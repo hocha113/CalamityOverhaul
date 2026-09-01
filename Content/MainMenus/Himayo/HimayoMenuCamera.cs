@@ -7,17 +7,17 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
     internal static class HimayoMenuCamera
     {
         /// <summary>垂直 FOV 半角正切，约 64°；视场稍宽可降低底图放大倍率，缓解发糊</summary>
-        public const float TanHalfFov = 0.625f;
+        public static float TanHalfFov => 0.625f;
 
         //鼠标可牵引的最大偏航/俯仰（弧度）
-        private const float MouseYawRange = 0.489f;
-        private const float MousePitchRange = 0.175f;
+        private static float MouseYawRange => 0.489f;
+        private static float MousePitchRange => 0.175f;
         //怠速漂移幅度与总俯仰夹角（远离等距柱状图极区拉伸）
-        private const float DriftYawAmp = 0.105f;
-        private const float DriftPitchAmp = 0.030f;
-        private const float PitchClamp = 0.279f;
+        private static float DriftYawAmp => 0.105f;
+        private static float DriftPitchAmp => 0.030f;
+        private static float PitchClamp => 0.279f;
         //每 tick 追随率
-        private const float Follow = 0.055f;
+        private static float Follow => 0.055f;
 
         private static float yaw, pitch, prevYaw, prevPitch;
         private static float driftTime;

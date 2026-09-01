@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.MainMenus.Himayo;
 using CalamityOverhaul.Content.MainMenus.Overs;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -50,9 +51,33 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                 Volume = 0.35f,
                 MaxInstances = 3,
             });
+            if (!Main.dedServ) {
+                MusicToast.Dismiss();
+                MusicToast.ShowMusic(
+                    title: "夢のきざはし",
+                    artist: "腐姬",
+                    albumCover: ADVAsset.Shenyo_Calm,
+                    style: MusicToast.MusicStyle.WetInk,
+                    displayDuration: 360,
+                    titleTexture: ShenyoMenu.YumeNoKizahashi,
+                    screenYProvider: ResolveToastY);
+            }
         }
 
-        internal static void OnThemeDeselected() => ShenyoGhostLakeScene.Release();
+        //退出钮下方；能让开版本号就让，矮屏允许压住版本号但不能盖住退出
+        private static float ResolveToastY() {
+            float preferred = ShenyoMenuButtons.ExitBottomY + 8f;
+            float aboveVersion = Main.screenHeight - 56f - MusicToast.PanelHeight;
+            float y = MathF.Min(preferred, aboveVersion);
+            return y < ShenyoMenuButtons.ExitBottomY ? preferred : y;
+        }
+
+        internal static void OnThemeDeselected() {
+            ShenyoGhostLakeScene.Release();
+            if (!Main.dedServ) {
+                MusicToast.Dismiss();
+            }
+        }
 
         public override void MenuLogicUpdate() {
             bool onTitle = Main.menuMode == 0;

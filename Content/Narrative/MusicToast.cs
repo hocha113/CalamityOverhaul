@@ -20,7 +20,8 @@ namespace CalamityOverhaul.Content.Narrative
             Vinyl,  //黑胶
             Digital,  //数字音波
             Neon,  //霓虹光谱
-            RedNeon  //红霓虹
+            RedNeon,  //红霓虹
+            WetInk  //湿墨冷青，对齐鬼湖色板
         }
 
         public class MusicInfo
@@ -28,6 +29,8 @@ namespace CalamityOverhaul.Content.Narrative
             public Texture2D AlbumCover { get; set; }
             public string Title { get; set; }
             public string Artist { get; set; }
+            public Texture2D TitleTexture { get; set; }
+            public Func<float> ScreenYProvider { get; set; }
             public MusicStyle Style { get; set; } = MusicStyle.Vinyl;
             public Action OnComplete { get; set; }
             public int DisplayDuration { get; set; } = 300;  //默认5秒
@@ -56,7 +59,7 @@ namespace CalamityOverhaul.Content.Narrative
 
         private const float MinPanelWidth = 320f;
         private const float MaxPanelWidth = 550f;
-        private const float PanelHeight = 90f;
+        internal const float PanelHeight = 90f;
         private const float AlbumSize = 70f;
         private const float AlbumPadding = 10f;
         private const float TextStartX = 95f;
@@ -89,11 +92,14 @@ namespace CalamityOverhaul.Content.Narrative
 
         #region 公共API
         public static void ShowMusic(string title, string artist = null, Texture2D albumCover = null,
-            MusicStyle style = MusicStyle.Vinyl, int displayDuration = 300, Action onComplete = null) {
+            MusicStyle style = MusicStyle.Vinyl, int displayDuration = 300, Action onComplete = null,
+            Texture2D titleTexture = null, Func<float> screenYProvider = null) {
             var music = new MusicInfo {
                 Title = title,
                 Artist = artist,
                 AlbumCover = albumCover,
+                TitleTexture = titleTexture,
+                ScreenYProvider = screenYProvider,
                 Style = style,
                 DisplayDuration = displayDuration,
                 OnComplete = onComplete
@@ -104,6 +110,19 @@ namespace CalamityOverhaul.Content.Narrative
         public static void ClearQueue() {
             Instance.musicQueue.Clear();
         }
+
+        public static void Dismiss() {
+            MusicToast inst = Instance;
+            inst.musicQueue.Clear();
+            inst.currentMusic = null;
+            inst.slideProgress = 0f;
+            inst.alpha = 1f;
+            inst.stateTimer = 0;
+            inst.currentState = AnimationState.SlideIn;
+            inst.particles.Clear();
+        }
+
+        public override void OnEnterWorld() => Dismiss();
         #endregion
 
         #region 更新逻辑
@@ -159,11 +178,7 @@ namespace CalamityOverhaul.Content.Narrative
 
         private void CalculatePanelWidth() {
             var font = FontAssets.MouseText.Value;
-
-            string titleText = currentMusic.Title ?? "Unknown Track";
-            Vector2 titleSize = font.MeasureString(titleText) * 0.85f;
-
-            float maxTextWidth = titleSize.X;
+            float maxTextWidth = ResolveTitleSize(MaxPanelWidth - TextStartX - TextPaddingRight).X;
 
             if (!string.IsNullOrEmpty(currentMusic.Artist)) {
                 Vector2 artistSize = font.MeasureString(currentMusic.Artist) * 0.65f;
@@ -171,8 +186,27 @@ namespace CalamityOverhaul.Content.Narrative
             }
 
             float requiredWidth = TextStartX + maxTextWidth + TextPaddingRight;
-
             currentPanelWidth = Math.Clamp(requiredWidth, MinPanelWidth, MaxPanelWidth);
+        }
+
+        private bool HasTitleTexture =>
+            currentMusic?.TitleTexture != null && !currentMusic.TitleTexture.IsDisposed;
+
+        //标题行高度对齐 0.85 字号；贴图不超过 1x，超宽再按可用宽度压
+        private Vector2 ResolveTitleSize(float maxWidth) {
+            if (HasTitleTexture) {
+                Texture2D tex = currentMusic.TitleTexture;
+                float lineH = FontAssets.MouseText.Value.MeasureString("A").Y * 0.85f;
+                float scale = Math.Min(1f, lineH / Math.Max(tex.Height, 1));
+                float width = tex.Width * scale;
+                if (width > maxWidth && width > 0.01f) {
+                    scale *= maxWidth / width;
+                }
+                return new Vector2(tex.Width * scale, tex.Height * scale);
+            }
+
+            string titleText = currentMusic.Title ?? "Unknown Track";
+            return FontAssets.MouseText.Value.MeasureString(titleText) * 0.85f;
         }
 
         private void UpdateAnimation() {
@@ -260,7 +294,8 @@ namespace CalamityOverhaul.Content.Narrative
 
         private Vector2 GetCurrentPanelPosition() {
             float x = MathHelper.Lerp(OffscreenX, OnscreenX, slideProgress);
-            return new Vector2(x, ScreenY);
+            float y = currentMusic?.ScreenYProvider?.Invoke() ?? ScreenY;
+            return new Vector2(x, y);
         }
         #endregion
 
@@ -283,6 +318,9 @@ namespace CalamityOverhaul.Content.Narrative
                     break;
                 case MusicStyle.RedNeon:
                     DrawRedNeonStyle(spriteBatch, panelRect);
+                    break;
+                case MusicStyle.WetInk:
+                    DrawWetInkStyle(spriteBatch, panelRect);
                     break;
             }
 
@@ -377,7 +415,7 @@ namespace CalamityOverhaul.Content.Narrative
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), borderColor * 0.85f);
             spriteBatch.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), borderColor * 0.85f);
 
-            DrawAudioWaveform(spriteBatch, rect);
+            DrawAudioWaveform(spriteBatch, rect, new Color(0, 200, 255) * alpha);
         }
 
         private void DrawDigitalGrid(SpriteBatch sb, Rectangle rect) {
@@ -395,15 +433,13 @@ namespace CalamityOverhaul.Content.Narrative
             }
         }
 
-        private void DrawAudioWaveform(SpriteBatch sb, Rectangle rect) {
+        private void DrawAudioWaveform(SpriteBatch sb, Rectangle rect, Color waveColor) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
             float startX = rect.X + TextStartX;
             float endX = rect.Right - TextPaddingRight;
             float centerY = rect.Y + rect.Height - 15f;
             float maxHeight = 10f;
-
-            Color waveColor = new Color(0, 200, 255) * alpha;
 
             for (int i = 0; i < audioLevels.Length - 1; i++) {
                 float t = i / (float)(audioLevels.Length - 1);
@@ -423,6 +459,39 @@ namespace CalamityOverhaul.Content.Narrative
                     sb.Draw(px, p1, new Rectangle(0, 0, 1, 1), waveColor, rot, Vector2.Zero, new Vector2(len, 1.5f), SpriteEffects.None, 0f);
                 }
             }
+        }
+        #endregion
+
+        #region 湿墨冷青（鬼湖）
+        //色值对齐 ShenyoMenuTheme：天穹底、潮雾、溺月、径流水光
+        private static readonly Color WetInkDeep = new(5, 7, 9);
+        private static readonly Color WetInkMurk = new(20, 26, 30);
+        private static readonly Color WetInkMoon = new(196, 214, 218);
+        private static readonly Color WetInkWater = new(136, 202, 216);
+        private static readonly Color WetInkPale = new(222, 232, 236);
+        private static readonly Color WetInkMist = new(118, 144, 152);
+
+        private void DrawWetInkStyle(SpriteBatch spriteBatch, Rectangle rect) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+
+            int segments = 16;
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                float t2 = (i + 1) / (float)segments;
+                int y1 = rect.Y + (int)(t * rect.Height);
+                int y2 = rect.Y + (int)(t2 * rect.Height);
+                Rectangle r = new(rect.X, y1, rect.Width, Math.Max(1, y2 - y1));
+                spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1),
+                    Color.Lerp(WetInkDeep, WetInkMurk, t) * (alpha * 0.88f));
+            }
+
+            Color hair = WetInkMoon * (alpha * 0.38f);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 1), new Rectangle(0, 0, 1, 1), hair);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1), new Rectangle(0, 0, 1, 1), hair * 0.7f);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 1, rect.Height), new Rectangle(0, 0, 1, 1), hair * 0.85f);
+            spriteBatch.Draw(px, new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height), new Rectangle(0, 0, 1, 1), hair * 0.55f);
+
+            DrawAudioWaveform(spriteBatch, rect, WetInkWater * (alpha * 0.42f));
         }
         #endregion
 
@@ -579,7 +648,10 @@ namespace CalamityOverhaul.Content.Narrative
                 float albumScale = Math.Min(AlbumSize / album.Width, AlbumSize / album.Height);
 
                 float rotation = currentMusic.Style == MusicStyle.Vinyl ? vinylRotation : 0f;
-                spriteBatch.Draw(album, albumPos, null, Color.White * alpha, rotation, album.Size() / 2f, albumScale, SpriteEffects.None, 0f);
+                Color albumTint = currentMusic.Style == MusicStyle.WetInk
+                    ? WetInkMist * alpha
+                    : Color.White * alpha;
+                spriteBatch.Draw(album, albumPos, null, albumTint, rotation, album.Size() / 2f, albumScale, SpriteEffects.None, 0f);
             }
             else {
                 DrawDefaultMusicIcon(spriteBatch, albumPos);
@@ -592,6 +664,7 @@ namespace CalamityOverhaul.Content.Narrative
                 MusicStyle.Digital => new Color(0, 220, 255) * alpha,
                 MusicStyle.Neon => new Color(255, 100, 255) * alpha,
                 MusicStyle.RedNeon => new Color(255, 125, 75) * alpha,
+                MusicStyle.WetInk => WetInkPale * alpha,
                 _ => Color.White * alpha
             };
 
@@ -599,18 +672,29 @@ namespace CalamityOverhaul.Content.Narrative
             Utils.DrawBorderString(spriteBatch, nowPlayingText, textStart, textColor * 0.7f, 0.6f);
 
             Vector2 titlePos = textStart + new Vector2(0, 14);
-            string titleText = currentMusic.Title ?? "Unknown Track";
-
             float availableWidth = currentPanelWidth - TextStartX - TextPaddingRight;
-            Vector2 titleSize = font.MeasureString(titleText) * 0.85f;
+            Vector2 titleSize = ResolveTitleSize(availableWidth);
 
-            if (titleSize.X > availableWidth) {
-                float scale = Math.Max(0.55f, availableWidth / titleSize.X * 0.85f);
-                Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, scale);
-                titleSize = font.MeasureString(titleText) * scale;
+            if (HasTitleTexture) {
+                Texture2D titleTex = currentMusic.TitleTexture;
+                float texScale = titleSize.X / Math.Max(titleTex.Width, 1);
+                Color titleTint = currentMusic.Style == MusicStyle.WetInk
+                    ? WetInkMoon * alpha
+                    : Color.White * alpha;
+                spriteBatch.Draw(titleTex, titlePos, null, titleTint, 0f,
+                    Vector2.Zero, texScale, SpriteEffects.None, 0f);
             }
             else {
-                Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, 0.85f);
+                string titleText = currentMusic.Title ?? "Unknown Track";
+                Vector2 measured = font.MeasureString(titleText) * 0.85f;
+                if (measured.X > availableWidth) {
+                    float scale = Math.Max(0.55f, availableWidth / measured.X * 0.85f);
+                    Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, scale);
+                    titleSize = font.MeasureString(titleText) * scale;
+                }
+                else {
+                    Utils.DrawBorderString(spriteBatch, titleText, titlePos, textColor, 0.85f);
+                }
             }
 
             if (!string.IsNullOrEmpty(currentMusic.Artist)) {
@@ -629,7 +713,7 @@ namespace CalamityOverhaul.Content.Narrative
 
         private void DrawDefaultMusicIcon(SpriteBatch sb, Vector2 center) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            Color iconColor = Color.White * alpha;
+            Color iconColor = (currentMusic.Style == MusicStyle.WetInk ? WetInkMoon : Color.White) * alpha;
 
             float noteSize = AlbumSize * 0.6f;
 
@@ -676,6 +760,11 @@ namespace CalamityOverhaul.Content.Narrative
                         new Color(0, 220, 255),
                         Color.Cyan
                     }),
+                    MusicStyle.WetInk => Main.rand.Next(new Color[] {
+                        WetInkMoon,
+                        WetInkMist,
+                        WetInkPale
+                    }),
                     MusicStyle.Neon => Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.6f),
                     MusicStyle.RedNeon => Main.rand.Next(new Color[] {
                         new Color(255, 0, 0),
@@ -719,5 +808,17 @@ namespace CalamityOverhaul.Content.Narrative
             }
         }
         #endregion
+    }
+
+    /// <summary>把局内 MusicToast 接到主菜单 Mod_MenuLoad 层；标题接管帧靠 DriveMenuOverlays 驱动</summary>
+    internal class MusicToastMenuHost : UIHandle
+    {
+        public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
+        public override float RenderPriority => 1.2f;
+        public override bool Active => Main.gameMenu && MusicToast.Instance.Active;
+
+        public override void MenuLogicUpdate() => MusicToast.Instance.LogicUpdate();
+
+        public override void Draw(SpriteBatch spriteBatch) => MusicToast.Instance.Draw(spriteBatch);
     }
 }

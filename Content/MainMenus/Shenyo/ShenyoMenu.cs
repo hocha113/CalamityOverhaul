@@ -12,6 +12,10 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
 
         public static LocalizedText ThemeName { get; private set; }
 
+        //曲名锁图（平假名无法走 MouseText）
+        [VaultLoaden(CWRConstant.Asset + "MainMenus/Shenyo/")]
+        public static Texture2D YumeNoKizahashi = null;
+
         public override string DisplayName => ThemeName?.Value ?? "Ghost Lake Rains";
 
         //主菜单 BGM：Assets/Sounds/Music/Rains.ogg（鬼雨主题曲，由 Main 每帧读 CurrentMenu.Music）
