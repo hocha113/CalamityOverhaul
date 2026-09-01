@@ -43,19 +43,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         //==================== 普攻音效 ====================
         //不拿 SoundID.Drip / Waterfall:两者是 Ambient 洞穴滴水,战斗里等于没声。
-        //灾厄在场走湿掌/水花;缺灾厄回退原版水矢/溅水。Splash 默认 IgnoreNew,连打会吞,这里一律 ReplaceOldest。
+        //一律原版:伞骨闷扫 / 水矢甩墨 / 溅水 / 水枪喷流。Splash 默认 IgnoreNew,连打会吞,这里一律 ReplaceOldest。
 
         /// <summary>撑伞/翻面/收伞:伞骨闷扫</summary>
-        internal static SoundStyle UmbrellaWhoosh
-            => "CalamityMod/Sounds/Item/SwooshMid".GetSound(SoundID.DD2_MonkStaffSwing);
+        internal static SoundStyle UmbrellaWhoosh => SoundID.DD2_MonkStaffSwing;
 
-        /// <summary>甩雨出手:湿掌甩墨</summary>
-        internal static SoundStyle InkFlick
-            => $"CalamityMod/Sounds/Custom/WetSlap{Main.rand.Next(1, 5)}".GetSound(SoundID.Item21);
+        /// <summary>甩雨出手:水矢甩墨</summary>
+        internal static SoundStyle InkFlick => SoundID.Item21;
 
-        /// <summary>泼溅/落点/蓄墨换档:水花</summary>
-        internal static SoundStyle InkSplash
-            => $"CalamityMod/Sounds/Item/WaterSplash{(Main.rand.NextBool() ? 1 : 2)}".GetSound(SoundID.Splash);
+        /// <summary>泼溅/落点/蓄墨换档:溅水</summary>
+        internal static SoundStyle InkSplash => SoundID.Splash;
 
         /// <summary>倾覆开闸:水枪喷流,给墨瀑一条持续感</summary>
         internal static SoundStyle InkSpray => SoundID.Item13;

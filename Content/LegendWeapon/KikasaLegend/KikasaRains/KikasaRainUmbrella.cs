@@ -573,7 +573,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 //出手拍:湿掌甩墨+向上后坐+眼睛燃一下+碎珠随甩;齐掷拍整把伞一沉
                 recoil = ghostVolley ? 7f : 4.5f;
                 eyeGlow = MathF.Max(eyeGlow, ghostVolley ? 1f : 0.5f);
-                //出手拍是全武器最高频音，灾厄 WetSlap 底子偏轰，整体压三成（反馈三·#67）
+                //出手拍是全武器最高频音，整体压三成（反馈三·#67）
                 KikasaInk.Play(KikasaInk.InkFlick, Projectile.Center,
                     ghostVolley ? 0.62f : 0.5f, ghostVolley ? -0.12f : 0.08f, 4);
                 KikasaInk.Play(SoundID.SplashWeak, Projectile.Center, 0.3f, 0.12f, 4);
