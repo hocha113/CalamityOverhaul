@@ -11,6 +11,10 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
 
         public static LocalizedText ThemeName { get; private set; }
 
+        //曲名锁图（平假名无法走 MouseText）
+        [VaultLoaden(CWRConstant.Asset + "MainMenus/Himayo/")]
+        public static Texture2D AsuENoKakehashi = null;
+
         public override string DisplayName => ThemeName?.Value ?? "Sakura Night";
 
         //主菜单 BGM：Assets/Sounds/Music/Future.ogg（由 Main 每帧读 CurrentMenu.Music，不依赖 DrawMenu）

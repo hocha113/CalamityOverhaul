@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.MainMenus.Shenyo;
+﻿using CalamityOverhaul.Content.MainMenus.Himayo;
+using CalamityOverhaul.Content.MainMenus.Shenyo;
 using System;
 using Terraria;
 
@@ -14,10 +15,11 @@ namespace CalamityOverhaul.Content.Narrative
                 return;
             }
             MusicToast.ShowMusic(
-                title: "凭夜:未来",
+                title: "明日への架け橋",
                 albumCover: ADVAsset.Himayo_forsmile,
                 style: MusicToast.MusicStyle.Sakura,
                 displayDuration: DisplayDuration,
+                titleTexture: HimayoMenu.AsuENoKakehashi,
                 screenYProvider: screenYProvider,
                 layoutScale: layoutScale);
         }

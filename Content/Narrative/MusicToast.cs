@@ -732,7 +732,8 @@ namespace CalamityOverhaul.Content.Narrative
                 float texScale = titleSize.X / Math.Max(titleTex.Width, 1);
                 Color titleTint = currentMusic.Style switch {
                     MusicStyle.WetInk => WetInkMoon * alpha,
-                    MusicStyle.Sakura => SakuraIvory * alpha,
+                    //夜樱锁图自带金描，不再乘象牙色
+                    MusicStyle.Sakura => Color.White * alpha,
                     _ => Color.White * alpha
                 };
                 spriteBatch.Draw(titleTex, titlePos, null, titleTint, 0f,
