@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 MusicToast.Dismiss();
                 MusicToast.ShowMusic(
                     title: "凭夜:未来",
-                    albumCover: ADVAsset.Himayo,
+                    albumCover: ADVAsset.Himayo_grin,
                     style: MusicToast.MusicStyle.Sakura,
                     displayDuration: 360,
                     screenYProvider: ResolveToastY,
