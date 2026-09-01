@@ -263,8 +263,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
             GodSmithEndowSource.OpenUseGate(player);
             try {
                 return GsCanUseItem(item, player);
-            }
-            finally {
+            } finally {
                 GodSmithEndowSource.CloseUseGate();
             }
         }

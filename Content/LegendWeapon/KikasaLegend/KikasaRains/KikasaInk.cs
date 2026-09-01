@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
-using Terraria;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using Terraria.Audio;
 using Terraria.ID;
 

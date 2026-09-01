@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Scenarios.Kiame.Gate;
 using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.OtherMods.SubWorld;

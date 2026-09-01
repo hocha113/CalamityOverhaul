@@ -245,8 +245,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             int idx;
             try {
                 idx = ActorLoader.NewActor<BssSandPillar>(new Vector2(anchor.X - width2 * 0.5f, footY - height));
-            }
-            finally {
+            } finally {
                 pendingValid = false;
             }
             if (idx < 0 || idx >= ActorLoader.MaxActorCount

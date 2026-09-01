@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Diagnostics;
 using Terraria;
@@ -162,8 +162,7 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
 
             try {
                 actor.Draw(sb, in frame);
-            }
-            finally {
+            } finally {
                 sb.End();
                 gd.ScissorRectangle = prevScissor;
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,

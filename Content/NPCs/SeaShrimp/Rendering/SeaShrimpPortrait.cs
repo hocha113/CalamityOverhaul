@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
+﻿using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Kinematics;
 using CalamityOverhaul.OtherMods.BossChecklist;
 using Microsoft.Xna.Framework.Graphics;
@@ -102,8 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering
             SeaShrimpRenderer.BeginPortrait(env);
             try {
                 SeaShrimpRenderer.DrawPortrait(sb, skeleton, ctx, glow: !frame.Masked);
-            }
-            finally {
+            } finally {
                 SeaShrimpRenderer.EndPortrait();
             }
         }

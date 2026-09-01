@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Items.Melee.Abyssrends;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Core;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles;
 using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
-using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;

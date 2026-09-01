@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
 using System;

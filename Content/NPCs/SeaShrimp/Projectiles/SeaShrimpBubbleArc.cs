@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.NPCs.SeaShrimp.Rendering;
-using InnoVault.Trails;
+﻿using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

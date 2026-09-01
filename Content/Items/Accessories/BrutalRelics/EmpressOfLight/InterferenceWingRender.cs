@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -73,8 +73,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
                         DrawTrails(graphicsDevice, mp);
                     }
                 }
-            }
-            finally {
+            } finally {
                 //绘制中途抛异常也要还原混合态，防泄漏 Additive 污染后续玩家层
                 if (deviceReady) {
                     graphicsDevice.BlendState = origBlend;

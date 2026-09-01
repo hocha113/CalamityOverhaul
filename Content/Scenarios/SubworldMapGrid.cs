@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -80,8 +80,7 @@ namespace CalamityOverhaul.Content.Scenarios
                             RenderTargetUsage.PreserveContents);
                         Main.initMap[i, j] = true;
                         rebuilt = true;
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         if (!upkeepFailWarned) {
                             upkeepFailWarned = true;
                             CWRMod.Instance.Logger.Warn($"[SubworldMapGrid] 扩容行目标补建失败({i},{j}): {e.Message}");
