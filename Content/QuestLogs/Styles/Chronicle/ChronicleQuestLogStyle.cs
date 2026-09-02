@@ -3,6 +3,8 @@ using CalamityOverhaul.Content.QuestLogs.Guide;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent;
 
@@ -435,11 +437,20 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         #region 详情：贴在右页上的一张记录条
 
         private const float SlipPadX = 22f;
-        //页脚带高：领赏牌与结卷蜡封住在这条带里，正文裁剪到它上缘为止
+        //页脚带高：领赏牌住在这条带里，正文裁剪到它上缘为止
         private const float FooterBandH = 76f;
         //正文与小节题头字号，测量与绘制共用一份；0.85 以下的字在羊皮纸上读作没墨水
         private const float BodyScale = 0.88f;
         private const float SectionScale = 0.9f;
+        //条目名：一行放不下先缩字，缩到 TitleMinScale 仍不够就按 TitleWrapScale 折成两行
+        private const float TitleMinScale = 0.85f;
+        private const float TitleWrapScale = 0.9f;
+        //题头蜡封：钉在条目名右侧、合卷键左侧的空档里，圆心距贴条右缘/上缘
+        private const float SealRadius = 18f;
+        private const float SealInsetRight = 72f;
+        private const float SealInsetTop = 32f;
+        //WaxSeal 用 r*0.9 的粗笔沿半径 r 描蜡体，路径本身略出单位圆，再加散列胀缩与投影，实占约 1.7r
+        private const float SealVisualFactor = 1.7f;
 
         public Rectangle GetCloseButtonRect(Rectangle panelRect)
             => new(panelRect.Right - 46, panelRect.Y + 18, 26, 26);
@@ -451,8 +462,43 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         private static Rectangle SlipRect(Rectangle detail)
             => new(detail.X + 10, detail.Y + 12, detail.Width - 26, detail.Height - 26);
 
-        /// <summary>题头高：条目名 + 金线 + 留白，正文从贴条顶往下这么多起笔</summary>
-        private static float HeaderHeight(float line) => 20f + line * 1.05f + 4f + 12f;
+        private static bool HasSeal(NodeState state)
+            => state == NodeState.Sealed || state == NodeState.Unclaimed;
+
+        /// <summary>条目名可用宽：结卷的到蜡封左缘为止，未结卷的到合卷键左缘为止</summary>
+        private float TitleAvailWidth(Rectangle detail, Rectangle slip, bool hasSeal) {
+            float limit = hasSeal
+                ? slip.Right - SealInsetRight - SealRadius * SealVisualFactor
+                : GetCloseButtonRect(detail).X;
+            return limit - 8f - (slip.X + SlipPadX);
+        }
+
+        /// <summary>条目名排法：行数与字号，测量与绘制共用</summary>
+        private static (List<string> rows, float scale) LayoutTitle(string title, float availW) {
+            title ??= string.Empty;
+            float width = Font.MeasureString(title).X;
+            if (width <= availW || width <= 0f) {
+                return ([title], 1f);
+            }
+            float shrink = availW / width;
+            if (shrink >= TitleMinScale) {
+                return ([title], shrink);
+            }
+            List<string> rows = ChroniclePen.Wrap(Font, title, availW, TitleWrapScale);
+            if (rows.Count > 2) {
+                //两行装不下的名字目前没有，真有也只让第二行溢出，不再往下堆
+                rows = [rows[0], string.Join(" ", rows.Skip(1))];
+            }
+            return (rows, TitleWrapScale);
+        }
+
+        /// <summary>条目名块高：首行按整行高占位（缩了字就在行内居中），后续行按实际字号累加</summary>
+        private static float TitleBlockHeight(float line, int rows, float scale)
+            => line * 1.05f + (rows - 1) * line * scale;
+
+        /// <summary>题头高：条目名块 + 金线 + 留白，正文从贴条顶往下这么多起笔</summary>
+        private static float HeaderHeight(float line, int titleRows, float titleScale)
+            => 20f + TitleBlockHeight(line, titleRows, titleScale) + 4f + 12f;
 
         public void DrawQuestDetail(SpriteBatch sb, QuestNode node, Rectangle panelRect, float alpha)
             => DrawDetail(sb, node, in layout, alpha, 0f);
@@ -462,7 +508,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             Rectangle slip = SlipRect(current.Detail);
             float wrapW = slip.Width - SlipPadX * 2f;
             float line = Font.MeasureString("A").Y;
-            float chrome = current.Detail.Height - slip.Height + HeaderHeight(line) + FooterBandH;
+            bool hasSeal = HasSeal(StateOf(node));
+            (List<string> rows, float scale) = LayoutTitle(node.DisplayName?.Value,
+                TitleAvailWidth(current.Detail, slip, hasSeal));
+            float chrome = current.Detail.Height - slip.Height
+                + HeaderHeight(line, rows.Count, scale) + FooterBandH;
             return MeasureBody(node, wrapW) + chrome;
         }
 
@@ -498,22 +548,30 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             float wrapW = slip.Width - SlipPadX * 2f;
             float line = Font.MeasureString("A").Y;
             NodeState state = StateOf(node);
+            bool hasSeal = HasSeal(state);
             int seed = Math.Abs(node.ID?.GetHashCode() ?? 0) % 9973;
 
-            //题头：条目名 + 一道金线
+            //题头：条目名 + 一道金线。名字伸不到蜡封/合卷键底下：先缩字，再折行
+            (List<string> titleRows, float titleScale) = LayoutTitle(node.DisplayName?.Value,
+                TitleAvailWidth(rect, slip, hasSeal));
             float y = slip.Y + 20f;
-            ChroniclePen.Ink(sb, Font, node.DisplayName?.Value ?? string.Empty,
-                new Vector2(x, y), ChroniclePalette.Ink, 1.0f, alpha);
-            y += line * 1.05f + 4f;
+            for (int i = 0; i < titleRows.Count; i++) {
+                float rowTop = i == 0
+                    ? y + (line - line * titleScale) * 0.5f
+                    : y + line * 1.05f + (i - 1) * line * titleScale;
+                ChroniclePen.Ink(sb, Font, titleRows[i], new Vector2(x, rowTop),
+                    ChroniclePalette.Ink, titleScale, alpha);
+            }
+            y += TitleBlockHeight(line, titleRows.Count, titleScale) + 4f;
             ChroniclePen.GiltRule(sb, new Vector2(x, y), wrapW * 0.72f, alpha * 0.8f);
-            y = slip.Y + HeaderHeight(line);
+            y = slip.Y + HeaderHeight(line, titleRows.Count, titleScale);
 
-            //结卷蜡封盖在贴条右下的落款位，与左下的领赏牌同一条页脚带。
-            //先前压在题头右上 (slip.Y+66)：蜡体外径约 1.45r≈33px，恰好盖住正文前两行行尾 60 余像素；
-            //题头带被合卷键占着放不下，正文又会随滚动从蜡封底下走过，只有页脚带是死的
-            if (state == NodeState.Sealed || state == NodeState.Unclaimed) {
-                ChroniclePen.WaxSeal(sb, new Vector2(slip.Right - 52f, slip.Bottom - 40f), 21f,
-                    alpha, seed, time, state == NodeState.Sealed, state == NodeState.Unclaimed);
+            //结卷蜡封压在题头右上、合卷键左侧，蜡体上缘咬着贴条顶边（与教程卡的图钉蜡封同一种贴法）。
+            //旧位 (slip.Right-52, slip.Y+66) 的圆心正落在正文起笔线上，蜡体盖掉描述前两行的行尾；
+            //题头带只有六十来像素，半径 21 收到 18 才卡得进合卷键与金线之间，下缘不越过正文起笔线
+            if (hasSeal) {
+                ChroniclePen.WaxSeal(sb, new Vector2(slip.Right - SealInsetRight, slip.Y + SealInsetTop),
+                    SealRadius, alpha, seed, time, state == NodeState.Sealed, state == NodeState.Unclaimed);
             }
 
             //收起键先画，窗口再矮也不能只剩命中区没有图形

@@ -195,25 +195,50 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             sb.DrawString(font, text, pos, ink, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>按宽度断行，返回每行文本</summary>
+        /// <summary>
+        /// 按宽度断行，返回每行文本。<br/>
+        /// 行内有空格就退到最后一个空格处断，西文不切在词中间；整词放不下或无空格（中文）才按字断
+        /// </summary>
         public static List<string> Wrap(DynamicSpriteFont font, string text, float maxWidth, float scale) {
             List<string> lines = [];
             if (string.IsNullOrEmpty(text)) {
                 return lines;
             }
             foreach (string paragraph in text.Split('\n')) {
+                int startCount = lines.Count;
                 string current = string.Empty;
                 foreach (char c in paragraph) {
+                    //折下来的续行不以空格开头；段首的缩进空格照留
+                    if (current.Length == 0 && c == ' ' && lines.Count > startCount) {
+                        continue;
+                    }
                     string probe = current + c;
-                    if (font.MeasureString(probe).X * scale > maxWidth && current.Length > 0) {
+                    if (current.Length == 0 || font.MeasureString(probe).X * scale <= maxWidth) {
+                        current = probe;
+                        continue;
+                    }
+                    if (c == ' ') {
+                        //恰在词尾溢出：本行到此为止，这个空格不要
+                        lines.Add(current);
+                        current = string.Empty;
+                        continue;
+                    }
+                    //退到词首重排：词尾带上 c 仍装得进一行才退，比一行还长的词按字断
+                    int lastSpace = current.LastIndexOf(' ');
+                    string tail = lastSpace > 0 ? current[(lastSpace + 1)..] + c : null;
+                    if (tail != null && font.MeasureString(tail).X * scale <= maxWidth) {
+                        lines.Add(current[..lastSpace]);
+                        current = tail;
+                    }
+                    else {
                         lines.Add(current);
                         current = c.ToString();
                     }
-                    else {
-                        current = probe;
-                    }
                 }
-                lines.Add(current);
+                //段末收尾；空段（连续换行）也照样占一行
+                if (current.Length > 0 || lines.Count == startCount) {
+                    lines.Add(current);
+                }
             }
             return lines;
         }

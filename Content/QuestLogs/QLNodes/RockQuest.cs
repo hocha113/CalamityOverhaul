@@ -15,7 +15,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = CWRID.Item_Terminus;
-            Position = new Vector2(0, -300);
+            //终末篇主轴钉在 x=-100:轴上依次是终末石→古恒石→终末之战→征战轮回,右翼终焉武器落 x=50,
+            //与工业西缘(x=300 的太阳能/电容矩阵)拉开 250px;轴放 x=0 时右翼在 150,与电容矩阵仅 158px 起
+            Position = new Vector2(-100, -300);
             AddParent<FirstQuest>();
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;

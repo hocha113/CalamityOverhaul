@@ -295,7 +295,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             DetailedDescription = this.GetLocalization(nameof(DetailedDescription), () => "捏碎终末石，你杀过的所有东西会排着队回来找你。全部再杀一遍，才算给这段旅途盖章。");
 
             IconTexturePath = "CalamityMod/UI/MiscTextures/BossRushIcon";
-            Position = new Vector2(100, -150);
+            //终末篇主轴上、古恒石正上方一格;征战轮回(五次终末之战)接在它下游
+            Position = new Vector2(0, -150);
             AddParent<RockQuest>();
 
             QuestType = QuestType.Main;
