@@ -72,6 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 //地下蓄势：钉住不动，预告实体负责地面演出
                 ctx.Mode = BssMoveMode.Hold;
                 npc.velocity = Vector2.Zero;
+                DeclareJaw(ctx, BssJawCommand.Clamp);
             }
             else if (t == BreachFrame) {
                 //破土：一帧定初速（力量在出手帧，不在加速度）
@@ -85,11 +86,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 }
                 npc.alpha = 0;
                 ctx.Mode = BssMoveMode.Direct;
+                DeclareJaw(ctx, BssJawCommand.Gape);
             }
             else {
                 //腾空抛物 → 落地
                 ctx.Mode = BssMoveMode.Direct;
                 ctx.LegCommand = landed ? BssLegCommand.March : BssLegCommand.Flail;
+                if (!landed) {
+                    DeclareJaw(ctx, BssJawCommand.Gape);
+                }
                 ctx.LegAlpha = landed ? 1f : 0.85f;
                 if (!landed) {
                     npc.velocity.Y = MathHelper.Clamp(npc.velocity.Y + BssDirector.LungeGravity, -30f, 18f);
@@ -114,8 +119,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     ctx.CrawlSpeed = 0f;
                     ctx.CrawlDirX = FacingToTarget(ctx);
                     ctx.FrontRaise = MathHelper.Clamp((t - landTime) / 18f, 0f, 0.45f);
-                    if (t - landTime == 12) {
+                    float stareAge = t - landTime;
+                    if (stareAge == 12) {
                         BssVfx.Roar(npc.Center, -0.25f, 0.8f);
+                    }
+                    if (stareAge >= 12) {
+                        DeclareRoarHold(ctx, (int)(stareAge - 12), 20);
                     }
                     if (t - landTime > StareFrames) {
                         return EndStare(ctx);

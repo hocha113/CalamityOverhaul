@@ -57,6 +57,27 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         Collapse,
     }
 
+    /// <summary>颚开合指令（纯表现，各端本地；未声明回 Idle，Idle 时颚绘制回落到爪映射）</summary>
+    internal enum BssJawCommand
+    {
+        /// <summary>待机呼吸（贴源图半张）</summary>
+        Idle,
+        /// <summary>吸气合拢：JawPhase = 合拢进度</summary>
+        Inhale,
+        /// <summary>喷吐：JawBurst 把口撑开，间隙半张</summary>
+        Spit,
+        /// <summary>怒吼：JawPhase = 蓄势，满值后顶开</summary>
+        Roar,
+        /// <summary>冲刺嘶吼张口（不是咬）</summary>
+        Gape,
+        /// <summary>咬合：JawPhase 0 合死、1 大张待咬</summary>
+        Bite,
+        /// <summary>钻沙/收拢咬死</summary>
+        Clamp,
+        /// <summary>死亡垂软半张</summary>
+        Slack,
+    }
+
     /// <summary>荒花沙蟒状态上下文</summary>
     internal class BssStateContext : INpcStateContext
     {
@@ -130,6 +151,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public Vector2 ClawAim { get; set; }
         /// <summary>挥掷主甩侧（±1，0 = 双爪同姿）</summary>
         public int ClawActiveSide { get; set; }
+        #endregion
+
+        #region 颚指令（每帧重声明；Burst 自衰减跨帧）
+        public BssJawCommand JawCommand { get; set; }
+        /// <summary>指令语义相位（吸气合拢度 / 怒吼蓄势 / 咬合斜坡）</summary>
+        public float JawPhase { get; set; }
+        /// <summary>喷吐包络（齐射拍置 1，逐帧自衰减）</summary>
+        public float JawBurst { get; set; }
         #endregion
 
         #region 表现通道
@@ -270,6 +299,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             ClawBurst *= 0.84f;
             if (ClawBurst < 0.02f) {
                 ClawBurst = 0f;
+            }
+            JawCommand = BssJawCommand.Idle;
+            JawPhase = 0f;
+            JawBurst *= 0.84f;
+            if (JawBurst < 0.02f) {
+                JawBurst = 0f;
             }
             PulseKind = 0;
             PulsePhase = 0f;

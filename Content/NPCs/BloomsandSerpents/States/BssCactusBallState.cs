@@ -53,6 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (t < WindupFrames) {
                 //后仰蓄势：8 次幂迟滞，最后几帧才猛然吸满（迟滞收势 = 出手的力量）
                 float late = MathF.Pow(t / (float)WindupFrames, 8f);
+                DeclareJaw(ctx, BssJawCommand.Inhale, MathHelper.Clamp(t / (float)WindupFrames, 0f, 1f));
                 Vector2 pose = new(anchor.X - throwDir * (14f + 30f * late),
                     groundY - BssDirector.CrawlRideHeight - 110f - 26f * late);
                 Vector2 desired = (pose - npc.Center) * 0.1f;
@@ -67,6 +68,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 //甩头释放：一帧向前抽，球齐出手，鞭波顺链而下
                 npc.velocity = new Vector2(throwDir * 10f, -3.5f);
                 ctx.PulseWhip(9f);
+                DeclareJaw(ctx, BssJawCommand.Spit);
+                ctx.JawBurst = 1f;
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.9f, Pitch = -0.5f }, npc.Center);
                     BssVfx.Roar(npc.Center, -0.15f, 0.6f);
@@ -90,11 +93,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 }
             }
             else {
-                //收势：不停步，直接压回去
+                //收势：不停步，直接压回去；喷口跟 JawBurst 衰减
                 ctx.Mode = BssMoveMode.Crawl;
                 ctx.CrawlSpeed = BssDirector.CrawlCruiseSpeed;
                 ctx.CrawlDirX = FacingToTarget(ctx);
                 ctx.LegCommand = BssLegCommand.March;
+                if (t < WindupFrames + 8) {
+                    DeclareJaw(ctx, BssJawCommand.Spit);
+                }
             }
 
             Timer++;

@@ -116,6 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.AccelRate = 0.12f;
             ctx.Slither = 0.3f;
             ctx.LegCommand = BssLegCommand.Flail;
+            DeclareRoarHold(ctx, (int)Timer, 18);
 
             Timer++;
             if (Vector2.Distance(npc.Center, entryPoint) < 110f
@@ -159,6 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             //末段亮花：出手前的身体预告
             if (progress > 0.75f) {
                 ctx.BloomGlow = Math.Max(ctx.BloomGlow, (progress - 0.75f) * 4f);
+                DeclareJaw(ctx, BssJawCommand.Inhale, (progress - 0.75f) * 4f);
             }
 
             Timer++;
@@ -196,6 +198,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.BloomGlow = Math.Max(ctx.BloomGlow, 1f);
             ctx.Compression = Math.Min(ctx.Compression, 0.86f);
             ctx.GatherLevel = progress;
+            if (t < 16) {
+                DeclareRoarHold(ctx, t, 16);
+            }
+            else {
+                DeclareJaw(ctx, BssJawCommand.Inhale, progress);
+            }
 
             //末段绷紧颤抖
             if (progress > 0.5f && !Main.dedServ) {
@@ -220,6 +228,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.PulseWhip(12f);
             //释放波：蓄力聚拢的长度从头向尾付出去
             ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.16f);
+            DeclareJaw(ctx, BssJawCommand.Gape);
             if (!Main.dedServ) {
                 BssVfx.SandBurst(npc.Center, 1.4f);
                 BssVfx.Roar(npc.Center, -0.35f, 1f);
@@ -237,6 +246,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (npc.velocity.Length() > BssDirector.DashContactSpeed) {
                 npc.damage = npc.defDamage;
             }
+            DeclareJaw(ctx, BssJawCommand.Gape);
+            DeclareSnatchIfClose(ctx, npc, BssDirector.DashContactSpeed);
 
             //冲刺尾流（各端本地）
             if (!Main.dedServ && Main.GameUpdateCount % 2 == 0) {

@@ -247,6 +247,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.Compression = MathHelper.Lerp(0.92f, 0.85f, progress);
             ctx.FrontRaise = MathHelper.Clamp(progress * 1.4f, 0f, 0.8f);
             ctx.BloomGlow = Math.Max(ctx.BloomGlow, progress);
+            DeclareJaw(ctx, BssJawCommand.Inhale, progress);
 
             //盘紧期头追瞄压向（正式锁向在滞空段收口）
             if (ctx.Target.Alives()) {
@@ -303,6 +304,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 lockedDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitX);
             }
             npc.rotation = npc.rotation.AngleLerp(lockedDir.ToRotation() + BssHead.FacingRot, 0.24f);
+            DeclareJaw(ctx, BssJawCommand.Inhale, MathHelper.Clamp(t / (float)BssDirector.VaultHopFrames, 0f, 1f));
 
             if (!Main.dedServ && Main.rand.NextBool(2)) {
                 Dust d = Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(20f, 20f),
@@ -325,6 +327,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
             ctx.PulseWhip(12f);
             ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.18f);
+            DeclareJaw(ctx, BssJawCommand.Gape);
             if (!Main.dedServ) {
                 BssVfx.Roar(npc.Center, -0.35f, 1f);
                 BssVfx.Shake(npc.Center, 6f, 1300f);
@@ -341,7 +344,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (npc.velocity.Length() > BssDirector.VaultContactSpeed) {
                 npc.damage = npc.defDamage;
             }
-            //撕咬意图：蹬柱爆冲中玩家贴嘴即鳌足急伸钳合
+            DeclareJaw(ctx, BssJawCommand.Gape);
+            //撕咬意图：蹬柱爆冲中玩家贴嘴即鳌足急伸钳合、颚咬死
             DeclareSnatchIfClose(ctx, npc, BssDirector.VaultContactSpeed);
 
             if (!Main.dedServ && Main.GameUpdateCount % 2 == 0) {

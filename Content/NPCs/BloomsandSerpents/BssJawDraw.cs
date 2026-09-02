@@ -7,11 +7,9 @@ using Terraria;
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 {
     /// <summary>
-    /// 头颚叠绘：左右瓣各绕自己根部顶边的铰链转，开合由已同步的爪指令/步态推导，不占网络包。
-    /// 图七不含牙，所有画头处都走这里；颚画在头本体之前（红根藏在头底，只露刃）。
-    ///
-    /// 挂点来自源图实测（1x → ×2）：两瓣根部相距 13px 居中于头轴，铰链行在头底上方 18px；
-    /// 源图姿态是半张，open=0 向内合到尖端相触，open=1 向外张开。
+    /// 头颚叠绘：左右瓣各绕自己根部顶边的铰链转。
+    /// 开合优先读已同步状态机声明的颚指令；颚未声明时回落到爪映射（祭舞/挥掷不必双写）。
+    /// 不占网络包。图七不含牙，所有画头处都走这里；颚画在头本体之前。
     /// </summary>
     internal static class BssJawDraw
     {
@@ -23,18 +21,57 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// <summary>各瓣贴图内的铰链像素（根部顶边中点）</summary>
         private static readonly Vector2 LeftOrigin = new(39f, 1f);
         private static readonly Vector2 RightOrigin = new(13f, 1f);
-        /// <summary>闭合摆角（相对源图姿态向内，尖端相触不交叉）</summary>
-        private const float ClosedAngle = -0.28f;
-        /// <summary>全张摆角（向外）</summary>
-        private const float WideAngle = 0.34f;
+        /// <summary>闭合摆角（相对源图半张向内，尖端相触）</summary>
+        private const float ClosedAngle = -0.55f;
+        /// <summary>全张摆角（约 45°/侧）</summary>
+        private const float WideAngle = 0.78f;
+
+        /// <summary>荒花：先颚指令，Idle 回落爪映射</summary>
+        internal static float ResolveOpen(BssJawCommand jaw, float jawPhase, float jawBurst,
+            BssClawCommand claw, float clawPhase, float clawBurst, float gaitPhase) {
+            return jaw == BssJawCommand.Idle
+                ? ResolveOpen(claw, clawPhase, clawBurst, gaitPhase)
+                : ResolveJaw(jaw, jawPhase, jawBurst, gaitPhase);
+        }
+
+        internal static float ResolveJaw(BssJawCommand cmd, float jawPhase, float jawBurst, float gaitPhase) {
+            float p = MathHelper.Clamp(jawPhase, 0f, 1f);
+            float burst = MathHelper.Clamp(jawBurst, 0f, 1f);
+            return cmd switch {
+                BssJawCommand.Inhale => MathHelper.Lerp(IdleOpen(gaitPhase), 0.05f, p),
+                BssJawCommand.Spit => MathHelper.Lerp(0.35f, 0.95f, burst),
+                BssJawCommand.Roar => MathHelper.Lerp(0.2f, 1f, p),
+                BssJawCommand.Gape => 0.85f,
+                BssJawCommand.Bite => MathHelper.Lerp(0f, 0.9f, p),
+                BssJawCommand.Clamp => 0.06f,
+                BssJawCommand.Slack => 0.55f + 0.08f * MathF.Sin(gaitPhase),
+                _ => IdleOpen(gaitPhase),
+            };
+        }
+
+        /// <summary>跟手速度：咬/喷快、吼/张中、待机慢</summary>
+        internal static float SnapRate(BssJawCommand jaw, BssClawCommand claw) {
+            BssJawCommand effective = jaw != BssJawCommand.Idle ? jaw : claw switch {
+                BssClawCommand.Snatch => BssJawCommand.Bite,
+                BssClawCommand.GuardMouth => BssJawCommand.Spit,
+                BssClawCommand.RainFlick => BssJawCommand.Spit,
+                _ => BssJawCommand.Idle,
+            };
+            return effective switch {
+                BssJawCommand.Bite or BssJawCommand.Spit => 0.55f,
+                BssJawCommand.Roar or BssJawCommand.Gape or BssJawCommand.Inhale => 0.22f,
+                BssJawCommand.Clamp => 0.28f,
+                _ => 0.08f,
+            };
+        }
 
         internal static float ResolveOpen(BssClawCommand cmd, float clawPhase, float clawBurst, float gaitPhase) {
             float idle = IdleOpen(gaitPhase);
             return cmd switch {
-                BssClawCommand.GuardMouth => MathHelper.Lerp(0.08f, 0.72f, MathHelper.Clamp(clawBurst, 0f, 1f)),
+                BssClawCommand.GuardMouth => MathHelper.Lerp(0.08f, 0.85f, MathHelper.Clamp(clawBurst, 0f, 1f)),
                 BssClawCommand.Snatch => MathHelper.Lerp(0.85f, 0.06f, MathHelper.Clamp(clawPhase, 0f, 1f)),
-                BssClawCommand.RainFlick => MathHelper.Lerp(idle, 0.62f, MathHelper.Clamp(clawPhase, 0f, 1f)),
-                BssClawCommand.Rite => 0.3f,
+                BssClawCommand.RainFlick => MathHelper.Lerp(idle, 0.72f, MathHelper.Clamp(clawPhase, 0f, 1f)),
+                BssClawCommand.Rite => MathHelper.Lerp(0.15f, 0.7f, MathHelper.Clamp(clawPhase, 0f, 1f)),
                 BssClawCommand.Tuck or BssClawCommand.Collapse => 0.08f,
                 _ => idle,
             };
@@ -43,18 +80,18 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         internal static float ResolveOpen(FssClawCommand cmd, float clawPhase, float clawBurst, float gaitPhase) {
             float idle = IdleOpen(gaitPhase);
             return cmd switch {
-                FssClawCommand.GuardMouth => MathHelper.Lerp(0.08f, 0.72f, MathHelper.Clamp(clawBurst, 0f, 1f)),
+                FssClawCommand.GuardMouth => MathHelper.Lerp(0.08f, 0.85f, MathHelper.Clamp(clawBurst, 0f, 1f)),
                 FssClawCommand.Snatch => MathHelper.Lerp(0.85f, 0.06f, MathHelper.Clamp(clawPhase, 0f, 1f)),
                 FssClawCommand.Fling => MathHelper.Lerp(idle, 0.72f, MathHelper.Clamp(clawPhase, 0f, 1f)),
-                FssClawCommand.Slam => MathHelper.Lerp(idle, 0.6f, MathHelper.Clamp(clawPhase, 0f, 1f)),
+                FssClawCommand.Slam => MathHelper.Lerp(idle, 0.65f, MathHelper.Clamp(clawPhase, 0f, 1f)),
                 FssClawCommand.Tuck or FssClawCommand.Collapse => 0.08f,
                 _ => idle,
             };
         }
 
-        /// <summary>待机微张：随步态轻微开合（半张附近呼吸）</summary>
+        /// <summary>待机微张：贴源图半张（open≈0.41 时摆角为 0）</summary>
         internal static float IdleOpen(float gaitPhase)
-            => 0.38f + 0.06f * MathF.Sin(gaitPhase * 2f);
+            => 0.42f + 0.04f * MathF.Sin(gaitPhase);
 
         /// <summary>
         /// 画两瓣颚。headCenter 为头本体绘制中心（含绘制偏移），headRotation 为头旋转；
@@ -69,14 +106,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
 
             Vector2 forward = BssClawScript.Forward(headRotation);
-            //贴图 +x 在世界里的方向（头正面朝下、rotation=0 时即屏幕右）
             Vector2 texRight = forward.RotatedBy(-MathHelper.PiOver2);
             Vector2 hinge = headCenter + forward * (HingeForward * scale) - screenPos;
             Vector2 leftPos = hinge + texRight * (LeftHingeSide * scale);
             Vector2 rightPos = hinge + texRight * (RightHingeSide * scale);
 
             float swing = MathHelper.Lerp(ClosedAngle, WideAngle, MathHelper.Clamp(jawOpen, 0f, 1f));
-            //屏幕坐标顺时针为正：左瓣尖端在铰链下方，正角把尖端甩向 -x（外侧）；右瓣镜像
             sb.Draw(left, leftPos, null, tint, headRotation + swing, LeftOrigin, scale, SpriteEffects.None, 0f);
             sb.Draw(right, rightPos, null, tint, headRotation - swing, RightOrigin, scale, SpriteEffects.None, 0f);
         }

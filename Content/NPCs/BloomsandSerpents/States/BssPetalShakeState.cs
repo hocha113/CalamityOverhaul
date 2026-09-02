@@ -47,6 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 if (bt < BssDirector.ShakeWindup) {
                     //蓄势：花光渐亮 + 草叶窸窣
                     ctx.BloomGlow = Math.Max(ctx.BloomGlow, bt / (float)BssDirector.ShakeWindup * 0.8f);
+                    DeclareJaw(ctx, BssJawCommand.Inhale, bt / (float)BssDirector.ShakeWindup);
                     if (bt == 0 && !Main.dedServ) {
                         SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.6f, Pitch = -0.3f, MaxInstances = 3 }, npc.Center);
                         if (beat == 0) {
@@ -58,12 +59,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     //抖动拍：身体在腿上剧颤（绘制层偏移，位置不动）
                     ctx.ShakeStrength = 1f;
                     ctx.BloomGlow = Math.Max(ctx.BloomGlow, 0.9f);
+                    DeclareJaw(ctx, BssJawCommand.Spit);
                     int burstT = bt - BssDirector.ShakeWindup;
                     //每拍甩 PetalsPerFlower 轮（间隔 4 帧错开，瓣幕有厚度不糊团）
                     if (burstT % 4 == 0 && burstT < BssDirector.PetalsPerFlower * 4) {
                         SpawnPetals(ctx);
                     }
                     if (burstT == 0) {
+                        ctx.JawBurst = 1f;
                         ctx.PulseWhip(6f);
                         if (!Main.dedServ) {
                             SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.8f, Pitch = 0.15f, MaxInstances = 3 }, npc.Center);

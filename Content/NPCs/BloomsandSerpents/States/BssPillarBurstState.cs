@@ -124,6 +124,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.FrontRaise = raise;
             ctx.Compression = Math.Min(ctx.Compression, 0.9f);
             ctx.BloomGlow = Math.Max(ctx.BloomGlow, raise * 0.9f);
+            if (t < RoarBeat) {
+                DeclareJaw(ctx, BssJawCommand.Inhale, raise);
+            }
+            else {
+                DeclareRoarHold(ctx, t - RoarBeat);
+            }
 
             //昂首：头指向斜上方（吼向天）
             float toward = FacingToTarget(ctx, 0f);

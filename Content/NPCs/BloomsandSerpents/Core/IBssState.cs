@@ -122,8 +122,25 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             return Math.Sign(dx);
         }
 
+        /// <summary>本帧颚意图（覆盖 BeginFrameDefaults 的 Idle）</summary>
+        protected static void DeclareJaw(BssStateContext ctx, BssJawCommand cmd, float phase = 0f) {
+            ctx.JawCommand = cmd;
+            ctx.JawPhase = phase;
+        }
+
+        /// <summary>怒吼拍后顶满再缓收（跟手约 12 帧到顶，避免只亮一帧）</summary>
+        protected static void DeclareRoarHold(BssStateContext ctx, int age, int hold = 22) {
+            if (age < 0 || age >= hold) {
+                return;
+            }
+            float phase = age < 8
+                ? 1f
+                : MathHelper.Clamp(1f - (age - 8) / (float)Math.Max(hold - 8, 1), 0.25f, 1f);
+            DeclareJaw(ctx, BssJawCommand.Roar, phase);
+        }
+
         /// <summary>
-        /// 撕咬意图（纯表现）：冲势伤害窗内玩家贴嘴时鳌足急伸钳合。
+        /// 撕咬意图（纯表现）：冲势伤害窗内玩家贴嘴时鳌足急伸钳合、颚咬死。
         /// 冲刺类状态在腾空/飞行段每帧调用，接触伤害机制不变。
         /// </summary>
         protected static void DeclareSnatchIfClose(BssStateContext ctx, NPC npc, float speedGate) {
@@ -134,6 +151,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             if (Vector2.Distance(mouth, ctx.Target.Center) < 190f) {
                 ctx.ClawCommand = BssClawCommand.Snatch;
                 ctx.ClawAim = ctx.Target.Center;
+                DeclareJaw(ctx, BssJawCommand.Bite, 0f);
             }
         }
 

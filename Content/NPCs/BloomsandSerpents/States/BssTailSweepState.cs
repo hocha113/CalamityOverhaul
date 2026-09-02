@@ -152,6 +152,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.March;
             ctx.Compression = Math.Min(ctx.Compression, MathHelper.Lerp(1f, 0.88f, progress));
             ctx.GatherLevel = progress;
+            DeclareJaw(ctx, BssJawCommand.Inhale, progress);
 
             if (t == 1 && !Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.7f, Pitch = -0.4f, MaxInstances = 2 },
@@ -179,6 +180,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.PulseWhip(11f);
                 //释放波：蓄力聚拢的长度从头向尾付出去
                 ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.15f);
+                DeclareJaw(ctx, BssJawCommand.Gape);
                 if (!Main.dedServ) {
                     BssVfx.SandBurst(npc.Center + new Vector2(0f, 16f), 1.2f);
                     BssVfx.Roar(npc.Center, -0.3f, 0.9f);
@@ -195,6 +197,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (npc.velocity.Length() > BssDirector.DashContactSpeed) {
                 npc.damage = npc.defDamage;
             }
+            DeclareJaw(ctx, BssJawCommand.Gape);
+            DeclareSnatchIfClose(ctx, npc, BssDirector.DashContactSpeed);
 
             float passedBy = Vector2.Dot(npc.Center - ctx.Target.Center, passDir);
             Timer++;
@@ -222,6 +226,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.TurnSpeed = 4.6f;
             ctx.AccelRate = 0.18f;
             ctx.LegCommand = BssLegCommand.Flail;
+            DeclareJaw(ctx, BssJawCommand.Gape);
 
             if (npc.velocity.Length() > 16f) {
                 npc.damage = npc.defDamage;

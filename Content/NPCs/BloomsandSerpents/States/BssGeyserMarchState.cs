@@ -109,6 +109,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.Raise;
             ctx.FrontRaise = raise;
             ctx.Compression = Math.Min(ctx.Compression, 0.94f);
+            DeclareJaw(ctx, BssJawCommand.Inhale, raise);
 
             Vector2 pose = new(riseAnchor.X, groundY - BssDirector.CrawlRideHeight - 170f * raise);
             Vector2 desired = (pose - npc.Center) * 0.1f;
@@ -139,6 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         private void UpdateSlam(BssStateContext ctx, NPC npc) {
             ctx.Mode = BssMoveMode.Direct;
             ctx.LegCommand = BssLegCommand.Flail;
+            DeclareJaw(ctx, BssJawCommand.Gape);
 
             float groundY = BssVfx.FindGroundY(npc.Center - new Vector2(0f, 260f), 800f);
             bool hit = prevY < groundY - 20f && npc.Center.Y >= groundY - 24f;
@@ -173,6 +175,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.CrawlDirX = FacingToTarget(ctx);
             ctx.CrawlSpeed = 8f;
             ctx.LegCommand = BssLegCommand.March;
+            DeclareRoarHold(ctx, (int)Timer, 20);
 
             int t = (int)Timer;
             if (t % BssDirector.GeyserStepGap == 0 && spawned < BssDirector.GeyserCount) {

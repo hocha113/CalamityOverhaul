@@ -123,6 +123,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         internal BssClawRig ClawRig { get; } = new();
         /// <summary>滤镜平滑包络（本地）</summary>
         private float stormSmooth;
+        /// <summary>颚开合平滑（本地跟手，从已同步指令推导）</summary>
+        private float jawSmooth = 0.42f;
         /// <summary>远距滞留帧</summary>
         private int farTimer;
 #if DEBUG
@@ -288,6 +290,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             if (!Main.dedServ) {
                 LegRig.Update(Context);
                 ClawRig.Update(Context);
+                float jawTarget = BssJawDraw.ResolveOpen(Context.JawCommand, Context.JawPhase, Context.JawBurst,
+                    Context.ClawCommand, Context.ClawPhase, Context.ClawBurst, Context.GaitPhase);
+                jawSmooth = MathHelper.Lerp(jawSmooth, jawTarget,
+                    BssJawDraw.SnapRate(Context.JawCommand, Context.ClawCommand));
             }
 
             //阶段驱动的沙暴底线（各端从同步的 Phase 推导，确定性）；死亡/撤离让位给演出退场
@@ -753,8 +759,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
 
             //颚先于本体：红根藏在头底之下，只露出两片刃
-            float jawOpen = BssJawDraw.ResolveOpen(Context.ClawCommand, Context.ClawPhase,
-                Context.ClawBurst, Context.GaitPhase);
+            float jawOpen = jawSmooth;
             Vector2 headWorld = mainPos + screenPos;
             BssJawDraw.Draw(spriteBatch, headWorld, NPC.rotation, jawOpen, drawColor * fade, screenPos, NPC.scale);
 

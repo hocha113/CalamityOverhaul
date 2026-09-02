@@ -86,6 +86,18 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.AccelRate = 0.16f;
                 ctx.Slither = 0.2f;
                 ctx.LegCommand = BssLegCommand.Flail;
+                if (t < 18) {
+                    DeclareRoarHold(ctx, t, 18);
+                }
+                else if (t >= OrbitEnd) {
+                    if (t == OrbitEnd) {
+                        DeclareJaw(ctx, BssJawCommand.Roar, 1f);
+                    }
+                    else {
+                        DeclareJaw(ctx, BssJawCommand.Inhale,
+                            MathHelper.Clamp((t - OrbitEnd) / (float)BssDirector.OrbitExitTelegraph, 0f, 1f));
+                    }
+                }
 
                 //环身即墙：高速段开伤害窗
                 if (npc.velocity.Length() > 12f) {
@@ -120,6 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.LegCommand = BssLegCommand.Tuck;
                 ctx.BloomGlow = Math.Max(ctx.BloomGlow, 1f);
                 ctx.GatherLevel = MathHelper.Clamp(hookFrames / 10f, 0f, 1f);
+                DeclareJaw(ctx, BssJawCommand.Inhale, ctx.GatherLevel);
 
                 Vector2 toLock = (exitLock - npc.Center).SafeNormalize(Vector2.UnitY);
                 Vector2 heading = npc.velocity.SafeNormalize(toLock);
@@ -149,6 +162,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 if (speed > BssDirector.LungeContactSpeed) {
                     npc.damage = npc.defDamage;
                 }
+                DeclareJaw(ctx, BssJawCommand.Gape);
+                DeclareSnatchIfClose(ctx, npc, BssDirector.LungeContactSpeed);
 
                 //入地表现
                 float groundY = BssVfx.FindGroundY(npc.Center - new Vector2(0f, 300f), 900f);

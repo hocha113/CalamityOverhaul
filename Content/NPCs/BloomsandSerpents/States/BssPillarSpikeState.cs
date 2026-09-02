@@ -82,6 +82,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.Raise;
             ctx.FrontRaise = MathHelper.Clamp(t / 14f, 0f, 1f);
             ctx.Compression = Math.Min(ctx.Compression, 0.94f);
+            DeclareJaw(ctx, BssJawCommand.Inhale, ctx.FrontRaise);
 
             if (t == 2 && !Main.dedServ) {
                 BssVfx.Roar(npc.Center, -0.2f, 0.7f);
@@ -124,6 +125,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.CrawlDirX = FacingToTarget(ctx);
             ctx.CrawlSpeed = 9f;
             ctx.LegCommand = BssLegCommand.March;
+            DeclareRoarHold(ctx, t, 20);
 
             int total = BssDirector.SpikeCount(ctx.Phase);
             if (t % BssDirector.SpikeStepGap == 0 && called < total) {

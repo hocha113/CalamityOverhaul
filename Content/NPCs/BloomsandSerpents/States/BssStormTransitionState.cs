@@ -56,6 +56,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 
             ctx.LegCommand = raise > 0.25f ? BssLegCommand.Raise : BssLegCommand.March;
             ctx.FrontRaise = raise;
+            if (t >= HaltFrames && t < RoarFrame) {
+                DeclareJaw(ctx, BssJawCommand.Inhale, raise);
+            }
+            else if (t >= RoarFrame) {
+                DeclareRoarHold(ctx, t - RoarFrame, 28);
+            }
 
             if (t >= HaltFrames) {
                 Vector2 pose = new(anchor.X, groundY - BssDirector.CrawlRideHeight - 210f * raise);

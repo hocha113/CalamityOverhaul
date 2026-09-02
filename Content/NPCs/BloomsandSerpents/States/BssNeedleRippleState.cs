@@ -59,6 +59,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
             ctx.FrontRaise = raise * 0.7f;
             ctx.Compression = MathHelper.Lerp(1f, 0.94f, raise);
+            if (t < FireFrom) {
+                DeclareJaw(ctx, BssJawCommand.Inhale, raise);
+            }
+            else if (t < allEnd) {
+                DeclareJaw(ctx, BssJawCommand.Spit);
+                if (t == FireFrom || (secondPass && t == FireEnd)) {
+                    ctx.JawBurst = 1f;
+                }
+            }
 
             Vector2 pose = new(anchor.X, groundY - BssDirector.CrawlRideHeight - 130f * raise);
             Vector2 desired = (pose - npc.Center) * 0.08f;

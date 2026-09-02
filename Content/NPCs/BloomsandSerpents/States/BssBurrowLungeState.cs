@@ -64,6 +64,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.CrawlDirX = FacingToTarget(ctx);
                 if (t > 3) {
                     ctx.LegCommand = BssLegCommand.Tuck;
+                    DeclareJaw(ctx, BssJawCommand.Clamp);
                 }
             }
             else if (t == DiveFrame) {
@@ -78,10 +79,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 }
                 ctx.Mode = BssMoveMode.Direct;
                 ctx.LegCommand = BssLegCommand.Tuck;
+                DeclareJaw(ctx, BssJawCommand.Clamp);
             }
             else if (t < OmenFrame) {
                 //地下接近：奔玩家脚下深处（腿收拢即可，地下自然被物块遮挡）
                 ctx.LegCommand = BssLegCommand.Tuck;
+                DeclareJaw(ctx, BssJawCommand.Clamp);
                 ctx.Mode = BssMoveMode.Steer;
                 ctx.MoveTarget = ctx.Target.Center + new Vector2(0f, 320f);
                 ctx.MoveSpeed = BssDirector.LungeDigSpeed;
@@ -91,6 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             else if (t == OmenFrame) {
                 //锁点 + 预告实体（生成位置即承诺，出土不再追瞄）
                 ctx.LegCommand = BssLegCommand.Tuck;
+                DeclareJaw(ctx, BssJawCommand.Clamp);
                 if (!VaultUtils.isClient && ctx.Target.Alives()) {
                     //三式破土掷骰：0 直上顶袭 / 1 侧翼斜刺 / 2 过顶长跃（动作经位置同步落到各端）
                     breachStyle = Main.rand.Next(3);
@@ -137,6 +141,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 //蓄势聚拢（吸气拍改由身体语言承担）
                 ctx.GatherLevel = MathHelper.Clamp(
                     (t - OmenFrame) / (float)BssDirector.BreachTelegraphFrames, 0f, 1f);
+                DeclareJaw(ctx, BssJawCommand.Inhale, ctx.GatherLevel);
             }
             else if (t == LungeFrame) {
                 //出土爆冲：一帧定初速，按三式给向，全部直线承诺不追瞄
@@ -177,11 +182,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.15f);
                 ctx.Mode = BssMoveMode.Direct;
                 ctx.LegCommand = BssLegCommand.Flail;
+                DeclareJaw(ctx, BssJawCommand.Gape);
             }
             else {
                 //腾空段：抛物，速度门槛开伤害窗（可见冲势=咬合窗）
                 ctx.Mode = BssMoveMode.Direct;
                 ctx.LegCommand = BssLegCommand.Flail;
+                DeclareJaw(ctx, BssJawCommand.Gape);
                 npc.velocity.Y = MathHelper.Clamp(npc.velocity.Y + BssDirector.LungeGravity, -30f, 19f);
 
                 //回潜检测：下坠中扎回地表以下
@@ -224,6 +231,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         /// <summary>收尾：钻到玩家近侧浅层，抬头出面立刻交还压迫（不远遁、不磨蹭）</summary>
         private IBssState UpdateFinish(BssStateContext ctx, NPC npc, int t) {
             ctx.LegCommand = BssLegCommand.Tuck;
+            DeclareJaw(ctx, BssJawCommand.Clamp);
             ctx.Mode = BssMoveMode.Steer;
             float side = Math.Sign(npc.Center.X - ctx.Target.Center.X);
             if (side == 0f) {

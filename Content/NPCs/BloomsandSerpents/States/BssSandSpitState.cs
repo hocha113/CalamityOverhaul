@@ -29,10 +29,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         /// <summary>锁定射向（权威端裁决弹幕；各端本地跟出姿态）</summary>
         private Vector2 lockedAim = Vector2.UnitX;
         private bool aimLocked;
+        /// <summary>贴脸收招短吼（不进齐射）</summary>
+        private bool abortClose;
 
         public override void OnEnter(BssStateContext ctx) {
             base.OnEnter(ctx);
             aimLocked = false;
+            abortClose = false;
         }
 
         public override IBssState OnUpdate(BssStateContext ctx) {
@@ -55,6 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     aimLocked = true;
                     //最小射距阀：贴脸不吐沙，直接收招（邀请骑脸）
                     if (Vector2.Distance(npc.Center, ctx.Target.Center) < BssDirector.SpitMinDistance) {
+                        abortClose = true;
                         Timer = FireEnd + 1;
                         if (!Main.dedServ) {
                             BssVfx.Roar(npc.Center, 0.1f, 0.5f);
@@ -68,6 +72,18 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (t >= LockFrame && t <= FireEnd) {
                 ctx.ClawCommand = BssClawCommand.GuardMouth;
                 ctx.ClawPhase = MathHelper.Clamp((t - LockFrame) / (float)BssDirector.SpitInhaleFrames, 0f, 1f);
+            }
+
+            //颚：跟踪呼吸 → 吸气合死 → 齐射一口一张（贴脸收招改短吼）
+            if (abortClose) {
+                DeclareJaw(ctx, BssJawCommand.Roar, 1f);
+            }
+            else if (t >= LockFrame && t < FireFrom) {
+                DeclareJaw(ctx, BssJawCommand.Inhale,
+                    MathHelper.Clamp((t - LockFrame) / (float)BssDirector.SpitInhaleFrames, 0f, 1f));
+            }
+            else if (t >= FireFrom && t <= FireEnd) {
+                DeclareJaw(ctx, BssJawCommand.Spit);
             }
 
             //吸气表现：沙尘向嘴收束
@@ -86,6 +102,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 //后坐：每口喷沙头向后一顿；鳌足同拍猛推摊开（护嘴配合喷吐的读数）
                 npc.velocity -= lockedAim * 2.6f;
                 ctx.ClawBurst = 1f;
+                ctx.JawBurst = 1f;
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.65f, Pitch = -0.2f, MaxInstances = 3 }, mouth);
                     for (int i = 0; i < 4; i++) {

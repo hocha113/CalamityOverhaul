@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.Tuck;
             ctx.LegAlpha = MathHelper.Clamp(1f - t / 14f, 0f, 1f);
             ctx.Mode = BssMoveMode.Direct;
+            DeclareJaw(ctx, BssJawCommand.Clamp);
 
             if (t < 14) {
                 npc.velocity *= 0.9f;

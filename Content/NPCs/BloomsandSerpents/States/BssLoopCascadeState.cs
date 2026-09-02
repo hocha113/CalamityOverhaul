@@ -104,6 +104,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.CrawlDirX = FacingToTarget(ctx);
             ctx.FrontRaise = 0.3f;
             ctx.GatherLevel = MathHelper.Clamp(Timer / (float)CrouchFrames, 0f, 1f);
+            DeclareJaw(ctx, BssJawCommand.Inhale, ctx.GatherLevel);
 
             Timer++;
             if (Timer >= CrouchFrames) {
@@ -139,6 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.AccelRate = 0.13f;
             ctx.Slither = 0.25f;
             ctx.LegCommand = BssLegCommand.Flail;
+            DeclareJaw(ctx, BssJawCommand.Gape);
 
             Timer++;
             if (Vector2.Distance(npc.Center, entryPoint) < 110f
@@ -221,6 +223,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             SteerOnRing(ctx, npc, omega);
             ctx.BloomGlow = Math.Max(ctx.BloomGlow, 1f);
             ctx.GatherLevel = MathHelper.Clamp(Timer / (float)BssDirector.LoopDiveTelegraph, 0f, 1f);
+            if (Timer < 16) {
+                DeclareRoarHold(ctx, (int)Timer, 16);
+            }
+            else {
+                DeclareJaw(ctx, BssJawCommand.Inhale, ctx.GatherLevel);
+            }
 
             Timer++;
             if (Timer >= BssDirector.LoopDiveTelegraph) {
@@ -245,6 +253,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.Tuck;
             if (npc.velocity.Length() > BssDirector.LungeContactSpeed) {
                 npc.damage = npc.defDamage;
+            }
+            if (landed) {
+                DeclareRoarHold(ctx, (int)(Timer - landTime), 16);
+            }
+            else {
+                DeclareJaw(ctx, BssJawCommand.Gape);
+                DeclareSnatchIfClose(ctx, npc, BssDirector.LungeContactSpeed);
             }
 
             float groundY = BssVfx.FindGroundY(npc.Center - new Vector2(0f, 300f), 900f);

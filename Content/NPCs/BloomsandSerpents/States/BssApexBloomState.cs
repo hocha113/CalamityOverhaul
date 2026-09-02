@@ -35,6 +35,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.Raise;
             ctx.FrontRaise = MathHelper.Clamp(t / 14f, 0f, 0.7f);
             ctx.Compression = 0.9f;
+            if (t < RoarFrame) {
+                DeclareJaw(ctx, BssJawCommand.Inhale, MathHelper.Clamp(t / (float)RoarFrame, 0f, 1f));
+            }
+            else {
+                DeclareRoarHold(ctx, t - RoarFrame, 26);
+            }
 
             if (t >= RoarFrame && !roared) {
                 roared = true;

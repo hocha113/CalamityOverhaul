@@ -144,6 +144,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.March;
             ctx.Compression = MathHelper.Lerp(1f, 0.86f, progress);
             ctx.GatherLevel = progress;
+            DeclareJaw(ctx, BssJawCommand.Inhale, progress);
 
             if (t == 1 && !Main.dedServ) {
                 //蓄力起手音：固定提前量，可被玩家内化（CC0 嘶息素材，低调 = 伏低吸气）
@@ -184,6 +185,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.PulseWhip(11f);
             //释放波：蓄力聚拢的长度从头向尾付出去（力从身体流向头）
             ctx.PulseGapWave(SerpentChainMath.WaveRelease, 0.16f);
+            DeclareJaw(ctx, BssJawCommand.Gape);
             if (!Main.dedServ) {
                 BssVfx.SandBurst(npc.Center + new Vector2(0f, 16f), 1.4f);
                 BssVfx.Roar(npc.Center, -0.35f, 1f);
@@ -203,7 +205,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (speed > BssDirector.DashContactSpeed) {
                 npc.damage = npc.defDamage;
             }
-            //撕咬意图：掠冲中玩家贴嘴即鳌足急伸钳合
+            DeclareJaw(ctx, BssJawCommand.Gape);
+            //撕咬意图：掠冲中玩家贴嘴即鳌足急伸钳合、颚咬死
             DeclareSnatchIfClose(ctx, npc, BssDirector.DashContactSpeed);
 
             //贴地尘浪（各端本地）

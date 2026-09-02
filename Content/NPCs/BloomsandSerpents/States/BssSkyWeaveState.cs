@@ -55,6 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.CrawlDirX = FacingToTarget(ctx);
                 ctx.FrontRaise = 0.3f;
                 ctx.GatherLevel = MathHelper.Clamp(t / (float)LeapFrame, 0f, 1f);
+                DeclareJaw(ctx, BssJawCommand.Inhale, ctx.GatherLevel);
             }
             else if (t == LeapFrame) {
                 //破空：一帧起跳
@@ -70,6 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 }
                 ctx.Mode = BssMoveMode.Direct;
                 ctx.LegCommand = BssLegCommand.Flail;
+                DeclareJaw(ctx, BssJawCommand.Gape);
             }
             else if (t < LoiterEnd) {
                 //游荡：利萨如锚点绕顶蜿蜒（锚点偏离玩家本体 = 压迫来自身体不来自追尾）
@@ -84,6 +86,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.AccelRate = 0.1f;
                 ctx.Slither = 0.85f;
                 ctx.LegCommand = BssLegCommand.Flail;
+                if (t < LoiterFrom + 16) {
+                    DeclareJaw(ctx, BssJawCommand.Gape);
+                }
 
                 //身体即威胁：高速蜿蜒段开伤害窗
                 if (npc.velocity.Length() > 14f) {
@@ -109,6 +114,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     (diveTarget - npc.Center).ToRotation() + BssHead.FacingRot, 0.2f);
                 ctx.BloomGlow = Math.Max(ctx.BloomGlow, 1f);
                 ctx.LegCommand = BssLegCommand.Tuck;
+                int tele = t - LoiterEnd;
+                if (tele < 16) {
+                    DeclareRoarHold(ctx, tele, 16);
+                }
+                else {
+                    DeclareJaw(ctx, BssJawCommand.Inhale,
+                        MathHelper.Clamp(tele / (float)BssDirector.WeaveDiveTelegraph, 0f, 1f));
+                }
             }
             else {
                 //俯冲与砸地
@@ -127,6 +140,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 if (speed > BssDirector.LungeContactSpeed) {
                     npc.damage = npc.defDamage;
                 }
+                DeclareJaw(ctx, BssJawCommand.Gape);
+                DeclareSnatchIfClose(ctx, npc, BssDirector.LungeContactSpeed);
 
                 //入地检测：砸地喷发 + 转爬行收招
                 float groundY = BssVfx.FindGroundY(npc.Center - new Vector2(0f, 300f), 900f);
@@ -163,6 +178,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
             if (cycle < 10) {
                 ctx.BloomGlow = Math.Max(ctx.BloomGlow, 0.6f);
+                DeclareJaw(ctx, BssJawCommand.Inhale, cycle / 10f);
                 if (!Main.dedServ && Main.GameUpdateCount % 2 == 0) {
                     Vector2 mouth = npc.Center + burstAim * 52f;
                     Vector2 from = mouth + Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(24f, 46f);
@@ -177,6 +193,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 
             Vector2 muzzle = npc.Center + burstAim * 52f;
             npc.velocity -= burstAim * 2.4f;
+            DeclareJaw(ctx, BssJawCommand.Spit);
+            ctx.JawBurst = 1f;
             if (!Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.65f, Pitch = -0.15f, MaxInstances = 3 }, muzzle);
             }

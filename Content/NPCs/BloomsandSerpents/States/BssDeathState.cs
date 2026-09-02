@@ -45,6 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             //沙暴退场
             ctx.StormLevel = Math.Max(0f, ctx.StormLevel - 0.008f);
             ctx.LegAlpha = 1f;
+            DeclareJaw(ctx, BssJawCommand.Slack);
 
             float groundY = BssVfx.FindGroundY(npc.Center - new Vector2(0f, 60f));
 
@@ -85,10 +86,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 if (t == CollapseEnd + 6 && !Main.dedServ) {
                     BssVfx.Roar(npc.Center, -0.4f, 0.8f);
                 }
+                if (t >= CollapseEnd + 6) {
+                    DeclareRoarHold(ctx, t - (CollapseEnd + 6), 18);
+                }
             }
             else if (t < QuietEnd) {
                 //静默一拍：溃爆前的吸气
                 HoldFlat(ctx, npc, groundY);
+                DeclareJaw(ctx, BssJawCommand.Inhale,
+                    MathHelper.Clamp((t - FlareEnd) / (float)Math.Max(QuietEnd - FlareEnd, 1), 0f, 1f));
             }
             else if (t < FinaleFrame) {
                 //溃爆波：尾→头扫过，体节各自在波前经过时本地炸沙落瓣
@@ -103,6 +109,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 //终幕：头爆沙散瓣，真死结算
                 finaleDone = true;
                 ctx.DeathPerformanceFinished = true;
+                DeclareJaw(ctx, BssJawCommand.Roar, 1f);
                 if (!Main.dedServ) {
                     BssVfx.SandBurst(npc.Center, 2f);
                     BssVfx.Roar(npc.Center, -1f, 1.2f);
