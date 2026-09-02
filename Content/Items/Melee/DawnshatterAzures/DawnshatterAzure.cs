@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.Rarities;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -39,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             Item.UseSound = null;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(6, 23, 75, 0);
-            Item.rare = CWRID.Rarity_DarkOrange;
+            Item.rare = ModContent.RarityType<StarsilverRarity>();
             Item.shoot = ModContent.ProjectileType<DawnshatterHeld>();
             Item.shootSpeed = 1f;
         }

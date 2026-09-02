@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
+using CalamityOverhaul.Content.Rarities;
 using System.Collections.ObjectModel;
 using Terraria;
 using Terraria.ID;
@@ -24,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<CyberPrismLaserProj>();
             Item.shootSpeed = 20f;
-            Item.rare = CWRID.Rarity_HotPink > 0 ? CWRID.Rarity_HotPink : ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<SHPCLegendRarity>();
         }
 
         /// <summary>返回 false 接管 tooltip 全绘制(行数据仍来自 ModifyTooltips 管线)</summary>

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.OtherMods.Coralite.Arcanes
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = ModContent.TileType<ArcaneTransformerTile>();
-            Item.rare = CWRID.Rarity_DarkOrange;
+            Item.rare = ItemRarityID.Orange;
             Item.value = Item.buyPrice(gold: 6);
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 1200;

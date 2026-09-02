@@ -179,7 +179,25 @@ namespace CalamityOverhaul.Content.TimeFreezes
             ApplyFrozenPose(npc);
             if (freezeState.TryCompensateLifetime() && npc.timeLeft < int.MaxValue) {
                 npc.timeLeft++;
+                //增益计时与寿命同口径冻住：原版在 AI 前已把 buffTime 递减，这里补回一帧，
+                //烧伤等 DoT 不在停格里白白到期，解冻后照常烧完（与 UpdateLifeRegen 归零配对）
+                for (int i = 0; i < NPC.maxBuffs; i++) {
+                    if (npc.buffType[i] > 0 && npc.buffTime[i] > 0 && npc.buffTime[i] < int.MaxValue) {
+                        npc.buffTime[i]++;
+                    }
+                }
             }
+        }
+
+        /// <summary>冻结期 DoT 不结算：原版在 AI 之前就走 lifeRegen，AI 拦截拦不到，
+        /// 时停里 Boss 会被灼烧类减益持续烧血（反馈六 #77，鬼切终斩/点鬼簿冻结与鬼伞重启同病）；
+        /// 与玩家侧 WorldFreezePlayer 冻住自身回血/增益计时的口径对称，总伤不变只是顺延</summary>
+        public override void UpdateLifeRegen(NPC npc, ref int damage) {
+            if (!freezeState.IsFrozen) {
+                return;
+            }
+            npc.lifeRegen = 0;
+            damage = 0;
         }
 
         internal void FreezeImmediately(NPC npc) {

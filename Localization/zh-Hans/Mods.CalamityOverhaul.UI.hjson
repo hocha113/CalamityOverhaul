@@ -534,6 +534,11 @@ OverhaulSettingsUI: {
 	DensityEverywhereText: 无处不在
 	ResetDefaultText: 重置为默认
 	DensityTooltipText: 结构生成密度
+	ModCompatSettingsText: 模组兼容
+	ModCompatFooterHintText: 这些补丁以弱引用方式修复其他模组的已知问题，可随时开关，无需重载
+	ModCompatEmptyHintText: 未检测到可应用兼容补丁的模组
+	PatchStatusActiveText: 补丁状态：已挂载
+	PatchStatusInactiveText: 补丁状态：未挂载（目标方法未找到，可能是模组版本不匹配）
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: 大修设置

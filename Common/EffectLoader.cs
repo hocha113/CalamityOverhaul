@@ -363,6 +363,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> AckFinale { get; set; }
         public static Asset<Effect> AckGlow { get; set; }
         public static Asset<Effect> OniCrimsonSlash { get; set; }
+        public static Asset<Effect> OniCrimsonSweep { get; set; }
         public static Asset<Effect> OniCrimsonImpactPost { get; set; }
         public static Asset<Effect> OniCrimsonBloom { get; set; }
         public static Asset<Effect> OniGateRift { get; set; }

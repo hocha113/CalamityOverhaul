@@ -757,7 +757,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     || !occupant.HardOccupiesBlade) {
                     continue;
                 }
-                if (projectile.ModProjectile is CrimsonRendSlash) {
+                if (projectile.ModProjectile is CrimsonRendSlash or CrimsonSweepSlash) {
                     continue;
                 }
                 if (normalDashInFlight && projectile.ModProjectile is OniFlashStep) {

@@ -214,6 +214,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.velocity = flyAngle.ToRotationVector2() * effectiveSpeed;
             Projectile.rotation = flyAngle;
 
+            //原版 Update 对出界弹幕直接 active=false 不走 Kill，递归重发/分裂等消亡派生会被静默吞掉
+            //（反馈五 #16：太空向上打递归机匣不生效）；预判下一步出界就主动 Kill 让 OnKill 正常派发
+            if (WillLeaveWorld(Projectile.position + Projectile.velocity)) {
+                Projectile.Kill();
+                return;
+            }
+
             //age 按 timeScale，时缓延寿
             age += timeScale;
             Projectile.timeLeft = MaxLife;
@@ -278,6 +285,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 }
             }
             SHPCModificationSystem.ForEachModule(Main.player[Projectile.owner], mod => mod.OnBeamAI(this));
+        }
+
+        /// <summary>与原版 Projectile.Update 的出界判式同口径（左上含边、右下含宽高），外加一格余量</summary>
+        private bool WillLeaveWorld(Vector2 nextPosition) {
+            const float margin = 16f;
+            return nextPosition.X <= Main.leftWorld + margin
+                || nextPosition.X + Projectile.width >= Main.rightWorld - margin
+                || nextPosition.Y <= Main.topWorld + margin
+                || nextPosition.Y + Projectile.height >= Main.bottomWorld - margin;
         }
 
         private void UpdateTrailHistory() {

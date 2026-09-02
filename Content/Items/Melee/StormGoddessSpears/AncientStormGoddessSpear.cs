@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Rarities;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using InnoVault.Trails;
@@ -43,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             Item.value = Item.buyPrice(0, 18, 25, 0);
             Item.shoot = ModContent.ProjectileType<AncientStormGoddessSpearHeld>();
             Item.shootSpeed = 15f;
-            Item.rare = CWRID.Rarity_CosmicPurple;
+            Item.rare = ModContent.RarityType<CopperRarity>();
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 7;

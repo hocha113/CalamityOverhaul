@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CalamityOverhaul.Content.Rarities;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -46,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             Item.value = Item.buyPrice(0, 18, 25, 0);
             Item.shoot = ModContent.ProjectileType<StormGoddessSpearHeld>();
             Item.shootSpeed = 18f; //提高射速
-            Item.rare = CWRID.Rarity_CosmicPurple;
+            Item.rare = ModContent.RarityType<CopperRarity>();
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 10; //提高暴击率

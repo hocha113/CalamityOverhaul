@@ -106,7 +106,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             //每帧基线，状态在Update里覆盖
             ApplyBaselineStats();
 
+            //客户端上状态 OnUpdate 只做表现（状态机已忽略客户端的切换返回值），但各状态内的
+            //本地速度写入仍会与每 10 帧的服务器快照互相拉扯，即 UpdateSuspension 收权后残余的
+            //联机抽搐（反馈五 #51）；速度全权用同步值，状态里的位置抖动等纯表现写入照旧
+            Vector2 syncedVelocity = npc.velocity;
             stateMachine?.Update();
+            if (VaultUtils.isClient) {
+                npc.velocity = syncedVelocity;
+            }
 
             if (!stateContext.SkipDefaultMovement) {
                 UpdateSuspension();

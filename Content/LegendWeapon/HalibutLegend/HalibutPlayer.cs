@@ -361,8 +361,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
                 //领域层数与复苏 tick
                 UpdateDomainSystemData();
-                //复苏 tick
-                ResurrectionSystem.Update();
+                //复苏 tick；世界冻结（点鬼簿/图鉴等冻结类 UI）期间不推进：
+                //玩家侧 PostUpdate 在冻结中照常跑，复苏值会在时停里白降，开着面板就能无限重启（反馈六 #78）
+                if (!WorldFreezeSystem.IsActive) {
+                    ResurrectionSystem.Update();
+                }
                 //同步最大生命值
                 PlayerLifeMax = (int)MathHelper.Clamp(PlayerLifeMax, Player.statLifeMax2, int.MaxValue - 1);
             }

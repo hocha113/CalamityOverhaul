@@ -536,6 +536,11 @@ OverhaulSettingsUI: {
 	DensityEverywhereText: Everywhere
 	ResetDefaultText: Reset to Default
 	DensityTooltipText: Structure Generation Density
+	ModCompatSettingsText: Mod Compatibility
+	ModCompatFooterHintText: These patches fix known issues in other mods via weak references. Toggle them at any time, no reload needed.
+	ModCompatEmptyHintText: No mods eligible for compatibility patches were detected.
+	PatchStatusActiveText: Patch status: applied
+	PatchStatusInactiveText: Patch status: not applied (target not found, possibly a mod version mismatch)
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul Settings

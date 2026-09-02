@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.MainMenus.Characters;
 using CalamityOverhaul.Content.Narrative.Data;
+using CalamityOverhaul.Content.Rarities;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using InnoVault.Narrative.Runtime;
 using Microsoft.Xna.Framework.Graphics;
@@ -32,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.consumable = false;
             Item.maxStack = 1;
-            Item.rare = CWRID.Rarity_BurnishedAuric;
+            Item.rare = ModContent.RarityType<GiltRarity>();
             Item.value = Item.sellPrice(platinum: 5);
             Item.UseSound = SoundID.Item122;
         }

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
+﻿using CalamityOverhaul.Content.Rarities;
+using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.Scenarios.SupCal.SupCalDisplayTexts;
 using CalamityOverhaul.Content.UIs.WeaponSkills;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Item.noMelee = true;
             Item.knockBack = 5;
             Item.value = Item.sellPrice(platinum: 10);
-            Item.rare = CWRID.Rarity_BurnishedAuric;
+            Item.rare = ModContent.RarityType<GiltRarity>();
             Item.UseSound = SoundID.Item113;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<PandemoniumChannel>();

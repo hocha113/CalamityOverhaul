@@ -143,6 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         private static bool IsOnikiriBlade(Projectile proj) => proj.ModProjectile is CrimsonRendSlash
+            or CrimsonSweepSlash
             or CrimsonRendCleave
             or OniZanshinSlashs.OniZanshinSlash
             or OniAnnihilates.OniAnnihilate

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Rarities;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -22,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.height = 32;
             Item.accessory = true;
             Item.value = Item.buyPrice(0, 25, 0, 0);
-            Item.rare = CWRID.Rarity_CosmicPurple;
+            Item.rare = ModContent.RarityType<CopperRarity>();
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

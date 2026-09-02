@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Rarities;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
@@ -45,7 +46,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 10f;
             Item.value = Item.sellPrice(gold: 75);
             //旧稿写的 Violet 稀有度已从灾厄移除，取同档的纯绿
-            Item.rare = CWRID.Rarity_PureGreen > 0 ? CWRID.Rarity_PureGreen : ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<JadeRarity>();
             DamageClass trueMelee = CWRRef.GetTrueMeleeDamageClass();
             Item.DamageType = trueMelee == DamageClass.Default ? DamageClass.Melee : trueMelee;
             //noMelee 武器需要手动允许近战词缀

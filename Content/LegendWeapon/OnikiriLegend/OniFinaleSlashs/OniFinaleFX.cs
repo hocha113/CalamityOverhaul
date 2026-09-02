@@ -141,14 +141,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         }
     }
 
-    /// <summary>世界卸载时清空屏幕演出状态与碎晶流向标记</summary>
+    /// <summary>世界卸载/切换时清空屏幕演出状态、碎晶流向标记与疾走隐身旗。
+    /// 子世界切换（旧网/超梦/鬼雨）不走 OnWorldUnload 但一定过 ClearWorld，处决途中登入旧网时
+    /// 红幕与本地隐身旗会原样带进新世界（反馈五 #19），两处一并挂清理</summary>
     internal sealed class OniFinaleFXSystem : ModSystem
     {
-        public override void OnWorldUnload() {
+        public override void OnWorldUnload() => ClearShowState();
+
+        public override void ClearWorld() => ClearShowState();
+
+        private static void ClearShowState() {
             OniFinaleFX.Clear();
             OniFinaleSlash.ShatterFlowActive = false;
             OniFinaleLattice.Clear();
             OniFinaleShatter.Clear();
+            //驱动它的疾走弹幕随旧世界一起消失，不会再走 OnKill 放行
+            OniFlashSteps.OniFlashStep.LocalPlayerHidden = false;
         }
     }
 

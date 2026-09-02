@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Content.HackTimes.Targets;
+using CalamityOverhaul.Content.Rarities;
 using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
@@ -164,6 +166,9 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
         }
 
         private static string GetRarityText(Item item) {
+            if (RarityLoader.GetRarity(item.rare) is ModRarity modRarity) {
+                return modRarity is CWRRarity cwr ? cwr.DisplayName.Value : modRarity.Name;
+            }
             return item.rare switch {
                 -1 => "Gray",
                 0 => "White",
@@ -183,6 +188,9 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
         }
 
         private static Color GetRarityColor(int rarity) {
+            if (RarityLoader.GetRarity(rarity) is ModRarity modRarity) {
+                return modRarity.RarityColor;
+            }
             return rarity switch {
                 -1 => new Color(130, 130, 130),
                 0 => Color.White,

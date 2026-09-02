@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public static LocalizedText KeyLabelExecute { get; private set; }
         public static LocalizedText KeyLabelDomain { get; private set; }
         public static LocalizedText KeyLabelFlip { get; private set; }
-        public static LocalizedText KeyLabelTeleport { get; private set; }
 
         private static Dictionary<int, int> DamageDictionary = [];
         private static Dictionary<int, int> CritDictionary = [];
@@ -208,7 +207,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             KeyLabelExecute = this.GetLocalization(nameof(KeyLabelExecute), () => "处决");
             KeyLabelDomain = this.GetLocalization(nameof(KeyLabelDomain), () => "领域展开");
             KeyLabelFlip = this.GetLocalization(nameof(KeyLabelFlip), () => "表里翻转");
-            KeyLabelTeleport = this.GetLocalization(nameof(KeyLabelTeleport), () => "领域传送");
         }
 
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

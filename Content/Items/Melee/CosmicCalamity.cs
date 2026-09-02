@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Rarities;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -48,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.value = Item.buyPrice(8, 25, 0, 0);
             Item.shoot = ModContent.ProjectileType<CosmicCalamityHeld>();
             Item.shootSpeed = 18f;
-            Item.rare = CWRID.Rarity_CosmicPurple;
+            Item.rare = ModContent.RarityType<CopperRarity>();
             Item.crit = 12;
         }
 

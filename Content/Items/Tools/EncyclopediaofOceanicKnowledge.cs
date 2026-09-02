@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.Rarities;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.useTime = 60;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.maxStack = 1;
-            Item.rare = CWRID.Rarity_BurnishedAuric;
+            Item.rare = ModContent.RarityType<GiltRarity>();
             Item.value = Item.sellPrice(platinum: 10);
             Item.UseSound = SoundID.Item29;
         }

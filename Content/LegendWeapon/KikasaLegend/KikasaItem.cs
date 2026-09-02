@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI;
+using CalamityOverhaul.Content.Rarities;
 using System.Collections.ObjectModel;
 using Terraria;
 using Terraria.DataStructures;
@@ -27,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
             Item.shoot = ModContent.ProjectileType<KikasaRainUmbrella>();
             Item.shootSpeed = 1f;
             Item.value = Terraria.Item.sellPrice(gold: 25);
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<KikasaLegendRarity>();
             //持有即常驻:悬伞由 CWRItem.HoldItem 的持有生成机制维持,使用只是指挥
             Item.CWR().heldProjType = ModContent.ProjectileType<KikasaRainUmbrella>();
         }

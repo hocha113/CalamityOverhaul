@@ -144,11 +144,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
             stateMachine?.Update();
 
-            //环境激怒免伤：写在状态机之后压过各状态的显形解锁；
-            //死亡演出除外，演出末帧需要放行击杀，激怒不得把他锁在 1 血
-            if (stateContext.IsLandEnraged && stateMachine?.CurrentState is not FishronDeathState) {
-                npc.dontTakeDamage = true;
-            }
+            //离海激怒不再免伤（反馈 #32/#82、0.9203 #47 拍板）：BossRush 在玩家头顶直刷必然离海，
+            //免伤即全程无敌；激怒只保留增伤/增防/提速的原版式狂暴，见 UpdatePhaseStats 与各状态
 
             //常规悬停物理（状态可跳过）
             if (!stateContext.SkipDefaultMovement) {
@@ -186,13 +183,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
                 stateContext.GrabCooldown--;
             }
 
-            //离开海域/太空的原版式激怒（判定式镜像原版）
+            //离开海域/太空的原版式激怒（判定式镜像原版）；BossRush 出怪不依赖海洋，
+            //与灾厄自身及本仓世花同策整段不判（0.9203 #47 BossRush 豁免口径）
             Player p = targetPlayer;
-            bool enrageRaw = p != null
+            bool enrageRaw = p != null && !CWRRef.GetBossRushActive()
                 && (p.position.Y < 800f || p.position.Y > Main.worldSurface * 16.0
                 || (p.position.X > 6400f && p.position.X < Main.maxTilesX * 16 - 6400));
             //滞回消抖：连续 30 帧在陆才落激怒，一沾海立即解除
-            //岸线上反复进出不会出现免伤/增伤逐帧抖动，方向永远偏袒玩家
+            //岸线上反复进出不会出现增伤/增防逐帧抖动，方向永远偏袒玩家
             enrageArmTimer = enrageRaw ? enrageArmTimer + 1 : 0;
             stateContext.IsLandEnraged = enrageArmTimer >= 30;
 
@@ -213,7 +211,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             }
         }
 
-        /// <summary>阶段基线数值：接触伤害与防御；环境激怒 = AI 不变 + 免伤 + 增伤</summary>
+        /// <summary>阶段基线数值：接触伤害与防御；环境激怒 = AI 不变 + 增伤 + 双倍防御（不再免伤），提速见各状态</summary>
         private void UpdatePhaseStats() {
             float dmgMult = stateContext.Phase == 3 ? 1.1f : stateContext.Phase == 2 ? 1.2f : 1f;
             int defense = stateContext.Phase == 3 ? 0 : stateContext.Phase == 2

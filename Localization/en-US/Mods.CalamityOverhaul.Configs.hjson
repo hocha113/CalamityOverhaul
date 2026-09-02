@@ -38,7 +38,12 @@ CWRServerConfig: {
 
 CWRClientConfig: {
 	DisplayName: Client Config
-	Headers.CWRWeapon: Weapon Configs
+
+	Headers: {
+		CWRWeapon: Weapon Configs
+		CWRDisplay: Display Configs
+		CWRModCompat: Mod Compatibility Patches
+	}
 
 	ScreenVibration: {
 		Label: Weapon Screen Vibration
@@ -58,5 +63,30 @@ CWRClientConfig: {
 	AmbienceDensity: {
 		Label: Ambience Density
 		Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+	}
+
+	RarityTextEffects: {
+		Label: Rarity Name Effects
+		Tooltip: Animated item-name effects for this mod's rarities (Lapis, Jade, Copper, Gilt, Starsilver and the four Legends). When disabled, names are drawn in plain color.
+	}
+
+	CalamityRarityTextFix: {
+		Label: Calamity: Fix black screen caused by name text effects
+		Tooltip:
+			'''
+			Calamity's Burnished Auric / Exotic Rainbow rarities and [ceffect] tags swap render targets while a tooltip is being drawn,
+			which discards the back buffer and blacks out the whole frame. When enabled, the effects are redrawn without render targets,
+			which also fixes misalignment at non-100% UI scale and reduces per-frame overhead.
+			'''
+	}
+
+	CalamityHolyBurnOrbFix: {
+		Label: Calamity: Fix Profaned Guardians / Providence crash
+		Tooltip:
+			'''
+			Calamity's holy orb trail drawer caches projectile references and keeps drawing them by their original type
+			after the slot has been reused by another projectile, causing a NullReferenceException (common in multiplayer).
+			When enabled, stale references are pruned right before drawing.
+			'''
 	}
 }

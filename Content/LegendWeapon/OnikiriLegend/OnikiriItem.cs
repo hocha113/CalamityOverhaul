@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
+using CalamityOverhaul.Content.Rarities;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +24,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>普攻控制器切换,真=鬼门开缝(OniSlash) 假=绯红裂空斩;A/B 对比用,双方外部接口一致</summary>
         internal static bool UseOniSlash => false;
 
+        /// <summary>绯红裂空斩表现层切换,真=扫掠版(CrimsonSweepSlash,刀身扫过的体积) 假=旧月牙版(CrimsonRendSlash);仅 UseOniSlash=false 时生效</summary>
+        internal static bool UseSweepSlash => false;
+
+        /// <summary>当前生效的连段控制器弹幕类型</summary>
+        internal static int ComboProjectileType => UseOniSlash
+            ? ModContent.ProjectileType<OniSlash>()
+            : UseSweepSlash
+                ? ModContent.ProjectileType<CrimsonSweepSlash>()
+                : ModContent.ProjectileType<CrimsonRendSlash>();
+
         public override void SetStaticDefaults() {
             ItemOverride.ItemMeleePrefixDic[Type] = true;
         }
@@ -40,11 +51,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Item.autoReuse = true;
             Item.channel = true;   //控制器按住循环,物品只触发首拍
             Item.UseSound = null;
-            Item.shoot = UseOniSlash
-                ? ModContent.ProjectileType<OniSlash>()
-                : ModContent.ProjectileType<CrimsonRendSlash>();
+            Item.shoot = ComboProjectileType;
             Item.shootSpeed = 1f;
-            Item.rare = CWRID.Rarity_BurnishedAuric > 0 ? CWRID.Rarity_BurnishedAuric : ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<OnikiriLegendRarity>();
             Item.value = Item.buyPrice(0, 25, 0, 0);
             OnikiriOverride.SetDefaultsFunc(Item);
         }
@@ -61,6 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>连段/肢解在场时封锁再用(新旧控制器都查,切换开关时不双开)</summary>
         public override bool CanUseItem(Player player)
             => player.ownedProjectileCounts[ModContent.ProjectileType<CrimsonRendSlash>()] == 0
+            && player.ownedProjectileCounts[ModContent.ProjectileType<CrimsonSweepSlash>()] == 0
             && player.ownedProjectileCounts[ModContent.ProjectileType<OniSlash>()] == 0
             && player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] == 0;
 
@@ -105,6 +115,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             float bladeScale = OnikiriOverride.GetBladeScale(Item);
             if (UseOniSlash) {
                 OniSlash.Fire(player, player.Center, velocity, damage, knockback, scale: bladeScale, source);
+            }
+            else if (UseSweepSlash) {
+                CrimsonSweepSlash.Fire(player, player.Center, velocity, damage, knockback, scale: bladeScale, source);
             }
             else {
                 CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: bladeScale, source);

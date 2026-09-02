@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Rarities;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.width = Item.height = 32;
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
-            Item.rare = CWRID.Rarity_Turquoise;
+            Item.rare = ModContent.RarityType<LapisRarity>();
         }
 
         /// <summary>真杀，无视免伤，含假人</summary>

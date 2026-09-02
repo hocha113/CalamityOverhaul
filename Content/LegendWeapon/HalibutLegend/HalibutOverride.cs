@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using CalamityOverhaul.Content.Rarities;
 using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
@@ -146,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.useTime = 10;
             Item.useAnimation = 10;
             Item.scale = ItemScale;
-            Item.rare = CWRID.Rarity_HotPink > 0 ? CWRID.Rarity_HotPink : ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<HalibutLegendRarity>();
             Item.value = Item.buyPrice(0, 2, 50, 0);
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;

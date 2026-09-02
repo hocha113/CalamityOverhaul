@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             nameof(CWRClientConfig.ScreenVibration),
             nameof(CWRClientConfig.DomainConciseDisplay),
             nameof(CWRClientConfig.LensEasing),
+            nameof(CWRClientConfig.RarityTextEffects),
         ];
 
         private static string ConfigClassNameFor(string propertyName)
@@ -43,6 +44,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 AddToggle(nameof(clientConfig.ScreenVibration), () => clientConfig.ScreenVibration, v => clientConfig.ScreenVibration = v, false);
                 AddToggle(nameof(clientConfig.DomainConciseDisplay), () => clientConfig.DomainConciseDisplay, v => clientConfig.DomainConciseDisplay = v, false);
                 AddToggle(nameof(clientConfig.LensEasing), () => clientConfig.LensEasing, v => clientConfig.LensEasing = v, false);
+                AddToggle(nameof(clientConfig.RarityTextEffects), () => clientConfig.RarityTextEffects, v => clientConfig.RarityTextEffects = v, false);
             }
 
             ActionButtons.Add(new ActionButton {
@@ -58,6 +60,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 clientConfig.ScreenVibration = true;
                 clientConfig.DomainConciseDisplay = false;
                 clientConfig.LensEasing = true;
+                clientConfig.RarityTextEffects = true;
             }
 
             SaveConfig();

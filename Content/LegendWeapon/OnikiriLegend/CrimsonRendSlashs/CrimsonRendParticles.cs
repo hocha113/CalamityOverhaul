@@ -846,6 +846,68 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
     }
 
+    /// <summary>
+    /// 刃头速度线:沿挥向的一条细长拉丝(Streak3 真 alpha,加色),4~6 帧内顺挥向滑出并拉长后熄灭<br/>
+    /// 只在爆发帧从刃头发,数量 1~3,读作空气被刃撕开的一瞬
+    /// </summary>
+    internal class PRT_CrimsonSpeedLine : BasePRT
+    {
+        public override string Texture => CWRConstant.Masking + "Streak3";
+        public override bool CanPool => true;
+        public override int InGame_World_MaxCount => 120;
+
+        private Color initialColor;
+        private float lengthPx;
+        private float thickness;
+
+        public PRT_CrimsonSpeedLine Configure(int lifetime, float lengthPx, float thickness = 0.07f) {
+            Lifetime = lifetime;
+            initialColor = Color;
+            this.lengthPx = lengthPx;
+            this.thickness = thickness;
+            return this;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            initialColor = default;
+            lengthPx = 0f;
+            thickness = 0.07f;
+        }
+
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            if (Lifetime <= 0) {
+                Lifetime = 5;
+            }
+            if (lengthPx <= 0f) {
+                lengthPx = 90f;
+            }
+            if (initialColor == default) {
+                initialColor = Color;
+            }
+            Rotation = Velocity.ToRotation();
+        }
+
+        public override void AI() {
+            Velocity *= 0.86f;
+            float t = LifetimeCompletion;
+            Opacity = (1f - t) * (1f - t);
+            Color = initialColor;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
+            float t = LifetimeCompletion;
+            //越到后段越拉长越薄,读作被抽走
+            float len = lengthPx * (1f + t * 0.8f) / tex.Width;
+            Vector2 scale = new Vector2(len, thickness * (1f - t * 0.5f)) * Scale;
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity, Rotation
+                , tex.Size() * 0.5f, scale, SpriteEffects.None, 0);
+            return false;
+        }
+    }
+
     /// <summary>命中火花序列帧,2×2 图集单次播放,加色</summary>
     internal class PRT_CrimsonHitFlash : BasePRT
     {

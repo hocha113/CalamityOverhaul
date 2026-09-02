@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.Scenarios.Helen;
 using InnoVault.GameSystem;
 using System;
 using System.Reflection;
@@ -76,7 +77,7 @@ internal class FisherEventSystem : ModSystem
     }
 
     private static void Hook_GiveCatchToStorage(orig_GiveCatchToStorage orig, object self, Player player, int itemType) {
-        itemType = ModifyFishingResult(itemType);
+        itemType = ModifyFishingResult(player, itemType);
         orig(self, player, itemType);
     }
 
@@ -88,19 +89,25 @@ internal class FisherEventSystem : ModSystem
         ref int itemType,
         ref int itemStack,
         ref bool cancel) {
-        itemType = ModifyFishingResult(itemType);
+        itemType = ModifyFishingResult(player, itemType);
     }
 
-    private static int ModifyFishingResult(int itemType) {
-        if (itemType == HalibutOverride.ID) {
-            if (HasCaughtHalibut) {
-                //已钓过则改鲈鱼
-                return ItemID.Bass;
-            }
-
-            HasCaughtHalibut = true;
+    private static int ModifyFishingResult(Player player, int itemType) {
+        if (itemType != HalibutOverride.ID) {
+            return itemType;
         }
 
+        //世界级闩只记得钓鱼机自己给过的那条；玩家用鱼竿钓到（已捕获旗已写）或正持有比目鱼时，
+        //钓鱼机照样再给一条（反馈五 #25）。与鱼竿口径对齐：玩家真值任一为真即改鲈鱼
+        bool alreadyOwned = HasCaughtHalibut
+            || (player?.active == true
+                && (player.HasHalibut()
+                    || HalibutState.Read(player, d => d.HasCaughtHalibut, d => d.HasCaughtHalibut)));
+        if (alreadyOwned) {
+            return ItemID.Bass;
+        }
+
+        HasCaughtHalibut = true;
         return itemType;
     }
 

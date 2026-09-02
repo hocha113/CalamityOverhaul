@@ -36,6 +36,31 @@ namespace CalamityOverhaul.Common
         [DefaultValue(1f)]
         public float AmbienceDensity { get; set; }
 
+        [Header("CWRDisplay")]
+
+        /// <summary>本模组稀有度的名称特效（金屑/润光/热浪/镜面/虹彩/传奇渐变），关掉只剩纯色</summary>
+        [BackgroundColor(120, 92, 160, 255)]
+        [DefaultValue(true)]
+        public bool RarityTextEffects { get; set; }
+
+        [Header("CWRModCompat")]
+
+        /// <summary>
+        /// 灾厄的燃金/异域彩虹稀有度与 [ceffect] 标签名称特效在绑定后备缓冲时切换渲染目标，
+        /// FNA 以 DiscardContents 重绑后备缓冲会把整帧清黑；开启后改用无渲染目标的等效绘制
+        /// </summary>
+        [BackgroundColor(70, 110, 160, 255)]
+        [DefaultValue(true)]
+        public bool CalamityRarityTextFix { get; set; }
+
+        /// <summary>
+        /// 灾厄 HolyBurnOrbDrawer 缓存的弹幕引用在槽位被复用后仍按原类型取 ModProjectile 导致空引用崩溃；
+        /// 开启后在绘制前剔除失效引用
+        /// </summary>
+        [BackgroundColor(70, 110, 160, 255)]
+        [DefaultValue(true)]
+        public bool CalamityHolyBurnOrbFix { get; set; }
+
         public override void OnLoaded() {
             Instance = this;
         }

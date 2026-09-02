@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.Rarities;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -220,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
                 () => "大雩之外墨系伤害 -10%");
             base.SetDefaults();
             //终章符：灾厄在场再上一档绿松石，否则紫档封顶
-            Item.rare = CWRID.Rarity_Turquoise > 0 ? CWRID.Rarity_Turquoise : ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<LapisRarity>();
         }
     }
 }

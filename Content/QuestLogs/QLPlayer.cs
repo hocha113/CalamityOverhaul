@@ -177,6 +177,11 @@ namespace CalamityOverhaul.Content.QuestLogs
                 return;
             }
 
+            //子世界（鬼雨/超梦/旧网等）里不推进目标：探索类目标全按主世界地理判定（Zone*Height 只看纵坐标），
+            //在鬼雨世界往下走就会把「到达地狱」做掉（反馈六 #70）；目前没有任何任务的目标写在子世界里，
+            //解锁轮询照常，回主世界再续
+            bool inSubworld = SubWorldRef.AnyActiveSubWorld();
+
             //每60帧查未解锁。不再要求开书：隐藏任务靠这里轮询触发条件，
             //普通任务的解锁与通知也不该等到翻书才发生
             bool checkUnlock = Main.GameUpdateCount % 60 == 0;
@@ -186,7 +191,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                     quest.CheckUnlock();
                 }
 
-                if (quest.IsUnlocked && !quest.IsCompleted) {
+                if (!inSubworld && quest.IsUnlocked && !quest.IsCompleted) {
                     quest.UpdateByPlayer();
                 }
             }

@@ -1,7 +1,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Rarities;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.height = 32;
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
-            Item.rare = CWRID.Rarity_Turquoise;
+            Item.rare = ModContent.RarityType<LapisRarity>();
         }
 
         public override void AddRecipes() {
@@ -833,6 +835,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
             if (!throne.RootCalcActive || projectile.owner != Main.myPlayer) {
+                return;
+            }
+            //SHPC 光束派生的子束（递归重发/链跳/分裂）在 NewProjectile 返回后才打 IsDerived 标，OnSpawn 里看不到；
+            //镜像会把它们当新攻击再裂五道，镜像消亡又触发递归机匣重发，两边互喂成套娃（反馈五 #16）。
+            //按生成源识别：父实体是 SHPC 光束的一律不镜像
+            if (source is EntitySource_Parent { Entity: Projectile parentProj }
+                && parentProj.ModProjectile is CyberTraceBeamProj) {
                 return;
             }
 

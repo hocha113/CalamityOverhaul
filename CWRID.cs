@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
-    /// <summary>跨模组内容 ID 缓存(Calamity 等)</summary>
+    /// <summary>跨模组内容 ID 缓存(Calamity 等)。稀有度不在此列，本模组自有 <see cref="Content.Rarities.CWRRarity"/></summary>
     internal static class CWRID
     {
         #region 物品ID引用
@@ -405,14 +405,6 @@ namespace CalamityOverhaul
         public readonly static int Dust_SulphurousSeaAcid = 75;
         public readonly static int Dust_Brimstone = 235;//灾厄使用夺命杖的粒子作为硫磺火焰粒子，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
-        #region 稀有度ID引用
-        public static int Rarity_BurnishedAuric => Get();
-        public static int Rarity_Turquoise => Get();
-        public static int Rarity_HotPink => Get();
-        public static int Rarity_PureGreen => Get();
-        public static int Rarity_CosmicPurple => Get();
-        public static int Rarity_DarkOrange => Get();
-        #endregion
         #region 物品组ID引用
         public readonly static int ItemGroup_RogueWeapon = 570;//盗贼武器物品组ID，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
@@ -520,12 +512,6 @@ namespace CalamityOverhaul
                 case "Dust":
                     if (ModContent.TryFind(calamityModName, typeName, out ModDust modDust)) {
                         result = modDust.Type;
-                        found = true;
-                    }
-                    break;
-                case "Rarity":
-                    if (ModContent.TryFind(calamityModName, typeName, out ModRarity modRarity)) {
-                        result = modRarity.Type;
                         found = true;
                     }
                     break;

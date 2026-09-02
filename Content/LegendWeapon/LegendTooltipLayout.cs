@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
+using CalamityOverhaul.Content.Rarities;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -140,7 +141,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
         public static float UIScreenW => PlayerInput.RealScreenWidth / Main.UIScale;
         public static float UIScreenH => PlayerInput.RealScreenHeight / Main.UIScale;
 
-        private enum OpKind { Text, Divider, Bar, Custom }
+        //经本面板接管过绘制的物品类型；稀有度名称行渲染器据此跳过，避免在原生坐标重画名字
+        private static readonly HashSet<int> panelItemTypes = [];
+
+        /// <summary>该物品的 tooltip 是否由传奇面板整块自绘</summary>
+        public static bool IsPanelItem(int itemType) => panelItemTypes.Contains(itemType);
+
+        private enum OpKind { Text, Title, Divider, Bar, Custom }
 
         private struct DrawOp
         {
@@ -286,6 +293,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             LegendTooltipSections sections = Classify(item, lines);
             float glyphH = font.MeasureString("A").Y;
+            panelItemTypes.Add(item.type);
 
             //---- 内容宽:自然需求夹在 [Min, 屏宽余量] ----
             float limit = Math.Max(80f, Math.Min(MaxContentW, UIScreenW - ScreenPad * 2 - PadX * 2));
@@ -354,8 +362,15 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 return wrapped;
             }
 
-            //题行
-            AddText(sections.ItemName, sections.NameColor, TitleScale, 0f, contentW);
+            //题行：走稀有度名称特效入口，与原生提示框同款
+            if (!string.IsNullOrEmpty(sections.ItemName)) {
+                float titleW = font.MeasureString(sections.ItemName).X;
+                float titleScale = titleW > 0f && titleW * TitleScale > contentW ? contentW / titleW : TitleScale;
+                ops.Add(new DrawOp {
+                    Kind = OpKind.Title, Text = sections.ItemName, Color = sections.NameColor,
+                    Scale = titleScale, Offset = new Vector2(0f, curY),
+                });
+            }
             curY += glyphH * TitleScale + 4f;
 
             //数据区:相邻短行并作双列
@@ -504,6 +519,9 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 switch (op.Kind) {
                     case OpKind.Text:
                         Utils.DrawBorderString(sb, op.Text, origin + op.Offset, op.Color, op.Scale);
+                        break;
+                    case OpKind.Title:
+                        RarityNameEffects.DrawItemName(sb, item, op.Text, origin + op.Offset, op.Color, op.Scale);
                         break;
                     case OpKind.Divider:
                         skin.DrawDivider(sb, origin + op.Offset, origin + op.Offset + new Vector2(op.Width, 0f), time);

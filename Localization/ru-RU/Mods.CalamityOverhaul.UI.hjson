@@ -534,6 +534,11 @@ OverhaulSettingsUI: {
 	DensityEverywhereText: Повсеместно
 	ResetDefaultText: По умолчанию
 	DensityTooltipText: Плотность генерации структур
+	ModCompatSettingsText: Совместимость с модами
+	ModCompatFooterHintText: Эти патчи исправляют известные проблемы других модов через слабые ссылки. Их можно переключать в любой момент без перезагрузки.
+	ModCompatEmptyHintText: Моды, к которым применимы патчи совместимости, не обнаружены.
+	PatchStatusActiveText: Состояние патча: применён
+	PatchStatusInactiveText: Состояние патча: не применён (цель не найдена, возможно, несовпадение версии мода)
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Настройки Overhaul

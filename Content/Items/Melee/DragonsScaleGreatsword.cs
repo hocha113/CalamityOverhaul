@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Rarities;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
@@ -41,7 +42,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = null;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(0, 4, 75, 0);
-            Item.rare = CWRID.Rarity_BurnishedAuric;
+            Item.rare = ModContent.RarityType<GiltRarity>();
             Item.shoot = ModContent.ProjectileType<DragonsScaleGreatswordHeld>();
             Item.shootSpeed = 7f;
             //noMelee 武器需要手动允许近战词缀

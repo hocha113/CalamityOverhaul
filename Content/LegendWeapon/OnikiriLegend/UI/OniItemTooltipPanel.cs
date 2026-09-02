@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 LegendTooltipPanel.BuildKeyRow(OnikiriOverride.KeyLabelExecute, CWRKeySystem.Onikiri_Execute),
                 LegendTooltipPanel.BuildKeyRow(OnikiriOverride.KeyLabelDomain, CWRKeySystem.Legend_Domain),
                 LegendTooltipPanel.BuildKeyRow(OnikiriOverride.KeyLabelFlip, CWRKeySystem.Onikiri_DomainFlip),
-                LegendTooltipPanel.BuildKeyRow(OnikiriOverride.KeyLabelTeleport, CWRKeySystem.Legend_Teleport),
+                //鬼切没有领域传送：Legend_Teleport 的受理点只在鬼伞/比目鱼/赛博三家，此行曾是照抄残留（反馈六 #80）
             ];
 
             LegendTrialInfo trial = LegendTooltipPanel.ReadTrial(item);

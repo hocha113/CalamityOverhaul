@@ -15,7 +15,20 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Item_Ranged + "AvalancheM60";
         public override void SetDefaults() {
-            Item.CloneDefaults(CWRID.Item_Onyxia);
+            if (CWRID.Item_Onyxia > 0) {
+                Item.CloneDefaults(CWRID.Item_Onyxia);
+            }
+            else {
+                //无灾厄时 CWRID 取 0，CloneDefaults(0) 会把物品克隆成空气默认（stack/宽高/useTime 全 0，
+                //丢出背包即消失，反馈六 #83）；按 Onyxia 的实际数值手写同款基线
+                Item.width = 84;
+                Item.height = 34;
+                Item.useTime = Item.useAnimation = 10;
+                Item.knockBack = 4.5f;
+                Item.shootSpeed = 28f;
+                Item.rare = ItemRarityID.Purple;
+                Item.DamageType = DamageClass.Ranged;
+            }
             Item.damage = 62;
             Item.useAmmo = AmmoID.Snowball;
             Item.shoot = ProjectileID.Bullet;
@@ -149,8 +162,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
                         proj.scale += Main.rand.NextFloat(0.3f);
                         proj.netUpdate = true;
                         if (Main.rand.NextBool(2)) {
+                            //无灾厄时暴风雪冰块 ID 取 0，会生出空类型弹幕（反馈六 #83），回退自家极寒冰雹
+                            int chunkType = CWRID.Proj_FlurrystormIceChunk > 0
+                                ? CWRID.Proj_FlurrystormIceChunk
+                                : ModContent.ProjectileType<ExtremeColdHail>();
                             Projectile proj2 = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.75f, 1.12f)
-                        , CWRID.Proj_FlurrystormIceChunk, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        , chunkType, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                             proj2.extraUpdates += 2;
                             proj2.netUpdate = true;
                         }
@@ -331,8 +348,24 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return false;
         }
 
+        /// <summary>冰块外观：灾厄在场借暴风雪冰块图，否则回退原版冰杖冰块（反馈六 #83 无灾厄贴图丢失）</summary>
+        internal static Texture2D ResolveIceChunkTexture() {
+            if (CWRRef.Has) {
+                return CWRUtils.GetT2DAsset(IceChunkTexture).Value;
+            }
+            Main.instance.LoadProjectile(ProjectileID.IceBlock);
+            return TextureAssets.Projectile[ProjectileID.IceBlock].Value;
+        }
+
+        /// <summary>冰碎音：灾厄在场用极地之灵受击音，否则回退原版碎冰</summary>
+        internal static SoundStyle ResolveIceShatterSound(float volume) {
+            return CWRRef.Has
+                ? new SoundStyle("CalamityMod/Sounds/NPCHit/CryogenHit", 3) with { Volume = volume }
+                : SoundID.Item27 with { Volume = volume };
+        }
+
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D texture = CWRUtils.GetT2DAsset(IceChunkTexture).Value;
+            Texture2D texture = ResolveIceChunkTexture();
             //消失前橙白闪烁警示，不受光照影响
             Color drawColor = Projectile.timeLeft < 30 && Projectile.timeLeft % 10 < 5 ? Color.Orange : Color.White;
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, drawColor
@@ -341,7 +374,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/NPCHit/CryogenHit", 3) with { Volume = 0.55f }, Projectile.Center);
+            SoundEngine.PlaySound(ResolveIceShatterSound(0.55f), Projectile.Center);
         }
     }
 
@@ -381,7 +414,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound("CalamityMod/Sounds/NPCHit/CryogenHit3".GetSound(), Projectile.Center);
+            SoundEngine.PlaySound(CWRRef.Has
+                ? "CalamityMod/Sounds/NPCHit/CryogenHit3".GetSound()
+                : SoundID.Item27, Projectile.Center);
             for (int i = 0; i < 10 * Projectile.scale; i++) {
                 int index2 = Dust.NewDust(Projectile.Center + VaultUtils.RandVr(Projectile.width * Projectile.scale), 1, 1, DustID.BlueCrystalShard, Projectile.velocity.X, Projectile.velocity.Y, 0, default, 1.1f);
                 Main.dust[index2].noGravity = true;

@@ -38,7 +38,12 @@ CWRServerConfig: {
 
 CWRClientConfig: {
 	DisplayName: Configuracao do Cliente
-	Headers.CWRWeapon: Configuracoes de Armas de Overhaul
+
+	Headers: {
+		CWRWeapon: Configuracoes de Armas de Overhaul
+		CWRDisplay: Configuracoes de Exibicao
+		CWRModCompat: Patches de Compatibilidade com Mods
+	}
 
 	ScreenVibration: {
 		Label: Vibracao de Tela da Arma
@@ -58,5 +63,30 @@ CWRClientConfig: {
 	AmbienceDensity: {
 		// Label: Ambience Density
 		// Tooltip: Scales decorative ambience particle density only; telegraphs and hazards are never reduced.
+	}
+
+	RarityTextEffects: {
+		Label: Efeitos de Nome por Raridade
+		Tooltip: Efeitos animados no nome dos itens das raridades deste mod (Lapis, Jade, Cobre, Dourado, Prata Estelar e as quatro Lendas). Quando desativado, os nomes sao desenhados em cor simples.
+	}
+
+	CalamityRarityTextFix: {
+		Label: Calamity: Corrigir tela preta causada pelos efeitos de texto do nome
+		Tooltip:
+			'''
+			As raridades Burnished Auric / Exotic Rainbow e as tags [ceffect] do Calamity trocam o render target enquanto uma dica e desenhada,
+			o que descarta o back buffer e deixa o quadro inteiro preto. Quando ativado, os efeitos sao redesenhados sem render targets,
+			o que tambem corrige o desalinhamento com escala de interface diferente de 100% e reduz o custo por quadro.
+			'''
+	}
+
+	CalamityHolyBurnOrbFix: {
+		Label: Calamity: Corrigir travamento na luta contra os Guardioes Profanos / Providence
+		Tooltip:
+			'''
+			O desenhador de rastros dos orbes sagrados do Calamity guarda referencias de projeteis e continua a desenha-los pelo tipo original
+			depois que o slot foi reutilizado por outro projetil, causando uma NullReferenceException (comum no multijogador).
+			Quando ativado, as referencias obsoletas sao removidas logo antes do desenho.
+			'''
 	}
 }

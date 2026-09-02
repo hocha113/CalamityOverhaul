@@ -55,6 +55,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         private int searchCooldown;
         private bool isCollectingCoins;
         private readonly List<int> magnetizedCoins = [];
+        //锁定瞬间的物品对象与类型；Main.item 槽位会被拾取换对象、被别的臂抓走归零类型、被新掉落物复用，
+        //追踪期逐帧核对，避免对错误或已空的物品实例操作
+        private Item lockedItemRef;
+        private int lockedItemType;
 
         //本地字段(不同步)
         private bool initialized;
@@ -115,23 +119,26 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         #region 目标与锁
 
-        private Item FindNearestItem() {
+        /// <summary>搜索最近可收物品，返回 <see cref="Main.item"/> 槽位索引，无则 -1。
+        /// 按索引遍历而不读 <see cref="Item.whoAmI"/>：原版只在 UpdateItem 里回填该字段，同帧新生成的掉落物上是旧值</summary>
+        private int FindNearestItem() {
             if (VaultUtils.isClient) {
-                return null;
+                return -1;
             }
 
             //先查有无存储，再扫物品
             var storageCandidates = collectorTP.GetStorageCandidates();
             if (storageCandidates.Count == 0) {
                 collectorTP.PromptNoStorage();
-                return null;
+                return -1;
             }
 
-            Item bestItem = null;
+            int bestIndex = -1;
             float minDistSQ = ItemSearchRange * ItemSearchRange;
             bool useFilter = collectorTP.FilterInstalled;
 
-            foreach (var item in Main.ActiveItems) {
+            for (int i = 0; i < Main.maxItems; i++) {
+                Item item = Main.item[i];
                 if (!IsValidTarget(item)) {
                     continue;
                 }
@@ -156,11 +163,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     continue;
                 }
 
-                bestItem = item;
+                bestIndex = i;
                 minDistSQ = distSQ;
             }
 
-            return bestItem;
+            return bestIndex;
         }
 
         private static bool AnyStorageAccepts(IReadOnlyList<IStorageProvider> candidates, Item item) {
@@ -174,7 +181,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         private bool IsValidTarget(Item item) {
-            if (item.IsAir || !item.active) {
+            if (item == null || item.IsAir || !item.active) {
                 return false;
             }
             if (unimportances.Contains(item.type)) {
@@ -190,6 +197,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             return true;
         }
 
+        /// <summary>追踪中的槽位是否仍是锁定时那件物品</summary>
+        private bool TrackedItemIntact(Item item) {
+            return item != null && item.active && item.Alives()
+                && ReferenceEquals(item, lockedItemRef) && item.type == lockedItemType;
+        }
+
+        /// <summary>记录锁定身份并上锁</summary>
+        private void BeginTracking(int itemIndex, Item item) {
+            targetItemWhoAmI = itemIndex;
+            lockedItemRef = item;
+            lockedItemType = item.type;
+            LockItem(item);
+        }
+
         /// <summary>锁物品并刷新时长(追踪每帧)</summary>
         private void LockItem(Item item) {
             var cwr = item.CWR();
@@ -203,16 +224,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     continue;
                 }
                 Item coin = Main.item[coinWhoAmI];
-                if (coin.active && !coin.IsAir && coin.CWR().TargetByCollector == WhoAmI) {
+                if (coin.active && coin.Alives() && coin.CWR().TargetByCollector == WhoAmI) {
                     coin.CWR().CollectorLockTime = LockDuration;
                 }
             }
         }
 
+        /// <summary>解除本臂在世界物品上的锁；抓取后槽位已被 <see cref="RemoveWorldItem"/> 清空，须先滤空实例再取 CWR</summary>
         private void UnlockTrackedItems() {
             if (targetItemWhoAmI >= 0 && targetItemWhoAmI < Main.maxItems) {
                 Item item = Main.item[targetItemWhoAmI];
-                if (item.active && item.CWR().TargetByCollector == WhoAmI) {
+                if (item.Alives() && item.CWR().TargetByCollector == WhoAmI) {
                     item.CWR().TargetByCollector = -1;
                 }
             }
@@ -221,10 +243,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     continue;
                 }
                 Item coin = Main.item[coinWhoAmI];
-                if (coin.active && coin.CWR().TargetByCollector == WhoAmI) {
+                if (coin.Alives() && coin.CWR().TargetByCollector == WhoAmI) {
                     coin.CWR().TargetByCollector = -1;
                 }
             }
+        }
+
+        /// <summary>销毁世界掉落物并同步：tML 的 TurnToAir 会一并置 active=false 且清空 GlobalItem 实例，
+        /// 此后该槽位再取 CWR 必踩空实例，调用方须先按 <see cref="TrackedItemIntact"/>/<c>Alives()</c> 过滤；
+        /// 显式置 active 是对齐原版销毁世界物品的口径，防上游语义变动</summary>
+        private static void RemoveWorldItem(Item item, int itemIndex) {
+            item.TurnToAir();
+            item.active = false;
+            NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemIndex);
         }
 
         /// <summary>夹爪物品吐回世界(中断/销毁)</summary>
@@ -257,8 +288,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             magnetizedCoins.Clear();
 
-            //查找周围的所有钱币
-            foreach (var coin in Main.ActiveItems) {
+            //查找周围的所有钱币(按槽位索引记账，不信任 whoAmI)
+            for (int i = 0; i < Main.maxItems; i++) {
+                Item coin = Main.item[i];
                 if (!coin.active || coin.IsAir || !coin.IsACoin) {
                     continue;
                 }
@@ -276,7 +308,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
                 //锁定这个钱币
                 LockItem(coin);
-                magnetizedCoins.Add(coin.whoAmI);
+                magnetizedCoins.Add(i);
             }
 
             //播放吸附音效
@@ -302,13 +334,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 }
 
                 Item coin = Main.item[coinWhoAmI];
-                if (!coin.active || coin.IsAir) {
+                if (!coin.active || coin.IsAir || !coin.IsACoin) {
                     continue;
                 }
 
                 totalValue += GetCoinValue(coin) * coin.stack;
-                coin.TurnToAir();
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, coinWhoAmI);
+                RemoveWorldItem(coin, coinWhoAmI);
             }
 
             //将总价值完整分解为多面值钱币，夹爪持有最大面值，其余作为找零一同携带
@@ -510,11 +541,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return;
             }
 
-            Item foundItem = FindNearestItem();
+            int foundIndex = FindNearestItem();
 
-            if (foundItem != null) {
-                targetItemWhoAmI = foundItem.whoAmI;
-                LockItem(foundItem);
+            if (foundIndex >= 0) {
+                Item foundItem = Main.item[foundIndex];
+                BeginTracking(foundIndex, foundItem);
 
                 //钱币则进磁吸并吸周围
                 isCollectingCoins = foundItem.IsACoin;
@@ -541,9 +572,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     return;
                 }
 
+                //先核对槽位仍是锁定那件、再取 CWR；IsValidTarget 内含"未被他臂锁定"判定
                 Item targetItem = Main.item[targetItemWhoAmI];
-                int lockOwner = targetItem.CWR().TargetByCollector;
-                if (!IsValidTarget(targetItem) || (lockOwner != WhoAmI && lockOwner != -1)) {
+                if (!TrackedItemIntact(targetItem) || !IsValidTarget(targetItem)) {
                     TransitionToState(ArmState.Idle);
                     return;
                 }
@@ -589,7 +620,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 }
 
                 Item targetItem = Main.item[targetItemWhoAmI];
-                if (!targetItem.Alives()) {
+                if (!TrackedItemIntact(targetItem) || !IsValidTarget(targetItem)) {
                     TransitionToState(ArmState.Idle);
                     return;
                 }
@@ -601,8 +632,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 //抓取完成
                 if (stateTimer > 12) {
                     graspItem = targetItem.Clone();
-                    targetItem.TurnToAir();
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItemWhoAmI);
+                    RemoveWorldItem(targetItem, targetItemWhoAmI);
 
                     //如果是钱币收集模式,合并所有吸附的钱币
                     if (isCollectingCoins) {
@@ -723,6 +753,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 //中断路径必须解除锁定，否则臂死亡后物品会被幽灵索引永久锁定
                 UnlockTrackedItems();
                 targetItemWhoAmI = -1;
+                lockedItemRef = null;
+                lockedItemType = ItemID.None;
                 targetStoragePos = Point16.NegativeOne;
                 cachedStorageProvider = null;
                 isCollectingCoins = false;

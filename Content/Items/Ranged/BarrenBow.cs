@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 12f;
             Item.useAmmo = AmmoID.Arrow;
             Item.value = Item.buyPrice(0, 2, 15, 0);
-            Item.rare = CWRID.Rarity_PureGreen;
+            Item.rare = ItemRarityID.LightRed;
             Item.shoot = ModContent.ProjectileType<BarrenBowHeld>();
         }
 

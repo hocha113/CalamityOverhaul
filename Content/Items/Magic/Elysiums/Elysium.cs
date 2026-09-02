@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.Rarities;
 using CalamityOverhaul.Content.UIs.WeaponSkills;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -79,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             Item.noUseGraphic = true;
             Item.knockBack = 6;
             Item.value = Item.sellPrice(platinum: 10);
-            Item.rare = CWRID.Rarity_BurnishedAuric;
+            Item.rare = ModContent.RarityType<GiltRarity>();
             Item.UseSound = null;//音效归手持弹幕
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<ElysiumHeld>();
