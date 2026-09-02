@@ -1,6 +1,8 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents;
+using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.Core;
+using CalamityOverhaul.OtherMods.BossChecklist;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -10,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
 {
     /// <summary>
-    /// 整链绘制：腿 → 残影 → 着色器本体（头+体节一批）→ 加色辉光层，
+    /// 整链绘制：腿 → 残影 → 着色器本体（体节尾→头、颚、头一批，前节压后节）→ 加色辉光层，
     /// 全部压在头的 PreDraw 里，体节/尾自身 PreDraw 返回 false。集中绘制的两个理由：
     /// 1. 体表着色器整链一次批切换（ScrapCommander 合同，禁每节重启）；
     /// 2. 鼓包蠕动/囊肿资源等跨节表现需要链序连续的参数空间。
@@ -55,26 +57,29 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                 gd.Textures[1] = CWRAsset.PerlinNoise.Value;
                 gd.SamplerStates[1] = SamplerState.LinearWrap;
 
-                DrawHeadCore(sb, screenPos, ctx, shader);
-                DrawJaws(sb, screenPos, ctx, shader);
-                foreach (var seg in ctx.Segments) {
+                //尾→头逐节压上（前节扇冠盖后节腹板），颚根藏在头底之下
+                for (int i = ctx.Segments.Count - 1; i >= 0; i--) {
+                    NPC seg = ctx.Segments[i];
                     if (seg.active && OnScreen(seg.Center, screenPos)) {
                         DrawSegmentCore(sb, screenPos, ctx, seg, shader);
                     }
                 }
+                DrawJaws(sb, screenPos, ctx, shader);
+                DrawHeadCore(sb, screenPos, ctx, shader);
 
                 sb.End();
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                     DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             }
             else {
-                DrawHeadCoreFallback(sb, screenPos, ctx);
-                DrawJaws(sb, screenPos, ctx, null);
-                foreach (var seg in ctx.Segments) {
+                for (int i = ctx.Segments.Count - 1; i >= 0; i--) {
+                    NPC seg = ctx.Segments[i];
                     if (seg.active && OnScreen(seg.Center, screenPos)) {
                         DrawSegmentCoreFallback(sb, screenPos, ctx, seg);
                     }
                 }
+                DrawJaws(sb, screenPos, ctx, null);
+                DrawHeadCoreFallback(sb, screenPos, ctx);
             }
 
             //加色辉光层（Deferred 批 A=0，画在本体之上：脉冲波/满溢/怒放的即时强调）
@@ -157,19 +162,27 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             return offset;
         }
 
-        /// <summary>体节帧（含 Body 两帧表 1px 内缩防串帧）与归一 uv 区域</summary>
+        /// <summary>体节帧（Body 三帧表去掉底部隔帧留白）与归一 uv 区域</summary>
         private static (Rectangle frame, Vector4 uvRect) SegFrame(NPC seg, Texture2D texture) {
             Rectangle frame = seg.frame;
             if (frame.Width <= 0 || frame.Height <= 0) {
                 frame = new Rectangle(0, 0, texture.Width, texture.Height / Math.Max(Main.npcFrameCount[seg.type], 1));
             }
             if (Main.npcFrameCount[seg.type] > 1) {
-                frame.Y += 1;
-                frame.Height -= 2;
+                frame.Height -= SerpentPortraitRig.BodyFramePad;
             }
             Vector4 uv = new(frame.X / (float)texture.Width, frame.Y / (float)texture.Height,
                 frame.Width / (float)texture.Width, frame.Height / (float)texture.Height);
             return (frame, uv);
+        }
+
+        /// <summary>体节绘制原点：尾节基部扇冠对齐体节扇冠位（与荒花同一偏移）</summary>
+        private static Vector2 SegOrigin(NPC seg, Rectangle frame) {
+            Vector2 origin = frame.Size() / 2f;
+            if (seg.type == ModContent.NPCType<FssTail>()) {
+                origin.Y += BssDirector.TailOriginShift;
+            }
+            return origin;
         }
 
         /// <summary>死亡溃爆波是否已扫过该链序</summary>
@@ -298,7 +311,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             Main.instance.LoadNPC(seg.type);
             Texture2D texture = TextureAssets.Npc[seg.type].Value;
             (Rectangle frame, _) = SegFrame(seg, texture);
-            Vector2 origin = frame.Size() / 2f;
+            Vector2 origin = SegOrigin(seg, frame);
 
             Vector2 back = seg.Center - (seg.position - seg.oldPosition) * 1.5f - screenPos;
             sb.Draw(texture, back, frame,
@@ -318,7 +331,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             }
             Texture2D texture = TextureAssets.Npc[seg.type].Value;
             (Rectangle frame, Vector4 uvRect) = SegFrame(seg, texture);
-            Vector2 origin = frame.Size() / 2f;
+            Vector2 origin = SegOrigin(seg, frame);
             Vector2 drawPos = seg.Center + SegDrawOffset(ctx, seg) - screenPos;
             float scaleMul = SegScaleMul(ctx, seg);
 
@@ -372,7 +385,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             Main.instance.LoadNPC(seg.type);
             Texture2D texture = TextureAssets.Npc[seg.type].Value;
             (Rectangle frame, _) = SegFrame(seg, texture);
-            Vector2 origin = frame.Size() / 2f;
+            Vector2 origin = SegOrigin(seg, frame);
             Vector2 drawPos = seg.Center + SegDrawOffset(ctx, seg) - screenPos;
             Color body = Lighting.GetColor(seg.Center.ToTileCoordinates()).MultiplyRGB(FssVfx.SkinMul);
             if (Ruptured(ctx, ordinal)) {
@@ -416,7 +429,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
 
             Texture2D texture = TextureAssets.Npc[seg.type].Value;
             (Rectangle frame, _) = SegFrame(seg, texture);
-            Vector2 origin = frame.Size() / 2f;
+            Vector2 origin = SegOrigin(seg, frame);
             Vector2 drawPos = seg.Center + SegDrawOffset(ctx, seg) - screenPos;
             Color gold = FssVfx.IchorBright with { A = 0 } * (0.55f * glow * fade);
             sb.Draw(texture, drawPos, frame, gold, seg.rotation,

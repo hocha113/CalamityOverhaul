@@ -14,8 +14,21 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const int BodyCount = 20;
         /// <summary>红花节间隔：ordinal % FlowerStep == FlowerStep-1 的体节开花（发射器）</summary>
         public const int FlowerStep = 3;
-        /// <summary>节距（体节帧高 98，扇冠露出后的链距）</summary>
+        /// <summary>
+        /// 节距（体节帧内容高 98）：前节压后节绘制，后节前端 28px 腹板塞进前节扇冠之下，
+        /// 露出的 70px 恰是扇冠 + 侧刺扇的完整轮廓
+        /// </summary>
         public const float SegmentGap = 70f;
+        /// <summary>
+        /// 颈距（头心 → 0 号体节心）：头半高 67，尾端仙人掌臂宽 118 会盖住一切；
+        /// 拉到 88 让 0 号节的侧刺扇刚好从头后露出，腹板仍藏在头下
+        /// </summary>
+        public const float NeckGap = 88f;
+        /// <summary>
+        /// 尾节绘制原点前移（像素）：尾贴图 138 高，基部扇冠在下半段；按包围盒中心画会被前一节整个盖住，
+        /// 原点前移让基部扇冠对齐体节扇冠的位置，T 形尾端多出的部分向后伸
+        /// </summary>
+        public const float TailOriginShift = 14f;
 
         //==================== 基础数值 ====================
 

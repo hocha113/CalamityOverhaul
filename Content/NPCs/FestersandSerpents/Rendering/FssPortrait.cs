@@ -161,15 +161,17 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                         : SerpentPortraitRig.BodyFrame(bodyTex, i, IsCyst(i));
                     float swell = IsCyst(i) ? 0.35f + 0.3f * MathF.Sin(Time * 2.1f + i) : 0f;
                     ApplySkin(shader, tex, fr, i * 0.173f, i + 1f, swell, vein);
+                    Vector2 origin = isTail ? SerpentPortraitRig.TailOrigin(tailTex) : fr.Size() * 0.5f;
                     sb.Draw(tex, segs[i].Center, fr, Ambient, segs[i].Rotation,
-                        fr.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
+                        origin, 1f, SpriteEffects.None, 0f);
                 }
                 float headSwell = 0.2f + 0.15f * MathF.Sin(Time * 1.7f);
                 ApplySkin(shader, headTex, headTex.Bounds, 0.031f, 0f, headSwell, vein);
-                sb.Draw(headTex, rig.HeadPos, null, Ambient, rig.HeadRotation,
-                    headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
+                //颚先于头本体（根藏头底），沿用头的皮肤参数
                 BssJawDraw.Draw(sb, rig.HeadPos, rig.HeadRotation,
                     BssJawDraw.IdleOpen(Time * 3f), Ambient, Vector2.Zero);
+                sb.Draw(headTex, rig.HeadPos, null, Ambient, rig.HeadRotation,
+                    headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
 
                 sb.End();
                 BossPortraitStage.BeginAlpha(sb, in frame);
@@ -181,13 +183,14 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                     Texture2D tex = isTail ? tailTex : bodyTex;
                     Rectangle fr = isTail ? tailTex.Bounds
                         : SerpentPortraitRig.BodyFrame(bodyTex, i, IsCyst(i));
+                    Vector2 origin = isTail ? SerpentPortraitRig.TailOrigin(tailTex) : fr.Size() * 0.5f;
                     sb.Draw(tex, segs[i].Center, fr, skin, segs[i].Rotation,
-                        fr.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
+                        origin, 1f, SpriteEffects.None, 0f);
                 }
-                sb.Draw(headTex, rig.HeadPos, null, skin, rig.HeadRotation,
-                    headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
                 BssJawDraw.Draw(sb, rig.HeadPos, rig.HeadRotation,
                     BssJawDraw.IdleOpen(Time * 3f), skin, Vector2.Zero);
+                sb.Draw(headTex, rig.HeadPos, null, skin, rig.HeadRotation,
+                    headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
             }
 
             //囊肿灵液辉光（加色事件层，剪影跳过）

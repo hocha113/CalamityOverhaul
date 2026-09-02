@@ -98,19 +98,19 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// <summary>爪尖微节贴图（共用胫爪稿；要专属稿时改回独立路径并补 png）</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> LegClawAsset = null;
-        /// <summary>鳌足上臂</summary>
+        /// <summary>鳌足三件（源图朝向入库，关节像素与骨轴角记在 <see cref="BssClawRig"/>）：上臂 70×34</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/ClawUpper")]
         internal static Asset<Texture2D> ClawUpperAsset = null;
-        /// <summary>鳌足下臂</summary>
+        /// <summary>鳌足下臂 48×18</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/ClawLower")]
         internal static Asset<Texture2D> ClawLowerAsset = null;
-        /// <summary>鳌足掌</summary>
+        /// <summary>鳌足掌 58×66</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/ClawChela")]
         internal static Asset<Texture2D> ClawChelaAsset = null;
-        /// <summary>左颚</summary>
+        /// <summary>左颚 52×76（铰链在根部顶边，见 <see cref="BssJawDraw"/>）</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/JawLeft")]
         internal static Asset<Texture2D> JawLeftAsset = null;
-        /// <summary>右颚</summary>
+        /// <summary>右颚 52×76</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/JawRight")]
         internal static Asset<Texture2D> JawRightAsset = null;
 
@@ -695,17 +695,33 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
         }
 
+        /// <summary>
+        /// 整链集中绘制（体节/尾自身 PreDraw 返回 false）：腿 → 远层鳌足 → 体节尾→头逐节压上 →
+        /// 颚 → 头本体 → 近层鳌足。前节压后节：每节前端腹板塞进前一节扇冠之下，扇冠成为可见的"领子"；
+        /// 交给 whoAmI 顺序会让 0 号节的腹板盖在头顶的白刺冠上。
+        /// </summary>
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (Context == null) {
                 return true;
             }
 
-            //腿画最底：体节 whoAmI 更高、绘制在后，天然盖住腿根
+            //腿画最底
             LegRig.Draw(spriteBatch, screenPos, Context);
 
             float clawFade = 1f - NPC.alpha / 255f;
-            //远层鳌足：压暗垫在头本体之下（深度读数）
+            //远层鳌足：压暗垫在整链之下（深度读数）
             ClawRig.DrawBack(spriteBatch, screenPos, clawFade);
+
+            //体节：尾先头后，前节盖住后节前端
+            if (Context.Segments.Count == 0) {
+                Context.RefreshSegments();
+            }
+            for (int i = Context.Segments.Count - 1; i >= 0; i--) {
+                NPC seg = Context.Segments[i];
+                if (seg.active && seg.ModNPC is BssBody body) {
+                    body.DrawSegment(spriteBatch, screenPos, Context);
+                }
+            }
 
             Main.instance.LoadNPC(Type);
             Texture2D texture = TextureAssets.Npc[Type].Value;
@@ -736,21 +752,22 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 }
             }
 
-            //本体
-            spriteBatch.Draw(texture, mainPos, frameRec, drawColor * fade, NPC.rotation,
-                origin, NPC.scale, SpriteEffects.None, 0f);
-
+            //颚先于本体：红根藏在头底之下，只露出两片刃
             float jawOpen = BssJawDraw.ResolveOpen(Context.ClawCommand, Context.ClawPhase,
                 Context.ClawBurst, Context.GaitPhase);
             Vector2 headWorld = mainPos + screenPos;
             BssJawDraw.Draw(spriteBatch, headWorld, NPC.rotation, jawOpen, drawColor * fade, screenPos, NPC.scale);
 
+            //本体
+            spriteBatch.Draw(texture, mainPos, frameRec, drawColor * fade, NPC.rotation,
+                origin, NPC.scale, SpriteEffects.None, 0f);
+
             //怒放辉光：头顶花叶在预告/怒放期泛红（加色薄层，体感来自本体遮蔽）
             if (Context.BloomGlow > 0.03f) {
                 Color bloom = BssVfx.BloomRed with { A = 0 } * (0.55f * Context.BloomGlow * fade);
+                BssJawDraw.Draw(spriteBatch, headWorld, NPC.rotation, jawOpen, bloom, screenPos, NPC.scale);
                 spriteBatch.Draw(texture, mainPos, frameRec, bloom, NPC.rotation,
                     origin, NPC.scale * 1.04f, SpriteEffects.None, 0f);
-                BssJawDraw.Draw(spriteBatch, headWorld, NPC.rotation, jawOpen, bloom, screenPos, NPC.scale);
                 Lighting.AddLight(NPC.Center, BssVfx.BloomRed.ToVector3() * 0.35f * Context.BloomGlow);
             }
 

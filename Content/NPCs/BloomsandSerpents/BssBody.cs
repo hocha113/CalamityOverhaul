@@ -11,10 +11,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
     /// <summary>
     /// 体节：跟链 + 统一血池 + 抖动/脉冲表现。
     /// 款式按链序确定（每 FlowerStep 节开一朵红花，红花节是钉刺/花瓣发射器），各端一致。
+    /// 绘制集中在头的整链层（尾→头逐节压上，前节扇冠盖住后节腹板），本类 PreDraw 返回 false，
+    /// 头部通过 <see cref="DrawSegment"/> 逐节调用。
     /// </summary>
     internal class BssBody : BssModNPC
     {
         public override string Texture => CWRConstant.NPC + "BSS/Body";
+
+        /// <summary>屏外裁剪边距（像素）：整链由头统一绘制，头 MustAlwaysDraw，体节自己做屏外剔除</summary>
+        private const float CullMargin = 340f;
 
         /// <summary>链序（生成时写入 npc.ai[0]）</summary>
         protected int Ordinal => (int)NPC.ai[0];
@@ -154,7 +159,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// </summary>
         private void FollowChain(NPC front, BssStateContext ctx) {
             float compression = ctx != null && ctx.Compression > 0.01f ? ctx.Compression : 1f;
-            float gap = BssDirector.SegmentGap * NPC.scale * compression;
+            //0 号节接在头后：头贴图比体节长得多，颈距单独标定
+            float baseGap = Ordinal == 0 ? BssDirector.NeckGap : BssDirector.SegmentGap;
+            float gap = baseGap * NPC.scale * compression;
             int total = ctx != null && ctx.TotalSegments > 0
                 ? ctx.TotalSegments : BssDirector.BodyCount + 1;
 
@@ -305,9 +312,23 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            NPC head = ResolveHead();
-            BssStateContext ctx = (head?.ModNPC as BssHead)?.Context;
+        /// <summary>绘制原点沿贴图 +y（前向）的偏移：体节 0，尾节把基部扇冠对齐到体节扇冠位</summary>
+        protected virtual float DrawOriginShift => 0f;
+
+        //整链由头集中绘制（层序：尾→头），体节自身不画
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+
+        /// <summary>整链层逐节绘制入口（头 PreDraw 调用；光照按体节自身位置取）</summary>
+        internal void DrawSegment(SpriteBatch spriteBatch, Vector2 screenPos, BssStateContext ctx) {
+            if (NPC.alpha >= 250) {
+                return;
+            }
+            Vector2 c = NPC.Center;
+            if (c.X < screenPos.X - CullMargin || c.X > screenPos.X + Main.screenWidth + CullMargin
+                || c.Y < screenPos.Y - CullMargin || c.Y > screenPos.Y + Main.screenHeight + CullMargin) {
+                return;
+            }
+            Color drawColor = Lighting.GetColor(c.ToTileCoordinates());
 
             Main.instance.LoadNPC(Type);
             Texture2D texture = TextureAssets.Npc[Type].Value;
@@ -315,7 +336,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             if (frame.Width <= 0 || frame.Height <= 0) {
                 frame = new Rectangle(0, 0, texture.Width, texture.Height / Main.npcFrameCount[Type]);
             }
-            Vector2 origin = frame.Size() / 2f;
+            Vector2 origin = frame.Size() / 2f + new Vector2(0f, DrawOriginShift);
             float fade = 1f - NPC.alpha / 255f;
 
             //全身抖动：足端踩定、身体在腿上晃（位置不动，纯绘制偏移）
@@ -396,8 +417,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                     Lighting.AddLight(NPC.Center, BssVfx.BloomRed.ToVector3() * 0.3f * glow);
                 }
             }
-
-            return false;
         }
         #endregion
     }

@@ -26,16 +26,20 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         [VaultLoaden(CWRConstant.NPC + "BSS/Tail")]
         internal static Asset<Texture2D> TailTex = null;
 
-        /// <summary>体节取帧（三帧竖排：0 绿赘 / 1 干净 / 2 橙囊；1px 内缩防串帧，镜像战斗 SegFrame）</summary>
+        /// <summary>体节帧底部隔帧留白（像素），入库贴图每帧 98 内容 + 2 空行</summary>
+        internal const int BodyFramePad = 2;
+
+        /// <summary>体节取帧（三帧竖排：0 绿赘 / 1 干净 / 2 橙囊；去掉底部隔帧留白，内容居中）</summary>
         internal static Rectangle BodyFrame(Texture2D tex, int style) {
             int frames = Math.Max(SerpentChainMath.BodyStyleCount, 1);
             int frameH = tex.Height / frames;
             style = Math.Clamp(style, 0, frames - 1);
-            Rectangle frame = new(0, style * frameH, tex.Width, frameH);
-            frame.Y += 1;
-            frame.Height -= 2;
-            return frame;
+            return new Rectangle(0, style * frameH, tex.Width, frameH - BodyFramePad);
         }
+
+        /// <summary>尾节绘制原点（基部扇冠对齐体节扇冠位，与战斗端同一偏移）</summary>
+        internal static Vector2 TailOrigin(Texture2D tailTex)
+            => tailTex.Size() * 0.5f + new Vector2(0f, BssDirector.TailOriginShift);
 
         internal static Rectangle BodyFrame(Texture2D tex, int ordinal, bool emitter)
             => BodyFrame(tex, SerpentChainMath.BodyStyleIndex(ordinal, emitter));
@@ -78,6 +82,8 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         //==================== 状态 ====================
 
         private readonly float gap;
+        /// <summary>颈距（头 → 0 号节），荒花头贴图长，单独标定</summary>
+        private readonly float neckGap;
         private readonly float patrolHalf;
         /// <summary>沙线 Y（场景坐标）</summary>
         public readonly float SandY;
@@ -113,8 +119,9 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         /// <summary>落地瞬间（位置）</summary>
         public Action<Vector2> OnLand;
 
-        public SerpentPortraitRig(int bodyCount, float segmentGap, float sandY, float patrolHalfWidth) {
+        public SerpentPortraitRig(int bodyCount, float segmentGap, float sandY, float patrolHalfWidth, float? neckGap = null) {
             gap = segmentGap;
+            this.neckGap = neckGap ?? segmentGap;
             SandY = sandY;
             patrolHalf = patrolHalfWidth;
             //链序 0..bodyCount-1 = 体节，末位 = 尾
@@ -146,7 +153,7 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
             CurrentStage = Stage.Surface;
             //整链向后铺直
             for (int i = 0; i < segs.Length; i++) {
-                segs[i].Center = headPos - new Vector2((i + 1) * gap, 0f);
+                segs[i].Center = headPos - new Vector2(neckGap + i * gap, 0f);
                 segs[i].Rotation = BssHead.FacingRot;
             }
             legRig.ResetLegs();
@@ -277,14 +284,14 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
             }
         }
 
-        /// <summary>标准跟链（镜像 BssBody.FollowChain，压缩恒 1）</summary>
+        /// <summary>标准跟链（镜像 BssBody.FollowChain，压缩恒 1；0 号节走颈距）</summary>
         private void FollowChain() {
             Vector2 front = headPos;
             for (int i = 0; i < segs.Length; i++) {
                 Vector2 toFront = front - segs[i].Center;
                 if (toFront.LengthSquared() > 0.01f) {
                     segs[i].Rotation = toFront.ToRotation() + BssHead.FacingRot;
-                    segs[i].Center = front - toFront.SafeNormalize(Vector2.Zero) * gap;
+                    segs[i].Center = front - toFront.SafeNormalize(Vector2.Zero) * (i == 0 ? neckGap : gap);
                 }
                 front = segs[i].Center;
             }

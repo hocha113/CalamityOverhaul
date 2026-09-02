@@ -14,16 +14,37 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
     /// 解算：常曲率弧链——欠伸展的余量按关节权重分配成总转角（基节僵、中段柔），
     /// 3 步割线校弦长 + 端向对齐旋转，读出节肢的整弧弯曲而非绳索；
     /// 逐关节拖拽平滑（尖端滞后 = 甩鞭），跟手速度由姿态 Snap 与 Burst 抬升。
-    /// 鳌足画上臂+下臂+掌，开合角随姿态绕腕转。
+    /// 鳌足画上臂+下臂+掌，掌绕腕微转读作张合。
     ///
     /// 绘制分层：side=-1 爪压暗画在头本体之前（远层），side=+1 画在头之后（近层）。
-    /// 贴图走 BssHead 三件套槽位。图鉴沙盒共用本类（AdvanceStandalone + DrawStandalone）。
+    /// 三件贴图保持源图朝向入库（像素画禁任意角旋转），每件记近端关节像素与骨轴角，
+    /// 绘制时 rotation = 世界骨向 − 贴图骨轴角；side=+1 侧整肢水平镜像，两侧解剖对称。
+    /// 图鉴沙盒共用本类（AdvanceStandalone + DrawStandalone）。
     /// </summary>
     internal class BssClawRig
     {
         #region 解剖
-        /// <summary>节长表（上臂、下臂、掌；总和 = <see cref="BssClawScript.Reach"/>）</summary>
-        private static readonly float[] SegLen = { 64f, 46f, 40f };
+        /// <summary>节长表（上臂、下臂、掌；= 各件贴图近端→远端关节像素距，总和 = <see cref="BssClawScript.Reach"/>）</summary>
+        private static readonly float[] SegLen = { 62f, 42f, 62f };
+
+        /// <summary>骨件贴图锚：近端关节像素（2x 贴图坐标）与近端→远端骨轴角</summary>
+        private readonly struct PieceAnchor
+        {
+            public readonly Vector2 Proximal;
+            public readonly float AxisAngle;
+
+            public PieceAnchor(Vector2 proximal, Vector2 distal) {
+                Proximal = proximal;
+                AxisAngle = (distal - proximal).ToRotation();
+            }
+        }
+
+        /// <summary>上臂：肩球在左下 (7,21)，细端在右上 (67,4)</summary>
+        private static readonly PieceAnchor UpperAnchor = new(new Vector2(7f, 21f), new Vector2(67f, 4f));
+        /// <summary>下臂：肘端在左 (3,11)，腕球在右 (45,5)</summary>
+        private static readonly PieceAnchor LowerAnchor = new(new Vector2(3f, 11f), new Vector2(45f, 5f));
+        /// <summary>掌：腕在柄底左下 (5,61)，钳口在右上指间 (43,11)；指尖朝贴图 +x，即骨轴顺时针侧</summary>
+        private static readonly PieceAnchor ChelaAnchor = new(new Vector2(5f, 61f), new Vector2(43f, 11f));
         /// <summary>关节转角权重（和为 1；基节僵、中段柔）</summary>
         private static readonly float[] TurnW = { 0.22f, 0.45f, 0.33f };
         /// <summary>逐关节拖拽率（越靠尖越滞后 = 甩鞭读数）</summary>
@@ -240,34 +261,35 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         #region 绘制
         /// <summary>远层爪（side = -1）：压暗画在头本体之前</summary>
         public void DrawBack(SpriteBatch sb, Vector2 screenPos, float fade) {
-            DrawLimb(sb, ref limbs[1], screenPos, fade, 0.8f);
+            DrawLimb(sb, ref limbs[1], SideOf(1), screenPos, fade, 0.8f);
         }
 
         /// <summary>近层爪（side = +1）：画在头本体之后盖面</summary>
         public void DrawFront(SpriteBatch sb, Vector2 screenPos, float fade) {
-            DrawLimb(sb, ref limbs[0], screenPos, fade, 1f);
+            DrawLimb(sb, ref limbs[0], SideOf(0), screenPos, fade, 1f);
         }
 
         /// <summary>图鉴端：双爪按层序（远→近由调用方在蒙皮前后各调一次）</summary>
         public void DrawStandalone(SpriteBatch sb, bool front, Func<float, Color> tintFor) {
-            ref Limb limb = ref limbs[front ? 0 : 1];
+            int li = front ? 0 : 1;
+            ref Limb limb = ref limbs[li];
             if (!limb.Inited) {
                 return;
             }
-            DrawLimbCore(sb, ref limb, Vector2.Zero, tintFor(front ? 1f : 0.8f));
+            DrawLimbCore(sb, ref limb, SideOf(li), Vector2.Zero, tintFor(front ? 1f : 0.8f));
         }
 
-        private static void DrawLimb(SpriteBatch sb, ref Limb limb, Vector2 screenPos, float fade, float dim) {
+        private static void DrawLimb(SpriteBatch sb, ref Limb limb, int side, Vector2 screenPos, float fade, float dim) {
             if (!limb.Inited || fade <= 0.03f) {
                 return;
             }
             Vector2 mid = limb.Joints[3];
             Color light = Lighting.GetColor((int)(mid.X / 16f), (int)(mid.Y / 16f));
             Color tint = new Color((byte)(light.R * dim), (byte)(light.G * dim), (byte)(light.B * dim), (byte)255) * fade;
-            DrawLimbCore(sb, ref limb, screenPos, tint);
+            DrawLimbCore(sb, ref limb, side, screenPos, tint);
         }
 
-        private static void DrawLimbCore(SpriteBatch sb, ref Limb limb, Vector2 screenPos, Color tint) {
+        private static void DrawLimbCore(SpriteBatch sb, ref Limb limb, int side, Vector2 screenPos, Color tint) {
             Texture2D upper = BssHead.ClawUpperAsset?.Value;
             Texture2D lower = BssHead.ClawLowerAsset?.Value;
             Texture2D chela = BssHead.ClawChelaAsset?.Value;
@@ -275,39 +297,33 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 return;
             }
 
-            DrawPiece(sb, upper, limb.Joints[0], limb.Joints[1], tint, screenPos);
-            DrawPiece(sb, lower, limb.Joints[1], limb.Joints[2], tint, screenPos);
+            //side=+1 肢（前向顺时针侧）镜像：未镜像时指尖在骨轴顺时针侧，镜像后落到逆时针侧 = 朝向体中线
+            bool mirror = side > 0;
+            DrawPiece(sb, upper, UpperAnchor, limb.Joints[0], limb.Joints[1], 0f, mirror, tint, screenPos);
+            DrawPiece(sb, lower, LowerAnchor, limb.Joints[1], limb.Joints[2], 0f, mirror, tint, screenPos);
             if (chela != null) {
-                DrawChela(sb, chela, limb.Joints[2], limb.Joints[3], limb.BladeSmooth, tint, screenPos);
+                //张合：掌绕腕向指尖侧摆，开得越大钳口越转向中线
+                float cock = 0.08f + MathHelper.Clamp(limb.BladeSmooth, 0f, 1f) * 0.35f;
+                float fingerSide = mirror ? -1f : 1f;
+                DrawPiece(sb, chela, ChelaAnchor, limb.Joints[2], limb.Joints[3], fingerSide * cock, mirror, tint, screenPos);
             }
         }
 
-        /// <summary>原尺寸骨节：近端锚底，不按骨长拉伸</summary>
-        private static void DrawPiece(SpriteBatch sb, Texture2D tex, Vector2 from, Vector2 to,
-            Color tint, Vector2 screenPos) {
+        /// <summary>
+        /// 原尺寸骨件：近端关节像素钉在 from，贴图骨轴转到 from→to 方向（不按骨长拉伸，
+        /// 节长已与贴图关节距一致）。镜像时原点 x 翻到对称位、骨轴角取 π−a。
+        /// </summary>
+        private static void DrawPiece(SpriteBatch sb, Texture2D tex, in PieceAnchor anchor, Vector2 from, Vector2 to,
+            float extraRot, bool mirror, Color tint, Vector2 screenPos) {
             Vector2 dir = to - from;
             if (dir.LengthSquared() < 9f) {
                 return;
             }
-            float rot = dir.ToRotation() + MathHelper.PiOver2;
-            Vector2 origin = new(tex.Width * 0.5f, tex.Height - 2f);
-            sb.Draw(tex, from - screenPos, null, tint, rot, origin, 1f, SpriteEffects.None, 0f);
-        }
-
-        /// <summary>鳌足绕腕开合；关节在贴图左下，右侧镜像时翻转到对称原点</summary>
-        private static void DrawChela(SpriteBatch sb, Texture2D tex, Vector2 wrist, Vector2 tip,
-            float bladeOpen, Color tint, Vector2 screenPos) {
-            Vector2 dir = tip - wrist;
-            if (dir.LengthSquared() < 9f) {
-                return;
-            }
-            float open = 0.12f + MathHelper.Clamp(bladeOpen, 0f, 1f) * 0.45f;
-            float rot = dir.ToRotation() + MathHelper.PiOver2 + Math.Sign(dir.X) * open;
-            //入库后关节约在 (10, 42)，右侧翻轴
-            bool flip = dir.X < 0f;
-            Vector2 origin = flip ? new Vector2(tex.Width - 10f, 42f) : new Vector2(10f, 42f);
-            SpriteEffects fx = flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            sb.Draw(tex, wrist - screenPos, null, tint, rot, origin, 1f, fx, 0f);
+            float axis = mirror ? MathHelper.Pi - anchor.AxisAngle : anchor.AxisAngle;
+            Vector2 origin = mirror ? new Vector2(tex.Width - anchor.Proximal.X, anchor.Proximal.Y) : anchor.Proximal;
+            SpriteEffects fx = mirror ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            float rot = dir.ToRotation() - axis + extraRot;
+            sb.Draw(tex, from - screenPos, null, tint, rot, origin, 1f, fx, 0f);
         }
         #endregion
     }

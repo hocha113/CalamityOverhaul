@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         public override void SetDefaults() {
-            Item.width = 20;
-            Item.height = 36;
+            Item.width = 28;
+            Item.height = 28;
             Item.maxStack = Item.CommonMaxStack;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.useAnimation = 45;

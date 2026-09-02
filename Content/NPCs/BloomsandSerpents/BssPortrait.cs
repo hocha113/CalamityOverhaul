@@ -31,7 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         public override Vector2 SceneHalfSize => new(300f, 250f);
 
         private BssPortraitActor() {
-            rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 70f, sandY: 118f, patrolHalfWidth: 232f) {
+            rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: BssDirector.SegmentGap, sandY: 118f,
+                patrolHalfWidth: 232f, neckGap: BssDirector.NeckGap) {
                 WithClaws = true,
             };
             rig.OnDive = pos => SandBurst(pos, -Vector2.UnitY, 10, 0.8f);
@@ -118,19 +119,21 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             Color skin = frame.Tint(Ambient);
             SerpentPortraitRig.SegmentPose[] segs = rig.Segments;
 
-            //尾→头压顶
+            //尾→头压顶（与战斗端整链层序一致）
             for (int i = segs.Length - 1; i >= 0; i--) {
                 bool isTail = i == rig.TailOrdinal;
                 Texture2D tex = isTail ? tailTex : bodyTex;
                 Rectangle fr = isTail ? tailTex.Bounds
                     : SerpentPortraitRig.BodyFrame(bodyTex, i, BssStateContext.IsFlowerOrdinal(i));
+                Vector2 origin = isTail ? SerpentPortraitRig.TailOrigin(tailTex) : fr.Size() * 0.5f;
                 sb.Draw(tex, segs[i].Center, fr, skin, segs[i].Rotation,
-                    fr.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
+                    origin, 1f, SpriteEffects.None, 0f);
             }
-            sb.Draw(headTex, rig.HeadPos, null, skin, rig.HeadRotation,
-                headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
+            //颚根藏在头底之下
             BssJawDraw.Draw(sb, rig.HeadPos, rig.HeadRotation,
                 BssJawDraw.IdleOpen(Time * 3f), skin, Vector2.Zero);
+            sb.Draw(headTex, rig.HeadPos, null, skin, rig.HeadRotation,
+                headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
 
             //红花脉冲加色（剪影模式跳过）
             if (frame.Masked) {

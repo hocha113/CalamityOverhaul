@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         protected override bool IsFlower => false;
 
+        protected override float DrawOriginShift => BssDirector.TailOriginShift;
+
         public override void FindFrame(int frameHeight) {
             //尾节单帧：链序落在红花位也不换帧
             NPC.frame = new Rectangle(0, 0, TextureAssets.Npc[Type].Width(), frameHeight);

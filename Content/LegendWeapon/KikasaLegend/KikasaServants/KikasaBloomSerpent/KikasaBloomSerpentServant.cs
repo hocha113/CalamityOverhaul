@@ -977,11 +977,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     color = Color.Lerp(lightColor, BloodMain, 0.5f) * (1f - dissolve);
                 }
 
-                sb.Draw(tex, pos, frame, color, rot, frame.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
                 if (i == 0) {
+                    //颚根藏在头底之下：先颚后头
                     BssJawDraw.Draw(sb, spine[0], rot, BssJawDraw.IdleOpen(Main.GlobalTimeWrappedHourly * 3f),
                         color, Main.screenPosition, DrawScale);
                 }
+                sb.Draw(tex, pos, frame, color, rot, frame.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
             }
 
             sb.End();

@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
     /// </summary>
     internal static class BssClawScript
     {
-        /// <summary>全肢触及（与 <see cref="BssClawRig"/> 三件套节长一致）</summary>
-        internal const float Reach = 150f;
+        /// <summary>全肢触及（= <see cref="BssClawRig"/> 三件套节长之和）</summary>
+        internal const float Reach = 166f;
 
         /// <summary>头前向（贴图前方朝下约定的反解）</summary>
         internal static Vector2 Forward(float headRotation)
@@ -41,13 +41,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         internal static Vector2 Lateral(float headRotation, int side)
             => Forward(headRotation).RotatedBy(side * MathHelper.PiOver2);
 
-        /// <summary>爪基锚点（头两侧偏前）</summary>
+        /// <summary>爪基锚点：头心两侧近边缘（头中段半宽 53px，肩球从头侧探出）</summary>
         internal static Vector2 Mount(Vector2 headCenter, float headRotation, int side)
-            => headCenter + Forward(headRotation) * 12f + Lateral(headRotation, side) * 20f;
+            => headCenter + Forward(headRotation) * 6f + Lateral(headRotation, side) * 40f;
 
-        /// <summary>嘴位（与喷沙状态的炮口约定一致：头心 + 前向，按新头半高重标）</summary>
+        /// <summary>嘴位（喷沙炮口 / 撕咬判距）：头底尖端，落在两瓣颚刃之间</summary>
         internal static Vector2 MouthPos(Vector2 headCenter, float headRotation)
-            => headCenter + Forward(headRotation) * 52f;
+            => headCenter + Forward(headRotation) * 66f;
 
         /// <summary>水平朝向符号（世界系编舞用：挥掷/祭舞以它定"向前"）</summary>
         private static float FacingSign(float headRotation) {
