@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -72,7 +73,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Projectiles
             //旧壳：体节素帧染灰紫（死皮，无灵液光）
             Main.instance.LoadProjectile(Type);
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Rectangle frame = new(0, 0, tex.Width, tex.Height / 2);
+            Rectangle frame = new(0, 0, tex.Width, tex.Height / SerpentChainMath.BodyStyleCount);
             Vector2 origin = frame.Size() / 2f;
             float fade = 1f - Projectile.alpha / 255f;
             Color husk = lightColor.MultiplyRGB(new Color(150, 132, 168));
