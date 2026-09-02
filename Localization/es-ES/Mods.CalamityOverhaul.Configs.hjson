@@ -42,7 +42,6 @@ CWRClientConfig: {
 	Headers: {
 		CWRWeapon: Ajustes de armas Overhaul
 		CWRDisplay: Ajustes de visualización
-		CWRModCompat: Parches de compatibilidad con mods
 	}
 
 	ScreenVibration: {
@@ -68,25 +67,5 @@ CWRClientConfig: {
 	RarityTextEffects: {
 		Label: Efectos de nombre por rareza
 		Tooltip: Efectos animados en el nombre de los objetos con rarezas de este mod (Lapislázuli, Jade, Cobre, Dorado, Plata estelar y las cuatro Leyendas). Al desactivarlo, los nombres se dibujan en color plano.
-	}
-
-	CalamityRarityTextFix: {
-		Label: Calamity: corregir la pantalla negra causada por los efectos de texto del nombre
-		Tooltip:
-			'''
-			Las rarezas Burnished Auric / Exotic Rainbow y las etiquetas [ceffect] de Calamity cambian de render target mientras se dibuja una descripción,
-			lo que descarta el búfer trasero y deja todo el fotograma en negro. Al activarlo, los efectos se dibujan sin render targets,
-			lo que además corrige el desajuste con una escala de interfaz distinta del 100 % y reduce el coste por fotograma.
-			'''
-	}
-
-	CalamityHolyBurnOrbFix: {
-		Label: Calamity: corregir el cierre inesperado en el combate contra los Guardianes profanos / Providence
-		Tooltip:
-			'''
-			El dibujador de estelas de orbes sagrados de Calamity guarda referencias a proyectiles y sigue dibujándolos según su tipo original
-			después de que otro proyectil haya reutilizado el hueco, provocando una NullReferenceException (frecuente en multijugador).
-			Al activarlo, las referencias obsoletas se eliminan justo antes de dibujar.
-			'''
 	}
 }

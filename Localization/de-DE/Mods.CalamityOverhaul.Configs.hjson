@@ -42,7 +42,6 @@ CWRClientConfig: {
 	Headers: {
 		CWRWeapon: Overhaul-Waffeneinstellungen
 		CWRDisplay: Anzeigeeinstellungen
-		CWRModCompat: Mod-Kompatibilitätspatches
 	}
 
 	ScreenVibration: {
@@ -68,25 +67,5 @@ CWRClientConfig: {
 	RarityTextEffects: {
 		Label: Seltenheits-Namenseffekte
 		Tooltip: Animierte Gegenstandsnamen-Effekte für die Seltenheiten dieses Mods (Lapis, Jade, Kupfer, Vergoldet, Sternsilber und die vier Legenden). Wenn deaktiviert, werden Namen in einfacher Farbe gezeichnet.
-	}
-
-	CalamityRarityTextFix: {
-		Label: Calamity: Schwarzen Bildschirm durch Namens-Texteffekte beheben
-		Tooltip:
-			'''
-			Die Seltenheiten Burnished Auric / Exotic Rainbow und [ceffect]-Tags von Calamity wechseln beim Zeichnen eines Tooltips das Render-Target,
-			wodurch der Back-Buffer verworfen wird und das gesamte Bild schwarz wird. Wenn aktiviert, werden die Effekte ohne Render-Targets gezeichnet,
-			was zugleich die Fehlausrichtung bei UI-Skalierung ungleich 100 % behebt und den Aufwand pro Frame senkt.
-			'''
-	}
-
-	CalamityHolyBurnOrbFix: {
-		Label: Calamity: Absturz im Kampf gegen Entweihte Wächter / Providence beheben
-		Tooltip:
-			'''
-			Calamitys Zeichner für die Spuren heiliger Kugeln speichert Projektilreferenzen und zeichnet sie weiter nach ihrem ursprünglichen Typ,
-			nachdem der Slot bereits von einem anderen Projektil belegt wurde – das verursacht eine NullReferenceException (häufig im Mehrspieler).
-			Wenn aktiviert, werden veraltete Referenzen direkt vor dem Zeichnen entfernt.
-			'''
 	}
 }

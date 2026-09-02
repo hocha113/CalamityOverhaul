@@ -534,11 +534,6 @@ OverhaulSettingsUI: {
 	DensityEverywhereText: Überall
 	ResetDefaultText: Auf Standard zurücksetzen
 	DensityTooltipText: Strukturgenerierungsdichte
-	ModCompatSettingsText: Mod-Kompatibilität
-	ModCompatFooterHintText: Diese Patches beheben bekannte Probleme anderer Mods über schwache Referenzen. Sie lassen sich jederzeit ohne Neuladen umschalten.
-	ModCompatEmptyHintText: Es wurden keine Mods erkannt, für die Kompatibilitätspatches verfügbar sind.
-	PatchStatusActiveText: Patch-Status: angewendet
-	PatchStatusInactiveText: Patch-Status: nicht angewendet (Ziel nicht gefunden, möglicherweise passt die Mod-Version nicht)
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Overhaul-Einstellungen

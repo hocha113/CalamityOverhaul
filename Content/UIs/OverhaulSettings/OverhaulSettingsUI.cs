@@ -34,11 +34,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText DensityFloodText { get; private set; }
         public static LocalizedText DensityEverywhereText { get; private set; }
         public static LocalizedText DensityTooltipText { get; private set; }
-        public static LocalizedText ModCompatSettingsText { get; private set; }
-        public static LocalizedText ModCompatFooterHintText { get; private set; }
-        public static LocalizedText ModCompatEmptyHintText { get; private set; }
-        public static LocalizedText PatchStatusActiveText { get; private set; }
-        public static LocalizedText PatchStatusInactiveText { get; private set; }
 
         internal bool _active;
         private float _sengs;
@@ -136,11 +131,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             DensityFloodText = this.GetLocalization(nameof(DensityFloodText), () => "泛滥");
             DensityEverywhereText = this.GetLocalization(nameof(DensityEverywhereText), () => "无处不在");
             DensityTooltipText = this.GetLocalization(nameof(DensityTooltipText), () => "结构生成密度");
-            ModCompatSettingsText = this.GetLocalization(nameof(ModCompatSettingsText), () => "模组兼容");
-            ModCompatFooterHintText = this.GetLocalization(nameof(ModCompatFooterHintText), () => "这些补丁以弱引用方式修复其他模组的已知问题，可随时开关，无需重载");
-            ModCompatEmptyHintText = this.GetLocalization(nameof(ModCompatEmptyHintText), () => "未检测到可应用兼容补丁的模组");
-            PatchStatusActiveText = this.GetLocalization(nameof(PatchStatusActiveText), () => "补丁状态：已挂载");
-            PatchStatusInactiveText = this.GetLocalization(nameof(PatchStatusInactiveText), () => "补丁状态：未挂载（目标方法未找到，可能是模组版本不匹配）");
 
             ContentSettingsCategory.LoadReflection();
         }
@@ -180,10 +170,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             var worldGenCat = new WorldGenSettingsCategory();
             worldGenCat.EnsureInitialized();
             categories.Add(worldGenCat);
-
-            var modCompatCat = new ModCompatSettingsCategory();
-            modCompatCat.EnsureInitialized();
-            categories.Add(modCompatCat);
         }
 
         public override void Update() {

@@ -42,7 +42,6 @@ CWRClientConfig: {
 	Headers: {
 		CWRWeapon: 大修武器设置
 		CWRDisplay: 显示设置
-		CWRModCompat: 模组兼容补丁
 	}
 
 	ScreenVibration: {
@@ -68,24 +67,5 @@ CWRClientConfig: {
 	RarityTextEffects: {
 		Label: 稀有度名称特效
 		Tooltip: 本模组稀有度（青金、翠玉、赤铜、鎏金、星银与四传奇）的物品名动态特效。关闭后只保留纯色名字
-	}
-
-	CalamityRarityTextFix: {
-		Label: 灾厄：修复特效名称文字导致的黑屏
-		Tooltip:
-			'''
-			灾厄的燃金、异域彩虹稀有度以及 [ceffect] 标签的名称特效会在绘制提示框时切换渲染目标，
-			导致后备缓冲被清空、整帧画面变黑。开启后改用不依赖渲染目标的等效绘制，
-			同时修正非 100% UI 缩放下的错位并降低每帧开销
-			'''
-	}
-
-	CalamityHolyBurnOrbFix: {
-		Label: 灾厄：修复亵渎守卫 / 亵渎天神战斗崩溃
-		Tooltip:
-			'''
-			灾厄的圣焰球拖尾绘制器会缓存弹幕引用，弹幕槽位被其他弹幕复用后仍按原类型绘制，
-			引发空引用崩溃（多人模式尤为常见）。开启后在绘制前剔除失效引用
-			'''
 	}
 }
