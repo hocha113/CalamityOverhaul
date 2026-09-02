@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
 {
@@ -589,7 +590,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
                 Main.UIScaleMatrix);
             sb.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(sb, body);
 
-            DrawBody(sb, node, x, body.Y - scroll, wrapW, line, alpha);
+            DrawBody(sb, node, x, body.Y - scroll, wrapW, line, alpha, body);
 
             sb.End();
             sb.GraphicsDevice.ScissorRectangle = prevScissor;
@@ -616,9 +617,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             }
         }
 
-        /// <summary>正文：描述 → 目标 → 奖励</summary>
+        /// <summary>正文：描述 → 目标 → 奖励。clip 是正文可见区，物件悬停只认落在这里面的鼠标</summary>
         private void DrawBody(SpriteBatch sb, QuestNode node, float x, float y, float wrapW,
-            float line, float alpha) {
+            float line, float alpha, Rectangle clip) {
             string desc = node.DetailedDescription?.Value ?? node.Description?.Value;
             if (!string.IsNullOrEmpty(desc)) {
                 foreach (string row in ChroniclePen.Wrap(Font, desc, wrapW, BodyScale)) {
@@ -634,7 +635,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
                     new Vector2(x, y), ChroniclePalette.Ink, SectionScale, alpha);
                 y += line * SectionScale + 10f;
                 foreach (var objective in node.Objectives) {
-                    y = DrawObjectiveRow(sb, objective, x, y, wrapW, line, alpha);
+                    y = DrawObjectiveRow(sb, objective, x, y, wrapW, line, alpha, clip);
                 }
             }
 
@@ -642,16 +643,19 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
                 ChroniclePen.Ink(sb, Font, QuestLog.RewardText?.Value ?? string.Empty,
                     new Vector2(x, y), ChroniclePalette.Ink, SectionScale, alpha);
                 y += line * SectionScale + 12f;
-                DrawRewards(sb, node, x, y, alpha);
+                DrawRewards(sb, node, x, y, alpha, clip);
             }
         }
 
+        //目标句尾物件小图的边长；行高 line*BodyScale≈23px，20 刚好嵌在行内不顶行距
+        private const float ObjectiveGlyphBox = 20f;
+
         /// <summary>
         /// 一条目标：句首一记短划，完成的划掉并补一记勾。<br/>
-        /// 进度数字压在右缘，不做条形进度
+        /// 目标是物件的，句尾跟一枚小图可悬停看说明；进度数字压在右缘，不做条形进度
         /// </summary>
         private float DrawObjectiveRow(SpriteBatch sb, QuestObjective objective, float x, float y,
-            float wrapW, float line, float alpha) {
+            float wrapW, float line, float alpha, Rectangle clip) {
             string text = objective.GetDisplayText();
             bool done = objective.IsCompleted;
             Color ink = done ? ChroniclePalette.InkFaint : ChroniclePalette.InkMute;
@@ -664,54 +668,114 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             float textX = x + 16f;
             ChroniclePen.Ink(sb, Font, text, new Vector2(textX, y), ink, BodyScale, alpha);
             float textW = Font.MeasureString(text ?? string.Empty).X * BodyScale;
+            float mid = y + line * BodyScale * 0.52f;
+
+            //右缘进度先落位，句尾物件图挤不进它左边就不画，不许两样叠在一起
+            float progressLeft = x + wrapW;
+            if (!done && objective.RequiredProgress > 1) {
+                string progress = $"{objective.CurrentProgress}/{objective.RequiredProgress}";
+                float pw = Font.MeasureString(progress).X * 0.78f;
+                progressLeft = x + wrapW - pw;
+                ChroniclePen.Ink(sb, Font, progress, new Vector2(progressLeft, y + 1f),
+                    ChroniclePalette.GoldDeep, 0.78f, alpha * 0.95f);
+            }
+
+            if (objective.TargetItemID > 0) {
+                float glyphLeft = textX + textW + 8f;
+                if (glyphLeft + ObjectiveGlyphBox <= progressLeft - 6f) {
+                    Vector2 center = new(glyphLeft + ObjectiveGlyphBox * 0.5f, mid);
+                    //做完的图随字一起褪，但不做成剪影，还得认得出是哪样东西
+                    Color tint = Color.Lerp(Color.White, ChroniclePalette.Paper, done ? 0.4f : 0.12f);
+                    bool hovered = GlyphHovered(center, ObjectiveGlyphBox, clip);
+                    if (hovered) {
+                        ChroniclePen.CircleMark(sb, center, ObjectiveGlyphBox * 0.78f, ChroniclePalette.Gold,
+                            alpha * 0.9f, objective.TargetItemID);
+                    }
+                    DrawItemGlyph(sb, objective.TargetItemID, center, ObjectiveGlyphBox, tint, alpha);
+                    if (hovered) {
+                        SetHoverItem(objective.TargetItemID);
+                    }
+                }
+            }
 
             if (done) {
                 //划掉：一道略斜的墨线穿过，末端翘一点
-                float mid = y + line * BodyScale * 0.52f;
                 ChroniclePen.Line(sb, new Vector2(textX - 2f, mid + 1f),
                     new Vector2(textX + textW + 3f, mid - 1.5f), 1.3f, ChroniclePalette.Ink, alpha * 0.55f);
-            }
-            else if (objective.RequiredProgress > 1) {
-                string progress = $"{objective.CurrentProgress}/{objective.RequiredProgress}";
-                float pw = Font.MeasureString(progress).X * 0.78f;
-                ChroniclePen.Ink(sb, Font, progress, new Vector2(x + wrapW - pw, y + 1f),
-                    ChroniclePalette.GoldDeep, 0.78f, alpha * 0.95f);
             }
 
             return y + line * BodyScale + 8f;
         }
 
-        /// <summary>奖励：物件躺在浅凿的窝里，不是描边格子</summary>
-        private static void DrawRewards(SpriteBatch sb, QuestNode node, float x, float y, float alpha) {
+        /// <summary>奖励：物件躺在浅凿的窝里，不是描边格子；悬停窝缘转金并出物品说明</summary>
+        private static void DrawRewards(SpriteBatch sb, QuestNode node, float x, float y, float alpha,
+            Rectangle clip) {
             const float Cell = 40f;
+            const float Well = 16f;
             for (int i = 0; i < node.Rewards.Count; i++) {
                 QuestReward reward = node.Rewards[i];
                 int col = i % 4;
                 int row = i / 4;
                 Vector2 center = new(x + 20f + col * Cell, y + 16f + row * 44f);
 
-                ChroniclePen.NodeWell(sb, center, 16f,
-                    reward.Claimed ? ChroniclePalette.InkFaint : ChroniclePalette.Ink, alpha, 1.3f);
-
-                Main.instance.LoadItem(reward.ItemType);
-                Texture2D tex = TextureAssets.Item[reward.ItemType]?.Value;
-                if (tex != null) {
-                    Rectangle frame = Main.itemAnimations[reward.ItemType] != null
-                        ? Main.itemAnimations[reward.ItemType].GetFrame(tex)
-                        : tex.Frame();
-                    float scale = 1f;
-                    if (frame.Width > 22 || frame.Height > 22) {
-                        scale = 22f / Math.Max(frame.Width, frame.Height);
-                    }
-                    Color tint = reward.Claimed ? ChroniclePalette.InkFaint * 0.8f : Color.White;
-                    sb.Draw(tex, center, frame, tint * alpha, 0f, frame.Size() / 2f, scale,
-                        SpriteEffects.None, 0f);
+                bool hovered = GlyphHovered(center, Well * 2f, clip);
+                Color ring = reward.Claimed ? ChroniclePalette.InkFaint : ChroniclePalette.Ink;
+                if (hovered) {
+                    ring = ChroniclePalette.Gold;
                 }
+                ChroniclePen.NodeWell(sb, center, Well, ring, alpha, hovered ? 1.7f : 1.3f);
+
+                Color tint = reward.Claimed ? ChroniclePalette.InkFaint * 0.8f : Color.White;
+                DrawItemGlyph(sb, reward.ItemType, center, 22f, tint, alpha);
 
                 if (reward.Amount > 1) {
                     ChroniclePen.Ink(sb, Font, $"x{reward.Amount}",
                         center + new Vector2(6f, 6f), ChroniclePalette.GoldDeep, 0.74f, alpha);
                 }
+
+                if (hovered) {
+                    SetHoverItem(reward.ItemType);
+                }
+            }
+        }
+
+        /// <summary>一枚物件图，长边缩进 box 内，居中于 center</summary>
+        private static void DrawItemGlyph(SpriteBatch sb, int itemType, Vector2 center, float box,
+            Color tint, float alpha) {
+            Main.instance.LoadItem(itemType);
+            Texture2D tex = TextureAssets.Item[itemType]?.Value;
+            if (tex == null) {
+                return;
+            }
+            Rectangle frame = Main.itemAnimations[itemType] != null
+                ? Main.itemAnimations[itemType].GetFrame(tex)
+                : tex.Frame();
+            float scale = 1f;
+            if (frame.Width > box || frame.Height > box) {
+                scale = box / Math.Max(frame.Width, frame.Height);
+            }
+            sb.Draw(tex, center, frame, tint * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f);
+        }
+
+        /// <summary>
+        /// 鼠标是否压在 center 周围 box 见方（外扩 2px）的物件图上。<br/>
+        /// 正文随滚动走，滚出可见区的图虽然还在算位却已被裁掉，故必须同时落在 clip 里
+        /// </summary>
+        private static bool GlyphHovered(Vector2 center, float box, Rectangle clip) {
+            Point mouse = Main.MouseScreen.ToPoint();
+            if (!clip.Contains(mouse)) {
+                return false;
+            }
+            int half = (int)(box * 0.5f) + 2;
+            Rectangle hit = new((int)center.X - half, (int)center.Y - half, half * 2, half * 2);
+            return hit.Contains(mouse);
+        }
+
+        /// <summary>挂上原版物品说明框，与其余样式的详情页同一套做法</summary>
+        private static void SetHoverItem(int itemType) {
+            if (itemType > ItemID.None && ContentSamples.ItemsByType.TryGetValue(itemType, out Item item)) {
+                Main.HoverItem = item.Clone();
+                Main.hoverItemName = item.Name;
             }
         }
 
