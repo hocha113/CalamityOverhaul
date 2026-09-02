@@ -43,3 +43,4 @@ GameModeText: {
 }
 
 SporeshineAmbience.DazeDeathReason: "{0} s'est assoupi au fond de la brume de spores"
+// WoodsongBrambleSystem.BrambleDeathReason: "{0} stepped into the forest bramble"

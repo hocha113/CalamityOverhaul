@@ -47,3 +47,4 @@ GameModeText: {
 }
 
 SporeshineAmbience.DazeDeathReason: "{0} уснул в глубине спорового тумана"
+// WoodsongBrambleSystem.BrambleDeathReason: "{0} stepped into the forest bramble"

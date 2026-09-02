@@ -161,16 +161,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             return KikasaBossLedger.Contains(identityType);
         }
 
-        //演出收尾类 boss 恒拒名单：沉溺完成是"直接移除"（不走 CheckDead），月总的死亡
-        //演出与事件收尾会被整段跳过，残部与全局状态悬置疑似软锁（反馈三·#87）
-        private static readonly HashSet<int> ceremonialBlocked = [
-            NPCID.MoonLordCore, NPCID.MoonLordHand, NPCID.MoonLordHead,
-        ];
-
-        /// <summary>沉溺被门槛拦下：BOSS 级且未击败，这一按该是鞭笞不是拖拽；
-        /// 死亡演出承担事件收尾的 boss（月总）已击败也恒拒，一律转鞭笞</summary>
+        /// <summary>沉溺被门槛拦下：BOSS 级且未击败，这一按该是鞭笞不是拖拽。
+        /// 月总已击败后可沉，完成收尾见 <see cref="KikasaMoonLordDrown"/></summary>
         internal static bool DrownBlocked(NPC npc)
-            => IsBossLevel(npc) && (!IsDefeated(npc) || ceremonialBlocked.Contains(npc.type));
+            => IsBossLevel(npc) && !IsDefeated(npc);
     }
 
     /// <summary>

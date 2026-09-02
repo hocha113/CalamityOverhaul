@@ -1,22 +1,27 @@
 ﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
 {
     /// <summary>
-    /// 「荆棘丛」权威端布点系统：残酷模式的纯净森林里，战斗打响时在玩家与来敌之间
-    /// 零星拱出可破坏的荆棘丛，封走位不封生路。纯客户端的 <see cref="WoodsongAmbience"/>
-    /// 不碰判定，危害层单独走权威端（镜像 RotmireVentSystem 的门控与伤害锚定）
+    /// 「荆棘丛」权威端布点：残酷纯净森林、战斗打响时在玩家与来敌之间
+    /// 拱出可破坏灌木，封走位不封生路。氛围层 <see cref="WoodsongAmbience"/> 不碰判定
     /// </summary>
-    internal class WoodsongBrambleSystem : ModSystem
+    internal class WoodsongBrambleSystem : ModSystem, ILocalizedModType
     {
+        public string LocalizationCategory => "GameModes";
+
+        /// <summary>踩进荆棘的死亡句（{0}=玩家名）</summary>
+        internal static LocalizedText BrambleDeathReason { get; private set; }
+
         /// <summary>布点资格重扫间隔（帧）</summary>
         private const int ScanInterval = 30;
         /// <summary>触发后的每玩家冷却（帧）</summary>
@@ -30,11 +35,20 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         /// <summary>沿敌向的落位距离窗口（像素）</summary>
         private const float PlaceMin = 120f;
         private const float PlaceMax = 250f;
+        /// <summary>城镇安宁半径（60 格）</summary>
+        private const float TownPeaceRange = 960f;
         /// <summary>伤害 = 原版森林标兵接触伤 × 此系数 × 0.5</summary>
         private const float DamageFrac = 0.8f;
+        /// <summary>踩上弹出，避免站在盒子里连吃</summary>
+        internal const float PlaceKnockback = 4.5f;
 
         private static readonly int[] cooldowns = new int[Main.maxPlayers];
         private static int scanTimer;
+
+        public override void SetStaticDefaults() {
+            BrambleDeathReason = this.GetLocalization(nameof(BrambleDeathReason),
+                () => "{0} stepped into the forest bramble");
+        }
 
         public override void ClearWorld() {
             Array.Clear(cooldowns);
@@ -57,7 +71,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                     cooldowns[idx] -= ScanInterval;
                     continue;
                 }
-                if (player.dead || !WoodsongAmbience.LocalInPureForest(player)) {
+                if (player.dead || !WoodsongAmbience.LocalInPureForest(player) || NearTown(player.Center)) {
                     continue;
                 }
                 NPC threat = FindThreat(player);
@@ -71,6 +85,16 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                     cooldowns[idx] = PlayerCooldown + Main.rand.Next(300);
                 }
             }
+        }
+
+        /// <summary>960px 内有存活城镇 NPC 则不投放</summary>
+        internal static bool NearTown(Vector2 pos) {
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (npc.townNPC && npc.life > 0 && npc.Distance(pos) < TownPeaceRange) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>最近的锁定该玩家的敌对个体；无战斗则 null</summary>
@@ -113,9 +137,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             if (!WoodsongAmbience.TryFindOutdoorSurfaceFor(player, tileX, out int surfY)) {
                 return false;
             }
-            Vector2 pos = new(tileX * 16f + 8f, surfY * 16f - 14f);
+            Vector2 pos = new(tileX * 16f + 8f, surfY * 16f - WoodsongBrambleProj.HitHeight * 0.5f);
             Projectile.NewProjectile(new EntitySource_WorldEvent(), pos, Vector2.Zero,
-                ModContent.ProjectileType<WoodsongBrambleProj>(), AnchorDamage(DamageFrac), 0f, Main.myPlayer);
+                ModContent.ProjectileType<WoodsongBrambleProj>(), AnchorDamage(DamageFrac),
+                PlaceKnockback, Main.myPlayer);
             return true;
         }
 
@@ -134,18 +159,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
     }
 
     /// <summary>
-    /// 可破坏荆棘丛：40 帧无害拱出（伤害窗=可见窗），落位后静止不追踪；
+    /// 可破坏落叶灌木：48 帧无害拱出（伤害窗=可见窗），落位后静止不追踪；
     /// 被玩家攻击命中 3 拍即碎（近战贴身挥击同样计数），寿命尽头自枯
     /// </summary>
     internal class WoodsongBrambleProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> Extra_98 = null;
-
-        /// <summary>无害拱出帧（公平契约 ≥30，档位不缩短）</summary>
-        internal const int SproutFrames = 40;
+        /// <summary>无害拱出帧（公平契约 ≥45，档位不缩短）</summary>
+        internal const int SproutFrames = 48;
         private const int ActiveFrames = 540;
         private const int FadeFrames = 24;
         /// <summary>破坏所需命中拍数：砍三下就碎</summary>
@@ -153,11 +175,12 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         /// <summary>命中拍最小间隔（帧），防同一发弹幕连帧连计</summary>
         private const int HitTickGap = 8;
         /// <summary>近战挥击计拍的贴身距离（像素）</summary>
-        private const float MeleeReach = 78f;
+        private const float MeleeReach = 96f;
+        internal const int HitWidth = 80;
+        internal const int HitHeight = 52;
 
-        //真 alpha 暗绿外壳 + 苔色亮芯（M5 双层配方，暗层必须 A>0）
-        private static readonly Color ThornDark = new(30, 44, 24);
-        private static readonly Color MossCore = new(96, 128, 62);
+        private const int LeafCols = 32;
+        private const int LeafRows = 8;
 
         private int Age => SproutFrames + ActiveFrames + FadeFrames - Projectile.timeLeft;
         private float Growth => MathHelper.Clamp(Age / (float)SproutFrames, 0f, 1f);
@@ -168,14 +191,15 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         private int hitGapTimer;
 
         public override void SetDefaults() {
-            Projectile.width = 54;
-            Projectile.height = 26;
+            Projectile.width = HitWidth;
+            Projectile.height = HitHeight;
             Projectile.hostile = true;
             Projectile.friendly = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
             Projectile.timeLeft = SproutFrames + ActiveFrames + FadeFrames;
+            Projectile.knockBack = WoodsongBrambleSystem.PlaceKnockback;
             Projectile.netImportant = true;
         }
 
@@ -184,12 +208,25 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
 
         public override bool ShouldUpdatePosition() => false;
 
+        public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers) {
+            modifiers.HitDirectionOverride = target.Center.X >= Projectile.Center.X ? 1 : -1;
+        }
+
         public override void AI() {
-            //拱出期的破土绿尘（纯客户端表现）
-            if (!Main.dedServ && Growth < 1f && Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height,
-                    DustID.GrassBlades, 0f, -1.2f, 100, default, 0.9f);
-                dust.noGravity = true;
+            if (!Main.dedServ) {
+                if (Age == 1) {
+                    SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.42f, Pitch = -0.18f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.28f, Pitch = -0.45f, MaxInstances = 2 }, Projectile.Center);
+                }
+                else if (Age == SproutFrames) {
+                    SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.34f, Pitch = -0.22f, MaxInstances = 2 }, Projectile.Center);
+                }
+                if (Growth < 1f && Main.rand.NextBool(2)) {
+                    Dust dust = Dust.NewDustDirect(
+                        new Vector2(Projectile.position.X, Projectile.Bottom.Y - 8f),
+                        Projectile.width, 8, DustID.GrassBlades, 0f, -1.2f, 100, default, 0.9f);
+                    dust.noGravity = true;
+                }
             }
 
             //破坏判定只在权威端；碎裂走 Kill 原生同步
@@ -247,37 +284,87 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = Extra_98?.Value;
-            if (tex == null) {
-                return false;
-            }
-            Vector2 origin = tex.Size() * 0.5f;
-            Vector2 basePos = Projectile.Center - Main.screenPosition;
-            //拱出缓出曲线 + 末期枯萎收缩
             float grow = 1f - (1f - Growth) * (1f - Growth);
             float fade = Fading ? Projectile.timeLeft / (float)FadeFrames : 1f;
-            float sway = MathF.Sin(Main.GlobalTimeWrappedHourly * 1.6f + Projectile.whoAmI) * 0.05f;
-
-            //三丛主体：暗绿外壳（A>0 遮挡层）+ 苔色亮芯
-            Span<Vector2> lobes = [new(-15f, 3f), new(0f, -4f), new(15f, 4f)];
-            Span<float> lobeScale = [0.17f, 0.21f, 0.16f];
-            for (int i = 0; i < lobes.Length; i++) {
-                Vector2 pos = basePos + lobes[i] * grow;
-                float rot = sway * (i - 1);
-                Vector2 scale = new Vector2(lobeScale[i], lobeScale[i] * 0.72f) * grow;
-                Main.EntitySpriteDraw(tex, pos, null, ThornDark * (0.95f * fade), rot,
-                    origin, scale * 1.18f, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(tex, pos, null, MossCore with { A = 0 } * (0.5f * fade), rot,
-                    origin, scale * 0.66f, SpriteEffects.None, 0);
+            if (fade < 0.02f) {
+                return false;
             }
-            //棘刺：细长暗签自丛体斜出（同为 A>0 暗层）
-            for (int i = 0; i < 5; i++) {
-                float ang = -MathHelper.PiOver2 + (i - 2) * 0.45f + sway;
-                Vector2 pos = basePos + new Vector2((i - 2) * 9f, -4f) * grow;
-                Main.EntitySpriteDraw(tex, pos, null, ThornDark * (0.9f * fade), ang,
-                    origin, new Vector2(0.028f, 0.14f) * grow, SpriteEffects.None, 0);
+            float visual = grow * (0.72f + 0.28f * fade);
+            float sway = MathF.Sin(Main.GlobalTimeWrappedHourly * 1.35f + Projectile.identity) * 0.05f
+                + Main.windSpeedCurrent * 0.10f;
+            Vector2 ground = new Vector2(Projectile.Center.X, Projectile.Bottom.Y) - Main.screenPosition;
+            Color lit = lightColor * fade;
+            Color bark = Color.Lerp(lit, new Color(68, 52, 34), 0.55f);
+            Color needle = Color.Lerp(lit, new Color(44, 66, 34), 0.45f);
+            int seed = Projectile.identity;
+
+            Main.instance.LoadProjectile(ProjectileID.NettleBurstLeft);
+            Main.instance.LoadProjectile(ProjectileID.NettleBurstEnd);
+            Main.instance.LoadGore(GoreID.TreeLeaf_Normal);
+            Texture2D stemTex = TextureAssets.Projectile[ProjectileID.NettleBurstLeft].Value;
+            Texture2D tipTex = TextureAssets.Projectile[ProjectileID.NettleBurstEnd].Value;
+            Texture2D leafTex = TextureAssets.Gore[GoreID.TreeLeaf_Normal].Value;
+            if (stemTex == null || tipTex == null || leafTex == null) {
+                return false;
+            }
+
+            Rectangle stemFrame = stemTex.Frame(1, Math.Max(1, Main.projFrames[ProjectileID.NettleBurstLeft]), 0, 0);
+            Rectangle tipFrame = tipTex.Frame(1, Math.Max(1, Main.projFrames[ProjectileID.NettleBurstEnd]), 0, 0);
+            Vector2 stemOrigin = new(stemFrame.Width * 0.5f, stemFrame.Height);
+            Vector2 tipOrigin = new(tipFrame.Width * 0.5f, tipFrame.Height);
+
+            for (int i = 0; i < 6; i++) {
+                float t = Mix(seed, i);
+                float ang = -MathHelper.PiOver2 + MathHelper.Lerp(-0.85f, 0.85f, i / 5f)
+                    + (t - 0.5f) * 0.16f + sway;
+                float len = MathHelper.Lerp(0.70f, 1.06f, Mix(seed, i + 17));
+                Main.EntitySpriteDraw(stemTex, ground, stemFrame, bark, ang + MathHelper.PiOver2,
+                    stemOrigin, new Vector2(0.88f, visual * len), SpriteEffects.None, 0);
+            }
+
+            for (int i = 0; i < 7; i++) {
+                float t = Mix(seed, i + 40);
+                float ang = -MathHelper.PiOver2 + MathHelper.Lerp(-1.05f, 1.05f, i / 6f)
+                    + (t - 0.5f) * 0.20f + sway * 1.15f;
+                float len = MathHelper.Lerp(0.55f, 0.92f, Mix(seed, i + 61));
+                Main.EntitySpriteDraw(tipTex, ground, tipFrame, needle, ang + MathHelper.PiOver2,
+                    tipOrigin, new Vector2(0.82f, visual * len), SpriteEffects.None, 0);
+            }
+
+            for (int i = 0; i < 8; i++) {
+                float t = Mix(seed, i + 90);
+                float ang = -MathHelper.PiOver2 + MathHelper.Lerp(-0.58f, 0.58f, i / 7f)
+                    + (t - 0.5f) * 0.18f + sway;
+                float rise = MathHelper.Lerp(22f, 42f, Mix(seed, i + 110)) * visual;
+                Vector2 pos = ground + ang.ToRotationVector2() * rise;
+                int row = (seed + i * 3) & (LeafRows - 1);
+                Rectangle src = leafTex.Frame(LeafCols, LeafRows, 0, row, -2, -2);
+                SpriteEffects flip = Mix(seed, i + 130) > 0.5f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                Main.EntitySpriteDraw(leafTex, pos, src, lit, (t - 0.5f) * 0.7f + sway * 1.6f,
+                    src.Size() * 0.5f, MathHelper.Lerp(0.85f, 1.15f, Mix(seed, i + 150)) * visual,
+                    flip, 0);
             }
             return false;
+        }
+
+        private static float Mix(int seed, int i) {
+            uint h = (uint)(seed * 374761393 + i * 668265263);
+            h ^= h >> 13;
+            h *= 1274126177u;
+            return (h & 0xFFFF) / 65535f;
+        }
+    }
+
+    internal class WoodsongBramblePlayer : ModPlayer
+    {
+        public override bool PreKill(double damage, int hitDirection, bool pvp,
+            ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {
+            if (damageSource.SourceProjectileType == ModContent.ProjectileType<WoodsongBrambleProj>()
+                && WoodsongBrambleSystem.BrambleDeathReason != null) {
+                damageSource = PlayerDeathReason.ByCustomReason(
+                    WoodsongBrambleSystem.BrambleDeathReason.ToNetworkText(Player.name));
+            }
+            return true;
         }
     }
 }

@@ -83,11 +83,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// 这里只留技术性守卫（正被放逐或已在沉溺中的目标不能被第二只手抓）；
         /// BOSS 未击败的门槛不在资格里，在入口分流（<see cref="KikasaBossGate.DrownBlocked"/>，
         /// 命中者转 <see cref="KikasaScourge"/> 鞭笞），城镇与普通生物照旧全放开。
-        /// 不可伤害体与事件核心（撒旦军团传送门/水晶等）除外——拖走事件门整场事件卡死（反馈六·#114）
+        /// 不可伤害体与事件核心（撒旦军团传送门/水晶等）除外——拖走事件门整场事件卡死（反馈六·#114）。
+        /// 已击败月总部件的战斗无敌窗不挡抓取，见 <see cref="KikasaMoonLordDrown.IsDefeatedPart"/>。
         /// </summary>
         public static bool IsEligibleTarget(NPC npc)
             => npc?.active == true && npc.lifeMax > 0
-            && !npc.dontTakeDamage
+            && (!npc.dontTakeDamage || KikasaMoonLordDrown.IsDefeatedPart(npc))
             && npc.type != NPCID.DD2LanePortal && npc.type != NPCID.DD2EterniaCrystal
             && !CyberBanish.IsBanishing(npc.whoAmI)
             && !IsDrowningAuthority(npc.whoAmI);
@@ -426,11 +427,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             };
             activation.Targets.Add(new DrownTarget { Identity = primary, Pin = target.position });
 
-            //蠕虫等整组一起封印；演出全套只给主段，组员在拖入拍一起下沉
-            NpcGroupHelper.CollectGroup(target, groupBuffer);
+            //蠕虫等整组一起封印；月总按核心索引收齐（含无敌残口），组员不再走资格过滤
+            bool moonFamily = KikasaMoonLordDrown.IsPart(target.type);
+            if (moonFamily) {
+                KikasaMoonLordDrown.CollectFamily(target, groupBuffer);
+            }
+            else {
+                NpcGroupHelper.CollectGroup(target, groupBuffer);
+            }
             for (int i = 0; i < groupBuffer.Count; i++) {
                 NPC member = groupBuffer[i];
-                if (member == null || member == target || !IsEligibleTarget(member)) {
+                if (member == null || member == target) {
+                    continue;
+                }
+                if (!moonFamily && !IsEligibleTarget(member)) {
+                    continue;
+                }
+                if (moonFamily && IsDrowningAuthority(member.whoAmI)) {
                     continue;
                 }
                 if (NetworkNPCIdentity.TryCapture(member, out NetworkNPCIdentity id)) {
@@ -546,6 +559,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         //抓握节拍：真身移除，此后各端由鬼影接管
 
         private static void CompleteActivation(DrownActivation activation) {
+            int moonCoreWho = -1;
+            if (KikasaMoonLordDrown.IsPart(activation.Targets[0].Identity.Type)
+                && activation.Targets[0].Identity.TryResolve(out NPC primaryNpc)) {
+                moonCoreWho = KikasaMoonLordDrown.CoreIndexOf(primaryNpc);
+            }
+
             for (int j = 0; j < activation.Targets.Count; j++) {
                 if (!activation.Targets[j].Identity.TryResolve(out NPC npc)) {
                     continue;
@@ -555,6 +574,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 if (Main.netMode == NetmodeID.Server) {
                     NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
                 }
+            }
+            if (moonCoreWho >= 0) {
+                KikasaMoonLordDrown.SweepRemainders(moonCoreWho);
             }
             cooldowns[activation.OwnerWho] = CooldownFrames;
 

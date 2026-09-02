@@ -15,8 +15,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
     /// 「暮雾」夜间贴地薄雾（绘制在 <see cref="WoodsongMistRender"/>），雾中远狼嚎与枝裂声，只有声与雾，绝不生成敌怪；<br/>
     /// 「引路鬼火」夜雾中低频亮起的中性冷白鬼火，缓缓飘向最近洞口或开阔地（<see cref="PRT_WoodsongWisp"/>）；<br/>
     /// 「惊鸦」浓雾夜树冠黑影掠动+鸦群惊飞（<see cref="PRT_WoodsongRaven"/>）。<br/>
-    /// 全部为本地客户端演出量（镜像 GhostRainAmbience/OldNetAmbience 的生命周期管理），
-    /// 无伤害机制、无网络包；档位（EffectiveTier）只调雾浓度上限与鬼火频率。<br/>
+    /// 氛围层为本地客户端演出（镜像 GhostRainAmbience/OldNetAmbience 的生命周期管理，无网络包）；
+    /// 战斗中的荆棘丛由 <see cref="WoodsongBrambleSystem"/> 权威端投放，不在本类判定。
+    /// 档位（EffectiveTier）只调雾浓度上限与鬼火频率。<br/>
     /// Boss 战中视觉氛围以低 Presence 弱化保留，一次性环境声与新排演出全部冻结，
     /// 只留开场一次「惊鸦报敌」（见 <see cref="UpdateThreatWarning"/>）。
     /// </summary>

@@ -47,3 +47,4 @@ GameModeText: {
 }
 
 SporeshineAmbience.DazeDeathReason: "{0} ist tief im Sporennebel betrunken umgesunken"
+// WoodsongBrambleSystem.BrambleDeathReason: "{0} stepped into the forest bramble"
