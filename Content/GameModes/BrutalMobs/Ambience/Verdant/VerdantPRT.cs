@@ -56,7 +56,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color, Rotation,
+            Color draw = Color.MultiplyRGB(Lighting.GetColor(Position.ToTileCoordinates()));
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, draw, Rotation,
                 tex.Size() * 0.5f, Scale, SpriteEffects.None, 0f);
             return false;
         }

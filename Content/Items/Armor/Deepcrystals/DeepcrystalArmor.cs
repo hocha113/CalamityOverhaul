@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Items.Armor.Deepcrystals
 
         public override void SetDefaults() {
             Item.width = 26;
-            Item.height = 24;
+            Item.height = 28;
             Item.value = Item.sellPrice(0, 3);
             Item.rare = ItemRarityID.Lime;
             Item.defense = 7;

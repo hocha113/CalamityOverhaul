@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant.Project
                 FogRadius * 0.92f, Tier, gapAngle);
         }
 
-        /// <summary>客户端粒子与相位音（预算：凝聚 ≤0.5 粒/帧，浓雾 ≤0.2 粒/帧）</summary>
+        /// <summary>客户端雾丝点缀与相位音（不当第二层雾体；环境光在 PRT 绘制时乘）</summary>
         private void UpdateVisuals(int elapsed) {
             if (elapsed == GatherFrames) {
                 //凝定拍：雾落成形
@@ -161,42 +161,42 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant.Project
             }
 
             if (elapsed < GatherFrames) {
-                //凝聚：雾丝自外缘向心聚拢（视觉预告通道）
-                if (elapsed % 2 == 0) {
+                //凝聚：雾丝自外缘向心聚拢（点缀，不当第二层雾体）
+                if (elapsed % 8 == 0) {
                     float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                     float r = FogRadius * Main.rand.NextFloat(1.05f, 1.45f);
                     Vector2 pos = Projectile.Center + ang.ToRotationVector2() * r;
                     Vector2 inward = (Projectile.Center - pos).SafeNormalize(Vector2.Zero)
                         * Main.rand.NextFloat(1.4f, 2.4f);
                     PRTLoader.NewParticle<PRT_VerdantMist>(pos, inward,
-                        new Color(156, 172, 146), Main.rand.NextFloat(0.3f, 0.5f))?.Configure(46);
+                        new Color(118, 132, 112), Main.rand.NextFloat(0.18f, 0.30f))?.Configure(46);
                 }
                 return;
             }
 
             if (elapsed < GatherFrames + DenseFrames) {
                 //浓雾：内部缓涡
-                if (elapsed % 5 == 0) {
+                if (elapsed % 12 == 0) {
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(FogRadius * 0.85f, FogRadius * 0.7f);
                     PRTLoader.NewParticle<PRT_VerdantMist>(pos,
                         new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), -Main.rand.NextFloat(0.05f, 0.25f)),
-                        new Color(150, 166, 142), Main.rand.NextFloat(0.42f, 0.68f))?.Configure(120);
+                        new Color(112, 128, 108), Main.rand.NextFloat(0.20f, 0.32f))?.Configure(120);
                 }
                 return;
             }
 
             //消散：雾向外剥离
-            if (elapsed % 3 == 0) {
+            if (elapsed % 8 == 0) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 pos = Projectile.Center + ang.ToRotationVector2() * FogRadius * Main.rand.NextFloat(0.3f, 0.8f);
                 Vector2 outward = (pos - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.6f, 1.2f);
                 PRTLoader.NewParticle<PRT_VerdantMist>(pos, outward,
-                    new Color(150, 166, 142), Main.rand.NextFloat(0.3f, 0.5f))?.Configure(60);
+                    new Color(112, 128, 108), Main.rand.NextFloat(0.16f, 0.26f))?.Configure(60);
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //淡底衬（画在实体层之下，人走进雾里有前后夹层感；主体遮蔽在渲染层）
+            //单张暗纱底衬（人走进雾里有前后夹层感）；主体遮蔽在密度场
             float density = Density;
             if (density < 0.03f) {
                 return false;
@@ -205,15 +205,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant.Project
             if (fog == null) {
                 return false;
             }
-            Color veil = (Main.dayTime ? new Color(146, 162, 138) : new Color(112, 128, 110)) * (0.16f * density);
+            Color veil = new Color(72, 84, 70).MultiplyRGB(lightColor) * (0.10f * density);
             float px = FogRadius * 1.7f;
             float scale = px / (fog.Width * 0.8f);
-            for (int i = 0; i < 3; i++) {
-                float t = Main.GlobalTimeWrappedHourly * 0.04f + Projectile.identity * 1.7f + i * 2.1f;
-                Vector2 off = new(MathF.Sin(t) * FogRadius * 0.28f, MathF.Cos(t * 0.8f) * FogRadius * 0.14f);
-                Main.EntitySpriteDraw(fog, Projectile.Center + off - Main.screenPosition, null,
-                    veil, t * 0.3f, fog.Size() / 2f, scale * (0.8f + 0.15f * i), SpriteEffects.None, 0);
-            }
+            Main.EntitySpriteDraw(fog, Projectile.Center - Main.screenPosition, null,
+                veil, 0f, fog.Size() / 2f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

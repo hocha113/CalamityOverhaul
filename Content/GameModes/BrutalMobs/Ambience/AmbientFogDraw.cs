@@ -97,14 +97,84 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience
         }
 
         private static readonly float[] lightBuf = new float[8];
+        private const int LightHoldSlots = 6;
+        private static readonly float[][] lightHold = new float[LightHoldSlots][];
+        private static readonly Vector2[] lightKeys = new Vector2[LightHoldSlots];
+        private static readonly uint[] lightTicks = new uint[LightHoldSlots];
+        private static uint lightClock;
 
-        /// <summary>沿长轴 8 点采样环境光系数（月照泛白，全黑沉没，保下限）</summary>
+        /// <summary>沿长轴 8 点采样环境光系数（月照泛白，全黑沉没，保下限）。
+        /// 液体格改邻格，避免水边雾被水面高光扯出亮带；同锚点跨帧短时平滑挡光照台阶</summary>
         private static void FillLight(Vector2 a, Vector2 b, float floor) {
             for (int i = 0; i < 8; i++) {
-                Vector2 p = Vector2.Lerp(a, b, i / 7f);
-                Color c = Lighting.GetColor((int)(p.X / 16f), (int)(p.Y / 16f));
-                lightBuf[i] = floor + (1f - floor) * ((c.R + c.G + c.B) / 765f);
+                lightBuf[i] = SampleLightCoeff(Vector2.Lerp(a, b, i / 7f), floor);
             }
+            SmoothLight(Vector2.Lerp(a, b, 0.5f));
+        }
+
+        private static float SampleLightCoeff(Vector2 world, float floor) {
+            int x = (int)(world.X / 16f);
+            int y = (int)(world.Y / 16f);
+            if (TileHasLiquid(x, y)) {
+                if (!TileHasLiquid(x, y - 1)) {
+                    y--;
+                }
+                else if (!TileHasLiquid(x - 1, y)) {
+                    x--;
+                }
+                else if (!TileHasLiquid(x + 1, y)) {
+                    x++;
+                }
+                else if (!TileHasLiquid(x, y + 1)) {
+                    y++;
+                }
+            }
+            Color c = Lighting.GetColor(x, y);
+            return floor + (1f - floor) * ((c.R + c.G + c.B) / 765f);
+        }
+
+        private static bool TileHasLiquid(int x, int y) {
+            if (!WorldGen.InWorld(x, y, 2)) {
+                return false;
+            }
+            return Framing.GetTileSafely(x, y).LiquidAmount > 0;
+        }
+
+        /// <summary>按采样线中点分槽，避免同帧多团雾互相拖光</summary>
+        private static void SmoothLight(Vector2 key) {
+            int slot = -1;
+            float best = 48f * 48f;
+            int oldest = 0;
+            uint oldestTick = uint.MaxValue;
+            for (int s = 0; s < LightHoldSlots; s++) {
+                lightHold[s] ??= new float[8];
+                if (lightTicks[s] != 0) {
+                    float d = Vector2.DistanceSquared(lightKeys[s], key);
+                    if (d < best) {
+                        best = d;
+                        slot = s;
+                    }
+                }
+                if (lightTicks[s] < oldestTick) {
+                    oldestTick = lightTicks[s];
+                    oldest = s;
+                }
+            }
+            if (slot < 0) {
+                slot = oldest;
+                lightHold[slot] ??= new float[8];
+                for (int i = 0; i < 8; i++) {
+                    lightHold[slot][i] = lightBuf[i];
+                }
+            }
+            else {
+                for (int i = 0; i < 8; i++) {
+                    lightBuf[i] = MathHelper.Lerp(lightHold[slot][i], lightBuf[i], 0.28f);
+                    lightHold[slot][i] = lightBuf[i];
+                }
+            }
+            lightKeys[slot] = key;
+            lightTicks[slot] = ++lightClock;
         }
 
         private static void FillLightFlat(float v) {

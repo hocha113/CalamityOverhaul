@@ -93,14 +93,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant
             if (density < 0.02f) {
                 return;
             }
-            Color baseCol = Main.raining ? new Color(134, 148, 134) : new Color(148, 164, 140);
+            Color baseCol = Main.raining ? new Color(78, 90, 80) : new Color(92, 108, 88);
             const float R = VerdantMireFogProj.FogRadius;
 
             var cloud = AmbientFogDraw.PoolSpec.Default;
             cloud.Center = proj.Center;
             cloud.SizePx = new Vector2(R * 2.7f, R * 2.4f);
             cloud.Body = baseCol;
-            cloud.Edge = Color.Lerp(baseCol, new Color(214, 226, 204), 0.45f);
+            cloud.Edge = Color.Lerp(baseCol, new Color(132, 146, 124), 0.35f);
             cloud.MaxAlpha = 0.55f;
             cloud.Density = density;
             cloud.FlowPx = 12f;
