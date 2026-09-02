@@ -186,10 +186,16 @@ namespace CalamityOverhaul.Content.Items.Accessories
         private bool TapWindow(int index)
             => Player.doubleTapCardinalTimer[index] > 0 && Player.doubleTapCardinalTimer[index] < 15;
 
+        /// <summary>本帧能否接住左右双击并起步。仪轨集环纱幕步据此让位，避免空消费闩把冲刺绑死</summary>
+        internal bool CanAcceptDash() {
+            return Equipped && !Player.dead && Player.whoAmI == Main.myPlayer
+                && dashTimer <= 0 && dashCooldown <= 0
+                && !Player.mount.Active && Player.grapCount <= 0 && !Player.pulley
+                && !Player.CCed && !Player.shimmering && !Player.setSolar;
+        }
+
         private void TryStartDash() {
-            if (dashTimer > 0 || dashCooldown > 0
-                || Player.mount.Active || Player.grapCount > 0 || Player.pulley
-                || Player.CCed || Player.shimmering || Player.setSolar) {
+            if (!CanAcceptDash()) {
                 return;
             }
 

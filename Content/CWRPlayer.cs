@@ -134,7 +134,10 @@ namespace CalamityOverhaul.Content
             RideElectricMinRocket = false;
         }
 
-        /// <summary>残酷遗物双击位移技的按方向消费闩，同帧同方向仅首个调用者获得执行权</summary>
+        /// <summary>
+        /// 残酷遗物双击位移技的按方向消费闩，同帧同方向仅首个调用者获得执行权。
+        /// 调用方必须先确认本次会真正执行，失败/让位路径不得预消费——否则后到的赤影冲刺会被空闩卡死
+        /// </summary>
         public bool TryConsumeRelicDoubleTap(int dir) {
             if (relicDoubleTapFrame[dir] == (int)Main.GameUpdateCount) {
                 return false;

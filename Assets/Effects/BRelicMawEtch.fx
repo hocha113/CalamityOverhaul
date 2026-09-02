@@ -6,8 +6,9 @@
 //  + 下淌酸膜水光（低频噪声带下滚增亮）
 //  + 轮廓滴酸（邻域 alpha 四采样找轮廓，下缘加权，酸往下积）
 //  + 酸泡闪点（高分位阈值碎亮点，快闪）
-//采样全数钳进 uUvRect 帧界防精灵表串帧；坐标全笛卡尔无 atan2；无动态分支
-//预乘语义（base.a 乘入着色项），进 AlphaBlend 批
+//采样：coords 落在 uUvRect 内才钳帧界（原版帧表防串帧）；对不上只钳 [0,1]
+//GlobalNPC 只能按 TextureAssets.Npc+npc.frame 猜帧界，灾厄 Boss 常换图，错钳=马赛克
+//坐标全笛卡尔无 atan2；无动态分支；预乘语义进 AlphaBlend 批
 //绑定噪声 PerlinNoise 实测值域 0.227~0.776，阈值一律过 nrm() 归一
 //消费入口 BrutalRelics/EaterOfWorlds/MawCorrosionNPC.cs（PreDraw Immediate 重绘）
 // ============================================================================
@@ -34,14 +35,20 @@ float nrm(float n) {
 }
 
 float4 PSEtch(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0 {
-    //帧内归一坐标：多帧精灵表上图案频率按单帧算
-    float2 fl = (coords - uUvRect.xy) / max(uUvRect.zw - uUvRect.xy, 0.00001);
+    float2 span = max(uUvRect.zw - uUvRect.xy, 0.00001);
+    float2 flGuess = (coords - uUvRect.xy) / span;
+    //半像素内缩让帧缘略越界，放 8% 余量；整精灵对不上猜测帧则 inFrame=0
+    float inFrame = step(-0.08, flGuess.x) * step(flGuess.x, 1.08)
+        * step(-0.08, flGuess.y) * step(flGuess.y, 1.08);
+    float2 fl = lerp(coords, saturate(flGuess), inFrame);
+    float2 clampLo = lerp(float2(0.0, 0.0), uUvRect.xy, inFrame);
+    float2 clampHi = lerp(float2(1.0, 1.0), uUvRect.zw, inFrame);
 
-    //湿膜蠕动：小幅 UV 位移，向下偏置（酸在淌不是在烧），采样钳回帧界
+    //湿膜蠕动：小幅 UV 位移，向下偏置（酸在淌不是在烧）
     float wn0 = tex2D(uNoiseTex, float2(fl.x * 2.2 + uSeed, fl.y * 1.6 - uTime * 0.22)).r;
     float wn1 = tex2D(uNoiseTex, float2(fl.x * 4.6 - uSeed, fl.y * 3.1 - uTime * 0.36)).r;
     float2 wob = float2((wn0 - 0.5) * 1.6 + (wn1 - 0.5) * 0.7, (wn1 - 0.5) * 1.0 + 0.35);
-    float2 suv = clamp(coords + wob * uTexelSize * (1.8 * uEtchT), uUvRect.xy, uUvRect.zw);
+    float2 suv = clamp(coords + wob * uTexelSize * (1.8 * uEtchT), clampLo, clampHi);
     float4 base = tex2D(uImage0, suv) * vc;
 
     //蚀坑：双频噪声阈值，坑随层数蔓延；坑心沉绿蚀肉、坑缘腐化紫淤痕
@@ -62,10 +69,10 @@ float4 PSEtch(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0 {
 
     //轮廓滴酸：邻域 alpha 四采样找轮廓缺口，下缘加权（液体向下积）
     float2 t3 = uTexelSize * 3.0;
-    float aL = tex2D(uImage0, clamp(suv - float2(t3.x, 0.0), uUvRect.xy, uUvRect.zw)).a;
-    float aR = tex2D(uImage0, clamp(suv + float2(t3.x, 0.0), uUvRect.xy, uUvRect.zw)).a;
-    float aU = tex2D(uImage0, clamp(suv - float2(0.0, t3.y), uUvRect.xy, uUvRect.zw)).a;
-    float aD = tex2D(uImage0, clamp(suv + float2(0.0, t3.y), uUvRect.xy, uUvRect.zw)).a;
+    float aL = tex2D(uImage0, clamp(suv - float2(t3.x, 0.0), clampLo, clampHi)).a;
+    float aR = tex2D(uImage0, clamp(suv + float2(t3.x, 0.0), clampLo, clampHi)).a;
+    float aU = tex2D(uImage0, clamp(suv - float2(0.0, t3.y), clampLo, clampHi)).a;
+    float aD = tex2D(uImage0, clamp(suv + float2(0.0, t3.y), clampLo, clampHi)).a;
     float edge = saturate(base.a * 1.2 - min(min(aL, aR), min(aU, aD)));
     float downBias = 0.40 + saturate(base.a - aD) * 1.35;
     float drip = nrm(tex2D(uNoiseTex, float2(fl.x * 3.2 + uSeed, fl.y * 1.4 - uTime * 0.45)).r);

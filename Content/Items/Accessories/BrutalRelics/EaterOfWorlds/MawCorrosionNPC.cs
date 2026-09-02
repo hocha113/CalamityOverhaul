@@ -221,13 +221,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
         }
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            //上一实体断批自愈：GlobalNPC 的 PostDraw 会被 ModNPC.PreDraw=false 吞掉
+            //上一实体断批自愈。ModNPC.PreDraw=false 会跳过本实体 vanilla 绘制，下只可能仍带着 Immediate
             if (shaderActive) {
-                shaderActive = false;
-                spriteBatch.End();
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                    Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
-                    null, Main.GameViewMatrix.TransformationMatrix);
+                EndShaderBatch(spriteBatch);
             }
             if (etchFade <= 0.02f || npc.IsABestiaryIconDummy) {
                 return true;
@@ -246,10 +242,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
 
             fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             fx.Parameters["uTexelSize"]?.SetValue(new Vector2(1f / tex.Width, 1f / tex.Height));
-            //帧界半像素内缩：采样全数钳回帧内，防精灵表渗色
-            fx.Parameters["uUvRect"]?.SetValue(new Vector4(
-                (frame.X + 0.5f) / tex.Width, (frame.Y + 0.5f) / tex.Height,
-                (frame.X + frame.Width - 0.5f) / tex.Width, (frame.Y + frame.Height - 0.5f) / tex.Height));
+            //GlobalNPC 看不见 ModNPC 实际绑定的图；帧矩形超出注册贴图时改传全图，避免错钳成马赛克
+            fx.Parameters["uUvRect"]?.SetValue(GuessUvRect(tex, frame));
             fx.Parameters["uEtchT"]?.SetValue(etchFade);
             fx.Parameters["uStackT"]?.SetValue(Stacks / (float)WorldEatersMaw.MaxStacks);
             fx.Parameters["uSeed"]?.SetValue(npc.whoAmI * 0.618f % 1f * 8f);
@@ -270,7 +264,25 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EaterOfWorlds
             if (!shaderActive) {
                 return;
             }
+            EndShaderBatch(spriteBatch);
+        }
+
+        /// <summary>注册贴图装得下当前帧则传半像素内缩帧界，否则全图(0,0,1,1)</summary>
+        private static Vector4 GuessUvRect(Texture2D tex, Rectangle frame) {
+            bool fits = frame.X >= 0 && frame.Y >= 0
+                && frame.Right <= tex.Width && frame.Bottom <= tex.Height
+                && frame.Width >= 2 && frame.Height >= 2;
+            if (!fits) {
+                return new Vector4(0f, 0f, 1f, 1f);
+            }
+            return new Vector4(
+                (frame.X + 0.5f) / tex.Width, (frame.Y + 0.5f) / tex.Height,
+                (frame.X + frame.Width - 0.5f) / tex.Width, (frame.Y + frame.Height - 0.5f) / tex.Height);
+        }
+
+        private static void EndShaderBatch(SpriteBatch spriteBatch) {
             shaderActive = false;
+            Main.instance.GraphicsDevice.Textures[1] = null;
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,

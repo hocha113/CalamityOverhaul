@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Rendering;
 using InnoVault.PRT;
@@ -320,7 +321,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
         #region 纱幕步（owner 端）
         /// <summary>
         /// 双击左/右方向键触发短距瞬移。与克眼遗物血雾冲刺同用双击语义，
-        /// 同帧并存由 CWRPlayer 消费闩裁决；触发后吃掉双击计时防止后续钩子连发
+        /// 同帧并存由 CWRPlayer 消费闩裁决；触发后吃掉双击计时防止后续钩子连发。
+        /// 符文不足/无落点不得预消费闩，否则后到的赤影冲刺会被空闩卡死（地面双击全废，
+        /// 跳起再点才撞上失败冷却窗口，表现为冲刺和飞行绑定）
         /// </summary>
         private void DetectVeilStep() {
             if (veilStepCooldown > 0 || Player.mount.Active || Player.grapCount > 0
@@ -329,24 +332,23 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
             }
 
             int dir = 0;
+            int tapIndex = -1;
             if (Player.controlRight && Player.releaseRight && TapWindow(2)) {
                 dir = 1;
+                tapIndex = 2;
             }
             else if (Player.controlLeft && Player.releaseLeft && TapWindow(3)) {
                 dir = -1;
+                tapIndex = 3;
             }
             if (dir == 0) {
                 return;
             }
-            //同帧同方向双击位移技消费闩：被别家抢走则本帧静默放弃(不进冷却不响提示音)
-            if (!Player.CWR().TryConsumeRelicDoubleTap(dir == 1 ? 2 : 3)) {
+            //赤影冲刺与纱幕步同键：冲刺能起步则让位，冷却中再轮到纱幕步
+            if (Player.GetModPlayer<NinjaCthulsparkPlayer>().CanAcceptDash()) {
                 return;
             }
-
             if (RuneCount < VeilStepCost) {
-                //符文不足：闷响提示，短冷却防音效连响
-                veilStepCooldown = 12;
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.6f, Pitch = -0.8f }, Player.Center);
                 return;
             }
 
@@ -364,8 +366,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.LunaticCultist
                 }
             }
             if (!found) {
-                veilStepCooldown = 12;
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.6f, Pitch = -0.8f }, Player.Center);
+                return;
+            }
+            if (!Player.CWR().TryConsumeRelicDoubleTap(tapIndex)) {
                 return;
             }
 
