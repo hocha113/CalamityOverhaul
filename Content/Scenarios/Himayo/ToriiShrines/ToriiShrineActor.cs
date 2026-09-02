@@ -5,12 +5,10 @@ using InnoVault.Cinematics;
 using InnoVault.Models3D.Runtime;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
@@ -731,46 +729,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 Color glint = Color.White with { A = 0 } * riteGlint;
                 spriteBatch.Draw(sword, drawPos, null, glint, rotation, origin, scale * 1.02f, SpriteEffects.None, 0f);
             }
-        }
-
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor) {
-            //仪式期不叠交互提示
-            if (departPhase != DeparturePhase.PullRite && ToriiShrine.SwordPresentForLocalPlayer()) {
-                DrawInteractPrompt(spriteBatch);
-            }
-        }
-
-        /// <summary>交互提示，柔光衬底+描边文字</summary>
-        private void DrawInteractPrompt(SpriteBatch sb) {
-            float alpha = ToriiShrine.GetInteractPromptAlpha();
-            if (alpha <= 0.01f) {
-                return;
-            }
-
-            Vector2 textPos = SwordAnchor - Main.screenPosition + new Vector2(0, -96f);
-
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
-            string hintText = ToriiShrine.GetPromptText();
-            Vector2 textSize = font.MeasureString(hintText) * 0.9f;
-
-            Texture2D glow = CWRAsset.SoftGlow.Value;
-            float pulse = MathF.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
-
-            //柔光椭圆衬底
-            Vector2 backingScale = new Vector2((textSize.X + 50f) / glow.Width, (textSize.Y + 30f) / glow.Height);
-            Color backingColor = new Color(190, 55, 80) with { A = 0 } * (alpha * (0.3f + pulse * 0.12f));
-            sb.Draw(glow, textPos, null, backingColor, 0f, glow.Size() / 2f, backingScale, SpriteEffects.None, 0f);
-
-            //文字
-            Color textColor = new Color(255, 228, 232) * alpha;
-            Utils.DrawBorderString(sb, hintText, textPos - textSize / 2, textColor, 0.9f);
-
-            //脉动光带
-            float lineWidth = textSize.X * (0.7f + pulse * 0.25f);
-            Vector2 linePos = textPos + new Vector2(0, textSize.Y / 2f + 6f);
-            Color lineColor = new Color(235, 95, 118) with { A = 0 } * (alpha * 0.6f);
-            sb.Draw(glow, linePos, null, lineColor, 0f, glow.Size() / 2f
-                , new Vector2(lineWidth / glow.Width, 4f / glow.Height), SpriteEffects.None, 0f);
         }
     }
 }

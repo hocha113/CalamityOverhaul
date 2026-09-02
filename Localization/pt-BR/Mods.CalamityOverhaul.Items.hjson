@@ -887,13 +887,13 @@ HandmadeDoll: {
 }
 
 ScapegoatDoll: {
-	// DisplayName: Scapegoat Doll
-	/* Tooltip:
+	DisplayName: Boneca substituta
+	Tooltip:
 		'''
-		While in your inventory, blocks one death in your place
-		The doll shatters and is lost after taking the blow
-		''' */
-	// ShatterText: The scapegoat doll shattered
+		No inventário, pode bloquear uma morte no seu lugar
+		Depois de bloquear, a boneca se parte e some
+		'''
+	ShatterText: A boneca substituta se partiu
 }
 
 Snowblindness: {

@@ -1319,7 +1319,7 @@ BulletinBoardUI: {
 }
 
 // HimayoMenu.ThemeName: Sakura Night
-// ShenyoMenu.ThemeName: Ghost Lake Rains
+ShenyoMenu.ThemeName: Chuva noturna no lago espectral
 
 AcknowledgmentUI: {
 	ArtistRole: Artista
@@ -1575,12 +1575,12 @@ OldNetDebriefPanel: {
 }
 
 CharacterDockUI: {
-	// OpenHintLabel: Click to view portrait
-	// DragHintLabel: Drag to move · Scroll to zoom · Right-click to reset
-	// LockedHintLabel: Not yet unlocked
-	// SupCal.Name: Brimstone Witch
-	// Helen.Name: Helen
-	// Shenyo.Name: Shenyo
+	OpenHintLabel: Clique para ver o retrato
+	DragHintLabel: Arraste para mover · Role para zoom · Clique direito para redefinir
+	LockedHintLabel: Ainda não desbloqueado
+	SupCal.Name: Bruxa de Enxofre
+	Helen.Name: Helen
+	Shenyo.Name: Shenyo
 }
 
 WeaponSkillHud: {

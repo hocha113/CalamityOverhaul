@@ -4,13 +4,13 @@ FirstMetShenyo: {
 	L2: How did you get here?
 	OptDead: Died once. When I woke up, I was here
 	OptRain: Snatched an umbrella and charged in
-	OptDeadLocked: (You are still alive. That answer will not leave your mouth)
-	OptRainLocked: (Your hands are empty. No umbrella to speak of)
+	OptDeadLocked: You have not died
+	OptRainLocked: Your hands are empty
 	A1: ...Back from the dead?
-	A2: A rare thing. Though by the look of you, you hardly seem to care
+	A2: A rare thing. Though by the look of you, you seem used to it
 	B1: Then your luck is not bad at all
-	B2: Now start thinking about how to get out
-	C1: The rain will hold the way open for you. Go back
+	B2: Now it is time to leave
+	C1: The umbrella will hold the way open for you. Go back
 	C2: That umbrella is yours from now on
 }
 
@@ -30,8 +30,8 @@ ShenyoDerivedUmbrella: {
 ShenyoDollGift: {
 	L0: I just remembered something worth giving you
 	L1: Keep this doll close. It can save your life once
-	L2: The one who sewed these was a silly girl. She made a whole pile for the man she secretly loved, though he could never possibly need them
-	L3: Back then I traded her plenty of ghost money for them. They make fine gifts for the young ones
+	L2: The one who sewed these was a silly girl. She made a whole pile for someone she liked, though that person could never possibly need them
+	L3: Back then I traded with her for quite a few. They make fine gifts for the young ones
 }
 
 ShenyoFesterSerpentGift: {
@@ -41,72 +41,72 @@ ShenyoFesterSerpentGift: {
 }
 
 ShenyoBossRushGift: {
-	L0: 都回来了，还是深渊里那条老的醒了？
-	L1: 不管是哪种，这一趟都不轻松
-	L2: 站稳了，别在我面前晃
-	L3: 这顿吃完，雨也该停了
+	L0: Did they all come back, or did that old thing in the abyss wake?
+	L1: Either way, this trip was no stroll
+	L2: Stand steady. Do not sway in front of me
+	L3: Once this meal is finished, the rain ought to stop
 }
 
 ShenyoCalamityEvilGift: {
-	L0: 一窝一窝的，钻血又钻肉，看着都疼
-	L1: 你倒是不怕疼
-	L2: 下次当心点，我这把伞挡雨，挡不了那些虫子
+	L0: Nest after nest, boring into blood and flesh. It hurts just to look
+	L1: You, though, do not seem to mind the pain
+	L2: Be more careful next time. This umbrella keeps off the rain, not those bugs
 }
 
 ShenyoCultistGift: {
-	L0: 念念叨叨，吵得很
-	L1: 他要放的那点东西，不是什么好东西
-	L2: 打断得好，省得他把场面弄大了
+	L0: Muttering on and on. Loud
+	L1: That thing he meant to let out is nothing good
+	L2: Good you cut him off, before the scene got out of hand
 }
 
 ShenyoDevourerOfGodsGift: {
-	L0: 天上绕圈的那条，听说吞过神
-	L1: 神是什么味道，我倒是有点好奇
-	L2: 壳留着也好，肉不必留给我
+	L0: That one circling the sky, they say it has swallowed gods
+	L1: What a god tastes like, I am a little curious
+	L2: Keep the shell if you like. You need not leave the meat for me
 }
 
 ShenyoDukeFishronGift: {
-	L0: 一头猪也学人掀浪，也是奇了
-	L1: 水的脾气，轮不到它使
-	L2: 按回水里也好，省得它总在我眼皮底下晃
+	L0: A pig learning to throw waves like a person. That is something
+	L1: The temper of water is not its to wield
+	L2: Good that you shoved it back under. Saves it from swaying under my eyes
 }
 
 ShenyoEmpressGift: {
-	L0: 太亮的东西，我这双眼睛看着费劲
-	L1: 白天不必去招惹她，你倒好，专挑难的
-	L2: 光都揉暗了，也算你的本事
+	L0: Things this bright strain these eyes
+	L1: No need to pick a fight with her in daylight. You, of course, go straight for the hard one
+	L2: You rubbed the light dim. I will grant you that
 }
 
 ShenyoEvilBossGift: {
-	L0Worm: 土里钻出来一条，一节一节的，恶心
-	L1Worm: 腥气比雨水还重，我倒是不嫌，你受得住就好
-	L0Brain: 脑子摊在外头，也不嫌凉
-	L1Brain: 这种东西，多看一眼都嫌脏了眼睛
-	L2: 了结了就好，别沾一身腥气回来找我
+	L0Worm: One crawled out of the dirt, segment after segment. Disgusting
+	L1Worm: The stink is heavier than rainwater... If you can stand it, fine
+	L0Brain: A brain laid out in the open, and it does not even mind the cold
+	L1Brain: Things like this, one look too many and they soil the eyes
+	L2: Good that it is over. Do not come back soaked in that stink
 }
 
 ShenyoExoAndSCalGift: {
-	L0: 工匠的得意，魔女的执念，凑一块倒是般配
-	L1: 两桌都收了，算你今天没白忙
-	L2: 往后这样的日子，不会再有几回了
+	L0: A craftsman's pride, a witch's obsession. Together they almost match
+	L1: Both tables cleared. Today was not wasted
+	L2: Days like this will not come around many more times
 }
 
 ShenyoEyeOfCthulhuGift: {
-	L0: 夜里睁着一只眼睛到处看，倒是不怕吓着自己
-	L1: 眨都不眨，看得人心里发毛
-	L2: 闭上了，也好，眼不见心不烦
+	L0: One eye open all night, looking everywhere, and not even afraid of scaring itself
+	L1: Does not even blink. Makes the skin crawl
+	L2: Closed now. Good. Out of sight, out of mind
 }
 
 ShenyoGolemGift: {
-	L0: 石头脑袋，还会蹦跶
-	L1: 砸开了也不过是个空壳子
-	L2: 浪花是你自己挣的，我可没帮忙
+	L0: A stone head, and it still hops
+	L1: Crack it open and it is nothing but an empty shell
+	L2: That splash you earned yourself. I did not help
 }
 
 ShenyoKingSlimeGift: {
-	L0: 这也配称王？
-	L1: 浑身软趴趴的，倒是挺能蹦
-	L2: 往后碰上真正难缠的，别学它虚张声势
+	L0: And this calls itself a king?
+	L1: Soft all over, but it can bounce
+	L2: When you meet something truly nasty, do not learn its bluster
 }
 
 ShenyoSeaShrimpGift: {
@@ -116,69 +116,69 @@ ShenyoSeaShrimpGift: {
 }
 
 ShenyoMechsGift: {
-	L0: 链子、灯泡、骨架，凑一块倒像个笑话
-	L1: 铁腥味重，我不爱，你倒是不嫌
-	L2: 三件一起收拾，算你有耐心
+	L0: Chains, a light bulb, a skeleton. Together they look like a joke
+	L1: The iron stink is heavy. I dislike it, you do not mind
+	L2: All three cleaned up at once. I will grant you patience
 }
 
 ShenyoMoonLordGift: {
-	L0: 月亮后头那位，也算见过世面了
-	L1: 浑身是眼睛，倒是和我这把伞下的雨有点像
-	L2: 了结了，今晚的月色，替我看仔细些
+	L0: The one behind the moon. That at least has seen the world
+	L1: Eyes all over, a little like the rain under this umbrella
+	L2: The moonlight tonight is not bad at all
 }
 
 ShenyoOldDukeGift: {
-	L0: 硫海底下那老东西，脾气比酸水还酸
-	L1: 跟我打过几次照面，谁也没让过谁
-	L2: 这回是你赢了，替我记他一笔
+	L0: That old thing, temper sourer than sour water
+	L1: We have crossed paths a few times. Neither of us ever gave ground
+	L2: This time you won
 }
 
 ShenyoPlanteraGift: {
-	L0: 睡着的花，吵醒了她就得担着
-	L1: 藤蔓缠人的样子，倒有点像我那把伞收不住的时候
-	L2: 花汁染了手，回来记得洗干净
+	L0: A sleeping flower. Wake her and there will be trouble
+	L1: The way those vines cling, a little like my umbrella when it will not close
+	L2: If the sap stained your hands, wash them when you get back
 }
 
 ShenyoPolterghastGift: {
-	L0: 地牢里那团魂，缝缝补补好几百年
-	L1: 跟我算是同类，你倒不必替它说情
-	L2: 散了也好，好过在那儿吊着
+	L0: Those souls in the dungeon, stitched and restitched for centuries
+	L1: They are poor souls that can actually be killed
+	L2: Scattered is better than hanging there
 }
 
 ShenyoQueenBeeOrDeerclopsGift: {
-	L0Bee: 甜是甜，脾气也冲，倒是配
-	L1Bee: 蜜是好东西，可惜它舍不得给
-	L0Deer: 独眼的，脾气比我还倔
-	L1Deer: 一根木头也能闹出这么大动静
-	L2: 这一趟，没伤着吧
+	L0Bee: Sweet, yes, and the temper just as sharp. They match
+	L1Bee: Honey is a good thing. Pity it will not share
+	L0Deer: This one-eyed thing has a stubborn temper
+	L1Deer: A single stick of wood, and all that noise
+	L2: This trip, you are not hurt, are you?
 }
 
 ShenyoQueenSlimeGift: {
-	L0: 粉粉嫩嫩的，倒是会打扮
-	L1: 还带着侍卫，排场不小
-	L2: 排场再大，也经不起一场雨
+	L0: All pink and tender. It does know how to dress
+	L1: Even brought an honor guard. Quite the show
+	L2: Show or not, it will not last a rain
 }
 
 ShenyoSkeletronGift: {
-	L0: 守门守了这么多年，骨头都该酥了
-	L1: 换了我，早就懒得守了
-	L2: 地牢的门开了，进去仔细些，别学它守株待兔守出瘾来
+	L0: Guarding that door for so many years, the bones ought to be soft by now
+	L1: If it were me, I would have quit long ago
+	L2: The dungeon door is open. Watch your step in there. Do not pick up its habit of sitting still until waiting becomes a vice
 }
 
 ShenyoSlimeGodGift: {
-	L0: 紫的黑的搅在一起，也敢称神
-	L1: 倒是有几分本事，能把这么多恶心东西糊成一团
-	L2: 化开了就好，省得脏了地方
+	L0: Purple and black stirred together, and it still dares to call itself a god
+	L1: It has some skill, I will grant, mashing that much filth into one lump
+	L2: Melted is better. Saves it from fouling the place
 }
 
 ShenyoWallOfFleshGift: {
-	L0: 地狱里那面肉墙，我隔着伞都嫌烫
-	L1: 捅穿了，世界也就跟着变了，这种事你倒是干得挺熟练
-	L2: 以后这种阵仗，还有的是
+	L0: That wall of flesh in hell, even through the umbrella I find it too hot
+	L1: You punched through, and the world changed with it. This sort of thing, you do rather smoothly
+	L2: Spectacle like this, there will be plenty more later
 }
 
 ShenyoYharonGift: {
-	L0: 烧了这么多年的一团火，也该熄了
-	L1: 火和雨，本来就合不来
-	L2: 羽毛湿了，就飘不起来了，正好
+	L0: A fire that has burned for so many years. It ought to go out
+	L1: Fire and rain were never meant to get along
+	L2: Once the feathers are wet, they will not float
 }
