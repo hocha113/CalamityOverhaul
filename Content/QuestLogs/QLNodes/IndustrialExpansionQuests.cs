@@ -29,11 +29,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
     //=========================================================================
     // 工业扩展批的任务书挂点,五条链共 22 节点,全部常驻无门控:
     //   液体链  泵→管道→储罐→岩浆发电机→微光转化槽,挂 BatteryQuest 上方带
-    //   加工链  粉碎机→回收机→自动合成台,挂 IncineratorQuest 下方带
-    //   农业链  蘑菇农场→养蜂箱→史莱姆槽→生物质发电机(三线闭环),挂 LifeWeaverQuest
+    //   加工链  粉碎机→回收机→自动合成台,挂 IndustrialStartQuest 西侧沿 y=-150 带走
+    //   农业链  蘑菇农场→养蜂箱→史莱姆槽→生物质发电机,沿 y=0 带向东一字排开
     //   防御链  火焰→冰冻→激光,护盾/治疗侧翼,挂 TeslaTowerQuest
     //   服务链  传送站→日晷→太阳能→电容矩阵→天气机,挂 BatteryQuest 左侧带
     // 坐标一律父级相对 150px 步进,双场景(有/无灾厄)间距审计最小 150px。
+    // 工业节点一律不得落到讨伐篇 y≥150 领空:y=150 是灾厄材料带,y=300 主线两套配置
+    // 全程满格,任何跨线连线必穿主线节点;无灾厄时主线更短,y=450/600 的原版侧翼与
+    // 事件带会前移到 x=750 附近,与"让位下移"的工业节点正面相撞
     // 灾厄件奖励走 AddReward(CWRID.*) 的 ID≤0 守卫,缺席时静默不加
     //=========================================================================
 
@@ -182,9 +185,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<Crusher>();
-            //下移让位：灾厄在场时 (0,150) 与叶绿任务同格（反馈十三·#58 同族叠点）
-            Position = new Vector2(0, 450);
-            AddParent<IncineratorQuest>();
+            //改挂工业起步西邻 (600,-150):原挂焚化炉 (900,0) 八邻全满,唯一空格 (900,150) 是孤格塞不下三节点链;
+            //先前"下移让位"到 (900,450) 后,连线纵穿主线 (900,300)(无灾厄=世纪之花/有灾厄=骷髅王),
+            //且无灾厄时回收机/装配台分别与史莱姆皇后、光之女皇同格。
+            //粉碎机配方只要铁锡石与电路板,与风力发电机同档,挂起步节点门控不失序
+            Position = new Vector2(-150, 0);
+            AddParent<IndustrialStartQuest>();
 
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
@@ -209,7 +215,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<Recycler>();
-            //加工链沿 y=150 带向西走:东侧被讨伐篇灾厄侧翼(1200/1350,150)占位
+            //加工链沿 y=-150 带向西走,落 (450,-150):与矿工线 y=0 平行 150px,同工业主街东段的排布方式
             Position = new Vector2(-150, 0);
             AddParent<CrusherQuest>();
 
@@ -236,8 +242,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<AutoCrafter>();
-            //改挂回收机下方：随粉碎机支链下移后左伸会撞灾厄生态任务带
-            Position = new Vector2(0, 150);
+            //链尾落 (300,-150):无灾厄时 Omiga 武器列在 x=150(y=-100/-200),斜距 158px,过 150px 线;再往西不可
+            Position = new Vector2(-150, 0);
             AddParent<RecyclerQuest>();
 
             QuestType = QuestType.Side;
@@ -345,12 +351,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<BiomassGenerator>();
-            //三农机全数就位后解锁,挂定位父(史莱姆槽)正下方的 (1800,150) 空位收束闭环
-            //下移让位：灾厄在场时 (0,150) 与生命合金任务同格（反馈十三·#58 同族叠点）
-            Position = new Vector2(0, 450);
+            //挂史莱姆槽东邻 (1950,0),农业链一字排到底:先前"下移让位"到 (1800,450) 后,
+            //有灾厄时纵线穿过生命合金 (1800,150) 与拜月教邪教徒 (1800,300),斜线擦过瘟疫使者/石巨人。
+            //原三父收束(蘑菇+蜂箱+史莱姆槽)只留史莱姆槽:门控等价——史莱姆槽须先解锁才能完成,
+            //而解锁又要求蜂箱完成、蜂箱要求蘑菇完成;穷举周边落点,三父连线在双场景下必与农业链重叠或穿点
+            Position = new Vector2(150, 0);
             AddParent<SlimeVatQuest>();
-            AddParent<MushroomFarmerQuest>();
-            AddParent<ApiaryQuest>();
 
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;

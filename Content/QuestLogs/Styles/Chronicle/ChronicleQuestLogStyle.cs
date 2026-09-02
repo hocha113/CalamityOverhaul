@@ -435,6 +435,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         #region 详情：贴在右页上的一张记录条
 
         private const float SlipPadX = 22f;
+        //页脚带高：领赏牌与结卷蜡封住在这条带里，正文裁剪到它上缘为止
+        private const float FooterBandH = 76f;
         //正文与小节题头字号，测量与绘制共用一份；0.85 以下的字在羊皮纸上读作没墨水
         private const float BodyScale = 0.88f;
         private const float SectionScale = 0.9f;
@@ -445,12 +447,23 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
         public Rectangle GetRewardButtonRect(Rectangle panelRect)
             => new(panelRect.X + 26, panelRect.Bottom - 64, 168, 30);
 
+        /// <summary>贴在详情栏上的记录条外框，测量与绘制共用</summary>
+        private static Rectangle SlipRect(Rectangle detail)
+            => new(detail.X + 10, detail.Y + 12, detail.Width - 26, detail.Height - 26);
+
+        /// <summary>题头高：条目名 + 金线 + 留白，正文从贴条顶往下这么多起笔</summary>
+        private static float HeaderHeight(float line) => 20f + line * 1.05f + 4f + 12f;
+
         public void DrawQuestDetail(SpriteBatch sb, QuestNode node, Rectangle panelRect, float alpha)
             => DrawDetail(sb, node, in layout, alpha, 0f);
 
         public float MeasureDetailHeight(QuestNode node, in QuestLogLayout current) {
-            float width = current.Detail.Width - SlipPadX * 2f - 20f;
-            return MeasureBody(node, width) + 150f;
+            //与 DrawDetail 同口径：换行宽差几像素会少算一行，死高差一截则末行永远滚不出来
+            Rectangle slip = SlipRect(current.Detail);
+            float wrapW = slip.Width - SlipPadX * 2f;
+            float line = Font.MeasureString("A").Y;
+            float chrome = current.Detail.Height - slip.Height + HeaderHeight(line) + FooterBandH;
+            return MeasureBody(node, wrapW) + chrome;
         }
 
         /// <summary>正文总高，与绘制同口径</summary>
@@ -478,7 +491,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
                 return;
             }
             Rectangle rect = current.Detail;
-            Rectangle slip = new(rect.X + 10, rect.Y + 12, rect.Width - 26, rect.Height - 26);
+            Rectangle slip = SlipRect(rect);
             DrawSlip(sb, slip, alpha);
 
             float x = slip.X + SlipPadX;
@@ -487,16 +500,19 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             NodeState state = StateOf(node);
             int seed = Math.Abs(node.ID?.GetHashCode() ?? 0) % 9973;
 
-            //题头：条目名 + 状态蜡封（结卷的贴条右上压一枚）
+            //题头：条目名 + 一道金线
             float y = slip.Y + 20f;
             ChroniclePen.Ink(sb, Font, node.DisplayName?.Value ?? string.Empty,
                 new Vector2(x, y), ChroniclePalette.Ink, 1.0f, alpha);
             y += line * 1.05f + 4f;
             ChroniclePen.GiltRule(sb, new Vector2(x, y), wrapW * 0.72f, alpha * 0.8f);
-            y += 12f;
+            y = slip.Y + HeaderHeight(line);
 
+            //结卷蜡封盖在贴条右下的落款位，与左下的领赏牌同一条页脚带。
+            //先前压在题头右上 (slip.Y+66)：蜡体外径约 1.45r≈33px，恰好盖住正文前两行行尾 60 余像素；
+            //题头带被合卷键占着放不下，正文又会随滚动从蜡封底下走过，只有页脚带是死的
             if (state == NodeState.Sealed || state == NodeState.Unclaimed) {
-                ChroniclePen.WaxSeal(sb, new Vector2(slip.Right - 52f, slip.Y + 66f), 21f,
+                ChroniclePen.WaxSeal(sb, new Vector2(slip.Right - 52f, slip.Bottom - 40f), 21f,
                     alpha, seed, time, state == NodeState.Sealed, state == NodeState.Unclaimed);
             }
 
@@ -504,7 +520,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles.Chronicle
             DrawCloseTag(sb, GetCloseButtonRect(rect), alpha);
 
             //正文区裁剪，滚动只动正文
-            Rectangle body = new(slip.X + 4, (int)y, slip.Width - 8, slip.Bottom - (int)y - 76);
+            Rectangle body = new(slip.X + 4, (int)y, slip.Width - 8, slip.Bottom - (int)y - (int)FooterBandH);
             if (body.Height < 40) {
                 return;
             }
