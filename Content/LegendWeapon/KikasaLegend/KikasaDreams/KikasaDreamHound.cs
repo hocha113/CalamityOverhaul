@@ -132,6 +132,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 18;
             Projectile.timeLeft = LifeFrames;
+            //撕咬无视护甲：超防 / SuperArmor 仍按 CWR 口径放过
+            Projectile.CWR().HitAttribute.OnHitBlindArmor = true;
         }
 
         /// <summary>

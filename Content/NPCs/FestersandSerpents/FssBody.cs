@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         private bool ruptureFired;
 
         public override void SetStaticDefaults() {
-            Main.npcFrameCount[Type] = 2;
+            Main.npcFrameCount[Type] = SerpentChainMath.BodyStyleCount;
             NPCID.Sets.NPCBestiaryDrawModifiers hide = new() { Hide = true };
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, hide);
             NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Confused] = true;
@@ -342,7 +342,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         protected virtual bool IsCyst => FssStateContext.IsCystOrdinal(Ordinal);
 
         public override void FindFrame(int frameHeight) {
-            NPC.frame = new Rectangle(0, IsCyst ? frameHeight : 0,
+            int style = SerpentChainMath.BodyStyleIndex(Ordinal, IsCyst);
+            NPC.frame = new Rectangle(0, style * frameHeight,
                 TextureAssets.Npc[Type].Width(), frameHeight);
         }
 

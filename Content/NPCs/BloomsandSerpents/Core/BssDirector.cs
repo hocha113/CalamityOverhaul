@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const int BodyCount = 20;
         /// <summary>红花节间隔：ordinal % FlowerStep == FlowerStep-1 的体节开花（发射器）</summary>
         public const int FlowerStep = 3;
-        /// <summary>节距（体节帧高 56，插槽重叠后的链距）</summary>
-        public const float SegmentGap = 40f;
+        /// <summary>节距（体节帧高 98，扇冠露出后的链距）</summary>
+        public const float SegmentGap = 70f;
 
         //==================== 基础数值 ====================
 

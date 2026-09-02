@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (cycle < 10) {
                 ctx.BloomGlow = Math.Max(ctx.BloomGlow, 0.6f);
                 if (!Main.dedServ && Main.GameUpdateCount % 2 == 0) {
-                    Vector2 mouth = npc.Center + burstAim * 28f;
+                    Vector2 mouth = npc.Center + burstAim * 52f;
                     Vector2 from = mouth + Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(24f, 46f);
                     Dust d = Dust.NewDustPerfect(from, DustID.Sand, (mouth - from) * 0.14f, 120, default, 0.9f);
                     d.noGravity = true;
@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 return;
             }
 
-            Vector2 muzzle = npc.Center + burstAim * 28f;
+            Vector2 muzzle = npc.Center + burstAim * 52f;
             npc.velocity -= burstAim * 2.4f;
             if (!Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.65f, Pitch = -0.15f, MaxInstances = 3 }, muzzle);

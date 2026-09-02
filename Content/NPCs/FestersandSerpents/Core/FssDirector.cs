@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         /// <summary>囊肿节间隔：ordinal % CystStep == CystStep-1 的体节带脓疮（发射器）</summary>
         public const int CystStep = 3;
         /// <summary>节距（复用 BSS 体节素材，放大后的链距）</summary>
-        public const float SegmentGap = 46f;
+        public const float SegmentGap = 80f;
         /// <summary>整体放大（更庞大的读数，贴图暂借 BSS）</summary>
         public const float BodyScale = 1.15f;
         /// <summary>链序数组上限（26+7+尾 = 34，留余量）</summary>

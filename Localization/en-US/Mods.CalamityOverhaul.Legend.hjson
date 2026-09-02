@@ -1175,7 +1175,7 @@ KikasaText: {
 		TipTeleportHintFormat: Press {0} to slip through a pool of water to the cursor; swifter within the lake, with a shorter cooldown
 		TipThrallFormat: Thralls out {0} / {1}
 		TipHoundCountFormat: Hounds out {0} / {1}
-		TipDreamNoTalis: Only the hounds' bite counts here — talismans do not apply
+		TipDreamNoTalis: Only the hounds' bite counts here; it ignores armor, and talismans do not apply
 		TipSeatsHintFormat: Hold {0} for the wheel · change the lineup in the Lakeheart
 		TipSeatEmpty: Empty
 		TipTalisHint: Click to open the Lakeheart and hang talismans on the rope
@@ -1291,7 +1291,7 @@ KikasaText: {
 		RestartBody: Press the restart key and the scene freezes into a black-and-white photograph, then washes open: nearby foes and you slide back to where you stood seconds ago, your life refills, debuffs rinse off, and nothing can touch you while it rewinds. It works outside the ghost rain too: the shutter borrows a ghost rain for that moment, and once the rewind settles the rain withdraws, leaving your domain as it was.
 		RestartPrompt: Hold the umbrella and press {0}
 		DreamTitle: Enter the Ghost Dream
-		DreamBody: At full water, hold the Flip the Lake key and the reflection in the lake pulls you into the dream. Foes there are helpless and no ranged projectile can exist; your items are sealed too, so hold left click to loose the hounds instead. Press the same key again to wake.
+		DreamBody: At full water, hold the Flip the Lake key and the reflection in the lake pulls you into the dream. Foes there are helpless and no ranged projectile can exist; your items are sealed too, so hold left click to loose the hounds instead. Their bite ignores armor. Press the same key again to wake.
 		DreamPrompt: At full water, hold {0}
 		SkipBtn: Skip
 		ConfirmBtn: Got it

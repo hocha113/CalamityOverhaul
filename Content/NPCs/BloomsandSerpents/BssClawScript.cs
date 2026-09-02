@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
     /// </summary>
     internal static class BssClawScript
     {
-        /// <summary>全肢触及（与 <see cref="BssClawRig"/> 节长表一致）</summary>
-        internal const float Reach = 222f;
+        /// <summary>全肢触及（与 <see cref="BssClawRig"/> 三件套节长一致）</summary>
+        internal const float Reach = 150f;
 
         /// <summary>头前向（贴图前方朝下约定的反解）</summary>
         internal static Vector2 Forward(float headRotation)
@@ -43,11 +43,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         /// <summary>爪基锚点（头两侧偏前）</summary>
         internal static Vector2 Mount(Vector2 headCenter, float headRotation, int side)
-            => headCenter + Forward(headRotation) * 10f + Lateral(headRotation, side) * 14f;
+            => headCenter + Forward(headRotation) * 12f + Lateral(headRotation, side) * 20f;
 
-        /// <summary>嘴位（与喷沙状态的炮口约定一致：头心 + 前向 28px）</summary>
+        /// <summary>嘴位（与喷沙状态的炮口约定一致：头心 + 前向，按新头半高重标）</summary>
         internal static Vector2 MouthPos(Vector2 headCenter, float headRotation)
-            => headCenter + Forward(headRotation) * 28f;
+            => headCenter + Forward(headRotation) * 52f;
 
         /// <summary>水平朝向符号（世界系编舞用：挥掷/祭舞以它定"向前"）</summary>
         private static float FacingSign(float headRotation) {
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         /// <summary>常态待机：胸前折叠螳臂（呼吸摆由骨架层叠加）</summary>
         internal static BssClawPose Idle(Vector2 center, float rotation, int side) {
-            Vector2 tip = center + Forward(rotation) * 52f + Lateral(rotation, side) * 28f;
+            Vector2 tip = center + Forward(rotation) * 48f + Lateral(rotation, side) * 24f;
             return new BssClawPose(tip, 0.8f, 0.25f, 0.12f);
         }
 
@@ -69,8 +69,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             Vector2 mouth = MouthPos(center, rotation);
             Vector2 fwd = Forward(rotation);
             Vector2 lat = Lateral(rotation, side);
-            Vector2 closed = mouth + fwd * 22f + lat * 9f;
-            Vector2 open = mouth + fwd * 64f + lat * 56f;
+            Vector2 closed = mouth + fwd * 18f + lat * 8f;
+            Vector2 open = mouth + fwd * 48f + lat * 42f;
             float b = 1f - MathF.Pow(1f - MathHelper.Clamp(burst, 0f, 1f), 3f);
             Vector2 tip = Vector2.Lerp(closed, open, b);
             //未合拢时从待机位渐入
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2) * side;
             float s = MathHelper.Clamp(snap01, 0f, 1f);
             Vector2 tip = mouth + dir * Math.Min(dist, Reach * 0.92f)
-                + perp * MathHelper.Lerp(36f, 8f, s);
+                + perp * MathHelper.Lerp(28f, 6f, s);
             return new BssClawPose(tip,
                 MathHelper.Lerp(-0.15f, 0.45f, s),
                 MathHelper.Lerp(1f, 0.08f, s),
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             //过顶合掌：向头顶正上收拢，末段咬合
             float p3 = (t - 0.72f) / 0.28f;
             float e3 = p3 * p3 * (3f - 2f * p3);
-            Vector2 clasp = center + new Vector2(side * MathHelper.Lerp(72f, 7f, e3), -Reach * 0.86f);
+            Vector2 clasp = center + new Vector2(side * MathHelper.Lerp(48f, 6f, e3), -Reach * 0.86f);
             return new BssClawPose(clasp,
                 MathHelper.Lerp(0.1f, 0.55f, e3),
                 MathHelper.Lerp(0.5f, 0.05f, e3),
@@ -173,13 +173,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         /// <summary>钻沙/掠冲收拢贴体</summary>
         internal static BssClawPose Tuck(Vector2 center, float rotation, int side) {
-            Vector2 tip = center - Forward(rotation) * 34f + Lateral(rotation, side) * 18f;
+            Vector2 tip = center - Forward(rotation) * 28f + Lateral(rotation, side) * 16f;
             return new BssClawPose(tip, 0.9f, 0.05f, 0.3f);
         }
 
         /// <summary>死亡垂软（摇晃由骨架层叠加）</summary>
         internal static BssClawPose Collapse(Vector2 center, int side) {
-            Vector2 tip = center + new Vector2(side * 26f, Reach * 0.68f);
+            Vector2 tip = center + new Vector2(side * 22f, Reach * 0.68f);
             return new BssClawPose(tip, 0.15f, 0.55f, 0.06f);
         }
     }

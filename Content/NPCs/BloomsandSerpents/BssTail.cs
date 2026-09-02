@@ -20,8 +20,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         public override void SetDefaults() {
             base.SetDefaults();
-            NPC.width = 26;
-            NPC.height = 26;
+            NPC.width = 36;
+            NPC.height = 36;
             NPC.damage = BssDirector.TailContact;
             NPC.defense = BssDirector.TailDefense;
             NPC.lifeMax = BssDirector.TailLife;

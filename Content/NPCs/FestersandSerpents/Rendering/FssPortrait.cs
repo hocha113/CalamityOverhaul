@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BloomsandSerpents;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.Core;
 using CalamityOverhaul.OtherMods.BossChecklist;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
         private readonly FssClawRig clawRig = new();
 
         private FssPortraitActor() {
-            rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 46f, sandY: 122f, patrolHalfWidth: 236f);
+            rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 80f, sandY: 122f, patrolHalfWidth: 236f);
             rig.OnDive = pos => SandBurst(pos, -Vector2.UnitY, 10, 0.8f);
             rig.OnLand = pos => SandBurst(pos, -Vector2.UnitY, 9, 0.9f);
             //落步爪咬/滑刹犁沙的微尘（步足模拟的沙效出口）
@@ -157,7 +158,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                     bool isTail = i == rig.TailOrdinal;
                     Texture2D tex = isTail ? tailTex : bodyTex;
                     Rectangle fr = isTail ? tailTex.Bounds
-                        : SerpentPortraitRig.BodyFrame(bodyTex, IsCyst(i));
+                        : SerpentPortraitRig.BodyFrame(bodyTex, i, IsCyst(i));
                     float swell = IsCyst(i) ? 0.35f + 0.3f * MathF.Sin(Time * 2.1f + i) : 0f;
                     ApplySkin(shader, tex, fr, i * 0.173f, i + 1f, swell, vein);
                     sb.Draw(tex, segs[i].Center, fr, Ambient, segs[i].Rotation,
@@ -167,6 +168,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                 ApplySkin(shader, headTex, headTex.Bounds, 0.031f, 0f, headSwell, vein);
                 sb.Draw(headTex, rig.HeadPos, null, Ambient, rig.HeadRotation,
                     headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
+                BssJawDraw.Draw(sb, rig.HeadPos, rig.HeadRotation,
+                    BssJawDraw.IdleOpen(Time * 3f), Ambient, Vector2.Zero);
 
                 sb.End();
                 BossPortraitStage.BeginAlpha(sb, in frame);
@@ -177,12 +180,14 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                     bool isTail = i == rig.TailOrdinal;
                     Texture2D tex = isTail ? tailTex : bodyTex;
                     Rectangle fr = isTail ? tailTex.Bounds
-                        : SerpentPortraitRig.BodyFrame(bodyTex, IsCyst(i));
+                        : SerpentPortraitRig.BodyFrame(bodyTex, i, IsCyst(i));
                     sb.Draw(tex, segs[i].Center, fr, skin, segs[i].Rotation,
                         fr.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
                 }
                 sb.Draw(headTex, rig.HeadPos, null, skin, rig.HeadRotation,
                     headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
+                BssJawDraw.Draw(sb, rig.HeadPos, rig.HeadRotation,
+                    BssJawDraw.IdleOpen(Time * 3f), skin, Vector2.Zero);
             }
 
             //囊肿灵液辉光（加色事件层，剪影跳过）
@@ -194,7 +199,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                     continue;
                 }
                 float glow = 0.5f + 0.35f * MathF.Sin(Time * 3.1f + i * 0.8f);
-                Rectangle fr = SerpentPortraitRig.BodyFrame(bodyTex, alt: true);
+                Rectangle fr = SerpentPortraitRig.BodyFrame(bodyTex, 2);
                 sb.Draw(bodyTex, segs[i].Center, fr,
                     FssVfx.IchorBright with { A = 0 } * (0.45f * glow), segs[i].Rotation,
                     fr.Size() * 0.5f, 1.06f, SpriteEffects.None, 0f);

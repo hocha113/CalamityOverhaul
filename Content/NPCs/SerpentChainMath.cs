@@ -78,6 +78,16 @@ namespace CalamityOverhaul.Content.NPCs
             return 1f - 0.20f * MathHelper.Clamp(gather, 0f, 1f) * falloff;
         }
 
+        /// <summary>体节竖排款式数（0 绿赘 / 1 干净 / 2 橙囊发射器）</summary>
+        public const int BodyStyleCount = 3;
+
+        /// <summary>
+        /// 体节款式：发射器节锁橙囊帧，其余按链序在绿赘与干净之间交替。
+        /// 纯函数，各端同算，不占网络包。
+        /// </summary>
+        public static int BodyStyleIndex(int ordinal, bool isEmitter)
+            => isEmitter ? 2 : ordinal & 1;
+
         /// <summary>高速拉伸节距系数：身体在加速度下被拉长（弹性质量读数），刹停自然回缩</summary>
         public static float SpeedStretchFactor(float headSpeed) {
             if (headSpeed <= 18f) {

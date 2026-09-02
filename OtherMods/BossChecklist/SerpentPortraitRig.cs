@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,14 +26,19 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         [VaultLoaden(CWRConstant.NPC + "BSS/Tail")]
         internal static Asset<Texture2D> TailTex = null;
 
-        /// <summary>体节取帧（两帧竖排：0 普通 / 1 红花或囊肿；1px 内缩防串帧，镜像战斗 SegFrame）</summary>
-        internal static Rectangle BodyFrame(Texture2D tex, bool alt) {
-            int frameH = tex.Height / 2;
-            Rectangle frame = new(0, alt ? frameH : 0, tex.Width, frameH);
+        /// <summary>体节取帧（三帧竖排：0 绿赘 / 1 干净 / 2 橙囊；1px 内缩防串帧，镜像战斗 SegFrame）</summary>
+        internal static Rectangle BodyFrame(Texture2D tex, int style) {
+            int frames = Math.Max(SerpentChainMath.BodyStyleCount, 1);
+            int frameH = tex.Height / frames;
+            style = Math.Clamp(style, 0, frames - 1);
+            Rectangle frame = new(0, style * frameH, tex.Width, frameH);
             frame.Y += 1;
             frame.Height -= 2;
             return frame;
         }
+
+        internal static Rectangle BodyFrame(Texture2D tex, int ordinal, bool emitter)
+            => BodyFrame(tex, SerpentChainMath.BodyStyleIndex(ordinal, emitter));
 
         internal struct SegmentPose
         {

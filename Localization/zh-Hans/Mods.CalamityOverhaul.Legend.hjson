@@ -1175,7 +1175,7 @@ KikasaText: {
 		TipTeleportHintFormat: 按 {0} 借一滩水渡到指针处；在血湖里施展更快、冷却更短
 		TipThrallFormat: 在场伞奴 {0} / {1}
 		TipHoundCountFormat: 在场恶犬 {0} / {1}
-		TipDreamNoTalis: 梦里只算恶犬的撕咬，符文不生效
+		TipDreamNoTalis: 梦里只算恶犬的撕咬，无视护甲；符文不生效
 		TipSeatsHintFormat: 按住 {0} 打开转盘召出或收回 · 在湖心景里调整编成
 		TipSeatEmpty: 空位
 		TipTalisHint: 点击打开湖心景，在祈雨绳上挂符
@@ -1291,7 +1291,7 @@ KikasaText: {
 		RestartBody: 按下重启键，画面定格成黑白照片，再被雨痕冲开：附近的敌人和你都退回数秒前的位置，你的生命回满、减益洗净，倒带全程无敌。不在鬼雨里也能按：快门那一刻会借来一场鬼雨，落定后雨自行退场，领域还是按键前的领域。
 		RestartPrompt: 手持鬼伞，按 {0}
 		DreamTitle: 进入鬼梦
-		DreamBody: 湖水涨满后长按「血湖表里」键，湖里的倒影会把你拽进鬼梦。梦中敌人失能，远程弹幕无法存在；你的物品也被封禁，改为按住左键连续唤出恶犬撕咬。再按一次同键就能醒来。
+		DreamBody: 湖水涨满后长按「血湖表里」键，湖里的倒影会把你拽进鬼梦。梦中敌人失能，远程弹幕无法存在；你的物品也被封禁，改为按住左键连续唤出恶犬。撕咬无视护甲。再按一次同键就能醒来。
 		DreamPrompt: 湖水涨满后，长按 {0}
 		SkipBtn: 跳过
 		ConfirmBtn: 明白了

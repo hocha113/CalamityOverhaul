@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BloomsandSerpents;
 using CalamityOverhaul.Content.NPCs.FestersandSerpents.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -55,6 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                 gd.SamplerStates[1] = SamplerState.LinearWrap;
 
                 DrawHeadCore(sb, screenPos, ctx, shader);
+                DrawJaws(sb, screenPos, ctx, shader);
                 foreach (var seg in ctx.Segments) {
                     if (seg.active && OnScreen(seg.Center, screenPos)) {
                         DrawSegmentCore(sb, screenPos, ctx, seg, shader);
@@ -67,6 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             }
             else {
                 DrawHeadCoreFallback(sb, screenPos, ctx);
+                DrawJaws(sb, screenPos, ctx, null);
                 foreach (var seg in ctx.Segments) {
                     if (seg.active && OnScreen(seg.Center, screenPos)) {
                         DrawSegmentCoreFallback(sb, screenPos, ctx, seg);
@@ -234,6 +237,24 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
 
             sb.Draw(texture, mainPos, frameRec, light * fade, npc.rotation,
                 origin, npc.scale, SpriteEffects.None, 0f);
+        }
+
+        private static void DrawJaws(SpriteBatch sb, Vector2 screenPos, FssStateContext ctx, Effect shader) {
+            NPC npc = ctx.Npc;
+            float fade = 1f - npc.alpha / 255f;
+            if (fade <= 0.01f) {
+                return;
+            }
+            float jawOpen = BssJawDraw.ResolveOpen(ctx.ClawCommand, ctx.ClawPhase, ctx.ClawBurst, ctx.GaitPhase);
+            Vector2 headWorld = npc.Center + HeadDrawOffset(ctx);
+            Color tint = shader != null
+                ? Lighting.GetColor(npc.Center.ToTileCoordinates()) * fade
+                : Lighting.GetColor(npc.Center.ToTileCoordinates()).MultiplyRGB(FssVfx.SkinMul) * fade;
+            if (shader != null) {
+                shader.Parameters["uUvRect"]?.SetValue(new Vector4(0f, 0f, 1f, 1f));
+                shader.CurrentTechnique.Passes[0].Apply();
+            }
+            BssJawDraw.Draw(sb, headWorld, npc.rotation, jawOpen, tint, screenPos, npc.scale);
         }
 
         private static void DrawHeadCoreFallback(SpriteBatch sb, Vector2 screenPos, FssStateContext ctx) {

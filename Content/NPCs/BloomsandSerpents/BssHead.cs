@@ -98,12 +98,21 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// <summary>爪尖微节贴图（共用胫爪稿；要专属稿时改回独立路径并补 png）</summary>
         [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> LegClawAsset = null;
-        /// <summary>鳌足节贴图（共用步足腿节稿）</summary>
-        [VaultLoaden(CWRConstant.NPC + "BSS/LegUpper")]
-        internal static Asset<Texture2D> ClawSegmentAsset = null;
-        /// <summary>鳌足爪刃贴图（共用胫爪稿）</summary>
-        [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
-        internal static Asset<Texture2D> ClawBladeAsset = null;
+        /// <summary>鳌足上臂</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/ClawUpper")]
+        internal static Asset<Texture2D> ClawUpperAsset = null;
+        /// <summary>鳌足下臂</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/ClawLower")]
+        internal static Asset<Texture2D> ClawLowerAsset = null;
+        /// <summary>鳌足掌</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/ClawChela")]
+        internal static Asset<Texture2D> ClawChelaAsset = null;
+        /// <summary>左颚</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/JawLeft")]
+        internal static Asset<Texture2D> JawLeftAsset = null;
+        /// <summary>右颚</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/JawRight")]
+        internal static Asset<Texture2D> JawRightAsset = null;
 
         private NpcStateMachine<BssStateContext> stateMachine;
         internal BssStateContext Context { get; private set; }
@@ -149,8 +158,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         public override void SetDefaults() {
-            NPC.width = 46;
-            NPC.height = 46;
+            NPC.width = 56;
+            NPC.height = 56;
             NPC.damage = BssDirector.HeadContact;
             NPC.defense = BssDirector.HeadDefense;
             NPC.lifeMax = BssDirector.HeadLife;
@@ -731,11 +740,17 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             spriteBatch.Draw(texture, mainPos, frameRec, drawColor * fade, NPC.rotation,
                 origin, NPC.scale, SpriteEffects.None, 0f);
 
+            float jawOpen = BssJawDraw.ResolveOpen(Context.ClawCommand, Context.ClawPhase,
+                Context.ClawBurst, Context.GaitPhase);
+            Vector2 headWorld = mainPos + screenPos;
+            BssJawDraw.Draw(spriteBatch, headWorld, NPC.rotation, jawOpen, drawColor * fade, screenPos, NPC.scale);
+
             //怒放辉光：头顶花叶在预告/怒放期泛红（加色薄层，体感来自本体遮蔽）
             if (Context.BloomGlow > 0.03f) {
                 Color bloom = BssVfx.BloomRed with { A = 0 } * (0.55f * Context.BloomGlow * fade);
                 spriteBatch.Draw(texture, mainPos, frameRec, bloom, NPC.rotation,
                     origin, NPC.scale * 1.04f, SpriteEffects.None, 0f);
+                BssJawDraw.Draw(spriteBatch, headWorld, NPC.rotation, jawOpen, bloom, screenPos, NPC.scale);
                 Lighting.AddLight(NPC.Center, BssVfx.BloomRed.ToVector3() * 0.35f * Context.BloomGlow);
             }
 

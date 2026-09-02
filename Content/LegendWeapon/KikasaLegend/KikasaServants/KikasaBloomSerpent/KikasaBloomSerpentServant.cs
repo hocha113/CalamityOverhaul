@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         internal const int SegCount = 12;
         internal const float DrawScale = 1f;
         /// <summary>节距 = boss 节距同值（短链原尺寸，读作幼体不是缩皮）</summary>
-        internal const float SegSpacing = 40f;
+        internal const float SegSpacing = 70f;
 
         /// <summary>红花节：链序 3/6/9（与 boss 的 ordinal%3==2 同律，头尾恒否）</summary>
         internal static bool IsFlowerSeg(int i)
@@ -905,9 +905,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             tex = TextureAssets.Npc[type].Value;
             int frames = Math.Max(1, Main.npcFrameCount[type]);
             int frameHeight = tex.Height / frames;
-            //体节两款式：红花节用款式2 帧
-            int frameY = frames > 1 && IsFlowerSeg(i) ? frameHeight : 0;
-            frame = new Rectangle(0, frameY, tex.Width, frameHeight);
+            int style = frames > 1 ? SerpentChainMath.BodyStyleIndex(i - 1, IsFlowerSeg(i)) : 0;
+            frame = new Rectangle(0, style * frameHeight, tex.Width, frameHeight);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -979,6 +978,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
 
                 sb.Draw(tex, pos, frame, color, rot, frame.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
+                if (i == 0) {
+                    BssJawDraw.Draw(sb, spine[0], rot, BssJawDraw.IdleOpen(Main.GlobalTimeWrappedHourly * 3f),
+                        color, Main.screenPosition, DrawScale);
+                }
             }
 
             sb.End();

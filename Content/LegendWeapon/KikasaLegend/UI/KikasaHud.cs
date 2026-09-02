@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 () => "Hounds afield {0} / {1}");
             //梦不吃符要说破，别让构筑玩家在梦里等一个不存在的加成（反馈二·#36，拍板走文案）
             TipDreamNoTalis = this.GetLocalization(nameof(TipDreamNoTalis),
-                () => "Only the hounds' bite counts here — talismans do not apply");
+                () => "Only the hounds' bite counts here; it ignores armor, and talismans do not apply");
             TipSeatsHintFormat = this.GetLocalization(nameof(TipSeatsHintFormat),
                 () => "{0} wheel calls/recalls \u00b7 manage seats in the Lakeheart");
             TipSeatEmpty = this.GetLocalization(nameof(TipSeatEmpty), () => "Vacant seat");

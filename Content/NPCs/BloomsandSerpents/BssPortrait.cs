@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         public override Vector2 SceneHalfSize => new(300f, 250f);
 
         private BssPortraitActor() {
-            rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 40f, sandY: 118f, patrolHalfWidth: 232f) {
+            rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 70f, sandY: 118f, patrolHalfWidth: 232f) {
                 WithClaws = true,
             };
             rig.OnDive = pos => SandBurst(pos, -Vector2.UnitY, 10, 0.8f);
@@ -123,12 +123,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 bool isTail = i == rig.TailOrdinal;
                 Texture2D tex = isTail ? tailTex : bodyTex;
                 Rectangle fr = isTail ? tailTex.Bounds
-                    : SerpentPortraitRig.BodyFrame(bodyTex, BssStateContext.IsFlowerOrdinal(i));
+                    : SerpentPortraitRig.BodyFrame(bodyTex, i, BssStateContext.IsFlowerOrdinal(i));
                 sb.Draw(tex, segs[i].Center, fr, skin, segs[i].Rotation,
                     fr.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
             }
             sb.Draw(headTex, rig.HeadPos, null, skin, rig.HeadRotation,
                 headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
+            BssJawDraw.Draw(sb, rig.HeadPos, rig.HeadRotation,
+                BssJawDraw.IdleOpen(Time * 3f), skin, Vector2.Zero);
 
             //红花脉冲加色（剪影模式跳过）
             if (frame.Masked) {
@@ -139,7 +141,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                     continue;
                 }
                 float glow = 0.5f + 0.4f * MathF.Sin(Time * 2.6f + i * 0.9f);
-                Rectangle fr = SerpentPortraitRig.BodyFrame(bodyTex, alt: true);
+                Rectangle fr = SerpentPortraitRig.BodyFrame(bodyTex, 2);
                 sb.Draw(bodyTex, segs[i].Center, fr,
                     BssVfx.BloomRed with { A = 0 } * (0.5f * glow), segs[i].Rotation,
                     fr.Size() * 0.5f, 1.06f, SpriteEffects.None, 0f);

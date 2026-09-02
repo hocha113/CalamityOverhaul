@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         private bool ruptureFired;
 
         public override void SetStaticDefaults() {
-            Main.npcFrameCount[Type] = 2;
+            Main.npcFrameCount[Type] = SerpentChainMath.BodyStyleCount;
             NPCID.Sets.NPCBestiaryDrawModifiers hide = new() { Hide = true };
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, hide);
             NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Confused] = true;
@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         public override void SetDefaults() {
-            NPC.width = 38;
-            NPC.height = 38;
+            NPC.width = 46;
+            NPC.height = 46;
             NPC.damage = BssDirector.BodyContact;
             NPC.defense = BssDirector.BodyDefense;
             NPC.lifeMax = BssDirector.BodyLife;
@@ -275,7 +275,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         protected virtual bool IsFlower => BssStateContext.IsFlowerOrdinal(Ordinal);
 
         public override void FindFrame(int frameHeight) {
-            NPC.frame = new Rectangle(0, IsFlower ? frameHeight : 0,
+            int style = SerpentChainMath.BodyStyleIndex(Ordinal, IsFlower);
+            NPC.frame = new Rectangle(0, style * frameHeight,
                 TextureAssets.Npc[Type].Width(), frameHeight);
         }
 
