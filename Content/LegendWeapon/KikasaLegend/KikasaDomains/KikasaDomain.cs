@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         public static float ViewedDreamBlend => Viewed?.DreamBlend ?? 0f;
 
         /// <summary>血湖空气冷调。默认关=原血暮红罩；开=滤镜/Grade暗部/Unify轻罩/低画质回退走瘀青靛</summary>
-        public static bool CoolAirGrade => false;
+        public static bool CoolAirGrade => true;
 
         /// <summary>血系表现色随观看域的鬼雨异化冷化</summary>
         public static Color CoolTint(Color blood, Color rain)
