@@ -158,9 +158,21 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Hollowdeep
             return count;
         }
 
+        /// <summary>坠落要有 ≥20 帧反应窗：顶下连续空气至少这么多格</summary>
+        internal const int HeadroomMinTiles = 10;
+        /// <summary>落点禁玩家列：与采样原点的水平距离下限（具名逃逸）</summary>
+        internal const int LockMinLateralTiles = 3;
+        /// <summary>采样窗半宽（瓦）；玩家距离只是安全网，不是生成轴</summary>
+        internal const int LockMaxLateralTiles = 8;
+        /// <summary>每轮随机列次数，全空则本轮不投放</summary>
+        private const int RockAnchorAttempts = 24;
+        /// <summary>向上找顶壁的最大瓦格数（更高穹顶视为无岩可落）</summary>
+        internal const int RockCeilingSearchTiles = 40;
+
         /// <summary>
         /// 从空腔点向上找第一块实心洞顶，返回其下沿悬挂锚点（下探 29px，落石 24px 判定箱
-        /// 在此完全离墙，起坠帧不会撞死在顶砖里）；起点实心或搜完未见顶皆失败
+        /// 在此完全离墙，起坠帧不会撞死在顶砖里）；起点实心或搜完未见顶皆失败。
+        /// 只认顶，不认净空：氛围滴水/萤缀用。伤害落石走 <see cref="TryFindRockfallAnchor"/>
         /// </summary>
         internal static bool TryFindCeiling(Vector2 worldPos, int maxUpTiles, out Vector2 anchor) {
             anchor = default;
@@ -179,6 +191,60 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Hollowdeep
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 伤害落石锚：在原点附近侧向列采顶壁，顶下净空 ≥ <see cref="HeadroomMinTiles"/>，
+        /// 列距 ≥ <see cref="LockMinLateralTiles"/>。竖井/贴顶自然失败，不退回玩家列
+        /// </summary>
+        internal static bool TryFindRockfallAnchor(Vector2 sampleCenter, out Vector2 anchor) {
+            anchor = default;
+            int originX = (int)(sampleCenter.X / 16f);
+            int originY = (int)(sampleCenter.Y / 16f);
+            for (int attempt = 0; attempt < RockAnchorAttempts; attempt++) {
+                int side = Main.rand.NextBool() ? 1 : -1;
+                int dx = Main.rand.Next(LockMinLateralTiles, LockMaxLateralTiles + 1);
+                int tileX = originX + side * dx;
+                if (TryFindQualifiedCeiling(tileX, originY, out anchor)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>该列从采样高度向上见顶，且顶下连续空气够坠落反应窗</summary>
+        internal static bool TryFindQualifiedCeiling(int tileX, int fromTileY, out Vector2 anchor) {
+            anchor = default;
+            if (!WorldGen.InWorld(tileX, fromTileY, 10) || WorldGen.SolidTile(tileX, fromTileY)) {
+                return false;
+            }
+            int ceilingY = -1;
+            for (int dy = 1; dy <= RockCeilingSearchTiles; dy++) {
+                int tileY = fromTileY - dy;
+                if (!WorldGen.InWorld(tileX, tileY, 10)) {
+                    return false;
+                }
+                if (WorldGen.SolidTile(tileX, tileY)) {
+                    ceilingY = tileY;
+                    break;
+                }
+            }
+            if (ceilingY < 0) {
+                return false;
+            }
+            int free = 0;
+            for (int i = 1; i <= HeadroomMinTiles; i++) {
+                int airY = ceilingY + i;
+                if (!WorldGen.InWorld(tileX, airY, 10) || WorldGen.SolidTile(tileX, airY)) {
+                    break;
+                }
+                free++;
+            }
+            if (free < HeadroomMinTiles) {
+                return false;
+            }
+            anchor = new Vector2(tileX * 16f + 8f, ceilingY * 16f + 29f);
+            return true;
         }
 
         //==================== 暗涌 ====================

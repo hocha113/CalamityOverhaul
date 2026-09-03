@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Hollowdeep;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -10,8 +11,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Hollowdeep.Proj
 {
     /// <summary>
     /// 「惊岩」落石。ai[0]=体型。
-    /// 生成位置即锁定落点铅垂线（预告即承诺）：洞顶碎石尘簌簌下落 + 咔啦裂响 52 帧
-    /// → 岩块脱顶坠下（仅坠落窗口有判定，微量伤害，可走位躲开）→ 触地碎裂余韵。
+    /// 生成位置即锁定落点铅垂线（预告即承诺）：洞顶碎石 + 沿列落尘 + 岩层低鸣 52 帧
+    /// → 岩块脱顶坠下（仅坠落窗且未叠盒起手才有判定）→ 触地碎裂余韵。
     /// 全程无后置字段写入，各端相位由 timeLeft 推导（镜像 WastesSandGeyserProj 的同步口径）
     /// </summary>
     internal class HollowdeepRockfallProj : ModProjectile
@@ -52,27 +53,38 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Hollowdeep.Proj
             int elapsed = Elapsed;
             bool falling = elapsed >= TelegraphFrames;
 
-            //判定窗=坠落窗；两个旗标都是各端由相位确定性推导，不走同步
+            //判定窗=坠落窗；旗标由相位推导。叠盒起手靠 localAI[1] 本地重算，不走同步
             Projectile.hostile = falling;
             Projectile.tileCollide = falling;
+            if (elapsed == TelegraphFrames) {
+                Projectile.localAI[1] = OverlapsAnyPlayer() ? 1f : 2f;
+            }
+            else if (falling && Projectile.localAI[1] < 1.5f && !OverlapsAnyPlayer()) {
+                Projectile.localAI[1] = 2f;
+            }
 
             if (!falling) {
-                //预告期：双通道预告（咔啦裂响 + 顶缝簌簌落尘）
+                //预告期：岩层低鸣（与镐子可分）+ 顶缝尘 + 沿落点列落尘（低头也看得见）
                 if (!Main.dedServ) {
                     if (elapsed == 0) {
-                        SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.6f, Pitch = -0.4f, MaxInstances = 5 }, Projectile.Center);
-                        SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.4f, Pitch = -0.5f, MaxInstances = 5 }, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.48f, Pitch = -0.72f, MaxInstances = 4 }, Projectile.Center);
                     }
                     else if (elapsed == 26) {
-                        SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.65f, Pitch = -0.15f, MaxInstances = 5 }, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.52f, Pitch = -0.4f, MaxInstances = 4 }, Projectile.Center);
                     }
                     if (elapsed % 2 == 0) {
                         float progress = elapsed / (float)TelegraphFrames;
-                        Dust dust = Dust.NewDustPerfect(
+                        Dust chip = Dust.NewDustPerfect(
                             Projectile.Center + new Vector2(Main.rand.NextFloat(-10f, 10f) * RockScale, -6f),
                             DustID.Stone, new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(1.2f, 2.6f)),
                             80, default, 0.8f + progress * 0.5f);
-                        dust.noGravity = false;
+                        chip.noGravity = false;
+                        float along = Main.rand.NextFloat(16f, HollowdeepAmbience.HeadroomMinTiles * 16f);
+                        Dust grit = Dust.NewDustPerfect(
+                            Projectile.Center + new Vector2(Main.rand.NextFloat(-5f, 5f), along),
+                            DustID.Stone, new Vector2(Main.rand.NextFloat(-0.15f, 0.15f), Main.rand.NextFloat(1.4f, 2.8f)),
+                            90, default, 0.7f + progress * 0.4f);
+                        grit.noGravity = false;
                     }
                     Lighting.AddLight(Projectile.Center, new Vector3(0.16f, 0.12f, 0.05f));
                 }
@@ -102,8 +114,21 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Hollowdeep.Proj
             }
         }
 
+        /// <summary>坠落窗且未叠盒起手才伤；贴顶重叠那几帧直接不算</summary>
+        public override bool CanHitPlayer(Player target) => Falling && Projectile.localAI[1] > 1.5f;
+
         //命中玩家同样当场碎裂（不穿身）
         public override void OnHitPlayer(Player target, Player.HurtInfo info) => Projectile.Kill();
+
+        private bool OverlapsAnyPlayer() {
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player player = Main.player[i];
+                if (player.active && !player.dead && Projectile.Hitbox.Intersects(player.Hitbox)) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public override void OnKill(int timeLeft) {
             if (Main.dedServ) {
