@@ -52,6 +52,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+            //坠道预告柱 1900 远超弹体:屏检余量放到柱长级,柱顶出屏时虚线不消失
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2600;
         }
 
         public override void SetDefaults() {

@@ -35,6 +35,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private int Palette => (int)Projectile.ai[2];
         private float Age => Lifetime - Projectile.timeLeft;
 
+        /// <summary>矛长 1900 远超弹体:屏检余量放到束长级,星球出屏时冕矛不消失</summary>
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2600;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 16;
             Projectile.hostile = true;

@@ -63,6 +63,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private readonly Vector2[] segments = new Vector2[SegmentCount];
         private bool segmentsInit;
 
+        /// <summary>预瞄线 1600 与体节链远超弹体:屏检余量放到线长级,头出屏时龙身/预瞄不消失</summary>
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2600;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 30;
             Projectile.hostile = true;

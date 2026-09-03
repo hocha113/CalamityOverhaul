@@ -41,6 +41,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 
         private bool plantBeatDone;
 
+        /// <summary>钉界环半径 340 超弹体:屏检余量放到环径级,离钉心时金环不消失</summary>
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 800;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 20;
             Projectile.hostile = true;

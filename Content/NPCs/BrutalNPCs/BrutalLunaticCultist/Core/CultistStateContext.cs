@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         public static readonly float[] PhaseRatios = [0.85f, 0.65f, 0.45f, 0.25f];
         /// <summary>黄道环半径(世界px),战场边界</summary>
         public const float ArenaRadius = 1800f;
+        /// <summary>场心锚点弹幕的屏检余量:默认 480 盖不住 ArenaRadius(贴墙时场心在屏外)</summary>
+        public const int ArenaDrawFluff = 3600;
         /// <summary>合相蓄力窗内打断所需伤害占比</summary>
         public const float ConjunctionBreakRatio = 0.05f;
         #endregion

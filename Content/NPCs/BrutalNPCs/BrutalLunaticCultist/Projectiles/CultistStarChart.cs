@@ -54,6 +54,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         internal static int BeamStartFor(int nodeCount) =>
             DrawStart + EdgeDrawFrames * (nodeCount - 1) + 9 + WarnFrames;
 
+        /// <summary>延长线半长 3400 远超弹体:屏检余量放到光刃级,离图心时预警/落刃不消失</summary>
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 4000;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 24;
             Projectile.hostile = true;

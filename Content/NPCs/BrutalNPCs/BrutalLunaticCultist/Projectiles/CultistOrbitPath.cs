@@ -42,6 +42,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private bool Mirrored => (int)Projectile.ai[2] == 1;
         private float Age => Lifetime - Projectile.timeLeft;
 
+        /// <summary>轨道半径约 650 超弹体:屏检余量放到轨径级,贴轨缘时椭圆不消失</summary>
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1600;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 24;
             Projectile.hostile = true;

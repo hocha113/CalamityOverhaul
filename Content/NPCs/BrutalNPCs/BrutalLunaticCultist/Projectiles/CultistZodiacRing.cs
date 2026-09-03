@@ -30,6 +30,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         /// <summary>撞墙脉冲(本地演出量)</summary>
         private float wallPulse;
 
+        /// <summary>穹膜半径远超 16px 弹体:屏检余量放到场心级,贴墙时环缘不随场心出屏消失</summary>
+        public override void SetStaticDefaults() =>
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = CultistStateContext.ArenaDrawFluff;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 16;
             Projectile.hostile = false;

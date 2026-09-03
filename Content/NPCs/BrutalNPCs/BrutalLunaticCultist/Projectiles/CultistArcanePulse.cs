@@ -38,6 +38,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private float Radius => MathHelper.Min(StartRadius + Age * Speed, MaxRadius);
         private float FadeOut => MathHelper.Clamp(Projectile.timeLeft / (float)FadeFrames, 0f, 1f);
 
+        /// <summary>扩环半径远超弹体:屏检余量放到满径级,离司祭时环缘不消失</summary>
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1600;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 16;
             Projectile.hostile = true;

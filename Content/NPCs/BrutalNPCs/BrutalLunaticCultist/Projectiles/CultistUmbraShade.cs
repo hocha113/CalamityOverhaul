@@ -89,6 +89,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 
         private int planetCache = -1;
 
+        /// <summary>本影楔长 1750 远超弹体:屏检余量放到楔长级,离星球时安全廊不消失</summary>
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2600;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 24;
             Projectile.hostile = false;

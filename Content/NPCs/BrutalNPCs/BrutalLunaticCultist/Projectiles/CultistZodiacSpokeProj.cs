@@ -33,6 +33,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private float Age => Lifetime - Projectile.timeLeft;
         private float CurrentAngle => BaseAngle + DriftRate * Age;
 
+        /// <summary>辐条锚在场心、根在环缘:屏检余量与黄道环同级,贴墙时点燃条不消失</summary>
+        public override void SetStaticDefaults() =>
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = CultistStateContext.ArenaDrawFluff;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 16;
             Projectile.hostile = true;

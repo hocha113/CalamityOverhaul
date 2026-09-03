@@ -93,6 +93,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         /// <summary>碰撞半径:小于可见体(对玩家宽容);星云是气,判定更松</summary>
         private float CollisionRadius => VisRadius * (Kind == KindNebula ? 0.70f : 0.88f) * Projectile.scale;
 
+        /// <summary>月体半径 620 超 24px 弹体:屏检余量放到体量级,贴球缘时球盘不消失</summary>
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1600;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 24;
             Projectile.hostile = true;

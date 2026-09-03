@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projectiles
@@ -27,6 +28,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private bool Locked => Projectile.timeLeft <= LockFrames;
 
         private bool lockBeatDone;
+
+        /// <summary>预瞄线长 2400 远超弹体:屏检余量放到线长级,星球出屏时虚线不消失</summary>
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2600;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 8;
