@@ -1,0 +1,89 @@
+
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\tModLoader.targets" />
+  <PropertyGroup>
+    <AssemblyName>CalamityOverhaul</AssemblyName>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Assets\NPCs\Fatuous\**" />
+    <AdditionalFiles Remove="Content\Buffs\Summon\**" />
+    <AdditionalFiles Remove="Content\Demo\**" />
+    <AdditionalFiles Remove="Content\Items\Typeless\**" />
+    <AdditionalFiles Remove="Content\NPCs\HeavenEaters\**" />
+    <Compile Remove="Assets\NPCs\Fatuous\**" />
+    <Compile Remove="Content\Buffs\Summon\**" />
+    <Compile Remove="Content\Demo\**" />
+    <Compile Remove="Content\Items\Typeless\**" />
+    <Compile Remove="Content\NPCs\HeavenEaters\**" />
+    <EmbeddedResource Remove="Assets\NPCs\Fatuous\**" />
+    <EmbeddedResource Remove="Content\Buffs\Summon\**" />
+    <EmbeddedResource Remove="Content\Demo\**" />
+    <EmbeddedResource Remove="Content\Items\Typeless\**" />
+    <EmbeddedResource Remove="Content\NPCs\HeavenEaters\**" />
+    <None Remove="Assets\NPCs\Fatuous\**" />
+    <None Remove="Content\Buffs\Summon\**" />
+    <None Remove="Content\Demo\**" />
+    <None Remove="Content\Items\Typeless\**" />
+    <None Remove="Content\NPCs\HeavenEaters\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="0.7.0.1.1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\Effects\ColorGradient.fx" />
+    <None Remove="assets\effects\DeductDraw.fx" />
+    <None Remove="Assets\Effects\GradientTrail.fx" />
+    <None Remove="assets\effects\KnifeDistortion.fx" />
+    <None Remove="Assets\Effects\KnifeRendering.fx" />
+    <None Remove="Assets\Effects\WarpShader.fx" />
+    <None Remove="Assets\Masking\DiffusionCircle2.png" />
+    <None Remove="Assets\Masking\DiffusionCircle3.png" />
+    <None Remove="Assets\Masking\DiffusionCircle4.png" />
+    <None Remove="Assets\Masking\DragonRage_Bar.png" />
+    <None Remove="Assets\Masking\e.png" />
+    <None Remove="Assets\Masking\Extra_193.png" />
+    <None Remove="Assets\Masking\Extra_193_White.png" />
+    <None Remove="Assets\Masking\MotionTrail2.png" />
+    <None Remove="Assets\Masking\MotionTrail3.png" />
+    <None Remove="Assets\Masking\MotionTrail4.png" />
+    <None Remove="Assets\Masking\SoftGlow.png" />
+    <None Remove="Assets\Masking\SplitTrail.png" />
+    <None Remove="Assets\Masking\StarTexture.png" />
+    <None Remove="Assets\Masking\StarTexture_White.png" />
+    <None Remove="Assets\Masking\Streak3.png" />
+    <None Remove="Assets\Masking\Wave.png" />
+    <None Remove="Assets\Masking\WavyNoise.png" />
+    <None Remove="Assets\Projectiles\Ranged\TurbulenceArrowHighlight.png" />
+    <None Remove="Assets\Projectiles\Ranged\TurbulenceFlow.png" />
+    <None Remove="OtherMods\improvegame\Thank you Cyrilly.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\ADV\Shenyo\" />
+    <Folder Include="Assets\Items\Bag\" />
+    <Folder Include="Assets\Items\Other\" />
+    <Folder Include="Assets\Players\" />
+    <Folder Include="Assets\Painting\" />
+    <Folder Include="Assets\Arcanes\" />
+    <Folder Include="Assets\UIs\FishSkill\" />
+    <Folder Include="Content\Items\Stones\Granites\" />
+    <Folder Include="Content\Scenarios\Draedon\Lines\ExoMechdusaSum\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="0.9203.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="InnoVault">
+      <HintPath>..\InnoVault\bin\Debug\net8.0\InnoVault.dll</HintPath>
+    </Reference>
+    <Reference Include="SubworldLibrary">
+      <HintPath>..\..\SubworldLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
