@@ -24,7 +24,7 @@ GameModeText: {
 	HintEnable: Clique para despertar
 	HintDisable: Clique para selar
 	BossRefuse: Um chefe ainda vive. O pacto nao pode ser alterado agora
-	// AsuraNeedBrutal: Awaken Cruel World first
+	// AsuraNeedBrutal: Awaken Brutal World first
 }
 
 // SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"

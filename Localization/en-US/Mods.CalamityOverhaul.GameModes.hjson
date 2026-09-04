@@ -1,5 +1,5 @@
 GameModeText: {
-	BrutalName: Cruel World
+	BrutalName: Brutal World
 	AsuraName: Asura Hell
 	AnnihilationName: Death's End
 	GodSmithName: Divine Artifice
@@ -24,7 +24,7 @@ GameModeText: {
 	HintEnable: Click to awaken
 	HintDisable: Click to seal
 	BossRefuse: A boss still lives. The pact cannot be altered now
-	AsuraNeedBrutal: Awaken Cruel World first
+	AsuraNeedBrutal: Awaken Brutal World first
 }
 
 SporeshineAmbience.DazeDeathReason: "{0} drowsed away deep in the spore haze"

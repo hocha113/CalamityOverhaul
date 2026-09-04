@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
         private const int BrutalOption = 4;
         /// <summary>修罗在原版难度枚举里的越界值</summary>
         private const int AsuraOption = 5;
-        /// <summary>六格统一文字缩放：容一行六格里最长的「残酷世界/Cruel World」不溢出</summary>
+        /// <summary>六格统一文字缩放：容一行六格里最长的「残酷世界/Brutal World」不溢出</summary>
         private const float TitleSize = 0.9f;
 
         private static Type difficultyEnumType;
