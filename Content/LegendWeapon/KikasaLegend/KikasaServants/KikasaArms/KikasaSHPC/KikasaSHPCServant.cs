@@ -52,6 +52,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         public int ArmsItemType => SHPCOverride.ID;
 
+        /// <summary>专属单体：强度由原件等级烘焙，不吃编队摊薄</summary>
+        public int UnitCount => 1;
+
         /// <summary>绘制缩放与炮口探出：SHPC 贴图对齐（占位初值）</summary>
         private const float GunDrawScale = 0.9f;
         private const float MuzzleLen = 34f;

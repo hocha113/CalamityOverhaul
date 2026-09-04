@@ -111,6 +111,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         private int spearCount = MaxSpears;
 
+        public int UnitCount => spearCount;
+
         //==================== 本地表现量 ====================
 
         private readonly bool[] breachDone = new bool[MaxSpears];

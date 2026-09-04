@@ -187,6 +187,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             });
         }
 
+        /// <summary>
+        /// 飞沫落湖：一颗有物理的血团砸回水面。微圈限量（不抢行波槽、留余量给主涟漪），
+        /// 一到两粒浅色溅滴弹起；strength≈团径与落速的合量 0.25~1.2。血柱飞沫成百上千地落，
+        /// 这里必须便宜：无雾、无声、无物理血滴
+        /// </summary>
+        public static void DropletSplash(Vector2 world, float strength) {
+            if (KikasaDomain.Viewed == null) {
+                return;
+            }
+            if (ripples.Count < RippleCap - 4 && Main.rand.NextBool(2)) {
+                RippleAt(world, MathHelper.Clamp(0.10f + strength * 0.14f, 0.1f, 0.28f));
+            }
+            int count = strength > 0.7f ? 2 : 1;
+            for (int i = 0; i < count; i++) {
+                Vector2 vel = new(Main.rand.NextFloat(-1.4f, 1.4f), -Main.rand.NextFloat(1.2f, 2.6f) * (0.6f + strength * 0.5f));
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                    world + new Vector2(Main.rand.NextFloat(-3f, 3f), -2f),
+                    vel, SplashPale * Main.rand.NextFloat(0.35f, 0.55f),
+                    Main.rand.NextFloat(0.3f, 0.5f) * (0.7f + strength * 0.4f))
+                    ?.Configure(Main.rand.Next(12, 22), vel.X);
+            }
+        }
+
         /// <summary>踏水碎星：沿行进反方向踢起几滴，行走涟漪的配菜</summary>
         public static void FootSplash(Vector2 world, float strength, float velX) {
             int count = 2 + (int)(strength * 2f);

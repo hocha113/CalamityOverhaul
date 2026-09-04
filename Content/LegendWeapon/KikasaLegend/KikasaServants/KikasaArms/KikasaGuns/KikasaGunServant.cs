@@ -34,7 +34,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         //==================== 可调基数（占位初值，验收再调）====================
 
         /// <summary>湖水子弹基伤（召唤加成与档案倍率前），由子弹幕消费。
-        /// 165 时血肉墙段 DPS 破 2600 超模，下调（反馈三·#35，拍板 2026/8/31）</summary>
+        /// 口径：迷你鲨档（稀有度 2）武器、单只、单发 = 1.0；档案 ShotDamageMul 按沉入武器稀有度沿幂曲线折档位，
+        /// 编队摊薄在命中端（KikasaServantBalanceGlobal，5 把 = 2.6 份而非 5 份）。
+        /// 历史：165 时血肉墙段 DPS 破 2600 下调至 120（反馈三·#35，2026/8/31）</summary>
         internal const int ShotDamage = 120;
 
         /// <summary>编队硬上限：数组容量，实际编制还要过档案 MaxUnits</summary>
@@ -139,6 +141,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         /// <summary>编队枪数：owner 在 Summon 里定值，ExtraAI 随包同步；远端首包前按满编</summary>
         private int gunCount = MaxGuns;
+
+        public int UnitCount => gunCount;
 
         //==================== 本地表现量（不入同步，节拍闩防快照回卷重播）====================
 

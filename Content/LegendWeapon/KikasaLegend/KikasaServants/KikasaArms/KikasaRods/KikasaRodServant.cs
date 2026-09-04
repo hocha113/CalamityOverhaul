@@ -37,6 +37,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         public int ArmsItemType => armsItemType;
 
+        /// <summary>独钓一竿，沉几根都只出一根</summary>
+        public int UnitCount => 1;
+
         private KikasaRodProfile? profileCache;
 
         private KikasaRodProfile Profile => profileCache ??= KikasaArmsProfiler.RodProfileOf(armsItemType);

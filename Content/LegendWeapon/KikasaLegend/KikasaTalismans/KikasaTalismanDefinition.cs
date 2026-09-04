@@ -146,6 +146,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
         internal virtual void OnGeyserErupt(in KikasaTalismanRainContext ctx, Projectile geyser) { }
 
         /// <summary>
+        /// 血柱起柱拍（各端；仅派发给标签符，ctx.Slot=-1）。血湖形态血珠首次入水起的柱，
+        /// 每颗珠子都可能触发，故与三泉的 <see cref="OnGeyserErupt"/> 分开派发；暂无符消费
+        /// </summary>
+        internal virtual void OnColumnErupt(in KikasaTalismanRainContext ctx, Projectile column) { }
+
+        /// <summary>
         /// 墨洼逐帧（各端）。旋钮类（宽度波动/判定关断）在此逐帧写。
         /// 服务：汐（潮性涨落/涌潮位移）、沆（夜蒸瘴雾柱）、霜（霜镜材质）
         /// </summary>

@@ -26,9 +26,9 @@ float uMix;          //0-1 合成介入度，起手淡入
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 
-//====== 双向调色板：血湖 ↔ 鬼雨湿墨（浑浊偏冷） ======
-static const float3 BLOOD_TINT = float3(0.930, 0.300, 0.270);  //镜像血染乘色
-static const float3 BLOOD_FOG  = float3(0.170, 0.024, 0.036);  //湖底血雾
+//====== 双向调色板：血湖 ↔ 鬼雨湿墨（浑浊偏冷）。血侧与 KikasaGrade 的 LAKE_TINT/LAKE_FOG 同值，起手才不跳色 ======
+static const float3 BLOOD_TINT = float3(0.820, 0.400, 0.400);  //镜像血染乘色
+static const float3 BLOOD_FOG  = float3(0.055, 0.018, 0.040);  //湖底墨雾
 static const float3 BLOOD_FOAM = float3(0.965, 0.520, 0.440);  //缝线血沫
 static const float3 RAIN_TINT  = float3(0.520, 0.620, 0.640);  //浊水灰青乘色
 static const float3 RAIN_FOG   = float3(0.085, 0.108, 0.126);  //冷雨沉雾
@@ -71,7 +71,7 @@ float4 PSMirror(float2 coords : TEXCOORD0) : COLOR0
 
     //双向调色：去饱和量/乘色/纵深压暗/沉雾全按 uColdMix 混合（血湖↔鬼雨浊水）
     float grey = dot(mcol, float3(0.30, 0.55, 0.15));
-    float3 graded = lerp(mcol, grey.xxx, lerp(0.40, 0.58, uColdMix));
+    float3 graded = lerp(mcol, grey.xxx, lerp(0.45, 0.58, uColdMix));
     graded *= lerp(BLOOD_TINT, RAIN_TINT, uColdMix);
     float depth = saturate(below * 1.5);
     graded *= 1.0 - depth * lerp(0.30, 0.36, uColdMix);

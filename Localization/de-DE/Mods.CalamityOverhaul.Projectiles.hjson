@@ -494,6 +494,7 @@ KikasaInkDrop.DisplayName: Tintenregen
 KikasaInkPour.DisplayName: Tintenkatarakt
 KikasaInkPuddle.DisplayName: Tintenlache
 KikasaInkGeyser.DisplayName: Tintenquelle
+// KikasaBloodColumn.DisplayName: Blood Column
 BrainBloodShard.DisplayName: Pulsierende Blutperle
 BrainMirrorImage.DisplayName: Spiegelabbild
 BrainShellFragment.DisplayName: Panzersplitter

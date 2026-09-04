@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -38,6 +39,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         /// <summary>瀑缘散射沿柱的最大距离,不跟空射射程一起拉长</summary>
         private const float ScatterAlongMax = 480f;
+
+        /// <summary>
+        /// 源头近段穿透距离(px):起点落在此段内、且在此段内就穿出去的薄实心(脸前方块/薄洞顶)
+        /// 不截断瀑;段内起步却到此处仍在实心的是厚体,照旧截在它的入口面接墨。
+        /// 远处地形规则不变(反馈:右键被脸上/头上的物块挡住)
+        /// </summary>
+        private const float NearPassPx = 96f;
 
         /// <summary>跟手转向:每帧最大角步进(弧度)与比例平滑系数,伞姿态与瀑体共用同一速率</summary>
         internal const float TrackTurnStep = 0.15f;
@@ -79,6 +87,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private int slotCount = 1;
         private int sustainFrames = SustainFrames;
         private bool geyserFired;
+        //近段薄墙的渗墨渍一瀑只留一次
+        private bool thinWallSplatDone;
+        //血形态:首帧按归属玩家同步领域态定,瀑的一生不再改;瀑体换血色板,散射滴起小柱,三泉抬高
+        private bool bloodMode;
 
         //唤雨符:每帧一解的档与派发器快照(空绳零开销),绘制线程复用上一帧
         private KikasaTalismanProfile pourProfile = KikasaTalismanProfile.Identity;
@@ -154,6 +166,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             pourProfile = KikasaTalismanCombat.Resolve(owner);
             pourHooks = KikasaTalismanHooks.For(owner);
             if ((int)life == 1) {
+                bloodMode = KikasaBloodForm.Active(owner);
                 //冲刷时长首帧一次性落定:齐掷档+12,泷符时长倍率再折入;timeLeft 补同一差值
                 int baseSustain = SustainFrames
                     + (slotCount >= KikasaOverride.TierGhostVolley ? 12 : 0);
@@ -200,12 +213,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float lakeY = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>().LakeWorldY : float.MaxValue;
 
             //射线找落点:实心截断;过水线不停,水下段每像素吃 1.8× 长度预算
-            //(稠血吸收,水下臂长自然缩短),各端确定性一致
+            //(稠血吸收,水下臂长自然缩短),各端确定性一致。
+            //源头近段(NearPassPx 内)的薄实心可穿:记连续实心段起点,段在近段内穿出即忽略;
+            //到近段末仍在实心=厚体,截在段起点;近段外的实心照旧截在入口
             lenPx = MaxLenPx;
             hitGround = false;
             hitLake = false;
             lakeCrossPx = -1f;
             float budget = MaxLenPx;
+            float solidRunStart = -1f;
             for (float d = 32f; d <= MaxLenPx; d += 16f) {
                 Vector2 p = Projectile.Center + dir * d;
                 if (p.Y >= lakeY && !hitLake) {
@@ -213,9 +229,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     lakeCrossPx = d;
                 }
                 if (Collision.SolidCollision(p - new Vector2(4f, 4f), 8, 8)) {
-                    lenPx = d;
-                    hitGround = true;
-                    break;
+                    if (solidRunStart < 0f) {
+                        solidRunStart = d;
+                    }
+                    if (solidRunStart >= NearPassPx || d >= NearPassPx) {
+                        lenPx = solidRunStart;
+                        hitGround = true;
+                        break;
+                    }
+                }
+                else if (solidRunStart >= 0f) {
+                    //近段内穿出薄实心:入口留一次渗墨,墙上有痕
+                    if (!thinWallSplatDone && !Main.dedServ) {
+                        thinWallSplatDone = true;
+                        KikasaInkFX.AddGroundSplat(Projectile.Center + dir * solidRunStart, dir * 10f,
+                            18f + Fill * 8f);
+                    }
+                    solidRunStart = -1f;
                 }
                 budget -= p.Y >= lakeY ? 16f * 1.8f : 16f;
                 if (budget <= 0f) {
@@ -249,20 +279,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     if (!Main.dedServ) {
                         for (int i = 0; i < 3; i++) {
                             Vector2 vel = (-dir).RotatedByRandom(0.9f) * Main.rand.NextFloat(2f, 5.5f);
-                            PRTLoader.NewParticle<PRT_KikasaInkBead>(end + Main.rand.NextVector2Circular(WidthPx * 0.3f, 6f),
-                                vel, Main.rand.NextBool(3) ? KikasaInk.InkDeep : KikasaInk.InkBody,
-                                Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(18, 28));
+                            SpawnSplashBead(end + Main.rand.NextVector2Circular(WidthPx * 0.3f, 6f), vel,
+                                Main.rand.NextBool(3), Main.rand.NextFloat(0.4f, 0.7f), Main.rand.Next(18, 28));
                         }
                         Vector2 tang = dir.RotatedBy(MathHelper.PiOver2);
                         for (int i = 0; i < 2; i++) {
                             float side = i == 0 ? 1f : -1f;
-                            PRTLoader.NewParticle<PRT_KikasaInkBead>(
-                                end - dir * 4f + tang * side * Main.rand.NextFloat(4f, WidthPx * 0.4f),
+                            SpawnSplashBead(end - dir * 4f + tang * side * Main.rand.NextFloat(4f, WidthPx * 0.4f),
                                 tang * side * Main.rand.NextFloat(3f, 6f) - dir * Main.rand.NextFloat(0.4f, 1.4f),
-                                KikasaInk.InkBody, Main.rand.NextFloat(0.34f, 0.55f))?.Configure(Main.rand.Next(16, 26));
+                                false, Main.rand.NextFloat(0.34f, 0.55f), Main.rand.Next(16, 26));
                         }
                         PRTLoader.NewParticle<PRT_KikasaInkMist>(end - dir * 10f,
-                            -dir * Main.rand.NextFloat(0.5f, 1.2f), KikasaInk.InkDeep,
+                            -dir * Main.rand.NextFloat(0.5f, 1.2f),
+                            bloodMode ? KikasaInk.BloodDeep : KikasaInk.InkDeep,
                             Main.rand.NextFloat(0.9f, 1.3f))?.Configure(Main.rand.Next(26, 40));
                     }
                     KikasaInk.Play(KikasaInk.InkSplash, end, 0.48f, -0.4f, 4);
@@ -341,9 +370,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                         drop.penetrate = dropCtx.Penetrate;
                     }
                     drop.netUpdate = true;
-                    //墨印:瀑的散射滴同属亲手指挥的攻击,盖印(端本地位,本分支已在归属端)
+                    //墨印:瀑的散射滴同属亲手指挥的攻击,盖印(端本地位,本分支已在归属端);
+                    //血形态散射滴入湖起小柱(0.4 高、0.7 宽、伤害减半),同为归属端本地字段
                     if (drop.ModProjectile is KikasaInkDrop inkDrop) {
                         inkDrop.AppliesTag = true;
+                        inkDrop.ColumnHeightMul = KikasaBloodForm.ScatterColumnHeightMul;
+                        inkDrop.ColumnScatter = true;
                     }
                 }
             }
@@ -377,6 +409,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
 
             Lighting.AddLight(Projectile.Center + dir * MathF.Min(lenPx, 420f) * 0.5f, 0.14f, 0.03f, 0.04f);
+        }
+
+        /// <summary>落点溅珠:墨形态墨珠、血形态血珠,同一处出手不同材质</summary>
+        private void SpawnSplashBead(Vector2 at, Vector2 vel, bool deep, float scale, int life) {
+            if (bloodMode) {
+                PRTLoader.NewParticle<PRT_KikasaBloodGlob>(at, vel,
+                    deep ? KikasaInk.BloodBright : KikasaInk.BloodBody, scale * 0.85f)?.Configure(life);
+            }
+            else {
+                PRTLoader.NewParticle<PRT_KikasaInkBead>(at, vel,
+                    deep ? KikasaInk.InkDeep : KikasaInk.InkBody, scale)?.Configure(life);
+            }
         }
 
         /// <summary>
@@ -432,7 +476,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             //沛符墨泉乘区(FireGeysers 只在所有者端被调,伤害随生成包带走)
             float geyserMul = pourProfile.GeyserDamageMul * geyserCtx.DamageMul;
             float geyserAi1 = KikasaTalismanHooks.PackTag(geyserCtx.TagId, geyserCtx.TagPayload);
-            float geyserAi2 = MathF.Round(MathHelper.Clamp(geyserCtx.HeightMul, 0.2f, 8f) * 1000f);
+            //血形态三泉抬高:满蓄终幕要压过普攻血柱的 300 上限(236→约 354)
+            float heightMul = geyserCtx.HeightMul * (bloodMode ? KikasaBloodForm.GeyserBloodHeightMul : 1f);
+            float geyserAi2 = MathF.Round(MathHelper.Clamp(heightMul, 0.2f, 8f) * 1000f);
 
             //泉锚点:过水线的瀑锚在过线处的水面(墨泉是湖面特性,不随水下段下潜),否则用真实末端
             Vector2 anchor = hitLake && lakeCrossPx >= 0f
@@ -529,6 +575,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float spanV = (inset + lenPx) / quadH;
             Vector2 dir = DirAngle.ToRotationVector2();
 
+            //四色逐体重设:血形态的瀑是倒下来的血,墨形态回墨色板(共享参数会被上一体污染)
+            if (bloodMode) {
+                fx.Parameters["uColBody"]?.SetValue(KikasaInk.BloodBody.ToVector3());
+                fx.Parameters["uColDeep"]?.SetValue(KikasaInk.BloodDeep.ToVector3());
+                fx.Parameters["uColCore"]?.SetValue(KikasaInk.BloodBright.ToVector3());
+                fx.Parameters["uColSheen"]?.SetValue(KikasaInk.BloodSheen.ToVector3());
+            }
+            else {
+                fx.Parameters["uColBody"]?.SetValue(KikasaInk.InkBody.ToVector3());
+                fx.Parameters["uColDeep"]?.SetValue(KikasaInk.InkDeep.ToVector3());
+                fx.Parameters["uColCore"]?.SetValue(KikasaInk.BloodCore.ToVector3());
+                fx.Parameters["uColSheen"]?.SetValue(KikasaInk.WetSheen.ToVector3());
+            }
             fx.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.7391f % 3.71f);
             fx.Parameters["uFade"]?.SetValue(fade);
             fx.Parameters["uWScale"]?.SetValue(ws);
@@ -566,7 +625,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float alpha = (1f - DrainT) * MathHelper.Clamp(life / 4f, 0f, 1f);
             Vector2 mid = Projectile.Center + DirAngle.ToRotationVector2() * (frontPx * 0.5f);
             Vector2 scale = new(WidthPx * widthT / tex.Width * 1.2f, frontPx / tex.Height * 1.1f);
-            sb.Draw(tex, mid - Main.screenPosition, null, KikasaInk.InkBody * (0.85f * alpha),
+            sb.Draw(tex, mid - Main.screenPosition, null,
+                (bloodMode ? KikasaInk.BloodBody : KikasaInk.InkBody) * (0.85f * alpha),
                 DirAngle - MathHelper.PiOver2, tex.Size() * 0.5f, scale, SpriteEffects.None, 0f);
         }
     }

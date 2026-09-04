@@ -494,6 +494,7 @@ KikasaInkDrop.DisplayName: Lluvia de tinta
 KikasaInkPour.DisplayName: Cascada de tinta
 KikasaInkPuddle.DisplayName: Charco de tinta
 KikasaInkGeyser.DisplayName: Géiser de tinta
+// KikasaBloodColumn.DisplayName: Blood Column
 BrainBloodShard.DisplayName: Perla de sangre palpitante
 BrainMirrorImage.DisplayName: Prótesis especular
 BrainShellFragment.DisplayName: Fragmento de caparazón

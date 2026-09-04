@@ -35,6 +35,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private int baseDamage = 320;
         public int ArmsItemType => ModContent.ItemType<Pandemonium>();
 
+        /// <summary>专属单体：强度由原件模板伤烘焙，不吃编队摊薄</summary>
+        public int UnitCount => 1;
+
         private const float BookDrawScale = 0.92f;
 
         private const int StateEmerge = 0;

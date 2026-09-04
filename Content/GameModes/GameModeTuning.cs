@@ -35,17 +35,31 @@ namespace CalamityOverhaul.Content.GameModes
 
         //——毁灭下的修罗机制强化——
 
-        /// <summary>毁灭下敌怪每次同类命中积累的免疫层数（其余档位 1 层）</summary>
-        public const float AnnihilationAdaptStacksPerHit = 2f;
+        /// <summary>毁灭下每次同源命中按这么多次命中计入适应（其余档位 1 次）</summary>
+        public const float AnnihilationAdaptHitsPerHit = 2f;
         /// <summary>毁灭下伤害下限相对最近命中的倍率（其余档位 1 倍）</summary>
         public const float AnnihilationFloorMult = 2f;
 
+        //——修罗：同源适应曲线——
+        //状态量就是减伤比例本身：每次命中吞掉一份"剩余脆弱度"，R ← R + (Cap - R) × Bite，
+        //首击约 Cap × Bite，之后逐击递减、渐近上限，没有台阶也没有撞顶的拐点；
+        //脱手过宽限后按固定速率线性回落，回落手感与旧版一致（约 3.4 秒吃满归零）
+
+        /// <summary>适应减伤的渐近上限，永远打得动</summary>
+        public const float AsuraResistCap = 0.82f;
+        /// <summary>每次同源命中吞掉的剩余脆弱度比例（首击 ≈ 8.2%，第 11 击累计 ≈ 56%，第 20 击 ≈ 72%）</summary>
+        public const float AsuraAdaptBite = 0.10f;
+        /// <summary>无同源命中的宽限帧数，此后开始回落</summary>
+        public const int AsuraAdaptGraceTicks = 60;
+        /// <summary>宽限后每帧回落的减伤比例</summary>
+        public const float AsuraAdaptDecayPerTick = 0.004f;
+
         //——修罗：近战是适应的裂隙——
 
-        /// <summary>真近战（物品挥击与刀刃本体弹幕）承受的适应减伤比例</summary>
-        public const float AsuraTrueMeleeAdaptTaken = 0.4f;
-        /// <summary>其余近战类弹幕（剑气等）承受的适应减伤比例</summary>
-        public const float AsuraMeleeProjAdaptTaken = 0.7f;
+        /// <summary>真近战（物品挥击与刀刃本体弹幕）承受的适应减伤比例（吃满仅约 20% 减伤）</summary>
+        public const float AsuraTrueMeleeAdaptTaken = 0.25f;
+        /// <summary>其余近战类弹幕（剑气等）承受的适应减伤比例（吃满约 49% 减伤）</summary>
+        public const float AsuraMeleeProjAdaptTaken = 0.6f;
         /// <summary>贴身增幅上限：贴着目标碰撞箱出手时的额外伤害比例</summary>
         public const float AsuraCloseRangeMaxBonus = 0.35f;
         /// <summary>贴身增幅满额距离（像素，玩家中心到目标碰撞箱最近点）</summary>

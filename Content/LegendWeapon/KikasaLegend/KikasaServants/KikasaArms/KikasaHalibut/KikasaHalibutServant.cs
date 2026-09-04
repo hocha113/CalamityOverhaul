@@ -58,6 +58,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>沉影盘在场判定用：专属械奴恒复制比目鱼</summary>
         public int ArmsItemType => HalibutOverride.ID;
 
+        /// <summary>专属单体：强度由原件等级烘焙，不吃编队摊薄</summary>
+        public int UnitCount => 1;
+
         /// <summary>绘制缩放：128×76 贴图对齐武器本体手感（HalibutOverride.ItemScale 同源）</summary>
         private const float GunDrawScale = 0.8f;
 

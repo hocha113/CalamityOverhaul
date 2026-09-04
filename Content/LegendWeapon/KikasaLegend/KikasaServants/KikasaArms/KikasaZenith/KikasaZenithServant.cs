@@ -51,6 +51,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>沉影盘在场判定用：专属械奴恒复制天顶剑</summary>
         public int ArmsItemType => ItemID.Zenith;
 
+        /// <summary>专属单体：强度由原件攻击力烘焙，不吃编队摊薄</summary>
+        public int UnitCount => 1;
+
         //==================== 状态 ====================
 
         private const int StateEmerge = 0;

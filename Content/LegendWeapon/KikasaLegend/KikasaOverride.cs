@@ -134,9 +134,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
 
         /// <summary>
         /// 鬼奴基伤表的标定档：18 只鬼奴的常量全部按三机械档（等级 11、表值 92）的手感写死，
-        /// <see cref="KikasaServants.KikasaServantBalanceGlobal"/> 在命中端按"当前表值/92"折算成长
+        /// <see cref="KikasaServants.KikasaServantBalanceGlobal"/> 在命中端按"当前表值/92"折算成长。
+        /// 械奴不用这个锚点：其档位倍率是以迷你鲨档（L3 表值）为 1.0 的幂曲线，见 KikasaArmsProfiler.TierMul
         /// </summary>
         public const float ServantTuneAnchor = 92f;
+
+        /// <summary>等级表原始值（按等级查表，越界钳到 0..MaxLevel）；械奴档位折算的读数口</summary>
+        public static int GetLevelTableValue(int level) => DamageDictionary[ClampLevel(level)];
 
         /// <summary>
         /// 等级表原始值（不含召唤加成与前缀，别与 <see cref="GetPanelDamage"/> 混用——

@@ -33,6 +33,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>鬼滴芯:青白鬼火,替掉血芯</summary>
         public static readonly Color GhostCore = new(150, 220, 214);
 
+        //浓血四件:血湖形态(KikasaBloodForm)的血珠/血柱/血索色板,不过 CoolTint——
+        //血形态只在非鬼雨存在。取值锚定血月祭坛三阶(#2A0407→#6B0B12→#A8121C)与
+        //领域血滴色,珠子要读作"湖里的血"而不是另一种红;血是暗的,没有白芯
+        /// <summary>血体:暗血,比湖面沉一档</summary>
+        public static readonly Color BloodBody = new(78, 10, 15);
+
+        /// <summary>血缘:表面张力挂边,最暗最饱和</summary>
+        public static readonly Color BloodDeep = new(40, 4, 8);
+
+        /// <summary>血亮:体心相对亮的鲜血</summary>
+        public static readonly Color BloodBright = new(150, 18, 26);
+
+        /// <summary>血湿光:各向异性窄反射带,小面积</summary>
+        public static readonly Color BloodSheen = new(232, 108, 94);
+
+        /// <summary>凝血:入水后的珠体,红进红要靠更沉的色读出轮廓</summary>
+        public static readonly Color BloodClot = new(34, 5, 9);
+
         /// <summary>确定性散列 0~1:绘制与多端一致的抖动都用它,不掷 Main.rand</summary>
         public static float Hash(int seed, int salt) {
             uint h = (uint)(seed * 374761393 + salt * 668265263);

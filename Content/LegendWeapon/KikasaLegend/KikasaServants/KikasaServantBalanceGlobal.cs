@@ -15,8 +15,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
     /// <para/>
     /// 同一处还收口两条成长口径（共性根因四，反馈二·#2/#19/#52/#120）：<br/>
     /// 鬼奴——基伤表按三机械档标定，命中端乘"当前等级表值/92"，肉前跟成长缩、后期随成长涨；<br/>
-    /// 械奴——强度由沉入物 DamageCurve 承载不吃锚点，但单发按"等级表值×8"钳顶，
-    /// 开局沉超进度武器不再一发秒杀当期 Boss
+    /// 械奴——强度由沉入武器自身档位承载（KikasaArmsProfiler.TierMul，稀有度→等级表），不读伞等级；
+    /// 命中端只做两件事：编队摊薄 <see cref="KikasaEffigyBoard.PackDamageScale"/>（沉 5 把 ≠ 5 倍），
+    /// 以及单发按"等级表值×8"钳顶（开局沉超进度武器不再一发秒杀当期 Boss）
     /// <para/>
     /// 墨印（<see cref="KikasaInkTag"/>）的结算也在这里：原版对等口径，
     /// 役从源或原版 minion 旗标族的命中对带印目标追加随等级表成长的平伤
@@ -32,6 +33,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         private bool servantSourced;
         //械奴族（沉入武器复制体）：区分成长口径
         private bool armsSourced;
+        //械奴编队复制体数，随标记一起沿父链传染；子弹幕出生时父编队已定编
+        private int armsUnitCount = 1;
 
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             if (projectile.ModProjectile is IKikasaServant) {
@@ -46,6 +49,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 && parentGlobal.servantSourced) {
                 servantSourced = true;
                 armsSourced = parentGlobal.armsSourced;
+                armsUnitCount = parent.ModProjectile is IKikasaArmsServant arms
+                    ? arms.UnitCount : parentGlobal.armsUnitCount;
             }
         }
 
@@ -62,12 +67,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             modifiers.FinalDamage *= KikasaEffigyBoard.ServantDamageScale(owner);
 
             if (armsSourced) {
-                //械奴钳顶：DamageCurve 只看沉入物 DPS 不看进度，开局沉高 DPS 武器会拉满倍率；
-                //按伞成长给单发上限，超出部分折算回去（读 projectile.damage 近似最终值的基数）
+                //编队摊薄：本体命中现读编制（Summon 在生成包之后才定编，出生时记的是满编），子弹幕用传染值
+                int units = projectile.ModProjectile is IKikasaArmsServant arms ? arms.UnitCount : armsUnitCount;
+                float scale = KikasaEffigyBoard.PackDamageScale(units);
+                //钳顶：档位只看沉入武器不看进度，开局沉超进度武器会拉满倍率；按伞成长给单发上限，
+                //比对的是摊薄后的期望单发（读 projectile.damage 近似最终值的基数），已在上限下的不再折
+                float expected = projectile.damage * scale;
                 int cap = KikasaOverride.GetRawLevelDamage(owner) * ArmsHitCapPerLevel;
-                if (projectile.damage > cap && projectile.damage > 0) {
-                    modifiers.FinalDamage *= cap / (float)projectile.damage;
+                if (expected > cap && expected > 0f) {
+                    scale *= cap / expected;
                 }
+                modifiers.FinalDamage *= scale;
                 return;
             }
             //鬼奴锚点：基伤常量 ×（当前等级表值 / 三机械标定档 92）。

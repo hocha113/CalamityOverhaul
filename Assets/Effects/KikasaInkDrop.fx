@@ -33,10 +33,12 @@ float uDrainV;    //墨瀑:排空前沿 v(<0=未排)
 float uWidthT;    //墨瀑:宽度生命周期包络 0~1
 float uSway;      //墨瀑:甩尾行波相位(源头钉死,末端摆)
 float uFill;      //墨瀑:蓄力档 0~1(沫量/飞沫微调)
+float uGhost;     //墨滴:追击穿透态 0~1,缘一线鬼青、体略透(穿墙的视觉说法)
 float3 uColBody;  //墨体近黑
 float3 uColDeep;  //暗血缘
 float3 uColCore;  //血芯
 float3 uColSheen; //湿反光
+float3 uColGhost; //鬼青缘光(穿透态)
 
 sampler uNoiseTex : register(s1);
 
@@ -106,14 +108,19 @@ float4 PSDrop(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     float sheen = 1.0 - smoothstep(0.0, 0.05, length(q - float2(spineX - w * 0.4, headY + strokeLen * 0.26)));
     sheen *= body * 0.5;
 
+    //穿透态:体略透,轮廓外沿一线鬼青(加色项,不改墨的形)
+    float ghostRim = (1.0 - smoothstep(0.0, 0.045, abs(d + 0.012)))
+        * step(0.0, s) * (1.0 - step(1.0, s)) * uGhost;
+
     //预乘合成
-    float aBody = body * 0.95;
+    float aBody = body * 0.95 * (1.0 - 0.15 * uGhost);
     float aHalo = halo * 0.16;
     float aWisp = wisp * 0.42;
     float3 col = bodyCol * aBody
                + lerp(uColBody, uColDeep, 0.45) * (aHalo + aWisp);
-    float a = saturate(aBody + aHalo + aWisp);
+    float a = saturate(aBody + aHalo + aWisp + ghostRim * 0.35);
     col += uColSheen * sheen * 0.18;
+    col += uColGhost * ghostRim * 0.7;
 
     //画布护栏：uv 边缘前归零防切边
     float guard = smoothstep(1.0, 0.86, max(abs(raw.x), abs(raw.y)));

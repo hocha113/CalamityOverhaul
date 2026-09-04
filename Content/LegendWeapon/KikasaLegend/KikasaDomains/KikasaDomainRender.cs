@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 {
     /// <summary>
     /// 血湖领域 RenderHandle。环境调色走 NPC 层之前的 TechGrade；
-    /// EndCapture 走 TechUnify：全帧轻罩 + 血湖镜面（倒影含实体）+ 撕纸前沿；
+    /// EndCapture 走 TechUnify：全帧轻罩 + 血湖镜面（倒影含实体）+ 沉湖清圈 + 撕纸前沿；
     /// 湖面墨晕在 Unify 之后叠上，避免被镜像换掉。
     /// </summary>
     internal class KikasaDomainRender : RenderHandle
@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaThrallMeltFX.Clear();
                 KikasaHoundReflection.Clear();
                 KikasaWispFX.Clear();
+                KikasaDiveClearing.Clear();
             }
         }
 
@@ -181,8 +182,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             grade.Parameters["uSeamGlow"]?.SetValue(seamGlow);
             grade.Parameters["uAspect"]?.SetValue(screenSize.X / screenSize.Y);
             grade.Parameters["uRain"]?.SetValue(kdp.RainBlend);
-            grade.Parameters["uCoolAir"]?.SetValue(KikasaDomain.CoolAirGrade ? 1f : 0f);
             grade.Parameters["uWispGlow"]?.SetValue(kdp.WispGlow);
+            //沉湖清圈：本机玩家确认没顶后湖水让出的一口清水（闲置 w=0）
+            KikasaDiveClearing.FillUniforms(grade, screenSize);
 
             //倒影恶犬醒着时，镜像里抹掉施术者本人，镜像源落在他身上的像素改采身侧背景
             float coverA = kdp.HoundReflection
@@ -277,15 +279,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
 
-            //血暮红罩或瘀青靛轻罩 + 沉暗，血湖细节让位；异化时罩色随之转冷
+            //瘀青靛轻罩 + 沉暗，血湖细节让位；异化时罩色随之转冷
 
             float rain = kdp.RainBlend;
-            Color veilA = KikasaDomain.CoolAirGrade ? new Color(22, 28, 56) : new Color(96, 18, 20);
-            Color veilB = KikasaDomain.CoolAirGrade ? new Color(8, 10, 20) : new Color(14, 4, 8);
             spriteBatch.Draw(white, full,
-                Color.Lerp(veilA, new Color(28, 42, 48), rain) * (0.22f * coverage));
+                Color.Lerp(new Color(22, 28, 56), new Color(28, 42, 48), rain) * (0.22f * coverage));
             spriteBatch.Draw(white, full,
-                Color.Lerp(veilB, new Color(8, 12, 16), rain) * (0.16f * coverage));
+                Color.Lerp(new Color(8, 10, 20), new Color(8, 12, 16), rain) * (0.16f * coverage));
 
             spriteBatch.End();
         }

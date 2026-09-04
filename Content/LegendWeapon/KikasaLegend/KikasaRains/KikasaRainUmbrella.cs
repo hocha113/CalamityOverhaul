@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTeleports;
 using CalamityOverhaul.Content.PRTTypes;
@@ -74,6 +75,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>常态随行锚点:背肩侧偏与悬高</summary>
         private const float IdleBackOffset = 30f;
         private const float IdleHeight = 58f;
+
+        /// <summary>
+        /// 洞顶让位:悬点落进实心时压到洞顶之下的余量,以及离玩家中心的最小悬高。
+        /// 伞悬在石头里=碗口在石头里,墨瀑射线第一步截断只剩桩、滴从岩层里甩出,
+        /// 是探洞时右键成桩的根因(反馈:头上的物块挡住右键)
+        /// </summary>
+        private const float CeilingMargin = 4f;
+        private const float MinHeadroom = 40f;
 
         private enum UmbrellaState : byte { Rise, Hover, Recall, Flip, Pour, Idle, AutoRain, Teleport }
 
@@ -171,6 +180,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private float pourAim = MathHelper.PiOver2;
         /// <summary>释放瞬间锁定的蓄力档</summary>
         private float pourFill;
+
+        //抽血蓄力(血湖形态的倒撑蓄墨):血索从伞正下方的湖面抽进碗口,纯表现,各端自算
+        /// <summary>血索在场强度 0~1(六帧平滑),Flip 期血形态且伞离湖在索长上限内才起</summary>
+        private float siphonT;
+        /// <summary>血索足点所在的湖面 Y(逐帧刷新)</summary>
+        private float siphonLakeY;
+        /// <summary>血索抽血的涟漪节拍计数</summary>
+        private int siphonRippleTimer;
+
+        /// <summary>血索可见:渲染层据此决定是否走血批</summary>
+        internal bool SiphonVisible => siphonT > 0.03f;
 
         //鬼域传送跟拍
         /// <summary>传送隐显乘子:没入水中=0,常态=1,乘进伞体与伞下鬼的绘制</summary>
@@ -399,6 +419,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             if (!Main.dedServ) {
                 UpdateInkTrail();
+                UpdateSiphon(owner);
+            }
+        }
+
+        /// <summary>
+        /// 抽血蓄力:血湖形态倒撑蓄墨期,伞正下方的湖面被抽起一条血索接进碗口,
+        /// 湖面按节拍荡圈(蓄得越满圈越大)。伞离湖超过索长上限只留涟漪不画索。
+        /// 纯表现:各端从同步的 State/StateTimer 与领域快照自算,无新包
+        /// </summary>
+        private void UpdateSiphon(Player owner) {
+            bool want = false;
+            if (State == UmbrellaState.Flip && KikasaBloodForm.Active(owner)) {
+                KikasaDomainPlayer lake = owner.GetModPlayer<KikasaDomainPlayer>();
+                siphonLakeY = lake.LakeWorldY;
+                float len = siphonLakeY - BowlMouthPos().Y;
+                bool onLake = MathF.Abs(Projectile.Center.X - owner.Center.X) <= KikasaLakeSurface.HalfWidth;
+                want = onLake && len > 24f && len < KikasaBloodForm.SiphonMaxLenPx;
+                if (onLake && len > 24f && ReferenceEquals(KikasaDomain.Viewed, lake)
+                    && ++siphonRippleTimer >= 7) {
+                    siphonRippleTimer = 0;
+                    KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, siphonLakeY),
+                        0.35f + 0.45f * ChargeFill);
+                }
+            }
+            else {
+                siphonRippleTimer = 0;
+            }
+            siphonT = MathHelper.Lerp(siphonT, want ? 1f : 0f, 1f / 6f);
+            if (siphonT < 0.02f && !want) {
+                siphonT = 0f;
             }
         }
 
@@ -469,9 +519,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         //==================== 状态推进 ====================
 
-        private Vector2 HoverAnchor(Player owner)
-            => owner.MountedCenter + new Vector2(owner.velocity.X * 2.2f,
-                -HoverHeight * talismanProfile.HoverHeightMul + MathF.Sin(bobPhase) * 6f - recoil);
+        private Vector2 HoverAnchor(Player owner, Vector2 offset = default)
+            => ClampToCeiling(owner, owner.MountedCenter + offset + new Vector2(owner.velocity.X * 2.2f,
+                -HoverHeight * talismanProfile.HoverHeightMul + MathF.Sin(bobPhase) * 6f - recoil));
+
+        /// <summary>
+        /// 洞顶让位:沿悬点所在列自玩家头顶向上探实心,悬点压到洞顶之下,
+        /// 但不低于 <see cref="MinHeadroom"/>(低洞里宁可与人略叠也要在空气里)。
+        /// 地形与玩家位置各端一致,各端算出同一悬点;悬点本就低于洞顶时零开销
+        /// </summary>
+        private Vector2 ClampToCeiling(Player owner, Vector2 anchor) {
+            float lowest = owner.MountedCenter.Y - MinHeadroom;
+            if (anchor.Y >= lowest) {
+                return anchor;
+            }
+            //伞半高按满体量常数取,不吃端本地的 visualScale,各端悬点一致
+            float halfHeight = 18f + CeilingMargin;
+            int x = (int)(anchor.X / 16f);
+            int startY = (int)((owner.position.Y - 2f) / 16f);
+            int endY = (int)((anchor.Y - halfHeight) / 16f);
+            for (int y = startY; y >= endY && y >= 1; y--) {
+                Tile t = Framing.GetTileSafely(x, y);
+                if (t.HasTile && Main.tileSolid[t.TileType] && !Main.tileSolidTop[t.TileType]) {
+                    float ceilingBottom = y * 16f + 16f;
+                    anchor.Y = MathF.Min(MathF.Max(anchor.Y, ceilingBottom + halfHeight), lowest);
+                    return anchor;
+                }
+            }
+            return anchor;
+        }
 
         /// <summary>初次部署:刚拿起伞,从手中升到随行位;攻击输入任意帧截断直入攻击态</summary>
         private void UpdateRise(Player owner) {
@@ -653,10 +729,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         //==================== 常态随行与自动索敌 ====================
 
-        /// <summary>随行锚点:背肩上方,配合慢速 lerp 移动时自然拖在身后</summary>
+        /// <summary>随行锚点:背肩上方,配合慢速 lerp 移动时自然拖在身后;同样让开洞顶</summary>
         private Vector2 IdleAnchor(Player owner)
-            => owner.MountedCenter + new Vector2(-owner.direction * IdleBackOffset,
-                -IdleHeight + MathF.Sin(bobPhase) * 5f);
+            => ClampToCeiling(owner, owner.MountedCenter + new Vector2(-owner.direction * IdleBackOffset,
+                -IdleHeight + MathF.Sin(bobPhase) * 5f));
 
         /// <summary>输入抢占:右键优先倒撑,左键墨雨;各端从同步控制位同拍直入,无前摇</summary>
         private bool TryEnterCommandedAttack(Player owner) {
@@ -844,7 +920,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// "伞下无雨":你没淋过的雨都记在伞里,现在连本带利还给别人
         /// </summary>
         private void UpdateFlip(Player owner) {
-            Vector2 anchor = HoverAnchor(owner) + new Vector2(0f, -12f);
+            Vector2 anchor = HoverAnchor(owner, new Vector2(0f, -12f));
             Projectile.Center = Vector2.Lerp(Projectile.Center, anchor, 0.2f);
             visualScale = MathHelper.Lerp(visualScale, 1f, 0.2f);
 
@@ -870,12 +946,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.38f + 0.2f * tier, -0.25f - 0.35f * tier, 3);
                 KikasaInk.Play(SoundID.Item21, Projectile.Center, 0.26f + 0.16f * tier, -0.4f - 0.25f * tier, 3);
                 if (!Main.dedServ) {
+                    //血形态碗里蓄的是抽上来的血,碗沿碎珠换血珠
+                    bool blood = KikasaBloodForm.Active(owner);
                     for (int i = 0; i < 6; i++) {
                         float xOff = Main.rand.NextFloat(-1f, 1f) * RimRadius * 0.8f * visualScale;
-                        PRTLoader.NewParticle<PRT_KikasaInkBead>(
-                            BowlMouthPos() + new Vector2(xOff, -2f),
-                            new Vector2(xOff * 0.04f, -Main.rand.NextFloat(1.2f, 2.4f) * tier),
-                            KikasaInk.InkDeep, Main.rand.NextFloat(0.3f, 0.45f))?.Configure(Main.rand.Next(14, 22));
+                        Vector2 at = BowlMouthPos() + new Vector2(xOff, -2f);
+                        Vector2 vel = new(xOff * 0.04f, -Main.rand.NextFloat(1.2f, 2.4f) * tier);
+                        if (blood) {
+                            PRTLoader.NewParticle<PRT_KikasaBloodGlob>(at, vel, KikasaInk.BloodBody,
+                                Main.rand.NextFloat(0.3f, 0.45f))?.Configure(Main.rand.Next(14, 22));
+                        }
+                        else {
+                            PRTLoader.NewParticle<PRT_KikasaInkBead>(at, vel,
+                                KikasaInk.InkDeep, Main.rand.NextFloat(0.3f, 0.45f))?.Configure(Main.rand.Next(14, 22));
+                        }
                     }
                 }
             }
@@ -885,7 +969,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 float side = Main.rand.NextBool() ? 1f : -1f;
                 PRTLoader.NewParticle<PRT_KikasaInkDrip>(
                     BowlMouthPos() + new Vector2(side * RimRadius * 0.86f * visualScale, 2f),
-                    new Vector2(side * 0.3f, 0.2f), KikasaInk.InkBody,
+                    new Vector2(side * 0.3f, 0.2f),
+                    KikasaBloodForm.Active(owner) ? KikasaInk.BloodBody : KikasaInk.InkBody,
                     Main.rand.NextFloat(0.55f, 0.85f))?.Configure(Main.rand.Next(26, 38));
             }
 
@@ -919,7 +1004,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
         /// <summary>倾覆:猛倾→墨瀑冲刷→甩干回正;结束后按输入续蓄或收伞</summary>
         private void UpdatePour(Player owner) {
-            Vector2 anchor = HoverAnchor(owner) + new Vector2(pourDirSign * 10f, -8f);
+            Vector2 anchor = HoverAnchor(owner, new Vector2(pourDirSign * 10f, -8f));
             Projectile.Center = Vector2.Lerp(Projectile.Center, anchor, 0.2f);
 
             float tiltPhase = MathHelper.Clamp(StateTimer / (float)PourTiltFrames, 0f, 1f);
@@ -1141,7 +1226,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             const float c1 = 1.70158f;
             const float c3 = c1 + 1f;
             float e = 1f + c3 * MathF.Pow(t - 1f, 3f) + c1 * (t - 1f) * (t - 1f);
-            Vector2 overhead = owner.MountedCenter + new Vector2(0f, -HoverHeight * 0.86f);
+            Vector2 overhead = ClampToCeiling(owner,
+                owner.MountedCenter + new Vector2(0f, -HoverHeight * 0.86f));
             Projectile.Center = Vector2.Lerp(stage.DestPoolPos + new Vector2(0f, 2f), overhead, e);
             teleportFade = MathHelper.Clamp(t * 4f, 0f, 1f);
             visualScale = MathHelper.Lerp(0.5f, 0.86f, MathHelper.Clamp(e, 0f, 1.2f));
@@ -1302,19 +1388,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             float side = xOff >= 0f ? 1f : -1f;
             Vector2 flickVel = new(side * Main.rand.NextFloat(3.2f, 5.8f), -Main.rand.NextFloat(4.2f, 7f));
 
-            //形态差异:血湖滴少而重,鬼雨滴密而细
+            //形态差异:血湖滴少而重(血珠,门走 KikasaBloodForm 同一谓词),鬼雨滴密而细
             float scale = 1f;
             float dmgMul = 1f;
             KikasaDomainPlayer kdp = Owner.GetModPlayer<KikasaDomainPlayer>();
-            if (kdp.AnyActive) {
-                if (kdp.IsRainForm) {
-                    scale = 0.85f;
-                    dmgMul = 0.72f;
-                }
-                else {
-                    scale = 1.12f;
-                    dmgMul = 1.15f;
-                }
+            if (kdp.AnyActive && kdp.IsRainForm) {
+                scale = 0.85f;
+                dmgMul = 0.72f;
+            }
+            else if (KikasaBloodForm.Active(Owner)) {
+                scale = 1.12f;
+                dmgMul = 1.15f;
             }
 
             //伞下鬼乘区与湖倾档:滴变大,落地留墨洼;唤雨符乘区与积潦解锁叠在其上
@@ -1370,9 +1454,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     drop.netUpdate = true;
                 }
                 //墨印:只有按住左键的手动墨雨盖印(含帮衬/齐掷鬼滴),自动交战的自卫滴不盖;
-                //端本地位,命中钩只在归属端跑
-                if (State == UmbrellaState.Hover && drop.ModProjectile is KikasaInkDrop inkDrop) {
-                    inkDrop.AppliesTag = true;
+                //端本地位,命中钩只在归属端跑。血形态自卫滴入湖起柱只有六成高,火力让位手动
+                if (drop.ModProjectile is KikasaInkDrop inkDrop) {
+                    if (State == UmbrellaState.Hover) {
+                        inkDrop.AppliesTag = true;
+                    }
+                    else if (State == UmbrellaState.AutoRain) {
+                        inkDrop.ColumnHeightMul = KikasaBloodForm.AutoColumnHeightMul;
+                    }
                 }
             }
         }
@@ -1448,10 +1537,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
 
-            //蓄墨液面(TechFill):倒扣稳定后才显,画在伞体之下让伞缘盖住碗沿
+            //蓄墨液面(TechFill):倒扣稳定后才显,画在伞体之下让伞缘盖住碗沿;
+            //血形态碗里是抽上来的血,四色换血色板,画完立刻还回墨色板(TechCanopy 共用同一组参数)
             float fill = ChargeFill;
             Texture2D canvas = VaultAsset.placeholder2?.Value;
             if (fill > 0.02f && flipT > 0.8f && canvas != null) {
+                bool bloodBowl = KikasaBloodForm.Active(Owner);
+                if (bloodBowl) {
+                    fx.Parameters["uColInk"]?.SetValue(KikasaInk.BloodBody.ToVector3());
+                    fx.Parameters["uColDeep"]?.SetValue(KikasaInk.BloodDeep.ToVector3());
+                    fx.Parameters["uColCore"]?.SetValue(KikasaInk.BloodBright.ToVector3());
+                    fx.Parameters["uColSheen"]?.SetValue(KikasaInk.BloodSheen.ToVector3());
+                }
                 fx.Parameters["uFill"]?.SetValue(fill);
                 fx.Parameters["uSlosh"]?.SetValue(State == UmbrellaState.Pour ? 1f : 0.25f + 0.75f * fill);
                 fx.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.173f % 4f);
@@ -1462,6 +1559,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 float h = 36f * visualScale;
                 sb.Draw(canvas, mouth, null, Color.White, 0f, canvas.Size() * 0.5f,
                     new Vector2(w / canvas.Width, h / canvas.Height), SpriteEffects.None, 0f);
+                if (bloodBowl) {
+                    fx.Parameters["uColInk"]?.SetValue(KikasaInk.InkBody.ToVector3());
+                    fx.Parameters["uColDeep"]?.SetValue(KikasaInk.InkDeep.ToVector3());
+                    fx.Parameters["uColCore"]?.SetValue(KikasaInk.BloodCore.ToVector3());
+                    fx.Parameters["uColSheen"]?.SetValue(KikasaInk.WetSheen.ToVector3());
+                }
             }
 
             //翻面帧的采样 x 镜像,瞳向补一次镜像才保持世界朝向
@@ -1564,6 +1667,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     (Color.White with { A = 0 }) * (0.28f * fade * pulse), 0f,
                     glow.Size() * 0.5f, sizePx * 0.8f / glow.Width, SpriteEffects.None, 0f);
             }
+        }
+
+        //==================== 抽血血索(由 KikasaRainRender 血批调用) ====================
+
+        /// <summary>血索几何:碗口到湖面的竖直 quad;宽随伞体量与蓄力档</summary>
+        private bool SolveSiphonLayout(out Vector2 mouth, out float len, out float width) {
+            mouth = BowlMouthPos();
+            len = siphonLakeY - mouth.Y;
+            width = 22f * MathF.Max(visualScale, 0.5f) * (0.7f + 0.3f * ChargeFill);
+            return siphonT > 0.03f && len > 8f;
+        }
+
+        /// <summary>着色器路径:TechSiphon,足在水面(v=1)、顶没入碗口(v=0);索长按宽标定上载</summary>
+        internal void DrawSiphonQuad(SpriteBatch sb, Effect fx, Texture2D canvas) {
+            if (!SolveSiphonLayout(out Vector2 mouth, out float len, out float width)) {
+                return;
+            }
+            float quadW = width / 0.31f;
+            fx.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.173f % 4f);
+            fx.Parameters["uFade"]?.SetValue(siphonT * teleportFade);
+            fx.Parameters["uWScale"]?.SetValue(width / len);
+            fx.Parameters["uLenW"]?.SetValue(len / width);
+            fx.Parameters["uFill"]?.SetValue(ChargeFill);
+            fx.Parameters["uColBody"]?.SetValue(KikasaInk.BloodBody.ToVector3());
+            fx.Parameters["uColDeep"]?.SetValue(KikasaInk.BloodDeep.ToVector3());
+            fx.Parameters["uColBright"]?.SetValue(KikasaInk.BloodBright.ToVector3());
+            fx.Parameters["uColSheen"]?.SetValue(KikasaInk.BloodSheen.ToVector3());
+            fx.CurrentTechnique = fx.Techniques["TechSiphon"];
+            fx.CurrentTechnique.Passes[0].Apply();
+            Vector2 topLeft = new Vector2(mouth.X - quadW * 0.5f, mouth.Y) - Main.screenPosition;
+            sb.Draw(canvas, topLeft, null, Color.White, 0f, Vector2.Zero,
+                new Vector2(quadW / canvas.Width, len / canvas.Height), SpriteEffects.None, 0f);
+        }
+
+        /// <summary>精灵回退:一条暗血细柱加一线亮痕,足部略宽</summary>
+        internal void DrawSiphonFallback(SpriteBatch sb) {
+            Texture2D tex = CWRAsset.Extra_98?.Value;
+            if (tex == null || !SolveSiphonLayout(out Vector2 mouth, out float len, out float width)) {
+                return;
+            }
+            float alpha = siphonT * teleportFade;
+            Vector2 mid = new Vector2(mouth.X, mouth.Y + len * 0.5f) - Main.screenPosition;
+            Vector2 origin = tex.Size() * 0.5f;
+            sb.Draw(tex, mid, null, KikasaInk.BloodDeep * (0.8f * alpha), 0f, origin,
+                new Vector2(width * 0.6f / tex.Width, len * 1.02f / tex.Height), SpriteEffects.None, 0f);
+            sb.Draw(tex, mid, null, KikasaInk.BloodBody * (0.9f * alpha), 0f, origin,
+                new Vector2(width * 0.42f / tex.Width, len / tex.Height), SpriteEffects.None, 0f);
+            sb.Draw(tex, mid + new Vector2(-width * 0.08f, 0f), null,
+                (KikasaInk.BloodSheen with { A = 0 }) * (0.35f * alpha), 0f, origin,
+                new Vector2(width * 0.08f / tex.Width, len * 0.8f / tex.Height), SpriteEffects.None, 0f);
+            Vector2 foot = new Vector2(mouth.X, siphonLakeY) - Main.screenPosition;
+            sb.Draw(tex, foot, null, KikasaInk.BloodDeep * (0.7f * alpha), 0f, origin,
+                new Vector2(width * 1.6f / tex.Width, width * 0.5f / tex.Height), SpriteEffects.None, 0f);
         }
     }
 }

@@ -344,26 +344,71 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 || item.DamageType.CountsAsClass<ThrowingDamageClass>())
             && item.shoot > ProjectileID.None && item.shoot < ProjectileLoader.ProjectileCount;
 
-        //==================== 伤害自平衡 ====================
-
-        /// <summary>DPS 幂曲线指数：标定为巨兽鲨自然落在 ≈2.4×（手调锚点复现）</summary>
-        private const float DamageCurveExp = 0.61f;
+        //==================== 伤害档位：沉什么武器就是什么档位 ====================
 
         /// <summary>速射档基准开火周期（迷你鲨现值），节奏折算的分母</summary>
         private const float BaseFirePeriod = 15f;
 
-        private static float DpsOf(Item item)
-            => item.damage * 60f / Math.Max(item.useAnimation, 1);
+        /// <summary>
+        /// 原版稀有度 0..11 → 鬼伞等级表等级。稀有度是模组生态里最可靠的进度证词：
+        /// 1 史前开荒（火枪/滑膛枪）、2 早期 Boss 档（迷你鲨/双管/星炮）、3 肉山前末段（凤凰/熔火）、
+        /// 4 困难初期至神圣（发条步枪/霰弹枪/各矿连弩/神圣连弩）、5 机械档（巨兽鲨/骨髓/冰弓）、
+        /// 6 机械后（代达罗斯）、7 世花后（乌兹/维纳斯/叶绿散弩）、8 石巨人与事件（狙击/战术霰弹/链机枪/海啸）、
+        /// 10 月总（S.D.M.G./星璇/幻影弓）。表值锚点：8=肉山、11=三机械、18=月总
+        /// </summary>
+        private static readonly int[] rarityLevel = [0, 1, 3, 6, 9, 11, 12, 14, 16, 17, 18, 19];
 
-        /// <summary>武器 DPS 相对迷你鲨的幂折算：越强越钝增，模组神器被上限钳住</summary>
-        private static float DamageCurve(Item item) {
-            float anchor = 51f; //迷你鲨 DPS 兜底值，正常路径被实时读数覆盖
-            if (ContentSamples.ItemsByType.TryGetValue(ItemID.Minishark, out Item mini)
-                && mini?.IsAir == false) {
-                anchor = Math.Max(DpsOf(mini), 1f);
-            }
-            return Math.Clamp(MathF.Pow(DpsOf(item) / anchor, DamageCurveExp), 0.35f, 6f);
+        /// <summary>
+        /// 无稀有度可依时（模组自定义稀有度/专家紫等负值）按面板 DPS 对数插值：
+        /// 迷你鲨 45 落 L3、S.D.M.G. 1020 落 L18，两点定线；灾厄月后枪 DPS 上千到上万自然落 L20~L24
+        /// </summary>
+        private const float DpsAnchorLow = 45f;
+        private const int DpsLevelLow = 3;
+        private const float DpsAnchorHigh = 1020f;
+        private const int DpsLevelHigh = 18;
+
+        /// <summary>面板 DPS：连发武器按 useAnimation/useTime 折出每次使用的发数，再摊到含 reuseDelay 的整周期</summary>
+        private static float DpsOf(Item item) {
+            int anim = Math.Max(item.useAnimation, 1);
+            int shots = Math.Max(1, anim / Math.Max(item.useTime, 1));
+            return item.damage * shots * 60f / (anim + Math.Max(item.reuseDelay, 0));
         }
+
+        /// <summary>沉入武器的等价鬼伞等级：原版稀有度查表，其余按 DPS 对数插值兜底</summary>
+        internal static int TierLevelOf(Item item) {
+            if (item == null) {
+                return DpsLevelLow;
+            }
+            if (item.rare >= 0 && item.rare < rarityLevel.Length) {
+                return rarityLevel[item.rare];
+            }
+            float dps = Math.Max(DpsOf(item), 1f);
+            float t = MathF.Log(dps / DpsAnchorLow) / MathF.Log(DpsAnchorHigh / DpsAnchorLow);
+            int level = (int)MathF.Round(DpsLevelLow + (DpsLevelHigh - DpsLevelLow) * t);
+            return Math.Clamp(level, 0, KikasaOverride.MaxLevel);
+        }
+
+        /// <summary>沉入武器的等价鬼伞等级（物品类型入口，湖心景等展示层可用）</summary>
+        internal static int TierLevelOf(int itemType) => TierLevelOf(SampleOf(itemType));
+
+        /// <summary>档位曲线锚点等级：迷你鲨档（稀有度 2 → L3）= 1.0，各族基伤常量都是按这一档单只单发写的</summary>
+        private const int TierAnchorLevel = 3;
+
+        /// <summary>
+        /// 档位曲线指数：沿用原 DPS 幂曲线的 0.61，坡度与改曲线前一致（巨兽鲨 2.46 ≈ 原手调 2.4），
+        /// 削弱只由编队摊薄承担、均匀落在 45% 左右（用户拍板 2026/9/5）。
+        /// 想让低稀有度武器随档位差拉得更开就往 1.0 拨（1.0 = 线性表值比，迷你鲨会掉到 0.23）
+        /// </summary>
+        private const float TierCurveExp = 0.61f;
+
+        /// <summary>
+        /// 档位倍率：(武器等价等级表值 / L3 表值)^0.61。迷你鲨 1.0、凤凰 1.48、神圣连弩 2.01、巨兽鲨 2.46、
+        /// 乌兹 3.04、狙击枪 3.45、S.D.M.G. 4.48。不读伞等级：沉什么武器就是什么档位，
+        /// 输入是稀有度而非面板 DPS，星炮/战术霰弹/幻影弓这类面板失真的武器才能落对档
+        /// </summary>
+        private static float TierMul(Item item)
+            => MathF.Pow(KikasaOverride.GetLevelTableValue(TierLevelOf(item))
+                / (float)KikasaOverride.GetLevelTableValue(TierAnchorLevel), TierCurveExp);
 
         //==================== 枪档案 ====================
 
@@ -388,49 +433,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         internal static KikasaGunProfile GunProfileOf(int itemType) {
             Item sample = SampleOf(itemType);
             SoundStyle sound = sample?.UseSound ?? SoundID.Item11;
+            float tier = TierMul(sample);
 
-            //手调覆写优先：迷你鲨/巨兽鲨保持演进前的手调数值，行为零回归
+            //手调覆写：迷你鲨/巨兽鲨的节奏/弹速/枪口保持演进前的手调值，演出零回归；伤害走档位
             if (itemType == ItemID.Minishark) {
-                return new(KikasaGunArchetype.Auto, 15, 3, 1f, 16.5f, 1, 5, 1f, sound, 26f, 1f);
+                return new(KikasaGunArchetype.Auto, 15, 3, tier, 16.5f, 1, 5, 1f, sound, 26f, 1f);
             }
             if (itemType == ItemID.Megashark) {
-                return new(KikasaGunArchetype.Auto, 15, 3, 2.4f, 16.5f, 1, 5, 1f, sound, 34f, 1f);
+                return new(KikasaGunArchetype.Auto, 15, 3, tier, 16.5f, 1, 5, 1f, sound, 34f, 1f);
             }
             if (sample == null || !IsGun(sample)) {
                 //异常兜底：按迷你鲨速射档出场，别让坏数据打断出水
-                return new(KikasaGunArchetype.Auto, 15, 3, 1f, 16.5f, 1, 5, 1f, sound, 26f, 1f);
+                return new(KikasaGunArchetype.Auto, 15, 3, tier, 16.5f, 1, 5, 1f, sound, 26f, 1f);
             }
 
             KikasaGunArchetype arch = ArchetypeOf(sample);
-            float baseMul = DamageCurve(sample);
             float speed = 16.5f * Math.Clamp(sample.shootSpeed / 7f, 0.75f, 1.5f);
             (float muzzleLen, float drawScale) = MeasureGun(sample);
 
-            //节奏折算：单发倍率乘 周期/基准，让编队总输出跟随武器 DPS 曲线而非开火密度
+            //节奏折算：单发倍率乘 周期/基准，让编队总输出只跟档位走而不跟开火密度走；
+            //后坐幅度跟单发倍率走（档位高、单发重的枪踢得更狠），下限保住史前枪的手感
             switch (arch) {
                 case KikasaGunArchetype.Auto: {
                     int period = Math.Clamp((int)(sample.useAnimation * 2.15f), 8, 18);
-                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 0.3f, 8f);
+                    float mul = tier * period / BaseFirePeriod;
                     float recoil = Math.Clamp(0.75f + mul * 0.18f, 0.75f, 2f);
                     return new(arch, period, 3, mul, speed, 1, 5, recoil, sound, muzzleLen, drawScale);
                 }
                 case KikasaGunArchetype.Standard: {
                     int period = Math.Clamp((int)(sample.useAnimation * 1.35f), 19, 30);
-                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 0.5f, 9f);
+                    float mul = tier * period / BaseFirePeriod;
                     float recoil = Math.Clamp(1f + mul * 0.22f, 1.1f, 2.4f);
                     return new(arch, period, 4, mul, speed, 1, 5, recoil, sound, muzzleLen, drawScale);
                 }
                 case KikasaGunArchetype.Sniper: {
                     //FirePeriod 供第二式慢重齐射用；点名狙杀另有自己的轮值时间线
                     const int period = 30;
-                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 1.2f, 10f);
-                    return new(arch, period, 5, mul, speed, 1, 3, 2.4f, sound, muzzleLen, drawScale);
+                    return new(arch, period, 5, tier * period / BaseFirePeriod, speed, 1, 3, 2.4f, sound, muzzleLen, drawScale);
                 }
                 default: {
                     //霰弹：单发字段供环猎独弹用，拢射墙按 Pellets 拆粒
                     const int period = 26;
-                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 0.5f, 7f);
-                    return new(arch, period, 4, mul, speed, 4, 4, 2f, sound, muzzleLen, drawScale);
+                    return new(arch, period, 4, tier * period / BaseFirePeriod, speed, 4, 4, 2f, sound, muzzleLen, drawScale);
                 }
             }
         }
@@ -440,9 +484,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         internal static KikasaBowProfile BowProfileOf(int itemType) {
             Item sample = SampleOf(itemType);
             SoundStyle sound = sample?.UseSound ?? SoundID.Item5;
+            float tier = TierMul(sample);
             if (sample == null || !IsBow(sample)) {
                 //异常兜底：按制式弓出场
-                return new(KikasaBowArchetype.Standard, 26, 4, 1.5f, 15.5f, 4, sound, 40f, 1f);
+                return new(KikasaBowArchetype.Standard, 26, 4, tier * 26 / BaseFirePeriod, 15.5f, 4, sound, 40f, 1f);
             }
 
             KikasaBowArchetype arch =
@@ -450,26 +495,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 : sample.useAnimation >= 30 ? KikasaBowArchetype.Longbow
                 : KikasaBowArchetype.Standard;
 
-            float baseMul = DamageCurve(sample);
             float speed = 15.5f * Math.Clamp(sample.shootSpeed / 9f, 0.8f, 1.4f);
             (float bowSpan, float drawScale) = MeasureBow(sample);
 
             switch (arch) {
                 case KikasaBowArchetype.Rapid: {
                     int period = Math.Clamp((int)(sample.useAnimation * 1.5f), 12, 22);
-                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 0.4f, 8f);
-                    return new(arch, period, 3, mul, speed, 4, sound, bowSpan, drawScale);
+                    return new(arch, period, 3, tier * period / BaseFirePeriod, speed, 4, sound, bowSpan, drawScale);
                 }
                 case KikasaBowArchetype.Longbow: {
                     //DrawPeriod 供排箭用；贯穿重箭另有自己的轮值时间线
                     const int period = 34;
-                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 1f, 10f);
-                    return new(arch, period, 5, mul, speed * 1.1f, 3, sound, bowSpan, drawScale);
+                    return new(arch, period, 5, tier * period / BaseFirePeriod, speed * 1.1f, 3, sound, bowSpan, drawScale);
                 }
                 default: {
                     int period = Math.Clamp((int)(sample.useAnimation * 1.3f), 20, 32);
-                    float mul = Math.Clamp(baseMul * period / BaseFirePeriod, 0.5f, 9f);
-                    return new(arch, period, 4, mul, speed, 4, sound, bowSpan, drawScale);
+                    return new(arch, period, 4, tier * period / BaseFirePeriod, speed, 4, sound, bowSpan, drawScale);
                 }
             }
         }
@@ -510,7 +551,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return new(30, 1.4f, 3, sound, 78f, 1f);
             }
             int period = Math.Clamp((int)(sample.useAnimation * 1.6f), 26, 56);
-            float mul = Math.Clamp(DamageCurve(sample) * period / BaseFirePeriod * 0.95f, 0.6f, 12f);
+            float mul = TierMul(sample) * period / BaseFirePeriod * 0.95f;
             (float reach, float drawScale) = MeasureDiag(sample, 84f, 0.65f, 1.5f);
             return new(period, mul, 3, sound, reach, drawScale);
         }
@@ -524,7 +565,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return new(ProjectileID.Shuriken, 30, 5, 1f, 10f, 3, sound, 1.1f);
             }
             int period = Math.Clamp((int)(sample.useAnimation * 1.8f), 22, 50);
-            float mul = Math.Clamp(DamageCurve(sample) * period / BaseFirePeriod, 0.4f, 8f);
+            float mul = TierMul(sample) * period / BaseFirePeriod;
             float speed = Math.Max(sample.shootSpeed, 8f);
             (_, float drawScale) = MeasureDiag(sample, 30f, 0.9f, 1.7f);
             return new(sample.shoot, period, 5, mul, speed, 3, sound, drawScale);
@@ -578,7 +619,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 : KikasaBladeWeight.Light;
 
             int relay = Math.Clamp((int)(sample.useAnimation * 1.5f), 24, 60);
-            float mul = Math.Clamp(DamageCurve(sample) * relay / BaseFirePeriod * 0.9f, 0.6f, 14f);
+            float mul = TierMul(sample) * relay / BaseFirePeriod * 0.9f;
             int maxUnits = weight switch {
                 KikasaBladeWeight.Grand => 2,
                 KikasaBladeWeight.Heavy => 3,
@@ -637,7 +678,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             //extraUpdates=0 的复制鞭体：LashTime 帧数与原版 itemAnimationMax×MaxUpdates 的实际时长等价
             int lashTime = Math.Clamp(useAnim, 18, 50);
             int lashPeriod = Math.Clamp(useAnim * 2, 44, 96);
-            float mul = Math.Clamp(DamageCurve(sample) * lashPeriod / BaseFirePeriod, 0.8f, 9f);
+            float mul = TierMul(sample) * lashPeriod / BaseFirePeriod;
             float speed = Math.Max(sample.shootSpeed, 2f);
             //鞭尖峰值探出：总长 = 弹速 × (useAnimation×2×num) × num5 × 倍率，num×num5 峰值 = 2/3
             float peakReach = speed * useAnim * (4f / 3f) * rangeMul;
@@ -665,7 +706,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return new(30, 1.2f, 12f, 260f, 3, sound, 1.1f);
             }
             int period = Math.Clamp((int)(sample.useAnimation * 1.6f), 24, 54);
-            float mul = Math.Clamp(DamageCurve(sample) * period / BaseFirePeriod, 0.5f, 9f);
+            float mul = TierMul(sample) * period / BaseFirePeriod;
             float speed = Math.Clamp(sample.shootSpeed, 9f, 16f) * 1.1f;
             //去程射程押弹速：原版镖弹速 9~13 对应中近距回旋圈
             float range = Math.Clamp(sample.shootSpeed * 26f, 190f, 430f);
@@ -697,8 +738,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             float life = yoyoProj > 0 ? ProjectileID.Sets.YoyosLifeTimeMultiplier[yoyoProj] : 8f;
             int dwell = life < 0f ? 132 : (int)Math.Clamp(60f + life * 7f, 72f, 132f);
             int period = dwell + 40;
-            //驻留期高频跳（约 6 跳/秒），单跳倍率整体压一档让总 DPS 跟曲线走
-            float mul = Math.Clamp(DamageCurve(sample) * 0.42f, 0.18f, 3.5f);
+            //驻留期高频跳（约 6 跳/秒），单跳倍率整体压一档让总 DPS 跟档位走
+            float mul = TierMul(sample) * 0.42f;
             (_, float drawScale) = MeasureDiag(sample, 26f, 0.9f, 1.6f);
             return new(period, mul, Math.Clamp(topSpeed, 9f, 17.5f),
                 Math.Clamp(reach, 160f, 400f), dwell, 3, sound, drawScale);
@@ -714,7 +755,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return new(ProjectileID.BallOHurt, 44, 2f, 13f, 300f, 3, sound, 1f);
             }
             int period = Math.Clamp((int)(sample.useAnimation * 1.2f), 38, 64);
-            float mul = Math.Clamp(DamageCurve(sample) * period / BaseFirePeriod, 0.8f, 12f);
+            float mul = TierMul(sample) * period / BaseFirePeriod;
             float speed = Math.Clamp(sample.shootSpeed + 2f, 11f, 18f);
             float reach = Math.Clamp(sample.shootSpeed * 24f, 240f, 420f);
             return new(sample.shoot, period, mul, speed, reach, 3, sound,

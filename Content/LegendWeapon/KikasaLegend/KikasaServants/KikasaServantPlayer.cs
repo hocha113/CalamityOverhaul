@@ -732,5 +732,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
     {
         /// <summary>复制的原型武器物品类型</summary>
         int ArmsItemType { get; }
+
+        /// <summary>编队里的复制体数量（单体专属条目恒 1）；命中端按它摊薄单只出力，见 KikasaEffigyBoard.PackDamageScale</summary>
+        int UnitCount { get; }
     }
 }

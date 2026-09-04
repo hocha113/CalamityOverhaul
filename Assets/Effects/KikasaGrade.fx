@@ -1,10 +1,12 @@
 // ============================================================================
 //KikasaGrade.fx 鬼伞血湖领域全屏调色，两个 technique 对应两个渲染时机
-//TechGrade（NPC 层之前，只吃环境）：血暮调色（红罩+暗部沉深绯/瘀青靛由 uCoolAir 选+非红轻去饱和）
+//TechGrade（NPC 层之前，只吃环境）：血暮调色（轻罩+暗部沉瘀青靛+非红轻去饱和，保红只保中间调）
 //TechUnify（EndCapture，吃整帧含实体）：
-//  轻血罩 + 血湖镜面（水位线以下真垂直镜像倒影，血染+深度血雾+浮渣+缝线血沫，
+//  轻血罩 + 血湖镜面（水位线以下真垂直镜像倒影，血染+深度墨雾+浮渣+缝线血沫，
 //  反射率贴缝强向深弱、透出水下真实世界，被淹之物经折射采样随水摆动）
+//  + 沉湖清圈（本机玩家确认没顶后湖水在人周围让出一口清水，uClearRing）
 //  + 湿纸撕裂前沿（浸润带/湿纤维缘/卷影）
+//2026-09 分离调：暗部墨黑带瘀青、中间调血色、高光去饱和；旧版"暗部深绯+全亮度保红"整屏同一饱和红判伤眼
 //开合遮罩是"被水浸烂的破纸"：圆扩散 + 三频纤维毛边，材质与鬼切墨浪刻意分野
 //直线算术+平 tex2D，门控走 step/lerp 不用分支；s0=屏幕帧 s1=PerlinNoise
 // ============================================================================
@@ -25,23 +27,23 @@ float uFoamBoost;       //0~1 涨水期泡沫/浮渣增强
 float uSeamGlow;        //0~1 缝线血沫水膜辉光
 float uAspect;          //宽/高
 float uRain;            //0~1 鬼雨异化混合：血暮↔湿墨浊水，全套色板权重乘混合
-float uCoolAir;         //0=血暮红罩暗部 1=瘀青靛空气（KikasaDomain.CoolAirGrade）
 float4 uLineWave[4];    //水线行波源 x=源uv.x y=寿命进度01 z=幅度(uv.y) w=备用；空槽 z=0
 float4 uCoverRect;      //倒影抹除矩形（屏幕 uv：xy=左上 zw=右下），倒影恶犬替换施术者镜像时用
 float uCoverA;          //0~1 抹除强度，随倒影出没渐变；0=不生效
 float uWispGlow;        //0~1 鬼火燃湖：浅水金光渗色 + 缝线金辉（火层画在实体层，这里补水体被照亮）
 float4 uTideTrough;     //跟脚潮让位坑 x=中心uv.x y=半宽uv.x z=坑深uv.y(负=蓄势隆起) w=坑唇浪包幅度uv.y；闲置全零
+float4 uClearRing;      //沉湖清圈 xy=圈心 uv z=半径(像素，≥1) w=0~1 清水强度；闲置 w=0
 
 #define LUMA_W float3(0.299, 0.587, 0.114)
 
 //====== 血暮调色板 ======
-static const float3 DUSK_SHADOW      = float3(0.315, 0.045, 0.075);  //暗部沉入的深绯
-static const float3 DUSK_SHADOW_COOL = float3(0.14, 0.09, 0.18);     //暗部沉入的瘀青靛
-static const float3 DUSK_TINT   = float3(1.055, 0.845, 0.800);  //血暮轻罩（乘色）
+static const float3 DUSK_SHADOW = float3(0.14, 0.09, 0.18);     //暗部沉入的瘀青靛（系列色板里的"黑"）
+static const float3 DUSK_TINT   = float3(1.020, 0.915, 0.885);  //血暮轻罩（乘色）
+static const float3 AIR_VEIL    = float3(1.015, 0.935, 0.970);  //Unify 全帧轻罩（乘色）
 //====== 血湖 ======
-static const float3 LAKE_TINT   = float3(0.930, 0.300, 0.270);  //镜像血染乘色
-static const float3 LAKE_FOG    = float3(0.170, 0.024, 0.036);  //湖底血雾
-static const float3 UNDER_TINT  = float3(0.640, 0.170, 0.185);  //水下真实世界沉染
+static const float3 LAKE_TINT   = float3(0.820, 0.400, 0.400);  //镜像血染乘色
+static const float3 LAKE_FOG    = float3(0.055, 0.018, 0.040);  //湖底墨雾（不再是暗红，湖底是屏幕下半的休息区）
+static const float3 UNDER_TINT  = float3(0.560, 0.240, 0.265);  //水下真实世界沉染
 static const float3 FOAM_COL    = float3(0.965, 0.520, 0.440);  //缝线血沫微光
 //====== 湿纸前沿 ======
 static const float3 SOAK_MUL    = float3(0.610, 0.385, 0.305);  //浸水纸乘暗（湿褐）
@@ -121,17 +123,21 @@ float3 paperFront(float2 coords, float sd) {
     return float3(soak, edge, curl);
 }
 
-//血暮环境调色：红是领域的colour保真，其余轻去饱和；暗部默认深绯，uCoolAir 沉瘀青靛
-//鬼雨异化（uRain）后不再保红、去饱和加重、罩色与暗部全套转冷
+//保红遮罩：红是领域的身份色，中间调的红免去饱和；亮部的红一并退（亮且饱和的红最伤眼）
+//鬼雨异化（uRain）后不再保红
+float RedKeep(float3 c, float luma) {
+    float redness = c.r - max(c.g, c.b);
+    return smoothstep(0.05, 0.30, redness) * (1.0 - uRain) * (1.0 - smoothstep(0.45, 0.85, luma));
+}
+
+//血暮环境调色：非红轻去饱和、轻罩乘色、暗部沉瘀青靛；鬼雨异化去饱和加重、罩色与暗部全套转冷
 float3 GradeDusk(float3 src, float d) {
     float luma = dot(src, LUMA_W);
-    float redness = src.r - max(src.g, src.b);
-    float redMask = smoothstep(0.05, 0.30, redness) * (1.0 - uRain);
+    float redMask = RedKeep(src, luma);
     float3 c = lerp(src, luma.xxx, (0.22 + 0.16 * uRain) * (1.0 - redMask));
     c *= lerp(DUSK_TINT, RAIN_TINT, uRain);
-    float shadowAmt = (1.0 - smoothstep(0.08, 0.50, luma)) * 0.44;
-    float3 duskShadow = lerp(DUSK_SHADOW, DUSK_SHADOW_COOL, uCoolAir);
-    c = lerp(c, lerp(duskShadow, RAIN_SHADOW, uRain) * (0.5 + luma * 1.2), shadowAmt);
+    float shadowAmt = (1.0 - smoothstep(0.08, 0.50, luma)) * 0.40;
+    c = lerp(c, lerp(DUSK_SHADOW, RAIN_SHADOW, uRain) * (0.5 + luma * 1.2), shadowAmt);
     //氛围级暗角，冷雨里略沉
     float vig = smoothstep(0.52, 1.05, d);
     c *= 1.0 - vig * (0.20 + 0.05 * uRain);
@@ -155,7 +161,16 @@ float4 PSGrade(float2 coords : TEXCOORD0) : COLOR0 {
     return float4(final, 1.0);
 }
 
-//====== TechUnify：全帧轻罩 + 血湖镜面 + 撕裂前沿（EndCapture 执行） ======
+//域内全帧轻罩：微量去饱和 + 轻血染，实体色相/轮廓仍清晰；异化后转冷罩不保红。
+//清圈内的水下世界也走它，圈里的东西看起来与水面上同一口径
+float3 AirVeil(float3 c) {
+    float luma = dot(c, LUMA_W);
+    float redMask = RedKeep(c, luma);
+    float3 t = lerp(c, luma.xxx, (0.14 + 0.10 * uRain) * (1.0 - redMask));
+    return t * lerp(AIR_VEIL, float3(0.900, 0.965, 1.005), uRain);
+}
+
+//====== TechUnify：全帧轻罩 + 血湖镜面 + 沉湖清圈 + 撕裂前沿（EndCapture 执行） ======
 float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float2 uv = coords;
     float3 src = tex2D(uImage0, uv).rgb;
@@ -164,13 +179,7 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float mask = mf.x;
     float sd = mf.y;
 
-    //域内全帧轻罩：微量去饱和 + 轻血染，实体色相/轮廓仍清晰；异化后转冷罩不保红
-    float luma = dot(src, LUMA_W);
-    float redness = src.r - max(src.g, src.b);
-    float redMask = smoothstep(0.05, 0.30, redness) * (1.0 - uRain);
-    float3 tone = lerp(src, luma.xxx, (0.14 + 0.10 * uRain) * (1.0 - redMask));
-    tone *= lerp(lerp(float3(1.030, 0.905, 0.885), float3(1.015, 0.935, 0.970), uCoolAir),
-        float3(0.900, 0.965, 1.005), uRain);
+    float3 tone = AirVeil(src);
 
     //水位线：稳定枢轴 + 噪声波动 + 落点行波 + 让位坑
     //（噪声/行波只动遮罩边界不动镜像几何；让位坑是低频结构项，镜像跟随它沉降）
@@ -182,6 +191,17 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float waterY = uWaterLevel + lineWave * uWaterWobble + waveSum + structural;
     float below = uv.y - waterY;
     float belowMask = saturate(below * 320.0);
+
+    //沉湖清圈：湖水在没顶者周围让出一口清水。轮廓吃低频笛卡尔噪声微摆（不是正圆），
+    //圈内倒影/血染/墨雾退去、折射摆动减弱，圈缘一线血沫水膜；只在水线以下成立。
+    //半径钳 ≥1px：闲置 z=0 时 smoothstep 两端重合会出 NaN，NaN×0 仍是 NaN
+    float2 ringPx = (uv - uClearRing.xy) * uScreenSize;
+    float ringD = length(ringPx);
+    float ringN = noiseTex(uv * 2.2 + float2(uTime * 0.030, -uTime * 0.021));
+    float ringR = max(uClearRing.z, 1.0) * (1.0 + (ringN - 0.5) * 0.14);
+    float clearIn = (1.0 - smoothstep(ringR * 0.70, ringR, ringD)) * uClearRing.w * belowMask;
+    float ringEdgeD = (ringD - ringR) / max(ringR * 0.045, 1.0);
+    float ringEdge = exp2(-ringEdgeD * ringEdgeD) * uClearRing.w * belowMask;
 
     //镜像采样：绕（稳定缝线 uPivotY + 让位坑结构项）垂直镜像，近水面涟漪扰动
     float seamProx = exp2(-abs(below) * 22.0);
@@ -202,7 +222,7 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     //镜像染色：去饱和→乘色→深度压暗→沉雾，血湖↔浊水按 uRain 全套混合
     //浑浊=去饱和更重、雾更浓更早、倒影更糊
     float mgrey = dot(mcol, float3(0.30, 0.55, 0.15));
-    float3 mirror = lerp(mcol, mgrey.xxx, lerp(0.40, 0.58, uRain));
+    float3 mirror = lerp(mcol, mgrey.xxx, lerp(0.45, 0.58, uRain));
     mirror *= lerp(LAKE_TINT, RAIN_LAKE, uRain);
     float depth = saturate(below * 1.6);
     mirror *= 1.0 - depth * lerp(0.30, 0.36, uRain);
@@ -210,9 +230,9 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     mirror = lerp(mirror, fogc, saturate(depth * lerp(0.42, 0.60, uRain) + (1.0 - srcOk)));
 
     //水下折射采样：被淹之物随水摆动。双频偏移水平为主，幅度随深度增长、
-    //贴水线渐入，y 向偏移恒小于离线距离，采不到水线以上的像素
+    //贴水线渐入，y 向偏移恒小于离线距离，采不到水线以上的像素；清圈内摆动大减
     float refrIn = saturate(below * 26.0);
-    float refrAmp = (0.0045 + 0.0075 * saturate(below * 2.2)) * refrIn;
+    float refrAmp = (0.0045 + 0.0075 * saturate(below * 2.2)) * refrIn * (1.0 - 0.75 * clearIn);
     float rn0 = noiseTex(float2(uv.x * 3.4 + uTime * 0.050, uv.y * 9.0 - uTime * 0.060));
     float rn1 = noiseTex(float2(uv.x * 11.0 - uTime * 0.090, uv.y * 21.0 + uTime * 0.110));
     float2 ruv = uv;
@@ -220,19 +240,21 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     ruv.y += (rn1 - 0.5) * refrAmp * 0.45;
     float3 usrc = tex2D(uImage0, clamp(ruv, 0.002, 0.998)).rgb;
 
-    //水下真实世界：透过湖水看到的沉暗世界，倒影浮在其上；浊水里更快没入雾底
+    //水下真实世界：透过湖水看到的沉暗世界，倒影浮在其上；浊水里更快没入雾底；
+    //清圈内退回水面上的轻罩口径，血染与墨雾一并让开
     float uluma = dot(usrc, LUMA_W);
     float3 under = lerp(usrc, uluma.xxx, lerp(0.30, 0.44, uRain));
     under *= lerp(UNDER_TINT, RAIN_UNDER, uRain);
     under = lerp(under, fogc, saturate(depth * lerp(0.55, 0.70, uRain)));
+    under = lerp(under, AirVeil(usrc), clearIn);
 
-    //反射率：贴缝掠射强、向深处弱（看穿浅水），战斗可读性也靠它；浊水反光钝
+    //反射率：贴缝掠射强、向深处弱（看穿浅水），战斗可读性也靠它；浊水反光钝；清圈内无倒影
     float refl = lerp(0.34, 0.85, exp2(-max(below, 0.0) * 5.0));
-    refl *= 1.0 - 0.35 * uRain;
+    refl *= (1.0 - 0.35 * uRain) * (1.0 - clearIn);
     float3 lake = lerp(under, mirror, refl);
 
-    //水面浮渣：贴水面漂的凝斑，浊水里更密
-    float scum = saturate((n0 - 0.58) * 4.0) * exp2(-max(below, 0.0) * 24.0);
+    //水面浮渣：贴水面漂的凝斑，浊水里更密；清水里没有
+    float scum = saturate((n0 - 0.58) * 4.0) * exp2(-max(below, 0.0) * 24.0) * (1.0 - clearIn);
     lake *= 1.0 - scum * (0.10 + 0.15 * uFoamBoost + 0.10 * uRain);
 
     //镜内雨丝已删：同 KikasaFlip，假雨丝勿加回；雨感交给雨帘倒影与天穹雨幡
@@ -257,6 +279,8 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     final += foamCol * step(0.80, spat) * seamBand * uSeamGlow * uRain * 0.22 * mask;
     //鬼火缝线金辉：水线被贴水的火照亮
     final += WISP_GOLD * seamBand * uWispGlow * mask * (0.16 + 0.20 * glintN);
+    //清圈圈缘：清水与血水的分界一线水膜微光，与缝线血沫同色不同相
+    final += foamCol * ringEdge * mask * (0.28 + 0.22 * ringN);
 
     //湿纸撕裂前沿：浸润带压暗旧世界，湿纤维缘勾撕口，卷影垫出纸厚
     float3 fl = paperFront(coords, sd);

@@ -494,6 +494,7 @@ KikasaInkDrop.DisplayName: Чернильный дождь
 KikasaInkPour.DisplayName: Чернильный водопад
 KikasaInkPuddle.DisplayName: Чернильная лужа
 KikasaInkGeyser.DisplayName: Чернильный источник
+// KikasaBloodColumn.DisplayName: Blood Column
 BrainBloodShard.DisplayName: Пульсирующая капля крови
 BrainMirrorImage.DisplayName: Зеркальный двойник
 BrainShellFragment.DisplayName: Осколок панциря
