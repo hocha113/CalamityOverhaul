@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
                 "获取龙羽",     //18 丛林龙犽戎
                 "造物主访问",   //19 星流巨械
                 "女巫审计",     //20 至尊灾厄
-                "终焉大战",     //21 终焉之战
+                "终焉之战",     //21 终焉之战
             ];
             for (int i = 0; i < TRIAL_COUNT; i++) {
                 int idx = i;

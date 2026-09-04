@@ -754,7 +754,7 @@ OnikiriTrialQuestLine: {
 	TrackerWaiting: 它还不在
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: 下一刀：{0}
-	BossRushTargetName: 散不掉的夜
+	BossRushTargetName: 终焉之战
 	EventActiveFormat: "{0}: 进行中"
 	Trial_0: 天穹夜目
 	Trial_1: 秽土双孽
@@ -943,7 +943,7 @@ KikasaTrialQuestLine: {
 	TrackerWaiting: 还没入席
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: 下一席：{0}
-	BossRushTargetName: 满桌的客
+	BossRushTargetName: 终焉之战
 	EventActiveFormat: "{0}: 进行中"
 	Trial_0: 初席软冻
 	Trial_1: 夜穹窥目

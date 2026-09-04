@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.TrialQuests
             TrackerWaiting = this.GetLocalization(nameof(TrackerWaiting), () => "还没入席");
             TrackerFighting = this.GetLocalization(nameof(TrackerFighting), () => "{0}: {1:0%}");
             TrackerBrief = this.GetLocalization(nameof(TrackerBrief), () => "下一席：{0}");
-            BossRushTargetName = this.GetLocalization(nameof(BossRushTargetName), () => "满桌的客");
+            BossRushTargetName = this.GetLocalization(nameof(BossRushTargetName), () => "终焉之战");
             EventActiveFormat = this.GetLocalization(nameof(EventActiveFormat), () => "{0}: 进行中");
 
             TrialTitles = new LocalizedText[TRIAL_COUNT];

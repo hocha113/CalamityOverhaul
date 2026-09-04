@@ -754,7 +754,7 @@ OnikiriTrialQuestLine: {
 	TrackerWaiting: It isn't here yet. Wait, or we go ask for it
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Next cut: {0}
-	BossRushTargetName: Night That Won't Break
+	BossRushTargetName: Battle of Terminus
 	EventActiveFormat: "{0}: underway"
 	Trial_0: Skybound Eye
 	Trial_1: Twain Evils of the Soil
@@ -943,7 +943,7 @@ KikasaTrialQuestLine: {
 	TrackerWaiting: Not seated yet—go invite it, or wait a while
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Next course: {0}
-	BossRushTargetName: A Table Full of Guests
+	BossRushTargetName: Battle of Terminus
 	EventActiveFormat: "{0}: In progress"
 	Trial_0: Soft First Course
 	Trial_1: Night-Staring Eye
