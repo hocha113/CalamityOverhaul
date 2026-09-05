@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "头还是旧的，身子倒换了新铁");
-            L1 = this.GetLocalization(nameof(L1), () => "像换装换到一半就冲出来了，别扭");
-            L2 = this.GetLocalization(nameof(L2), () => "下次换完再出来打行不行。看得我都替它着急");
+            L0 = this.GetLocalization(nameof(L0), () => "顶着个老骷髅头，底下倒装了四把崭新的大铁锯子");
+            L1 = this.GetLocalization(nameof(L1), () => "活像新衣服套了一半就火急火燎出门打架，看着别扭极了");
+            L2 = this.GetLocalization(nameof(L2), () => "骨架全散一地了，趁那些铁臂还没凉透，找找有什么趁手的");
         }
 
         protected override void Build(NarrativeComposer n) {

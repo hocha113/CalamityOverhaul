@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "黏是黏了点。不过比起名字里还带着黏，这算什么");
-            L1 = this.GetLocalization(nameof(L1), () => "以前我会嫌。现在嘛……习惯了");
-            L2 = this.GetLocalization(nameof(L2), () => "给你。问从哪摸出来的，我可装听不见");
+            L0 = this.GetLocalization(nameof(L0), () => "踩烂泥踩多了，倒觉得这团神仙浆子手感不算太糟");
+            L1 = this.GetLocalization(nameof(L1), () => "起码没顺着裤腿往鞋帮里钻，算它还有点神仙样");
+            L2 = this.GetLocalization(nameof(L2), () => "顺手从果冻堆里捞出来的，拿着吧，可别追问我是从哪儿找着的");
         }
 
         protected override void Build(NarrativeComposer n) {

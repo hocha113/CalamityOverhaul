@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "两个人对视太久，会忍不住笑");
-            L1 = this.GetLocalization(nameof(L1), () => "你懂吧。越忍越想笑，嘴角自己就翘起来那种");
-            L2 = this.GetLocalization(nameof(L2), () => "我以前跟人比赛谁先憋不住。每次都是我输");
-            L3 = this.GetLocalization(nameof(L3), () => "看着那两只……算了，我又想笑了");
+            L0 = this.GetLocalization(nameof(L0), () => "一只红的一只绿的，满天乱晃，眼珠子瞪得跟铜铃似的");
+            L1 = this.GetLocalization(nameof(L1), () => "刚才打到一半我都在想，要是两只撞在一块儿，会不会把彼此给看晕了");
+            L2 = this.GetLocalization(nameof(L2), () => "我以前跟人比赛谁先憋不住笑，每次都是我输");
+            L3 = this.GetLocalization(nameof(L3), () => "噗……光是想想它俩撞在一起的场面，我都忍不住乐");
         }
 
         protected override void Build(NarrativeComposer n) {

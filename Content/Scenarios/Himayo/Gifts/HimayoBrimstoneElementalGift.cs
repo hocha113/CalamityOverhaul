@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "热气还没散。你看那滩，还在冒");
-            L1 = this.GetLocalization(nameof(L1), () => "脚伸进去会怎样？……别，我不是让你试");
-            L2 = this.GetLocalization(nameof(L2), () => "总之先别碰。烫手");
+            L0 = this.GetLocalization(nameof(L0), () => "周围岩浆滩还在咕嘟咕嘟冒白烟，站在这儿脚底板都要熟了");
+            L1 = this.GetLocalization(nameof(L1), () => "别盯着火星子发呆啦，留神鞋底被烫穿个洞");
+            L2 = this.GetLocalization(nameof(L2), () => "刀刃还烫手，先挂在腰边晾晾，咱们快换个凉快地儿");
         }
 
         protected override void Build(NarrativeComposer n) {

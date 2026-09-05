@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "花开败了，就该剪掉");
-            L1 = this.GetLocalization(nameof(L1), () => "梗留着也没意思。占地方，还看着人心烦");
-            L2 = this.GetLocalization(nameof(L2), () => "我们那儿卖花的都这么干。败了就剪，别磨蹭");
-            L3 = this.GetLocalization(nameof(L3), () => "哎，说这个干嘛。你又不是来买花的");
+            L0 = this.GetLocalization(nameof(L0), () => "呼，藤蔓总算枯下去了，一股烂根的土腥气");
+            L1 = this.GetLocalization(nameof(L1), () => "我们花村常说，花要是烂了芯子，再舍不得也得连根拔除，不然整片花田都得遭殃");
+            L2 = this.GetLocalization(nameof(L2), () => "枯枝败叶烂在地里也没什么看头，占地方还惹人心烦");
+            L3 = this.GetLocalization(nameof(L3), () => "刀上缠的花苞碎叶拍一拍，收拾干净咱们就动身");
         }
 
         protected override void Build(NarrativeComposer n) {

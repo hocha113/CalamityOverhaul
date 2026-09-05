@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "学走路学得那么像，烦");
-            L1 = this.GetLocalization(nameof(L1), () => "不是怕它，是看着别扭。学得越像越假");
-            L2 = this.GetLocalization(nameof(L2), () => "拿着。问从哪摸的，我装听不见");
+            L0 = this.GetLocalization(nameof(L0), () => "呼……总算散了，飘在空中的那个影子，动作僵硬得像具被线吊着的木偶");
+            L1 = this.GetLocalization(nameof(L1), () => "越是刻意学活人，反而越透着一股死板的假意，看着直让人膈应");
+            L2 = this.GetLocalization(nameof(L2), () => "灰烬里落了片拓本，拿着吧，这回真不是假的了");
         }
 
         protected override void Build(NarrativeComposer n) {

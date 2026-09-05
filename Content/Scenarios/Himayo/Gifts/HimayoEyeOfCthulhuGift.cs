@@ -20,11 +20,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "对了，我们那儿以前有个人，睡觉的时候眼睛合不上");
-            L1 = this.GetLocalization(nameof(L1), () => "不是吓人那种睁大，是眼皮半耷着，正对着房梁，像在发呆");
-            L2 = this.GetLocalization(nameof(L2), () => "被子裹得严严实实，屋里静得要命。有一回我路过窗下，差点喊人");
-            L3 = this.GetLocalization(nameof(L3), () => "结果人家第二天还好好的，在田里喊我帮忙搬花盆");
-            L4 = this.GetLocalization(nameof(L4), () => "哎，说着说着，看着你那双眼……我怎么也困了。不说了");
+            L0 = this.GetLocalization(nameof(L0), () => "呼……总算落下来了，被那么大一只眼珠子盯了半宿，后背都直发毛");
+            L1 = this.GetLocalization(nameof(L1), () => "不过这么一直干瞪着不眨，它自己到底嫌不嫌眼酸啊");
+            L2 = this.GetLocalization(nameof(L2), () => "刚才被盯得久了，我自己都跟着有点犯困");
+            L3 = this.GetLocalization(nameof(L3), () => "呐，在附近摸出来个小玩意，拿好了，别弄丢了");
+            L4 = this.GetLocalization(nameof(L4), () => "歇会儿吧，今晚可算能踏实合眼了");
         }
 
         protected override void Build(NarrativeComposer n) {

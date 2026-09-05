@@ -18,8 +18,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override bool IsBossRushGift => true;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "先站住");
-            L1 = this.GetLocalization(nameof(L1), () => "别晃。气还没喘匀呢");
+            L0 = this.GetLocalization(nameof(L0), () => "先站定别动……腿都快晃了吧");
+            L1 = this.GetLocalization(nameof(L1), () => "气先慢慢喘匀……这一路走来辛苦啦，欢迎回来");
         }
 
         protected override void Build(NarrativeComposer n) {

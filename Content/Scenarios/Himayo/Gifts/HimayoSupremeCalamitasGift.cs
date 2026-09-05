@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "那边弄得空气发沉。发滞那种");
-            L1 = this.GetLocalization(nameof(L1), () => "去吹吹风，或者洗把脸。不是嫌脏，是让你清醒点");
-            L2 = this.GetLocalization(nameof(L2), () => "这种程度……我倒习惯了。你别愣着就行");
+            L0 = this.GetLocalization(nameof(L0), () => "结界碎了……那股缠得人透不过气的灰烬和压迫感，终于散开了");
+            L1 = this.GetLocalization(nameof(L1), () => "别在风口里呆站着发木，深深吸口气，或者用冷水抹把脸醒醒神");
+            L2 = this.GetLocalization(nameof(L2), () => "以前处理恶灵时这种九死一生的阵仗我见得多了……但这一次，有你在我身边");
         }
 
         protected override void Build(NarrativeComposer n) {

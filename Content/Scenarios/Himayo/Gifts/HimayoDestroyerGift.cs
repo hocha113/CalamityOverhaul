@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "叫毁灭者……听着挺唬人的");
-            L1 = this.GetLocalization(nameof(L1), () => "结果不就是很长的一截铁吗");
-            L2 = this.GetLocalization(nameof(L2), () => "那个，别掉地上。掉了我可不管捡");
+            L0 = this.GetLocalization(nameof(L0), () => "轰隆隆叫得震天响，拆开了一看，还真就是一长串大实心铁轱辘");
+            L1 = this.GetLocalization(nameof(L1), () => "震得我脑壳到现在还在嗡嗡响呢");
+            L2 = this.GetLocalization(nameof(L2), () => "铁芯里翻出来个硬家伙，拿稳了，掉地上砸着脚我可不背你");
         }
 
         protected override void Build(NarrativeComposer n) {

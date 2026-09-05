@@ -20,11 +20,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "先别站着发呆了。喘两口气也好啊");
-            L1 = this.GetLocalization(nameof(L1), () => "刚才那摊抱成一团的……你有没有觉得，特别像坏掉的豆沙");
-            L2 = this.GetLocalization(nameof(L2), () => "我一说出口就后悔。现在我自己也饿了");
-            L3 = this.GetLocalization(nameof(L3), () => "你要是也饿，就去找点吃的。打完怪还硬撑着，最傻");
-            L4 = this.GetLocalization(nameof(L4), () => "还有，手别往脸上抹。不是嫌你脏，抹完眼睛真的会辣，信我");
+            L0 = this.GetLocalization(nameof(L0), () => "刚才那团乱七八糟挤在一块儿的……瞧着居然有点像捣烂的红豆沙");
+            L1 = this.GetLocalization(nameof(L1), () => "咳，本来还不觉得，随口一说倒把自己说饿了");
+            L2 = this.GetLocalization(nameof(L2), () => "你要是也饿了就去找点吃的，刚打完硬撑着最傻了");
+            L3 = this.GetLocalization(nameof(L3), () => "顺手摸出来的小物件塞给你，拿着吧");
+            L4 = this.GetLocalization(nameof(L4), () => "还有，手上有脏污别往脸上抹，抹完眼睛可真的会辣，听我的准没错");
         }
 
         protected override void Build(NarrativeComposer n) {

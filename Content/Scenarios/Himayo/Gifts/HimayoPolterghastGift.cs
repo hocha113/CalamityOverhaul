@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "潮得像屋里晾了一个礼拜的衣服，怎么都干不了");
-            L1 = this.GetLocalization(nameof(L1), () => "这种地方睡觉，醒来腰一定疼");
-            L2 = this.GetLocalization(nameof(L2), () => "开窗？这儿哪来的窗。炭也没有");
-            L3 = this.GetLocalization(nameof(L3), () => "反正别在这儿过夜。听劝");
+            L0 = this.GetLocalization(nameof(L0), () => "地底这片阴风吹得人骨头缝里都发潮，像屋里晾了半个月没干透的湿布");
+            L1 = this.GetLocalization(nameof(L1), () => "连扇透气的窗都没有，生个炭盆也没柴火，在这儿睡一觉明天腰肯定酸疼");
+            L2 = this.GetLocalization(nameof(L2), () => "冤魂全被荡平了，不过冷气还在往衣服里钻");
+            L3 = this.GetLocalization(nameof(L3), () => "别在这阴冷坑里多呆，回地面上烤烤火，免得落一身湿寒");
         }
 
         protected override void Build(NarrativeComposer n) {

@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0Worm = this.GetLocalization(nameof(L0Worm), () => "恶心……一截一截挤在土里");
-            L1Worm = this.GetLocalization(nameof(L1Worm), () => "腥得像刚翻开的泥沟。够了，我不想再闻");
-            L0Brain = this.GetLocalization(nameof(L0Brain), () => "脑子就该待在头壳里");
-            L1Brain = this.GetLocalization(nameof(L1Brain), () => "湿乎乎摊在外面。我看一眼都嫌");
+            L0Worm = this.GetLocalization(nameof(L0Worm), () => "这一截一截挤在烂泥里的家伙，腥气重得像刚翻出来的烂泥沟，可憋死我了");
+            L1Worm = this.GetLocalization(nameof(L1Worm), () => "快把刀甩干净收起来，咱们换个通风的地方吹吹风去");
+            L0Brain = this.GetLocalization(nameof(L0Brain), () => "湿漉漉一团看着就让人头皮发麻，脑子就该老老实实待在头壳里嘛");
+            L1Brain = this.GetLocalization(nameof(L1Brain), () => "刀身沾得黏糊糊的，赶紧拿布擦一擦，可别往你自己衣裳上抹");
         }
 
         protected override void Build(NarrativeComposer n) {
