@@ -21,11 +21,11 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0Bee = this.GetLocalization(nameof(L0Bee), () => "甜是甜，脾气也冲，倒是配");
-            L1Bee = this.GetLocalization(nameof(L1Bee), () => "蜜是好东西，可惜它舍不得给");
-            L0Deer = this.GetLocalization(nameof(L0Deer), () => "独眼的，脾气比我还倔");
-            L1Deer = this.GetLocalization(nameof(L1Deer), () => "一根木头也能闹出这么大动静");
-            L2 = this.GetLocalization(nameof(L2), () => "这一趟，没伤着吧");
+            L0Bee = this.GetLocalization(nameof(L0Bee), () => "甜是甜，尾巴上的刺倒也扎人得很");
+            L1Bee = this.GetLocalization(nameof(L1Bee), () => "蜜是好物事，可惜它护得太紧");
+            L0Deer = this.GetLocalization(nameof(L0Deer), () => "独眼的大家伙，脾气比我还倔");
+            L1Deer = this.GetLocalization(nameof(L1Deer), () => "枯木一般的残蹄，也能踏出这般风雪");
+            L2 = this.GetLocalization(nameof(L2), () => "这一趟折腾，没磕着碰着吧");
         }
 
         protected override void Build(NarrativeComposer n) {

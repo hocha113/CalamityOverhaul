@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "守门守了这么多年，骨头都该酥了");
-            L1 = this.GetLocalization(nameof(L1), () => "换了我，早就懒得守了");
-            L2 = this.GetLocalization(nameof(L2), () => "地牢的门开了，进去仔细些，别学它守株待兔守出瘾来");
+            L0 = this.GetLocalization(nameof(L0), () => "在门前站了那么些年，一身骨头早该酥了");
+            L1 = this.GetLocalization(nameof(L1), () => "换作是我，早就懒得继续看守了");
+            L2 = this.GetLocalization(nameof(L2), () => "地牢门开了，进去仔细看路，莫学那老仆守成了痴呆");
         }
 
         protected override void Build(NarrativeComposer n) {

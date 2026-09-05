@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "烧了这么多年的一团火，也该熄了");
-            L1 = this.GetLocalization(nameof(L1), () => "火和雨，本来就合不来");
-            L2 = this.GetLocalization(nameof(L2), () => "羽毛湿了，就飘不起来了，正好");
+            L0 = this.GetLocalization(nameof(L0), () => "烧了不知多少年的一把烈火，终究也是熄了");
+            L1 = this.GetLocalization(nameof(L1), () => "水火本就不相容，强融不得");
+            L2 = this.GetLocalization(nameof(L2), () => "羽毛全淋湿了，再也飘不起来，正好");
         }
 
         protected override void Build(NarrativeComposer n) {

@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "都回来了，还是深渊里那条老的醒了？");
-            L1 = this.GetLocalization(nameof(L1), () => "不管是哪种，这一趟都不轻松");
-            L2 = this.GetLocalization(nameof(L2), () => "站稳了，别在我面前晃");
-            L3 = this.GetLocalization(nameof(L3), () => "这顿吃完，雨也该停了");
+            L0 = this.GetLocalization(nameof(L0), () => "全都聚回来了，还是深渊里那个醒了");
+            L1 = this.GetLocalization(nameof(L1), () => "无论是哪个，这份层次都不算轻松");
+            L2 = this.GetLocalization(nameof(L2), () => "站稳些，别老在面前晃悠");
+            L3 = this.GetLocalization(nameof(L3), () => "这场打完，外头的雨也该停了");
         }
 
         protected override void Build(NarrativeComposer n) {

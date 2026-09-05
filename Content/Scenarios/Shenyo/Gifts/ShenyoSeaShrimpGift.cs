@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "海滩底下那只虾，一身晶壳，一拳能把水打空");
-            L1 = this.GetLocalization(nameof(L1), () => "壳蜕了一层又一层，脾气倒是半点没软");
-            L2 = this.GetLocalization(nameof(L2), () => "空响听着吓人，你接住了，手上算有真功夫");
+            L0 = this.GetLocalization(nameof(L0), () => "滩底下藏着的那只大虾，浑身亮晶晶的，一拳还能把水打散");
+            L1 = this.GetLocalization(nameof(L1), () => "壳蜕了一层又一层，脾气倒是一点没改");
+            L2 = this.GetLocalization(nameof(L2), () => "动静听着唬人，你给接下来了，手上倒有些真本事");
         }
 
         protected override void Build(NarrativeComposer n) {

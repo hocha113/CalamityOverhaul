@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "月亮后头那位，也算见过世面了");
-            L1 = this.GetLocalization(nameof(L1), () => "浑身是眼睛，倒是和我这把伞下的雨有点像");
-            L2 = this.GetLocalization(nameof(L2), () => "了结了，今晚的月色，替我看仔细些");
+            L0 = this.GetLocalization(nameof(L0), () => "天顶上那团大影子，终究也是散了");
+            L1 = this.GetLocalization(nameof(L1), () => "浑身长满眼睛，倒跟我这把伞下的雨幕有些像");
+            L2 = this.GetLocalization(nameof(L2), () => "今夜的月色瞧着还算顺眼，替我多看一眼吧");
         }
 
         protected override void Build(NarrativeComposer n) {

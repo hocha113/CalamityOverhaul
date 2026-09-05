@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "工匠的得意，魔女的执念，凑一块倒是般配");
-            L1 = this.GetLocalization(nameof(L1), () => "两桌都收了，算你今天没白忙");
-            L2 = this.GetLocalization(nameof(L2), () => "往后这样的日子，不会再有几回了");
+            L0 = this.GetLocalization(nameof(L0), () => "机关的得意，魔女的执念，凑在一块倒也般配");
+            L1 = this.GetLocalization(nameof(L1), () => "两边都称量过了，算你今天没白跑");
+            L2 = this.GetLocalization(nameof(L2), () => "往后这世上，怕是难再有这种大动静了");
         }
 
         protected override void Build(NarrativeComposer n) {

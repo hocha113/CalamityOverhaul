@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "石头脑袋，还会蹦跶");
-            L1 = this.GetLocalization(nameof(L1), () => "砸开了也不过是个空壳子");
-            L2 = this.GetLocalization(nameof(L2), () => "浪花是你自己挣的，我可没帮忙");
+            L0 = this.GetLocalization(nameof(L0), () => "庙里的石头桩子，居然还会蹦跶");
+            L1 = this.GetLocalization(nameof(L1), () => "砸开了看，不过也是个空心壳子");
+            L2 = this.GetLocalization(nameof(L2), () => "浪花是你自个凭本事掀的，我可没帮你");
         }
 
         protected override void Build(NarrativeComposer n) {

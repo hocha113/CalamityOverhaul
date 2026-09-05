@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "睡着的花，吵醒了她就得担着");
-            L1 = this.GetLocalization(nameof(L1), () => "藤蔓缠人的样子，倒有点像我那把伞收不住的时候");
-            L2 = this.GetLocalization(nameof(L2), () => "花汁染了手，回来记得洗干净");
+            L0 = this.GetLocalization(nameof(L0), () => "在深处睡着的花，叫醒了果然是桩麻烦事");
+            L1 = this.GetLocalization(nameof(L1), () => "藤蔓疯长缠绞的样子，倒有点像我当年收不住伞的时候");
+            L2 = this.GetLocalization(nameof(L2), () => "花汁染在手上黏得很，记得去打水洗干净");
         }
 
         protected override void Build(NarrativeComposer n) {

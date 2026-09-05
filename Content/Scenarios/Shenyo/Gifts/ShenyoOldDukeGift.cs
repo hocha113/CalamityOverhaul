@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "硫海底下那老东西，脾气比酸水还酸");
-            L1 = this.GetLocalization(nameof(L1), () => "跟我打过几次照面，谁也没让过谁");
-            L2 = this.GetLocalization(nameof(L2), () => "这回是你赢了，替我记他一笔");
+            L0 = this.GetLocalization(nameof(L0), () => "硫海底下那头老东西，脾气比酸水还冲");
+            L1 = this.GetLocalization(nameof(L1), () => "当年打过几回照面，谁也没让过谁");
+            L2 = this.GetLocalization(nameof(L2), () => "这回被你收了，替我记他一笔");
         }
 
         protected override void Build(NarrativeComposer n) {

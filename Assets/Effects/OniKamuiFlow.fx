@@ -15,6 +15,10 @@
 //：极角审计合规。s 以世界路径长度归一（uLenScale=路径px/噪声瓦片px），
 //冲刺途中路径变长时墨纹钉在世界空间不随拉伸游动。
 //预乘 alpha 输出，配 BlendState.AlphaBlend；核心/白闪走 alpha 之外的加色余量
+//
+//兼容性硬约束（2026-09 神威疾走首绘闪退排查）：全程直线代码 + 纯 tex2D，禁止 if/return/
+//tex2Dlod。FNA3D 的 D3D11 后端在着色器首次绘制时才关优化编译并交驱动生成机器码，
+//旧驱动对分支结构最脆弱；剔除像素一律用 step() 门控乘到输出上。
 //ps_3_0 / vs_3_0
 // ============================================================================
 
@@ -98,8 +102,8 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float boundary = (0.98 - tear * (0.62 * bN + 0.30 * bN2)) * taper;
     //羽化宽度随收束缩窄，尖端不糊
     float aEdge = smoothstep(boundary, boundary - (0.26 * taper + 0.035), abs(cy));
-    if (aEdge < 0.004)
-        return float4(0, 0, 0, 0);
+    //轮廓外归零走门控乘法而不是提前返回：本文件全程直线代码，见文件头兼容性说明
+    float edgeGate = step(0.004, aEdge);
 
     //---- 存活/蒸发：回抽从尾端推进 + 尾端常态剥碎，前沿烧蚀 ----
     //斜率 2.3：uRetract=1 时头端阈值 1.15 > 噪声上界，保证擦净不留残膜
@@ -115,8 +119,8 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float alpha = aEdge * capA * survive * body;
     alpha = saturate(alpha * lerp(1.0, 1.35, saturate(uFlash)));
     alpha *= uOpacity;
-    if (alpha < 0.004 && burn < 0.05)
-        return float4(0, 0, 0, 0);
+    //alpha 与烧蚀边都低于阈值的像素整体归零（原为提前返回，语义相同：任一超阈即存活）
+    float live = max(step(0.004, alpha), step(0.05, burn)) * edgeGate;
 
     //---- 色带：头白热 → 亮绯红 → 深红 → 黑红尾 ----
     float heat = saturate(pow(u, 1.55));
@@ -144,9 +148,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //全形白闪：提亮一拍而非擦掉重画
     col = lerp(col, col + uColHot * 0.60, saturate(uFlash));
 
-    //预乘输出 + 核心/闪光的加色余量（半加法辉光）
+    //预乘输出 + 核心/闪光的加色余量（半加法辉光）；门控在最后一乘，被剔除像素输出精确为 0
     float3 extra = uColHot * (core * 0.35 + saturate(uFlash) * 0.12) * capA * survive * uOpacity;
-    return float4(col * alpha + extra, alpha);
+    return float4(col * alpha + extra, alpha) * live;
 }
 
 technique Technique1

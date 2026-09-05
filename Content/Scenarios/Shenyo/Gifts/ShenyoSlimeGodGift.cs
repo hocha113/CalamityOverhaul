@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "紫的黑的搅在一起，也敢称神");
-            L1 = this.GetLocalization(nameof(L1), () => "倒是有几分本事，能把这么多恶心东西糊成一团");
-            L2 = this.GetLocalization(nameof(L2), () => "化开了就好，省得脏了地方");
+            L0 = this.GetLocalization(nameof(L0), () => "红的紫的糊成一锅，也敢在嘴上称神");
+            L1 = this.GetLocalization(nameof(L1), () => "能把这许多杂乱东西裹作一团，倒算有些层次");
+            L2 = this.GetLocalization(nameof(L2), () => "化干净了就好，省得脏了眼前地方");
         }
 
         protected override void Build(NarrativeComposer n) {

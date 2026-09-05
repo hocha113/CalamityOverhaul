@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "天上绕圈的那条，听说吞过神");
-            L1 = this.GetLocalization(nameof(L1), () => "神是什么味道，我倒是有点好奇");
-            L2 = this.GetLocalization(nameof(L2), () => "壳留着也好，肉不必留给我");
+            L0 = this.GetLocalization(nameof(L0), () => "天上盘着的那条，听说连神都吞过");
+            L1 = this.GetLocalization(nameof(L1), () => "神到了什么层次、什么滋味，我倒有点好奇");
+            L2 = this.GetLocalization(nameof(L2), () => "那身甲壳你自个留着，肉不必拿来给我看");
         }
 
         protected override void Build(NarrativeComposer n) {

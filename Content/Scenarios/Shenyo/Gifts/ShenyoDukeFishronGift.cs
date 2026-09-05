@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "一头猪也学人掀浪，也是奇了");
-            L1 = this.GetLocalization(nameof(L1), () => "水的脾气，轮不到它使");
-            L2 = this.GetLocalization(nameof(L2), () => "按回水里也好，省得它总在我眼皮底下晃");
+            L0 = this.GetLocalization(nameof(L0), () => "一头海猪也学着人掀风作浪，也是奇事");
+            L1 = this.GetLocalization(nameof(L1), () => "水的脾气，轮不到它来使唤");
+            L2 = this.GetLocalization(nameof(L2), () => "按回水里也好，免得总在眼前乱晃");
         }
 
         protected override void Build(NarrativeComposer n) {

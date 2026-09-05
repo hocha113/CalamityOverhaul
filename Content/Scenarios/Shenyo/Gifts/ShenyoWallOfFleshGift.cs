@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "地狱里那面肉墙，我隔着伞都嫌烫");
-            L1 = this.GetLocalization(nameof(L1), () => "捅穿了，世界也就跟着变了，这种事你倒是干得挺熟练");
-            L2 = this.GetLocalization(nameof(L2), () => "以后这种阵仗，还有的是");
+            L0 = this.GetLocalization(nameof(L0), () => "地底下那面大肉墙，隔着雨幕我都嫌烘得慌");
+            L1 = this.GetLocalization(nameof(L1), () => "贯穿过去这天地的规矩就变了，你下手倒是利落");
+            L2 = this.GetLocalization(nameof(L2), () => "往后这类层次的大场面，有的是");
         }
 
         protected override void Build(NarrativeComposer n) {

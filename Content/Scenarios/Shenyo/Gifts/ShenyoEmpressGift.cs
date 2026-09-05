@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "太亮的东西，我这双眼睛看着费劲");
-            L1 = this.GetLocalization(nameof(L1), () => "白天不必去招惹她，你倒好，专挑难的");
-            L2 = this.GetLocalization(nameof(L2), () => "光都揉暗了，也算你的本事");
+            L0 = this.GetLocalization(nameof(L0), () => "太亮堂的东西，我看着刺眼");
+            L1 = this.GetLocalization(nameof(L1), () => "大白天本不用去招惹她，你倒专挑难对付的");
+            L2 = this.GetLocalization(nameof(L2), () => "光都揉暗了，算你有几分本事");
         }
 
         protected override void Build(NarrativeComposer n) {

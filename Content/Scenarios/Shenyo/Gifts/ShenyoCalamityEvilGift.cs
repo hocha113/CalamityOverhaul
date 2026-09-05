@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "一窝一窝的，钻血又钻肉，看着都疼");
-            L1 = this.GetLocalization(nameof(L1), () => "你倒是不怕疼");
-            L2 = this.GetLocalization(nameof(L2), () => "下次当心点，我这把伞挡雨，挡不了那些虫子");
+            L0 = this.GetLocalization(nameof(L0), () => "钻肉噬骨的一大窝，看着都嫌烦");
+            L1 = this.GetLocalization(nameof(L1), () => "你倒是不怎么怕疼");
+            L2 = this.GetLocalization(nameof(L2), () => "往后当心些，这把伞能挡雨，挡不了那些小虫子");
         }
 
         protected override void Build(NarrativeComposer n) {

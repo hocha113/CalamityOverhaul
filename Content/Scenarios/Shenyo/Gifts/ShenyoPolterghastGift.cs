@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "地牢里那团魂，缝缝补补好几百年");
-            L1 = this.GetLocalization(nameof(L1), () => "跟我算是同类，你倒不必替它说情");
-            L2 = this.GetLocalization(nameof(L2), () => "散了也好，好过在那儿吊着");
+            L0 = this.GetLocalization(nameof(L0), () => "地牢深处那些碎魂，缝缝补补吊了好几百年");
+            L1 = this.GetLocalization(nameof(L1), () => "追究起来同我也算同类，倒用不着替它可惜");
+            L2 = this.GetLocalization(nameof(L2), () => "散在水里归于清静也好，省得总在那儿哀哀戚戚");
         }
 
         protected override void Build(NarrativeComposer n) {

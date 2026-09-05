@@ -21,11 +21,11 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0Worm = this.GetLocalization(nameof(L0Worm), () => "土里钻出来一条，一节一节的，恶心");
-            L1Worm = this.GetLocalization(nameof(L1Worm), () => "腥气比雨水还重，我倒是不嫌，你受得住就好");
-            L0Brain = this.GetLocalization(nameof(L0Brain), () => "脑子摊在外头，也不嫌凉");
-            L1Brain = this.GetLocalization(nameof(L1Brain), () => "这种东西，多看一眼都嫌脏了眼睛");
-            L2 = this.GetLocalization(nameof(L2), () => "了结了就好，别沾一身腥气回来找我");
+            L0Worm = this.GetLocalization(nameof(L0Worm), () => "泥里钻出来的一截截长虫，腥气重得难闻");
+            L1Worm = this.GetLocalization(nameof(L1Worm), () => "比死水还沉的气味，你倒受得住");
+            L0Brain = this.GetLocalization(nameof(L0Brain), () => "脑子就该好好待在骨头里，摊在外头也不嫌凉");
+            L1Brain = this.GetLocalization(nameof(L1Brain), () => "这种脏东西，多瞧一眼都嫌烦");
+            L2 = this.GetLocalization(nameof(L2), () => "弄干净了就好，别沾一身腥味回来找我");
         }
 
         protected override void Build(NarrativeComposer n) {

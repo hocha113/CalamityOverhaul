@@ -20,6 +20,8 @@
 //  uAxis/uStretch 沿运动轴拉长形体，拖影由 C# 多画一遍偏移 quad 承担。
 //
 //直线算术 + 纯 tex2D，无动态分支、无 tex2Dlod。预乘输出，配 AlphaBlend。
+//兼容性硬约束（2026-09 神威疾走首绘闪退排查，樱流与之衔接同样适用）：禁止 if/return
+//提前返回，阈下像素一律 step() 门控乘到输出；旧版两处 return 曾被 fxc 编成 if_ne 动态分支。
 //ps_3_0 / vs_3_0
 // ============================================================================
 
@@ -140,8 +142,8 @@ float4 PSStream(PSInput input) : COLOR0
     float body = saturate(0.18 + flow * 0.92);
     float alpha = aEdge * capA * survive * body * grainMask * gust;
     alpha = saturate(alpha * lerp(1.0, 1.30, saturate(uFlash))) * uOpacity;
-    if (alpha < 0.004 && recall < 0.05)
-        return float4(0, 0, 0, 0);
+    //alpha 与召回边都低于阈值的像素整体归零：门控乘法替代提前返回（任一超阈即存活）
+    float live = max(step(0.004, alpha), step(0.05, recall));
 
     //---- 色带：尾 墨绯 → 深绯 → 亮樱 → 头微微泛白。终端白化压到 0.45：
     //瓣不发热，头端的"亮"主要由密度(alpha)与花核自己扛 ----
@@ -169,9 +171,9 @@ float4 PSStream(PSInput input) : COLOR0
     //全形白闪：提亮一拍而非擦掉重画
     col = lerp(col, col + uColHot * 0.50, saturate(uFlash));
 
-    //预乘输出 + 白闪的加色余量（中脊的加色份额压到 0.12，防头部亮度堆积）
+    //预乘输出 + 白闪的加色余量（中脊的加色份额压到 0.12，防头部亮度堆积）；门控最后一乘
     float3 extra = uColHot * (ridge * 0.12 + saturate(uFlash) * 0.10) * capA * survive * uOpacity;
-    return float4(col * alpha + extra, alpha);
+    return float4(col * alpha + extra, alpha) * live;
 }
 
 //螺旋花涡：三条瓣粒臂向心卷入 + 近实心口 + 瓣粒咬边。
@@ -214,8 +216,8 @@ float4 PSCoreBloom(PSInput input) : COLOR0
         + bodyA * armMask * (0.28 + 0.72 * clump) * (1.0 - heart));
 
     float alpha = density * input.Color.a * uOpacity;
-    if (alpha < 0.004)
-        return float4(0, 0, 0, 0);
+    //阈下像素整体归零：门控乘法替代提前返回
+    float live = step(0.004, alpha);
 
     //色由密度驱动：疏处深绯 → 密处樱 → 心口淡樱白；不做白热常驻，
     //核的"亮"靠与流带/拖影的对比读出来，不靠把 RGB 顶到 1
@@ -225,9 +227,9 @@ float4 PSCoreBloom(PSInput input) : COLOR0
     float glint = smoothstep(0.80, 0.96, grain) * bodyA;
     col += uColHot * glint * uBloom * 0.35;
 
-    //加色余量只给反光斑（点不是体）
+    //加色余量只给反光斑（点不是体）；门控最后一乘
     float3 extra = uColHot * glint * uBloom * 0.08 * input.Color.a * uOpacity;
-    return float4(col * alpha + extra, alpha);
+    return float4(col * alpha + extra, alpha) * live;
 }
 
 technique TechStream

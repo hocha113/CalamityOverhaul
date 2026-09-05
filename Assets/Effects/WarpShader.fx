@@ -1,6 +1,10 @@
 // ============================================================================
 //WarpShader.fx 屏幕空间扭曲后处理
 //采样 uImage0 场景 + uImage1 位移图；ps_3_0
+//
+//兼容性硬约束（2026-09 神威疾走首绘闪退排查）：全程直线代码，禁止 if/分支内 return。
+//旧版在 if(!any(displace)) 分支里做 tex2D，经 FNA3D 关优化编译后 DXBC 里的 sample
+//落在发散分支内，是旧驱动最脆弱的构造；现在改为无条件采样 + 算术选择，输出逐像素等价。
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -21,8 +25,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 displace = tex2D(uImage1, coords);
 
-    if (!any(displace))
-        return tex2D(uImage0, coords);
+    //无位移像素原样透传场景色（含其 alpha）。必须无条件采样并以乘法参与最终合成：
+    //只在条件路径上用到的采样会被编译器重新沉进分支
+    float4 passthrough = tex2D(uImage0, coords);
+    float hasWarp = any(displace) ? 1.0 : 0.0;
 
     //解码位移向量
     float rot = displace.r * 6.28318;
@@ -30,10 +36,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float mag = displace.g * i;
     float2 offset = dir * mag;
 
-    //色差强度与位移量成正比
-    float aberration = length(offset) * 12.0;
-    if (noBlueshift)
-        aberration *= 0.15;
+    //色差强度与位移量成正比；禁蓝移时压到 0.15（uniform 选择，编译为 cmp）
+    float aberration = length(offset) * 12.0 * (noBlueshift ? 0.15 : 1.0);
 
     //色差分离: R/G/B通道以不同偏移采样
     //模拟引力色散 — 高频光(蓝)偏折更强
@@ -67,21 +71,14 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     result.b = colorB.b;
     result.a = 1.0;
 
-    //引力频移着色
+    //引力频移着色：蓝移（中子星引力场中光频率升高）与中性提亮二选一，uniform 选择无分支
     float shift = length(offset);
-    if (!noBlueshift)
-    {
-        //蓝移：中子星引力场中光频率升高
-        result.b += shift * 28.0;
-        result.r += shift * 2.0;
-        result.g += shift * 1.5;
-    }
-    else
-    {
-        result.rgb += shift * 0.15;
-    }
+    float3 blueshift = float3(shift * 2.0, shift * 1.5, shift * 28.0);
+    float3 neutral = float3(shift, shift, shift) * 0.15;
+    result.rgb += noBlueshift ? neutral : blueshift;
 
-    return result;
+    //乘法选择而非 lerp：hasWarp 只取 0/1，两路输出都与原值逐位相同
+    return result * hasWarp + passthrough * (1.0 - hasWarp);
 }
 
 technique Technique1

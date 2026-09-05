@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "链子、灯泡、骨架，凑一块倒像个笑话");
-            L1 = this.GetLocalization(nameof(L1), () => "铁腥味重，我不爱，你倒是不嫌");
-            L2 = this.GetLocalization(nameof(L2), () => "三件一起收拾，算你有耐心");
+            L0 = this.GetLocalization(nameof(L0), () => "铁链、探灯、钢骨架，拼在一块像个笑话");
+            L1 = this.GetLocalization(nameof(L1), () => "铁腥味重得很，我不喜，你倒不嫌弃");
+            L2 = this.GetLocalization(nameof(L2), () => "一口气全拆干净，算你有耐性");
         }
 
         protected override void Build(NarrativeComposer n) {
