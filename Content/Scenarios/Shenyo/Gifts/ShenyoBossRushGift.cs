@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "全都聚回来了，还是深渊里那个醒了");
-            L1 = this.GetLocalization(nameof(L1), () => "无论是哪个，这份层次都不算轻松");
+            L1 = this.GetLocalization(nameof(L1), () => "无论是哪个，都不算轻松");
             L2 = this.GetLocalization(nameof(L2), () => "站稳些，别老在面前晃悠");
             L3 = this.GetLocalization(nameof(L3), () => "这场打完，外头的雨也该停了");
         }

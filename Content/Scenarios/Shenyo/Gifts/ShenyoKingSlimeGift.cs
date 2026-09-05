@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Kikasa;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "软趴趴一滩烂泥，也能拿出来称量？");
+            L0 = this.GetLocalization(nameof(L0), () => "软趴趴一滩烂泥，也配称量我？");
             L1 = this.GetLocalization(nameof(L1), () => "蹦得倒是挺欢腾");
             L2 = this.GetLocalization(nameof(L2), () => "以后碰上真正凶险的，莫学它这般虚张声势");
         }

@@ -42,7 +42,7 @@ ShenyoFesterSerpentGift: {
 
 ShenyoBossRushGift: {
 	L0: 全都聚回来了，还是深渊里那个醒了
-	L1: 无论是哪个，这份层次都不算轻松
+	L1: 无论是哪个，都不算轻松
 	L2: 站稳些，别老在面前晃悠
 	L3: 这场打完，外头的雨也该停了
 }
@@ -61,7 +61,7 @@ ShenyoCultistGift: {
 
 ShenyoDevourerOfGodsGift: {
 	L0: 天上盘着的那条，听说连神都吞过
-	L1: 神到了什么层次、什么滋味，我倒有点好奇
+	L1: 神到了什么层次，我倒有点好奇
 	L2: 那身甲壳你自个留着，肉不必拿来给我看
 }
 
@@ -104,7 +104,7 @@ ShenyoGolemGift: {
 }
 
 ShenyoKingSlimeGift: {
-	L0: 软趴趴一滩烂泥，也能拿出来称量？
+	L0: 软趴趴一滩烂泥，也配称量我？
 	L1: 蹦得倒是挺欢腾
 	L2: 以后碰上真正凶险的，莫学它这般虚张声势
 }
