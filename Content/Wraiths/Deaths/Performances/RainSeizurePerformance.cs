@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,60 +11,189 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
 {
     /// <summary>
     /// 鬼雨夺身「被雨认领」。<br/>
-    /// 前兆：四下的雨改向，全部朝玩家头顶收拢，一张脸痕压在雨里；<br/>
-    /// 显形：雨丝收束成一条向上的雨喉，把人整个提离地面吸进去；<br/>
-    /// 处决：雨喉一合，人不见了；<br/>
-    /// 余韵：尸身随雨落回原地，那一小片急雨迟迟不散。<br/>
-    /// 材质：湿墨阴幕（冷灰青尸雨/贴地潮雾/脸痕/雨喉），不混喜堂墨红或雷电狂欢。
+    /// 前兆：四下的雨改向朝头顶收拢，脸痕压在雨里，喉口在上方成形；<br/>
+    /// 显形：雨喉垂下，末端绞索缠住人把他抽离地面吞进去，喉身一道颈缩自下而上跑过；<br/>
+    /// 处决：喉口把人吐回来，尸身坠地那一刻才算死，砸出一圈水花并顿五帧；<br/>
+    /// 余韵：喉体自上而下抽干散去，原地那片急雨迟迟不散。<br/>
+    /// 材质：湿墨阴幕，喉体走 <c>GhostRain.fx</c> 的 <c>TechThroat</c>，与常驻雨幕同一套水；
+    /// 禁喜堂墨红、雷电狂欢与 SoftGlow 雨体。
     /// </summary>
     internal sealed class RainSeizurePerformance : WraithDeathPerformance
     {
         public override int OmenEndFrame => 40;
-        public override int ExecuteFrame => 122;
-        public override int TotalFrames => 198;
+        public override int ExecuteFrame => 138;
+        public override int TotalFrames => 192;
+
+        /// <summary>尸身砸地那一下卡住的帧数，总长因此约 197 帧</summary>
+        private const int LandHoldFrames = 5;
+
+        //节拍锚点，全部是绝对帧
+        private const int ThroatDropFrame = 41;
+        private const int GrabFrame = 62;
+        private const int SwallowFrame = 96;
+        private const int GulpFrame = 116;
+        private const int EjectFrame = 120;
+
+        /// <summary>喉口悬在落点上方这么高</summary>
+        private const float ThroatHeight = 330f;
+        /// <summary>喉体 quad 宽度，噪声按此与高度折算等比</summary>
+        private const float ThroatWidth = 250f;
+        /// <summary>无地面时的坠落行程</summary>
+        private const float AirborneDrop = 260f;
 
         private static readonly Color RainPale = new(170, 185, 190);
         private static readonly Color RainCorpse = new(140, 170, 165);
         private static readonly Color MistDamp = new(58, 66, 70);
 
-        //雨喉起点：玩家头顶上方的喉口
-        private const float ThroatHeight = 300f;
-        //被吸上去的高度
-        private const float SwallowLift = 210f;
+        //三层处决音：低频体感层是抽吸风压，与其余五只互不相同
+        private static readonly SeizureCue GrabCue = new(
+            SeizureCue.Custom("RainGrab", SoundID.DD2_BetsyWindAttack with {
+                Pitch = -0.55f, Volume = 0.7f, MaxInstances = 3,
+            }),
+            SoundID.SplashWeak with { Pitch = -0.25f, Volume = 0.5f, MaxInstances = 3 },
+            SoundID.DD2_DrakinBreathIn with { Pitch = -0.3f, Volume = 0.35f, MaxInstances = 3 });
+
+        private static readonly SeizureCue GulpCue = new(
+            SeizureCue.Custom("RainGulp", SoundID.DD2_BetsyWindAttack with {
+                Pitch = -0.95f, Volume = 0.9f, MaxInstances = 3,
+            }),
+            SoundID.DD2_DrakinBreathIn with { Pitch = -0.7f, Volume = 0.6f, MaxInstances = 3 },
+            SoundID.SplashWeak with { Pitch = 0.15f, Volume = 0.4f, MaxInstances = 3 });
+
+        private static readonly SeizureCue LandCue = new(
+            SeizureCue.Custom("RainLand", SoundID.DD2_BetsyWindAttack with {
+                Pitch = -1f, Volume = 0.55f, MaxInstances = 3,
+            }),
+            SoundID.SplashWeak with { Pitch = -0.45f, Volume = 0.95f, MaxInstances = 3 });
 
         private Vector2 groundAnchor;
         private bool anchorSet;
+        private float landingY;
+        private float throatOpen;
+        private float throatGrip;
+        private float swallow;
+        private float drain;
         private float liftAmount;
-        private int throatFlash;
-        private bool corpseDropped;
-        private Vector2 corpsePos;
-        private float corpseFall;
+        private float fallAmount;
+        private int gulpFlash;
 
-        private Vector2 ThroatMouth {
+        public override void OnBegin() {
+            ResolveAnchors();
+            //远处一声闷雷，不带闪电
+            SoundEngine.PlaySound(SoundID.Thunder with {
+                Pitch = -0.85f, Volume = 0.4f, MaxInstances = 3,
+            }, groundAnchor);
+        }
+
+        public override void BuildBeats(SeizureBeatTable beats) {
+            beats.Add(16, SpawnFaceStreak);
+            beats.Add(30, () => {
+                SpawnFaceStreak();
+                SoundEngine.PlaySound(SoundID.DD2_BetsyWindAttack with {
+                    Pitch = -0.85f, Volume = 0.4f, MaxInstances = 3,
+                }, MouthPoint);
+            });
+            //喉体自喉口垂下
+            beats.Add(ThroatDropFrame, () => {
+                SoundEngine.PlaySound(SoundID.DD2_DrakinBreathIn with {
+                    Pitch = -0.55f, Volume = 0.5f, MaxInstances = 3,
+                }, MouthPoint);
+                YankBurst(groundAnchor);
+            });
+            //绞索缠身，人被抽离地面
+            beats.Add(GrabFrame, () => {
+                GrabCue.Play(Player?.Center ?? groundAnchor);
+                YankBurst(Player?.Center ?? groundAnchor);
+                gulpFlash = 10;
+            });
+            //吞：颈缩自下而上跑
+            beats.Add(SwallowFrame, () => {
+                SoundEngine.PlaySound(SoundID.DD2_DrakinBreathIn with {
+                    Pitch = -0.2f, Volume = 0.55f, MaxInstances = 3,
+                }, MouthPoint);
+            });
+            //喉口一合
+            beats.Add(GulpFrame, () => {
+                GulpCue.Play(MouthPoint);
+                gulpFlash = 16;
+                MouthSpray();
+            });
+            //吐回：尸身自喉口下端掉出来
+            beats.Add(EjectFrame, () => {
+                SoundEngine.PlaySound(SoundID.SplashWeak with {
+                    Pitch = -0.6f, Volume = 0.6f, MaxInstances = 3,
+                }, ThroatEnd);
+            });
+        }
+
+        /// <summary>砸地那一下卡住，让「落定」有重量</summary>
+        public override int HoldFramesAt(int frame)
+            => frame == ExecuteFrame ? LandHoldFrames : 0;
+
+        //---- 几何 ----
+
+        private void ResolveAnchors() {
+            Vector2 center = Player?.Center ?? DeathAnchor;
+            groundAnchor = center;
+            landingY = Ground.HasGround ? Ground.GroundY : center.Y + AirborneDrop;
+            anchorSet = true;
+        }
+
+        private Vector2 MouthPoint {
             get {
-                Vector2 anchor = anchorSet ? groundAnchor : Player.Center;
-                return anchor - new Vector2(0f, ThroatHeight);
+                Vector2 basePos = anchorSet ? groundAnchor : (Player?.Center ?? DeathAnchor);
+                return new Vector2(basePos.X, landingY - ThroatHeight);
             }
         }
 
-        public override void OnBegin() {
-            groundAnchor = Player.Center;
-            anchorSet = true;
-            //远处一声闷雷，不带闪电
-            SoundEngine.PlaySound(SoundID.Thunder with {
-                Pitch = -0.85f,
-                Volume = 0.4f,
-                MaxInstances = 3,
-            }, Player.Center);
+        /// <summary>人被抽到的高度：喉口内侧一截</summary>
+        private Vector2 HoldPoint => MouthPoint + new Vector2(0f, 118f);
+
+        /// <summary>喉体下端：抓取期跟着人，吞下后自下而上缩回喉口</summary>
+        private Vector2 ThroatEnd {
+            get {
+                Vector2 mouth = MouthPoint;
+                Vector2 low = liftAmount > 0f
+                    ? Vector2.Lerp(new Vector2(mouth.X, landingY), HoldPoint, liftAmount)
+                    : new Vector2(mouth.X, landingY);
+                //吞咽把下端一路收回喉口
+                return Vector2.Lerp(low, mouth + new Vector2(0f, 60f), swallow);
+            }
         }
+
+        /// <summary>尸身坠回的位置</summary>
+        private Vector2 FallPoint {
+            get {
+                Vector2 from = MouthPoint + new Vector2(0f, 140f);
+                Vector2 to = new(MouthPoint.X, landingY - 16f);
+                //自由落体读作加速，不是匀速下滑
+                return Vector2.Lerp(from, to, fallAmount * fallAmount);
+            }
+        }
+
+        //---- 推进 ----
 
         public override void Update() {
             if (!anchorSet) {
-                groundAnchor = Player.Center;
-                anchorSet = true;
+                ResolveAnchors();
             }
-            if (throatFlash > 0) {
-                throatFlash--;
+            if (gulpFlash > 0) {
+                gulpFlash--;
+            }
+
+            //喉体宽度生命周期：张开 → 维持 → 吞咽颈缩 → 自喉口抽干
+            throatOpen = MathHelper.Clamp((Timer - ThroatDropFrame) / 22f, 0f, 1f);
+            throatGrip = MathHelper.Clamp((Timer - GrabFrame + 6f) / 20f, 0f, 1f);
+            liftAmount = VaultUtils.EaseOutCubic(
+                MathHelper.Clamp((Timer - GrabFrame) / 32f, 0f, 1f));
+            swallow = MathHelper.Clamp((Timer - SwallowFrame) / (float)(GulpFrame - SwallowFrame),
+                0f, 1f);
+            if (Timer >= EjectFrame) {
+                //吐回之后喉体不再吞，改为自上而下抽干
+                swallow = MathHelper.Clamp(1f - (Timer - EjectFrame) / 10f, 0f, 1f);
+                drain = MathHelper.Clamp((Timer - EjectFrame - 6f) / 46f, 0f, 1f);
+                fallAmount = MathHelper.Clamp((Timer - EjectFrame) / (float)(ExecuteFrame - EjectFrame),
+                    0f, 1f);
             }
 
             switch (Phase) {
@@ -73,60 +203,24 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
                     if (Timer % 6 == 0) {
                         SpawnMist(2);
                     }
-                    //一张脸痕压在雨里
-                    if (Timer == 18 || Timer == 32) {
-                        SpawnFaceStreak();
-                    }
                     break;
 
-                case WraithSeizePhase.Manifest: {
-                    //雨喉成形并开始上提
-                    if (Timer == OmenEndFrame + 1) {
-                        SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with {
-                            Pitch = -0.75f,
-                            Volume = 0.55f,
-                            MaxInstances = 3,
-                        }, Player.Center);
-                        GhostRainYankBurst(Player.Center);
-                        throatFlash = 12;
-                    }
-                    liftAmount = VaultUtils.EaseOutCubic(
-                        MathHelper.Clamp((PhaseProgress - 0.15f) / 0.75f, 0f, 1f));
+                case WraithSeizePhase.Manifest:
                     SpawnConvergingRain(4);
                     if (Timer % 5 == 0) {
                         SpawnMist(1);
                     }
-                    //被吞进喉口前的最后一记收紧
-                    if (PhaseProgress is >= 0.82f and < 0.85f && Timer % 2 == 0) {
-                        SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with {
-                            Pitch = -0.5f,
-                            Volume = 0.5f,
-                            MaxInstances = 3,
-                        }, ThroatMouth);
-                        throatFlash = 10;
+                    //人在喉里被淋透：身上不断挂水线往下淌
+                    if (Timer >= GrabFrame && Timer < SwallowFrame && Timer % 3 == 0) {
+                        SpawnBodyDrips(Player?.Center ?? HoldPoint);
+                    }
+                    if (Timer >= EjectFrame && Timer % 2 == 0) {
+                        SpawnBodyDrips(FallPoint);
                     }
                     break;
-                }
 
                 case WraithSeizePhase.Linger:
-                    liftAmount = 1f;
-                    //尸身随雨落回：处决后 18 帧从喉口掉下来
-                    if (Timer > ExecuteFrame + 16) {
-                        if (!corpseDropped) {
-                            corpseDropped = true;
-                            corpsePos = ThroatMouth;
-                        }
-                        corpseFall = MathHelper.Clamp(corpseFall + 0.075f, 0f, 1f);
-                        corpsePos = Vector2.Lerp(ThroatMouth, groundAnchor,
-                            corpseFall * corpseFall);
-                        if (corpseFall >= 1f && Timer % 3 == 0) {
-                            //落地那一刻起，原地这片急雨迟迟不散
-                            SpawnLocalDownpour(2);
-                        }
-                        else if (Timer % 2 == 0) {
-                            SpawnTrailDrips(corpsePos);
-                        }
-                    }
+                    //原地这片急雨迟迟不散
                     if (Timer % 3 == 0) {
                         SpawnLocalDownpour(2);
                     }
@@ -138,110 +232,136 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
         }
 
         public override void OnExecute() {
-            throatFlash = 16;
-            //雨喉一合
-            SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with {
-                Pitch = -0.95f,
-                Volume = 0.75f,
-                MaxInstances = 3,
-            }, ThroatMouth);
-            SoundEngine.PlaySound(SoundID.Thunder with {
-                Pitch = -0.95f,
-                Volume = 0.35f,
-                MaxInstances = 3,
-            }, ThroatMouth);
-            GhostRainYankBurst(SwallowPoint);
-            //吞下时喉口炸开一圈水花
-            for (int i = 0; i < 20; i++) {
-                float angle = MathHelper.TwoPi * i / 20f;
-                PRTLoader.NewParticle<PRT_GhostRainDrop>(SwallowPoint,
-                    angle.ToRotationVector2() * Main.rand.NextFloat(2.5f, 6.5f)
-                    + new Vector2(0f, -2f),
-                    RainPale * Main.rand.NextFloat(0.45f, 0.7f),
-                    Main.rand.NextFloat(0.6f, 1f))
-                    ?.Configure(Main.rand.Next(20, 34), 0f);
+            gulpFlash = 14;
+            LandCue.Play(new Vector2(MouthPoint.X, landingY));
+            //落地砸开一圈水花：贴地横向铺开，不是球形爆
+            Vector2 impact = new(MouthPoint.X, landingY - 8f);
+            for (int i = 0; i < 26; i++) {
+                float spread = Main.rand.NextFloat(-1f, 1f);
+                Vector2 vel = new(spread * Main.rand.NextFloat(3.5f, 8.5f),
+                    -Main.rand.NextFloat(1.5f, 5f));
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                    impact + new Vector2(Main.rand.NextFloat(-22f, 22f), 0f), vel,
+                    (Main.rand.NextBool(5) ? RainCorpse : RainPale)
+                    * Main.rand.NextFloat(0.5f, 0.75f),
+                    Main.rand.NextFloat(0.6f, 1.05f))
+                    ?.Configure(Main.rand.Next(22, 38), vel.X);
+            }
+            for (int i = 0; i < 4; i++) {
+                SpawnMist(1);
+            }
+            //残体顺着坠势往下摊，不是原版的随机上抛
+            if (Player != null) {
+                SeizurePuppet.ThrowBody(Player, new Vector2(0f, 1.6f), 1.8f, 0.1f);
             }
         }
 
-        /// <summary>被提到的位置：喉口正下方，随上提量接近喉口。</summary>
-        private Vector2 SwallowPoint {
-            get {
-                Vector2 anchor = anchorSet ? groundAnchor : Player.Center;
-                return anchor - new Vector2(0f, SwallowLift * liftAmount);
-            }
-        }
+        //---- 玩家 ----
 
-        //吞入喉口后到尸身落回之间不画本体
-        public override bool HidesPlayer => Phase == WraithSeizePhase.Linger
-            && Timer < ExecuteFrame + 16;
+        //吞进喉口到吐回来之间不画本体
+        public override bool HidesPlayer => Timer >= SwallowFrame && Timer < EjectFrame;
 
-        public override void Draw(SpriteBatch sb) {
-            Texture2D pixel = VaultAsset.placeholder2?.Value;
-            if (pixel == null) {
+        public override void UpdatePlayerMotion() {
+            if (Player == null || Player.dead) {
                 return;
             }
-            Rectangle src = new(0, 0, 1, 1);
-            Vector2 mouth = ThroatMouth;
-
-            //雨喉：自喉口垂到猎物的一束收窄水柱，越靠喉口越窄
-            float throatAlpha = Phase switch {
-                WraithSeizePhase.Omen => PhaseProgress * 0.3f,
-                WraithSeizePhase.Manifest => 0.35f + PhaseProgress * 0.35f,
-                WraithSeizePhase.Linger => MathHelper.Clamp(1.1f - PhaseProgress * 1.7f, 0f, 1f) * 0.6f,
-                _ => 0f,
-            };
-            if (throatAlpha > 0.01f) {
-                Vector2 low = Phase == WraithSeizePhase.Omen
-                    ? (Player.dead ? DeathAnchor : Player.Center)
-                    : SwallowPoint;
-                float flash = throatFlash > 0 ? throatFlash / 16f * 0.4f : 0f;
-                const int Bands = 13;
-                for (int i = 0; i < Bands; i++) {
-                    float t = i / (float)(Bands - 1);
-                    Vector2 pos = Vector2.Lerp(low, mouth, t);
-                    //喉壁摆动：低频湿墨，不做整条平移
-                    float sway = MathF.Sin(t * 4.2f + Timer * 0.16f + Seed * 0.4f)
-                        * MathHelper.Lerp(16f, 4f, t);
-                    pos.X += sway;
-                    float width = MathHelper.Lerp(96f, 26f, t) * (0.85f + flash);
-                    float alpha = throatAlpha * MathHelper.Lerp(0.85f, 0.35f, t);
-                    sb.Draw(pixel, pos - Main.screenPosition, src,
-                        MistDamp * alpha, 0f, new Vector2(0.5f),
-                        new Vector2(width, ThroatHeight / Bands + 4f), SpriteEffects.None, 0f);
-                    //喉内的冷灰青水线
-                    sb.Draw(pixel, pos - Main.screenPosition, src,
-                        RainCorpse * (alpha * 0.45f), 0f, new Vector2(0.5f),
-                        new Vector2(width * 0.42f, ThroatHeight / Bands + 2f),
-                        SpriteEffects.None, 0f);
-                }
-                //喉口：一圈压暗的收束环
-                float mouthAlpha = throatAlpha * (0.7f + flash);
-                sb.Draw(pixel, mouth - Main.screenPosition, src, MistDamp * mouthAlpha, 0f,
-                    new Vector2(0.5f), new Vector2(112f, 14f), SpriteEffects.None, 0f);
-                sb.Draw(pixel, mouth - Main.screenPosition, src,
-                    RainPale * (mouthAlpha * 0.3f), 0f, new Vector2(0.5f),
-                    new Vector2(74f, 5f), SpriteEffects.None, 0f);
+            if (Timer < GrabFrame) {
+                //还站着，只是被往上抽着
+                SeizurePuppet.Brake(Player, 0.6f, freeze: Timer > 10);
+                return;
             }
-
-            //尸身落回：一团湿暗轮廓带着水痕坠下（本体已隐藏时才画）
-            if (corpseDropped && corpseFall < 1f) {
-                float squash = MathHelper.Lerp(1.25f, 1f, corpseFall);
-                sb.Draw(pixel, corpsePos - Main.screenPosition, src,
-                    MistDamp * 0.9f, 0f, new Vector2(0.5f),
-                    new Vector2(20f / squash, 34f * squash), SpriteEffects.None, 0f);
-                sb.Draw(pixel, corpsePos - Main.screenPosition, src,
-                    RainCorpse * 0.28f, 0f, new Vector2(0.5f),
-                    new Vector2(11f / squash, 24f * squash), SpriteEffects.None, 0f);
+            if (Timer < EjectFrame) {
+                SeizurePuppet.Anchor(Player, Vector2.Lerp(
+                    new Vector2(MouthPoint.X, landingY - 24f), HoldPoint, liftAmount), 0.32f);
+                return;
             }
+            SeizurePuppet.Anchor(Player, FallPoint, 0.5f);
         }
+
+        public override void ApplyPose() {
+            if (Player == null) {
+                return;
+            }
+            if (Timer < GrabFrame) {
+                SeizurePuppet.LeanFromFeet(Player, -Player.direction * 0.1f * PhaseProgress);
+                return;
+            }
+            //被吊在雨喉里：并腿悬挂，随水流轻摆
+            float sway = MathF.Sin(Timer * 0.13f + Seed) * 0.16f;
+            if (Timer >= EjectFrame) {
+                //吐回来的人是软的，越掉越翻
+                sway += fallAmount * fallAmount * 1.15f * (Seed % 2 == 0 ? 1f : -1f);
+            }
+            SeizurePuppet.Hang(Player, sway);
+        }
+
+        public override void UpdateDeathBody() {
+            if (Player == null) {
+                return;
+            }
+            //尸身落定，摊在原地被雨浇着
+            SeizurePuppet.SettleBody(Player, 0.78f);
+        }
+
+        //---- 绘制 ----
+
+        public override void Draw(SpriteBatch sb) {
+            if (!anchorSet) {
+                return;
+            }
+            Vector2 mouth = MouthPoint;
+            Vector2 low = ThroatEnd;
+            float height = low.Y - mouth.Y;
+            if (throatOpen <= 0.01f || drain >= 0.999f || height < 24f) {
+                return;
+            }
+
+            Effect effect = EffectLoader.GhostRain?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || white == null || noise == null) {
+                return;
+            }
+
+            float width = ThroatWidth * (1f + gulpFlash / 16f * 0.08f);
+            Rectangle dest = new(
+                (int)(mouth.X - Main.screenPosition.X - width * 0.5f),
+                (int)(mouth.Y - Main.screenPosition.Y),
+                (int)width, (int)height);
+
+            //喉体自开一批：TechThroat 与天幕 TechSky 同为 ps-only，共用一个 Effect 实例安全
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uSeed"]?.SetValue(Seed * 0.037f);
+            effect.Parameters["uIntensity"]?.SetValue(1f);
+            effect.Parameters["uOpen"]?.SetValue(throatOpen);
+            effect.Parameters["uSwallow"]?.SetValue(swallow);
+            effect.Parameters["uDrain"]?.SetValue(drain);
+            effect.Parameters["uGrip"]?.SetValue(throatGrip);
+            effect.Parameters["uAspect"]?.SetValue(width / MathF.Max(height, 1f));
+            effect.CurrentTechnique = effect.Techniques["TechThroat"];
+            effect.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(white, dest, Color.White);
+            sb.End();
+
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        //---- 粒子 ----
 
         /// <summary>改向的雨：从四周朝喉口收拢的雨丝。</summary>
         private void SpawnConvergingRain(int count) {
-            Vector2 mouth = ThroatMouth;
+            Vector2 mouth = MouthPoint;
             for (int i = 0; i < count; i++) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 pos = mouth + angle.ToRotationVector2()
-                    * Main.rand.NextFloat(140f, 320f);
+                    * Main.rand.NextFloat(150f, 340f);
                 Vector2 vel = (mouth - pos).SafeNormalize(-Vector2.UnitY)
                     * Main.rand.NextFloat(4.5f, 9f);
                 PRTLoader.NewParticle<PRT_GhostRainYank>(pos, vel,
@@ -252,9 +372,9 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
             }
         }
 
-        /// <summary>雨喉拽入的爆点：漏斗收束丝 + 上抽碎珠。</summary>
-        private void GhostRainYankBurst(Vector2 target) {
-            Vector2 mouth = ThroatMouth;
+        /// <summary>拽入爆点：漏斗收束丝 + 上抽碎珠。</summary>
+        private void YankBurst(Vector2 target) {
+            Vector2 mouth = MouthPoint;
             for (int i = 0; i < 16; i++) {
                 float angle = MathHelper.TwoPi * i / 16f + Main.rand.NextFloat(-0.2f, 0.2f);
                 Vector2 pos = target + angle.ToRotationVector2()
@@ -276,9 +396,37 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
             }
         }
 
+        /// <summary>喉口合上时自口沿甩出的水。</summary>
+        private void MouthSpray() {
+            Vector2 mouth = MouthPoint + new Vector2(0f, 40f);
+            for (int i = 0; i < 18; i++) {
+                float side = Main.rand.NextBool() ? 1f : -1f;
+                Vector2 vel = new(side * Main.rand.NextFloat(2.5f, 7f),
+                    Main.rand.NextFloat(-2f, 3.5f));
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                    mouth + new Vector2(side * Main.rand.NextFloat(20f, 90f),
+                        Main.rand.NextFloat(-18f, 18f)), vel,
+                    RainPale * Main.rand.NextFloat(0.45f, 0.7f),
+                    Main.rand.NextFloat(0.55f, 0.95f))
+                    ?.Configure(Main.rand.Next(20, 34), vel.X);
+            }
+        }
+
+        /// <summary>挂在身上往下淌的水线：雨是落在东西上的。</summary>
+        private void SpawnBodyDrips(Vector2 at) {
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                    at + Main.rand.NextVector2Circular(13f, 20f),
+                    new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(2.5f, 5f)),
+                    RainPale * Main.rand.NextFloat(0.4f, 0.6f),
+                    Main.rand.NextFloat(0.45f, 0.72f))
+                    ?.Configure(Main.rand.Next(16, 28), 0f);
+            }
+        }
+
         /// <summary>余韵的一小片急雨：只落在死点周围，迟迟不散。</summary>
         private void SpawnLocalDownpour(int count) {
-            Vector2 anchor = anchorSet ? groundAnchor : DeathAnchor;
+            Vector2 anchor = new(MouthPoint.X, landingY);
             for (int i = 0; i < count; i++) {
                 Vector2 pos = anchor + new Vector2(Main.rand.NextFloat(-96f, 96f),
                     -Main.rand.NextFloat(180f, 320f));
@@ -292,19 +440,11 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
             }
         }
 
-        private void SpawnTrailDrips(Vector2 pos) {
-            PRTLoader.NewParticle<PRT_GhostRainDrop>(
-                pos + Main.rand.NextVector2Circular(10f, 14f),
-                new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(2f, 4.5f)),
-                RainPale * 0.45f, Main.rand.NextFloat(0.45f, 0.7f))
-                ?.Configure(Main.rand.Next(16, 26), 0f);
-        }
-
         private void SpawnMist(int count) {
-            Vector2 anchor = anchorSet ? groundAnchor : DeathAnchor;
+            Vector2 anchor = new(MouthPoint.X, landingY);
             for (int i = 0; i < count; i++) {
                 Vector2 pos = anchor + new Vector2(Main.rand.NextFloat(-130f, 130f),
-                    Main.rand.NextFloat(-8f, 26f));
+                    Main.rand.NextFloat(-26f, 8f));
                 PRTLoader.NewParticle<PRT_GhostRainMist>(pos,
                     new Vector2(Main.rand.NextFloat(-0.35f, 0.35f),
                         Main.rand.NextFloat(-0.08f, 0f)),
@@ -324,44 +464,50 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
                 ?.Configure(Main.rand.Next(50, 74));
         }
 
-        public override void UpdatePlayerMotion() {
-            if (Player == null || Player.dead) {
-                return;
+        //---- 运镜 ----
+
+        public override Vector2 CameraFocus {
+            get {
+                if (Timer < GrabFrame) {
+                    return Vector2.Lerp(Player?.Center ?? DeathAnchor, MouthPoint, 0.28f);
+                }
+                if (Timer < EjectFrame) {
+                    //跟着人往喉口抬
+                    return Vector2.Lerp(HoldPoint, MouthPoint, 0.3f);
+                }
+                if (Phase == WraithSeizePhase.Linger) {
+                    return new Vector2(MouthPoint.X, landingY - 40f);
+                }
+                //坠落段镜头跟着尸身下压
+                return Vector2.Lerp(FallPoint, new Vector2(MouthPoint.X, landingY), 0.35f);
             }
-            if (Phase == WraithSeizePhase.Manifest && liftAmount > 0f) {
-                //被雨喉提离地面：直接改写坐标，不靠速度堆叠
-                Vector2 target = SwallowPoint;
-                Player.velocity = Vector2.Zero;
-                Player.Center = Vector2.Lerp(Player.Center, target, 0.35f);
-                Player.fallStart = (int)(Player.position.Y / 16f);
-                return;
-            }
-            base.UpdatePlayerMotion();
         }
 
-        public override Vector2 CameraFocus => Phase switch {
-            //上提期镜头跟着人往喉口抬
-            WraithSeizePhase.Manifest => Vector2.Lerp(SwallowPoint, ThroatMouth, 0.25f),
-            WraithSeizePhase.Linger => corpseDropped
-                ? Vector2.Lerp(corpsePos, groundAnchor, 0.5f)
-                : Vector2.Lerp(ThroatMouth, groundAnchor, 0.35f),
-            _ => Player?.Center ?? DeathAnchor,
-        };
+        public override float CameraZoom {
+            get {
+                if (Phase == WraithSeizePhase.Omen) {
+                    return 1.08f;
+                }
+                if (Timer < EjectFrame) {
+                    return MathHelper.Lerp(1.14f, 1.02f, liftAmount);
+                }
+                return Phase == WraithSeizePhase.Linger ? 1.1f : 1.06f;
+            }
+        }
 
-        public override float CameraZoom => Phase switch {
-            WraithSeizePhase.Omen => 1.1f,
-            WraithSeizePhase.Manifest => MathHelper.Lerp(1.16f, 1.02f, PhaseProgress),
-            WraithSeizePhase.Linger => 1.08f,
-            _ => 1f,
-        };
+        public override float CameraFocusLerp => Timer >= EjectFrame ? 0.2f : 0.12f;
 
-        public override float CameraFocusLerp => Phase == WraithSeizePhase.Manifest ? 0.16f : 0.1f;
-
-        public override float ShakeIntensity => Phase switch {
-            WraithSeizePhase.Omen => 0.8f * PhaseProgress,
-            WraithSeizePhase.Manifest => 1.4f + (throatFlash > 0 ? throatFlash * 0.35f : 0f),
-            WraithSeizePhase.Linger => throatFlash > 0 ? throatFlash * 0.3f : 0f,
-            _ => 0f,
-        };
+        public override float ShakeIntensity {
+            get {
+                if (gulpFlash > 0) {
+                    return gulpFlash * 0.42f;
+                }
+                return Phase switch {
+                    WraithSeizePhase.Omen => 0.7f * PhaseProgress,
+                    WraithSeizePhase.Manifest => 1.2f,
+                    _ => 0f,
+                };
+            }
+        }
     }
 }

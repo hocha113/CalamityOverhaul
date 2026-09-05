@@ -54,6 +54,11 @@ CWRClientConfig: {
 		Tooltip: Off by default. When enabled, only Cyberspace / Sea Domain style domain visuals are reduced. Onikiri's Oni Domain is unaffected, as are weapon and cyberware visuals such as dismember, omokage, and HackTime.
 	}
 
+	HideOtherDomains: {
+		Label: Hide Other Players' Domains
+		Tooltip: On by default. When enabled, full-screen domain visuals opened by other players (Onikiri's Oni Domain, Kikasa's Blood Lake, Ghost Rain and Ghost Dream) are no longer drawn on your screen. They still appear when you stand on their lake, get dragged underwater, or are inside their dream. Visual only, no effect is changed; your own domains are unaffected.
+	}
+
 	LensEasing: {
 		Label: Lens Easing
 		Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast

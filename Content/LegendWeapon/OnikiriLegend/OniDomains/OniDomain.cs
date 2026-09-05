@@ -70,7 +70,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         /// <summary>
         /// 本机屏幕上正在生效的那个域：自己的优先，否则取范围内最近的他人领域。
-        /// 世界级表现（天空/调色/光照/装饰/音效）一律读它，HUD 与面影仍读 <see cref="Local"/>
+        /// 世界级表现（天空/调色/光照/装饰/音效）一律读它，HUD 与面影仍读 <see cref="Local"/>。
+        /// 客户端设置屏蔽他人领域时，他人域一律不入选（<see cref="LegendDomainView.SpectateOthers"/>）：
+        /// 鬼域对他人没有任何功能作用，屏蔽即纯旁观屏蔽，状态机与转播照旧
         /// </summary>
         public static OniDomainPlayer Viewed { get; private set; }
 
@@ -99,6 +101,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (own.AnyActive) {
                 Viewed = own;
                 viewedIndex = local.whoAmI;
+                return;
+            }
+
+            //屏蔽旁观：他人域不入选。走的是"施术者出视野"同一条 Viewed==null 收场路径
+            if (!LegendDomainView.SpectateOthers) {
+                viewedIndex = -1;
                 return;
             }
 

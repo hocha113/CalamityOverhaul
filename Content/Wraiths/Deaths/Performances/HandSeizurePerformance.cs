@@ -1,89 +1,159 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Wraiths.Projectiles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
 {
     /// <summary>
     /// 焦黑枯手夺身「五指之内」。<br/>
-    /// 前兆：脚下焦土渗烟，五枚指尖破土；<br/>
-    /// 显形：远大于役使时的巨掌自地底托起，五指自四周合拢，按 32%/68% 节拍两度碾紧；<br/>
-    /// 处决：五指完全攥死成拳；余韵：拳头带着人缩回地底，只留一枚焦黑掌印。<br/>
-    /// 材质：焦炭枯尸手，近实心暗体、龟裂缝透血烬（沿用枯手橙红烬 + 焦烟 + 暗血）。
+    /// 前兆：地面五道裂口透出烬光，五枚爪尖破土；空中被夺身时改为虚空撕口成形。<br/>
+    /// 显形：巨掌自裂口托起，把人捧离地面，五指按 32%/68% 两度碾紧，玩家随之被压弯；<br/>
+    /// 处决：五指攥死成拳，顿六帧，血烬自指缝迸出；<br/>
+    /// 余韵：拳带着人沉回地底，土层合拢，只留一枚焦黑掌印。<br/>
+    /// 材质：焦炭枯尸手，与役使时同一套 <see cref="GhostHandRig"/> 与 <c>GhostHandSheath.fx</c>，
+    /// 处决版不得比日常版还糙。
     /// </summary>
     internal sealed class HandSeizurePerformance : WraithDeathPerformance
     {
-        public override int OmenEndFrame => 42;
-        public override int ExecuteFrame => 124;
-        public override int TotalFrames => 190;
+        public override int OmenEndFrame => 44;
+        public override int ExecuteFrame => 126;
+        public override int TotalFrames => 184;
 
-        private static readonly Color CharBody = new(24, 18, 15);
-        private static readonly Color CharEdge = new(12, 9, 8);
+        /// <summary>攥死那一下卡住的帧数，总长因此约 190 帧</summary>
+        private const int FistHoldFrames = 6;
+
+        /// <summary>巨手尺度：掌半宽约 51px、中指约 147px，刚好能把人捧在掌心</summary>
+        private const float HandScale = 3.2f;
+        /// <summary>肩埋在裂口之下这么深，臂由此升出</summary>
+        private const float ShoulderDepth = 430f;
+
+        private static readonly Color CharPrint = new(16, 11, 9);
         private static readonly Color EmberHot = new(212, 70, 26);
         private static readonly Color EmberDim = new(120, 38, 18);
+        private static readonly Color CharSmoke = new(58, 30, 20);
         private static readonly Color DarkBlood = new(126, 16, 20);
 
-        //五指横位（相对掌心），负=拇指侧
-        private static readonly float[] FingerOffsets = [-64f, -30f, 4f, 36f, 66f];
-        private static readonly float[] FingerLengths = [66f, 88f, 96f, 88f, 72f];
+        //三层处决音：低频体感层是巨物砸地，与其余五只互不相同
+        private static readonly SeizureCue BreachCue = new(
+            SeizureCue.Custom("HandBreach", SoundID.DD2_OgreGroundPound with {
+                Pitch = -0.75f, Volume = 0.55f, MaxInstances = 2,
+            }),
+            SoundID.NPCDeath14 with { Pitch = -0.85f, Volume = 0.35f, MaxInstances = 2 });
 
-        //碾紧节拍：0.32 / 0.68 各一步，处决拳死
-        private int crushStep;
-        private int crushFlash;
+        private static readonly SeizureCue RiseCue = new(
+            SeizureCue.Custom("HandRise", SoundID.DD2_OgreGroundPound with {
+                Pitch = -0.45f, Volume = 0.9f, MaxInstances = 2,
+            }),
+            SoundID.NPCDeath14 with { Pitch = -0.6f, Volume = 0.5f, MaxInstances = 2 },
+            SoundID.DD2_KoboldExplosion with { Pitch = 0.4f, Volume = 0.22f, MaxInstances = 2 });
+
+        private static readonly SeizureCue FistCue = new(
+            SeizureCue.Custom("HandFist", SoundID.DD2_OgreGroundPound with {
+                Pitch = -0.2f, Volume = 1f, MaxInstances = 2,
+            }),
+            SoundID.NPCDeath14 with { Pitch = -0.35f, Volume = 0.85f, MaxInstances = 2 },
+            SoundID.DD2_KoboldExplosion with { Pitch = 0.15f, Volume = 0.4f, MaxInstances = 2 });
+
+        private readonly GhostHandRig rig = new() { Scale = HandScale };
+
+        private Vector2 breachPoint;
+        private bool breachSet;
+        private float palmRise;
         private float clampHeld;
-        private Vector2 palmAnchor;
-        private bool palmSet;
+        private int crushFlash;
+        private float sink;
+        private bool fistShut;
 
         public override void OnBegin() {
-            SoundEngine.PlaySound(SoundID.NPCDeath6 with {
-                Pitch = -0.85f,
-                Volume = 0.55f,
-                MaxInstances = 1,
-            }, Player.Center);
+            rig.Identity = Seed * 0.137f;
+            ResolveBreach();
+            //臂先摊成直线埋在裂口下，免得第一帧从别处甩过来
+            rig.Snap(PalmCenter, ShoulderPoint);
+            BreachCue.Play(breachPoint);
         }
 
+        public override void BuildBeats(SeizureBeatTable beats) {
+            beats.Add(10, () => BreachBurst(2));
+            beats.Add(26, () => {
+                BreachCue.Play(breachPoint);
+                BreachBurst(3);
+            });
+            //巨掌破土：显形第一拍
+            beats.Add(OmenEndFrame + 2, () => {
+                RiseCue.Play(breachPoint);
+                SpawnCharSmoke(breachPoint, 12);
+                SpawnEmber(breachPoint, 10, 4.2f);
+            });
+            //32% / 68%：它攥猎物的老节拍，这次落在你身上
+            beats.Add(OmenEndFrame + 27, () => Crush(0.16f, bleed: false));
+            beats.Add(OmenEndFrame + 56, () => Crush(0.22f, bleed: true));
+            //指节咬合前的一顿吸气
+            beats.Add(ExecuteFrame - 8, () => crushFlash = 10);
+            //拳开始沉回裂口
+            beats.Add(ExecuteFrame + 16, () => SpawnCharSmoke(breachPoint, 8));
+            //土层合拢
+            beats.Add(ExecuteFrame + 44, () => {
+                SoundEngine.PlaySound(SoundID.DD2_OgreGroundPound with {
+                    Pitch = -0.9f, Volume = 0.4f, MaxInstances = 2,
+                }, breachPoint);
+                SpawnCharSmoke(breachPoint, 6);
+            });
+        }
+
+        /// <summary>攥死那一下把逻辑帧卡住，让「合上」这一拍有重量</summary>
+        public override int HoldFramesAt(int frame)
+            => frame == ExecuteFrame ? FistHoldFrames : 0;
+
+        //---- 几何 ----
+
+        /// <summary>
+        /// 裂口：有地就贴地，空中被夺身则在身下开一道虚空撕口。<br/>
+        /// 空中变体只换成形理由（撕口而非破土）与余韵（不留地面掌印），巨手照常成形。
+        /// </summary>
+        private void ResolveBreach() {
+            Vector2 anchor = Player?.Center ?? DeathAnchor;
+            breachPoint = Ground.FootAnchor(anchor, 104f);
+            breachSet = true;
+        }
+
+        private Vector2 ShoulderPoint => breachPoint + new Vector2(0f, ShoulderDepth);
+
+        /// <summary>掌心：自裂口下方托到人脚底，余韵再沉回去</summary>
         private Vector2 PalmCenter {
             get {
-                if (!palmSet) {
-                    return Player.Center + new Vector2(0f, 52f);
-                }
-                //显形期掌心从地底托到脚下，余韵拖着拳沉回去
-                float lift = Phase switch {
-                    WraithSeizePhase.Omen => 0f,
-                    WraithSeizePhase.Manifest => MathHelper.Clamp(PhaseProgress / 0.3f, 0f, 1f),
-                    _ => 1f,
-                };
-                float sink = Phase == WraithSeizePhase.Linger
-                    ? VaultUtils.EaseOutCubic(MathHelper.Clamp((PhaseProgress - 0.1f) / 0.75f, 0f, 1f)) * 150f
-                    : 0f;
-                return palmAnchor + new Vector2(0f, MathHelper.Lerp(96f, 50f, lift) + sink);
+                Vector2 basePos = breachSet ? breachPoint : (Player?.Center ?? DeathAnchor);
+                //掌面比裂口高出一截，人正好被捧在上面
+                float lift = MathHelper.Lerp(148f, -34f, palmRise);
+                return basePos + new Vector2(0f, lift + sink);
             }
         }
 
-        /// <summary>合拢量 0..1：相位基线 + 碾紧步进，处决后拳死。</summary>
-        private float Clamp01 {
+        /// <summary>人被捧住的位置：掌心上方半个身位</summary>
+        private Vector2 CradlePoint => PalmCenter - new Vector2(0f, 46f);
+
+        /// <summary>合拢量 0..1</summary>
+        private float ClampAmount {
             get {
-                if (Phase == WraithSeizePhase.Linger) {
-                    return 1f;
+                if (fistShut) {
+                    return 1.05f;
                 }
-                float baseClamp = Phase == WraithSeizePhase.Manifest ? PhaseProgress * 0.5f : 0f;
+                float baseClamp = Phase == WraithSeizePhase.Manifest ? PhaseProgress * 0.34f : 0f;
                 return MathHelper.Clamp(baseClamp + clampHeld
-                    + (crushFlash > 0 ? crushFlash / 12f * 0.06f : 0f), 0f, 1f);
+                    + (crushFlash > 0 ? crushFlash / 12f * 0.08f : 0f), -0.1f, 1.05f);
             }
         }
+
+        //---- 推进 ----
 
         public override void Update() {
-            if (!palmSet) {
-                palmAnchor = Player.Center;
-                palmSet = true;
-            }
-            if (!Player.dead) {
-                palmAnchor = Player.Center;
+            if (!breachSet) {
+                ResolveBreach();
             }
             if (crushFlash > 0) {
                 crushFlash--;
@@ -91,272 +161,272 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
 
             switch (Phase) {
                 case WraithSeizePhase.Omen:
-                    //破土：指尖处焦烟与烬
-                    if (Timer == 12 || Timer == 30) {
-                        SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                            Pitch = -0.9f + Timer * 0.004f,
-                            Volume = 0.6f,
-                            MaxInstances = 2,
-                        }, Player.Center);
-                    }
+                    //爪尖破土：只露出指尖那一截，其余被裂口线切掉
+                    palmRise = MathHelper.Clamp((Timer - 8f) / 34f, 0f, 1f) * 0.24f;
                     if (Timer % 3 == 0) {
-                        float offset = FingerOffsets[Main.rand.Next(FingerOffsets.Length)];
-                        SpawnCharSmoke(Player.Center + new Vector2(offset, 44f), 1);
-                        if (Main.rand.NextBool(2)) {
-                            SpawnEmber(Player.Center + new Vector2(offset, 40f), 1, 1.6f);
-                        }
+                        SpawnCharSmoke(RandomCrackPoint(), 1);
+                    }
+                    if (Timer % 5 == 0) {
+                        SpawnEmber(RandomCrackPoint(), 1, 1.8f);
                     }
                     break;
 
                 case WraithSeizePhase.Manifest:
-                    if (Timer == OmenEndFrame + 1) {
-                        SoundEngine.PlaySound(SoundID.NPCDeath6 with {
-                            Pitch = -0.6f,
-                            Volume = 0.8f,
-                            MaxInstances = 1,
-                        }, Player.Center);
-                        SoundEngine.PlaySound(SoundID.Item32 with {
-                            Pitch = -0.7f,
-                            Volume = 0.45f,
-                            MaxInstances = 1,
-                        }, Player.Center);
-                        SpawnCharSmoke(PalmCenter, 10);
-                        SpawnEmber(PalmCenter, 8, 3.4f);
-                    }
-                    //32% / 68%：它攥猎物的老节拍，这次落在你身上
-                    if (PhaseProgress >= 0.32f && crushStep == 0) {
-                        Crush(0.16f);
-                    }
-                    if (PhaseProgress >= 0.68f && crushStep == 1) {
-                        Crush(0.2f);
-                    }
+                    palmRise = MathHelper.Clamp(0.24f + PhaseProgress / 0.34f, 0f, 1f);
                     if (Timer % 4 == 0) {
-                        SpawnCharSmoke(PalmCenter + Main.rand.NextVector2Circular(60f, 10f), 1);
+                        SpawnCharSmoke(PalmCenter + Main.rand.NextVector2Circular(70f, 14f), 1);
+                    }
+                    if (Timer % 9 == 0) {
+                        SpawnEmber(PalmCenter + Main.rand.NextVector2Circular(60f, 12f), 1, 1.6f);
                     }
                     break;
 
                 case WraithSeizePhase.Linger:
-                    //拳头沉回地底，土层合拢
-                    if (Timer % 4 == 0 && PhaseProgress < 0.8f) {
-                        SpawnCharSmoke(PalmCenter + Main.rand.NextVector2Circular(50f, 8f), 2);
+                    palmRise = 1f;
+                    //拳带着人沉回裂口
+                    sink = VaultUtils.EaseOutCubic(
+                        MathHelper.Clamp((PhaseProgress - 0.08f) / 0.62f, 0f, 1f)) * 240f;
+                    if (Timer % 4 == 0 && PhaseProgress < 0.75f) {
+                        SpawnCharSmoke(breachPoint + Main.rand.NextVector2Circular(56f, 10f), 1);
                     }
-                    if (Timer % 7 == 0 && PhaseProgress < 0.6f) {
-                        SpawnEmber(PalmCenter + Main.rand.NextVector2Circular(40f, 10f), 1, 2f);
+                    if (Timer % 8 == 0 && PhaseProgress < 0.5f) {
+                        SpawnEmber(breachPoint + Main.rand.NextVector2Circular(46f, 10f), 1, 2.2f);
                     }
                     break;
             }
+
+            SolveRig();
+            Lighting.AddLight(PalmCenter, EmberDim.ToVector3() * (0.5f + ClampAmount * 0.4f));
         }
 
-        private void Crush(float clampGain) {
-            crushStep++;
+        private void SolveRig() {
+            rig.Identity = Seed * 0.137f;
+            rig.SolveArm(ShoulderPoint, PalmCenter, 0.35f + ClampAmount * 0.5f, 1);
+            //五指按指位分散包拢，不再全部收敛到同一点糊成一团
+            Span<float> offsets = [0.10f, 0.02f, -0.04f, 0.02f, 0.10f];
+            rig.SolveFingers(MathHelper.Clamp(ClampAmount, -0.2f, 1.05f), offsets);
+        }
+
+        private void Crush(float clampGain, bool bleed) {
             crushFlash = 12;
             clampHeld += clampGain;
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                Pitch = -0.55f + crushStep * 0.1f,
-                Volume = 0.85f,
+            SoundEngine.PlaySound(SoundID.DD2_OgreGroundPound with {
+                Pitch = -0.55f + clampHeld * 0.35f,
+                Volume = 0.8f,
                 MaxInstances = 2,
-            }, Player.Center);
-            SpawnEmber(Player.Center, 7, 3f);
+            }, PalmCenter);
+            SoundEngine.PlaySound(SoundID.NPCDeath14 with {
+                Pitch = -0.5f,
+                Volume = 0.5f,
+                MaxInstances = 2,
+            }, CradlePoint);
+            SpawnEmber(CradlePoint, 8, 3.2f);
             //第二次碾紧起就见血
-            if (crushStep >= 2) {
-                for (int i = 0; i < 6; i++) {
-                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
-                        Player.Center + Main.rand.NextVector2Circular(12f, 16f),
-                        Main.rand.NextVector2Circular(3f, 2.4f) - Vector2.UnitY * 1.4f,
-                        DarkBlood, Main.rand.NextFloat(0.5f, 0.9f))
-                        ?.Configure(Main.rand.Next(16, 26), 0.3f);
-                }
+            if (!bleed) {
+                return;
+            }
+            for (int i = 0; i < 7; i++) {
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
+                    CradlePoint + Main.rand.NextVector2Circular(14f, 18f),
+                    Main.rand.NextVector2Circular(3.2f, 2.6f) - Vector2.UnitY * 1.4f,
+                    DarkBlood, Main.rand.NextFloat(0.5f, 0.9f))
+                    ?.Configure(Main.rand.Next(16, 26), 0.3f);
             }
         }
 
         public override void OnExecute() {
-            //五指攥死
-            clampHeld = 1f;
-            crushFlash = 14;
-            SoundEngine.PlaySound(SoundID.NPCDeath13 with {
-                Pitch = -0.7f,
-                Volume = 0.9f,
-                MaxInstances = 1,
-            }, Player.Center);
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                Pitch = -0.35f,
-                Volume = 1f,
-                MaxInstances = 1,
-            }, Player.Center);
-            SpawnEmber(Player.Center, 14, 5f);
-            for (int i = 0; i < 10; i++) {
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
-                    Player.Center + Main.rand.NextVector2Circular(14f, 18f),
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2.5f, 6.5f),
-                    new Color(132, 16, 22), Main.rand.NextFloat(0.6f, 1f))
-                    ?.Configure(Main.rand.Next(18, 30), 0.32f);
+            fistShut = true;
+            crushFlash = 16;
+            FistCue.Play(CradlePoint);
+            SpawnEmber(CradlePoint, 18, 5.5f);
+            SpawnCharSmoke(CradlePoint, 10);
+            //血烬自指缝迸出：沿五指的缝隙方向甩，不是均匀圆爆
+            for (int k = 0; k < GhostHandRig.FingerCount; k++) {
+                Vector2 gap = (rig.FingerTip(k) - CradlePoint).SafeNormalize(-Vector2.UnitY);
+                for (int i = 0; i < 4; i++) {
+                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
+                        CradlePoint + gap * Main.rand.NextFloat(10f, 26f),
+                        gap.RotatedByRandom(0.45f) * Main.rand.NextFloat(3.5f, 8f),
+                        Main.rand.NextBool(3) ? new Color(168, 22, 26) : DarkBlood,
+                        Main.rand.NextFloat(0.6f, 1.05f))
+                        ?.Configure(Main.rand.Next(18, 32), 0.34f);
+                }
             }
-            SpawnCharSmoke(Player.Center, 8);
+        }
+
+        //---- 玩家 ----
+
+        public override void UpdatePlayerMotion() {
+            if (Player == null || Player.dead) {
+                return;
+            }
+            if (Phase == WraithSeizePhase.Omen) {
+                SeizurePuppet.Brake(Player, 0.55f, freeze: Timer > 10);
+                return;
+            }
+            //被掌托起：直接改写坐标，别靠速度堆叠
+            SeizurePuppet.Anchor(Player, CradlePoint, 0.3f);
+        }
+
+        public override void ApplyPose() {
+            if (Player == null) {
+                return;
+            }
+            if (Phase == WraithSeizePhase.Omen) {
+                //还站着，只是被钉住
+                SeizurePuppet.LeanFromFeet(Player, Player.direction * 0.12f * PhaseProgress);
+                return;
+            }
+            SeizurePuppet.FaceTowards(Player, PalmCenter);
+            SeizurePuppet.Curl(Player, MathHelper.Clamp(ClampAmount, 0f, 1f), Seed);
+        }
+
+        //拳合上之后人就在拳里，不该还站在掌上，也不该在旁边散成残体。
+        //正典九之二写的「拳带人沉回地底」此前从未兑现，就是缺这一句
+        public override bool HidesPlayer => fistShut;
+
+        //---- 绘制 ----
+
+        public override void DrawPrimitive(GraphicsDevice device) {
+            Effect fx = EffectLoader.GhostHandSheath?.Value;
+            Texture2D noise = CWRAsset.NoiseSoft01?.Value;
+            if (fx == null || noise == null) {
+                return;
+            }
+
+            BlendState prevBlend = device.BlendState;
+            RasterizerState prevRaster = device.RasterizerState;
+            DepthStencilState prevDepth = device.DepthStencilState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+            device.DepthStencilState = DepthStencilState.None;
+            try {
+                float grip = MathHelper.Clamp(ClampAmount, 0f, 1f);
+                fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+                fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                fx.Parameters["uOpacity"]?.SetValue(1f);
+                fx.Parameters["uGrip"]?.SetValue(grip);
+                fx.Parameters["uSeed"]?.SetValue(Seed * 0.137f * 10f);
+                fx.Parameters["uEmber"]?.SetValue(
+                    0.7f + grip * 0.5f + (crushFlash > 0 ? crushFlash / 16f * 0.8f : 0f));
+                fx.Parameters["uNoiseTex"]?.SetValue(noise);
+
+                //裂口线以下的几何压平到线上，读作被土掩着，而不是浮在地表上
+                float cut = breachPoint.Y;
+                var arm = ClipBelow(rig.BuildArmStrip(grip, Main.GlobalTimeWrappedHourly), cut);
+                var palm = ClipBelow(rig.BuildPalmStrip(grip), cut);
+                foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                    pass.Apply();
+                    device.DrawUserPrimitives(PrimitiveType.TriangleStrip, arm, 0, arm.Length - 2);
+                    device.DrawUserPrimitives(PrimitiveType.TriangleStrip, palm, 0, palm.Length - 2);
+                    for (int k = 0; k < GhostHandRig.FingerCount; k++) {
+                        var finger = ClipBelow(rig.BuildFingerStrip(k), cut);
+                        device.DrawUserPrimitives(PrimitiveType.TriangleStrip,
+                            finger, 0, finger.Length - 2);
+                    }
+                }
+            }
+            finally {
+                device.BlendState = prevBlend;
+                device.RasterizerState = prevRaster;
+                device.DepthStencilState = prevDepth;
+            }
+        }
+
+        /// <summary>把裂口线以下的顶点压到线上，得到一条干净的地平切口。</summary>
+        private static VertexPositionColorTexture[] ClipBelow(
+            VertexPositionColorTexture[] verts, float cutY) {
+            for (int i = 0; i < verts.Length; i++) {
+                if (verts[i].Position.Y > cutY) {
+                    verts[i].Position.Y = cutY;
+                }
+            }
+            return verts;
         }
 
         public override void Draw(SpriteBatch sb) {
-            if (!palmSet) {
+            //焦黑掌印：拳沉走后地上留的痕。暗层必须走真 alpha 贴图，
+            //黑底亮度型贴图无论加色还是 A=0 都画不出暗东西
+            if (Phase != WraithSeizePhase.Linger || !Ground.HasGround) {
                 return;
             }
-            float sinkFade = Phase == WraithSeizePhase.Linger
-                ? MathHelper.Clamp(1.15f - PhaseProgress, 0f, 1f) : 1f;
-
-            //掌印余痕：拳头沉走后地上留焦黑手形
-            if (Phase == WraithSeizePhase.Linger) {
-                DrawScorchPrint(sb, MathHelper.Clamp(PhaseProgress * 1.4f, 0f, 1f));
-            }
-
-            if (Phase == WraithSeizePhase.Omen) {
-                //破土的五枚指尖
-                float poke = MathHelper.Clamp((Timer - 8f) / 30f, 0f, 1f);
-                for (int i = 0; i < FingerOffsets.Length; i++) {
-                    float h = FingerLengths[i] * 0.22f * poke
-                        * (0.8f + 0.2f * MathF.Sin(Timer * 0.2f + i * 1.3f));
-                    Vector2 tipBase = palmAnchor + new Vector2(FingerOffsets[i], 48f);
-                    DrawCharSegment(sb, tipBase, tipBase - new Vector2(0f, h),
-                        MathHelper.Lerp(9f, 13f, poke), 1f, i * 1.7f);
-                }
+            Texture2D dark = CWRAsset.Extra_98?.Value;
+            if (dark == null) {
                 return;
             }
-
-            //掌与五指
-            Vector2 palm = PalmCenter;
-            float clampAmount = Clamp01;
-            DrawPalm(sb, palm, sinkFade);
-            Vector2 targetPoint = (Player.dead ? DeathAnchor : Player.Center) - new Vector2(0f, 6f);
-            for (int i = 0; i < FingerOffsets.Length; i++) {
-                DrawFinger(sb, palm, i, clampAmount, targetPoint, sinkFade);
-            }
-        }
-
-        private void DrawPalm(SpriteBatch sb, Vector2 palm, float fade) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
-            float crushBoost = crushFlash > 0 ? crushFlash / 14f * 0.3f : 0f;
-            //掌身：焦炭厚板，两层压边
-            sb.Draw(pixel, palm - Main.screenPosition, src, CharEdge * (0.9f * fade), 0f,
-                new Vector2(0.5f), new Vector2(158f, 34f), SpriteEffects.None, 0f);
-            sb.Draw(pixel, palm - Main.screenPosition, src, CharBody * (0.96f * fade), 0f,
-                new Vector2(0.5f), new Vector2(148f, 27f), SpriteEffects.None, 0f);
-            //龟裂缝：横贯掌面的两道烬线，随碾紧发亮
-            float flick = 0.6f + 0.4f * MathF.Sin(Timer * 0.23f + Seed);
-            for (int i = 0; i < 2; i++) {
-                float y = i == 0 ? -5f : 6f;
-                float crackAlpha = (0.35f + crushBoost) * flick * fade;
-                sb.Draw(pixel, palm + new Vector2(i == 0 ? -18f : 24f, y) - Main.screenPosition,
-                    src, EmberHot * crackAlpha, i == 0 ? 0.06f : -0.04f, new Vector2(0.5f),
-                    new Vector2(74f, 1.6f), SpriteEffects.None, 0f);
-            }
-        }
-
-        /// <summary>一根手指：三节焦炭骨节自掌缘弓向合拢点，节间透烬。</summary>
-        private void DrawFinger(SpriteBatch sb, Vector2 palm, int index, float clampAmount,
-            Vector2 target, float fade) {
-            float baseX = FingerOffsets[index];
-            Vector2 root = palm + new Vector2(baseX, -10f);
-            float length = FingerLengths[index];
-            //张开姿态：指根朝外上方；合拢时逐节转向目标上方合拢点
-            Vector2 openDir = new Vector2(baseX * 0.012f, -1f).SafeNormalize(-Vector2.UnitY);
-            Vector2 clampPoint = target + new Vector2(baseX * 0.1f, -26f);
-
-            Vector2 nodePos = root;
-            Vector2 currentDir = openDir;
-            const int Segments = 3;
-            for (int s = 0; s < Segments; s++) {
-                float segLen = length * (s == 0 ? 0.42f : s == 1 ? 0.34f : 0.26f);
-                //越靠指尖越吃合拢量
-                float segClamp = MathHelper.Clamp(clampAmount * (0.55f + s * 0.45f), 0f, 1f);
-                Vector2 toClamp = (clampPoint - nodePos).SafeNormalize(currentDir);
-                Vector2 dir = Vector2.Lerp(currentDir, toClamp, segClamp).SafeNormalize(currentDir);
-                Vector2 next = nodePos + dir * segLen;
-                float width = MathHelper.Lerp(15f, 8f, s / (float)(Segments - 1));
-                DrawCharSegment(sb, nodePos, next, width, fade, index * 2.1f + s * 0.9f);
-                //节间烬缝
-                float flick = 0.5f + 0.5f * MathF.Sin(Timer * 0.27f + index * 1.9f + s * 2.3f);
-                float crackAlpha = (0.3f + clampAmount * 0.4f
-                    + (crushFlash > 0 ? crushFlash / 14f * 0.35f : 0f)) * flick * fade;
-                sb.Draw(VaultAsset.placeholder2.Value, next - Main.screenPosition,
-                    new Rectangle(0, 0, 1, 1), EmberHot * crackAlpha,
-                    dir.ToRotation() + MathHelper.PiOver2, new Vector2(0.5f),
-                    new Vector2(width * 0.66f, 1.5f), SpriteEffects.None, 0f);
-                nodePos = next;
-                currentDir = dir;
-            }
-        }
-
-        /// <summary>一节焦炭：暗边 + 近实心体。</summary>
-        private void DrawCharSegment(SpriteBatch sb, Vector2 from, Vector2 to, float width,
-            float fade, float seedOffset) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
-            Vector2 delta = to - from;
-            float len = delta.Length();
-            if (len < 1f) {
+            float appear = MathHelper.Clamp((PhaseProgress - 0.35f) / 0.25f, 0f, 1f);
+            float fade = appear * MathHelper.Clamp(1.4f - PhaseProgress, 0f, 1f);
+            if (fade <= 0.01f) {
                 return;
             }
-            float rot = delta.ToRotation();
-            float wobble = 1f + 0.04f * MathF.Sin(Timer * 0.15f + seedOffset + Seed);
-            sb.Draw(pixel, from - Main.screenPosition, src, CharEdge * (0.88f * fade), rot,
-                new Vector2(0f, 0.5f), new Vector2(len, width * wobble + 3f), SpriteEffects.None, 0f);
-            sb.Draw(pixel, from - Main.screenPosition, src, CharBody * (0.95f * fade), rot,
-                new Vector2(0f, 0.5f), new Vector2(len, width * wobble), SpriteEffects.None, 0f);
+            Vector2 origin = dark.Size() * 0.5f;
+            Vector2 ground = breachPoint - Main.screenPosition;
+            sb.Draw(dark, ground, null, CharPrint * (0.85f * fade), 0f, origin,
+                new Vector2(3.6f, 0.5f), SpriteEffects.None, 0f);
+            for (int k = 0; k < GhostHandRig.FingerCount; k++) {
+                Vector2 mark = ground + new Vector2((k - 2) * 46f, -10f);
+                sb.Draw(dark, mark, null, CharPrint * (0.7f * fade),
+                    MathHelper.PiOver2, origin, new Vector2(0.9f, 0.28f), SpriteEffects.None, 0f);
+            }
         }
 
-        /// <summary>焦黑掌印：掌斑 + 五道指痕，随余韵浮现又缓灭。</summary>
-        private void DrawScorchPrint(SpriteBatch sb, float appear) {
-            Texture2D glow = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
-            Vector2 glowOrigin = glow.Size() * 0.5f;
-            float fade = appear * MathHelper.Clamp(1.3f - PhaseProgress, 0f, 1f);
-            Vector2 ground = palmAnchor + new Vector2(0f, 46f) - Main.screenPosition;
-            sb.Draw(glow, ground, null, CharEdge * (0.8f * fade), 0f, glowOrigin,
-                new Vector2(0.5f, 0.14f), SpriteEffects.None, 0f);
-            for (int i = 0; i < FingerOffsets.Length; i++) {
-                Vector2 mark = ground + new Vector2(FingerOffsets[i] * 0.9f, -6f);
-                sb.Draw(glow, mark, null, CharEdge * (0.65f * fade), 0f, glowOrigin,
-                    new Vector2(0.07f, 0.16f), SpriteEffects.None, 0f);
-                if (i % 2 == 0) {
-                    sb.Draw(glow, mark, null, EmberDim * (0.3f * fade), 0f, glowOrigin,
-                        new Vector2(0.04f, 0.08f), SpriteEffects.None, 0f);
-                }
+        //---- 粒子 ----
+
+        /// <summary>裂口上随机一处：五道裂缝的其中一条</summary>
+        private Vector2 RandomCrackPoint() {
+            int crack = Main.rand.Next(GhostHandRig.FingerCount);
+            return breachPoint + new Vector2((crack - 2) * 46f + Main.rand.NextFloat(-10f, 10f),
+                Main.rand.NextFloat(-6f, 6f));
+        }
+
+        private void BreachBurst(int cracks) {
+            for (int i = 0; i < cracks; i++) {
+                Vector2 pos = RandomCrackPoint();
+                SpawnCharSmoke(pos, 3);
+                SpawnEmber(pos, 3, 2.6f);
             }
         }
 
         private static void SpawnCharSmoke(Vector2 pos, int count) {
             for (int i = 0; i < count; i++) {
-                PRTLoader.NewParticle<PRT_Smoke>(pos + Main.rand.NextVector2Circular(10f, 6f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.4f, 1.1f)
-                    + Main.rand.NextVector2Circular(0.5f, 0.3f),
-                    new Color(58, 30, 20), Main.rand.NextFloat(0.09f, 0.15f))
-                    ?.Configure(Main.rand.Next(22, 38), 0.45f, Main.rand.NextFloat(-0.02f, 0.02f));
+                PRTLoader.NewParticle<PRT_Smoke>(pos + Main.rand.NextVector2Circular(12f, 7f),
+                    -Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.4f)
+                    + Main.rand.NextVector2Circular(0.6f, 0.3f),
+                    CharSmoke, Main.rand.NextFloat(0.1f, 0.18f))
+                    ?.Configure(Main.rand.Next(24, 42), 0.45f, Main.rand.NextFloat(-0.02f, 0.02f));
             }
         }
 
         private static void SpawnEmber(Vector2 pos, int count, float speed) {
             for (int i = 0; i < count; i++) {
                 PRTLoader.NewParticle<PRT_PallbearerEmber>(
-                    pos + Main.rand.NextVector2Circular(10f, 8f),
-                    Main.rand.NextVector2Circular(speed, speed) - Vector2.UnitY * speed * 0.4f,
+                    pos + Main.rand.NextVector2Circular(12f, 9f),
+                    Main.rand.NextVector2Circular(speed, speed) - Vector2.UnitY * speed * 0.45f,
                     Main.rand.NextBool() ? EmberHot : new Color(222, 82, 30),
-                    Main.rand.NextFloat(0.4f, 0.85f))
-                    ?.Configure(Main.rand.Next(14, 24), 0.05f);
+                    Main.rand.NextFloat(0.4f, 0.9f))
+                    ?.Configure(Main.rand.Next(14, 26), 0.05f);
             }
         }
 
-        public override Vector2 CameraFocus => Phase == WraithSeizePhase.Linger
-            ? DeathAnchor + new Vector2(0f, 24f)
-            : Player?.Center ?? DeathAnchor;
+        //---- 运镜 ----
+
+        public override Vector2 CameraFocus => Phase switch {
+            WraithSeizePhase.Omen => Vector2.Lerp(Player?.Center ?? DeathAnchor, breachPoint, 0.35f),
+            WraithSeizePhase.Manifest => Vector2.Lerp(CradlePoint, PalmCenter, 0.35f),
+            _ => Vector2.Lerp(PalmCenter, breachPoint, 0.5f),
+        };
 
         public override float CameraZoom => Phase switch {
-            WraithSeizePhase.Omen => 1.12f,
-            WraithSeizePhase.Manifest => 1.32f,
+            WraithSeizePhase.Omen => 1.1f,
+            WraithSeizePhase.Manifest => MathHelper.Lerp(1.18f, 1.34f, PhaseProgress),
             WraithSeizePhase.Linger => 1.14f,
             _ => 1f,
         };
 
         public override float ShakeIntensity => Phase switch {
-            WraithSeizePhase.Omen => 2f * PhaseProgress,
-            WraithSeizePhase.Manifest => 2.2f + (crushFlash > 0 ? crushFlash * 0.5f : 0f),
-            WraithSeizePhase.Linger => crushFlash > 0 ? crushFlash * 0.45f : 0f,
+            WraithSeizePhase.Omen => 1.8f * PhaseProgress,
+            WraithSeizePhase.Manifest => 2.2f + (crushFlash > 0 ? crushFlash * 0.55f : 0f),
+            WraithSeizePhase.Linger => crushFlash > 0 ? crushFlash * 0.5f : 1.2f * (1f - PhaseProgress),
             _ => 0f,
         };
     }

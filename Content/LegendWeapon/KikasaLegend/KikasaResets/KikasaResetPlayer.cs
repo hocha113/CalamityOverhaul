@@ -22,20 +22,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                 || !CWRKeySystem.Legend_Restart.JustPressed) {
                 return;
             }
+            HandleRestartPress();
+        }
+
+        /// <summary>重启键按下沿的单一受理点（键位与教程临时键共用）；返回是否走到了受理</summary>
+        internal bool HandleRestartPress() {
             //时停/全屏地图/演出锁输入时不受理新命令
             if (HackTime.Active || Main.mapFullscreen
                 || Main.blockInput || Player.mouseInterface) {
-                return;
+                return false;
             }
             //赛博空间激活时让位给赛博重启（与 CrimsonBrideRestart 的让位同款）
             if (Cyberspace.Active) {
-                return;
+                return false;
             }
             //持伞门：领域在切走武器后仍保持打开，重启只归手上有伞的人
             if (!HoldingUmbrella()) {
-                return;
+                return false;
             }
             KikasaReset.TryReset(Player);
+            return true;
         }
 
         private bool HoldingUmbrella() {

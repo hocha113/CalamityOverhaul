@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
+using CalamityOverhaul.Content.Narrative.Guides;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,20 +24,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             Secondary,
         }
 
-        /// <summary>收起纸片的文字缩放</summary>
-        private const float AbortScale = 0.62f;
+        /// <summary>卡肩纸片的文字缩放：三家统一的次要提示字号</summary>
+        private const float AbortScale = GuideCardTypography.Hint;
 
-        private const int CardWidth = 352;
+        //字号并轨到 GuideCardTypography 后卡随之放宽，正文换行数与旧卡相当
+        private const int CardWidth = GuideCardTypography.CardWidth;
         //询问是一次性抉择,给宽一点并让开右侧的符纹章
-        private const int AskCardWidth = 430;
+        private const int AskCardWidth = 460;
         private const float AskSigilRadius = 34f;
         //询问卡浮定前不受理点击
         private const int AskArmFrames = 24;
         private const int EdgePad = 10;
-        private const float TitleScale = 0.9f;
-        private const float BodyScale = 0.78f;
-        private const float PromptScale = 0.82f;
-        private const float HintScale = 0.72f;
+        private const float TitleScale = GuideCardTypography.Title;
+        private const float BodyScale = GuideCardTypography.Body;
+        private const float PromptScale = GuideCardTypography.Prompt;
+        private const float HintScale = GuideCardTypography.Hint;
         private const float ContentPadX = 16f;
         private const float ContentPadTop = 13f;
 
@@ -444,18 +446,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 }
             }
 
-            float mainScale = asking ? 0.86f : 0.76f;
-            float subScale = asking ? 0.86f : 0.7f;
+            float mainScale = asking ? 0.9f : GuideCardTypography.Button;
+            float subScale = asking ? 0.9f : GuideCardTypography.Button;
             if (!string.IsNullOrEmpty(primaryText)) {
                 primaryRect = MakeButtonRect(font, card, primaryText, rightAligned: true,
-                    asking ? 29 : 24, mainScale);
+                    asking ? 29 : 26, mainScale);
                 primaryAction = ButtonAction.Primary;
                 DrawPaperButton(spriteBatch, font, primaryRect, primaryText,
                     OnikiriUITheme.Bright, time, alpha, mainScale);
             }
             if (!string.IsNullOrEmpty(secondaryText)) {
                 secondaryRect = MakeButtonRect(font, card, secondaryText, rightAligned: false,
-                    asking ? 29 : 22, subScale);
+                    asking ? 29 : 26, subScale);
                 secondaryAction = ButtonAction.Secondary;
                 DrawPaperButton(spriteBatch, font, secondaryRect, secondaryText,
                     OnikiriUITheme.GhostFire, time, alpha * 0.92f, subScale);
@@ -496,7 +498,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static Rectangle DrawShoulderTag(SpriteBatch spriteBatch, DynamicSpriteFont font,
             string text, int rightX, int y, Color hotColor, float alpha) {
             int width = (int)(font.MeasureString(text).X * AbortScale) + 14;
-            Rectangle rect = new(rightX - width, y, width, 19);
+            Rectangle rect = new(rightX - width, y, width, 22);
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
             bool hovered = rect.Contains(OnikiriUITheme.UIMouse.ToPoint());

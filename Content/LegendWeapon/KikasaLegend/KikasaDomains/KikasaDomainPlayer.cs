@@ -243,6 +243,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             && !DreamWorldVisual
             && RiseT >= 0.999f;
 
+        /// <summary>湖面触达的纵向带上沿：脚底在水线上方这么多像素内仍算站在面上（与站立容差同量级）</summary>
+        private const float LakeTouchAbovePx = 8f;
+
+        /// <summary>湖面触达的纵向带下沿：没入水线下超过约一屏的人（在湖底洞里挖矿）与这面湖已无功能交集</summary>
+        private const float LakeTouchBelowPx = 1200f;
+
+        /// <summary>
+        /// 该域此刻是否在功能上触达 <paramref name="local"/>：身处鬼梦圆内（封物禁弹）、脚底到了湖面水线
+        /// （站面或没入，可被平台托住）、被其鬼手钉着（沉人）。
+        /// 客户端屏蔽他人领域时的强制观看依据：功能作用到人身上就必须让人看见，
+        /// 三条口径分别对齐 <see cref="KikasaDream.DreamWorldAt"/>、<see cref="KikasaLakeSurface.ApplyStanding"/>
+        /// 与 <see cref="KikasaDrowns.KikasaPlayerDrown"/>；只读本域已同步的快照与本机玩家位置，不发包。
+        /// 湖面一条把 Opening 也算进来：水线锚点开域帧已定，涨水正是"平台即将接住你"的预告，
+        /// 不然人只会在水位满的那一帧看到一面凭空出现的湖
+        /// </summary>
+        internal bool TouchesLocalPlayer(Player local) {
+            if (!AnyActive || local == null || !local.active || ReferenceEquals(Player, local)) {
+                return false;
+            }
+            if (DreamWorldVisual && Vector2.DistanceSquared(Player.Center, local.Center)
+                <= KikasaDream.WorldRange * KikasaDream.WorldRange) {
+                return true;
+            }
+            if ((LakeBodySolid || Phase == KikasaDomainPhase.Opening)
+                && MathF.Abs(local.Center.X - Player.Center.X) <= KikasaLakeSurface.HalfWidth
+                && local.Bottom.Y >= LakeWorldY - LakeTouchAbovePx
+                && local.Bottom.Y <= LakeWorldY + LakeTouchBelowPx) {
+                return true;
+            }
+            return KikasaDrowns.KikasaPlayerDrown.IsLocalVictimOf(Player.whoAmI);
+        }
+
         /// <summary>涨水观感进度：前快后慢，水逼近脚底时减速（与入雨演出同曲线）</summary>
         public float RiseProgress => 1f - MathF.Pow(1f - RiseT, 1.6f);
 

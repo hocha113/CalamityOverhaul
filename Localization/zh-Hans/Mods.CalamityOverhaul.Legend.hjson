@@ -1293,6 +1293,13 @@ KikasaText: {
 		DreamTitle: 进入鬼梦
 		DreamBody: 湖水涨满后长按「血湖表里」键，湖里的倒影会把你拽进鬼梦。梦中敌人失能，远程弹幕无法存在；你的物品也被封禁，改为按住左键连续唤出恶犬。撕咬无视护甲。再按一次同键就能醒来。
 		DreamPrompt: 湖水涨满后，长按 {0}
+		CloseTitle: 收起血湖
+		CloseBody: 血湖不会自己退：换了武器、走得再远，湖和血暮天色都跟着你。手持鬼伞再按一次开域的键，湖水退去，世界恢复原样。湖藏、沉影和沉溺记录都留在伞里，下次开域还在。
+		ClosePrompt: 手持鬼伞，按 {0} 收回血湖
+		CloseInDreamNote: 你还在鬼梦里。先按 {0} 醒来，再收域。
+		CloseSettlingNote: 湖面正在变相，等它落定。
+		KeyUnboundFallback: 「{0}」还没绑定。这一步可以先按 {1} 代替；想一直用，到 设置 > 控制 里绑好。
+		ShieldNote: 教程期间敌怪伤不到你，附近也不会刷怪。
 		SkipBtn: 跳过
 		ConfirmBtn: 明白了
 		AssistBtn: 替我演示

@@ -33,11 +33,28 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
         protected float PhaseProgress => Host.PhaseProgress;
         /// <summary>处决帧锚点：玩家死亡时的位置，余韵围绕它展开</summary>
         protected Vector2 DeathAnchor => Host.DeathAnchor;
+        /// <summary>开演时探得的地面锚。破土、沉地、落地一律用它，禁止「玩家中心 + 固定偏移」当地面</summary>
+        protected SeizureGround Ground => Host.Ground;
 
         //---- 帧表（3 秒规格：前兆 0.7s / 显形 1.4s / 余韵 1s）----
+        //注意这是逻辑帧；HoldFramesAt 声明的顿帧会额外占用真实时间，两者之和仍须压在 200 帧内
         public virtual int OmenEndFrame => 42;
         public virtual int ExecuteFrame => 126;
         public virtual int TotalFrames => 186;
+
+        /// <summary>
+        /// 声明本演出的具名拍。<b>只在此处 Add</b>，表在首次推进时封口。<br/>
+        /// 一切「到某帧做某事」都应走这里，不要在 <see cref="Update"/> 里写
+        /// <c>Timer == X</c> 或 <c>PhaseProgress in [a,b)</c>：前者会被联机快照修正跳过，
+        /// 后者按帧落点可能触发零次或两次。
+        /// </summary>
+        public virtual void BuildBeats(SeizureBeatTable beats) { }
+
+        /// <summary>
+        /// 该逻辑帧要不要卡住若干帧不推进（处决顿挫）。<br/>
+        /// 必须是纯静态映射，权威端与各客户端各算各的但结果一致，不额外发包。
+        /// </summary>
+        public virtual int HoldFramesAt(int frame) => 0;
 
         /// <summary>演出开始（各端本地各调一次）</summary>
         public virtual void OnBegin() { }
@@ -84,11 +101,20 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
             if (Player == null || Player.dead) {
                 return;
             }
-            Player.velocity *= 0.5f;
-            if (Timer > 6) {
-                Player.velocity = Vector2.Zero;
-            }
-            Player.fallStart = (int)(Player.position.Y / 16f);
+            SeizurePuppet.Brake(Player, 0.5f, freeze: Timer > 6);
         }
+
+        /// <summary>
+        /// 受害者体态，在 <c>PostUpdate</c> 阶段应用（原版 <c>PlayerFrame</c> 已跑完）。<br/>
+        /// 只有这里写 <c>bodyFrame</c> 才不会被覆盖；写 <see cref="SeizurePuppet"/> 以外的
+        /// 玩家绘制字段前先确认它不在 <c>PlayerFrame</c> 的重算范围内。
+        /// </summary>
+        public virtual void ApplyPose() { }
+
+        /// <summary>
+        /// 处决之后的残体驱动。原版把头、身、腿三段抛散并逐帧加重力，
+        /// 三段速度公开可写，「尸身怎么散」因此归各鬼自己管，不必另画假尸体。
+        /// </summary>
+        public virtual void UpdateDeathBody() { }
     }
 }

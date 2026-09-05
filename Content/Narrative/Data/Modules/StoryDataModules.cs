@@ -165,6 +165,8 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool DerivedUmbrellaMet;
         /// <summary>门伞初谈播完，防重播</summary>
         public bool PostDerivedUmbrellaIsComplete;
+        /// <summary>鬼雨初遇线执行保护已消耗的帧数（随存档只增不减），烧完保护自行退场</summary>
+        public int ShieldFramesUsed;
     }
 
     /// <summary>鬼伞沉宴试炼节点礼物完成位，顺序对应 KikasaTrialQuestLine 的24关</summary>
@@ -318,6 +320,10 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public int StepCheckpoint;
         /// <summary>玩家主动收起过教程；只能由湖心景的「?」再启动</summary>
         public bool Declined;
+        /// <summary>首次教程的执行保护已用完（走完/收起/重开任一件事都落此位），之后重看教程不再受保护</summary>
+        public bool ShieldSpent;
+        /// <summary>首次教程执行保护已消耗的帧数（随存档只增不减），烧完保护自行退场</summary>
+        public int ShieldFramesUsed;
     }
 
     /// <summary>旧网深潜引导与首潜委托进度；随玩家存档</summary>

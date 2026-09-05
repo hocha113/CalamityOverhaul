@@ -170,6 +170,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             return false;
         }
 
+        /// <summary>本机玩家此刻是否被该施术者的鬼手钉着（客户端镜像口径）。
+        /// 领域旁观屏蔽的触达判定用：被沉的人必须看得见沉自己的那面湖</summary>
+        internal static bool IsLocalVictimOf(int ownerWho) {
+            if (Main.dedServ) {
+                return false;
+            }
+            for (int i = 0; i < binds.Count; i++) {
+                if (binds[i].OwnerWho == ownerWho && binds[i].VictimWho == Main.myPlayer) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         internal static ClientBind GetClientBind(int bindId) {
             for (int i = 0; i < binds.Count; i++) {
                 if (binds[i].BindId == bindId) {
