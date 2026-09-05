@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Gel Legion: slimes roll in escort formation; two different slimes striking one foe within a beat triggers a gel burst, and the rally order piles them into a sticky mound";
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Ring,
             Radius = 60f,

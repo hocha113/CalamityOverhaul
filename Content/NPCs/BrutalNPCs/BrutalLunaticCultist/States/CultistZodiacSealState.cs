@@ -97,10 +97,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
 
             //双出口:辐条散尽即收,或超时兜底
             if (Timer > CastBeat + 30 && !AnySpokeAlive(npc.whoAmI)) {
-                return new CultistCoilState(10);
+                return new CultistCoilState(7);
             }
             if (Timer >= Timeout) {
-                return new CultistCoilState(10);
+                return new CultistCoilState(7);
             }
             return null;
         }

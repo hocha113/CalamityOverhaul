@@ -43,20 +43,16 @@ GsSpikyBall.Desc:
 	Reforja: las bolas con pinchos que expiran en el campo vuelven directo a la mochila
 	Si un enemigo pisa a la vez tres o más de tus bolas, salta una explosión de pinchos en cadena, cada una al 50% de daño; cada bola solo explota una vez en su vida
 	'''
-GsGrenade.Desc:
-	'''
-	Reforja: si una explosión alcanza a tres o más enemigos, devuelve una; en la ventana de combo la mecha arde un 20% más rápido
-	Clic derecho: un lanzamiento bajo y rodado, la mecha se acorta a 1.2 segundos
-	'''
+GsGrenade.Desc: Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window
 GsStickyGrenade.Desc:
 	'''
 	Reforja: la explosión marca a los enemigos 3 segundos con una quemadura corrosiva; un marcado sufre +30% de tu siguiente explosión y es crítico asegurado
-	Alcanzar a tres enemigos devuelve una; clic derecho para un lanzamiento rodado
+	Alcanzar a tres enemigos devuelve una
 	'''
 GsBouncyGrenade.Desc:
 	'''
 	Reforja: cada rebote carga la explosión, +12% de daño, hasta tres capas
-	Una granada que rebotó tres veces se devuelve entera si la explosión alcanza a un enemigo; clic derecho para un lanzamiento rodado
+	Una granada que rebotó tres veces se devuelve entera si la explosión alcanza a un enemigo
 	'''
 GsBeenade.Desc:
 	'''

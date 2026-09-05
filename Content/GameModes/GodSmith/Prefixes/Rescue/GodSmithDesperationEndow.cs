@@ -71,10 +71,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Rescue
         }
     }
 
-    /// <summary>黑红怒焰：先黑烟压场再赤焰炸开，余烬带着火星回落</summary>
+    /// <summary>黑红怒焰：一圈扩张的爆发判定；绘制只有一笔按当前半径缩放的原版气泡贴图</summary>
     internal class GodSmithDesperationBurst : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
 
         /// <summary>扩张终末半径（像素）</summary>
         internal const float MaxRadius = 110f;
@@ -97,53 +97,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Rescue
         public override void AI() {
             if (Projectile.timeLeft == 19 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.6f, Pitch = -0.3f }, Projectile.Center);
-                for (int i = 0; i < 8; i++) {
-                    Dust smoke = Dust.NewDustPerfect(Projectile.Center,
-                        DustID.Smoke, Main.rand.NextVector2Circular(3f, 3f), 170, Color.Black, 1.6f);
-                    smoke.noGravity = true;
-                }
             }
             float radius = MaxRadius * (float)Math.Sqrt(LifeRatio);
             int size = (int)(radius * 2f);
             if (size > Projectile.width) {
                 Projectile.Resize(size, size);
             }
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 4; i++) {
-                    float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center + ang.ToRotationVector2() * radius,
-                        DustID.Torch, ang.ToRotationVector2() * 2.5f - Vector2.UnitY * 1.2f, 80, default, 1.4f);
-                    dust.noGravity = true;
-                }
-            }
-            Lighting.AddLight(Projectile.Center, 0.55f, 0.2f, 0.05f);
         }
 
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 90, 40, 0) * Projectile.Opacity;
-
+        /// <summary>区域弹一笔：原版气泡贴图按当前判定直径缩放画在中心，随生命淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float radius = MaxRadius * (float)Math.Sqrt(LifeRatio);
-            float fade = 1f - LifeRatio;
-            float scale = radius * 2.4f / tex.Width;
-            //赤焰双层：深红外沿 + 橙亮内核
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(140, 20, 10, 0) * (0.6f * fade), 0f, origin, scale, 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 140, 60, 0) * (0.45f * fade), 0f, origin, scale * 0.65f, 0);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * (1f - LifeRatio), 0f,
+                tex.Size() * 0.5f, Projectile.width / (float)tex.Width, SpriteEffects.None, 0);
             return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 10; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(30f, 30f),
-                    DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(1f, 3f), 60, default, 1.2f);
-                dust.noGravity = false;
-            }
         }
     }
 }

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 {
     /// <summary>
     /// 体节：跟链 + 统一血池 + 抖动/脉冲表现。
-    /// 款式按链序确定（每 FlowerStep 节开一朵红花，红花节是钉刺/花瓣发射器），各端一致。
+    /// 款式按链序查 <see cref="BssDirector.BodyStyleLayout"/>（红花节是钉刺/花瓣发射器），各端一致。
     /// 绘制集中在头的整链层（尾→头逐节压上，前节扇冠盖住后节腹板），本类 PreDraw 返回 false，
     /// 头部通过 <see cref="DrawSegment"/> 逐节调用。
     /// </summary>
@@ -44,8 +44,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         public override void SetDefaults() {
+            //判定盒写贴图尺度的原值，缩放交给原版 SetDefaults 收尾的 width/height × scale（与脓蕾沙蟒同一写法）
             NPC.width = 46;
             NPC.height = 46;
+            NPC.scale = BssDirector.BodyScale;
             NPC.damage = BssDirector.BodyContact;
             NPC.defense = BssDirector.BodyDefense;
             NPC.lifeMax = BssDirector.BodyLife;
@@ -159,16 +161,22 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// </summary>
         private void FollowChain(NPC front, BssStateContext ctx) {
             float compression = ctx != null && ctx.Compression > 0.01f ? ctx.Compression : 1f;
-            //0 号节接在头后：头贴图比体节长得多，颈距单独标定
+            //0 号节接在头后：头贴图背部实心区短，颈距单独标定
             float baseGap = Ordinal == 0 ? BssDirector.NeckGap : BssDirector.SegmentGap;
             float gap = baseGap * NPC.scale * compression;
             int total = ctx != null && ctx.TotalSegments > 0
                 ? ctx.TotalSegments : BssDirector.BodyCount + 1;
 
             if (ctx != null) {
-                gap *= SerpentChainMath.GatherFactor(Ordinal, ctx.GatherLevel);
-                gap *= SerpentChainMath.GapWaveFactor(Ordinal, ctx.GapWaveKind, ctx.GapWaveAge, ctx.GapWaveAmp);
-                gap *= SerpentChainMath.SpeedStretchFactor(ctx.HeadSpeed);
+                float dynamic = SerpentChainMath.GatherFactor(Ordinal, ctx.GatherLevel)
+                    * SerpentChainMath.GapWaveFactor(Ordinal, ctx.GapWaveKind, ctx.GapWaveAge, ctx.GapWaveAmp)
+                    * SerpentChainMath.SpeedStretchFactor(ctx.HeadSpeed);
+                //颈段只许收不许放：颈距按"前端圆叶刚好藏进头背实心区"标定，
+                //释放波/高速拉伸再放 10%~18% 就会把接缝拉开成空档；波形从 1 号节起照常传播
+                if (Ordinal == 0) {
+                    dynamic = Math.Min(dynamic, 1f);
+                }
+                gap *= dynamic;
             }
 
             Vector2 toFront = front.Center - NPC.Center;
@@ -278,11 +286,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         #endregion
 
         #region 帧与绘制
-        /// <summary>红花节判定（款式2；尾节恒否）</summary>
+        /// <summary>红花节判定（款式表中的款式 2；尾节恒否）</summary>
         protected virtual bool IsFlower => BssStateContext.IsFlowerOrdinal(Ordinal);
 
         public override void FindFrame(int frameHeight) {
-            int style = SerpentChainMath.BodyStyleIndex(Ordinal, IsFlower);
+            int style = BssDirector.BodyStyle(Ordinal);
             NPC.frame = new Rectangle(0, style * frameHeight,
                 TextureAssets.Npc[Type].Width(), frameHeight);
         }

@@ -17,9 +17,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override int FamilyIdx => GsSentryFamilyIdx.RainbowCrystal;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: linked to any sentry, each burst refracts a prism ray into another foe\n" +
-            "Hits charge the crystal, right-click when full to unfurl an aurora veil above it";
-
+            "Deploy doctrine: linked to any sentry, each burst refracts a prism ray into another foe\nHits charge the crystal, right-click when full to unfurl an aurora veil above it";
         protected override SentryKit BuildKit() => new() {
             TowerTypes = [ProjectileID.RainbowCrystal],
             BoltTypes = [ProjectileID.RainbowCrystalExplosion],

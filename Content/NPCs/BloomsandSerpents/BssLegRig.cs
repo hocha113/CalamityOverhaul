@@ -7,27 +7,27 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 {
     /// <summary>
-    /// 三节步足系统（纯表现层）。联机契约沿用旧版：各端从已同步的体节位置本地重建，
+    /// 三节步足系统（纯表现层）。联机契约：各端从已同步的体节位置本地重建，
     /// 不入网络包，无 gameplay 碰撞。
     ///
-    /// 编制：4 髋站 x 两侧翻缘 = 8 条三节长肢（基节/腿节/胫爪 + 爪尖微节，触及 ~130px）。
+    /// 编制：4 髋站 x 两侧翻缘 = 8 条三节长肢（基节/腿节/胫爪 + 爪尖微节，贴图尺度触及 ~130px，
+    /// 骨长/步幅/骨宽随 <see cref="Scale"/> 同比，战斗端取宿主 NPC.scale）。
     /// 每条腿固定锚在体节体轴的一侧法线上（手性随体轴连续），身体水平时一排在地侧
     /// 一排在背侧，竖直时两排向左右张开。
     ///
-    /// 运动模型是"世界落足步行"（与坟灾虫臂的体坐标划桨相反的构造）：足端钉在世界
-    /// 固定点，身体从上面驶过；髋足漂移超过步幅、且蜈蚣节律波（站序滞后 + 同站反相）
-    /// 轮到本腿时抬腿换步——预备下压半拍 → 抛物摆越（落点沿速度前瞻 + 探地）→
-    /// 落地爪咬（回填 <see cref="BssStateContext.StationBob"/> 下沉 + 咬沙尘）。
-    /// 高速滑刹：体速超过步频承受上限时足端拖滑犁沙（爪尖犁出连续沙痕），
-    /// 读作"快到来不及迈步"。
+    /// 运动模型是节肢动物的"世界落足步行"：足端钉在世界固定点，身体从上面驶过；
+    /// 足落在休息位前方半个步幅，随体位移漂到休息位后方半个步幅时抬腿换步——
+    /// 一个步幅 = 一个步态时钟周期（<see cref="BssStateContext.GaitIncrement"/> 按此定义），
+    /// 换步许可窗沿髋站前→后传播、同站两侧反相，蜈蚣的节律波由此闭合，
+    /// 而不是靠伸展超限的应急换步凑出来。预备下压半拍 → 抛物摆越 → 落地爪咬。
     ///
-    /// IK：基节朝足端限幅摆动（全伸时放开直指），腿节+胫爪双骨余弦解析；
-    /// 膝弯偏好随走地权重从体后向天顶连续过渡（节肢动物高膝拱），带迟滞防抖。
-    /// 爪尖第四微节：落地咬地、摆越后拖、腾空内卷。
+    /// 肢体范围约束（沿用残酷月球领主手臂链的思路）：每个落足目标先钳进髋的可达包络
+    /// （半径窗 + 相对法线的摆角窗），腿不许甩到前后极限；基节摆动限幅、膝弯有效跨距
+    /// 有上下限（永不锁直、永不折死）、爪尖目标越界只钳制不拉伸。
+    /// 高速滑刹：体速超过步频承受上限时足端拖滑犁沙，读作"快到来不及迈步"。
     ///
     /// 图鉴沙盒共用本类：SetStation + Advance 由 <see cref="OtherMods.BossChecklist.SerpentPortraitRig"/>
-    /// 驱动，探地换虚拟沙线。贴图为步足正式稿（爪尖微节共用胫爪稿，槽位在 BssHead），
-    /// 本文件不动。
+    /// 驱动，探地换虚拟沙线。贴图为步足正式稿（爪尖微节共用胫爪稿，槽位在 BssHead）。
     /// </summary>
     internal class BssLegRig
     {
@@ -42,16 +42,29 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// <summary>各站步幅性格差（去机械感：每站步子大小略有不同）</summary>
         private static readonly float[] StrideAccent = { 1.06f, 0.93f, 1.02f, 0.9f };
 
+        /// <summary>
+        /// 骨长与步幅的整体倍率（战斗端每帧取宿主 NPC.scale，图鉴端保持 1）。
+        /// 下面所有 *Base 常量都是贴图尺度的像素量，实际使用一律经属性乘过倍率
+        /// </summary>
+        public float Scale { get; set; } = 1f;
+
         /// <summary>基节长（髋部摆节，短而粗）</summary>
-        internal const float CoxaLen = 26f;
+        private const float CoxaLenBase = 26f;
         /// <summary>腿节长</summary>
-        internal const float FemurLen = 54f;
+        private const float FemurLenBase = 54f;
         /// <summary>胫爪长</summary>
-        internal const float TibiaLen = 56f;
+        private const float TibiaLenBase = 56f;
         /// <summary>爪尖微节长（纯绘制第四节）</summary>
-        internal const float ClawLen = 13f;
+        private const float ClawLenBase = 13f;
         /// <summary>全肢触及</summary>
-        internal const float MaxReach = CoxaLen + FemurLen + TibiaLen - 6f;
+        private const float MaxReachBase = CoxaLenBase + FemurLenBase + TibiaLenBase - 6f;
+        /// <summary>髋锚离体轴的法向偏移</summary>
+        private const float HipSideBase = 10f;
+
+        private float CoxaLen => CoxaLenBase * Scale;
+        private float FemurLen => FemurLenBase * Scale;
+        private float TibiaLen => TibiaLenBase * Scale;
+        private float MaxReach => MaxReachBase * Scale;
 
         /// <summary>站间相位差：换步许可窗前→后传的蜈蚣节律</summary>
         internal const float StationLag = MathHelper.TwoPi * 0.22f;
@@ -60,22 +73,44 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         #endregion
 
         #region 步行调参
+        /// <summary>
+        /// 步幅（贴图尺度）：足端从前落点漂到后抬点经历的体位移，约 0.74 倍全肢触及。
+        /// 步态时钟一个周期 = 身体前进一个步幅
+        /// </summary>
+        internal const float StrideBase = 96f;
+        /// <summary>世界步幅（战斗端：贴图步幅 × 整体放大），<see cref="BssStateContext.GaitIncrement"/> 读它</summary>
+        internal static float StrideWorld => StrideBase * BssDirector.BodyScale;
+        /// <summary>换步许可窗占时钟周期的比例（窗内且同站对腿落地才许抬）</summary>
+        private const float StepWindow = 0.5f;
         /// <summary>足端休息半径（占全肢触及比例）</summary>
         private const float RestReach = 0.56f;
-        /// <summary>髋足漂移触发换步的距离</summary>
-        private const float StrideTrigger = 44f;
-        /// <summary>落点沿速度前瞻帧数（步子迈向将到之处）</summary>
-        private const float StepLead = 9f;
-        /// <summary>摆越离地余隙</summary>
-        private const float StepClearance = 30f;
+        /// <summary>落足目标可达包络：半径窗（占全肢触及；下限须容得下髋离地约 0.34 倍触及的贴地姿）</summary>
+        private const float EnvelopeMin = 0.25f;
+        private const float EnvelopeMax = 0.84f;
+        /// <summary>落足目标可达包络：相对法线的摆角窗（弧度，约 ±57°）</summary>
+        private const float EnvelopeSwing = 1.0f;
+        /// <summary>摆越离地余隙（贴图尺度）</summary>
+        private const float StepClearanceBase = 26f;
+        /// <summary>探地起扫高度：从髋上方这么远向下扫地（贴图尺度）</summary>
+        private const float GroundProbeLiftBase = 46f;
+
+        private float StepClearance => StepClearanceBase * Scale;
+        private float GroundProbeLift => GroundProbeLiftBase * Scale;
         /// <summary>强制换步的伸展比（相对 MaxReach；不等节律窗）</summary>
-        private const float EmergencyStretch = 0.93f;
+        private const float EmergencyStretch = 0.9f;
         /// <summary>基节相对法线的摆动限幅（弧度；关节感的来源）</summary>
-        private const float CoxaSwingMax = 1.15f;
-        /// <summary>滑刹渐入速度（px/f）</summary>
-        private const float SkateStart = 11f;
+        private const float CoxaSwingMax = 0.8f;
+        /// <summary>
+        /// 膝弯有效跨距窗（腿节+胫爪的合成距离占两骨之和）：上限杜绝锁直；
+        /// 下限只防退化（贴地爬行时髋离地仅约 60px 而全肢 175px，长腿本就该高拱深折，
+        /// 下限抬高会把足端画进地里）
+        /// </summary>
+        private const float KneeSpanMin = 0.12f;
+        private const float KneeSpanMax = 0.94f;
+        /// <summary>滑刹渐入速度（px/f；中速步行档 12 以内全程真迈步）</summary>
+        private const float SkateStart = 15f;
         /// <summary>滑刹全开速度</summary>
-        private const float SkateFull = 20f;
+        private const float SkateFull = 26f;
         #endregion
 
         /// <summary>驱动一帧腿部模拟的环境包（战斗端从 ctx 建，图鉴端自建）</summary>
@@ -94,12 +129,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             public Action<Vector2, Vector2, float> SandFx;
             /// <summary>是否允许直接出 Dust（战斗客户端）</summary>
             public bool AllowDust;
-            /// <summary>柱面抓握几何（Grip 指令时有效）</summary>
-            public bool GripActive;
-            public float GripCenterX;
-            public float GripHalfWidth;
-            public float GripTopY;
-            public float GripBottomY;
         }
 
         private struct Leg
@@ -113,8 +142,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             public float SwingT;
             public float SwingDur;
             public float SwingClearance;
-            /// <summary>摆越弧的抬升方向（地面 = 上，柱面 = 离壁）</summary>
-            public Vector2 SwingUp;
             public bool Planted;
             public bool Swinging;
             public bool Inited;
@@ -139,7 +166,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         private readonly Leg[] legs = new Leg[TotalLegs];
-        /// <summary>平滑行进方向（步幅前瞻与姿态依据，避免转身瞬间腿抽搐）</summary>
+        /// <summary>平滑行进方向（单位向量；步幅前后判定与落点前瞻依据，避免转身瞬间腿抽搐）</summary>
+        private Vector2 travel = Vector2.UnitX;
+        /// <summary>平滑水平朝向（±1；立起/瘫软等姿态用）</summary>
         private float travelDir = 1f;
 
         //站宿主位姿（Advance 前由驱动方预填）
@@ -171,6 +200,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// <summary>战斗端本帧腿部模拟（客户端与单人；服务端由调用方拦掉）</summary>
         public void Update(BssStateContext ctx) {
             boundCtx = ctx;
+            Scale = ctx.Npc.scale;
             battleGroundAt ??= (x, refY) => BssVfx.FindGroundY(new Vector2(x, refY), 460f);
             battlePlant ??= (station, weight) => {
                 if (boundCtx != null) {
@@ -195,19 +225,17 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 OnPlant = battlePlant,
                 SandFx = null,
                 AllowDust = !Main.dedServ,
-                GripActive = ctx.LegGripActive,
-                GripCenterX = ctx.LegGripCenterX,
-                GripHalfWidth = ctx.LegGripHalfWidth,
-                GripTopY = ctx.LegGripTopY,
-                GripBottomY = ctx.LegGripBottomY,
             };
             Advance(in env);
         }
 
         /// <summary>共用模拟核心：按预填站位推进全部腿（战斗与图鉴同一套）</summary>
         public void Advance(in LegEnv env) {
-            if (Math.Abs(env.HostVelocity.X) > 1.2f) {
-                travelDir = MathHelper.Lerp(travelDir, Math.Sign(env.HostVelocity.X), 0.08f);
+            if (env.HostVelocity.LengthSquared() > 1.2f * 1.2f) {
+                travel = Vector2.Lerp(travel, env.HostVelocity.SafeNormalize(travel), 0.1f).SafeNormalize(Vector2.UnitX);
+                if (Math.Abs(env.HostVelocity.X) > 1.2f) {
+                    travelDir = MathHelper.Lerp(travelDir, Math.Sign(env.HostVelocity.X), 0.08f);
+                }
             }
 
             for (int li = 0; li < TotalLegs; li++) {
@@ -224,7 +252,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 Vector2 chainVec = chainDir.ToRotationVector2();
                 float flankSign = (li & 1) == 0 ? 1f : -1f;
                 Vector2 normal = (chainDir + MathHelper.PiOver2).ToRotationVector2() * flankSign;
-                Vector2 hip = stationPos[station] + normal * 10f;
+                Vector2 hip = stationPos[station] + normal * (HipSideBase * Scale);
 
                 leg.Hip = hip;
                 leg.Back = -chainVec;
@@ -234,7 +262,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 //足端初始化逐腿做在"首次见到宿主体节"时（防默认 (0,0) 拉丝）
                 if (!leg.Inited) {
                     Vector2 f0 = hip + normal * (MaxReach * RestReach);
-                    f0.Y = Math.Min(f0.Y, env.GroundAt(f0.X, hip.Y - 46f));
+                    f0.Y = Math.Min(f0.Y, env.GroundAt(f0.X, hip.Y - GroundProbeLift));
                     leg.Foot = f0;
                     leg.PlantPos = f0;
                     leg.Planted = true;
@@ -254,9 +282,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 }
                 else if (env.Command == BssLegCommand.Raise && station < 2) {
                     UpdateRaise(ref leg, li, hip, normal, in env);
-                }
-                else if (env.Command == BssLegCommand.Grip && env.GripActive) {
-                    UpdateGrip(ref leg, li, hip, chainVec, normal, in env);
                 }
                 else {
                     //March 步行 / Brace 蹲伏 / Flail 强制腾空 / Raise 后二站 / Collapse 未失力站
@@ -286,9 +311,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             leg.Planted = false;
             leg.Swinging = false;
             Vector2 dangle = hip + new Vector2(
-                travelDir * ((li & 1) == 1 ? 18f : 26f) + MathF.Sin(Main.GlobalTimeWrappedHourly * 2.2f + li * 1.7f) * 6f,
+                (travelDir * ((li & 1) == 1 ? 18f : 26f) + MathF.Sin(Main.GlobalTimeWrappedHourly * 2.2f + li * 1.7f) * 6f) * Scale,
                 MaxReach * 0.9f);
-            dangle.Y = Math.Min(dangle.Y, env.GroundAt(dangle.X, hip.Y - 46f));
+            dangle.Y = Math.Min(dangle.Y, env.GroundAt(dangle.X, hip.Y - GroundProbeLift));
             leg.Foot = Vector2.Lerp(leg.Foot, dangle, 0.16f);
         }
 
@@ -296,7 +321,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         private void UpdateTuck(ref Leg leg, int li, Vector2 hip, Vector2 chainVec, Vector2 normal) {
             leg.Planted = false;
             leg.Swinging = false;
-            Vector2 fold = hip - chainVec * (28f + li / 2 * 6f + (li & 1) * 8f) + normal * 7f;
+            Vector2 fold = hip - chainVec * ((28f + li / 2 * 6f + (li & 1) * 8f) * Scale) + normal * (7f * Scale);
             leg.Foot = Vector2.Lerp(leg.Foot, fold, 0.28f);
         }
 
@@ -310,52 +335,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             int station = li / 2;
             float lift = MathHelper.Clamp(env.FrontRaise, 0f, 1f);
             Vector2 pose = hip
-                + new Vector2(travelDir * (36f + station * 16f - (li & 1) * 9f), -20f - 40f * lift)
-                + normal * 10f
-                + new Vector2(MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + li * 2.3f) * 5f, 0f);
+                + new Vector2(travelDir * (36f + station * 16f - (li & 1) * 9f), -20f - 40f * lift) * Scale
+                + normal * (10f * Scale)
+                + new Vector2(MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + li * 2.3f) * 5f * Scale, 0f);
             leg.Foot = Vector2.Lerp(leg.Foot, pose, 0.16f);
         }
 
         /// <summary>
-        /// 柱面抓握（盘柱攀爬）：足端锚到沙柱近壁面，用与步行同一套换步机（快步、
-        /// 小步幅、摆越弧朝离壁向），身体螺旋上升时腿一路重新抓握。够不着壁面的腿收拢。
-        /// </summary>
-        private void UpdateGrip(ref Leg leg, int li, Vector2 hip, Vector2 chainVec, Vector2 normal, in LegEnv env) {
-            float side = Math.Sign(hip.X - env.GripCenterX);
-            if (side == 0f) {
-                side = (li & 1) == 0 ? 1f : -1f;
-            }
-            Vector2 wallPoint = new(
-                env.GripCenterX + side * env.GripHalfWidth,
-                MathHelper.Clamp(hip.Y + 8f, env.GripTopY, env.GripBottomY));
-
-            if (Vector2.Distance(hip, wallPoint) > MaxReach * 0.97f) {
-                UpdateTuck(ref leg, li, hip, chainVec, normal);
-                return;
-            }
-
-            if (leg.Swinging) {
-                AdvanceSwing(ref leg, li, in env);
-                return;
-            }
-
-            if (!leg.Planted) {
-                leg.PlantPos = leg.Foot;
-                leg.Planted = true;
-            }
-
-            float drift = Vector2.Distance(leg.PlantPos, wallPoint);
-            float stretch = Vector2.Distance(hip, leg.PlantPos) / MaxReach;
-            if (drift > 30f || stretch > EmergencyStretch) {
-                BeginSwing(ref leg, wallPoint, 8f, 12f, new Vector2(-side, 0f));
-                return;
-            }
-            leg.Foot = leg.PlantPos;
-        }
-
-        /// <summary>
         /// 世界落足步行（March/Brace；Flail 或够不着地时腾空卷曲）：
-        /// 足端钉在世界落点上，身体驶过；漂移/伸展超限且节律窗轮到本腿时换步。
+        /// 足落在休息位前方半步幅，随身体驶过漂到后方半步幅时、且节律窗轮到本腿、
+        /// 同站对腿落地，才抬腿换步；伸展/落差超限走应急换步（不等窗）。
         /// 高速滑刹：落点锚随体滑移，滑差犁沙。
         /// </summary>
         private void UpdateWalk(ref Leg leg, int li, Vector2 hip, Vector2 normal, Vector2 chainVec, in LegEnv env) {
@@ -367,19 +356,19 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             Vector2 restProbe = hip + normal * (MaxReach * restReach * StrideAccent[station]);
             if (brace) {
                 //蹲伏站距外扩：前后站沿行进向撑开，读出"绷住要跳"
-                restProbe.X += travelDir * (station - 1.5f) * 14f;
+                restProbe += travel * ((station - 1.5f) * 14f * Scale);
             }
-            float groundY = env.GroundAt(restProbe.X, hip.Y - 46f);
+            float groundY = env.GroundAt(restProbe.X, hip.Y - GroundProbeLift);
 
             //髋没入地下：自动收拢（钻沙途中残留步行指令的兜底）
-            if (groundY < hip.Y - 10f) {
+            if (groundY < hip.Y - 10f * Scale) {
                 UpdateTuck(ref leg, li, hip, chainVec, normal);
                 return;
             }
 
             float groundDist = groundY - hip.Y;
             bool plantable = !forceAir && leg.Groundness > 0.3f
-                && groundDist < MaxReach * 0.95f && groundDist >= -10f;
+                && groundDist < MaxReach * 0.9f && groundDist >= -10f * Scale;
             if (!plantable) {
                 AirCurl(ref leg, li, hip, normal, in env);
                 return;
@@ -397,8 +386,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
             if (!leg.Planted) {
                 //从空中/其他姿态回到步行：远则快摆落位（防瞬移贴地），近则就地落桩
-                if (Vector2.Distance(leg.Foot, rest) > 14f) {
-                    BeginSwing(ref leg, rest, 8f, 14f, -Vector2.UnitY);
+                if (Vector2.Distance(leg.Foot, rest) > 14f * Scale) {
+                    Vector2 landing = ClampToEnvelope(hip, normal, rest);
+                    landing.Y = env.GroundAt(landing.X, hip.Y - GroundProbeLift);
+                    BeginSwing(ref leg, landing, 7f, 14f * Scale);
                     return;
                 }
                 leg.PlantPos = rest;
@@ -407,7 +398,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
             //滑刹：锚点随体滑移（部分抓地），滑差犁出连续沙痕
             if (skate > 0.01f) {
-                leg.PlantPos.X += env.HostVelocity.X * skate * 0.8f;
+                leg.PlantPos += env.HostVelocity * (skate * 0.8f);
                 leg.DragHeat = MathHelper.Clamp(leg.DragHeat + 0.12f, 0f, 1f);
                 EmitDrag(ref leg, in env, skate);
             }
@@ -415,55 +406,67 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 leg.DragHeat = MathHelper.Clamp(leg.DragHeat - 0.08f, 0f, 1f);
             }
 
-            //地形跟随：小落差贴、大落差触发紧急换步
-            float plantGroundY = env.GroundAt(leg.PlantPos.X, hip.Y - 46f);
+            //地形跟随：小落差贴、大落差触发应急换步
+            float plantGroundY = env.GroundAt(leg.PlantPos.X, hip.Y - GroundProbeLift);
             float groundGap = Math.Abs(plantGroundY - leg.PlantPos.Y);
-            if (groundGap < 18f) {
+            float stepDown = 18f * Scale;
+            if (groundGap < stepDown) {
                 leg.PlantPos.Y = plantGroundY;
                 groundGap = 0f;
             }
 
-            //换步判定：漂移超步幅（节律窗内）或伸展/落差超限（紧急，不等窗）
-            float drift = Vector2.Distance(leg.PlantPos, rest);
+            //步幅周期：足端沿行进向落到休息位后方半步幅即该抬；滑刹期允许拖得更远
+            float stride = StrideBase * Scale * StrideAccent[station] * (brace ? 0.5f : 1f);
+            float along = Vector2.Dot(leg.PlantPos - rest, travel);
             float stretch = Vector2.Distance(hip, leg.PlantPos) / MaxReach;
-            float trigger = (brace ? 26f : StrideTrigger) * (1f + skate * 1.2f);
-            bool emergency = stretch > EmergencyStretch || groundGap >= 18f;
-            bool wantStep = drift > trigger || emergency;
+            bool emergency = stretch > EmergencyStretch || groundGap >= stepDown;
+            bool behind = along < -0.5f * stride * (1f + skate * 0.8f);
+            bool wantStep = behind || emergency;
             float t01 = SlotPhase01(li, env.GaitPhase);
-            bool waveOpen = t01 < 0.5f;
+            bool windowOpen = t01 < StepWindow;
             bool partnerSwinging = legs[li ^ 1].Swinging;
 
-            if (wantStep && (emergency || (waveOpen && !partnerSwinging))) {
-                Vector2 target = rest + env.HostVelocity * StepLead;
-                //落点钳在预测髋的可及圈内（不许迈出解剖极限）
-                Vector2 hipFuture = hip + env.HostVelocity * (StepLead * 0.5f);
-                Vector2 fromHip = target - hipFuture;
-                float lim = MaxReach * 0.82f;
-                if (fromHip.Length() > lim) {
-                    target = hipFuture + fromHip.SafeNormalize(Vector2.UnitY) * lim;
-                }
-                target.Y = env.GroundAt(target.X, hip.Y - 46f);
+            if (wantStep && (emergency || (windowOpen && !partnerSwinging))) {
+                //落点：休息位前方半步幅 + 少量速度前瞻，钳进预测髋的可达包络（不许迈出解剖极限）
+                Vector2 target = rest + travel * (0.5f * stride) + env.HostVelocity * 2f;
+                Vector2 hipFuture = hip + env.HostVelocity * 3f;
+                target = ClampToEnvelope(hipFuture, normal, target);
+                target.Y = env.GroundAt(target.X, hip.Y - GroundProbeLift);
 
-                float distStep = Vector2.Distance(leg.Foot, target);
-                float dur = MathHelper.Clamp(8f + distStep / 18f, brace ? 6f : 8f, 18f)
-                    * (1f - skate * 0.3f);
-                float clearance = StepClearance * (0.75f + 0.3f * StrideAccent[station])
-                    * (1f + skate * 0.5f);
-                BeginSwing(ref leg, target, dur, clearance, -Vector2.UnitY);
+                //摆越时长 ≈ 周期的四成（速度越快步子越快），蹲伏碎步更短
+                float cycle = stride / Math.Max(speed, 3f);
+                float dur = MathHelper.Clamp(cycle * 0.42f, brace ? 4f : 5f, 12f);
+                float clearance = StepClearance * (0.8f + 0.25f * StrideAccent[station]) * (1f + skate * 0.4f);
+                BeginSwing(ref leg, target, dur, clearance);
                 return;
             }
 
             leg.Foot = leg.PlantPos;
         }
 
-        /// <summary>起一步摆越（统一入口：常规换步/回步行落位/柱面重抓握共用）</summary>
-        private static void BeginSwing(ref Leg leg, Vector2 target, float dur, float clearance, Vector2 up) {
+        /// <summary>
+        /// 肢体范围包络：目标点钳进髋的可达圈（半径窗）与相对法线的摆角窗。
+        /// 这是"腿不许乱甩"的几何声明：越界目标被拉回边界，而不是让骨链去够。
+        /// </summary>
+        private Vector2 ClampToEnvelope(Vector2 hip, Vector2 normal, Vector2 target) {
+            Vector2 d = target - hip;
+            float len = d.Length();
+            float normalAng = normal.ToRotation();
+            if (len < 1f) {
+                return hip + normal * (MaxReach * EnvelopeMin);
+            }
+            float ang = MathHelper.Clamp(MathHelper.WrapAngle(d.ToRotation() - normalAng), -EnvelopeSwing, EnvelopeSwing);
+            len = MathHelper.Clamp(len, MaxReach * EnvelopeMin, MaxReach * EnvelopeMax);
+            return hip + (normalAng + ang).ToRotationVector2() * len;
+        }
+
+        /// <summary>起一步摆越（统一入口：常规换步/回步行落位共用；抬升方向 = 世界上）</summary>
+        private static void BeginSwing(ref Leg leg, Vector2 target, float dur, float clearance) {
             leg.SwingFrom = leg.Foot;
             leg.SwingTo = target;
             leg.SwingT = 0f;
             leg.SwingDur = dur;
             leg.SwingClearance = clearance;
-            leg.SwingUp = up;
             leg.Swinging = true;
             leg.Planted = false;
         }
@@ -477,22 +480,20 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             Vector2 pos;
             if (t < PressEnd) {
                 //预备：足端原地向支撑向压一记（蓄力半拍，力量在离地前）
-                float press = MathF.Sin(t / PressEnd * MathHelper.Pi) * 3f;
-                pos = leg.SwingFrom - leg.SwingUp * press;
+                float press = MathF.Sin(t / PressEnd * MathHelper.Pi) * 3f * Scale;
+                pos = leg.SwingFrom + new Vector2(0f, press);
             }
             else {
                 float m = (t - PressEnd) / (1f - PressEnd);
                 float horiz = m * m * (3f - 2f * m);
                 pos = Vector2.Lerp(leg.SwingFrom, leg.SwingTo, horiz);
                 float arc = MathF.Sin(m * MathHelper.Pi);
-                pos += leg.SwingUp * arc * leg.SwingClearance;
+                pos.Y -= arc * leg.SwingClearance;
             }
 
-            //摆越途中不许穿地（仅地面步态需要；柱面 SwingUp 为横向，探地钳制无意义）
-            if (leg.SwingUp.Y < -0.5f) {
-                float gy = env.GroundAt(pos.X, pos.Y - 60f);
-                pos.Y = Math.Min(pos.Y, gy);
-            }
+            //摆越途中不许穿地
+            float gy = env.GroundAt(pos.X, pos.Y - 60f * Scale);
+            pos.Y = Math.Min(pos.Y, gy);
             leg.Foot = pos;
 
             if (leg.SwingT >= 1f) {
@@ -510,7 +511,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         /// <summary>
         /// 腾空卷曲（Flail/够不着地）：三关节相位错拍的"抓挠空气"——倾角与半径
-        /// 双频异速调制画出折叠的抓握小环，与放射状划桨划清界限。
+        /// 双频异速调制画出折叠的抓握小环，幅度压在包络摆角窗内。
         /// </summary>
         private void AirCurl(ref Leg leg, int li, Vector2 hip, Vector2 normal, in LegEnv env) {
             leg.Planted = false;
@@ -519,7 +520,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             int station = li / 2;
             float ph = SlotPhase01(li, env.GaitPhase) * MathHelper.TwoPi;
             float rotSign = (li & 1) == 0 ? -1f : 1f;
-            float tilt = (MathF.Sin(ph) * 0.62f + travelDir * 0.12f) * rotSign;
+            float tilt = MathHelper.Clamp((MathF.Sin(ph) * 0.62f + travelDir * 0.12f) * rotSign, -EnvelopeSwing, EnvelopeSwing);
             float radius = MaxReach * (0.42f + 0.11f * MathF.Sin(ph * 2f + station * 1.3f));
             Vector2 target = hip + normal.RotatedBy(tilt) * radius;
             leg.Foot = Vector2.Lerp(leg.Foot, target, 0.18f);
@@ -539,17 +540,17 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         #region 沙效
         /// <summary>落地爪咬沙尘</summary>
         private static void EmitPlant(ref Leg leg, in LegEnv env) {
-            float power = MathHelper.Clamp(env.HostVelocity.Length() / 14f, 0.4f, 1.3f);
+            float power = MathHelper.Clamp(env.HostVelocity.Length() / 10f, 0.4f, 1.3f);
             if (env.SandFx != null) {
                 env.SandFx(leg.Foot, new Vector2(0f, -1.6f) * power, power);
                 return;
             }
-            if (!env.AllowDust || env.HostVelocity.Length() < 2f) {
+            if (!env.AllowDust || env.HostVelocity.Length() < 1.5f) {
                 return;
             }
-            for (int k = 0; k < 4; k++) {
+            for (int k = 0; k < 3; k++) {
                 Dust d = Dust.NewDustPerfect(leg.Foot + new Vector2(Main.rand.NextFloat(-6f, 6f), -2f),
-                    DustID.Sand, new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), -Main.rand.NextFloat(0.8f, 2.2f) * power),
+                    DustID.Sand, new Vector2(Main.rand.NextFloat(-1.4f, 1.4f), -Main.rand.NextFloat(0.8f, 2f) * power),
                     110, default, Main.rand.NextFloat(0.8f, 1.2f));
                 d.noGravity = false;
             }
@@ -577,8 +578,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         #region IK 解算
         /// <summary>
         /// 三节解析 IK：基节朝足端限幅摆动（近距关节感、全伸放开直指），
-        /// 腿节+胫爪双骨余弦；膝弯偏好 = 体后 → 天顶随走地权重连续过渡（高膝拱），
-        /// 分支迟滞防抖。爪尖角按姿态平滑（落地咬地/摆越后拖/腾空内卷）。
+        /// 腿节+胫爪双骨余弦（有效跨距钳在 KneeSpan 窗内：永不锁直、永不折死）；
+        /// 膝弯偏好 = 体后 → 天顶随走地权重连续过渡（高膝拱），分支迟滞防抖。
+        /// 爪尖角按姿态平滑（落地咬地/摆越后拖/腾空内卷）。
         /// </summary>
         private void SolveLeg(ref Leg leg, Vector2 hip, Vector2 normal, in LegEnv env) {
             Vector2 d = leg.Foot - hip;
@@ -599,8 +601,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             float baseAng = normal.ToRotation();
             float wantAng = dir.ToRotation();
             float delta = MathHelper.WrapAngle(wantAng - baseAng);
+            float slack = 12f * Scale;
             float stretch01 = MathHelper.Clamp(
-                (dist - (FemurLen + TibiaLen - 12f)) / (CoxaLen + 12f), 0f, 1f);
+                (dist - (FemurLen + TibiaLen - slack)) / (CoxaLen + slack), 0f, 1f);
             float swingMax = MathHelper.Lerp(CoxaSwingMax, MathHelper.Pi, stretch01);
             //失力腿基节松脱：向重力向垂
             float coxaAng = baseAng + MathHelper.Clamp(delta, -swingMax, swingMax);
@@ -609,9 +612,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
             Vector2 coxaTip = hip + coxaAng.ToRotationVector2() * CoxaLen;
 
-            //腿节 + 胫爪双骨
+            //腿节 + 胫爪双骨：有效跨距钳窗
             Vector2 e = leg.Foot - coxaTip;
-            float eLen = MathHelper.Clamp(e.Length(), 8f, FemurLen + TibiaLen - 2f);
+            float span = FemurLen + TibiaLen;
+            float eLen = MathHelper.Clamp(e.Length(), span * KneeSpanMin, span * KneeSpanMax);
             float eAng = e.ToRotation();
             float cosA = MathHelper.Clamp(
                 (FemurLen * FemurLen + eLen * eLen - TibiaLen * TibiaLen) / (2f * FemurLen * eLen), -1f, 1f);
@@ -635,8 +639,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             leg.Knee = knee;
             leg.DrawFoot = foot;
 
-            //爪尖角：落地顺胫爪续入支撑面（地面咬沙、柱面扣壁同一条规则）、
-            //摆越沿行进后拖、腾空顺胫爪向内卷
+            //爪尖角：落地顺胫爪续入地面咬沙、摆越沿行进后拖、腾空顺胫爪向内卷
             float clawTarget;
             if (leg.Planted) {
                 clawTarget = (foot - knee).ToRotation();
@@ -682,7 +685,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 float dim = MathHelper.Lerp(0.62f, 1f, leg.Groundness) * (1f - leg.Limp * 0.35f);
                 Color tint = new Color((byte)(light.R * dim), (byte)(light.G * dim), (byte)(light.B * dim), (byte)255) * fade;
                 float bob = ctx.StationBob[li / 2] * StationDipPx;
-                DrawLeg(sb, in leg, screenPos, tint, bob);
+                DrawLeg(sb, in leg, screenPos, tint, bob, Scale);
             }
         }
 
@@ -695,7 +698,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 if (!leg.Visible || !leg.Inited) {
                     continue;
                 }
-                DrawLeg(sb, in leg, Vector2.Zero, tintFor(li, leg.Groundness), 0f);
+                DrawLeg(sb, in leg, Vector2.Zero, tintFor(li, leg.Groundness), 0f, Scale);
             }
         }
 
@@ -716,8 +719,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
         }
 
-        /// <summary>画一条腿的四段骨节（基节/腿节/胫爪/爪尖；髋端叠 bob 下沉，足端踩定）</summary>
-        private static void DrawLeg(SpriteBatch sb, in Leg leg, Vector2 screenPos, Color tint, float bobPx) {
+        /// <summary>画一条腿的四段骨节（基节/腿节/胫爪/爪尖；髋端叠 bob 下沉，足端踩定；骨宽随倍率）</summary>
+        private static void DrawLeg(SpriteBatch sb, in Leg leg, Vector2 screenPos, Color tint, float bobPx, float scale) {
             Texture2D upperTex = BssHead.LegUpperAsset?.Value;
             Texture2D lowerTex = BssHead.LegLowerAsset?.Value;
             Texture2D clawTex = BssHead.LegClawAsset?.Value;
@@ -725,13 +728,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 return;
             }
             Vector2 hip = leg.Hip + new Vector2(0f, bobPx);
-            float thick = MathHelper.Lerp(0.9f, 1f, leg.Groundness);
+            float thick = MathHelper.Lerp(0.9f, 1f, leg.Groundness) * scale;
 
             DrawBone(sb, upperTex, hip, leg.CoxaTip, 1.35f * thick, tint, screenPos);
             DrawBone(sb, upperTex, leg.CoxaTip, leg.Knee, 1.05f * thick, tint, screenPos);
             DrawBone(sb, lowerTex, leg.Knee, leg.DrawFoot, 0.9f * thick, tint, screenPos);
             if (clawTex != null) {
-                Vector2 clawEnd = leg.DrawFoot + leg.ClawAng.ToRotationVector2() * ClawLen;
+                Vector2 clawEnd = leg.DrawFoot + leg.ClawAng.ToRotationVector2() * (ClawLenBase * scale);
                 DrawBone(sb, clawTex, leg.DrawFoot, clawEnd, 0.62f * thick, tint, screenPos);
             }
         }

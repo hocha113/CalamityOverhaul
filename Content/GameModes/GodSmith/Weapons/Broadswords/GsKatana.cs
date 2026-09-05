@@ -1,6 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -11,8 +8,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 {
     /// <summary>
     /// 【冷钢太刀】材质：淬钢青的东洋冷锻刃。签名：①太刀语言——斩切相仅两帧，
-    /// 刀身隐入挥影、行程全由涂抹带承弧 ②「残心」：每斩收势前段几何完全冻结，
-    /// 刀停在终角纹丝不动 ③第三拍「居合」：刀贴鞘长蓄、寒光聚拢，一闪出鞘白闪爆发
+    /// 刀两帧瞬移到终角 ②「残心」：每斩收势前段几何完全冻结，
+    /// 刀停在终角纹丝不动 ③第三拍「居合」：刀贴鞘长蓄，一闪出鞘爆发
     /// </summary>
     internal class GsKatana : GsBroadswordScheme
     {
@@ -21,14 +18,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsKatanaHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: the blade vanishes into its own swing arc and reappears frozen at the endpoint; " +
-            "the third strike is a sheathed iai draw that erupts in a single white flash";
-
-        //钢青冷色板
+            "Reforged: the blade vanishes into its own swing arc and reappears frozen at the endpoint; the third strike is a sheathed iai draw that erupts in a single white flash";
         internal static readonly Color SteelBright = new(214, 234, 248); //霜白刃缘
         internal static readonly Color SteelMain = new(126, 156, 184);   //钢青身
         internal static readonly Color SteelHot = new(166, 220, 255);    //寒光青白
-        internal static readonly Color SteelDeep = new(14, 20, 30);      //近黑钢影
 
         //底伤 +5%：两记快斩 0.95x + 居合 1.5x（但居合滞帧 7 帧拉长节奏），
         //按 max(useTime, 弹幕总帧) 摊算综合 DPS 约为原版 103%~112%
@@ -38,7 +31,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 冷钢太刀手持：三拍。0 横一文字 / 1 返し斬（镜像更快）/ 2 居合（贴鞘长蓄、
-    /// 白闪一闪）。整替几何：斩切两帧瞬移到终角（藏行程），收势前 40% 完全冻结（残心）。
+    /// 一闪出鞘）。整替几何：斩切两帧瞬移到终角，收势前 40% 完全冻结（残心）。
     /// ai[0]=拍号 ai[1]=交替符号
     /// </summary>
     internal class GsKatanaHeld : GsBroadswordHeldBase
@@ -47,7 +40,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsKatana.SteelBright;
         protected override Color BodyMain => GsKatana.SteelMain;
         protected override Color HotAccent => GsKatana.SteelHot;
-        protected override Color DeepShadow => GsKatana.SteelDeep;
 
         /// <summary>斩切仅两帧，攻速快时可能压到 1 帧（p 直达 1.0），窗放宽到全程</summary>
         protected override float DamageWindowEnd => 1.01f;
@@ -109,7 +101,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     break;
                 }
                 case PhaseSlash: {
-                    //两帧闪斩：首帧直达 96% 终角，次帧落定——刀不走过程，行程交给涂抹带
+                    //两帧闪斩：首帧直达 96% 终角，次帧落定——刀不走过程
                     float p = (timer - raiseDur - holdDur) / (float)slashDur;
                     slashProgress = p;
                     mainAngle = p < 0.75f
@@ -122,17 +114,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     float q = (timer - raiseDur - holdDur - slashDur) / (float)recoverDur;
                     slashProgress = 1f;
                     if (q <= FreezeRatio) {
-                        //残心：几何纹丝不动，只让挥影自然蚀散
+                        //残心：几何纹丝不动
                         mainAngle = ArcEnd;
                         mainReach = FullReach;
-                        fanFade = MathHelper.Clamp(1f - (q / FreezeRatio) * 0.55f, 0f, 1f);
                     }
                     else {
                         float r = (q - FreezeRatio) / (1f - FreezeRatio);
                         float settle = EaseOutQuad(r);
                         mainAngle = ArcEnd - (swingDir * 0.07f * settle);
                         mainReach = FullReach * MathHelper.Lerp(1f, 0.74f, r * r);
-                        fanFade = MathHelper.Clamp(0.45f * (1f - r), 0f, 1f);
                     }
                     break;
                 }
@@ -141,39 +131,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             mainTip = Hand + (mainAngle.ToRotationVector2() * mainReach);
         }
 
-        //==================== 演出：刀隐入影，弧由涂抹承 ====================
-
-        /// <summary>斩切当帧刀身压暗隐入挥影；其余相全亮</summary>
-        protected override float BladeAlpha => CurrentPhase == PhaseSlash ? 0.22f : 1f;
-
-        /// <summary>行程由残影链承弧：拍数多、间距大，铺满整段挥弧</summary>
-        protected override int GhostCount => IsFinisher ? 4 : 3;
-        protected override float GhostSpacing => IsFinisher ? 0.5f : 0.38f;
-
-        /// <summary>涂抹带外层提到霜白，弧比刀亮（太刀的swoosh是主角）</summary>
-        protected override Color SmearOuterColor => Color.Lerp(GsKatana.SteelBright, Color.White, 0.45f);
-
-        protected override bool GlowAlways => IsFinisher;
-        protected override Color GlowColor => GsKatana.SteelHot;
-
-        /// <summary>base 之上补一层更窄更亮的芯弧，涂抹 alpha 整体抬高</summary>
-        protected override void DrawSmearArc(SpriteBatch sb) {
-            base.DrawSmearArc(sb);
-            if (slashProgress <= 0.02f || fanFade <= 0.02f) {
-                return;
-            }
-            Texture2D wave = CWRAsset.SemiCircularSmear?.Value;
-            if (wave == null) {
-                return;
-            }
-            float alpha = fanFade * (0.28f + slashProgress * 0.3f);
-            Vector2 arcCenter = Hand + (mainAngle.ToRotationVector2() * mainReach * 0.55f) - Main.screenPosition;
-            float rot = mainAngle + (swingDir * 0.35f);
-            Color core = Color.Lerp(GsKatana.SteelHot, Color.White, 0.6f) * alpha;
-            core.A = 0;
-            sb.Draw(wave, arcCenter, null, core, rot, wave.Size() / 2f
-                , new Vector2(0.4f, 0.06f) * (mainReach / 118f), SpriteEffects.None, 0f);
-        }
+        //==================== 音效 ====================
 
         protected override void HandlePhaseEvents(int phase) {
             //居合起手：一记贴鞘的低鸣
@@ -183,29 +141,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             base.HandlePhaseEvents(phase);
         }
 
-        /// <summary>出鞘一闪：白闪拉满（顿帧走 beat.Hitstop=2）</summary>
-        protected override void OnSlashBegin() {
-            if (IsFinisher) {
-                SetFlash(8);
-            }
-        }
-
         /// <summary>太刀音色：高频薄刃声，居合补一记利落的出鞘斩响</summary>
         protected override void PlaySwingSound() {
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.75f, Pitch = Beat.SwingPitch }, Owner.Center);
             if (IsFinisher) {
                 SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.5f, Pitch = 0.15f }, Owner.Center);
-            }
-        }
-
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            //居合蓄势：寒光自四周向刀鞘聚拢
-            if (IsFinisher && phase is PhaseRaise or PhaseHold) {
-                Vector2 hilt = Vector2.Lerp(Hand, mainTip, 0.3f);
-                Vector2 at = hilt + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f, 62f);
-                PRTLoader.NewParticle<PRT_Light>(at, (hilt - at) * 0.15f, GsKatana.SteelHot,
-                    Main.rand.NextFloat(0.05f, 0.1f))?.Configure(8, 0.5f);
             }
         }
     }

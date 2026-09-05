@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,18 +15,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
     /// </summary>
     internal class GsWebBindProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.WebSpit;
 
         public override string LocalizationCategory => "GodSmithSummonMinionsA";
-
-        private static readonly Color WebPale = new(232, 228, 244);
-        private static readonly Color WebVenom = new(168, 130, 226);
 
         internal const int BindFrames = 90;
 
         private ref float Life => ref Projectile.localAI[0];
-
-        private float Seed => Projectile.identity * 0.7717f % MathHelper.TwoPi;
 
         private NPC BoundTarget {
             get {
@@ -64,40 +59,21 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
             }
             Projectile.Center = target.Center;
             Projectile.velocity = Vector2.Zero;
-
-            if (!VaultUtils.isServer && Main.rand.NextBool(7)) {
-                Dust web = Dust.NewDustDirect(target.position, target.width, target.height,
-                    DustID.Web, 0f, 0.3f, 120, default, 0.9f);
-                web.noGravity = true;
-            }
         }
 
+        /// <summary>区域尺寸提示：原版蛛网贴图按目标体型拉伸一笔罩在身上（进出场渐隐）</summary>
         public override bool PreDraw(ref Color lightColor) {
             NPC target = BoundTarget;
-            Texture2D soft = CWRAsset.Extra_98?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (target == null || soft == null || glow == null) {
-                return false;
-            }
             float fadeIn = MathHelper.Clamp(Life / 8f, 0f, 1f);
             float fadeOut = MathHelper.Clamp(Projectile.timeLeft / 14f, 0f, 1f);
             float fade = fadeIn * fadeOut;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            float wrapW = target.width * 1.35f / soft.Width;
-            float wrapH = target.height * 1.3f / soft.Height;
-
-            //网罩暗底（真 alpha 压暗）+ 缠绕丝光带
-            Main.EntitySpriteDraw(soft, pos, null, (WebVenom * 0.35f) * fade, 0f,
-                soft.Size() / 2f, new Vector2(wrapW, wrapH), SpriteEffects.None, 0);
-            for (int i = 0; i < 3; i++) {
-                float ang = Seed + i * (MathHelper.Pi / 3f)
-                    + 0.06f * (float)Math.Sin(Life * 0.1f + i);
-                Main.EntitySpriteDraw(soft, pos, null, WebPale * (0.4f * fade), ang,
-                    soft.Size() / 2f,
-                    new Vector2(wrapW * 1.2f, 3.2f / soft.Height), SpriteEffects.None, 0);
+            if (target == null || fade <= 0.01f) {
+                return false;
             }
-            Main.EntitySpriteDraw(glow, pos, null, (WebVenom with { A = 0 }) * (0.3f * fade),
-                0f, glow.Size() / 2f, new Vector2(wrapW * 1.5f, wrapH * 1.4f) * 0.35f,
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade,
+                0f, tex.Size() / 2f,
+                new Vector2(target.width * 1.35f / tex.Width, target.height * 1.3f / tex.Height),
                 SpriteEffects.None, 0);
             return false;
         }

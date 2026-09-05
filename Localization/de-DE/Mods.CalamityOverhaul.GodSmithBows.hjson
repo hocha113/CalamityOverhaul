@@ -1,0 +1,217 @@
+GsWoodenBow.Desc:
+	'''
+	Umschmiedung: Bogen halten lädt, Loslassen schießt. Halb geladene Pfeile sind schneller und schmerzhafter, volle Ladung wird zum Holzgeist-Pfeil, Überladung trifft und spaltet in einen Fächerregen
+	Zu langes Spannen auf der Sehne wird instabil: fällt auf volle Ladung zurück und bringt kurze Ermüdung
+	'''
+GsBorealWoodBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile tragen Frost und frieren schwächere Feinde ein
+	'''
+GsPalmWoodBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile sind trocken und sauber, treffen leichter vital
+	'''
+GsRichMahoganyBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Ranken-Vielstängel: Überladung trifft und spaltet einen Extra-Holzpfeil
+	'''
+GsEbonwoodBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile entzünden mit etwas Chance Schattenflamme
+	'''
+GsShadewoodBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile reißen mit etwas Chance eine Blutwunde, das Ziel blutet weiter
+	'''
+GsAshWoodBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung wandelt, Überladung spaltet
+	Überladene Pfeile entzünden Feinde und spritzen Glut
+	'''
+GsCopperBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung schießt einen kostenlosen Beipfeil
+	'''
+GsTinBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung schießt einen kostenlosen Beipfeil, Funken dichter
+	'''
+GsIronBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung prägt einen Stanzpfeil: Rückstoß steigt stark, schwächere Feinde kurz festgehalten
+	'''
+GsLeadBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung prägt einen bleivergifteten Stanzpfeil: schwerer Schlag hält fest und vergiftet
+	'''
+GsSilverBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung wird zum Heiligenschein-Pfeil: nach dem Treffer prallt er einmal zum nächsten Feind
+	'''
+GsTungstenBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladene Pfeile prallen zweimal, der letzte Schlag platzt klein
+	'''
+GsGoldBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung wird zum Königspfeil, trifft leichter kritisch, kritische Treffer spritzen ein paar Kupfermünzen
+	'''
+GsPlatinumBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen, volle Ladung härtet die Spitze, Treffer spritzen Metallfunken und treffen im kleinen Umkreis mit
+	Überladung wird zum Kronenpfeil und trifft immer kritisch, kritische Treffer spritzen mehr Kupfermünzen
+	'''
+GsDemonBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen. Volle Ladung wird zum Schattenpfeil, ein durchschlagender Unheilspfeil
+	Überladung trifft und lässt zwei Seelenjagd-Dämonenflammen langsam nahe Feinde jagen
+	'''
+GsTendonBow.Desc:
+	'''
+	Umschmiedung: Dreistufiges Spannen. Volle Ladung wird zum Thrombus-Pfeil, reißt eine Blutwunde, das Ziel blutet weiter
+	Überladung ist ein Blutschlag: schwerer Pfeil, härterer Rückstoß, Treffer spritzen Blutperlen und heilen ein wenig
+	'''
+GsBloodRainBow.Desc:
+	'''
+	Umschmiedung: Pfeile werden weiterhin zu Blutregen vom Himmel. Dreistufiges Spannen
+	Volle Ladung fügt vier Blutpfeile hinzu, die aufs Fadenkreuz fallen, Überladung eine Blutflut aus acht, und am Einschlag der Hauptpfeile staut sich eine Blutlache, die Feinde verlangsamt
+	'''
+GsBeesKnees.Desc:
+	'''
+	Umschmiedung: Holzpfeile werden weiterhin zu Bienenpfeilen. Dreistufiges Spannen
+	Volle Ladung trifft und lässt zwei extra Bienen, Überladung trifft und hängt einen Bienensog auf, der weiter Bienen schickt. Höchstens zwölf Bienen gleichzeitig
+	'''
+GsHellwingBow.Desc:
+	'''
+	Umschmiedung: Holzpfeile werden weiterhin zu wanddurchschlagenden Feuerfledermäusen, Spannen geht schneller
+	Volle Ladung schickt drei Fledermäuse in V-Formation, Überladung sechs, die spiralig auseinander und wieder nach vorn zusammenlaufen
+	'''
+GsMoltenFury.Desc:
+	'''
+	Umschmiedung: Holzpfeile werden weiterhin zu Flammenpfeilen. Dreistufiges Spannen
+	Volle Ladung wird zum Schmelzkern-Pfeil, trifft und spritzt Schmelzperlen, Überladung ruft fünf Schmelzregen aufs Ziel
+	'''
+
+GsChargeBleedBuff: {
+	DisplayName: Aderlass
+	Description: Das Bluten hört nicht auf
+}
+
+GsDaedalusStormbow.Desc:
+	'''
+	Umschmiedung: Pfeile fallen vom Firmament, die Einschlagstelle leuchtet zuerst als Silbermal, dort fallen die Pfeile
+	Dauerfeuer häuft Sturmladung, ist sie voll, legt der nächste Schuss ein Neun-Mal-Himmelsquadrat, Ecken, Kanten und Mitte fallen nacheinander
+	Der schwere Mittelpfeil landet in einer Heiligexplosion.
+	Himmelspfeile häufen Jagdmal, bei drei Stapeln und erneutem Treffer stürzt ein Straf-Schwerepfeil dem markierten Feind nach
+	'''
+GsTsunami.Desc:
+	'''
+	Umschmiedung: Ein Zug schickt fünf Pfeile als Wellenreihe, sie wogen vorwärts und fallen nach dem Brecher
+	Dauerfeuer häuft Gezeitenkraft, ist sie voll, wird der nächste Schuss zur Riesenwelle: sieben Pfeile in Doppelreihe plus Durchschlag, die Schaumkrone fegt den Weg frei
+	Wellenpfeile häufen Gezeitenmal, bei drei Stapeln und erneutem Treffer steigt eine Gezeitensäule unter dem Feind
+	Sind markierte Feinde auf dem Feld, spaltet jeder vierte Pfeil einen Gezeitenjäger auf sie
+	'''
+GsFairyQueenRangedItem.Desc:
+	'''
+	Umschmiedung: Alle Pfeile werden zu Dämmerungslanzen, ein Bogenzug feuert fünf Lanzen, sie lösen sich nacheinander im Bogen und ziehen zum Fadenkreuz
+	Jede dritte Lanze der Runde ist die Königinnenlanze, Schaden fast verdoppelt
+	Dauerfeuer häuft Dämmerung, ist sie voll, fächert der nächste Schuss fünf Prismenlanzen
+	Dämmerungslanzen häufen Male, bei drei Stapeln und erneutem Treffer erscheinen zwei Lichtkugeln, die zwei Sekunden um den Feind kreisen und picken
+	'''
+GsDD2BetsyBow.Desc:
+	'''
+	Umschmiedung: Ein Zug schickt fünf Drachenflammen-Pfeile, sie steigen, stallieren, drehen und stürzen aufs Fadenkreuz
+	Einschlag platzt in einem Drachenfeuerring, Feinde in der Luft erleiden 35% mehr Schaden
+	Dauerfeuer häuft Luftschlag-Ladung, ist sie voll, ruft der nächste Schuss einen Teppichbombenlauf, neun Pfeile fallen nacheinander entlang der Bahn
+	Drachenflammen-Pfeile häufen Flammenmal, bei drei Stapeln und erneutem Treffer stürzt ein schwerer Drachenflammen-Pfeil dem markierten Feind nach
+	'''
+GsPhantasm.Desc:
+	'''
+	Umschmiedung: Linksklick halten spannt durchgehend, Schussfolge steigt mit der Raserei, der Bogen spaltet Phantom-Nachbögen
+	Ab zwei Stapeln Raserei kommen pro Salve zwei Flügel-Phantompfeile dazu
+	Sechs Treffer hintereinander auf dasselbe Ziel rufen einen Phantomschützen hinter dir, der Seelenpfeile mit dir schießt
+	Hauptpfeile häufen Seelenmal, bei drei Stapeln und erneutem Treffer schießt der Phantomschütze vier Seelenpfeile dem Feind nach
+	'''
+GsPearlwoodBow.Desc:
+	'''
+	Umschmiedung: Alle 5 Schüsse füllt sich Regenbogenlicht, der nächste Schuss wird zur Fünf-Pfeil-Regenbogenbrücke, fächert von einer Seite, die Runde verbraucht nur 1 Munition
+	Trifft derselbe Feind 3 Pfeile des Bogens, platzt eine Perlen-Prismenexplosion
+	'''
+GsCobaltRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen drei Pfeile hintereinander ab, immer schneller, die Runde verbraucht nur 1 Munition
+	Salventreffer häufen Jagdmal und wirbeln einen Wind, der dich kurz schneller gehen lässt
+	'''
+GsPalladiumRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen drei Pfeile in Querreihe, die Runde verbraucht nur 1 Munition
+	Fällt ein markierter Feind, kommen 2 Leben zurück, eine Hinrichtung gibt 5
+	'''
+GsMythrilRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen vier Pfeile im Keil, die Runde verbraucht nur 1 Munition
+	Salven-Hauptpfeil auf markierte Feinde trifft immer kritisch, Beipfeile +8% kritische Chance
+	'''
+GsOrichalcumRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen vier keilförmige Pfeile mit Blütenblättern, die Runde verbraucht nur 1 Munition
+	Salvenpfeile platzen in kleinen Blütenexplosionen
+	'''
+GsAdamantiteRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen fünf Pfeile in Gänseflug, Rückstoß um die Hälfte höher, die Runde verbraucht nur 1 Munition
+	Der Salven-Hauptpfeil schlägt ein karmesinrotes Beben, die Stoßwelle trifft umstehende Feinde
+	'''
+GsTitaniumRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen fünf Pfeile in Gänseflug, die Runde verbraucht nur 1 Munition
+	Salvenpfeile ätzen Rüstung: jeder Treffer am selben Feind +2 Durchschlag, höchstens 5 Stapel
+	'''
+GsHallowedRepeater.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen vier Pfeile im Kreuz, die Runde verbraucht nur 1 Munition
+	Hinrichtung eines voll markierten Feindes stürzt einen goldenen Heiligenstern auf ihn
+	'''
+GsChlorophyteShotbow.Desc:
+	'''
+	Umschmiedung: Jeder 6. Schuss hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen sechs Sporenkegel-Pfeile, die Runde verbraucht nur 1 Munition
+	Markierte Feinde erleiden 10% mehr Schaden von dieser Armbrust, Hinrichtung öffnet eine Sporenwolke
+	'''
+GsStakeLauncher.Desc:
+	'''
+	Umschmiedung: Jeder 6. Pflock hängt einen Dreierstoß nach; ist die Salvenladung voll, gehen drei Pflöcke im Keil, die Runde verbraucht nur 1 Munition
+	Jeder Pflock nagelt fest und markiert die Beute; der Pflock nach vollem Mal ist die Kreuzigung, Schaden ×2,3, gegen Untote noch +25%
+	Eine gelungene Kreuzigung füllt sofort 30 Ladung nach; bei voller Ladung sammelt sich Silberlicht an der Mündung
+	'''
+GsIceBow.Desc:
+	'''
+	Umschmiedung: Ist die Salvenladung voll, wirft der Bogen 6 Eiszapfen in den Himmel, sie fallen als Eisregen um den Cursor, die Salvenrunde verbraucht nur 1 Munition
+	Eiszapfen häufen Frostmal, bei 3 Stapeln platzt der nächste Zapfen in einem Frostausbruch
+	'''
+GsMarrow.Desc:
+	'''
+	Umschmiedung: Ist die Salvenladung voll, gehen 5 Knochenpfeile im Kreuz, Durchschlag +1, die Salvenrunde verbraucht nur 1 Munition
+	Hinrichtung eines voll jagdmarkierten Feindes schließt 4 Knochenpfeile um ihn zum Käfig
+	'''
+GsShadowflameBow.Desc:
+	'''
+	Umschmiedung: Ist die Salvenladung voll, gehen 3 Schattenflammen-Pfeile, sie treffen sich am Cursor, die Salvenrunde verbraucht nur 1 Munition
+	Jeder Pfeil auf einen jagdmarkierten Feind ruft ein verfolgendes Schattenflammen-Irrlicht; bei Hinrichtung platzt ein Schattenausbruch
+	'''
+GsPulseBow.Desc:
+	'''
+	Umschmiedung: Impulspfeile gewinnen bei jedem Wandprall 10% Schaden, höchstens 5-mal; ist die Salvenladung voll, gehen 3 parallele Impulsschienen, die Salvenrunde verbraucht nur 1 Munition
+	Jagdmarkierte Feinde biegen vorbeiziehende Impulse zu sich; bei Hinrichtung springt eine Stromkette zu 2 nahen Feinden
+	'''

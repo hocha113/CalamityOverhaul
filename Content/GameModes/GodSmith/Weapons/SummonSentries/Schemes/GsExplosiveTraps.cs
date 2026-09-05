@@ -68,9 +68,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.14f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: traps within 200px form a minefield web, any blast chain-detonates neighbors\n" +
-            "Five blasts auto-overdrive the trap into high explosive; right-click to trigger a chain check";
-
+            "Deploy doctrine: traps within 200px form a minefield web, any blast chain-detonates neighbors\nFive blasts auto-overdrive the trap into high explosive; right-click to trigger a chain check";
         protected override SentryKit BuildKit() => new() {
             TowerTypes = [ProjectileID.DD2ExplosiveTrapT1, ProjectileID.DD2ExplosiveTrapT2, ProjectileID.DD2ExplosiveTrapT3],
             BoltTypes = [ProjectileID.DD2ExplosiveTrapT1Explosion, ProjectileID.DD2ExplosiveTrapT2Explosion, ProjectileID.DD2ExplosiveTrapT3Explosion],
@@ -89,9 +87,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.12f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: traps within 200px form a minefield web, any blast chain-detonates neighbors\n" +
-            "Five blasts auto-overdrive the trap into high explosive; right-click to trigger a chain check";
-
+            "Deploy doctrine: traps within 200px form a minefield web, any blast chain-detonates neighbors\nFive blasts auto-overdrive the trap into high explosive; right-click to trigger a chain check";
         protected override SentryKit BuildKit() => null;
     }
 
@@ -103,9 +99,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.10f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: traps within 200px form a minefield web, any blast chain-detonates neighbors\n" +
-            "Overdriven blasts hurl shrapnel skyward on top of the high-explosive core";
-
+            "Deploy doctrine: traps within 200px form a minefield web, any blast chain-detonates neighbors\nOverdriven blasts hurl shrapnel skyward on top of the high-explosive core";
         protected override SentryKit BuildKit() => null;
     }
 }

@@ -1,25 +1,9 @@
-GsSpiritFlame.Desc:
-	'''
-	Reforgé : les flammes spirituelles traînent un feu d'âme pâle ; la moitié des impacts détache une flammèche chasseuse
-	Maintenez le clic droit pour charger ; relâchez pour poser au curseur un anneau de cinq flammes qui se jettent tour à tour sur les ennemis proches
-	'''
+GsSpiritFlame.Desc: Reforgé : les flammes spirituelles traînent un feu d'âme pâle ; la moitié des impacts détache une flammèche chasseuse
 GsSpiritFlameRingProj.DisplayName: Anneau de flammes spirituelles
 GsSpiritFlameWispProj.DisplayName: Flammèche chasseuse
-GsPoisonStaff.Desc:
-	'''
-	Reforgé : les crocs traînent un brouillard de venin et se scindent en deux crocs fins au second mors
-	Maintenez le clic droit pour charger le Baiser du serpent : une petite vipère rapide qui se faufile et pose un couloir de poison
-	'''
-GsVenomStaff.Desc:
-	'''
-	Reforgé : les crocs traînent un brouillard de venin et se scindent en un croc lourd au second mors
-	Maintenez le clic droit pour charger le Baiser du serpent : une grosse vipère lente dont le corps fondu laisse un bassin d'acide
-	'''
-GsShadowFlameHexDoll.Desc:
-	'''
-	Reforgé : les tentacules de Flamme d'ombre plantent une marque de malédiction ; les ennemis marqués subissent plus de dégâts de cette poupée
-	Maintenez le clic droit pour charger le Grand hex : un domaine de marque au curseur qui fouette les intrus de tentacules
-	'''
+GsPoisonStaff.Desc: Reforgé : les crocs traînent un brouillard de venin et se scindent en deux crocs fins au second mors
+GsVenomStaff.Desc: Reforgé : les crocs traînent un brouillard de venin et se scindent en un croc lourd au second mors
+GsShadowFlameHexDoll.Desc: Reforgé : les tentacules de Flamme d'ombre plantent une marque de malédiction ; les ennemis marqués subissent plus de dégâts de cette poupée
 GsLeafBlower.Desc:
 	'''
 	Reforgé : les lames de feuilles volent avec un sillage vert tranchant

@@ -24,14 +24,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
 
         public override float DamageTweak => 1.08f;
 
-        /// <summary>毒藤绿</summary>
-        public override Color MarkColor => new(110, 196, 64);
-
         protected override string GsDescFallback =>
-            "Reforged: on-beat lashes grow thorn scars on the prey; " +
-            "4 scars seal the mark, and the next on-beat hit bursts it into " +
-            "a thorn explosion plus 4 homing venom barbs";
-
+            "Reforged: on-beat lashes grow thorn scars on the prey; 4 scars seal the mark, and the next on-beat hit bursts it into a thorn explosion plus 4 homing venom barbs";
         protected override void OnExecute(Player player, NPC target, Projectile whipProj, WhipMarkState st) {
             int burstDmg = Math.Max(1, (int)MathF.Round(st.MarkDamage * 0.6f));
             int dartDmg = Math.Max(1, (int)MathF.Round(st.MarkDamage * 0.4f));

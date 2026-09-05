@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -66,7 +64,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
         }
     }
 
-    /// <summary>风势记账：佩戴帧标记 + 奔行距离累计 + 蓄满就绪；就绪闪光只本端可见</summary>
+    /// <summary>风势记账：佩戴帧标记 + 奔行距离累计 + 蓄满就绪；就绪提示音只本端可闻</summary>
     internal class GodSmithSwiftFootEndowPlayer : ModPlayer
     {
         private bool wornThisFrame;
@@ -95,19 +93,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
             }
             distance = 0f;
             charged = true;
-            //就绪读数：只佩戴者本端可见
+            //就绪提示音：只佩戴者本端可闻
             if (Player.whoAmI == Main.myPlayer && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item24 with { Volume = 0.4f, Pitch = 0.6f }, Player.Center);
-                for (int i = 0; i < 10; i++) {
-                    Dust dust = Dust.NewDustPerfect(Player.Center, DustID.Cloud,
-                        Main.rand.NextVector2Circular(3f, 3f), 130, default, 1.1f);
-                    dust.noGravity = true;
-                }
             }
         }
     }
 
-    /// <summary>贯穿风刃：一泓青白气刃破风而出，越飞越薄，途中留下气旋涟漪</summary>
+    /// <summary>贯穿风刃：一泓青白气刃破风而出</summary>
     internal class GodSmithSwiftWindBlade : ModProjectile
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.LightBeam;
@@ -140,41 +133,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.timeLeft < 12) {
                 Projectile.alpha = Math.Min(255, Projectile.alpha + 22);
-            }
-            Lighting.AddLight(Projectile.Center, 0.2f, 0.35f, 0.35f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Cloud,
-                    -Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(0.5f, 0.5f), 140, default, 0.9f);
-                dust.noGravity = true;
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(170, 240, 230, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            //气刃随飞行变薄拉长
-            float age = 1f - Projectile.timeLeft / 45f;
-            float stretch = (0.9f + Projectile.velocity.Length() * 0.05f) * (1f + age * 0.5f);
-            float width = 0.8f - age * 0.35f;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(50, 120, 110, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(width * 1.6f, stretch * 1.15f), 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(200, 255, 245, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(width * 0.7f, stretch), 0);
-            return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 6; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Cloud,
-                    Main.rand.NextVector2Circular(2.5f, 2.5f), 130, default, 1f);
-                dust.noGravity = true;
             }
         }
     }

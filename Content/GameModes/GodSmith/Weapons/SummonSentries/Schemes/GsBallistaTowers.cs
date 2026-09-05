@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Projectiles;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,7 +8,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
     /// <summary>
     /// 弩炮三档「贯通工事」共享基类：<br/>
     /// 充能 6，超频 240 帧「攻城连弩」= 每发原矢补一发 0.75× 伴矢（等效射速 ×1.75）、
-    /// 原矢穿透 +2（带 &gt;0 守卫）、T3 矢升格巨型攻城矢（×1.4 体）、超频矢曳割裂气流；
+    /// 原矢穿透 +2（带 &gt;0 守卫）、T3 矢升格巨型攻城矢（×1.4 体）；
     /// 组合技（弩炮×弩炮成链）「交叉火力」= 两矢 45 帧内命中同目标追加 1.2× 十字钉刺
     /// </summary>
     internal abstract class GsBallistaBase : GsSentryScheme
@@ -50,23 +49,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
                 (int)(tower.damage * 1.2f), 4f, proj.owner,
                 GsSentryBurstProj.StyleCrossSpike, 70f);
         }
-
-        /// <summary>超频矢的割裂气流带（跨端可见：远端也按出生判定画）</summary>
-        protected sealed override void DrawBoltExtra(Projectile bolt, SentryKit kit, GsSentryLocal st, Color lightColor) {
-            if (!st.OverdriveShot || bolt.velocity.LengthSquared() < 1f) {
-                return;
-            }
-            Texture2D air = CWRAsset.Airflow?.Value;
-            if (air == null) {
-                return;
-            }
-            Color c = new Color(255, 226, 150) * 0.4f;
-            c.A = 0;
-            float rot = bolt.velocity.ToRotation();
-            Main.EntitySpriteDraw(air, bolt.Center - bolt.velocity * 1.6f - Main.screenPosition, null, c,
-                rot, new Vector2(air.Width * 0.15f, air.Height * 0.5f),
-                new Vector2(0.65f, 0.10f * bolt.scale), SpriteEffects.None, 0);
-        }
     }
 
     /// <summary>弩炮杆 T1（kit 宿主）</summary>
@@ -77,9 +59,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.12f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire\n" +
-            "Two linked ballistas nail a cross-fire spike into any target both hit within moments";
-
+            "Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire\nTwo linked ballistas nail a cross-fire spike into any target both hit within moments";
         protected override SentryKit BuildKit() => new() {
             TowerTypes = [ProjectileID.DD2BallistraTowerT1, ProjectileID.DD2BallistraTowerT2, ProjectileID.DD2BallistraTowerT3],
             BoltTypes = [ProjectileID.DD2BallistraProj],
@@ -96,9 +76,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.10f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire\n" +
-            "Two linked ballistas nail a cross-fire spike into any target both hit within moments";
-
+            "Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire\nTwo linked ballistas nail a cross-fire spike into any target both hit within moments";
         protected override SentryKit BuildKit() => null;
     }
 
@@ -110,9 +88,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.08f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire\n" +
-            "Overdriven bolts grow into massive siege shafts; cross-fire spikes reward paired towers";
-
+            "Deploy doctrine: hits charge the tower, right-click when full for siege repeater fire\nOverdriven bolts grow into massive siege shafts; cross-fire spikes reward paired towers";
         protected override SentryKit BuildKit() => null;
     }
 }

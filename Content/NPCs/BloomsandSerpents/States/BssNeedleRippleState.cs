@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
     /// <summary>
     /// 针刺涟漪（P2 起）：前半身拱起 → 预告波沿体节亮过红花 → 静默一拍 →
     /// 发射波扫过红花节时朝体外法向射钉刺，涟漪推进不齐射。
-    /// 公平阀声明：只有红花节发射（FlowerStep=3 的空间缺口）、钉刺出手即死向不追踪、
+    /// 公平阀声明：只有红花节发射（红花位由 BssDirector.BodyStyleLayout 声明，节间留有空间缺口）、钉刺出手即死向不追踪、
     /// 埋沙的节不发射；拱身持位 = 阵型相对稳定。P3 追加尾→头反向第二波。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)BssStateIndex.NeedleRipple, typeof(BssStateContext))]
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.5f, Pitch = 0.3f, MaxInstances = 4 }, seg.Center);
                     for (int i = 0; i < 4; i++) {
-                        Dust d = Dust.NewDustPerfect(seg.Center + normal * 12f, DustID.JunglePlants,
+                        Dust d = Dust.NewDustPerfect(seg.Center + normal * (12f * seg.scale), DustID.JunglePlants,
                             normal.RotatedByRandom(0.4f) * Main.rand.NextFloat(1.5f, 3.5f), 100, default, 1f);
                         d.noGravity = true;
                     }
@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                         float spread = MathHelper.Lerp(-BssDirector.NeedleFanHalf, BssDirector.NeedleFanHalf,
                             n > 1 ? i / (float)(n - 1) : 0.5f);
                         Vector2 vel = normal.RotatedBy(spread) * BssDirector.NeedleSpeed;
-                        Projectile.NewProjectile(ctx.Npc.GetSource_FromAI(), seg.Center + normal * 14f,
+                        Projectile.NewProjectile(ctx.Npc.GetSource_FromAI(), seg.Center + normal * (14f * seg.scale),
                             vel, type, damage, 0.5f, Main.myPlayer);
                     }
                 }

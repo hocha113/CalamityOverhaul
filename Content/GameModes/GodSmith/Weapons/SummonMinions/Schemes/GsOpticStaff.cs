@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +10,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
     /// 光学法杖「双瞳协议」（A 档）：机械双瞳成对翼列护卫；
     /// 签名 = 突击令下红瞳激光与绿瞳冲撞在 40 帧内先后咬中焦点目标，
     /// 视线于其身上交汇成 X 形爆闪（<see cref="GsOpticCrossrayProj"/>，1.25×，
-    /// 咒焰引燃，冷却 120 帧）；增强层 = 激光红色曳光、冲撞咒绿涂抹（速度驱动，非匀速裸弹）
+    /// 咒焰引燃，冷却 120 帧）
     /// </summary>
     internal class GsOpticStaff : GsMinionScheme
     {
@@ -22,10 +20,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Twin Pact: the mini twins fly wing formation; under the assault order, a laser and a ram biting one foe in quick succession cross their sights into an X-flash that ignites cursed flames";
-
-        private static readonly Color RetRed = new(255, 84, 74);
-        private static readonly Color SpazGreen = new(128, 255, 96);
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Wings,
             Radius = 58f,
@@ -57,29 +51,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
             => GsMinionCastMotion.ApplyRaise(player);
-
-        public override void GsUseAnimation(Item item, Player player)
-            => GsMinionCastMotion.CastBurst(player, RetRed, SpazGreen);
-
-        //==================== 增强层：飞行视觉（各端，粒子守服务端） ====================
-
-        protected override void GsMinionPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //红瞳激光曳光：拉出与速度同向的红色光粒
-            if (proj.type == ProjectileID.MiniRetinaLaser && proj.timeLeft % 3 == 0) {
-                PRTLoader.NewParticle<PRT_Light>(proj.Center - proj.velocity * 0.4f,
-                    -proj.velocity * 0.03f, RetRed, 0.1f)?.Configure(8, 0.75f);
-            }
-            //绿瞳高速冲撞：咒绿涂抹尾迹
-            if (proj.type == ProjectileID.Spazmamini && proj.velocity.Length() > 8f
-                && proj.timeLeft % 2 == 0) {
-                PRTLoader.NewParticle<PRT_Light>(
-                    proj.Center - proj.velocity * 0.6f, -proj.velocity * 0.06f,
-                    SpazGreen, 0.13f)?.Configure(10, 0.7f);
-            }
-        }
 
         //==================== 签名：交叉视线 ====================
 

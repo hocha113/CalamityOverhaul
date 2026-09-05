@@ -12,22 +12,30 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
 {
     /// <summary>
-    /// 魔法·困难弹体族（MagicMorph）共享引擎：法术二形态。<br/>
-    /// 交互契约：右键触发进入蓄力（<see cref="GsAltFunctionUse"/> 放行 +
-    /// <see cref="GsCanUseItem"/> 捕获 altFunctionUse==2，闩锁防重触发），
+    /// 魔法·困难弹体族（MagicMorph）共享引擎：各法器默认只保留左键形态。<br/>
+    /// R2 保留件把 <see cref="HasAltForm"/> 打开后走法术二形态契约：右键触发进入蓄力
+    /// （<see cref="GsAltFunctionUse"/> 放行 + <see cref="GsCanUseItem"/> 捕获 altFunctionUse==2，闩锁防重触发），
     /// 蓄力推进在 <see cref="GsHoldItem"/> 的本地玩家路径逐帧读右键；
-    /// 松手时蓄满则结算蓝耗（item.mana × <see cref="ChargeManaMult"/>）并调 <see cref="FireMorphB"/>。<br/>
+    /// 松手时蓄满则结算蓝耗（item.mana × <see cref="ChargeManaMult"/>）并调 <see cref="FireMorphB"/>。
     /// 蓄力状态挂 <see cref="GsMorphPlayer"/>（每玩家实例字段），换武器/关模式/死亡由其兜底清理；
-    /// 蓄力读数（杖尖聚拢粒子/蓄满定音与轻屏震）是施法者本地反馈，
-    /// 跨端可见的部分一律由释放出的真弹幕承载。<br/>
-    /// B 形态生成走 <see cref="SpawnMorph"/>：pendingKind 在 NewProjectile 同步调用链内被
+    /// 蓄力读数是施法者本地反馈，跨端可见的部分一律由释放出的真弹幕承载。其余件对右键零足迹。<br/>
+    /// 子产物生成走 <see cref="SpawnMorph"/>：pendingKind 在 NewProjectile 同步调用链内被
     /// <see cref="GsProjOnSpawnMarked"/> 消费写进 MarkData，先于生成包发出，各端一致
     /// </summary>
     internal abstract class GsMorphScheme : GodSmithScheme
     {
         public sealed override string GsFamily => "MagicMorph";
 
-        //==================== 二形态参数（子类按计划行覆写） ====================
+        /// <summary>基础伤害乘区（数值行，残酷口径下的账面加成）</summary>
+        protected virtual float BaseDamageMult => 1.08f;
+
+        public override void GsModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
+            => damage *= BaseDamageMult;
+
+        //==================== 二形态（R2 保留件；默认关） ====================
+
+        /// <summary>是否启用右键二形态契约。默认关；R2 保留件覆写为 true</summary>
+        protected virtual bool HasAltForm => false;
 
         /// <summary>B 形态蓄力阈值（帧）</summary>
         protected virtual int ChargeTicksB => 45;
@@ -41,25 +49,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
         /// <summary>蓄力读数粒子色</summary>
         protected virtual Color ChargeColor => new(196, 142, 255);
 
-        /// <summary>基础伤害乘区（数值行，残酷口径下的账面加成）</summary>
-        protected virtual float BaseDamageMult => 1.08f;
-
-        public override void GsModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
-            => damage *= BaseDamageMult;
-
-        //==================== MarkData 形态约定 ====================
-
         /// <summary>MarkData 形态值：0=A 常规；1=B 主体；≥10 供子类自定义（碎屑/子产物等）</summary>
         protected const int KindA = 0;
         /// <summary>B 形态主体</summary>
         protected const int KindB = 1;
 
-        //==================== 右键蓄力流 ====================
-
-        public override bool? GsAltFunctionUse(Item item, Player player) => true;
+        public sealed override bool? GsAltFunctionUse(Item item, Player player) => HasAltForm ? true : null;
 
         public sealed override bool? GsCanUseItem(Item item, Player player) {
-            if (player.altFunctionUse == 2) {
+            if (HasAltForm && player.altFunctionUse == 2) {
                 //右键从不走原版使用链；触发信号只在本地玩家端消费，闩锁保证一次按住只触发一次
                 if (player.whoAmI == Main.myPlayer) {
                     GsMorphPlayer morph = player.GetModPlayer<GsMorphPlayer>();
@@ -71,7 +69,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
                 return false;
             }
             //本地玩家蓄力期间锁左键，防止边蓄边施
-            if (player.whoAmI == Main.myPlayer
+            if (HasAltForm && player.whoAmI == Main.myPlayer
                 && player.GetModPlayer<GsMorphPlayer>().ChargingItem == item.type) {
                 return false;
             }
@@ -83,14 +81,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
 
         /// <summary>
         /// 右键按下瞬间（仅本地玩家，单次按住只回调一次）。
-        /// 默认开始蓄力；瞬发型武器（领域迁移/模式切换/收回）覆写本方法
+        /// 默认开始蓄力；瞬发型武器（形态切换）覆写本方法
         /// </summary>
         protected virtual void OnAltTrigger(Item item, Player player)
             => player.GetModPlayer<GsMorphPlayer>().BeginCharge(item.type);
 
         public sealed override void GsHoldItem(Item item, Player player) {
             GsMorphHoldItem(item, player);
-            if (player.whoAmI != Main.myPlayer) {
+            if (!HasAltForm || player.whoAmI != Main.myPlayer) {
                 return;
             }
             GsMorphPlayer morph = player.GetModPlayer<GsMorphPlayer>();
@@ -158,9 +156,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
 
         /// <summary>
         /// 释放 B 形态（仅本地玩家路径；蓝耗已结算）。
-        /// 生成弹幕用 <see cref="SpawnMorph"/> 走打标通道；模式切换型武器在此开模式窗
+        /// 生成弹幕用 <see cref="SpawnMorph"/> 走打标通道；模式切换型武器在此开模式窗。默认无
         /// </summary>
-        protected abstract void FireMorphB(Item item, Player player);
+        protected virtual void FireMorphB(Item item, Player player) { }
 
         //==================== 打标生成管线 ====================
 
@@ -169,7 +167,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
 
         /// <summary>
         /// 以指定形态生成弹幕（仅本地玩家路径）。出生源用 GetSource_ItemUse 走路由打标通道，
-        /// kind/data2 经 OnSpawnMarked 写进 MarkData/MarkData2，与 ai0/ai1 一起先于生成包定型
+        /// kind/data2 经 OnSpawnMarked 写进 MarkData/MarkData2（≥10 供子类自定义：碎屑/子产物等），
+        /// 与 ai0/ai1 一起先于生成包定型
         /// </summary>
         protected Projectile SpawnMorph(Player player, Item item, Vector2 pos, Vector2 vel,
             int type, int damage, float knockback, int kind, float data2 = 0f,

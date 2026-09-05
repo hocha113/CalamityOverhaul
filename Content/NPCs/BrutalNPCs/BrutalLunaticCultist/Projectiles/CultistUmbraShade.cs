@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
     /// <summary>
     /// 蚀祭主控:暗影盘滑过主星(食相自身即预告),全食后先给宽限期,再放冕矛,本影楔=唯一安全走廊<br/>
     /// ai[0]=宿主npc ai[1]=本影基角(出生锁定,朝向当时的目标=先给玩家安全区) ai[2]=漂移率(符号即方向)<br/>
-    /// 节奏:滑入 62f(楔形随食相渐显)→宽限 108f(无冕矛,楔慢漂 0.4x)→齐射期 512f(楔加速到 1.9x,12槽/20f 起步收紧到 16槽/14f)→复圆,全程 760f<br/>
+    /// 节奏:滑入 62f(楔形随食相渐显)→宽限 108f(无冕矛,楔慢漂 0.4x)→齐射期 410f(楔加速到 1.9x,14槽/24f 起步收紧到 18槽/18f)→复圆,全程 658f<br/>
+    /// (2026-09-05 用户令:齐射窗 512→410 削 20%;整屏随食相压暗;本影楔纯黑锐边;冕矛齐射节拍化,见 <see cref="RhythmAt"/>)<br/>
     /// 分相变体:星旋楔宽 ×0.8;星云本影漂至中点拍反向折返(折返窗匀减速过零);日耀本影旋速 ×0.7(出手端定率)+齐射窗天降散点火焰流星;<br/>
     /// 月明全食段 +MoonExtend 帧(齐射窗同步拉长,蚀祭态另在首尾各压一轮追星矢);星尘由蚀祭态召幻影龙(主星公转冻结见星球)<br/>
     /// 公平阀:GapHalf 声明角缺口(分相同参),冕矛发射循环与本影楔绘制同读;本影在漂,故跳槽按冕矛伤害窗前瞻扫过区间,<br/>
@@ -24,14 +25,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        internal const int Lifetime = 760;
+        internal const int Lifetime = 658;
         private const int SlideInEnd = 62;
-        /// <summary>全食后宽限帧数:不放冕矛,给玩家看清并走进安全区</summary>
+        /// <summary>全食后宽限帧数:不放冕矛,给玩家看清并走进安全区(公平阀,削时不动它)</summary>
         private const int GraceFrames = 108;
-        private const int TotalityEnd = 694;
-        private const int SlideOutEnd = 738;
-        /// <summary>月明相全食延长帧数:滑入/宽限/复圆不变,只拉长齐射窗(220→24:用户令月明全程砍 20%,980→784)</summary>
-        internal const int MoonExtend = 24;
+        private const int TotalityEnd = 592;
+        private const int SlideOutEnd = 636;
+        /// <summary>月明相全食延长帧数:滑入/宽限/复圆不变,只拉长齐射窗(24→19 随齐射窗同比削 20%)</summary>
+        internal const int MoonExtend = 19;
         /// <summary>月明相末轮追星矢齐射龄(蚀祭态读,"快结束时"的第二轮连射拍)</summary>
         internal const int MoonLateVolleyAge = TotalityEnd + MoonExtend - 90;
         /// <summary>声明缺口半角基准(rad):本影楔可见宽度与冕矛跳角同源;分相实值走 <see cref="GapHalf"/></summary>
@@ -39,11 +40,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         /// <summary>星旋相楔宽系数:宽度减 20%(判定/绘制/跳槽同参收窄;
         /// 0.7 时首相楔仅 ±13.6°,最窄的楔压在玩家还没学会跟楔的第一阶段,判过窄勿回调)</summary>
         private const float VortexGapMul = 0.8f;
-        /// <summary>冕矛节奏:起步 12 槽/20 帧,中段起收紧 16 槽/14 帧(浪形升级)</summary>
-        private const int VolleyIntervalEarly = 20;
-        private const int VolleyIntervalLate = 14;
-        private const int VolleySlotsEarly = 12;
-        private const int VolleySlotsLate = 16;
+        /// <summary>
+        /// 冕矛节拍:起步 14 槽/24 帧(间隔=喷发时长,一环烧尽恰是下一环炸出),中段起收紧 18 槽/18 帧(间隔=预警时长,下一环的丝与当前喷发同起);<br/>
+        /// 拍型:奇拍疏(半数槽+半槽错位,填进上一记满环的空隙)偶拍满,每 4 拍一记重拍(满环+缘线顶亮+屏闪+高音);<br/>
+        /// 满/疏交替+固定间隔=听得见看得见的节拍,而非旧版三四环叠着喷的连绵雾
+        /// </summary>
+        private const int VolleyIntervalEarly = 24;
+        private const int VolleyIntervalLate = 18;
+        private const int VolleySlotsEarly = 14;
+        private const int VolleySlotsLate = 18;
+        /// <summary>每拍进动:顺本影漂向进此比例槽距,整环缓旋而不是原地闪</summary>
+        private const float VolleyPrecession = 0.18f;
+        /// <summary>整屏压暗峰值(全食时),喂 <see cref="CultistScreenFX.SetDim"/></summary>
+        private const float EclipseDim = 0.58f;
         /// <summary>日耀相流星拍距:齐射窗内每拍一颗,锚玩家横向散点(2颗/14f→1颗/12f,密度 -42%≈用户令 -40%)</summary>
         private const int MeteorGap = 12;
         /// <summary>日耀相流星横向散布半宽(px)</summary>
@@ -226,6 +235,46 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             return false;
         }
 
+        /// <summary>齐射节拍:该龄所属区段的拍距与满环槽数(发射循环与缘线包络同读,拍序=龄/拍距)</summary>
+        private void RhythmAt(float age, out int interval, out int slots) {
+            bool late = age >= EscalateAgeF;
+            interval = late ? VolleyIntervalLate : VolleyIntervalEarly;
+            slots = late ? VolleySlotsLate : VolleySlotsEarly;
+        }
+
+        /// <summary>重拍:每 4 拍一记,满环+缘线顶亮+屏闪+高音</summary>
+        private static bool IsAccentVolley(int volley) => volley % 4 == 0;
+
+        /// <summary>疏拍:奇拍只放半数槽并错半槽,矛落进上一记满环的空隙</summary>
+        private static bool IsSparseVolley(int volley) => volley % 2 == 1;
+
+        /// <summary>
+        /// 缘线节拍包络 0~1(各端由龄纯推,零同步):冕矛喷发瞬间顶满,拍间指数回落;<br/>
+        /// 重拍更亮更久,疏拍轻;齐射窗外归零
+        /// </summary>
+        private float BeatEnvelope(float age) {
+            float firedAge = age - CultistCoronaLance.WarnFrames;
+            if (firedAge <= GraceEnd) {
+                return 0f;
+            }
+            RhythmAt(firedAge, out int interval, out _);
+            int volley = (int)firedAge / interval;
+            float volleyAge = volley * interval;
+            //窗末最后一拍之后不再有新喷发,包络接着上一拍衰完
+            if (volleyAge >= VolleyEndF) {
+                volley--;
+                volleyAge -= interval;
+            }
+            if (volleyAge <= GraceEnd) {
+                return 0f;
+            }
+            float since = firedAge - volleyAge;
+            bool accent = IsAccentVolley(volley);
+            float peak = accent ? 1f : IsSparseVolley(volley) ? 0.45f : 0.75f;
+            float decay = interval * (accent ? 0.42f : 0.28f);
+            return peak * MathF.Exp(-since / decay);
+        }
+
         public override void AI() {
             NPC owner = OwnerWho >= 0 && OwnerWho < Main.maxNPCs ? Main.npc[OwnerWho] : null;
             Projectile planet = FindPlanet();
@@ -275,23 +324,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 }
             }
 
-            //全食压场(本地):天黑+去饱和
-            if (coverage > 0.6f && !VaultUtils.isServer) {
-                CultistScreenFX.SetVeil(0.45f * coverage, planet.Center, new Color(30, 40, 46), 1500f);
-                CultistScreenFX.BreakDesat = MathHelper.Max(CultistScreenFX.BreakDesat, 0.22f * coverage);
+            //全食压场(本地):整屏随食相沉暗(日食的天黑)+去饱和,帷幕捏聚垫底
+            if (!VaultUtils.isServer && coverage > 0.01f) {
+                CultistScreenFX.SetDim(EclipseDim * coverage);
+                if (coverage > 0.6f) {
+                    CultistScreenFX.SetVeil(0.45f * coverage, planet.Center, new Color(30, 40, 46), 1500f);
+                    CultistScreenFX.BreakDesat = MathHelper.Max(CultistScreenFX.BreakDesat, 0.22f * coverage);
+                }
             }
 
-            //冕矛志愿(权威端):宽限期不出手;起步 12 槽/20f,中段收紧 16 槽/14f
+            //冕矛志愿(权威端):宽限期不出手;满/疏交替,每 4 拍一记重拍(见 RhythmAt/IsSparseVolley/IsAccentVolley)
             //跳槽按伤害窗前瞻:本影在漂,矛又有 18f 预警延迟,静态查出生角会让"合法出界"的矛
             //在开火时落进已漂来的安全楔——缺口区间=[开火起~开火止]本影扫过角±GapHalf(略放 2f 余量);
             //星云折返拍落在伤害窗内时,扫过角在折返点取极值,区间并入它再取中
             if (!VaultUtils.isClient && age > GraceEnd && age < VolleyEndF) {
-                bool late = age >= EscalateAgeF;
-                int interval = late ? VolleyIntervalLate : VolleyIntervalEarly;
+                RhythmAt(age, out int interval, out int slots);
                 if ((int)age % interval == 0) {
-                    int slots = late ? VolleySlotsLate : VolleySlotsEarly;
                     int volley = (int)age / interval;
-                    float baseRot = volley * 0.26f;
+                    bool sparse = IsSparseVolley(volley);
+                    bool accent = IsAccentVolley(volley);
+                    float slotStep = MathHelper.TwoPi / slots;
+                    //进动顺本影漂向,整环缓旋;疏拍错半槽,矛恰落在上一记满环的空隙里
+                    float baseRot = volley * slotStep * VolleyPrecession * MathF.Sign(DriftRate)
+                        + (sparse ? slotStep * 0.5f : 0f);
                     int palette = (int)planet.ai[0];
                     float fireStartAge = age + CultistCoronaLance.WarnFrames - 2f;
                     float fireEndAge = age + CultistCoronaLance.WarnFrames + CultistCoronaLance.FireFrames + 2f;
@@ -306,7 +361,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                     float sweepMid = (lo + hi) * 0.5f;
                     float sweepHalf = (hi - lo) * 0.5f + GapHalf;
                     for (int i = 0; i < slots; i++) {
-                        float angle = baseRot + i * MathHelper.TwoPi / slots;
+                        if (sparse && i % 2 == 1) {
+                            continue;
+                        }
+                        float angle = baseRot + i * slotStep;
                         float delta = MathHelper.WrapAngle(angle - sweepMid);
                         if (Math.Abs(delta) < sweepHalf) {
                             continue;
@@ -316,7 +374,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                             42, 0f, Main.myPlayer, angle, planet.whoAmI, palette);
                     }
                     if (!VaultUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.5f, Pitch = -0.2f }, planet.Center);
+                        //起手音分强弱:满拍沉,疏拍轻而高,重拍响
+                        SoundEngine.PlaySound(SoundID.Item117 with {
+                            Volume = accent ? 0.7f : sparse ? 0.35f : 0.5f,
+                            Pitch = sparse ? 0.15f : -0.2f
+                        }, planet.Center);
+                    }
+                }
+            }
+
+            //重拍落点(各端本地):重拍那环喷发的瞬间,屏闪+星心一震+高音钉拍,节拍从屏幕上读得出来
+            int firedAge = (int)age - CultistCoronaLance.WarnFrames;
+            if (firedAge > GraceEnd && firedAge < VolleyEndF) {
+                RhythmAt(firedAge, out int beatInterval, out _);
+                if (firedAge % beatInterval == 0 && IsAccentVolley(firedAge / beatInterval)) {
+                    CultistScreenFX.PushFlash(0.10f);
+                    CultistMotion.Shake(planet.Center, 2.5f, 6);
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.6f, Pitch = 0.55f }, planet.Center);
                     }
                 }
             }
@@ -364,28 +439,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 wedgeStrength *= MathHelper.Clamp(coverage / 0.72f, 0f, 1f);
             }
             if (wedgeStrength > 0.01f) {
-                //缘线脉冲:宽限最后 40 帧爬升,齐射期保持=冕矛在场的危险宣告
-                float lancePulse = age >= VolleyEndF ? 0f
-                    : MathHelper.Clamp((age - (GraceEnd - 40f)) / 40f, 0f, 1f);
+                //缘线:宽限最后 40 帧爬升为危险宣告底光,齐射期按冕矛节拍跳亮(喷发瞬间顶满,拍间回落),齐射窗收后 30 帧退光
+                float lanceArm = MathHelper.Clamp((age - (GraceEnd - 40f)) / 40f, 0f, 1f)
+                    * (1f - MathHelper.Clamp((age - VolleyEndF) / 30f, 0f, 1f));
+                float lancePulse = lanceArm * (0.2f + 0.8f * BeatEnvelope(age));
                 float umbra = UmbraAngle;
                 Vector2 dir = umbra.ToRotationVector2();
                 //采样点须密:梯形条带的仿射 UV 插值会把缘线等值线在段缝处折出台阶,10 点时肉眼可见锯齿
                 const int WedgePts = 40;
                 const float WedgeLen = 1750f;
                 float tanHalf = (float)Math.Tan(GapHalf * 0.94f);
+                float rootDist = visR * 0.8f;
                 Vector2[] pts = new Vector2[WedgePts];
                 float[] widths = new float[WedgePts];
                 float[] alphas = new float[WedgePts];
                 for (int i = 0; i < WedgePts; i++) {
                     float t = i / (float)(WedgePts - 1);
-                    float dist = visR * 0.8f + t * WedgeLen;
+                    float dist = rootDist + t * WedgeLen;
                     pts[i] = planet.Center + dir * dist - Main.screenPosition;
                     widths[i] = dist * tanHalf;
                     alphas[i] = 1f;
                 }
                 sb.End();
+                //uAspect=末端半宽/根部半宽:着色器据此把影缘与缘线折算成恒定像素宽,从根到末一样锐
                 CultistOrreryRenderer.DrawTechniqueStrip("TechUmbra", pts, widths, alphas,
-                    new Color(6, 10, 18), mid, bright, wedgeStrength, 0f, lancePulse, 0.51f);
+                    Color.Black, mid, bright, wedgeStrength, 0f, lancePulse, 0.51f,
+                    uAspect: (rootDist + WedgeLen) / MathHelper.Max(rootDist, 1f));
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                     DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             }

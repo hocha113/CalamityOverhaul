@@ -49,12 +49,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
                 info.Damage -= absorb;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.6f, Pitch = -0.2f }, player.Center);
-                    for (int i = 0; i < 12; i++) {
-                        float ang = MathHelper.TwoPi * i / 12f;
-                        Dust dust = Dust.NewDustPerfect(player.Center + ang.ToRotationVector2() * 26f,
-                            DustID.RuneWizard, ang.ToRotationVector2() * 2f, 100, default, 1.1f);
-                        dust.noGravity = true;
-                    }
                 }
             };
         }

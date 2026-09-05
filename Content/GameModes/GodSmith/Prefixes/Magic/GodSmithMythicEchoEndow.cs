@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -49,7 +47,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Magic
         }
     }
 
-    /// <summary>星灵：金紫四芒星绕身盘旋，脉动呼吸；持有者换下神话武器即散场。
+    /// <summary>星灵：一枚星绕身盘旋；持有者换下神话武器即散场。
     /// ai[0] = 轨道角，ai[1] = 开火计时。开火只在 owner 端结算，伤害按当时手持武器实算</summary>
     internal class GodSmithMythicStarWisp : ModProjectile
     {
@@ -94,12 +92,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Magic
             orbit.Y += (float)Math.Sin(Projectile.ai[0] * 2.3f) * 8f;
             Projectile.Center = Vector2.Lerp(Projectile.Center, anchor + orbit, 0.25f);
             Projectile.rotation += 0.08f;
-            Lighting.AddLight(Projectile.Center, 0.4f, 0.3f, 0.5f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(5)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.YellowStarDust,
-                    Main.rand.NextVector2Circular(0.8f, 0.8f), 100, default, 0.8f);
-                dust.noGravity = true;
-            }
             //开火循环：只在 owner 端点名，伤害按当时手持武器与词缀档实算
             if (Projectile.owner != Main.myPlayer || Projectile.timeLeft <= 20) {
                 return;
@@ -137,25 +129,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Magic
             }
             return best;
         }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 220, 160, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            //呼吸脉动：确定性时间函数，不掷随机
-            float pulse = 0.85f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + Projectile.whoAmI);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(140, 80, 200, 0) * (0.7f * Projectile.Opacity), Projectile.rotation, origin,
-                pulse * 1.25f, 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 235, 180, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                pulse * 0.8f, 0);
-            return false;
-        }
     }
 
-    /// <summary>星辉飞弹：金紫小星划着弧线咬向目标，尾迹缀满星屑</summary>
+    /// <summary>星辉飞弹：小星划着弧线咬向目标</summary>
     internal class GodSmithMythicStarShot : ModProjectile
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.FallingStar;
@@ -182,35 +158,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Magic
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, want * speed, 0.12f);
             }
             Projectile.rotation += 0.25f;
-            Lighting.AddLight(Projectile.Center, 0.35f, 0.28f, 0.45f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.YellowStarDust,
-                    -Projectile.velocity * 0.15f, 100, default, 0.9f);
-                dust.noGravity = true;
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 225, 170, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(150, 90, 210, 0) * (0.7f * Projectile.Opacity), Projectile.rotation, origin, 0.9f, 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 240, 190, 0) * Projectile.Opacity, Projectile.rotation, origin, 0.6f, 0);
-            return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 8; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.YellowStarDust,
-                    Main.rand.NextVector2Circular(3f, 3f), 100, default, 1.1f);
-                dust.noGravity = true;
-            }
         }
     }
 }

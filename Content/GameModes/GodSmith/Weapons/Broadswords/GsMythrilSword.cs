@@ -1,10 +1,9 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -24,14 +23,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsMythrilSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: every slash brands its target with a mythril seal; " +
-            "the third seal rings out as a resonant shockwave";
-
-        //绿松秘银色板
+            "Reforged: every slash brands its target with a mythril seal; the third seal rings out as a resonant shockwave";
         internal static readonly Color ResBright = new(178, 255, 226); //翠亮刃缘
         internal static readonly Color ResMain = new(66, 196, 156);    //秘银翠
         internal static readonly Color ResHot = new(110, 240, 255);    //共鸣青辉
-        internal static readonly Color ResDeep = new(18, 52, 44);      //深翠垫影
 
         //预算账：拍均 (1+1+1.22)/3≈1.07；三印齐鸣 0.55x 每三次命中引爆一次（单体 ≈ +0.18/拍）；
         //连段总帧 (20+19+24)=63 对原版 60 (+5%) → 综合单体 DPS ≈ (1.07+0.18)×0.95 ≈ 原版 105%~119%
@@ -50,7 +45,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsMythrilSword.ResBright;
         protected override Color BodyMain => GsMythrilSword.ResMain;
         protected override Color HotAccent => GsMythrilSword.ResHot;
-        protected override Color DeepShadow => GsMythrilSword.ResDeep;
 
         /// <summary>共鸣印计数：whoAmI → (npc 类型, 印数)。命中判定只在 owner 端跑，
         /// 本表只被本地玩家的挥砍读写；类型不符视为槽位复用，重新记数</summary>
@@ -107,19 +101,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 return;
             }
             brandMap[target.whoAmI] = (target.type, brands);
-            //印记递升音阶 + 印数颗翠星贴在伤口上方
+            //印记递升音阶
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item29 with {
                     Volume = 0.3f,
                     Pitch = 0.2f + 0.25f * brands,
                     MaxInstances = 3
                 }, target.Center);
-                for (int i = 0; i < brands; i++) {
-                    PRTLoader.NewParticle<PRT_Sparkle>(
-                        target.Center + new Vector2((i - (brands - 1) * 0.5f) * 14f, -target.height * 0.5f - 6f),
-                        -Vector2.UnitY * 0.5f, Color.White, 0.75f)
-                        ?.Configure(GsMythrilSword.ResHot, 20, 0.1f, 1.1f);
-                }
             }
         }
 
@@ -139,23 +127,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 brandMap.Remove(k);
             }
         }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //秘银泛音光点
-            PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
-                GsMythrilSword.ResHot, IsFinisher ? 0.24f : 0.15f)?.Configure(10, 0.75f);
-        }
     }
 
     /// <summary>
     /// 秘银震荡波：三印齐鸣的就地爆发，10 帧过冲撑到半径 150 后回坐，伤害只在扩张期结算一次。
-    /// 自绘三件套：外圈虚线环（弧段沿切向排布）+ 内圈反相细环 + 三枚坍缩翠星沿半径旋入爆心，
-    /// 佐镜头光斑与中心闪。绘制全走 identity 播种与确定相位，禁 Main.rand
+    /// 用原版泡泡贴图按半径画一笔作范围提示
     /// </summary>
     internal class GsMythrilSwordWaveProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
         public override LocalizedText DisplayName => Language.GetText("ItemName.MythrilSword");
 
         private const int TotalLife = 22;
@@ -189,23 +169,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         public override void AI() {
             Life++;
             if (Life == 1f && !VaultUtils.isServer) {
-                //齐鸣：双层钟音 + 翠青火花外抛
+                //齐鸣：双层钟音
                 SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.55f, Pitch = -0.1f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item101 with { Volume = 0.3f, Pitch = 0.3f }, Projectile.Center);
-                for (int i = 0; i < 10; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 7f),
-                        Main.rand.NextBool(3) ? GsMythrilSword.ResHot : GsMythrilSword.ResBright,
-                        Main.rand.NextFloat(0.32f, 0.55f))?.Configure(true, Main.rand.Next(12, 20));
-                }
-                for (int i = 0; i < 5; i++) {
-                    PRTLoader.NewParticle<PRT_Light>(
-                        Projectile.Center + Main.rand.NextVector2Circular(14f, 14f),
-                        -Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.6f),
-                        GsMythrilSword.ResMain, Main.rand.NextFloat(0.07f, 0.13f))?.Configure(12, 0.7f);
-                }
             }
-            Lighting.AddLight(Projectile.Center, GsMythrilSword.ResMain.ToVector3() * (0.8f * (1f - Life01)));
         }
 
         //伤害只在扩张期结算（一目标一次）
@@ -218,66 +185,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
             => modifiers.HitDirectionOverride = Math.Sign(target.Center.X - Projectile.Center.X);//击退向外
 
-        /// <summary>绘制路径确定性伪随机</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
+        /// <summary>范围提示：原版泡泡贴图按当前半径缩放画一笔，随寿命淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D dash = CWRAsset.SemiCircularSmear?.Value;
-            Texture2D star = CWRAsset.StarGlow01?.Value;
-            Texture2D flare = CWRAsset.StarFlare01?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (dash == null || star == null || flare == null || glow == null) {
-                return false;
-            }
-            Vector2 center = Projectile.Center - Main.screenPosition;
-            float fade = 1f - Life01;
-            float radius = Radius;
-            float spin = Main.GlobalTimeWrappedHourly * 1.6f + SegRand(2) * 6.28f;
-
-            //中心闪：首帧最亮随后蚀散
-            Color flash = GsMythrilSword.ResBright * (0.7f * fade * fade);
-            flash.A = 0;
-            Main.EntitySpriteDraw(glow, center, null, flash, 0f, glow.Size() * 0.5f,
-                0.7f * (0.5f + 0.5f * Life01), SpriteEffects.None, 0);
-            Color flareC = GsMythrilSword.ResHot * (0.45f * fade);
-            flareC.A = 0;
-            Main.EntitySpriteDraw(flare, center, null, flareC, Life * 0.06f, flare.Size() * 0.5f,
-                0.42f, SpriteEffects.None, 0);
-
-            //外圈虚线环：14 段弧刻沿切向排布，随波旋进
-            const int dashes = 14;
-            for (int i = 0; i < dashes; i++) {
-                float ang = MathHelper.TwoPi * i / dashes + spin * 0.3f;
-                Vector2 at = center + ang.ToRotationVector2() * radius;
-                Color seg = GsMythrilSword.ResMain * (0.55f * fade);
-                seg.A = 0;
-                Main.EntitySpriteDraw(dash, at, null, seg, ang + MathHelper.PiOver2, dash.Size() * 0.5f,
-                    new Vector2(0.1f, 0.05f), SpriteEffects.None, 0);
-            }
-            //内圈反相细环：10 段，逆旋
-            const int inner = 10;
-            for (int i = 0; i < inner; i++) {
-                float ang = MathHelper.TwoPi * (i + 0.5f) / inner - spin * 0.4f;
-                Vector2 at = center + ang.ToRotationVector2() * (radius * 0.76f);
-                Color seg = GsMythrilSword.ResBright * (0.4f * fade);
-                seg.A = 0;
-                Main.EntitySpriteDraw(dash, at, null, seg, ang + MathHelper.PiOver2, dash.Size() * 0.5f,
-                    new Vector2(0.07f, 0.035f), SpriteEffects.None, 0);
-            }
-            //三枚坍缩翠星：自外缘旋入爆心（印记归位的具象）
-            for (int i = 0; i < 3; i++) {
-                float ang = spin + MathHelper.TwoPi * i / 3f;
-                float dist = radius * (1f - MathHelper.Clamp(Life / 12f, 0f, 1f)) * 0.85f;
-                Vector2 at = center + ang.ToRotationVector2() * dist;
-                Color sig = GsMythrilSword.ResHot * (0.65f * fade);
-                sig.A = 0;
-                Main.EntitySpriteDraw(star, at, null, sig, ang + Life * 0.12f, star.Size() * 0.5f,
-                    0.2f + 0.06f * SegRand(i + 20), SpriteEffects.None, 0);
-            }
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float scale = Radius * 2f / MathF.Max(tex.Width, 1);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * (1f - Life01),
+                0f, tex.Size() * 0.5f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

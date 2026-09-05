@@ -1,6 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -18,7 +15,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     #region 铜阔剑：导电
     /// <summary>
     /// 【铜导之刃】材质：新锻亮铜。签名：①全组最轻快的双拍连击，音高最高
-    /// ②「导电」命中湿身目标伤害 +15% 并迸静电青白火花 ③铜橙刀光带绿锈垫影
+    /// ②「导电」命中湿身目标伤害 +15%
     /// </summary>
     internal class GsCopperBroadsword : GsBroadswordScheme
     {
@@ -30,12 +27,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         protected override string GsDescFallback =>
             "Reforged: a nimble two-beat combo; strikes conduct through drenched foes, dealing bonus damage with a static crackle";
-
-        //铜橙+绿锈色板
         internal static readonly Color CopperBright = new(255, 202, 148); //亮铜刃缘
         internal static readonly Color CopperMain = new(198, 116, 62);    //铜身橙
         internal static readonly Color CopperZap = new(168, 240, 255);    //静电青白
-        internal static readonly Color CopperRust = new(26, 48, 40);      //绿锈暗影
 
         //预算账：双拍均伤 ~1.06x、总帧短于 useAnimation（冷却吃 max 两者不提速）；
         //导电 +15% 仅湿身目标（雨战/水战摊入均值约 +2%）→ 综合 DPS ~原版 110%
@@ -53,7 +47,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsCopperBroadsword.CopperBright;
         protected override Color BodyMain => GsCopperBroadsword.CopperMain;
         protected override Color HotAccent => GsCopperBroadsword.CopperZap;
-        protected override Color DeepShadow => GsCopperBroadsword.CopperRust;
 
         protected override int BeatCount => 2;
 
@@ -83,31 +76,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 modifiers.SourceDamage *= 1.15f;
             }
         }
-
-        /// <summary>导电命中：静电青白火花 + 电尘（基类已守非服务器端）</summary>
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            if (!target.wet) {
-                return;
-            }
-            for (int i = 0; i < 6; i++) {
-                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2.5f, 7f);
-                PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, GsCopperBroadsword.CopperZap
-                    , Main.rand.NextFloat(0.3f, 0.55f))?.Configure(false, Main.rand.Next(10, 16));
-            }
-            for (int i = 0; i < 4; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.Electric
-                    , Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 3.5f), 0, default, Main.rand.NextFloat(0.7f, 1f));
-                d.noGravity = true;
-            }
-        }
     }
     #endregion
 
     #region 锡阔剑：锡鸣共振
     /// <summary>
     /// 【锡鸣之刃】材质：亮锡薄刃。签名：①四拍连击音高沿音阶逐拍上行
-    /// ②第四拍共鸣拍伤害 +20%、白闪起手并伴高音脆响 ③亮锡银刀光
+    /// ②第四拍共鸣拍伤害 +20%、起手伴高音脆响
     /// </summary>
     internal class GsTinBroadsword : GsBroadswordScheme
     {
@@ -119,12 +94,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         protected override string GsDescFallback =>
             "Reforged: a four-beat combo that rings up the scale; the fourth resonant strike lands harder in a white flash";
-
-        //亮锡银色板
         internal static readonly Color TinBright = new(232, 238, 244);  //锡亮银
         internal static readonly Color TinMain = new(152, 162, 174);    //锡身灰
         internal static readonly Color TinRing = new(255, 255, 240);    //共鸣白
-        internal static readonly Color TinDeep = new(40, 44, 54);       //锡暗影
 
         //预算账：拍均伤 (1+1+1+1.2)/4≈1.05，共鸣拍要连满四刀（断手 55 帧回拍）
         //实战摊 ~1.04 → base 1.05 → 综合 DPS ~原版 109%
@@ -134,7 +106,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 锡阔剑手持：四拍音阶剑，SwingPitch 逐拍 +0.1 上行；
-    /// 第四拍共鸣拍伤害 +20%、SetFlash 白闪、MaxMana 脆响。ai[0]=拍号 ai[1]=交替符号
+    /// 第四拍共鸣拍伤害 +20%、MaxMana 脆响。ai[0]=拍号 ai[1]=交替符号
     /// </summary>
     internal class GsTinBroadswordHeld : GsBroadswordHeldBase
     {
@@ -142,7 +114,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsTinBroadsword.TinBright;
         protected override Color BodyMain => GsTinBroadsword.TinMain;
         protected override Color HotAccent => GsTinBroadsword.TinRing;
-        protected override Color DeepShadow => GsTinBroadsword.TinDeep;
 
         protected override int BeatCount => 4;
 
@@ -171,19 +142,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             if (!IsFinisher) {
                 return;
             }
-            //共鸣：白闪 + 一记高音脆响
-            SetFlash(8);
+            //共鸣：一记高音脆响
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.7f, Pitch = 0.5f }, Owner.Center);
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            if (IsFinisher) {
-                //共鸣拍命中放一朵共鸣白光
-                PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero, GsTinBroadsword.TinRing, 0.28f)
-                    ?.Configure(12, 0.9f);
             }
         }
     }
@@ -192,7 +153,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     #region 铅阔剑：铅坠劈
     /// <summary>
     /// 【铅坠重刃】材质：灌铅钝刃。签名：①全拍表沉钝、击退 +40%
-    /// ②「铅坠劈」终结拍改为过顶下劈，命中顿帧 3 ③落劈震起地面尘土
+    /// ②「铅坠劈」终结拍改为过顶下劈，命中顿帧 3 ③落劈触地一记闷响
     /// </summary>
     internal class GsLeadBroadsword : GsBroadswordScheme
     {
@@ -202,12 +163,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         protected override string GsDescFallback =>
             "Reforged: slow, brutal swings with heavy knockback; the finisher drops as an overhead slam that shakes dust from the ground";
-
-        //铅灰蓝色板
         internal static readonly Color LeadBright = new(172, 184, 208); //铅灰亮
         internal static readonly Color LeadMain = new(98, 108, 134);    //铅身蓝灰
         internal static readonly Color LeadHot = new(142, 162, 224);    //坠劈冷蓝
-        internal static readonly Color LeadDeep = new(22, 25, 36);      //铅沉暗影
 
         //预算账：拍均伤 (1+1+1.35)/3≈1.12 但连段总帧长于原版节奏 → base 1.06
         //综合 DPS ~原版 108%；击退 +40% 是控场收益不进 DPS
@@ -220,7 +178,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 铅阔剑手持：三拍钝剑，两记慢横劈接「铅坠劈」——终结拍整替几何为过顶下劈
-    /// （自前方拖上头顶、翻过天顶砸向脚前），命中顿帧 3，落劈震起地面尘土。
+    /// （自前方拖上头顶、翻过天顶砸向脚前），命中顿帧 3，落劈触地闷响。
     /// ai[0]=拍号 ai[1]=交替符号（终结拍忽略符号，恒过顶）
     /// </summary>
     internal class GsLeadBroadswordHeld : GsBroadswordHeldBase
@@ -229,7 +187,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsLeadBroadsword.LeadBright;
         protected override Color BodyMain => GsLeadBroadsword.LeadMain;
         protected override Color HotAccent => GsLeadBroadsword.LeadHot;
-        protected override Color DeepShadow => GsLeadBroadsword.LeadDeep;
 
         private bool slammed;
 
@@ -252,7 +209,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override void OnStageInit() {
             base.OnStageInit();
             if (IsFinisher) {
-                //过顶劈恒沿面朝向翻落，压掉交替符号，残影/涂抹方向随之对齐
+                //过顶劈恒沿面朝向翻落，压掉交替符号，翻刃方向随之对齐
                 swingDir = facingDir;
             }
         }
@@ -299,8 +256,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     mainAngle = ChopEnd + facingDir * 0.08f * (1f - settle);
                     mainReach = FullReach * MathHelper.Lerp(0.95f, 0.8f, q * q);
                     slashProgress = 1f;
-                    float fadeDur = MathF.Max(4f, recoverDur * 0.7f);
-                    fanFade = MathHelper.Clamp(1f - ((timer - raiseDur - holdDur - slashDur) / fadeDur), 0f, 1f);
                     break;
                 }
             }
@@ -309,42 +264,36 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         protected override void HandlePhaseEvents(int phase) {
             base.HandlePhaseEvents(phase);
-            //落劈触底：收势首帧向脚下找地面，震起尘土
+            //落劈触底：收势首帧向脚下找地面，触地闷响
             if (IsFinisher && !slammed && phase == PhaseRecover) {
                 slammed = true;
                 if (!VaultUtils.isServer) {
-                    SpawnSlamDust();
+                    PlaySlamSound();
                 }
             }
         }
 
-        /// <summary>刃尖下方八格内找实心地面，沿地面震起烟尘与碎石</summary>
-        private void SpawnSlamDust() {
+        /// <summary>刃尖下方八格内找到实心地面才放触地闷响</summary>
+        private void PlaySlamSound() {
             Point tile = mainTip.ToTileCoordinates();
             for (int j = 0; j < 8; j++) {
                 if (!WorldGen.SolidTile(tile.X, tile.Y + j)) {
                     continue;
                 }
-                float groundY = (tile.Y + j) * 16f;
                 SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.9f, Pitch = -0.5f }, mainTip);
-                for (int i = 0; i < 14; i++) {
-                    float x = mainTip.X + Main.rand.NextFloat(-52f, 52f);
-                    Dust d = Dust.NewDustPerfect(new Vector2(x, groundY - 2f)
-                        , Main.rand.NextBool() ? DustID.Smoke : DustID.Stone
-                        , new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), -Main.rand.NextFloat(0.8f, 2.4f))
-                        , 120, default, Main.rand.NextFloat(0.9f, 1.5f));
-                    d.noGravity = Main.rand.NextBool(3);
-                }
                 break;
             }
         }
     }
     #endregion
 
-    #region 银阔剑：月辉刃
+    #region 银阔剑：月刃尖
     /// <summary>
-    /// 【月辉银刃】材质：淬月的纯银。签名：①夜间伤害 +12%
-    /// ②命中迸溅白银辉光、夜里另升一粒月尘 ③终结拍涂抹带更长更亮、残影多一层
+    /// 【月辉银刃】材质：淬月的纯银。<br/>
+    /// 签名（真近战）：刀身外段是「月刃尖」——用刃尖那四成刀身砍中的敌人吃 +40% 伤害，伴一声银铃脆响；
+    /// 夜里月光更长，刃尖段放宽到一半刀身。<br/>
+    /// 操作奖励：拉开距离、让敌人只碰到刀尖再挥，而不是贴脸乱砍。终结拍照旧前压重斩（×1.3）。<br/>
+    /// 预算：贴脸乱砍 ≈ 原版 100%；掐着刀尖打 ≈ 140%
     /// </summary>
     internal class GsSilverBroadsword : GsBroadswordScheme
     {
@@ -353,27 +302,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsSilverBroadswordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: blessed silver that bites harder at night; the finisher smears a long trail of moonlit silver";
-
-        //银白冷色板
+            "Reforged: the outer part of the blade is the moon edge, and foes struck by it take 40% more damage with a silver chime\nKeep your distance so only the tip lands; at night the moon edge covers half the blade";
         internal static readonly Color SilverBright = new(236, 246, 255); //银亮白
         internal static readonly Color SilverMain = new(172, 192, 216);   //银身冷灰
         internal static readonly Color SilverMoon = new(202, 226, 255);   //月辉淡蓝
-        internal static readonly Color SilverDeep = new(30, 38, 52);      //银夜暗影
-
-        //预算账：base 1.06，夜间 ×1.12≈1.19（未破 120% 上限）；
-        //昼夜各半摊入均值 ≈1.12 → 综合 DPS ~原版 112%
-        public override void GsModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            damage *= 1.06f;
-            if (!Main.dayTime) {
-                damage *= 1.12f;
-            }
-        }
     }
 
     /// <summary>
-    /// 银阔剑手持：三拍中量剑。终结拍涂抹带更长更亮（覆 SmearOuterColor/GhostCount）；
-    /// 命中迸银辉，夜里另升月尘。ai[0]=拍号 ai[1]=交替符号
+    /// 银阔剑手持：三拍中量剑，终结拍前压重斩；命中时按目标离手距离判定是否吃到刃尖。
+    /// ai[0]=拍号 ai[1]=交替符号
     /// </summary>
     internal class GsSilverBroadswordHeld : GsBroadswordHeldBase
     {
@@ -381,7 +318,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsSilverBroadsword.SilverBright;
         protected override Color BodyMain => GsSilverBroadsword.SilverMain;
         protected override Color HotAccent => GsSilverBroadsword.SilverMoon;
-        protected override Color DeepShadow => GsSilverBroadsword.SilverDeep;
+
+        /// <summary>刃尖段起点（占手→刃尖距离的比例）：白天外四成，夜里外一半</summary>
+        private static float TipStart => Main.dayTime ? 0.60f : 0.50f;
+        /// <summary>刃尖伤害倍率</summary>
+        private const float TipDamage = 1.40f;
 
         protected override GsBroadBeat GetBeat(int stage) {
             if (stage == 2) {
@@ -396,20 +337,25 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             return b;
         }
 
-        //终结拍的月辉涂抹：更亮的月色 + 多一层残影拖长挥迹
-        protected override Color SmearOuterColor => IsFinisher ? GsSilverBroadsword.SilverMoon : EdgeBright;
-        protected override int GhostCount => IsFinisher ? 4 : 2;
+        /// <summary>目标离手的最近距离落在刃尖段内即为刃尖命中（贴身大体型目标距离≈0，天然不算）</summary>
+        private bool IsTipHit(NPC target) => target.Hitbox.Distance(Hand) >= mainReach * TipStart;
 
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //银辉迸溅
-            PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero, GsSilverBroadsword.SilverBright, 0.22f)
-                ?.Configure(12, 0.85f);
-            if (!Main.dayTime) {
-                //夜里另升一粒月尘
-                PRTLoader.NewParticle<PRT_Sparkle>(target.Center + Main.rand.NextVector2Circular(10f, 10f)
-                    , -Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.5f), Color.White, 0.8f)
-                    ?.Configure(GsSilverBroadsword.SilverMoon, 22, 0.08f, 1.2f);
+        protected override void ModifyHitExtra(NPC target, ref NPC.HitModifiers modifiers) {
+            if (IsTipHit(target)) {
+                modifiers.FinalDamage *= TipDamage;
+            }
+        }
+
+        protected override void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (VaultUtils.isServer || !IsTipHit(target)) {
+                return;
+            }
+            //银铃脆响 + 三粒银屑：告诉玩家这一下是刀尖咬到的
+            SoundEngine.PlaySound(SoundID.Item35 with { Volume = 0.5f, Pitch = 0.55f, MaxInstances = 2 }, target.Center);
+            for (int i = 0; i < 3; i++) {
+                Dust d = Dust.NewDustPerfect(target.Center + Main.rand.NextVector2Circular(6f, 6f), DustID.SilverCoin,
+                    Main.rand.NextVector2Circular(1.5f, 1.5f) - Vector2.UnitY * 1.2f, 0, default, 1f);
+                d.noGravity = true;
             }
         }
     }
@@ -418,7 +364,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     #region 钨阔剑：破甲刻痕
     /// <summary>
     /// 【钨钢刻刃】材质：致密钨钢。签名：①「破甲刻痕」同一目标连吃 3 刀后，
-    /// 后续命中无视 8 点防御 ②命中钢屑火花密度全组最高 ③刻痕成型时金铁脆鸣提示
+    /// 后续命中无视 8 点防御 ②刻痕成型时金铁脆鸣提示
     /// </summary>
     internal class GsTungstenBroadsword : GsBroadswordScheme
     {
@@ -428,12 +374,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         protected override string GsDescFallback =>
             "Reforged: notch the same target three times and every following cut ignores part of its armor";
-
-        //钨绿灰色板
         internal static readonly Color TungstenBright = new(192, 216, 194); //钨亮绿灰
         internal static readonly Color TungstenMain = new(112, 138, 118);   //钨身绿灰
         internal static readonly Color TungstenHot = new(255, 182, 104);    //钢屑火橙
-        internal static readonly Color TungstenDeep = new(24, 34, 28);      //钨沉暗影
 
         //预算账：base 1.05 + 破甲 8 点仅对高甲目标折 ~+4% 且要先垫 3 刀
         //→ 综合 DPS ~原版 109%
@@ -443,7 +386,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 钨阔剑手持：三拍重剑。owner 端按目标记刻痕数，同一目标连吃 3 刀后
-    /// 后续命中破甲 8 点；挥砍钢屑火花密度全组最高。ai[0]=拍号 ai[1]=交替符号
+    /// 后续命中破甲 8 点。ai[0]=拍号 ai[1]=交替符号
     /// </summary>
     internal class GsTungstenBroadswordHeld : GsBroadswordHeldBase
     {
@@ -451,7 +394,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsTungstenBroadsword.TungstenBright;
         protected override Color BodyMain => GsTungstenBroadsword.TungstenMain;
         protected override Color HotAccent => GsTungstenBroadsword.TungstenHot;
-        protected override Color DeepShadow => GsTungstenBroadsword.TungstenDeep;
 
         /// <summary>刻痕计数：whoAmI → (npc 类型, 累计刀数)。命中判定只在 owner 端跑，
         /// 本表只被本地玩家的挥砍读写；类型不符视为槽位复用，重新记数</summary>
@@ -488,11 +430,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             int hits = notches.TryGetValue(target.whoAmI, out (int npcType, int hits) n) && n.npcType == target.type
                 ? n.hits + 1 : 1;
             notches[target.whoAmI] = (target.type, hits);
-            //刻痕成型的瞬间给一记金铁脆鸣 + 一粒火橙星
+            //刻痕成型的瞬间给一记金铁脆鸣
             if (hits == 3 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.55f, Pitch = 0.35f }, target.Center);
-                PRTLoader.NewParticle<PRT_Sparkle>(target.Center, Vector2.Zero, Color.White, 0.9f)
-                    ?.Configure(GsTungstenBroadsword.TungstenHot, 18, 0.1f, 1.1f);
             }
         }
 
@@ -512,38 +452,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 notches.Remove(k);
             }
         }
-
-        /// <summary>挥砍钢屑密度全组最高：基类之上每帧再补一粒</summary>
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            if (phase != PhaseSlash) {
-                return;
-            }
-            Vector2 sweepVel = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
-            Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.55f, 1f));
-            PRTLoader.NewParticle<PRT_Spark>(at, sweepVel * Main.rand.NextFloat(4f, 9f)
-                , Main.rand.NextBool() ? GsTungstenBroadsword.TungstenHot : GsTungstenBroadsword.TungstenBright
-                , Main.rand.NextFloat(0.4f, 0.65f))?.Configure(true, Main.rand.Next(14, 22));
-        }
-
-        /// <summary>命中钢屑加量</summary>
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            Vector2 aimDir = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
-            for (int i = 0; i < 6; i++) {
-                Vector2 vel = aimDir.RotatedByRandom(0.8) * Main.rand.NextFloat(4f, 10f);
-                PRTLoader.NewParticle<PRT_Spark>(target.Center, vel
-                    , Main.rand.NextBool() ? GsTungstenBroadsword.TungstenHot : GsTungstenBroadsword.TungstenBright
-                    , Main.rand.NextFloat(0.4f, 0.7f))?.Configure(true, Main.rand.Next(16, 26));
-            }
-        }
     }
     #endregion
 
     #region 金阔剑：鎏金
     /// <summary>
-    /// 【鎏金华刃】材质：鎏金重剑。签名：①残影多一层且通体鎏金 ②命中掉金星屑、
-    /// 偶尔一声金币脆响 ③终结拍在身怀金币时伤害 +8%（财气上刃的趣味设定）
+    /// 【鎏金华刃】材质：鎏金重剑。签名：①命中偶尔一声金币脆响
+    /// ②终结拍在身怀金币时伤害 +8%（财气上刃的趣味设定）
     /// </summary>
     internal class GsGoldBroadsword : GsBroadswordScheme
     {
@@ -553,12 +468,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         protected override string GsDescFallback =>
             "Reforged: gilded afterimages and coin-spark hits; the finisher strikes richer while gold sits in your purse";
-
-        //鎏金色板
         internal static readonly Color GoldBright = new(255, 228, 142); //鎏金亮
         internal static readonly Color GoldMain = new(216, 162, 62);    //金身
         internal static readonly Color GoldHot = new(255, 202, 82);     //金芒
-        internal static readonly Color GoldDeep = new(60, 42, 16);      //金沉暗影
 
         //预算账：base 1.06 + 终结拍条件 +8%（仅 1/3 出手、持金即触发，摊 ~+2.5%）
         //→ 综合 DPS ~原版 109%
@@ -567,8 +479,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     }
 
     /// <summary>
-    /// 金阔剑手持：三拍华剑。残影比基类多一层、通体鎏金；命中掉 1~2 枚金星屑
-    /// 并低概率金币脆响；终结拍身怀金币则 +8% 伤害。ai[0]=拍号 ai[1]=交替符号
+    /// 金阔剑手持：三拍华剑。命中低概率金币脆响；
+    /// 终结拍身怀金币则 +8% 伤害。ai[0]=拍号 ai[1]=交替符号
     /// </summary>
     internal class GsGoldBroadswordHeld : GsBroadswordHeldBase
     {
@@ -576,7 +488,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsGoldBroadsword.GoldBright;
         protected override Color BodyMain => GsGoldBroadsword.GoldMain;
         protected override Color HotAccent => GsGoldBroadsword.GoldHot;
-        protected override Color DeepShadow => GsGoldBroadsword.GoldDeep;
 
         protected override GsBroadBeat GetBeat(int stage) {
             if (stage == 2) {
@@ -593,9 +504,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             b.SwingPitch = stage == 0 ? -0.1f : -0.18f;
             return b;
         }
-
-        //鎏金签名：残影比基类各多一层，金色由色板天然承担
-        protected override int GhostCount => IsFinisher ? 4 : 3;
 
         /// <summary>终结拍身怀金币则 +8%（趣味设定；条件摊入方案侧包络注释）</summary>
         protected override void ModifyHitExtra(NPC target, ref NPC.HitModifiers modifiers) {
@@ -614,17 +522,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             return false;
         }
 
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //金星屑 1~2 枚（纯演出）
-            int stars = Main.rand.Next(1, 3);
-            for (int i = 0; i < stars; i++) {
-                PRTLoader.NewParticle<PRT_Sparkle>(target.Center + Main.rand.NextVector2Circular(12f, 12f)
-                    , new Vector2(Main.rand.NextFloat(-1f, 1f), -Main.rand.NextFloat(0.5f, 1.8f)), Color.White
-                    , Main.rand.NextFloat(0.7f, 1f))?.Configure(GsGoldBroadsword.GoldHot, Main.rand.Next(18, 26), 0.12f, 1.1f);
-            }
-            //低概率一声金币脆响
-            if (Main.rand.NextBool(5)) {
+        /// <summary>命中低概率一声金币脆响</summary>
+        protected override void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (!VaultUtils.isServer && Main.rand.NextBool(5)) {
                 SoundEngine.PlaySound(SoundID.CoinPickup with { Volume = 0.5f, Pitch = Main.rand.NextFloat(-0.1f, 0.3f) }, target.Center);
             }
         }
@@ -634,7 +534,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     #region 铂金阔剑：全重劈
     /// <summary>
     /// 【铂金压顶】材质：冷铸铂金。签名：①全组最重的三拍全重劈，音高最低顿帧最足
-    /// ②终结拍 LungeSpeed 4 前压、击退 +50% ③终结斩切期贴刃双层冲击波涂抹
+    /// ②终结拍 LungeSpeed 4 前压、击退 +50%
     /// </summary>
     internal class GsPlatinumBroadsword : GsBroadswordScheme
     {
@@ -644,12 +544,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         protected override string GsDescFallback =>
             "Reforged: three full-weight cleaves; the finisher lunges with a double shockwave and crushing knockback";
-
-        //冷白铂色板
         internal static readonly Color PlatBright = new(228, 238, 252); //铂亮白
         internal static readonly Color PlatMain = new(182, 196, 218);   //铂身冷灰
         internal static readonly Color PlatHot = new(172, 202, 255);    //压顶冷蓝
-        internal static readonly Color PlatDeep = new(30, 36, 50);      //铂沉暗影
 
         //预算账：拍均伤 (1.05+1.05+1.42)/3≈1.17 × base 1.07 ≈ 1.25 倍/挥，
         //但连段总帧长于原版节奏 ~15% → 综合 DPS ~原版 110%；击退 +50% 不进 DPS
@@ -662,7 +559,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 铂金阔剑手持：三拍全重劈（Raise 9~10/顿帧 2~3/音高全组最低/LeanAmp 大），
-    /// 终结拍 LungeSpeed 4、DrawExtra 贴刃双层冲击波涂抹。ai[0]=拍号 ai[1]=交替符号
+    /// 终结拍 LungeSpeed 4。ai[0]=拍号 ai[1]=交替符号
     /// </summary>
     internal class GsPlatinumBroadswordHeld : GsBroadswordHeldBase
     {
@@ -670,7 +567,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsPlatinumBroadsword.PlatBright;
         protected override Color BodyMain => GsPlatinumBroadsword.PlatMain;
         protected override Color HotAccent => GsPlatinumBroadsword.PlatHot;
-        protected override Color DeepShadow => GsPlatinumBroadsword.PlatDeep;
 
         protected override GsBroadBeat GetBeat(int stage) {
             if (stage == 2) {
@@ -687,29 +583,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 , LeanAmp = stage == 0 ? 0.085f : 0.09f,
                 DamageMult = 1.05f, Hitstop = 2, LungeSpeed = 0f, SwingPitch = stage == 0 ? -0.52f : -0.58f,
             };
-        }
-
-        /// <summary>终结斩切期贴刃双层冲击波：随行程外扩、渐淡（确定性，不掷 Main.rand）</summary>
-        protected override void DrawExtra(SpriteBatch sb, Color lightColor) {
-            if (!IsFinisher || CurrentPhase != PhaseSlash || slashProgress < 0.1f) {
-                return;
-            }
-            Texture2D wave = CWRAsset.SemiCircularSmear?.Value;
-            if (wave == null) {
-                return;
-            }
-            float grow = 0.8f + slashProgress * 0.6f;
-            float alpha = (1f - slashProgress * 0.6f) * 0.5f;
-            Vector2 at = Hand + (mainAngle.ToRotationVector2() * mainReach * 0.7f) - Main.screenPosition;
-            float rot = mainAngle + (swingDir * 0.35f);
-            Color outer = GsPlatinumBroadsword.PlatBright * alpha;
-            outer.A = 0;
-            sb.Draw(wave, at, null, outer, rot, wave.Size() / 2f
-                , new Vector2(0.6f, 0.34f) * grow * (mainReach / 118f), SpriteEffects.None, 0f);
-            Color inner = GsPlatinumBroadsword.PlatHot * (alpha * 0.8f);
-            inner.A = 0;
-            sb.Draw(wave, at, null, inner, rot + (swingDir * 0.08f), wave.Size() / 2f
-                , new Vector2(0.52f, 0.2f) * grow * (mainReach / 118f), SpriteEffects.None, 0f);
         }
     }
     #endregion

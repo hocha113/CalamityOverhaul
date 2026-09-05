@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -66,14 +64,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Magic
         }
     }
 
-    /// <summary>紫电奥能弧：三道紫电在目标身上炸开又收束，弧向逐帧抖动（AI 内掷随机，绘制只读）</summary>
+    /// <summary>紫电奥能弧：在目标身上炸开的短命奥能判定</summary>
     internal class GodSmithOverloadArc : ModProjectile
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.LightBeam;
-
-        private float Seed => Projectile.whoAmI * 2.399f;
-
-        private float LifeRatio => 1f - Projectile.timeLeft / 18f;
 
         public override void SetDefaults() {
             Projectile.width = 56;
@@ -91,42 +85,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Magic
         public override void AI() {
             if (Projectile.timeLeft == 17 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.5f, Pitch = -0.1f }, Projectile.Center);
-                for (int i = 0; i < 10; i++) {
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.PurpleTorch,
-                        Main.rand.NextVector2Circular(5f, 5f), 100, default, 1.3f);
-                    dust.noGravity = true;
-                }
-            }
-            //抖动量在 AI 里掷好存 localAI，绘制端只读（绘制禁 Main.rand）
-            Projectile.localAI[0] = Main.rand.NextFloat(-0.22f, 0.22f);
-            Lighting.AddLight(Projectile.Center, 0.4f, 0.15f, 0.55f);
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(200, 120, 255, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float grow = LifeRatio < 0.3f ? LifeRatio / 0.3f : 1f - (LifeRatio - 0.3f) / 0.7f;
-            for (int i = 0; i < 3; i++) {
-                float rot = Seed + i * (MathHelper.TwoPi / 3f) + Projectile.localAI[0];
-                float len = (1.1f + 0.5f * i % 2) * (0.4f + grow);
-                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                    new Color(90, 20, 160, 0) * (0.8f * grow), rot, origin, new Vector2(1.1f, len * 1.15f), 0);
-                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                    new Color(225, 160, 255, 0) * grow, rot, origin, new Vector2(0.5f, len), 0);
-            }
-            return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 6; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.PurpleTorch,
-                    Main.rand.NextVector2Circular(3f, 3f), 100, default, 1.1f);
-                dust.noGravity = true;
             }
         }
     }

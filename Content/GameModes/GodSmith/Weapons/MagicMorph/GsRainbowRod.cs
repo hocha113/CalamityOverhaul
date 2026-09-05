@@ -1,47 +1,22 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
 {
     /// <summary>
-    /// 彩虹魔杖重铸：引导二形态。<br/>
-    /// A 形态引导弹命中迸散 3 枚彩虹碎屑（承签子弹幕，直线衰减）；
-    /// B 形态（右键蓄 60t）「虹桥」：在光标处架 340px 任意角度虹弧 4s，
-    /// 敌穿桥受伤、友方踩桥加速（真弹幕承载，全端可见）
+    /// 彩虹魔杖重铸：引导弹命中迸散 3 枚彩虹碎屑（承签子弹幕，直线衰减）
     /// </summary>
     internal class GsRainbowRod : GsMorphScheme
     {
         public override int TargetItemID => ItemID.RainbowRod;
 
         protected override string GsDescFallback =>
-            "Reforged: guided bolts burst into prismatic shards on hit.\nHold right click to charge; release to raise a rainbow bridge that hurts foes crossing it and hastens allies standing on it";
-
-        protected override int ChargeTicksB => 60;
-        protected override float ChargeManaMult => 2.0f;
-        protected override Color ChargeColor => new(255, 120, 220);
+            "Reforged: guided bolts burst into prismatic shards on hit.\nrelease to raise a rainbow bridge that hurts foes crossing it and hastens allies standing on it";
         protected override float BaseDamageMult => 1.08f;
 
         /// <summary>MarkData 形态：彩虹碎屑</summary>
         private const int KindShard = 10;
-
-        protected override void FireMorphB(Item item, Player player) {
-            SoundEngine.PlaySound(SoundID.Item9 with { Volume = 1f, Pitch = 0.2f }, player.Center);
-            //桥心=光标（限 600px 内），桥轴=释放时瞄准方向
-            Vector2 anchor = Main.MouseWorld;
-            if (player.Center.Distance(anchor) > 600f) {
-                anchor = player.Center + GsAimUnit(player) * 600f;
-            }
-            float axisAngle = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX).ToRotation();
-            int dmg = (int)(player.GetWeaponDamage(item) * 0.4f);
-            Projectile.NewProjectile(player.GetSource_ItemUse(item), anchor, Vector2.Zero,
-                ModContent.ProjectileType<GsRainbowBridgeProj>(), dmg, 1f, player.whoAmI, axisAngle);
-        }
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
             if (proj.type != ProjectileID.RainbowRodBullet || KindOf(router) == KindShard) {
@@ -77,11 +52,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
             proj.velocity *= 0.975f;
             proj.velocity.Y += 0.06f;
             proj.rotation = proj.velocity.ToRotation() + MathHelper.PiOver2;
-            if (!VaultUtils.isServer && proj.timeLeft % 3 == 0) {
-                Color c = Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.6f);
-                PRTLoader.NewParticle<PRT_Sparkle>(proj.Center, -proj.velocity * 0.1f, c, 0.2f)
-                    ?.Configure(c, 10, 0.15f, 0.8f);
-            }
             return false;
         }
     }

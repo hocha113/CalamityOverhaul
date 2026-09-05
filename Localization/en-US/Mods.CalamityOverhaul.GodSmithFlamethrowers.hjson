@@ -1,0 +1,10 @@
+GsFlamethrower.Desc:
+	'''
+	Reforged: a wide cone that leaves burning ground
+	Sustained spraying drains pressure and shortens the flame; ease off to recover
+	'''
+GsElfMelter.Desc:
+	'''
+	Reforged: wide red-green flame laced with thaw mist
+	Pressure rules still apply: long sprays shorten the flame
+	'''

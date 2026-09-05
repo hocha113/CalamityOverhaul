@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -93,10 +91,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Ranged
         }
     }
 
-    /// <summary>灼铜跳弹：带着金属铛声弹开，先飘后咬加速命中，尾迹是铜火星</summary>
+    /// <summary>灼铜跳弹：带着金属铛声弹开，先飘后咬加速命中</summary>
     internal class GodSmithRicochetBolt : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bullet;
 
         public override void SetDefaults() {
             Projectile.width = 10;
@@ -123,28 +121,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Ranged
                 Projectile.velocity *= 0.95f;
                 Projectile.alpha = Math.Min(255, Projectile.alpha + 20);
             }
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            Lighting.AddLight(Projectile.Center, 0.4f, 0.25f, 0.08f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.CopperCoin,
-                    -Projectile.velocity * 0.15f, 100, default, 0.9f);
-                dust.noGravity = true;
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 150, 70, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float stretch = 0.2f + Projectile.velocity.Length() * 0.045f;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(140, 60, 15, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(stretch * 1.5f, 0.24f), 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 190, 110, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(stretch, 0.12f), 0);
-            return false;
+            //原版子弹贴图竖向朝上，旋转补四分之一圈
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
         public override void OnKill(int timeLeft) {
@@ -152,11 +130,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Ranged
                 return;
             }
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.4f, Pitch = 0.5f }, Projectile.Center);
-            for (int i = 0; i < 8; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.CopperCoin,
-                    Main.rand.NextVector2Circular(3.5f, 3.5f), 90, default, 1f);
-                dust.noGravity = true;
-            }
         }
     }
 }

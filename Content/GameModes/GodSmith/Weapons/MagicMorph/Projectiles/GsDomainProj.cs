@@ -1,6 +1,6 @@
-using CalamityOverhaul.Common;
-using System;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Projectiles
@@ -8,17 +8,16 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Project
     /// <summary>
     /// MagicMorph 族小领域基类：短时驻场弹幕（真弹幕承载，全端可见）。<br/>
     /// 寿命在 SetDefaults 定死（各端出生即一致，杜绝服务端直改 timeLeft 不入包）；
-    /// 判定为以弹幕中心为圆心的圆，与可见边界环同源；
+    /// 判定为以弹幕中心为圆心的圆，范围提示为原版贴图按半径缩放的一笔；
     /// tick 节奏走 usesLocalNPCImmunity + localNPCHitCooldown；
-    /// 同类领域全场最多一座：再放走 <see cref="TryMigrate{T}"/> 旧域迁移（不叠不刷不续命）
+    /// 同类领域全场最多一座：再放走 <see cref="TryMigrate{T}"/> 旧域迁移（不叠不刷不续命）。
+    /// 子类须覆写 <see cref="ModProjectile.Texture"/> 指向原版贴图
     /// </summary>
     internal abstract class GsDomainProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
-
         //==================== 子类参数 ====================
 
-        /// <summary>判定半径（px），与可见边界同源</summary>
+        /// <summary>判定半径（px），与范围提示同源</summary>
         protected abstract int DomainRadius { get; }
 
         /// <summary>寿命（帧），SetDefaults 写死后不得再改</summary>
@@ -29,16 +28,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Project
 
         /// <summary>域本体是否携带接触判定（false=纯位置标记/产物承伤型）</summary>
         protected virtual bool DealsContactDamage => true;
-
-        /// <summary>边界环三色：波前亮缘</summary>
-        protected abstract Color RingBright { get; }
-        /// <summary>边界环三色：环带主体</summary>
-        protected abstract Color RingMain { get; }
-        /// <summary>边界环三色：内侧残波</summary>
-        protected abstract Color RingDeep { get; }
-
-        /// <summary>边界环 Y 透视压缩，贴地域用 0.4~0.5，悬空域用 1</summary>
-        protected virtual float RingSquish => 1f;
 
         //==================== 生命周期 ====================
 
@@ -82,53 +71,33 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Project
             }
         }
 
-        private Vector2 prevCenter;
-
         public sealed override void AI() {
             //模式关闭时在场领域即刻消散（世界旗标全端同步，各端 Kill 一致）
             if (!GameModeSystem.GodSmithActive) {
                 Projectile.Kill();
                 return;
             }
-            //迁移瞬间的跨端可见反馈：位置突变时两端各撒少量粒子
-            if (prevCenter != Vector2.Zero && !VaultUtils.isServer
-                && Projectile.Center.DistanceSQ(prevCenter) > 100f * 100f) {
-                OnMigrateVisual(prevCenter);
-            }
-            prevCenter = Projectile.Center;
             DomainAI();
-            if (!VaultUtils.isServer) {
-                EmitAmbient();
-            }
         }
 
         /// <summary>子类领域逻辑（各端都会执行；权威改动守 IsOwnedByLocalPlayer，服务端可写 NPC 位移）</summary>
         protected virtual void DomainAI() { }
 
-        /// <summary>域内环境粒子（仅客户端；预算 ≤4/帧）</summary>
-        protected virtual void EmitAmbient() { }
-
-        /// <summary>迁移瞬间的旧址消散反馈（仅客户端）</summary>
-        protected virtual void OnMigrateVisual(Vector2 oldCenter) { }
-
         //==================== 绘制 ====================
 
+        /// <summary>范围提示：原版贴图首帧按判定半径缩放画一笔（lightColor 着色），随寿命淡入淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
             float fade = LifeFade;
             if (fade <= 0.02f) {
                 return false;
             }
-            //边界慢环：半径呼吸微动，identity 定相（绘制路径禁 Main.rand）
-            float breathe = 1f + 0.018f * MathF.Sin(Main.GlobalTimeWrappedHourly * 2.4f + Projectile.identity * 0.83f);
-            ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center, DomainRadius * breathe, 7f,
-                RingBright, RingMain, RingDeep, 0.45f * fade,
-                squish: RingSquish, innerGlow: 0.12f, timeSeed: Projectile.identity * 0.37f);
-            DrawDomainInner(fade);
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            Rectangle frame = tex.Frame(1, Main.projFrames[Type], 0, 0);
+            float scale = DomainRadius * 2f / frame.Width;
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor * fade, 0f,
+                frame.Size() * 0.5f, scale, SpriteEffects.None, 0);
             return false;
         }
-
-        /// <summary>域内自定义绘制层（已处于实体批；黑底贴图记得色批 A=0）</summary>
-        protected virtual void DrawDomainInner(float fade) { }
 
         //==================== 迁移 helper ====================
 

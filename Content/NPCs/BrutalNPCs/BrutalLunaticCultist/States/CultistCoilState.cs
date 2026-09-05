@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             restFrames = extraRest;
         }
 
-        /// <summary>基础时长随阶段收紧(2026-08-28 二次提速:技能间隔全段较上版再收短 30%)</summary>
+        /// <summary>基础时长随阶段收紧(2026-08-28 二次提速收短 30%;2026-09-05 三次提速再收短 30%,各态额外休息帧同比)</summary>
         private static int BaseDuration(CultistStateContext context) {
-            int frames = context.Phase switch { >= 4 => 13, 3 => 15, 2 => 17, 1 => 20, _ => 22 };
+            int frames = context.Phase switch { >= 4 => 9, 3 => 10, 2 => 12, 1 => 14, _ => 15 };
             if (context.IsAsuraMode) {
                 frames = (int)(frames * 0.85f);
             }
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
 
             //充能满格:合相祭仪压过一切(最短停留闸随间隔提速同步收短)
-            if (context.AlignFull && Timer > 11) {
+            if (context.AlignFull && Timer > 8) {
                 return new CultistConjunctionState();
             }
 

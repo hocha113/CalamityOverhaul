@@ -1,6 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -51,7 +49,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions
     /// 阵型槽位各端按 (type, identity) 排序逐帧确定性重算；指挥官光环 = 已用仆从槽 ≥3。<br/>
     /// S3b 消费面：<see cref="RegisterKit"/>、<see cref="GetCommand"/>、
     /// <see cref="TryGetAssaultTarget"/>、<see cref="TryGetRallyPoint"/>、
-    /// <see cref="CommanderAuraActive"/>、<see cref="CommandColor"/>、
+    /// <see cref="CommanderAuraActive"/>、
     /// <see cref="RallyFieldAlive"/>、<see cref="FindOwnedProj"/>、<see cref="GsHitTally"/>
     /// </summary>
     internal static class MinionDoctrine
@@ -171,13 +169,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions
             point = new Vector2(banner.ai[1], banner.ai[2]);
             return true;
         }
-
-        /// <summary>当前指令对应的主题色（光环与旗桩共用）</summary>
-        internal static Color CommandColor(int owner) => GetCommand(owner) switch {
-            CommandAssault => AssaultRed,
-            CommandRally => RallyCyan,
-            _ => GuardGold,
-        };
 
         //==================== 右键指挥（只在本地玩家路径调用） ====================
 
@@ -495,7 +486,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions
 
         //==================== 指挥官光环 ====================
 
-        /// <summary>指挥官光环激活：模式开启且已用仆从槽 ≥3（各端本地按同条件判定，视觉确定性）</summary>
+        /// <summary>指挥官光环激活：模式开启且已用仆从槽 ≥3（各端本地按同条件判定）</summary>
         internal static bool CommanderAuraActive(Player player)
             => GameModeSystem.GodSmithActive && player.slotsMinions >= AuraSlotNeed;
 
@@ -568,29 +559,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions
             }
             foreach (int key in stale) {
                 map.Remove(key);
-            }
-        }
-    }
-
-    /// <summary>指挥官光环视觉：各端为每个满足条件的玩家本地绘制（确定性条件，无需同步）</summary>
-    internal class GsMinionCommandPlayer : ModPlayer
-    {
-        public override void PostUpdate() {
-            if (VaultUtils.isServer || !MinionDoctrine.CommanderAuraActive(Player)) {
-                return;
-            }
-            Color hue = MinionDoctrine.CommandColor(Player.whoAmI);
-            Lighting.AddLight(Player.Center, hue.ToVector3() * 0.16f);
-            //环缘呼吸微光（每秒约 3 粒，whoAmI 定相去同相）
-            if (Main.rand.NextBool(20)) {
-                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                float breathe = 1f + 0.06f * (float)Math.Sin(
-                    Main.GlobalTimeWrappedHourly * 2.1f + Player.whoAmI * 1.7f);
-                Vector2 at = Player.Center + ang.ToRotationVector2()
-                    * (MinionDoctrine.AuraRadius * 0.96f * breathe);
-                PRTLoader.NewParticle<PRT_Light>(at,
-                    ang.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 0.6f,
-                    hue, Main.rand.NextFloat(0.07f, 0.12f))?.Configure(16, 0.55f);
             }
         }
     }

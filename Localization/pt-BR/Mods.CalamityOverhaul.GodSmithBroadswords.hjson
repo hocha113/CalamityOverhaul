@@ -7,11 +7,6 @@
 	Reforged: every slash tears a shadow scar into the air;
 	the third strike sinks the blade into shadow, then erupts forward, and its scar lingers to corrode
 	''' */
-/* GsNightsEdge.Desc:
-	'''
-	Reforged: a five-beat rite; the first four strikes each channel one of the blades that forged it,
-	and the fifth fuses all four souls into a piercing wave of night
-	''' */
 # ===== Wood tier =====
 /* GsWoodenSword.Desc:
 	'''
@@ -53,10 +48,14 @@
 // GsCopperBroadsword.Desc: Reforged: a nimble two-beat combo; strikes conduct through drenched foes, dealing bonus damage with a static crackle
 // GsTinBroadsword.Desc: Reforged: a four-beat combo that rings up the scale; the fourth resonant strike lands harder in a white flash
 // GsLeadBroadsword.Desc: Reforged: slow, brutal swings with heavy knockback; the finisher drops as an overhead slam that shakes dust from the ground
-// GsSilverBroadsword.Desc: Reforged: blessed silver that bites harder at night; the finisher smears a long trail of moonlit silver
+/* GsSilverBroadsword.Desc:
+	'''
+	Reforged: the outer part of the blade is the moon edge, and foes struck by it take 40% more damage with a silver chime
+	Keep your distance so only the tip lands; at night the moon edge covers half the blade
+	''' */
 // GsTungstenBroadsword.Desc: Reforged: notch the same target three times and every following cut ignores part of its armor
 // GsGoldBroadsword.Desc: Reforged: gilded afterimages and coin-spark hits; the finisher strikes richer while gold sits in your purse
-// GsPlatinumBroadsword.Desc: Reforged: three full-weight cleaves; the finisher lunges with a double shockwave and crushing knockback
+// GsPlatinumBroadsword.Desc: Reforged: three full-weight cleaves; the finisher lands with a double shockwave and crushing knockback
 # ===== Environment / drop swords =====
 // GsBoneSword.Desc: Reforged: the third strike hurls a spinning bone that arcs through the air, splintering on whatever it strikes
 // GsMandibleBlade.Desc: Reforged: every swing bites with twin mandible arcs that snap shut like pincers; the third bite clamps down for extra damage
@@ -66,7 +65,7 @@
 // GsBladedGlove.Desc: Reforged: a five-beat claw flurry at point-blank range; the fifth strike rakes with a triple claw mark for bonus damage
 // GsKatana.Desc: Reforged: the blade vanishes into its own swing arc and reappears frozen at the endpoint; the third strike is a sheathed iai draw that erupts in a single white flash
 // GsIceBlade.Desc: Reforged: each slash condenses a spinning ice shard that arcs down in flight; the finisher looses a twin fan of shards
-// GsFalconBlade.Desc: Reforged: the fastest three-cut combo of its tier; the third strike is a falcon dive that pounces toward your aim, trailing doubled afterimages
+// GsFalconBlade.Desc: Reforged: the fastest three-cut combo of its tier; the third strike is a heavier, longer falcon dive
 // GsTentacleSpike.Desc: Reforged: strikes smear clinging slime onto victims, and sinking it into flesh drinks a sliver of life back
 // GsCandyCaneSword.Desc: Reforged: every fifth strike on the same target cracks the candy coating, dealing 50% bonus damage in a burst of red-and-white sugar shards
 // GsDyeTradersScimitar.Desc: Reforged: each sweep dyes its arc a new color of the rainbow; the third stroke flares all seven at once and splatters the target with dye
@@ -116,7 +115,6 @@
 // GsCutlass.Desc: Reforged: a four-beat plunder dance with rising tempo; land hits to build Panache, and with enough swagger the fourth beat becomes a whirling double-arc slash that strikes twice all around
 // GsDD2SquireBetsySword.Desc: Reforged: every slash looses a sonic dragon-roar wave; hits feed the Dragon Soul, and at 4 souls the finisher's wave ascends into twin coiling dragons
 // GsDD2SquireDemonSword.Desc: Reforged: raise the shield with right click as ever; a perfect block still repays fivefold force on the next strike, and brands the blade with hellfire: the next three slashes hurl burning waves that ignite foes
-// GsExcalibur.Desc: Reforged: a four-beat rite of daylight; every slash casts a holy arc, hits build Radiance, and the fourth judgment strike detonates it as a sacred nova
 // GsFetidBaghnakhs.Desc: Reforged: a four-beat point-blank claw flurry; every hit rakes a festering mark into the target, and the fourth mark bursts into pus, poisoning and envenoming everything it splatters
 // GsFrostbrand.Desc: Reforged: winter's breath; every slash exhales a frost bolt that stalls and surges in flight, hits inflict Frostburn, and the finishing beat fans the bolt into three ice shards
 // GsGreenPhaseblade.Desc: Reforged: a plasma edge that charges as it cuts; every hit extends the blade, and at full charge the next finishing slash hurls a plasma arc
@@ -140,13 +138,9 @@
 // GsSeedler.Desc: Reforged: every slash hurls a spinning seed pod that bounces and bursts into a fan of seeking thorns; the finisher's pod erupts into vines, raising a lingering bramble patch that keeps stabbing
 // GsSlapHand.Desc: Reforged: a three-beat divine slapping; every hit stamps a giant palm print with absurd knockback along the swing, and the finisher claps both palms together, ringing out a small shockwave
 // GsStarWrath.Desc: Reforged: every slash calls three comet-tailed stars down from the night sky; landed hits build the Star Tide, and at full tide the finishing slash unleashes a cascade of falling stars crowned by one great star that bursts into a ring
-// GsTerraBlade.Desc: Reforged: a four-beat duet where the light soul and the night soul take turns; every slash casts a terra wave in that soul's color, and the fourth beat fuses both souls into a grand resonant blade that detonates a verdant star ring on hit
 // GsTheHorsemansBlade.Desc: Reforged: striking a foe summons a flaming jack-o'-lantern to run it down; repeated strikes on one victim brand Headhunt marks, and at full marks the finishing slash calls a cavalry of four burning pumpkins to trample the line
 // GsTitaniumSword.Desc: Reforged: every slash leaves a titanium shade hanging in the air that replays the same cut half a beat later
-// GsTrueExcalibur.Desc: Reforged: a three-beat rite of daybreak; every slash hurls a piercing wave of daylight that grows mightier with each beat, and the third wave detonates a cross of holy light where it strikes
-// GsTrueNightsEdge.Desc: Reforged: the night tide; each heavy slash hurls a great wave of night that slows, stalls, then rushes back for a second cut, and the final wave swells larger, shedding two lesser night blades as it turns
 // GsWhitePhaseblade.Desc: Reforged: a plasma edge that charges as it cuts; every hit extends the blade, and at full charge the next finishing slash hurls a plasma arc
 // GsWhitePhasesaber.Desc: Reforged: a perfected plasma saber; hits overcharge the blade for greater reach, every finishing slash casts a short energy arc, and a full charge unleashes an overloaded arc that bursts on impact
 // GsYellowPhaseblade.Desc: Reforged: a plasma edge that charges as it cuts; every hit extends the blade, and at full charge the next finishing slash hurls a plasma arc
 // GsYellowPhasesaber.Desc: Reforged: a perfected plasma saber; hits overcharge the blade for greater reach, every finishing slash casts a short energy arc, and a full charge unleashes an overloaded arc that bursts on impact
-// GsZenith.Desc: Reforged: the pivot of ten thousand blades; every slash hurls phantom swords of history that arc to your cursor and return, hits build Sword Will, and the third strike unleashes a converging blade formation that tears open a spacetime rift at full Will

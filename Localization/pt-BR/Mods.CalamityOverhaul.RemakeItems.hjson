@@ -38,3 +38,15 @@ RBloodButcherer: {
 		Struck enemies are Blood Butchered
 		''' */
 }
+
+RTerraBlade: {
+	// DisplayName: "{$ItemName.TerraBlade}"
+	/* Tooltip:
+		'''
+		Five-beat combo: two heavy vertical cleaves, two rapid elliptical sweeps, then one grand spin
+		Every beat releases homing Terra Light along the blade path: 1 per cleave, 2 per sweep, 4 on the spin
+		Terra Light that strikes an enemy calls forth one of the blade's forged souls, alternating light and night
+		Light soul: a spectral True Excalibur descends from above and pierces the target
+		Night soul: a spectral True Night's Edge whirls at the point of impact, striking repeatedly
+		''' */
+}

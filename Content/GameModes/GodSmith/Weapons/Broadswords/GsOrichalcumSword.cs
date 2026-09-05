@@ -1,6 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -23,14 +20,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsOrichalcumSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: each swing scatters drifting petals along the arc that flutter, " +
-            "then dive at nearby prey; the finisher looses a full bloom";
-
-        //山铜粉晶色板
+            "Reforged: each swing scatters drifting petals along the arc that flutter, then dive at nearby prey; the finisher looses a full bloom";
         internal static readonly Color BloomBright = new(255, 168, 210); //粉瓣亮
         internal static readonly Color BloomMain = new(232, 96, 160);    //山铜粉
         internal static readonly Color BloomHot = new(255, 214, 236);    //盛放粉白
-        internal static readonly Color BloomDeep = new(70, 26, 52);      //深花影
 
         //预算账：拍均 (0.95+0.95+1.2)/3≈1.03；花瓣 2/2/4 枚 ×0.12x 追击
         //（散射后单体实取约半数 → +0.16/拍）；连段总帧 (20+19+27)=66 ≈ 原版 66 →
@@ -48,7 +41,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsOrichalcumSword.BloomBright;
         protected override Color BodyMain => GsOrichalcumSword.BloomMain;
         protected override Color HotAccent => GsOrichalcumSword.BloomHot;
-        protected override Color DeepShadow => GsOrichalcumSword.BloomDeep;
 
         private bool petalsFired;
 
@@ -88,9 +80,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 return;
             }
             petalsFired = true;
-            if (IsFinisher) {
-                SetFlash(6);
-            }
             int count = IsFinisher ? 4 : 2;
             int petalDamage = Math.Max(1, (int)(Projectile.damage * 0.12f));
             for (int i = 0; i < count; i++) {
@@ -104,53 +93,27 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             }
         }
 
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            if (phase != PhaseSlash || !Main.rand.NextBool(2)) {
-                return;
-            }
-            //斩切期刃面簌落粉尘
-            PRTLoader.NewParticle<PRT_Light>(
-                Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 1f)),
-                new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(0.4f, 1.1f)),
-                Main.rand.NextBool(3) ? GsOrichalcumSword.BloomHot : GsOrichalcumSword.BloomMain,
-                Main.rand.NextFloat(0.05f, 0.09f))?.Configure(11, 0.55f);
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //花瓣簌落柔响 + 粉白光雨（与金属剑的脆响区分）
-            SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.4f, Pitch = 0.5f, MaxInstances = 3 }, target.Center);
-            int motes = IsFinisher ? 5 : 3;
-            for (int i = 0; i < motes; i++) {
-                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f)
-                    - Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.5f);
-                PRTLoader.NewParticle<PRT_Light>(target.Center + Main.rand.NextVector2Circular(10f, 10f), vel,
-                    Main.rand.NextBool() ? GsOrichalcumSword.BloomBright : GsOrichalcumSword.BloomHot,
-                    Main.rand.NextFloat(0.06f, 0.11f))?.Configure(13, 0.65f);
+        /// <summary>命中：花瓣簌落柔响（与金属剑的脆响区分）</summary>
+        protected override void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.4f, Pitch = 0.5f, MaxInstances = 3 }, target.Center);
             }
         }
     }
 
     /// <summary>
-    /// 追击花瓣：沿挥弧撒出，先 14 帧飘落打旋（轻重力+横向摇曳），
+    /// 追击花瓣：沿挥弧撒出，用原版山铜花瓣贴图。先 14 帧飘落打旋（轻重力+横向摇曳），
     /// 再锁定 420 像素内猎物俯冲咬去，速度随俯冲渐升；无猎物则继续飘散。
-    /// 自绘叶形：两片镜像月牙拼成瓣身（粉体+亮缘）+ 粉晕垫底 + 瓣尖亮点，
-    /// 张合呼吸吃 identity 种子。ai[0]=自旋方向 ai[1]=瓣序（错开摇曳相位）
+    /// ai[0]=自旋方向 ai[1]=瓣序（错开摇曳相位）
     /// </summary>
     internal class GsOrichalcumSwordPetalProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.FlowerPetal;
         public override LocalizedText DisplayName => Language.GetText("ItemName.OrichalcumSword");
 
         private ref float Life => ref Projectile.localAI[0];
         private float SpinDir => Projectile.ai[0] >= 0f ? 1f : -1f;
         private float SwayPhase => Projectile.ai[1] * 1.7f;
-
-        /// <summary>出生 3 帧淡入、末尾 8 帧淡出</summary>
-        private float VisualFade => Math.Min(
-            MathHelper.Clamp(Life / 3f, 0f, 1f),
-            MathHelper.Clamp(Projectile.timeLeft / 8f, 0f, 1f));
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 18;
@@ -190,14 +153,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     Projectile.rotation += SpinDir * 0.26f;
                 }
             }
-
-            Lighting.AddLight(Projectile.Center, GsOrichalcumSword.BloomMain.ToVector3() * (0.22f * VisualFade));
-
-            if (!VaultUtils.isServer && Life % 3f == 0f) {
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, -Projectile.velocity * 0.08f,
-                    Main.rand.NextBool() ? GsOrichalcumSword.BloomMain : GsOrichalcumSword.BloomBright,
-                    Main.rand.NextFloat(0.04f, 0.08f))?.Configure(9, 0.5f);
-            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -205,57 +160,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 return;
             }
             SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.25f, Pitch = 0.6f, MaxInstances = 3 }, Projectile.Center);
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f),
-                    Main.rand.NextBool() ? GsOrichalcumSword.BloomBright : GsOrichalcumSword.BloomMain,
-                    Main.rand.NextFloat(0.24f, 0.4f))?.Configure(true, Main.rand.Next(9, 14));
-            }
-        }
-
-        /// <summary>绘制路径确定性伪随机</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        /// <summary>两片镜像月牙拼瓣身：粉晕垫底 + 粉瓣双片 + 亮缘 + 瓣尖亮点（无随机）</summary>
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D crescent = CWRAsset.CrescentEdge01?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (crescent == null || glow == null) {
-                return false;
-            }
-            float fade = VisualFade;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = crescent.Size() * 0.5f;
-            //瓣面张合呼吸
-            float breath = 0.88f + 0.12f * MathF.Sin(Life * 0.32f + SegRand(4) * 6.28f);
-            float rot = Projectile.rotation;
-
-            //粉晕垫底
-            Color haze = GsOrichalcumSword.BloomDeep * (0.5f * fade);
-            haze.A = 0;
-            Main.EntitySpriteDraw(glow, pos, null, haze, 0f, glow.Size() * 0.5f, 0.34f * breath, SpriteEffects.None, 0);
-            //瓣身：两片镜像月牙微错角拼合
-            Color body = GsOrichalcumSword.BloomMain * (0.85f * fade);
-            body.A = 0;
-            Main.EntitySpriteDraw(crescent, pos, null, body, rot + 0.35f, origin,
-                new Vector2(0.11f, 0.07f) * breath, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(crescent, pos, null, body, rot - 0.35f, origin,
-                new Vector2(0.11f, 0.07f) * breath, SpriteEffects.FlipVertically, 0);
-            //亮缘
-            Color rim = GsOrichalcumSword.BloomBright * (0.7f * fade);
-            rim.A = 0;
-            Main.EntitySpriteDraw(crescent, pos, null, rim, rot + 0.35f, origin,
-                new Vector2(0.085f, 0.04f) * breath, SpriteEffects.None, 0);
-            //瓣尖亮点
-            Vector2 tip = pos + rot.ToRotationVector2() * (9f * breath);
-            Color dot = GsOrichalcumSword.BloomHot * (0.55f * fade);
-            dot.A = 0;
-            Main.EntitySpriteDraw(glow, tip, null, dot, 0f, glow.Size() * 0.5f, 0.1f, SpriteEffects.None, 0);
-            return false;
         }
     }
 }

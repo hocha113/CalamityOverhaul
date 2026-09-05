@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -27,15 +25,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         public override string GsFamily => "MeleeOddities";
 
         protected override string GsDescFallback =>
-            "Reforged: a coiling four-beat thrust; each landed stab calls one ghast that pierces its mark, " +
-            "then rings around it for a half-damage encore. Three landed stabs in a row call twin ghasts";
-
-        //怨魂色板：幽白 → 幽绿 → 沉潭青 → 墓穴深影
-        internal static readonly Color GhostBright = new(214, 255, 232); //幽白亮芯
-        internal static readonly Color GhastGreen = new(120, 236, 170);  //怨魂幽绿
-        internal static readonly Color SoulTeal = new(64, 170, 150);     //沉潭青
-        internal static readonly Color GraveDeep = new(26, 42, 38);      //墓穴深影
-
+            "Reforged: a coiling four-beat thrust; each landed stab calls one ghast that pierces its mark, then rings around it for a half-damage encore. Three landed stabs in a row call twin ghasts";
         /// <summary>连续命中刺数；方案单例跨玩家共享，只在 myPlayer 守门路径（owner 命中/收刺）消费</summary>
         private int thrustStreak;
 
@@ -185,11 +175,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             UpdateGlaiveTransform(phase);
             UpdatePose(phase);
             HandlePhaseEvents(phase);
-            if (!VaultUtils.isServer) {
-                HandleParticles(phase);
-            }
-
-            Lighting.AddLight(tipPos, GsMonkStaffT2.GhastGreen.ToVector3() * 0.28f);
 
             if (timer >= totalDur) {
                 Projectile.Kill();
@@ -283,25 +268,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             }
         }
 
-        /// <summary>粒子演出（已守非服务器端）：蓄势魂雾双螺旋绕枪尖，镜像原版 dust228 绕相位公式</summary>
-        private void HandleParticles(int phase) {
-            if (phase == PhaseGather) {
-                float prog = timer / (float)gatherDur;
-                for (int i = 0; i < 2; i++) {
-                    float spiral = (prog * MathHelper.TwoPi * 2f) + (i * MathHelper.Pi);
-                    Dust d = Dust.NewDustPerfect(tipPos + (AimVec.RotatedBy(spiral) * 8f),
-                        DustID.GoldFlame, AimVec * 2f, 110, default, 0.9f);
-                    d.noGravity = true;
-                    d.noLight = true;
-                }
-            }
-            else if (DamageActive && Main.rand.NextBool(2)) {
-                Dust d = Dust.NewDustPerfect(Vector2.Lerp(Hand, tipPos, Main.rand.NextFloat(0.5f, 1f)),
-                    DustID.GoldFlame, AimVec * Main.rand.NextFloat(2f, 4f), 110, default, 1.1f);
-                d.noGravity = true;
-            }
-        }
-
         /// <summary>贪婪判定：手→枪尖线判宽 26 + 贴身兜底</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!DamageActive) {
@@ -354,20 +320,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                     }
                 }
             }
-
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 4; i++) {
-                    Vector2 vel = AimVec.RotatedByRandom(0.6) * Main.rand.NextFloat(2.5f, 6f);
-                    Color c = Main.rand.NextBool(3) ? GsMonkStaffT2.GhostBright : GsMonkStaffT2.GhastGreen;
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, c, Main.rand.NextFloat(0.35f, 0.55f))
-                        ?.Configure(true, Main.rand.Next(10, 18));
-                }
-                for (int i = 0; i < 4; i++) {
-                    Dust d = Dust.NewDustPerfect(target.Center, DustID.GoldFlame,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 3.5f), 110, default, 1.1f);
-                    d.noGravity = true;
-                }
-            }
         }
 
         /// <summary>目标选取镜像原版 SummonMonkGhast：玩家 800px 内可追踪敌人随机一只</summary>
@@ -408,7 +360,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             }
         }
 
-        /// <summary>确定性伪随机（identity+salt 播种），蓄势纵幅与绘制抖动共用</summary>
+        /// <summary>确定性伪随机（identity+salt 播种），蓄势纵幅用</summary>
         private float SeedRand01(int salt) {
             uint h = (uint)((Projectile.identity * 374761393) + (salt * 668265263));
             h = (h ^ (h >> 13)) * 1274126177u;
@@ -420,90 +372,32 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             return x * x * (3f - (2f * x));
         }
 
-        //==================== 绘制：辉光垫底 + 刺出残像 + 本体 + 直线涂抹 ====================
-
+        /// <summary>枪体本体一笔：原版物品贴图沿枪角（对角贴图补 π/4），origin 取杆尾握把端</summary>
         public override bool PreDraw(ref Color lightColor) {
             if (timer <= 0) {
                 return false;
             }
-            SpriteBatch sb = Main.spriteBatch;
-            DrawThrustSmear(sb);
-            DrawGlaiveSet(sb, lightColor);
-            return false;
-        }
-
-        /// <summary>直线涂抹：刺出到收势间沿刺线铺窄笔涂抹（加色 A=0）</summary>
-        private void DrawThrustSmear(SpriteBatch sb) {
-            int phase = CurrentPhase;
-            if (phase == PhaseGather) {
-                return;
-            }
-            Texture2D wave = CWRAsset.SemiCircularSmear?.Value;
-            if (wave == null) {
-                return;
-            }
-            float fade = phase == PhaseRecover
-                ? 1f - ((timer - gatherDur - thrustDur - apexDur) / (float)recoverDur)
-                : 1f;
-            float alpha = 0.34f * fade;
-            Vector2 mid = Hand + (AimVec * (reach * 0.62f)) - Main.screenPosition;
-            Color c = GsMonkStaffT2.GhastGreen * alpha;
-            c.A = 0;
-            sb.Draw(wave, mid, null, c, baseAngle, wave.Size() / 2f,
-                new Vector2(0.42f * (reach / FullReach), 0.09f), SpriteEffects.None, 0f);
-            Color c2 = GsMonkStaffT2.GhostBright * (alpha * 0.7f);
-            c2.A = 0;
-            sb.Draw(wave, mid, null, c2, baseAngle, wave.Size() / 2f,
-                new Vector2(0.36f * (reach / FullReach), 0.045f), SpriteEffects.None, 0f);
-        }
-
-        /// <summary>枪体：原版物品贴图沿枪角（对角贴图补 π/4）+辉光垫底（GlowMask231 替代）+刺出残像两道</summary>
-        private void DrawGlaiveSet(SpriteBatch sb, Color lightColor) {
             Main.instance.LoadItem(ItemID.MonkStaffT2);
             Texture2D tex = TextureAssets.Item[ItemID.MonkStaffT2].Value;
-            Vector2 origin = new(8f, tex.Height - 8f); //杆尾握把端
+            Vector2 origin = new(8f, tex.Height - 8f);
             float diag = new Vector2(tex.Width, tex.Height).Length();
             float visLen = 100f;
             float scale = visLen / MathF.Max(diag - 14f, 1f);
-            float drawRot = baseAngle + MathHelper.PiOver4;
-
-            //刺出残像两道：滞后触及处的加色魂影
-            int phase = CurrentPhase;
-            if (phase is PhaseThrust or PhaseApex) {
-                Span<(float lag, float alpha)> ghosts = [(44f, 0.13f), (22f, 0.26f)];
-                foreach ((float lag, float alpha) in ghosts) {
-                    float gReach = MathF.Max(RestReach, reach - lag);
-                    Vector2 gGrip = Hand + posOffset + (AimVec * gReach) - (AimVec * visLen) - Main.screenPosition;
-                    Color gc = GsMonkStaffT2.GhastGreen * alpha;
-                    gc.A = 0;
-                    sb.Draw(tex, gGrip, null, gc, drawRot, origin, scale, SpriteEffects.None, 0f);
-                }
-            }
-
             Vector2 gripPos = tipPos - (AimVec * visLen) - Main.screenPosition;
-
-            //墓穴深影垫底
-            Color shadow = new Color(GsMonkStaffT2.GraveDeep.R, GsMonkStaffT2.GraveDeep.G, GsMonkStaffT2.GraveDeep.B, 190) * 0.45f;
-            sb.Draw(tex, gripPos + new Vector2(facingDir, 2f), null, shadow, drawRot, origin, scale * 1.02f, SpriteEffects.None, 0f);
-
-            //幽绿辉光垫底：同贴图加色一份，替代原版 GlowMask231
-            Color glow = GsMonkStaffT2.GhastGreen * 0.30f;
-            glow.A = 0;
-            sb.Draw(tex, gripPos, null, glow, drawRot, origin, scale * 1.04f, SpriteEffects.None, 0f);
-
-            sb.Draw(tex, gripPos, null, lightColor, drawRot, origin, scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, gripPos, null, lightColor, baseAngle + MathHelper.PiOver4, origin, scale, SpriteEffects.None, 0f);
+            return false;
         }
     }
 
     /// <summary>
     /// 怨魂：直线全额穿过目标（越过其中心 40px）后转入环舞相——绕目标 70px 一圈
     /// （角速 0.18/帧，随目标移动），环舞中补一记 0.5 倍（复击冷却 30 帧自然放行），
-    /// 绕满一圈魂雾散场。自绘：原版幽灵贴图垫底+幽绿半透 tint+拖尾渐淡+怨魂脸闪现。<br/>
+    /// 绕满一圈散场。贴图借原版怨魂（700）默认绘制，半透走 Projectile.alpha。<br/>
     /// ai[0]=目标索引（随生成包过线），ai[1]=相位 0 直线 1 环舞（ModifyHitNPC 减伤标记）
     /// </summary>
     internal class GsMonkStaffT2GhastProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.MonkStaffT2Ghast;
         public override LocalizedText DisplayName => Language.GetText("ItemName.MonkStaffT2");
 
         /// <summary>环舞半径（px）</summary>
@@ -511,15 +405,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         /// <summary>环舞角速（弧度/帧）</summary>
         private const float OrbitStep = 0.18f;
 
-        private int frameTick;
-        private int faceFlash;
         private float orbitAngle;
         private float orbitAccum;
         private int orbitSign = 1;
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 8;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.MonkStaffT2Ghast];
         }
 
         public override void SetDefaults() {
@@ -532,6 +423,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30; //直线击后自然放行环舞补击
             Projectile.timeLeft = 120;
+            Projectile.alpha = 96; //怨魂半透
         }
 
         /// <summary>环舞相位置由 AI 直写，直线相走原生位移</summary>
@@ -549,9 +441,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         }
 
         public override void AI() {
-            frameTick++;
-            if (faceFlash > 0) {
-                faceFlash--;
+            if (++Projectile.frameCounter >= 5) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
             }
             NPC target = OrbitTarget;
 
@@ -567,7 +459,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                         orbitSign = MathF.Abs(crossZ) < 0.05f
                             ? (Projectile.identity % 2 == 0 ? 1 : -1)
                             : Math.Sign(crossZ); //顺着当前切向动量绕
-                        faceFlash = 3;
                         if (Projectile.owner == Main.myPlayer) {
                             Projectile.netUpdate = true;
                         }
@@ -583,7 +474,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                 orbitAngle += OrbitStep * orbitSign;
                 orbitAccum += OrbitStep;
                 Projectile.Center = target.Center + (orbitAngle.ToRotationVector2() * OrbitRadius);
-                //切向速度只喂朝向与拖尾（位置由上行直写）
+                //切向速度只喂朝向（位置由上行直写）
                 Projectile.velocity = (orbitAngle + (orbitSign * MathHelper.PiOver2)).ToRotationVector2()
                     * (OrbitStep * OrbitRadius);
                 if (orbitAccum >= MathHelper.TwoPi) {
@@ -596,14 +487,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             Projectile.spriteDirection = Projectile.direction = Projectile.velocity.X >= 0f ? 1 : -1;
             Projectile.rotation = Projectile.velocity.ToRotation()
                 + (Projectile.spriteDirection == -1 ? MathHelper.Pi : 0f);
-
-            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    DustID.GoldFlame, Projectile.velocity * 0.2f, 110, default, Main.rand.NextFloat(0.8f, 1.2f));
-                d.noGravity = true;
-                d.noLight = true;
-            }
-            Lighting.AddLight(Projectile.Center, GsMonkStaffT2.GhastGreen.ToVector3() * 0.3f);
         }
 
         /// <summary>环舞补击减伤 0.5 倍（ai[1] 相位标记即减伤标记）</summary>
@@ -614,85 +497,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            faceFlash = 3;
             if (VaultUtils.isServer) {
                 return;
             }
             SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaiveImpactGhost with { Volume = 0.8f }, Projectile.Center);
-            //魂雾爆一圈
-            for (int i = 0; i < 10; i++) {
-                Vector2 vel = (MathHelper.TwoPi * i / 10f).ToRotationVector2() * Main.rand.NextFloat(1.5f, 3f);
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.GoldFlame, vel, 110, default, 1.2f);
-                d.noGravity = true;
-            }
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //魂雾散场
-            for (int i = 0; i < 12; i++) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.GoldFlame,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3.5f), 110, default, Main.rand.NextFloat(0.9f, 1.4f));
-                d.noGravity = true;
-            }
-            PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, GsMonkStaffT2.GhastGreen, 0.16f)
-                ?.Configure(10, 0.7f);
-        }
-
-        /// <summary>确定性伪随机（identity+salt 播种，绘制禁 Main.rand）</summary>
-        private float DrawRand01(int salt) {
-            uint h = (uint)((Projectile.identity * 374761393) + (salt * 668265263));
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        /// <summary>原版弹幕 700 贴图垫底：拖尾渐淡 → 幽绿半透本体 → 加色辉光 → 怨魂脸一帧闪现</summary>
-        public override bool PreDraw(ref Color lightColor) {
-            Main.instance.LoadProjectile(ProjectileID.MonkStaffT2Ghast);
-            Texture2D tex = TextureAssets.Projectile[ProjectileID.MonkStaffT2Ghast].Value;
-            int frameCount = Math.Max(1, Main.projFrames[ProjectileID.MonkStaffT2Ghast]);
-            int frameH = tex.Height / frameCount;
-            Rectangle frameRect = new(0, frameH * ((frameTick / 5) % frameCount), tex.Width, frameH);
-            Vector2 origin = new(tex.Width / 2f, frameH / 2f);
-            SpriteEffects fx = Projectile.spriteDirection == -1
-                ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-            //出场渐显 + 环舞收尾渐隐
-            float fade = MathHelper.Clamp(frameTick / 8f, 0f, 1f);
-            if (Projectile.ai[1] == 1f) {
-                fade *= MathHelper.Clamp((MathHelper.TwoPi - orbitAccum) / 1f, 0f, 1f);
-            }
-
-            //拖尾渐淡（加色 A=0）
-            for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
-                Vector2 at = Projectile.oldPos[i] + (Projectile.Size / 2f) - Main.screenPosition;
-                Color trail = GsMonkStaffT2.GhastGreen * (0.18f * (1f - (i / (float)Projectile.oldPos.Length)) * fade);
-                trail.A = 0;
-                Main.EntitySpriteDraw(tex, at, frameRect, trail, Projectile.rotation, origin, 0.95f, fx, 0);
-            }
-
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-
-            //幽绿半透本体
-            Color body = Color.Lerp(lightColor, GsMonkStaffT2.GhastGreen, 0.55f) * (0.62f * fade);
-            Main.EntitySpriteDraw(tex, drawPos, frameRect, body, Projectile.rotation, origin, 1f, fx, 0);
-
-            //加色辉光
-            Color glow = GsMonkStaffT2.GhastGreen * (0.30f * fade);
-            glow.A = 0;
-            Main.EntitySpriteDraw(tex, drawPos, frameRect, glow, Projectile.rotation, origin, 1.06f, fx, 0);
-
-            //怨魂脸一帧闪现：同贴图放大 1.6 加色一闪即灭（identity 播种微转角）
-            if (faceFlash > 0) {
-                Color face = GsMonkStaffT2.GhostBright * (0.8f * (faceFlash / 3f));
-                face.A = 0;
-                float jitter = (DrawRand01(frameTick) - 0.5f) * 0.16f;
-                Main.EntitySpriteDraw(tex, drawPos, frameRect, face,
-                    Projectile.rotation + jitter, origin, 1.6f, fx, 0);
-            }
-            return false;
         }
     }
 }

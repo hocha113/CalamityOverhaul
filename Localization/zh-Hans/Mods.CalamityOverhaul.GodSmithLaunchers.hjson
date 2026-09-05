@@ -1,0 +1,57 @@
+GsElectrosphereLauncher: {
+	Desc: 重铸：场上有两颗以上电球时，球间架起特斯拉电弧，最多连 3 段，电弧造成电球一半的伤害
+	TipOverload: 过载！
+}
+
+GsGrenadeLauncher: {
+	Desc:
+		'''
+		重铸：榴弹改为黏附墙面与敌身；黏在血肉上的榴弹伤害提高 25%
+		场上最多布设 6 枚，超出时最老的一枚自爆腾位
+		'''
+	TipDetonate: 全部引爆！
+}
+
+GsJackOLanternLauncher: {
+	Desc: 重铸：每处爆点留下一片烛火场，持续灼烧站在里面的敌人
+	TipGrin: 齐声狞笑！
+}
+
+GsNailGun: {
+	Desc: 重铸：钉子钉进血肉不再脱落，每名敌人最多钉 5 枚，每枚使其受到的所有伤害提高 3%
+	TipExtract: 连肉拔钉！
+}
+
+GsProximityMineLauncher: {
+	Desc:
+		'''
+		重铸：地雷的触发半径只对你可见
+		闲置 60 秒的地雷自行回收，退还一发火箭
+		'''
+	TipChain: 多米诺！
+	TipRecycle: 地雷已回收
+}
+
+GsRocketLauncher: {
+	Desc: 重铸：出手带后坐，直射伤害提高
+	TipDetonate: 空爆！
+}
+
+GsSnowmanCannon: {
+	Desc: 重铸：命中给敌人烙上雪花印，受本武器伤害提高 8%
+	ModeHoming: 载具：追踪蜂群
+	ModeOrbital: 载具：暴雪轨道
+}
+
+GsStarCannon.Desc:
+	'''
+	重铸：星星撞到方块不会碎，而是叮一声弹开一次，弹开后更大更快
+	打跳弹：对着地面、天花板或墙壁射，拐进敌人的星星多造成 45% 伤害
+	'''
+
+GsStynger: {
+	Desc: 重铸：命中即炸，出手带后坐。毒刺弹药与弹片原样保留
+	ModeImpact: 引信：触发
+	ModeRange: 引信：定距空爆
+	ModeRicochet: 引信：跳弹
+}

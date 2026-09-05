@@ -2,6 +2,7 @@
 using CalamityOverhaul.OtherMods.BossChecklist;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
@@ -18,6 +19,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         private readonly SerpentPortraitRig rig;
         private readonly PortraitMotes motes = new();
+        /// <summary>短链（12 节）内的红花节链序，图鉴散瓣只从这些节出</summary>
+        private readonly int[] bloomPicks;
 
         private float petalTimer;
         private float flowerTimer;
@@ -35,6 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 patrolHalfWidth: 232f, neckGap: BssDirector.NeckGap) {
                 WithClaws = true,
             };
+            bloomPicks = BssDirector.BloomOrdinals.Where(o => o < rig.TailOrdinal).ToArray();
             rig.OnDive = pos => SandBurst(pos, -Vector2.UnitY, 10, 0.8f);
             rig.OnLand = pos => SandBurst(pos, -Vector2.UnitY, 9, 0.9f);
             rig.OnBreach = (pos, dir) => {
@@ -70,13 +74,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                     new Vector2(Main.rand.NextFloat(0.4f, 1.3f), Main.rand.NextFloat(0.5f, 1f)));
             }
 
-            //红花节零星散瓣（地表期）
+            //红花节零星散瓣（地表期）：只从短链范围内的红花位挑
             flowerTimer += dt;
-            if (flowerTimer > 0.9f && !rig.HeadBuried) {
+            if (flowerTimer > 0.9f && !rig.HeadBuried && bloomPicks.Length > 0) {
                 flowerTimer = 0f;
                 SerpentPortraitRig.SegmentPose[] segs = rig.Segments;
-                int pick = Main.rand.Next(4) * BssDirector.FlowerStep + (BssDirector.FlowerStep - 1);
-                if (pick < segs.Length && !rig.SegmentBuried(pick)) {
+                int pick = bloomPicks[Main.rand.Next(bloomPicks.Length)];
+                if (!rig.SegmentBuried(pick)) {
                     SpawnPetal(segs[pick].Center + Main.rand.NextVector2Circular(8f, 8f),
                         new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), Main.rand.NextFloat(-1.2f, -0.3f)));
                 }
@@ -119,12 +123,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             Color skin = frame.Tint(Ambient);
             SerpentPortraitRig.SegmentPose[] segs = rig.Segments;
 
-            //尾→头压顶（与战斗端整链层序一致）
+            //尾→头压顶（与战斗端整链层序一致，款式同查 Boss 款式表）
             for (int i = segs.Length - 1; i >= 0; i--) {
                 bool isTail = i == rig.TailOrdinal;
                 Texture2D tex = isTail ? tailTex : bodyTex;
                 Rectangle fr = isTail ? tailTex.Bounds
-                    : SerpentPortraitRig.BodyFrame(bodyTex, i, BssStateContext.IsFlowerOrdinal(i));
+                    : SerpentPortraitRig.BodyFrame(bodyTex, BssDirector.BodyStyle(i));
                 Vector2 origin = isTail ? SerpentPortraitRig.TailOrigin(tailTex) : fr.Size() * 0.5f;
                 sb.Draw(tex, segs[i].Center, fr, skin, segs[i].Rotation,
                     origin, 1f, SpriteEffects.None, 0f);
@@ -144,7 +148,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                     continue;
                 }
                 float glow = 0.5f + 0.4f * MathF.Sin(Time * 2.6f + i * 0.9f);
-                Rectangle fr = SerpentPortraitRig.BodyFrame(bodyTex, 2);
+                Rectangle fr = SerpentPortraitRig.BodyFrame(bodyTex, BssDirector.StyleBloom);
                 sb.Draw(bodyTex, segs[i].Center, fr,
                     BssVfx.BloomRed with { A = 0 } * (0.5f * glow), segs[i].Rotation,
                     fr.Size() * 0.5f, 1.06f, SpriteEffects.None, 0f);

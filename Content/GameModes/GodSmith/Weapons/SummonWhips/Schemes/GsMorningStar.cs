@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
     /// 晨星「链锤惯性」：慢重鞭给 18f 宽窗；三层转印。<br/>
     /// 独有「抡锤蓄势」：每记踩拍挥击都在鞭梢落点砸出 80px 贴地震荡
     /// （0.5x + 轻屏震）；<br/>
-    /// 处决 = 星坠锤：目标头顶砸落流星锤 2.0x（锤体 = 原版晨星鞭梢贴图放大 + 拖尾），
+    /// 处决 = 星坠锤：目标头顶砸落流星锤 2.0x，
     /// 落点 120px 震波 0.6x，总账 2.6x。强度目标 118%
     /// </summary>
     internal class GsMorningStar : GsWhipScheme
@@ -26,14 +26,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
 
         public override float DamageTweak => 1.05f;
 
-        /// <summary>星金白</summary>
-        public override Color MarkColor => new(255, 226, 150);
-
         protected override string GsDescFallback =>
-            "Reforged: every on-beat swing slams a quake at the whip tip; " +
-            "3 scars seal the mark, and the next on-beat hit calls a falling star mace " +
-            "down on the target's head";
-
+            "Reforged: every on-beat swing slams a quake at the whip tip; 3 scars seal the mark, and the next on-beat hit calls a falling star mace down on the target's head";
         /// <summary>抡锤蓄势：踩拍挥击的鞭梢落点震荡</summary>
         protected override void OnWhipApex(Player player, Projectile whipProj, GodSmithProjRouter router, Vector2 tipPos) {
             if (router.MarkData2 < 1f) {

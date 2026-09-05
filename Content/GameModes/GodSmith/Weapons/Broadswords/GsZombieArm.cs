@@ -1,5 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -10,7 +8,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     /// <summary>
     /// 【僵尸臂】材质：还没僵透的腐烂手臂。签名：①乱抡：每一拍的时长与挥弧
     /// 按连段序号伪随机摇摆 ±20%，抡起来歪歪扭扭没个准头 ②命中 12% 概率甩目标
-    /// 一脸腐液上缓速 ③挥动与命中都掉腐屑
+    /// 一脸腐液使其迷乱
     /// </summary>
     internal class GsZombieArm : GsBroadswordScheme
     {
@@ -19,14 +17,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsZombieArmHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: flails with the sloppy rhythm of the undead, no two swings alike; " +
-            "rotten splatter may briefly confuse whatever it hits";
-
-        //腐臂色板
+            "Reforged: flails with the sloppy rhythm of the undead, no two swings alike; rotten splatter may briefly confuse whatever it hits";
         internal static readonly Color RotBright = new(182, 202, 158); //腐皮灰绿
         internal static readonly Color RotMain = new(112, 132, 96);    //烂肉暗绿
         internal static readonly Color RotHot = new(154, 224, 110);    //腐液荧绿
-        internal static readonly Color RotDeep = new(32, 38, 26);      //尸斑暗色
 
         //公认弱势趣味武器，包络放宽到 130%：底伤 +20%，
         //终结拍 1.25x + 12% 缓速（控制收益小），综合 DPS 约为原版 122%~128%
@@ -63,7 +57,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsZombieArm.RotBright;
         protected override Color BodyMain => GsZombieArm.RotMain;
         protected override Color HotAccent => GsZombieArm.RotHot;
-        protected override Color DeepShadow => GsZombieArm.RotDeep;
 
         /// <summary>迷乱时长 0.7s（Slow 对 NPC 无效，Confused 是真实生效的原版路径）</summary>
         private const int ConfuseFrames = 42;
@@ -106,40 +99,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Main.rand.NextFloat() < 0.12f) {
                 target.AddBuff(BuffID.Confused, ConfuseFrames);
-                if (!VaultUtils.isServer) {
-                    //腐液糊上去的反馈
-                    PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
-                        GsZombieArm.RotHot, 0.24f)?.Configure(12, 0.8f);
-                    for (int i = 0; i < 6; i++) {
-                        Dust d = Dust.NewDustPerfect(target.Center, DustID.Corruption,
-                            Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f), 80, default,
-                            Main.rand.NextFloat(1f, 1.5f));
-                        d.noGravity = true;
-                    }
-                }
-            }
-        }
-
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            //抡动时掉腐屑，烂手臂就是会掉渣
-            if (phase == PhaseSlash && Main.rand.NextBool(2)) {
-                Dust d = Dust.NewDustPerfect(Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.4f, 1f)),
-                    DustID.Corruption, Vector2.Zero, 100, default, Main.rand.NextFloat(0.7f, 1.1f));
-                d.velocity = (mainAngle + swingDir * MathHelper.PiOver2).ToRotationVector2() * 1.2f;
-                d.noGravity = false;
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //腐屑迸溅
-            int bits = IsFinisher ? 7 : 4;
-            for (int i = 0; i < bits; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.Corruption,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), 90, default,
-                    Main.rand.NextFloat(0.8f, 1.3f));
-                d.noGravity = Main.rand.NextBool();
             }
         }
     }

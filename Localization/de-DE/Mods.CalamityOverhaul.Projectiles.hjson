@@ -797,6 +797,9 @@ KikasaTeleportProj.DisplayName: Kikasa · Tintenregen-Sprung
 EyetoothDart.DisplayName: Augenzahn-Wurfpfeil
 DivineSourceBoltProjectile.DisplayName: Göttlicher Quell-Lichtgeschoss
 BloodButchererBolt.DisplayName: Blutmetzger-Nekrogeschoss
+// TerraLightProj.DisplayName: Terra Light
+// TerraSoulJudgmentProj.DisplayName: True Excalibur Spirit
+// TerraSoulSpinProj.DisplayName: True Night's Edge Spirit
 BloodshotBombHeld.DisplayName: Blutwogen-Bombe
 BloodshotBombThrown.DisplayName: Geworfene Blutwogen-Bombe
 BloodshotFleshChunk.DisplayName: Blutwogen-Fleischbrocken
@@ -1051,8 +1054,6 @@ GsDD2SquireBetsySwordWaveProj.DisplayName: Betsy-Schwertbogen
 GsDD2SquireDemonSwordFireWaveProj.DisplayName: Dämonen-Höllenfeuer-Schwertbogen
 GsEbonSporeMistProj.DisplayName: Ebenholz-Giftsporennebel
 GsEnchantedSwordBeamProj.DisplayName: Verzauberter Schwertbogen
-GsExcaliburArcProj.DisplayName: Excalibur-Heiliger Bogen
-GsExcaliburNovaProj.DisplayName: Excalibur-Heilige Nova
 GsFetidBaghnakhsBurstProj.DisplayName: Stinkende-Baghnakhs-Schattenschlag
 GsFetidBaghnakhsMarkProj.DisplayName: Stinkende-Baghnakhs-Reißmal
 GsFieryGreatswordPitProj.DisplayName: Vulkan-Lavagrupe
@@ -1067,7 +1068,6 @@ GsLightsBaneScarProj.DisplayName: Lichtfluch-Schattennarbe
 GsMeowmereCatProj.DisplayName: Miaumere-Katzengeschoss
 GsMeowmereMeteorProj.DisplayName: Miaumere-Fallmeteor
 GsMeowmereStarBurstProj.DisplayName: Miaumere-Sternenstoß
-GsNightsEdgeWaveProj.DisplayName: Klinge-der-Nacht-Nachtschwertbogen
 GsPalmSandWaveProj.DisplayName: Palmenholz-Sandwelle
 GsPhasebladeArcProj.DisplayName: Phasenklinge-Lichtbogen
 GsPhasesaberBurstProj.DisplayName: Phasensäbel-Rissstoß
@@ -1082,16 +1082,7 @@ GsSlapHandPrintProj.DisplayName: Klatschhand-Abdruck
 GsStarfuryStarProj.DisplayName: Sternenzorn-Fallstern
 GsStarWrathFallProj.DisplayName: Sternenwut-Himmelsmeteor
 GsStarWrathRingProj.DisplayName: Sternenwut-Sternenring
-GsTerraBladeBurstProj.DisplayName: Terraklinge-Resonanzstoß
-GsTerraBladeRingProj.DisplayName: Terraklinge-Energiering
-GsTerraBladeWaveProj.DisplayName: Terra-Superschwertbogen
 GsTheHorsemansBladeJackProj.DisplayName: Reiterklinge-Kürbisseele
-GsTrueExcaliburCrossProj.DisplayName: Echtes-Excalibur-Heiliges Kreuz
-GsTrueExcaliburWaveProj.DisplayName: Echtes-Excalibur-Heiliger Schwertbogen
-GsTrueNightsEdgeShardProj.DisplayName: Echte-Klinge-der-Nacht-Nachtsplitter
-GsTrueNightsEdgeWaveProj.DisplayName: Echte-Klinge-der-Nacht-Nachtschwertbogen
-GsZenithPhantomProj.DisplayName: Zenit-Phantomklinge
-GsZenithRiftProj.DisplayName: Zenit-Leerennarbe
 GsBallOHurtBarbProj.DisplayName: Schmerzball-Stachel
 GsBlueMoonCrescentProj.DisplayName: Blauer-Mond-Sichelleuchten
 GsChainGuillotinesShearProj.DisplayName: Kettenguillotine-Schnitt
@@ -1218,11 +1209,15 @@ TempleDiveOmen.DisplayName: Tempelsturz-Warnung
 TempleDropOmen.DisplayName: Tempel-Steinschlagwarnung
 TempleEmberProj.DisplayName: Tempel-Brandgeschoss
 BssBreachOmen.DisplayName: Erddurchbruch-Überfallwarnung
+// BssDashOmen.DisplayName: Dash Telegraph
 BssCactusBallProj.DisplayName: Kaktus-Rollball
 BssNeedleProj.DisplayName: Riesennadel-Flugstachel
 BssPetalProj.DisplayName: Sturm-Blütenblatt
 BssSandGlob.DisplayName: Sandklumpen
-BssSandVortexProj.DisplayName: Treibsand-Wirbel
+// BssSandSurgeProj.DisplayName: Sand Surge
+// BssDustDevilProj.DisplayName: Dust Devil
+// BssWindPetalProj.DisplayName: Gale Petal
+// BssPincerSnapProj.DisplayName: Pincer Snap
 FssBreachOmen.DisplayName: Fäulnis-Sandhügel
 FssCascadeDrop.DisplayName: Ichor-Kaskade
 FssIchorGate.DisplayName: Ichor-Tor
@@ -1247,6 +1242,14 @@ DeepcrystalJetBeam.DisplayName: Abgrundkristall-Wasserstrahl
 DeepcrystalSeekBubble.DisplayName: Abgrundkristall-Zielsuchblase
 DeepcrystalWaterShot.DisplayName: Abgrundkristall-Wassergeschoss
 SoulbindingCounterFlame.DisplayName: Seelenfessel-Gegenflamme
-BssStormMark.DisplayName: Sandsturm-Auge-Mal
 GsGunHoldPoseProj.DisplayName: Gottesschmied-Gewehrhaltung
 // CrimsonSweepSlash.DisplayName: Crimson Sweep Slash
+// GsArmorBlastProj.DisplayName: Gs Armor Blast Proj
+// GsJungleStingerProj.DisplayName: Gs Jungle Stinger Proj
+// GsNecroBoneProj.DisplayName: Gs Necro Bone Proj
+// GsOrichalcumPetalProj.DisplayName: Gs Orichalcum Petal Proj
+// GsHallowedStarProj.DisplayName: Gs Hallowed Star Proj
+// GsSpectreSoulProj.DisplayName: Gs Spectre Soul Proj
+// GsStardustShardProj.DisplayName: Gs Stardust Shard Proj
+// GsTikiSpiritFlameProj.DisplayName: Gs Tiki Spirit Flame Proj
+// GsTurtleSpikeProj.DisplayName: Gs Turtle Spike Proj

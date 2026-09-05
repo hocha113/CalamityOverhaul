@@ -63,11 +63,7 @@ GsTitaniumTrident.Desc:
 	Reforged: each thrust casts two parallel shade-tridents above and below the true blade,
 	flying a short lane before dissolving
 	'''
-GsGungnir.Desc:
-	'''
-	Reforged: a stately three-beat thrust crowned by a golden finisher;
-	right click hurls the oath-lance as a piercing bolt of light that never misses its sworn prey
-	'''
+GsGungnir.Desc: Reforged: a stately three-beat thrust crowned by a golden finisher;
 GsChlorophytePartisan.Desc:
 	'''
 	Reforged: while the blade dwells at full reach, spores gather on its tip;

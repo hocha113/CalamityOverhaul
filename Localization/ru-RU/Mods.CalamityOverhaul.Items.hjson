@@ -5131,6 +5131,11 @@ BssBloomBud: {
 		'''
 }
 
+BssTreasureBag: {
+	// DisplayName: Treasure Bag (Bloomsand Serpent)
+	// Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
 FssFesterBud: {
 	DisplayName: Гноящийся бутон
 	Tooltip:

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
     /// 深化 = 黑暗能量跳劈命中带鞭痕目标时按层数传染邻敌（每层 +1 记补劈，
     /// 上限 4；不改原版跳劈弹幕的内部计数，传染走自建闪劈真弹幕）；<br/>
     /// 处决 = 大镰收魂：紫魂涌出 1.6x + 魂爆 0.6x，并对全场带鞭痕目标补 0.5x 闪劈
-    /// （封顶 6 个防粒子超预算）。强度目标 115%
+    /// （封顶 6 个）。强度目标 115%
     /// </summary>
     internal class GsDarkHarvest : GsWhipScheme
     {
@@ -27,14 +27,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
 
         public override float DamageTweak => 1.04f;
 
-        /// <summary>幽紫</summary>
-        public override Color MarkColor => new(150, 80, 220);
-
         protected override string GsDescFallback =>
-            "Reforged: dark energy leaps spread to nearby foes for each reap scar on the victim; " +
-            "4 scars seal the mark, and the next on-beat hit reaps its soul, " +
-            "flash-scything every scarred enemy on the field";
-
+            "Reforged: dark energy leaps spread to nearby foes for each reap scar on the victim; 4 scars seal the mark, and the next on-beat hit reaps its soul, flash-scything every scarred enemy on the field";
         public override void GsSetStaticDefaults()
             //黑暗能量跳劈由仆从命中触发生成，无打标源，走类型通道
             => GsRegisterProjChannel(ProjectileID.ScytheWhipProj);

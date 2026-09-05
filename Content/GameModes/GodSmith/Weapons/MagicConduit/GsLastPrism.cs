@@ -30,6 +30,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
         internal override float HeatPerShot => 0f;
         internal override float CoolRatePerTick => 1.4f;
         internal override GsOverloadPolicy OverloadPolicy => GsOverloadPolicy.NoBreak;
+        internal override bool VentEnabled => true;
+        internal override bool SelfDrawnVisuals => true;
         internal override float VentMinHeat => 40f;
         internal override Color MuzzleTheme => new(214, 190, 255);
 

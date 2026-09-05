@@ -1,7 +1,4 @@
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -14,7 +11,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
     /// <summary>
     /// 【短剑首把·垂直切片】罗马短剑重铸：军团操典三段刺。<br/>
     /// 材质：军团青铜刃。签名行为：①三拍连刺——高线快刺、低线快刺、盾步重刺交替几何
-    /// ②节奏训练——踩住断拍窗连刺，刺速逐层加快（最多三层，青铜辉光可见）
+    /// ②节奏训练——踩住断拍窗连刺，刺速逐层加快（最多三层）
     /// ③盾步重刺前压半步，命中金属重音 + 小震屏
     /// </summary>
     internal class GsGladius : GsShortswordScheme
@@ -22,9 +19,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         public override int TargetItemID => ItemID.Gladius;
 
         protected override string GsDescFallback =>
-            "Reforged: legion drill in three beats, two quick thrusts then a shield-step heavy;" +
-            "\nkeep the rhythm and each thrust comes faster, up to three tempo stacks";
-
+            "Reforged: legion drill in three beats, two quick thrusts then a shield-step heavy;\nkeep the rhythm and each thrust comes faster, up to three tempo stacks";
         protected override int HeldProjType => ModContent.ProjectileType<GsGladiusHeld>();
 
         protected override int ComboBeats => 3;
@@ -48,16 +43,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
 
     /// <summary>
     /// 罗马短剑手持突刺。ai[0]=拍号 0 高线快刺 / 1 低线快刺 / 2 盾步重刺，ai[1]=节奏层数。<br/>
-    /// 节奏层数直接加攻速缩放（+8%/层），层数越高青铜辉光越亮
+    /// 节奏层数直接加攻速缩放（+8%/层）
     /// </summary>
     internal class GsGladiusHeld : GsThrustHeldBase
     {
         protected override int TargetItemType => ItemID.Gladius;
-
-        //军团青铜色板
-        internal static readonly Color BronzeBright = new(236, 210, 148);
-        internal static readonly Color BronzeMain = new(198, 152, 88);
-        internal static readonly Color LegionRed = new(190, 58, 46);
 
         private bool IsFinisher => ComboStage >= 2;
         private int TempoStacks => Math.Clamp((int)WeaponParam, 0, 3);
@@ -74,9 +64,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         protected override int HitstopFrames => IsFinisher ? 3 : 1;
         protected override float LeanAmp => IsFinisher ? 0.06f : 0.028f;
         protected override float ThrustPitch => IsFinisher ? -0.10f : 0.22f;
-
-        protected override Color EdgeColor => BronzeBright;
-        protected override Color CoreColor => IsFinisher ? LegionRed : BronzeMain;
 
         /// <summary>高低线交替：0 拍走高线，1 拍走低线，终结拍直取中线</summary>
         protected override void ModifyStabDirection(ref Vector2 unit) {
@@ -104,18 +91,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             if (IsFinisher) {
                 SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.45f, Pitch = -0.30f }, Owner.Center);
             }
-            //爆发帧青铜火花沿刺向甩出
-            int count = IsFinisher ? 4 : 2;
-            for (int i = 0; i < count; i++) {
-                Vector2 at = Vector2.Lerp(Hand, TipPos, Main.rand.NextFloat(0.55f, 1f));
-                Color c = Main.rand.NextBool(3) ? LegionRed : BronzeBright;
-                PRTLoader.NewParticle<PRT_Spark>(at, stabUnit * Main.rand.NextFloat(4.5f, 9f), c,
-                    Main.rand.NextFloat(0.35f, 0.55f))?.Configure(true, Main.rand.Next(10, 18));
-            }
         }
-
-        /// <summary>节奏层数可视化：层数越高刃身青铜辉光越亮</summary>
-        protected override float ExtraGlowStrength() => TempoStacks * 0.09f;
 
         protected override void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone, bool firstOnTarget) {
             if (!IsFinisher || !firstOnTarget) {
@@ -129,43 +105,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
                         target.Center, stabUnit, 3.5f, 5f, 7, 480f, FullName));
                 }
             }
-        }
-
-        protected override void SpawnHitEffects(NPC target, NPC.HitInfo hit) {
-            bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
-            Vector2 pos = Vector2.Lerp(TipPos, target.Center, 0.5f);
-            PRTLoader.NewParticle<PRT_Light>(pos, Vector2.Zero,
-                IsFinisher ? LegionRed : BronzeBright, 0.16f + (IsFinisher ? 0.08f : 0f))?.Configure(9, 0.75f);
-            int sparks = IsFinisher ? 9 : 5;
-            for (int i = 0; i < sparks; i++) {
-                Vector2 vel = stabUnit.RotatedByRandom(0.5) * Main.rand.NextFloat(3.5f, 8.5f);
-                Color c = steel
-                    ? (Main.rand.NextBool() ? BronzeBright : BronzeMain)
-                    : (Main.rand.NextBool(3) ? LegionRed : BronzeBright);
-                PRTLoader.NewParticle<PRT_Spark>(pos, vel, c, Main.rand.NextFloat(0.4f, 0.65f))
-                    ?.Configure(true, Main.rand.Next(12, 20));
-            }
-            if (!steel) {
-                for (int i = 0; i < 2; i++) {
-                    Dust d = Dust.NewDustPerfect(pos, DustID.Blood,
-                        stabUnit.RotatedByRandom(0.8) * Main.rand.NextFloat(1.5f, 3.5f), 100, default, Main.rand.NextFloat(0.9f, 1.2f));
-                    d.noGravity = Main.rand.NextBool();
-                }
-            }
-        }
-
-        /// <summary>满层节奏时刀根缀一枚军团红穗光点（定值，无随机）</summary>
-        protected override void DrawOverBlade(SpriteBatch sb) {
-            if (TempoStacks < 3 || FanFade <= 0.05f) {
-                return;
-            }
-            Texture2D glow = CWRAsset.StarGlow01?.Value;
-            if (glow == null) {
-                return;
-            }
-            Vector2 at = Hand + stabUnit * (holdout + 4f) - Main.screenPosition;
-            Color c = LegionRed with { A = 0 } * (0.55f * FanFade);
-            sb.Draw(glow, at, null, c, 0f, glow.Size() / 2f, 0.22f, SpriteEffects.None, 0f);
         }
     }
 }

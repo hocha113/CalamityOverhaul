@@ -62,11 +62,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Offense
         }
     }
 
-    /// <summary>剑风环浪：青钢色刃风自落点荡开，环沿由钢屑勾勒，扩张后散尽。
+    /// <summary>剑风环浪：刃风自落点荡开成扩张的环形判定；绘制只有一笔按当前半径缩放的原版气泡贴图。
     /// ai[0] = 原目标 whoAmI，环浪对其免疫，只扫其余敌人</summary>
     internal class GodSmithEchoSlashWave : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
 
         /// <summary>扩张终末半径（像素）</summary>
         internal const float MaxRadius = 150f;
@@ -98,31 +98,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Offense
             if (size > Projectile.width) {
                 Projectile.Resize(size, size);
             }
-            if (!VaultUtils.isServer) {
-                //环沿钢屑：沿当前半径撒一圈，勾出可读的环形
-                for (int i = 0; i < 6; i++) {
-                    float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center + ang.ToRotationVector2() * radius,
-                        DustID.Platinum, ang.ToRotationVector2() * 1.6f, 100, default, 1.1f);
-                    dust.noGravity = true;
-                }
-            }
-            Lighting.AddLight(Projectile.Center, 0.2f, 0.35f, 0.4f);
         }
 
-        public override Color? GetAlpha(Color lightColor) => new Color(140, 220, 235, 0) * Projectile.Opacity;
-
+        /// <summary>区域弹一笔：原版气泡贴图按当前判定直径缩放画在中心，随生命淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float radius = MaxRadius * (float)Math.Sqrt(LifeRatio);
-            float fade = 1f - LifeRatio;
-            //软圆盘随扩张变薄，营造消散中的风环
-            float scale = radius * 2.4f / tex.Width;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(60, 130, 150, 0) * (0.5f * fade), 0f, origin, scale, 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(170, 235, 245, 0) * (0.35f * fade), 0f, origin, scale * 0.75f, 0);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * (1f - LifeRatio), 0f,
+                tex.Size() * 0.5f, Projectile.width / (float)tex.Width, SpriteEffects.None, 0);
             return false;
         }
     }

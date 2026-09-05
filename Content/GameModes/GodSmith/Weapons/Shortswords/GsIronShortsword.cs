@@ -1,7 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -12,16 +8,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
     /// <summary>
     /// 铁短剑重铸「铁壁反刺」。<br/>
     /// 材质：厚脊冷锻铁刃，收势横持如小盾。签名行为：①收刀相持有格挡帧，期间被击减伤三成
-    /// ②格挡吃下一击即点亮「反刺就绪」一秒，就绪期下一刺必暴击 ③格挡成功金铁交鸣，就绪刃身灼亮
+    /// ②格挡吃下一击即点亮「反刺就绪」一秒，就绪期下一刺必暴击 ③格挡成功金铁交鸣
     /// </summary>
     internal class GsIronShortsword : GsShortswordScheme
     {
         public override int TargetItemID => ItemID.IronShortsword;
 
         protected override string GsDescFallback =>
-            "Reforged: the recovery stance holds a guard that blunts incoming blows by 30%;" +
-            "\nblock a hit to ready a riposte, and your next thrust within a second strikes true";
-
+            "Reforged: the recovery stance holds a guard that blunts incoming blows by 30%;\nblock a hit to ready a riposte, and your next thrust within a second strikes true";
         protected override int HeldProjType => ModContent.ProjectileType<GsIronShortswordHeld>();
 
         public override void GsModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
@@ -74,15 +68,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             modifiers.FinalDamage *= 0.70f;
             riposteFrames = 60;
 
-            //格挡成功反馈：金铁交鸣 + 钢屑迸溅
+            //格挡成功反馈：金铁交鸣
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.7f, Pitch = 0.35f }, Player.Center);
-                for (int i = 0; i < 6; i++) {
-                    Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 7f);
-                    Color c = Main.rand.NextBool() ? GsIronShortswordHeld.SteelBright : GsIronShortswordHeld.RiposteHot;
-                    PRTLoader.NewParticle<PRT_Spark>(Player.Center, vel, c, Main.rand.NextFloat(0.35f, 0.6f))
-                        ?.Configure(true, Main.rand.Next(12, 20));
-                }
             }
         }
     }
@@ -94,11 +82,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
     internal class GsIronShortswordHeld : GsThrustHeldBase
     {
         protected override int TargetItemType => ItemID.IronShortsword;
-
-        //冷锻铁盾色板（与铁宽剑同宗但更冷灰，反刺灼橙做区分）
-        internal static readonly Color SteelBright = new(214, 220, 230);
-        internal static readonly Color SteelMain = new(152, 160, 172);
-        internal static readonly Color RiposteHot = new(255, 152, 78);
 
         protected override float WindupFrames => 3f;
         protected override float ThrustFrames => 4f;
@@ -112,9 +95,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         protected override int HitstopFrames => 2;
         protected override float LeanAmp => 0.032f;
         protected override float ThrustPitch => 0.10f;
-
-        protected override Color EdgeColor => SteelBright;
-        protected override Color CoreColor => RiposteHot;
 
         private GsIronShortswordPlayer ModPlayerState => Owner.GetModPlayer<GsIronShortswordPlayer>();
         /// <summary>本刺是否消费了反刺就绪（OnInit 定夺，全程锁定）</summary>
@@ -145,62 +125,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             if (!riposteThrust || !firstOnTarget || VaultUtils.isServer) {
                 return;
             }
-            //反刺命中升级反馈：重音 + 灼橙闪
+            //反刺命中升级反馈：重音
             SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.55f, Pitch = 0.2f }, target.Center);
-            PRTLoader.NewParticle<PRT_Light>(Vector2.Lerp(TipPos, target.Center, 0.5f), Vector2.Zero,
-                RiposteHot, 0.26f)?.Configure(11, 0.85f);
-        }
-
-        /// <summary>命中反馈：冷灰钢屑，反刺换灼橙</summary>
-        protected override void SpawnHitEffects(NPC target, NPC.HitInfo hit) {
-            Vector2 pos = Vector2.Lerp(TipPos, target.Center, 0.5f);
-            int count = riposteThrust ? 9 : 5;
-            for (int i = 0; i < count; i++) {
-                Vector2 vel = stabUnit.RotatedByRandom(0.55) * Main.rand.NextFloat(3.5f, 8f);
-                Color c = riposteThrust
-                    ? (Main.rand.NextBool() ? RiposteHot : SteelBright)
-                    : (Main.rand.NextBool(3) ? SteelMain : SteelBright);
-                PRTLoader.NewParticle<PRT_Spark>(pos, vel, c, Main.rand.NextFloat(0.35f, 0.6f))
-                    ?.Configure(true, Main.rand.Next(12, 20));
-            }
-            if (!CWRLoad.NPCValue.ISTheofSteel(target)) {
-                Dust d = Dust.NewDustPerfect(pos, DustID.Blood,
-                    stabUnit.RotatedByRandom(0.8) * Main.rand.NextFloat(1.5f, 3.5f), 100, default, Main.rand.NextFloat(0.9f, 1.2f));
-                d.noGravity = Main.rand.NextBool();
-            }
-        }
-
-        /// <summary>就绪期刃身灼亮 + 反刺出刺常亮（owner 端本地表现）</summary>
-        protected override float ExtraGlowStrength() {
-            if (riposteThrust) {
-                return 0.40f;
-            }
-            return Owner.whoAmI == Main.myPlayer && ModPlayerState.riposteFrames > 0 ? 0.30f : 0f;
-        }
-
-        /// <summary>格挡帧可视化：收刀相刃前横一道冷灰盾光（定值，无随机；各端按相位同步可见）。
-        /// 注意基类 FanFade 在收刀相衰减，格挡光用自己的收势进度计淡出</summary>
-        protected override void DrawOverBlade(SpriteBatch sb) {
-            if (CurrentPhase != PhaseRecover) {
-                return;
-            }
-            Texture2D streak = CWRAsset.LightShot?.Value;
-            if (streak == null) {
-                return;
-            }
-            float recoverT = MathHelper.Clamp(
-                (Elapsed - WindupFrames - ThrustFrames - DwellFrames) / RecoverFrames, 0f, 1f);
-            float guardFade = 1f - recoverT * recoverT;//盾面随收势入尾才撤
-            if (guardFade <= 0.05f) {
-                return;
-            }
-            //盾光垂直于刺向，横在刀身中段
-            Vector2 at = Hand + stabUnit * (holdout + BladeLength * 0.55f) - Main.screenPosition;
-            float rot = stabUnit.ToRotation() + MathHelper.PiOver2;
-            float pulse = 0.85f + 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.whoAmI);
-            Color c = SteelBright with { A = 0 } * (0.40f * guardFade * pulse);
-            sb.Draw(streak, at, null, c, rot, streak.Size() / 2f,
-                new Vector2(46f / streak.Width, 0.16f), SpriteEffects.None, 0f);
         }
     }
 }

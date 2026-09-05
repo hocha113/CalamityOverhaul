@@ -42,11 +42,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             NPC npc = ctx.Npc;
             int t = (int)Timer;
 
-            //全程行进：身体压向玩家，头管瞄准
+            //全程行进：身体慢慢压向玩家，头管瞄准（齐射期放到挪步档，边喷边走不站桩）
             ctx.Mode = BssMoveMode.Crawl;
             ctx.CrawlDirX = FacingToTarget(ctx);
             ctx.CrawlSpeed = t < LockFrame ? BssDirector.CrawlCruiseSpeed
-                : t < FireEnd ? 5f : BssDirector.CrawlCruiseSpeed;
+                : t < FireEnd ? BssDirector.SpitCrawlSpeed : BssDirector.CrawlCruiseSpeed;
             ctx.LegCommand = BssLegCommand.March;
             ctx.FrontRaise = MathHelper.Clamp(t / 10f, 0f, 0.5f);
 
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 
             //吸气表现：沙尘向嘴收束
             if (!Main.dedServ && t >= LockFrame && t < FireFrom && Main.GameUpdateCount % 2 == 0) {
-                Vector2 mouth = npc.Center + lockedAim * 52f;
+                Vector2 mouth = npc.Center + lockedAim * (52f * npc.scale);
                 Vector2 from = mouth + Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(26f, 54f);
                 Dust d = Dust.NewDustPerfect(from, DustID.Sand, (mouth - from) * 0.13f, 120, default, 0.9f);
                 d.noGravity = true;
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (t >= FireFrom && t < FireEnd && (t - FireFrom) % BssDirector.SpitVolleyGap == 0) {
                 int volley = (t - FireFrom) / BssDirector.SpitVolleyGap;
                 float lane = LanePairs[volley % LanePairs.Length];
-                Vector2 mouth = npc.Center + lockedAim * 52f;
+                Vector2 mouth = npc.Center + lockedAim * (52f * npc.scale);
                 //后坐：每口喷沙头向后一顿；鳌足同拍猛推摊开（护嘴配合喷吐的读数）
                 npc.velocity -= lockedAim * 2.6f;
                 ctx.ClawBurst = 1f;

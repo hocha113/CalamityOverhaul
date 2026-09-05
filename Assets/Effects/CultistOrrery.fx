@@ -3,7 +3,7 @@
 //TechRing     浑天仪环带(vs+ps 条带):黑鎏金星铜,蚀刻星文+棱边亮线+充能辉流
 //TechStarLine 星轨线(vs+ps 条带):轨道椭圆/星图连线,描绘进度+星屑虚线+过载白热
 //TechCorridor 危险走廊(vs+ps 条带):掷星预瞄,平顶淡体+内置双缘轨,一趟画完读作"面"
-//TechUmbra    本影楔(vs+ps 条带):蚀祭安全区,真暗遮蔽+硬影缘+钻石环缘线(与 TechShade 冕环同构)
+//TechUmbra    本影楔(vs+ps 条带):蚀祭安全区,纯黑全实遮蔽+像素级硬影缘+节拍缘线(uAspect 折算恒定像素宽)
 //TechLance    冕矛(ps quad):月总幻影死光语法的星质喷矛,预警细丝→三层亮束+星尘外流,无暗鞘
 //TechGaze     凝视死光(ps quad):月瞳湮灭射线,瞳口绽放+过曝白芯+扫向不对称,与冕矛(星质)分野
 //TechGazeWarp 凝视死光扭曲位移图(ps quad):R方向 G强度 A混合,供 WarpShader 屏幕折射
@@ -219,9 +219,11 @@ technique TechCorridor
 
 //----------------------------------------------------------------------------
 //TechUmbra 本影楔:u=沿影(0 根部/行星侧),v=横截;真暗遮蔽=A 承载
-//uProgress=显形度,缘界冕环声明安全区边界(缺口即所见);uCharge=冕矛将至的缘线脉冲
-//缘线与蚀盘钻石环同构:半影影缘+高斯白热芯+外泄色辉,几何干净,亮度沿缘呼吸
-//(撕边位置抖动已废:三补收半影后仍被判糊,四补对齐星缘锐度,五补白缘裁剪成硬白带→高斯软峰+半影回放)
+//uProgress=显形度,缘界冕环声明安全区边界(缺口即所见);uCharge=冕矛节拍包络(C# 按齐射拍喂,重拍顶满)
+//uAspect=楔末端半宽/根部半宽:横截特征按它折算成恒定像素宽,影缘与缘线从根到末一样锐
+//影体全黑全实(2026-09-05 用户令:安全区彻底纯黑,边缘更锋利):
+//半影只留 ≈3.5px,影内不透星尘;缘线=细白热芯(≈5px)+外泄色辉,亮度跟冕矛节拍跳,不再按 uTime 呼吸
+//(历史:撕边抖动→糊;纯硬切曾被判生硬故留半影;本版半影收窄至像素级但保留抗锯齿过渡)
 //----------------------------------------------------------------------------
 float4 UmbraPS(PSInput input) : COLOR0
 {
@@ -230,32 +232,29 @@ float4 UmbraPS(PSInput input) : COLOR0
     float vA = input.Color.a;
     float crossA = abs(cross_);
 
-    //影体:主体平台实暗,缘沿留半影过渡(纯硬切被判生硬,五补放宽)
-    float shadowCore = 1.0 - smoothstep(0.755, 0.83, crossA);
+    //像素归一:楔沿 u 线性变宽,横截量乘 px 后即根部像素尺度
+    float px = lerp(1.0, max(uAspect, 1.0), uv.x);
+    float edgeD = (crossA - 0.794) * px;
+
+    //影体:全黑平台,像素级半影硬缘(抗锯齿过渡而非软影)
+    float shadowCore = 1.0 - smoothstep(-0.016, 0.016, edgeD);
     //根部收进行星轮廓,末端收口
     float lenEnv = smoothstep(0.0, 0.05, uv.x) * (1.0 - smoothstep(0.92, 1.0, uv.x));
-    //影内星尘:安全区里安静的微光
-    float starN = nrm(noise(float2(uv.x * 3.0 + uSeed, cross_ * 1.4 + uSeed * 2.3 - uTime * 0.02)));
-    float stars = pow(starN, 6.0) * shadowCore;
-
     float dark = shadowCore * lenEnv * uProgress;
 
-    //缘界冕环:高斯软缘(exp 尖峰+饱和裁剪被判硬,五补换软峰降增益),色辉只向影外泄
-    float edgeD = crossA - 0.793;
-    float ring = exp(-edgeD * edgeD * 60.0) * lenEnv * uProgress;
-    float ringCore = exp(-edgeD * edgeD * 500.0) * lenEnv * uProgress;
-    float outGate = smoothstep(-0.02, 0.05, edgeD);
-    //亮度沿缘呼吸:几何不动,活在光里(钻石环 coronaN 同构)
-    float breatheN = 0.72 + 0.28 * nrm(noise(float2(uv.x * 4.0 + uSeed, uSeed * 2.3 + uTime * 0.05)));
-    float pulse = 1.0 + uCharge * (0.5 + 0.4 * sin(uTime * 16.0 + uv.x * 5.0));
+    //缘界冕环:细白热芯骑在影缘上,色辉只向影外泄
+    float ring = exp(-edgeD * edgeD * 90.0) * lenEnv * uProgress;
+    float ringCore = exp(-edgeD * edgeD * 1400.0) * lenEnv * uProgress;
+    float outGate = smoothstep(-0.01, 0.04, edgeD);
+    //亮度沿缘缓变(几何不动)+冕矛节拍:重拍瞬亮,拍间回落
+    float breatheN = 0.78 + 0.22 * nrm(noise(float2(uv.x * 4.0 + uSeed, uSeed * 2.3 + uTime * 0.05)));
+    float pulse = 1.0 + uCharge * (1.1 + 0.25 * sin(uTime * 16.0 + uv.x * 5.0));
 
-    float3 col = float3(0.004, 0.006, 0.012) * dark;
-    col += uColBright * stars * 0.22 * uProgress;
-    col += lerp(uColMid, uColBright, 0.6) * ring * outGate * breatheN * 0.42 * pulse;
-    col += uColHot * ringCore * (0.55 + 0.25 * (pulse - 1.0));
+    float3 col = lerp(uColMid, uColBright, 0.6) * ring * outGate * breatheN * 0.5 * pulse;
+    col += uColHot * ringCore * (0.85 + 0.6 * (pulse - 1.0));
 
-    float a = (dark * 0.85 + ringCore * 0.08) * vA;
-    return float4(col * vA, a) * uAlpha;
+    float a = (dark + ringCore * 0.12) * vA;
+    return float4(col * vA, saturate(a)) * uAlpha;
 }
 
 technique TechUmbra

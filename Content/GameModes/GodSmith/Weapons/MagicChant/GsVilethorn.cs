@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -20,17 +18,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override int TargetItemID => ItemID.Vilethorn;
 
         protected override string GsDescFallback =>
-            "Reforged: on-beat thorns fork into vile spikes wherever they bite;" +
-            "\nat full resonance the next cast also erupts a ring of thorns around you";
-
+            "Reforged: on-beat thorns fork into vile spikes wherever they bite;\nat full resonance the next cast also erupts a ring of thorns around you";
         protected override float BaseDamageMult => 1.10f;
-
-        protected override Color ChantColor => new(150, 96, 220);
 
         /// <summary>形态：V 形分叉短刺 / 棘环短棘</summary>
         private const float FormVSpike = 10f;
-
-        private static readonly Color VileGreen = new(126, 190, 88);
 
         protected override bool? ChantEmpowerShoot(Item item, Player player, GsChantPlayer chant,
             EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity,
@@ -47,28 +39,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             return null;
         }
 
-        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //飞行相：腐化荆棘的酸绿微光，本体延展动画由原版负责
-            Lighting.AddLight(proj.Center, VileGreen.ToVector3() * 0.16f);
-            if (proj.timeLeft % 9 == 0 && Main.rand.NextBool(2)) {
-                PRTLoader.NewParticle<PRT_ToxicMist>(proj.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    Main.rand.NextVector2Circular(0.5f, 0.5f), VileGreen * 0.5f,
-                    Main.rand.NextFloat(0.3f, 0.5f))?.Configure(Main.rand.Next(12, 20));
-            }
-        }
-
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            if (!VaultUtils.isServer) {
-                //命中相：孢尘一撮
-                for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_ToxicMist>(target.Center + Main.rand.NextVector2Circular(6f, 6f),
-                        Main.rand.NextVector2Circular(1.2f, 1.2f), VileGreen * 0.55f,
-                        Main.rand.NextFloat(0.35f, 0.55f))?.Configure(Main.rand.Next(10, 16));
-                }
-            }
             //蔓生节拍：正拍荆棘（任意延展段承签同标）命中点分叉 V 形二次刺
             if (!proj.IsOwnedByLocalPlayer() || router.MarkData is not (FormOnBeat or FormEmpower)) {
                 return;
@@ -81,15 +52,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 Projectile.NewProjectile(proj.GetSource_FromThis(), target.Center, vDir * 0.5f,
                     ProjectileID.VilethornTip, spikeDamage, proj.knockBack * 0.4f, proj.owner);
             }
-        }
-
-        public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            //余痕相：刺尖枯散的孢尘比刺活得久
-            if (VaultUtils.isServer || !Main.rand.NextBool(2)) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_ToxicMist>(proj.Center, -Vector2.UnitY * 0.4f,
-                VileGreen * 0.45f, Main.rand.NextFloat(0.35f, 0.55f))?.Configure(Main.rand.Next(16, 26));
         }
     }
 }

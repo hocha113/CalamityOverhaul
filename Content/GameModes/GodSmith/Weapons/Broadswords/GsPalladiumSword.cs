@@ -1,7 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -13,7 +10,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 {
     /// <summary>
     /// 【命脉汲取】材质：温血钯金重锻的再生金属剑。
-    /// 签名：①命中在刃上积攒「活性」（上限 6），刀脊亮起脉搏光点
+    /// 签名：①命中在刃上积攒「活性」（上限 6）
     /// ②终结拍命中把活性抽成命脉光珠，自伤口飞回持剑人，每珠回复 1 点生命（每循环上限 6）
     /// ③拍表带脉搏滞（滞帧全族最长），终结汲取带治愈钟音
     /// </summary>
@@ -24,18 +21,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsPalladiumSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: hits store vitality in the warm palladium edge; the finisher draws it out " +
-            "as life motes that fly back and mend you, up to six per combo";
-
-        //温血钯金色板
+            "Reforged: hits store vitality in the warm palladium edge; the finisher draws it out as life motes that fly back and mend you, up to six per combo";
         internal static readonly Color VeinBright = new(255, 214, 160); //暖金刃缘
         internal static readonly Color VeinMain = new(222, 128, 92);    //钯铜体色
         internal static readonly Color VeinLife = new(255, 122, 104);   //命脉橙红
-        internal static readonly Color VeinDeep = new(58, 30, 24);      //暖褐垫影
 
         internal const int VitalityCap = 6;
 
-        /// <summary>活性层数 0~6；跨玩家共享单例，只在 myPlayer 守门路径读写（镜像 GsExcalibur.Radiance）</summary>
+        /// <summary>活性层数 0~6；跨玩家共享单例，只在 myPlayer 守门路径读写</summary>
         internal int Vitality;
 
         //预算账：拍均 (1+1+1.28)/3≈1.09 ×底伤 1.08≈1.18；命脉光珠零伤害（纯回复）；
@@ -55,7 +48,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsPalladiumSword.VeinBright;
         protected override Color BodyMain => GsPalladiumSword.VeinMain;
         protected override Color HotAccent => GsPalladiumSword.VeinLife;
-        protected override Color DeepShadow => GsPalladiumSword.VeinDeep;
 
         private bool siphonFired;
 
@@ -97,9 +89,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 scheme.Vitality = Math.Min(GsPalladiumSword.VitalityCap, scheme.Vitality + 1);
                 if (old < GsPalladiumSword.VitalityCap && scheme.Vitality == GsPalladiumSword.VitalityCap
                     && !VaultUtils.isServer) {
-                    //攒满：一记温软的提示音 + 刃身微闪
+                    //攒满：一记温软的提示音
                     SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.35f, Pitch = 0.15f }, Owner.Center);
-                    SetFlash(5);
                 }
                 return;
             }
@@ -123,65 +114,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     target.Center + Main.rand.NextVector2Circular(10f, 10f), vel, 0, 0f, i);
             }
         }
-
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            if (!IsFinisher || phase > PhaseHold) {
-                return;
-            }
-            //汲取蓄势：暖光自持剑人胸口渗入刀身
-            Vector2 chest = Owner.MountedCenter;
-            Vector2 to = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.4f, 0.8f));
-            PRTLoader.NewParticle<PRT_Light>(chest + Main.rand.NextVector2Circular(12f, 12f),
-                (to - chest) * 0.12f, GsPalladiumSword.VeinLife,
-                Main.rand.NextFloat(0.05f, 0.1f))?.Configure(9, 0.55f);
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //命脉命中：橙红温光一点
-            PRTLoader.NewParticle<PRT_Light>(target.Center, -Vector2.UnitY * 0.6f,
-                GsPalladiumSword.VeinLife, IsFinisher ? 0.26f : 0.16f)?.Configure(11, 0.8f);
-        }
-
-        /// <summary>活性脉搏光点：沿刀脊排布，双搏节律明灭（只画给 owner，层数不跨端共享）</summary>
-        protected override void DrawExtra(SpriteBatch sb, Color lightColor) {
-            if (Owner.whoAmI != Main.myPlayer) {
-                return;
-            }
-            GsPalladiumSword scheme = Scheme;
-            int stacks = scheme?.Vitality ?? 0;
-            if (stacks <= 0 || fanFade <= 0.05f) {
-                return;
-            }
-            Texture2D star = CWRAsset.StarGlow01?.Value;
-            if (star == null) {
-                return;
-            }
-            Vector2 hand = Hand;
-            float t = Main.GlobalTimeWrappedHourly;
-            for (int i = 0; i < stacks; i++) {
-                Vector2 at = hand + mainAngle.ToRotationVector2() * (mainReach * (0.28f + 0.11f * i))
-                    - Main.screenPosition;
-                //双搏节律：主搏 + 半拍后的副搏，逐珠错相
-                float phase = t * 5.2f + i * 0.9f;
-                float pulse = MathF.Max(0f, MathF.Sin(phase)) * 0.7f
-                    + MathF.Max(0f, MathF.Sin(phase * 2f + 0.9f)) * 0.3f;
-                Color c = GsPalladiumSword.VeinLife * (fanFade * (0.28f + 0.4f * pulse));
-                c.A = 0;
-                sb.Draw(star, at, null, c, 0f, star.Size() * 0.5f, 0.12f + 0.05f * pulse, SpriteEffects.None, 0f);
-            }
-        }
     }
 
     /// <summary>
-    /// 命脉光珠：自伤口抽出的生命精粹，先外撇减速，再折返加速飞回持剑人，
-    /// 贴身即消并回复 1 点生命（仅 owner 端结算，Heal 自带同步）。
-    /// 自绘暖珠：速度拉丝暖晕 + 橙红珠体 + 亮芯，航迹滴落暖尘。零伤害纯功能弹幕
+    /// 命脉光珠：自伤口抽出的生命精粹，用原版吸血刀回血珠贴图。先外撇减速，再折返加速飞回持剑人，
+    /// 贴身即消并回复 1 点生命（仅 owner 端结算，Heal 自带同步）。零伤害纯功能弹幕
     /// </summary>
     internal class GsPalladiumSwordLifeMoteProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.VampireHeal;
         public override LocalizedText DisplayName => Language.GetText("ItemName.PalladiumSword");
 
         private ref float Life => ref Projectile.localAI[0];
@@ -223,15 +164,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 }
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
-
-            Lighting.AddLight(Projectile.Center, GsPalladiumSword.VeinLife.ToVector3() * 0.26f);
-
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                //航迹滴落暖尘
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, -Projectile.velocity * 0.08f,
-                    Main.rand.NextBool() ? GsPalladiumSword.VeinLife : GsPalladiumSword.VeinBright,
-                    Main.rand.NextFloat(0.04f, 0.08f))?.Configure(8, 0.5f);
-            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -239,55 +171,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.22f, Pitch = 0.55f, MaxInstances = 4 }, Projectile.Center);
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.3f, 0.8f), GsPalladiumSword.VeinBright,
-                    Main.rand.NextFloat(0.05f, 0.09f))?.Configure(10, 0.55f);
-            }
-        }
-
-        /// <summary>绘制路径确定性伪随机</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
-                return false;
-            }
-            Vector2 center = Projectile.Center - Main.screenPosition;
-            float fadeIn = MathHelper.Clamp(Life / 3f, 0f, 1f);
-            //速度拉丝：沿速度方向压扁的暖晕，飞得越快拉得越长
-            float speed01 = MathHelper.Clamp(Projectile.velocity.Length() / 16f, 0f, 1f);
-            Vector2 stretch = new(0.3f + 0.4f * speed01, 0.26f - 0.1f * speed01);
-            float breath = 0.9f + 0.1f * MathF.Sin(Life * 0.4f + SegRand(3) * 6.28f);
-
-            //拖尾：速度回溯两段
-            for (int i = 1; i <= 2; i++) {
-                Vector2 back = center - Projectile.velocity * (i * 1.8f);
-                Color trail = GsPalladiumSword.VeinLife * (0.18f * (1f - i / 3f) * fadeIn);
-                trail.A = 0;
-                Main.EntitySpriteDraw(glow, back, null, trail, Projectile.rotation, glow.Size() * 0.5f,
-                    stretch * (0.8f - i * 0.18f), SpriteEffects.None, 0);
-            }
-            //暖晕
-            Color halo = GsPalladiumSword.VeinLife * (0.6f * fadeIn * breath);
-            halo.A = 0;
-            Main.EntitySpriteDraw(glow, center, null, halo, Projectile.rotation, glow.Size() * 0.5f,
-                stretch, SpriteEffects.None, 0);
-            //珠体
-            Color body = GsPalladiumSword.VeinBright * (0.75f * fadeIn);
-            body.A = 0;
-            Main.EntitySpriteDraw(glow, center, null, body, Projectile.rotation, glow.Size() * 0.5f,
-                stretch * 0.55f, SpriteEffects.None, 0);
-            //亮芯
-            Color core = Color.White * (0.5f * fadeIn * breath);
-            core.A = 0;
-            Main.EntitySpriteDraw(glow, center, null, core, 0f, glow.Size() * 0.5f, 0.08f, SpriteEffects.None, 0);
-            return false;
         }
     }
 }

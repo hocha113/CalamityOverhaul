@@ -1,172 +1,228 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Yoyos
 {
-    /// <summary>指令模式常量（写进 <see cref="GodSmithProjRouter.MarkData"/> 跨端同步）</summary>
-    internal static class GsYoyoMode
+    /// <summary>
+    /// 每悠悠球一份的环绕状态（<see cref="GodSmithProjRouter.LocalState"/> 承载，各端各持，弹幕亡即弃）。
+    /// 开关与环心是 owner 权威本地量；跨端只镜像开关本身（MarkData），远端靠位置同步看轨迹
+    /// </summary>
+    internal class GsYoyoOrbitState
     {
-        /// <summary>跟随：不覆写，原版 aiStyle 99 全权</summary>
-        public const int Follow = 0;
-        /// <summary>驻场：锚定光标点小半径自旋巡逻</summary>
-        public const int Anchor = 1;
-        /// <summary>折返：高速直线穿刺回手（一次性）</summary>
-        public const int Lash = 2;
-        /// <summary>环绕：绕玩家贴身防御轨道</summary>
-        public const int Orbit = 3;
-        /// <summary>路径编程：贝塞尔巡回（仅泰拉悠悠球）</summary>
-        public const int Path = 4;
+        /// <summary>环绕开关（owner 权威）</summary>
+        public bool Orbiting;
+        /// <summary>环绕相位角</summary>
+        public float Phase;
+        /// <summary>环心（逐帧跟光标，已按放线距离夹紧）</summary>
+        public Vector2 Center;
+        /// <summary>上帧右键原始状态（边沿检测）；首帧只记录不触发，出球时已按住的右键不算一次点击</summary>
+        public bool PrevRight;
+        public bool InputInit;
+        /// <summary>环绕期周期 netUpdate 计时</summary>
+        public int NetSyncTimer;
+        /// <summary>MaxUpdates 去重门（每帧逻辑只跑一次）</summary>
+        public uint LastFrame;
+        /// <summary>各端上帧看到的开关（切换音效用）</summary>
+        public bool SeenOrbiting;
+        public bool SeenInit;
     }
 
     /// <summary>
-    /// 悠悠球族方案基类。全员 Router 类型通道增强：原版 aiStyle 99 每帧先跑
-    /// （线绳/飞行时限/回收/悠悠球袋/配重球生态全部无损），指令激活时在
-    /// <see cref="GsProjPostAI"/> 覆写速度实现轨迹指令；模式关闭当帧路由停发即回原版。<br/>
-    /// 三指令按 <see cref="Tier"/> 解锁：T1 驻场，T2 +折返，T3 +环绕，T4 +路径编程。
-    /// 指令输入 = owner 侧原始右键边沿检测（channel 占用左键，AltFunctionUse 在
-    /// itemAnimation 归零前不可达，见计划 §0.1）。<br/>
-    /// 跨端契约：指令模式写 MarkData、热度层写 MarkData2（netUpdate 过线），
-    /// 锚点/路径点/输入机是 owner 权威 <see cref="GsYoyoState"/> 本地量，
-    /// 远端靠弹幕位置同步呈现轨迹
+    /// 悠悠球族方案基类。原版 aiStyle 99 全权（线绳/飞行时限/回收/悠悠球袋/配重球生态全部无损），
+    /// 本族只加一条右键指令：球在外时点右键，悠悠球改为围着光标位置转圈巡逻，
+    /// 环心逐帧跟随光标；再点一次或收球即回原版跟随。<br/>
+    /// 指令输入 = owner 侧右键原始边沿（channel 占用左键，AltFunctionUse 在 itemAnimation 归零前不可达）。
+    /// 跨端契约：开关写 MarkData 随 netUpdate 过线，环心/相位是 owner 本地量，远端靠弹幕位置同步呈现
     /// </summary>
     internal abstract class GsYoyoScheme : GodSmithScheme
     {
         public sealed override string GsFamily => "Yoyos";
 
-        //==================== 类型通道注册 ====================
-
         /// <summary>本方案悠悠球弹幕 type（加载期从原版 item.shoot 读取，不硬编码）</summary>
         internal int YoyoProjType { get; private set; } = -1;
 
-        /// <summary>全族已注册的悠悠球弹幕 type 集合（配重球/蜂/绿珠等承签子弹幕靠它早退）</summary>
-        internal static readonly HashSet<int> YoyoTypeSet = [];
+        /// <summary>基础伤害倍率（有效 DPS 口径的静态部分）</summary>
+        internal virtual float DamageMul => 1.05f;
+
+        /// <summary>环绕半径 px</summary>
+        internal virtual float OrbitRadius => 40f;
+
+        /// <summary>环绕期球体辉光色</summary>
+        internal virtual Color GlowColor => new(255, 214, 120);
+
+        /// <summary>全族共用简述（en 默认值；正典 zh 写在族 loc 文件，键仍按各方案类名落位）</summary>
+        protected override string GsDescFallback =>
+            "Reforged: while the yoyo is out, right click to make it circle around your cursor;" +
+            "\nright click again or let go to return to normal";
 
         public override void GsSetStaticDefaults() {
-            //从原版物品模板取弹幕 type，天平自动跟原版走
             YoyoProjType = new Item(TargetItemID).shoot;
             if (YoyoProjType <= ProjectileID.None) {
                 CWRMod.Instance.Logger.Error($"[GodSmith] 悠悠球方案 {FullName} 读取 item.shoot 失败，通道未注册");
                 return;
             }
             GsRegisterProjChannel(YoyoProjType);
-            YoyoTypeSet.Add(YoyoProjType);
         }
-
-        //==================== 参数面（21 件参数行按需覆写） ====================
-
-        /// <summary>指令解锁档：1 驻场 / 2 +折返 / 3 +环绕 / 4 +路径编程</summary>
-        internal virtual int Tier => 1;
-
-        /// <summary>基础伤害倍率（有效 DPS 口径的静态部分，机制收益另算）</summary>
-        internal virtual float DamageMul => 1.05f;
-
-        /// <summary>驻场自旋巡逻半径 px</summary>
-        internal virtual float AnchorRadius => 26f;
-
-        /// <summary>驻场自旋角速度 rad/帧</summary>
-        internal virtual float AnchorSpin => 0.35f;
-
-        /// <summary>驻场热度：每 hit 伤害增幅</summary>
-        internal virtual float HeatPerHit => 0.04f;
-
-        /// <summary>驻场热度上限（总增幅）</summary>
-        internal virtual float HeatCap => 0.40f;
-
-        /// <summary>折返速度倍率（基于原版 YoyosTopSpeed）</summary>
-        internal virtual float LashSpeedMul => 2.2f;
-
-        /// <summary>折返伤害倍率</summary>
-        internal virtual float LashDamageMul => 1.35f;
-
-        /// <summary>环绕轨道半径 = 原版 YoyosMaximumRange × 本比例</summary>
-        internal virtual float OrbitRadiusRatio => 0.45f;
-
-        /// <summary>环绕角速度 rad/帧</summary>
-        internal virtual float OrbitSpin => 0.22f;
-
-        /// <summary>环绕期时限流速倍率（防挂机，1.5 = 每帧多走 0.5）</summary>
-        internal virtual float OrbitTimeDrain => 1.5f;
-
-        /// <summary>路径编程点数上限（仅泰拉悠悠球 &gt;0）</summary>
-        internal virtual int PathPoints => 0;
-
-        /// <summary>主题辉光色（指令激活时球体加色层）</summary>
-        internal virtual Color GlowColor => new(255, 214, 120);
-
-        /// <summary>热度辉光色（层数越高越亮）</summary>
-        internal virtual Color HeatColor => new(255, 150, 60);
-
-        /// <summary>热度层数上限（由 HeatCap/HeatPerHit 折算）</summary>
-        internal int HeatCapLayers => (int)MathF.Round(HeatCap / HeatPerHit);
-
-        //==================== 个性钩子（tick 类各端都调，钩子体内自守端别） ====================
-
-        /// <summary>任意模式每帧（含跟随态；冷却递减/形态复位放这，端别纪律同下）</summary>
-        internal virtual void OnGlobalTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st, int effMode) { }
-
-        /// <summary>驻场每帧（含服务器；粒子守 !VaultUtils.isServer，生成守 IsOwnedByLocalPlayer，权威判定守非多人客户端）</summary>
-        internal virtual void OnAnchorTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st) { }
-
-        /// <summary>环绕每帧（端别纪律同上）</summary>
-        internal virtual void OnOrbitTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st) { }
-
-        /// <summary>折返每帧（端别纪律同上）</summary>
-        internal virtual void OnLashTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st) { }
-
-        /// <summary>路径巡回每帧（端别纪律同上）</summary>
-        internal virtual void OnPathTick(Projectile proj, GodSmithProjRouter router, GsYoyoState st) { }
-
-        /// <summary>折返下达瞬间（仅 owner 端，镜像弹等伴生生成放这）</summary>
-        internal virtual void OnLashBeginOwner(Projectile proj, GodSmithProjRouter router, GsYoyoState st) { }
-
-        /// <summary>指令态命中（仅 owner 端；mode 为命中时的指令模式）</summary>
-        internal virtual void OnCommandHit(Projectile proj, NPC target, in NPC.HitInfo hit, GsYoyoState st, int mode, GodSmithProjRouter router) { }
-
-        /// <summary>指令态伤害修饰（判定端执行；基类已做热度与折返倍率，这里追加个性）</summary>
-        internal virtual void ModifyCommandHit(Projectile proj, NPC target, ref NPC.HitModifiers modifiers, GsYoyoState st, int mode) { }
-
-        /// <summary>个性绘制层（PostDraw 末尾；heatRatio = 热度层/上限）</summary>
-        internal virtual void OnCommandDraw(Projectile proj, GodSmithProjRouter router, GsYoyoState st, int effMode, float heatRatio) { }
-
-        //==================== 数值行 ====================
 
         public override void GsModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             damage *= DamageMul;
         }
 
-        //==================== Router 回调 → 指令层 ====================
+        //==================== 环绕指令 ====================
 
-        public sealed override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            //承签传染的子弹幕（蜂/绿珠/配重球/血珠等）不接管，原版行为无损
+        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
+            //承签传染的子弹幕（配重球等）不接管
             if (proj.type != YoyoProjType) {
                 return;
             }
-            GsYoyoCommandLayer.PostAI(this, proj, router);
+            Player owner = Main.player[proj.owner];
+            if (!owner.active) {
+                return;
+            }
+            GsYoyoOrbitState st = router.GetOrCreateState<GsYoyoOrbitState>();
+            bool isOwner = proj.IsOwnedByLocalPlayer();
+            bool newFrame = st.LastFrame != Main.GameUpdateCount;
+            if (newFrame) {
+                st.LastFrame = Main.GameUpdateCount;
+            }
+
+            if (isOwner) {
+                //原版回收态（ai[0] < 0）或松手当帧立即停覆写，收线全交原版
+                bool recalled = proj.ai[0] < 0f || !owner.channel || owner.dead || owner.CCed;
+                if (recalled) {
+                    if (st.Orbiting) {
+                        SetOrbiting(proj, router, st, false);
+                    }
+                }
+                else {
+                    if (newFrame) {
+                        ReadInput(proj, router, st, owner);
+                    }
+                    if (st.Orbiting) {
+                        Steer(proj, st, owner, newFrame);
+                    }
+                }
+                //环绕期周期性推位置同步，远端轨迹不漂
+                if (st.Orbiting && newFrame && ++st.NetSyncTimer >= 10) {
+                    st.NetSyncTimer = 0;
+                    proj.netUpdate = true;
+                }
+            }
+
+            if (!newFrame) {
+                return;
+            }
+            bool effOrbit = isOwner ? st.Orbiting : router.MarkData > 0.5f;
+            if (st.SeenInit && st.SeenOrbiting != effOrbit && !VaultUtils.isServer) {
+                SoundStyle sound = effOrbit
+                    ? SoundID.Item8 with { Volume = 0.45f, Pitch = 0.35f }
+                    : SoundID.Item8 with { Volume = 0.3f, Pitch = -0.25f };
+                SoundEngine.PlaySound(sound, proj.Center);
+            }
+            st.SeenInit = true;
+            st.SeenOrbiting = effOrbit;
+            if (effOrbit && !VaultUtils.isServer) {
+                Lighting.AddLight(proj.Center, GlowColor.ToVector3() * 0.2f);
+            }
         }
 
-        public sealed override void GsProjModifyHitNPC(Projectile proj, NPC target, ref NPC.HitModifiers modifiers, GodSmithProjRouter router) {
-            if (proj.type != YoyoProjType) {
+        /// <summary>owner 侧右键按下沿切换环绕；UI 悬停/背包/地图打开时忽略；出球首帧只登记不触发</summary>
+        private void ReadInput(Projectile proj, GodSmithProjRouter router, GsYoyoOrbitState st, Player owner) {
+            bool right = Main.mouseRight;
+            if (!st.InputInit) {
+                st.InputInit = true;
+                st.PrevRight = right;
                 return;
             }
-            GsYoyoCommandLayer.ModifyHit(this, proj, target, ref modifiers, router);
+            bool uiBlock = Main.playerInventory || owner.mouseInterface || Main.mapFullscreen || Main.ingameOptionsWindow;
+            if (right && !st.PrevRight && !uiBlock) {
+                SetOrbiting(proj, router, st, !st.Orbiting);
+            }
+            st.PrevRight = right;
         }
 
-        public sealed override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            if (proj.type != YoyoProjType) {
-                return;
+        /// <summary>开关转移（仅 owner 端）：开启时从球当前方位切入环，identity 奇偶错相让悠悠球袋双球对置；镜像 MarkData 过线</summary>
+        private void SetOrbiting(Projectile proj, GodSmithProjRouter router, GsYoyoOrbitState st, bool on) {
+            st.Orbiting = on;
+            if (on) {
+                Player owner = Main.player[proj.owner];
+                st.Center = ClampCenter(proj, owner, Main.MouseWorld);
+                st.Phase = (proj.Center - st.Center).ToRotation() + proj.identity % 2 * MathHelper.Pi;
+                st.NetSyncTimer = 0;
             }
-            GsYoyoCommandLayer.OnHit(this, proj, target, hit, router);
+            router.MarkData = on ? 1f : 0f;
+            proj.netUpdate = true;
         }
 
-        public sealed override void GsProjPostDraw(Projectile proj, Color lightColor, GodSmithProjRouter router) {
+        /// <summary>速度覆写：环心逐帧跟光标，球沿环匀角速前进；角速按原版顶速折算，上限给足余量防滞后</summary>
+        private void Steer(Projectile proj, GsYoyoOrbitState st, Player owner, bool newFrame) {
+            st.Center = ClampCenter(proj, owner, Main.MouseWorld);
+            float top = ProjectileID.Sets.YoyosTopSpeed[proj.type];
+            if (top < 8f) {
+                top = 8f;
+            }
+            float r = OrbitRadius;
+            float spin = MathHelper.Clamp(top * 0.9f / r, 0.12f, 0.30f);
+            if (newFrame) {
+                st.Phase += spin;
+            }
+            Vector2 target = st.Center + st.Phase.ToRotationVector2() * r;
+            Vector2 to = target - proj.Center;
+            float dist = to.Length();
+            float maxSpeed = MathF.Max(top, spin * r) + 6f;
+            proj.velocity = dist <= maxSpeed ? to : to * (maxSpeed / dist);
+        }
+
+        /// <summary>环心收进原版最大放线距离之内（扣掉环半径），线不会被拉断</summary>
+        private Vector2 ClampCenter(Projectile proj, Player owner, Vector2 point) {
+            float maxR = ProjectileID.Sets.YoyosMaximumRange[proj.type] * 0.92f - OrbitRadius;
+            if (maxR < 80f) {
+                maxR = 80f;
+            }
+            Vector2 d = point - owner.Center;
+            if (d.LengthSquared() > maxR * maxR) {
+                point = owner.Center + d.SafeNormalize(Vector2.UnitX) * maxR;
+            }
+            return point;
+        }
+
+        //==================== 绘制：环绕态读数 ====================
+
+        public override void GsProjPostDraw(Projectile proj, Color lightColor, GodSmithProjRouter router) {
             if (proj.type != YoyoProjType) {
                 return;
             }
-            GsYoyoCommandLayer.PostDraw(this, proj, router);
+            GsYoyoOrbitState st = router.GetOrCreateState<GsYoyoOrbitState>();
+            bool isOwner = proj.IsOwnedByLocalPlayer();
+            bool orbiting = isOwner ? st.Orbiting : router.MarkData > 0.5f;
+            if (!orbiting) {
+                return;
+            }
+
+            //球体辉光（SoftGlow 黑底贴图，预乘批里 A=0 即加色）
+            Texture2D glowTex = CWRAsset.SoftGlow?.Value;
+            if (glowTex != null) {
+                float pulse = 0.75f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 7f + proj.identity * 0.83f);
+                Color c = GlowColor * (0.4f * pulse);
+                c.A = 0;
+                Main.EntitySpriteDraw(glowTex, proj.Center - Main.screenPosition, null, c, 0f,
+                    glowTex.Size() / 2f, 0.6f, SpriteEffects.None, 0);
+            }
+
+            //环心标记只有 owner 画（环心是本地量）
+            Texture2D star = CWRAsset.StarGlow01?.Value;
+            if (isOwner && star != null) {
+                float pulse = 0.55f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5f);
+                Color c = GlowColor * pulse;
+                c.A = 0;
+                Main.EntitySpriteDraw(star, st.Center - Main.screenPosition, null, c,
+                    Main.GlobalTimeWrappedHourly * 1.2f, star.Size() / 2f, 0.3f, SpriteEffects.None, 0);
+            }
         }
     }
 }

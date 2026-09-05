@@ -7,11 +7,6 @@ GsLightsBane.Desc:
 	Reforja: cada tajo rasga en el aire una herida de sombra;
 	el tercero se hunde en la sombra y estalla hacia adelante; la cicatriz se queda un instante y erosiona sin cesar a quien la toca
 	'''
-GsNightsEdge.Desc:
-	'''
-	Reforja: un rito de cinco tiempos en uno. Los cuatro primeros tajos invocan cada uno el alma de un material de forja: sombra, carne, jungla y fuego infernal;
-	el quinto funde las cuatro almas y lanza una onda de filo de la noche que atraviesa la formación enemiga
-	'''
 # ===== Wood tier =====
 GsWoodenSword.Desc:
 	'''
@@ -116,7 +111,6 @@ GsCobaltSword.Desc: Reforja: si el combo no se rompe, el filo de cobalto se vuel
 GsCutlass.Desc: Reforja: danza de saqueo de cuatro tiempos; el tempo sube a cada tiempo. Los impactos del combo acumulan Garbo; al juntar bastante, el cuarto tiempo se vuelve un tajo doble en remolino, dos vueltas en torno al cuerpo y un juicio de daño en cada una.
 GsDD2SquireBetsySword.Desc: Reforja: cada tajo suelta una onda de estampido de rugido de dragón. Los impactos acumulan Alma de dragón; al llenar cuatro capas, la onda del remate asciende a una onda de dos dragones entrelazados.
 GsDD2SquireDemonSword.Desc: Reforja: al empuñarla, mantener pulsado clic derecho alza el escudo; tras un bloqueo exitoso, el siguiente tajo inflige el quíntuple de daño. El bloqueo exitoso además enciende el filo; los tres tajos siguientes lanzan ondas de fuego y prenden a los enemigos.
-GsExcalibur.Desc: Reforja: combo de veredicto diurno de cuatro tiempos; cada tajo lanza un arco de luz sagrada de corto alcance que cubre la distancia fuera del filo. Los tajos que aciertan acumulan Resplandor sagrado; al acertar el tajo de veredicto del cuarto tiempo, detona una nova de luz sagrada: a más Resplandor, más fuerte la explosión.
 GsFetidBaghnakhs.Desc: Reforja: danza de zarpazos a quemarropa de cuatro tiempos. Cada golpe araña en el objetivo una marca de garras podrida; la cuarta estalla en pus; los enemigos salpicados quedan envenenados y teñidos de ponzoña.
 GsFrostbrand.Desc: Reforja: aliento de invierno. Cada tajo exhala un proyectil de escarcha que primero se atrasa y luego se lanza; al acertar aplica quemadura gélida. El proyectil del remate se abre en un abanico de tres esquirlas de hielo.
 GsGreenPhaseblade.Desc: Reforja: filo de haz de plasma; al cortar enemigos acumula carga y el filo se alarga y brilla. Al llenar la carga, el siguiente remate lanza un arco de plasma.
@@ -140,13 +134,9 @@ GsRedPhasesaber.Desc: Reforja: filo de plasma refinado; al cortar enemigos acumu
 GsSeedler.Desc: Reforja: cada tajo lanza una vaina de semilla que gira; tras rebotar estalla en un abanico de zarzas que persiguen. La vaina del remate brota lianas y, en el impacto, alza un matorral de zarza que sigue pinchando.
 GsSlapHand.Desc: Reforja: tres manotazos de castigo celestial; cada palma deja una huella enorme y un retroceso disparatado. El remate junta las dos palmas y suelta un pequeño anillo de onda de choque.
 GsStarWrath.Desc: Reforja: cada tajo llama del cielo nocturno tres meteoros con cola de cometa. Los impactos acumulan Marea estelar; al llenarla, el remate pasa a verter una lluvia de estrellas; la gran estrella final, al tocar suelo, estalla un anillo estelar.
-GsTerraBlade.Desc: Reforja: dúo de cuatro tiempos en el que el alma de luz y el alma de noche se turnan el filo. Cada tajo lanza una onda de filo terra del color del alma en turno; el cuarto funde las dos almas y taja un gran filo resonante que, al acertar, estalla un anillo estelar verde.
 GsTheHorsemansBlade.Desc: Reforja: al acertar a un enemigo llama una cabeza de calabaza en llamas que embiste al objetivo. Golpear sin parar al mismo objetivo sella una Marca de cacería; al llenarla, el remate llama una caballería de cuatro calabazas ardientes que carga en fila y aplasta la línea del objetivo.
 GsTitaniumSword.Desc: Reforja: cada tajo deja en el aire una sombra de titanio que, medio tiempo después, repite el mismo tajo.
-GsTrueExcalibur.Desc: Reforja: veredicto diurno de tres tiempos. Cada tajo lanza una onda de filo diurno que atraviesa, más fuerte a cada tiempo. La onda del tercero, al acertar, estalla una cruz de luz sagrada.
-GsTrueNightsEdge.Desc: Reforja: tres tiempos de marea nocturna, abiertos y amplios. Cada tajo lanza una gran onda de filo de la noche; de ida se va frenando y, al agotar el ímpetu, acelera el retorno y taja otro tramo. La onda del remate es más grande y, al volver, se parte en dos filos nocturnos menores.
 GsWhitePhaseblade.Desc: Reforja: filo de haz de plasma; al cortar enemigos acumula carga y el filo se alarga y brilla. Al llenar la carga, el siguiente remate lanza un arco de plasma.
 GsWhitePhasesaber.Desc: Reforja: filo de plasma refinado; al cortar enemigos acumula carga y el tope de extensión del filo es más alto. Cada remate lanza un filo de luz corto; a plena carga, en su lugar lanza un arco sobrecargado que al impactar estalla en un anillo de plasma.
 GsYellowPhaseblade.Desc: Reforja: filo de haz de plasma; al cortar enemigos acumula carga y el filo se alarga y brilla. Al llenar la carga, el siguiente remate lanza un arco de plasma.
 GsYellowPhasesaber.Desc: Reforja: filo de plasma refinado; al cortar enemigos acumula carga y el tope de extensión del filo es más alto. Cada remate lanza un filo de luz corto; a plena carga, en su lugar lanza un arco sobrecargado que al impactar estalla en un anillo de plasma.
-GsZenith.Desc: Reforja: el eje de las diez mil espadas. Cada tajo lanza la sombra de una espada célebre de la historia; recorre un arco hacia el cursor, gira y vuelve. Los impactos acumulan Voluntad de la espada; a más Voluntad, más fuerte la formación que abre el remate; al llenarla, llama la formación de las Ocho Espadas que se reúnen y cercan; el centro rasga una fisura espacio-temporal y estalla con estruendo.

@@ -54,6 +54,28 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText GodSmithRecastTitle;
         /// <summary>盔甲神赋行前缀（含冒号）</summary>
         internal static LocalizedText GodSmithEndowPrefix;
+        /// <summary>接管套装的继承行：{0}=镶嵌头盔名，{1}=其套装奖励</summary>
+        internal static LocalizedText GodSmithInheritLine;
+        /// <summary>接管套装单件 tooltip 的套装奖励预告：{0}=套装奖励</summary>
+        internal static LocalizedText GodSmithSetPreview;
+        /// <summary>镶嵌头盔 tooltip 行：{0}=链上头盔名序列</summary>
+        internal static LocalizedText GodSmithNestChain;
+        /// <summary>镶嵌面板标题</summary>
+        internal static LocalizedText GodSmithNestTitle;
+        /// <summary>镶嵌面板脚注：整套穿好后继承</summary>
+        internal static LocalizedText GodSmithNestHint;
+        /// <summary>镶嵌面板脚注：正在生效</summary>
+        internal static LocalizedText GodSmithNestActive;
+        /// <summary>未镶嵌头盔的提示：合成时可加入的低一档头盔与继承收益，{0}=低档头盔组名列表</summary>
+        internal static LocalizedText GodSmithNestReceiveHint;
+        /// <summary>低档头盔的提示：可镶进的高一档头盔，{0}=高档头盔组名列表</summary>
+        internal static LocalizedText GodSmithNestGiveHint;
+        /// <summary>头盔组名列表的连接词（或）</summary>
+        internal static LocalizedText GodSmithNestOr;
+        /// <summary>配方条件文案：需要神匠模式</summary>
+        internal static LocalizedText GodSmithRecipeOn;
+        /// <summary>配方条件文案：神匠模式下不可用</summary>
+        internal static LocalizedText GodSmithRecipeOff;
 
         /// <summary>状态词：已开启</summary>
         internal static LocalizedText StateOn;
@@ -103,6 +125,21 @@ namespace CalamityOverhaul.Content.GameModes
                 () => "Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode");
             GodSmithRecastTitle = this.GetLocalization(nameof(GodSmithRecastTitle), () => "Godsmith Reforged");
             GodSmithEndowPrefix = this.GetLocalization(nameof(GodSmithEndowPrefix), () => "Endowment: ");
+            GodSmithInheritLine = this.GetLocalization(nameof(GodSmithInheritLine), () => "Inherited from {0}: {1}");
+            GodSmithSetPreview = this.GetLocalization(nameof(GodSmithSetPreview), () => "Godsmith set bonus: {0}");
+            GodSmithNestChain = this.GetLocalization(nameof(GodSmithNestChain), () => "Socketed: {0}");
+            GodSmithNestTitle = this.GetLocalization(nameof(GodSmithNestTitle), () => "Socketed Helmets");
+            GodSmithNestHint = this.GetLocalization(nameof(GodSmithNestHint),
+                () => "Wear the full set to inherit the set bonus of every socketed helmet");
+            GodSmithNestActive = this.GetLocalization(nameof(GodSmithNestActive),
+                () => "Full set worn: all socketed set bonuses are active");
+            GodSmithNestReceiveHint = this.GetLocalization(nameof(GodSmithNestReceiveHint),
+                () => "Add {0} when crafting this helmet to socket it in\nWear the full set to also inherit the socketed helmet's set bonus");
+            GodSmithNestGiveHint = this.GetLocalization(nameof(GodSmithNestGiveHint),
+                () => "Can be socketed into {0}: include this helmet when crafting one");
+            GodSmithNestOr = this.GetLocalization(nameof(GodSmithNestOr), () => " or ");
+            GodSmithRecipeOn = this.GetLocalization(nameof(GodSmithRecipeOn), () => "Divine Artifice active");
+            GodSmithRecipeOff = this.GetLocalization(nameof(GodSmithRecipeOff), () => "Divine Artifice dormant");
             StateOn = this.GetLocalization(nameof(StateOn), () => "Active");
             StateOff = this.GetLocalization(nameof(StateOff), () => "Dormant");
             HintEnable = this.GetLocalization(nameof(HintEnable), () => "Click to awaken");

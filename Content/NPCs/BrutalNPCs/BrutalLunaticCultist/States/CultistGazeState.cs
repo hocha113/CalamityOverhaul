@@ -75,10 +75,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return new CultistCoilState();
             }
             if (Timer > EyeOpenFrames + 30 && !AnyBeamAlive(npc.whoAmI)) {
-                return new CultistCoilState(14);
+                return new CultistCoilState(10);
             }
             if (Timer >= Timeout) {
-                return new CultistCoilState(14);
+                return new CultistCoilState(10);
             }
             return null;
         }

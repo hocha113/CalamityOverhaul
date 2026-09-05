@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 {
     /// <summary>
     /// 头颚叠绘：左右瓣各绕自己根部顶边的铰链转。
-    /// 开合优先读已同步状态机声明的颚指令；颚未声明时回落到爪映射（祭舞/挥掷不必双写）。
+    /// 开合优先读已同步状态机声明的颚指令；颚未声明时回落到爪映射（护嘴/蹲伏不必双写）。
     /// 不占网络包。图七不含牙，所有画头处都走这里；颚画在头本体之前。
     /// </summary>
     internal static class BssJawDraw
@@ -54,7 +54,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             BssJawCommand effective = jaw != BssJawCommand.Idle ? jaw : claw switch {
                 BssClawCommand.Snatch => BssJawCommand.Bite,
                 BssClawCommand.GuardMouth => BssJawCommand.Spit,
-                BssClawCommand.RainFlick => BssJawCommand.Spit,
+                BssClawCommand.Brace or BssClawCommand.Fling => BssJawCommand.Gape,
+                BssClawCommand.Scoop => BssJawCommand.Inhale,
                 _ => BssJawCommand.Idle,
             };
             return effective switch {
@@ -70,8 +71,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             return cmd switch {
                 BssClawCommand.GuardMouth => MathHelper.Lerp(0.08f, 0.85f, MathHelper.Clamp(clawBurst, 0f, 1f)),
                 BssClawCommand.Snatch => MathHelper.Lerp(0.85f, 0.06f, MathHelper.Clamp(clawPhase, 0f, 1f)),
-                BssClawCommand.RainFlick => MathHelper.Lerp(idle, 0.72f, MathHelper.Clamp(clawPhase, 0f, 1f)),
-                BssClawCommand.Rite => MathHelper.Lerp(0.15f, 0.7f, MathHelper.Clamp(clawPhase, 0f, 1f)),
+                BssClawCommand.Brace => MathHelper.Lerp(idle, 0.78f, MathHelper.Clamp(clawPhase, 0f, 1f)),
+                BssClawCommand.Scoop => MathHelper.Lerp(idle, 0.18f, MathHelper.Clamp(clawPhase, 0f, 1f)),
+                BssClawCommand.Fling => MathHelper.Lerp(0.18f, 0.88f, MathHelper.Clamp(clawPhase, 0f, 1f)),
                 BssClawCommand.Tuck or BssClawCommand.Collapse => 0.08f,
                 _ => idle,
             };

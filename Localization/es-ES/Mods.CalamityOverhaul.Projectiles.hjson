@@ -797,6 +797,9 @@ KikasaTeleportProj.DisplayName: Kikasa · Salto de lluvia de tinta
 EyetoothDart.DisplayName: Dardo de diente ocular
 DivineSourceBoltProjectile.DisplayName: Proyectil radiante de la fuente sagrada
 BloodButchererBolt.DisplayName: Proyectil nigromántico de la Degolladora
+// TerraLightProj.DisplayName: Terra Light
+// TerraSoulJudgmentProj.DisplayName: True Excalibur Spirit
+// TerraSoulSpinProj.DisplayName: True Night's Edge Spirit
 BloodshotBombHeld.DisplayName: Bomba de oleada de sangre
 BloodshotBombThrown.DisplayName: Bomba de oleada de sangre arrojada
 BloodshotFleshChunk.DisplayName: Trozo de carne de oleada de sangre
@@ -1051,8 +1054,6 @@ GsDD2SquireBetsySwordWaveProj.DisplayName: Arco de espada del Dragón volador
 GsDD2SquireDemonSwordFireWaveProj.DisplayName: Arco de fuego infernal de la Marca del infierno
 GsEbonSporeMistProj.DisplayName: Niebla de esporas de ébano
 GsEnchantedSwordBeamProj.DisplayName: Arco de la Espada encantada
-GsExcaliburArcProj.DisplayName: Arco sagrado de Excalibur
-GsExcaliburNovaProj.DisplayName: Nova sagrada de Excalibur
 GsFetidBaghnakhsBurstProj.DisplayName: Asalto veloz de los Baghnakhs fétidos
 GsFetidBaghnakhsMarkProj.DisplayName: Marca de desgarro de los Baghnakhs fétidos
 GsFieryGreatswordPitProj.DisplayName: Fosa de lava del Volcán
@@ -1067,7 +1068,6 @@ GsLightsBaneScarProj.DisplayName: Cicatriz de sombra del Azote de luz
 GsMeowmereCatProj.DisplayName: Proyectil de gato de Miaumere
 GsMeowmereMeteorProj.DisplayName: Meteoro de Miaumere
 GsMeowmereStarBurstProj.DisplayName: Estallido estelar de Miaumere
-GsNightsEdgeWaveProj.DisplayName: Arco nocturno del Filo de la noche
 GsPalmSandWaveProj.DisplayName: Ola de arena de palmera
 GsPhasebladeArcProj.DisplayName: Arco de luz de la Hoja en fase
 GsPhasesaberBurstProj.DisplayName: Estallido del Sable en fase
@@ -1082,16 +1082,7 @@ GsSlapHandPrintProj.DisplayName: Huella de la Mano abofeteadora
 GsStarfuryStarProj.DisplayName: Estrella de la Furia estelar
 GsStarWrathFallProj.DisplayName: Meteoro de la Cólera estelar
 GsStarWrathRingProj.DisplayName: Anillo estelar de la Cólera estelar
-GsTerraBladeBurstProj.DisplayName: Estallido resonante de la Espada de la Tierra
-GsTerraBladeRingProj.DisplayName: Anillo de energía de la Espada de la Tierra
-GsTerraBladeWaveProj.DisplayName: Arco de la Espada de la Tierra
 GsTheHorsemansBladeJackProj.DisplayName: Alma de calabaza de la Hoja del Jinete
-GsTrueExcaliburCrossProj.DisplayName: Cruz sagrada de la Verdadera Excalibur
-GsTrueExcaliburWaveProj.DisplayName: Arco de luz de la Verdadera Excalibur
-GsTrueNightsEdgeShardProj.DisplayName: Cristal nocturno del Verdadero Filo de la noche
-GsTrueNightsEdgeWaveProj.DisplayName: Arco nocturno del Verdadero Filo de la noche
-GsZenithPhantomProj.DisplayName: Filo fantasma del Cénit
-GsZenithRiftProj.DisplayName: Grieta del vacío del Cénit
 GsBallOHurtBarbProj.DisplayName: Púa de la Bola del dolor
 GsBlueMoonCrescentProj.DisplayName: Resplandor de la Luna azul
 GsChainGuillotinesShearProj.DisplayName: Corte de las Guillotinas encadenadas
@@ -1218,11 +1209,15 @@ TempleDiveOmen.DisplayName: Aviso de picado del templo
 TempleDropOmen.DisplayName: Aviso de desprendimiento del templo
 TempleEmberProj.DisplayName: Proyectil de fuego del templo
 BssBreachOmen.DisplayName: Aviso de asalto que rompe la tierra
+// BssDashOmen.DisplayName: Dash Telegraph
 BssCactusBallProj.DisplayName: Bola rodante de cactus
 BssNeedleProj.DisplayName: Aguja gigante voladora
 BssPetalProj.DisplayName: Pétalo de tormenta
 BssSandGlob.DisplayName: Bola de arena
-BssSandVortexProj.DisplayName: Vórtice de arenas movedizas
+// BssSandSurgeProj.DisplayName: Sand Surge
+// BssDustDevilProj.DisplayName: Dust Devil
+// BssWindPetalProj.DisplayName: Gale Petal
+// BssPincerSnapProj.DisplayName: Pincer Snap
 FssBreachOmen.DisplayName: Montículo de arena pútrida
 FssCascadeDrop.DisplayName: Cascada de icor
 FssIchorGate.DisplayName: Puerta de icor
@@ -1247,6 +1242,14 @@ DeepcrystalJetBeam.DisplayName: Rayo de chorro de cristal abisal
 DeepcrystalSeekBubble.DisplayName: Burbuja teledirigida de cristal abisal
 DeepcrystalWaterShot.DisplayName: Proyectil de agua de cristal abisal
 SoulbindingCounterFlame.DisplayName: Llama de contraataque de atadura de almas
-BssStormMark.DisplayName: Marca del ojo de la tormenta de arena
 // GsGunHoldPoseProj.DisplayName: Gs Gun Hold Pose Proj
 // CrimsonSweepSlash.DisplayName: Crimson Sweep Slash
+// GsArmorBlastProj.DisplayName: Gs Armor Blast Proj
+// GsJungleStingerProj.DisplayName: Gs Jungle Stinger Proj
+// GsNecroBoneProj.DisplayName: Gs Necro Bone Proj
+// GsOrichalcumPetalProj.DisplayName: Gs Orichalcum Petal Proj
+// GsHallowedStarProj.DisplayName: Gs Hallowed Star Proj
+// GsSpectreSoulProj.DisplayName: Gs Spectre Soul Proj
+// GsStardustShardProj.DisplayName: Gs Stardust Shard Proj
+// GsTikiSpiritFlameProj.DisplayName: Gs Tiki Spirit Flame Proj
+// GsTurtleSpikeProj.DisplayName: Gs Turtle Spike Proj

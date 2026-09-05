@@ -1,11 +1,10 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -14,27 +13,19 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
     /// <summary>
     /// 圣金水柱重铸（A 档）。材质身份：熔金灵液（黏稠灼热的猩红灵液金浆）。<br/>
     /// ①「蚀刻」：命中叠蚀层，五层灵液爆裂出八向飞溅并延长灵液侵蚀；<br/>
-    /// ②「高压喷涌」：持续喷洒 90 帧不中断进入高压窗（弹速 +30%、金浆拉丝增密、蚀层每命中 +2）；<br/>
-    /// ③爆裂点滞留灵液滴挂驻场；④施法有喷压后坐与出手金雾
+    /// ②「高压喷涌」：持续喷洒 90 帧不中断进入高压窗（弹速 +30%、蚀层每命中 +2）；<br/>
+    /// ③爆裂点滞留灵液滴挂驻场；④施法有喷压后坐
     /// </summary>
     internal class GsGoldenShower : GsChantScheme
     {
         public override int TargetItemID => ItemID.GoldenShower;
 
         protected override string GsDescFallback =>
-            "Reforged: hits etch molten ichor; the fifth layer bursts into an eight-way spray and a dripping ichor cluster" +
-            "\nSpray without pause to build high pressure: faster bolts, denser streams, double etching";
-
+            "Reforged: hits etch molten ichor; the fifth layer bursts into an eight-way spray and a dripping ichor cluster\nSpray without pause to build high pressure: faster bolts, denser streams, double etching";
         protected override float BaseDamageMult => 1.05f;
 
         /// <summary>持续流变体：节奏由喷洒时长自管，不走标准就绪窗</summary>
         protected override bool UsesStandardBeat => false;
-
-        protected override Color ChantColor => IchorGold;
-
-        internal static readonly Color IchorBright = new(255, 236, 150);
-        internal static readonly Color IchorGold = new(255, 202, 64);
-        internal static readonly Color IchorDeep = new(150, 96, 18);
 
         /// <summary>私有形态：蚀层爆裂的八向灵液飞溅</summary>
         private const float FormSplash = 10f;
@@ -55,7 +46,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         /// </summary>
         private static bool InPressure(GsChantPlayer chant) => Main.GameUpdateCount < chant.TimerA;
 
-        //==================== 动画法：喷压后坐 + 出手金雾 ====================
+        //==================== 动画法：喷压后坐 ====================
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame) {
             if (player.itemAnimationMax <= 0) {
@@ -66,21 +57,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             float progress = player.itemAnimation / n;
             player.itemLocation -= new Vector2(player.direction, 0f) * (2f * progress);
             GsMagicKickMath.ApplyKickDiff(player, 0.07f * progress, 0.07f * ((player.itemAnimation + 1) / n));
-        }
-
-        public override void GsUseAnimation(Item item, Player player) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //出手金雾：喷口一蓬灵液雾金（各端可见的起手光效）
-            Vector2 tip = player.MountedCenter + new Vector2(player.direction * 18f, -4f);
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(tip + Main.rand.NextVector2Circular(4f, 4f),
-                    new Vector2(player.direction * Main.rand.NextFloat(0.8f, 1.8f), -Main.rand.NextFloat(0.2f, 0.9f)),
-                    IchorGold, Main.rand.NextFloat(0.2f, 0.32f))?.Configure(false, Main.rand.Next(8, 12));
-            }
-            PRTLoader.NewParticle<PRT_Light>(tip, Vector2.Zero, IchorBright, 0.1f)?.Configure(8, 0.7f);
-            Lighting.AddLight(tip, IchorGold.ToVector3() * 0.3f);
         }
 
         //==================== 高压喷涌：喷洒时长自管节奏 ====================
@@ -102,8 +78,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                         chant.CounterA = 0;
                         chant.TimerA = now + PressureWindowTicks;
                         SoundEngine.PlaySound(SoundID.Item13 with { Volume = 0.8f, Pitch = 0.4f }, player.Center);
-                        PRTLoader.NewParticle<PRT_ProcRing>(player.MountedCenter + GsAimUnit(player) * 26f,
-                            Vector2.Zero, IchorGold, 1f)?.Configure(20f, 6f, 12);
                     }
                 }
             }
@@ -111,21 +85,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 //断喷：蓄压清零（高压窗一旦开启不因断喷提前关闭）
                 chant.CounterA = 0;
             }
-
-            //高压窗内的个人读数：喷口金辉呼吸
-            if (VaultUtils.isServer || !InPressure(chant)) {
-                return;
-            }
-            if (now % 6 == 0) {
-                Vector2 tip = player.MountedCenter + GsAimUnit(player) * 26f;
-                PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(4f, 4f),
-                    -Vector2.UnitY * 0.4f, IchorBright, 0.09f)?.Configure(10, 0.7f);
-            }
         }
 
         protected override void ChantModifyShootStats(Item item, Player player, GsChantPlayer chant,
             ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
-            //把窗态写进拍型（各端按 MarkData 加密拉丝）；高压窗内弹速 +30%
+            //把窗态写进拍型（各端按 MarkData 判蚀层加成）；高压窗内弹速 +30%
             bool pressure = InPressure(chant);
             chant.CurrentBeat = pressure ? ChantBeat.OnBeat : ChantBeat.Straight;
             chant.ResonanceAtCast = 0;
@@ -134,50 +98,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             }
         }
 
-        //==================== 飞行相：灵液拉丝 + 滴落细屑 ====================
+        //==================== 飞行相：飞溅弹泄力 ====================
 
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (proj.type != BoltType || VaultUtils.isServer) {
+            if (proj.type != BoltType) {
                 return;
             }
-            if (router.MarkData == FormSplash) {
-                //飞溅弹：短程泄力，金珠迸散
-                if (proj.timeLeft < 14) {
-                    proj.velocity *= 0.92f;
-                }
-                if (proj.timeLeft % 3 == 0) {
-                    PRTLoader.NewParticle<PRT_Spark>(proj.Center, -proj.velocity * 0.1f,
-                        IchorBright, Main.rand.NextFloat(0.18f, 0.3f))?.Configure(false, Main.rand.Next(6, 10));
-                }
-                Lighting.AddLight(proj.Center, IchorGold.ToVector3() * 0.16f);
-                return;
-            }
-            //灵液拉丝：沿速度方向拖出黏稠金丝，高压窗弹更密
-            int interval = IsOnBeatProj(router) ? 2 : 4;
-            if (proj.timeLeft % interval == 0) {
-                PRTLoader.NewParticle<PRT_Spark>(proj.Center - proj.velocity * 0.5f,
-                    proj.velocity * 0.12f + Main.rand.NextVector2Circular(0.3f, 0.3f),
-                    IchorGold, Main.rand.NextFloat(0.24f, 0.4f))?.Configure(true, Main.rand.Next(10, 16));
-            }
-            //滴落细屑：黏稠液流偶尔坠下一滴金珠
-            if (proj.timeLeft % 9 == 0 && Main.rand.NextBool(2)) {
-                PRTLoader.NewParticle<PRT_Light>(proj.Center + Main.rand.NextVector2Circular(3f, 3f),
-                    new Vector2(proj.velocity.X * 0.05f, Main.rand.NextFloat(0.6f, 1.4f)),
-                    IchorBright, Main.rand.NextFloat(0.05f, 0.09f))?.Configure(Main.rand.Next(14, 24), 0.6f);
-            }
-            Lighting.AddLight(proj.Center, IchorGold.ToVector3() * 0.22f);
-        }
-
-        public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            //余痕相：金珠溅散坠落，活得比弹体久
-            if (VaultUtils.isServer || proj.type != BoltType) {
-                return;
-            }
-            int count = router.MarkData == FormSplash ? 2 : 3;
-            for (int i = 0; i < count; i++) {
-                PRTLoader.NewParticle<PRT_Light>(proj.Center + Main.rand.NextVector2Circular(5f, 5f),
-                    new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), Main.rand.NextFloat(0.4f, 1.2f)),
-                    IchorGold, Main.rand.NextFloat(0.06f, 0.1f))?.Configure(Main.rand.Next(16, 26), 0.6f);
+            //飞溅弹：短程泄力
+            if (router.MarkData == FormSplash && proj.timeLeft < 14) {
+                proj.velocity *= 0.92f;
             }
         }
 
@@ -186,17 +115,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
             if (proj.type != BoltType) {
                 return;
-            }
-            if (!VaultUtils.isServer) {
-                //命中反馈：金浆迸溅（高压窗更盛）
-                int burst = IsOnBeatProj(router) ? 5 : 3;
-                Vector2 dir = proj.velocity.SafeNormalize(Vector2.UnitX);
-                for (int i = 0; i < burst; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                        (-dir).RotatedByRandom(1.0) * Main.rand.NextFloat(2f, 4.5f),
-                        i % 2 == 0 ? IchorGold : IchorBright,
-                        Main.rand.NextFloat(0.22f, 0.38f))?.Configure(true, Main.rand.Next(10, 16));
-                }
             }
             if (!proj.IsOwnedByLocalPlayer()) {
                 return;
@@ -268,30 +186,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             EtchStacks = 0;
             EtchUntil = 0;
         }
-
-        public override void DrawEffects(NPC npc, ref Color drawColor) {
-            //蚀层体表可见：金浆越积越亮，滴落越密（层数只在攻击方端存在，个人读数合法）
-            if (EtchStacks <= 0 || Main.GameUpdateCount >= EtchUntil || Main.dedServ) {
-                return;
-            }
-            drawColor = Color.Lerp(drawColor, GsGoldenShower.IchorGold,
-                MathHelper.Clamp(EtchStacks * 0.05f, 0f, 0.25f));
-            if (Main.rand.NextBool(Math.Max(2, 10 - EtchStacks * 2))) {
-                PRTLoader.NewParticle<PRT_Light>(
-                    npc.Center + Main.rand.NextVector2Circular(npc.width * 0.4f, npc.height * 0.4f),
-                    new Vector2(0f, Main.rand.NextFloat(0.6f, 1.3f)),
-                    GsGoldenShower.IchorBright, Main.rand.NextFloat(0.06f, 0.1f))?.Configure(Main.rand.Next(12, 20), 0.65f);
-            }
-        }
     }
 
     /// <summary>
-    /// 灵液滴挂：蚀层爆裂后滞留原地的金浆团，缓慢滴落、多跳低伤
-    /// （判定圆与可见浆团同源；短寿驻场演出）
+    /// 灵液滴挂：蚀层爆裂后滞留原地的金浆团，多跳低伤
+    /// （判定圆与可见尺寸同源；短寿驻场）
     /// </summary>
     internal class GsGoldenShowerDripProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.GoldenShowerFriendly;
 
         public override string LocalizationCategory => "GodSmithMagicChant";
 
@@ -321,19 +224,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
 
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //滴挂：金珠不断从浆团坠下
-            if (Projectile.timeLeft % 5 == 0) {
-                float r = RadiusNow;
-                PRTLoader.NewParticle<PRT_Light>(
-                    Projectile.Center + new Vector2(Main.rand.NextFloat(-r, r) * 0.7f, Main.rand.NextFloat(-6f, 6f)),
-                    new Vector2(0f, Main.rand.NextFloat(0.8f, 1.8f)),
-                    Main.rand.NextBool() ? GsGoldenShower.IchorGold : GsGoldenShower.IchorBright,
-                    Main.rand.NextFloat(0.06f, 0.11f))?.Configure(Main.rand.Next(16, 26), 0.7f);
-            }
-            Lighting.AddLight(Projectile.Center, GsGoldenShower.IchorGold.ToVector3() * 0.3f * (RadiusNow / Radius));
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -350,22 +240,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //三层黏稠浆团（A=0 加色批），identity 定相的垂坠呼吸
-            Texture2D glow = CWRAsset.SoftGlow.Value;
+            //原版灵液弹贴图一笔按判定半径缩放（尺寸提示与判定同源）
             float r = RadiusNow;
             if (r < 4f) {
                 return false;
             }
-            Vector2 basePos = Projectile.Center - Main.screenPosition;
-            for (int i = 0; i < 3; i++) {
-                float phase = Main.GlobalTimeWrappedHourly * 3.4f + Projectile.identity * 0.61f + i * 2.2f;
-                //垂坠形变：浆团下沉重、上收轻，像挂着的黏液
-                Vector2 off = new(MathF.Sin(phase) * r * 0.22f, MathF.Abs(MathF.Cos(phase * 0.6f)) * 5f);
-                float s = r / glow.Width * (2.0f - i * 0.45f);
-                Color c = (i == 2 ? Color.White : i == 1 ? GsGoldenShower.IchorGold : GsGoldenShower.IchorDeep) with { A = 0 };
-                Main.EntitySpriteDraw(glow, basePos + off, null, c * (0.32f + i * 0.1f), 0f,
-                    glow.Size() / 2f, new Vector2(s, s * 1.25f), SpriteEffects.None, 0);
-            }
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float scale = r * 2f / Math.Max(tex.Width, tex.Height);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor,
+                0f, tex.Size() / 2f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

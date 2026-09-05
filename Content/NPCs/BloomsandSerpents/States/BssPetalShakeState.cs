@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 {
     /// <summary>
     /// 抖擞花瓣（P2 起）：足端踩定、全身在腿上抖，红花节甩出缓降花瓣，随沙暴风漂移。
-    /// 公平阀声明：花瓣只从红花节出（花道间距 ≈ FlowerStep×节距）、出生横向抖动上限
+    /// 公平阀声明：花瓣只从红花节出（红花位由 BssDirector.BodyStyleLayout 声明，花道间距 = 红花链序差×节距）、出生横向抖动上限
     /// PetalLaneHalfWidth=26 = 花道之间保有可站走廊；缓降 + 风向固定（出手锁定），可预读。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)BssStateIndex.PetalShake, typeof(BssStateContext))]
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 //表现瓣（客户端）
                 if (!Main.dedServ) {
                     for (int i = 0; i < 2; i++) {
-                        BssVfx.PetalDrift(seg.Center + normal * 10f,
+                        BssVfx.PetalDrift(seg.Center + normal * (10f * seg.scale),
                             normal * Main.rand.NextFloat(1f, 2f) + axisDir * Main.rand.NextFloat(-1f, 1f));
                     }
                 }
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 if (!VaultUtils.isClient) {
                     int damage = BssDirector.ScaleProjectileDamage(ctx.Npc, BssDirector.PetalDamage);
                     int type = ModContent.ProjectileType<BssPetalProj>();
-                    Vector2 pos = seg.Center + normal * 10f
+                    Vector2 pos = seg.Center + normal * (10f * seg.scale)
                         + axisDir * Main.rand.NextFloat(-BssDirector.PetalLaneHalfWidth, BssDirector.PetalLaneHalfWidth);
                     Vector2 vel = normal * Main.rand.NextFloat(1.8f, 3f) + axisDir * Main.rand.NextFloat(-1.1f, 1.1f);
                     Projectile.NewProjectile(ctx.Npc.GetSource_FromAI(), pos, vel, type, damage, 0.4f,

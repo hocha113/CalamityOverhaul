@@ -1,9 +1,8 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -16,10 +15,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
     /// </summary>
     internal class GsChargedBlasterCannonHeldProj : GsConduitHeldProj
     {
-        internal static readonly Color PlasmaBright = new(170, 240, 255);
-        internal static readonly Color PlasmaMain = new(66, 178, 240);
-        internal static readonly Color PlasmaDeep = new(20, 62, 120);
-
         private const float PulseLength = 520f;
         private const float PulseWidth = 26f;
         private const int PulseWindow = 6;
@@ -61,10 +56,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
             //节拍事件：各端从同步热段 + 本地相位一致推进
             if (CyclePhase == 0 && Projectile.localAI[1] > 8f && collapse01 <= 0f) {
                 if (HeatStageSync >= 1) {
-                    //弧束脉冲起点：全端音画
+                    //弧束脉冲起点：全端音效
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.5f, Pitch = -0.1f, MaxInstances = 4 }, Projectile.Center);
-                        PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, PlasmaBright, 0.14f)?.Configure(8, 0.8f);
                     }
                 }
                 else if (Projectile.IsOwnedByLocalPlayer()) {
@@ -76,18 +70,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
                         SoundEngine.PlaySound(SoundID.Item91 with { Volume = 0.45f, Pitch = 0.1f, MaxInstances = 4 }, Projectile.Center);
                     }
                 }
-            }
-
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Lighting.AddLight(Projectile.Center, PlasmaMain.ToVector3() * (HeatStageSync >= 1 ? 0.5f : 0.3f));
-            //炮口电弧读数：充能越满弧越密
-            if (Main.GameUpdateCount % (HeatStageSync >= 1 ? 2 : 5) == 0) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    AimUnit.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(0.6f, 1.6f),
-                    Main.rand.NextBool() ? PlasmaMain : PlasmaBright,
-                    Main.rand.NextFloat(0.16f, 0.28f))?.Configure(false, Main.rand.Next(6, 12));
             }
         }
 
@@ -103,55 +85,26 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
                 Projectile.Center, Projectile.Center + AimUnit * beamLength, PulseWidth * 0.7f, ref point);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(7f, 7f),
-                    Main.rand.NextVector2Circular(2.2f, 2.2f), PlasmaBright,
-                    Main.rand.NextFloat(0.22f, 0.36f))?.Configure(true, Main.rand.Next(10, 16));
-            }
-        }
-
         public override bool PreDraw(ref Color lightColor) {
-            //先画炮体，脉冲束与炮口充能核压在其上
+            //先画炮体，脉冲束压在其上
             DrawWeaponBody();
-            SpriteBatch sb = Main.spriteBatch;
-            Texture2D glow = CWRAsset.SoftGlow.Value;
-            Vector2 muzzle = Projectile.Center - Main.screenPosition;
-            float flick = 1f + 0.09f * MathF.Sin(Main.GlobalTimeWrappedHourly * 43f + Projectile.identity * 0.58f);
-
-            //弧束脉冲：脉冲窗内三层断续束（窗内宽度先胀后收，判定同窗）
+            //弧束脉冲：脉冲窗内一笔拉伸原版爆破激光条（窗内宽度先胀后收，判定同窗）
             if (InPulse) {
                 float p = CyclePhase / (float)PulseWindow;
-                float w = PulseWidth * MathF.Sin(p * MathHelper.Pi) * flick;
-                if (w > 1f) {
-                    GsConduitVFX.DrawBeam(sb, Projectile.Center, AimUnit.ToRotation(), beamLength, w,
-                        PlasmaMain, PlasmaBright);
-                    Vector2 impact = Projectile.Center + AimUnit * beamLength - Main.screenPosition;
-                    sb.Draw(glow, impact, null, PlasmaBright with { A = 0 } * 0.8f, 0f,
-                        glow.Size() / 2f, w / 40f, SpriteEffects.None, 0f);
-                }
+                float w = PulseWidth * MathF.Sin(p * MathHelper.Pi);
+                DrawBeamStrip(ProjectileID.ChargedBlasterLaser, Projectile.Center, AimUnit, beamLength, w, lightColor);
             }
-            //炮口充能核：热段越高越亮
-            float charge = HeatStageSync >= 1 ? 1f : 0.6f;
-            sb.Draw(glow, muzzle, null, PlasmaDeep with { A = 0 } * (0.7f * charge), 0f,
-                glow.Size() / 2f, 0.6f * charge * flick, SpriteEffects.None, 0f);
-            sb.Draw(glow, muzzle, null, PlasmaBright with { A = 0 } * (0.6f * charge), 0f,
-                glow.Size() / 2f, 0.28f * charge, SpriteEffects.None, 0f);
             return false;
         }
     }
 
     /// <summary>
     /// 湮灭炮：过载触发的巨型电浆球。缓速贯穿推进，
-    /// owner 端每 20t 向近敌舔一道电弧小弹（0.3 倍原版爆破激光）；
-    /// 自绘三层电浆辉体 + 差速旋弧
+    /// owner 端每 20t 向近敌舔一道电弧小弹（0.3 倍原版爆破激光）
     /// </summary>
     internal class GsChargedBlasterCannonOrbProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.ChargedBlasterOrb;
 
         public override string LocalizationCategory => "GodSmithMagicConduit";
 
@@ -181,17 +134,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
                         ProjectileID.ChargedBlasterLaser, arcDamage, 1.5f, Projectile.owner);
                 }
             }
-
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Lighting.AddLight(Projectile.Center, GsChargedBlasterCannonHeldProj.PlasmaMain.ToVector3() * 0.6f);
-            if (Projectile.timeLeft % 3 == 0) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
-                    Main.rand.NextVector2Circular(1.2f, 1.2f) - Projectile.velocity * 0.1f,
-                    GsChargedBlasterCannonHeldProj.PlasmaBright,
-                    Main.rand.NextFloat(0.2f, 0.34f))?.Configure(false, Main.rand.Next(8, 14));
-            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -199,36 +141,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.8f, Pitch = -0.4f }, Projectile.Center);
-            for (int i = 0; i < 10; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                    Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(2.5f, 6f),
-                    GsChargedBlasterCannonHeldProj.PlasmaMain,
-                    Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(14, 24));
-            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //三层电浆辉体 + 差速旋弧（A=0 加色，identity 定相脉动）
-            Texture2D glow = CWRAsset.SoftGlow.Value;
-            Texture2D star = CWRAsset.StarTexture.Value;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            float t = Main.GlobalTimeWrappedHourly;
-            float seed = Projectile.identity * 0.49f;
-            float pulse = 0.85f + 0.15f * MathF.Sin(t * 7f + seed);
-            Main.EntitySpriteDraw(glow, pos, null,
-                GsChargedBlasterCannonHeldProj.PlasmaDeep with { A = 0 } * (0.7f * pulse), 0f,
-                glow.Size() / 2f, 1.1f * pulse, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, pos, null,
-                GsChargedBlasterCannonHeldProj.PlasmaMain with { A = 0 } * (0.65f * pulse), 0f,
-                glow.Size() / 2f, 0.65f * pulse, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, pos, null, Color.White with { A = 0 } * (0.5f * pulse), 0f,
-                glow.Size() / 2f, 0.3f, SpriteEffects.None, 0);
-            for (int i = 0; i < 3; i++) {
-                float ang = t * (2.4f + i * 0.8f) * (i % 2 == 0 ? 1f : -1f) + seed + i * 2.1f;
-                Main.EntitySpriteDraw(star, pos + ang.ToRotationVector2() * 26f, null,
-                    GsChargedBlasterCannonHeldProj.PlasmaBright with { A = 0 } * 0.5f, ang,
-                    star.Size() / 2f, 0.12f, SpriteEffects.None, 0);
-            }
+            //原版电浆球贴图一笔按命中盒直径缩放（原图很小，默认绘制看不出巨球尺寸）
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float scale = Projectile.width / (float)Math.Max(tex.Width, tex.Height);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor,
+                Projectile.rotation, tex.Size() / 2f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

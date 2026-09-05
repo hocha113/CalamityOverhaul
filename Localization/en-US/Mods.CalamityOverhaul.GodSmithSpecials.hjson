@@ -1,0 +1,26 @@
+GsChainGun.Desc:
+	'''
+	Reforged: hold to spin up, ramping to the fastest fire rate in the land until the barrels glow red-hot after 8s of sustained fire, forcing a slowdown until you let go
+	Firing slows your movement while you suppress
+	'''
+GsDartPistol.Desc:
+	'''
+	Reforged: quick two-round bursts, second dart at 70%
+	Dart ammo effects are fully preserved
+	'''
+GsDartRifle.Desc:
+	'''
+	Reforged: hold to charge, the aim line fades in, release to loose; a full 1s draw gives x2 dart speed, +2 pierce and +50% damage
+	Dart ammo effects are fully preserved
+	'''
+GsPiranhaGun.Desc: Reforged: the classic bite-and-hold
+GsToxikarp.Desc:
+	'''
+	Reforged: the classic rapid-fire bubbles
+	No ammo, as always
+	'''
+GsCoinGun.Desc:
+	'''
+	Reforged: Copper fires 3-coin sprays, Silver pierces one extra target, Gold hits 10% harder, Platinum bursts into golden light on hit
+	Return on Investment: kills refund 1 coin of that denomination, capped at 3 per second
+	'''

@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
     /// 蚀祭:暗影盘滑向主星(食相自身即 62 帧预告),全食后先过宽限期再放冕矛;<br/>
     /// 本影楔从玩家所在角起步(先给安全区)随食相缓动渐显,宽限期慢漂,齐射期渐加速;司祭跪祷不出手<br/>
     /// 分相后手(变体主体在 UmbraShade):星尘相冕矛解禁后召幻影龙两段直线冲撞;月明相首尾各压一轮追星矢连射<br/>
-    /// Timeout 必须盖过 UmbraShade 全寿命(760+出生延迟 12;月明相再加 MoonExtend),否则状态提前回 Coil 开星球火闸=双重压力
+    /// Timeout 必须盖过 UmbraShade 全寿命(658+出生延迟 12;月明相再加 MoonExtend),否则状态提前回 Coil 开星球火闸=双重压力
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)CultistStateIndex.Eclipse, typeof(CultistStateContext))]
     internal class CultistEclipseState : CultistStateBase
@@ -19,7 +19,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         public override string StateName => "CultistEclipse";
         public override CultistStateIndex StateIndex => CultistStateIndex.Eclipse;
 
-        private const int Timeout = 790;
+        /// <summary>UmbraShade.Lifetime + 出生延迟 12 + 18 帧余量</summary>
+        private const int Timeout = CultistUmbraShade.Lifetime + 12 + 18;
         /// <summary>月明相首轮追星矢拍("技能刚开始"的连射)</summary>
         private const int MoonEarlyVolleyBeat = 26;
         /// <summary>月明相齐射星数(与追星矢态月明规格同)</summary>
@@ -115,11 +116,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return new CultistCoilState();
             }
             if (Timer > 48 && !AnyShadeAlive(npc.whoAmI)) {
-                return new CultistCoilState(14);
+                return new CultistCoilState(10);
             }
             //月明相全食延长,超时同步外扩才不至半途开星球火闸
             if (Timer >= Timeout + (context.Phase >= 4 ? CultistUmbraShade.MoonExtend : 0)) {
-                return new CultistCoilState(14);
+                return new CultistCoilState(10);
             }
             return null;
         }

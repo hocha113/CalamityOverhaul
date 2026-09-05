@@ -1,6 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -10,8 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
 {
     /// <summary>
-    /// 附魔回旋镖重铸。材质：秘法附魔的蓝钢镖身。签名行为：①悬停蓄势顶点迸出三枚追敌星辉
-    /// ②回程拖出星尘余痕，粒子寿命长过镖体 ③命中星屑迸溅与清脆魔音
+    /// 附魔回旋镖重铸。材质：秘法附魔的蓝钢镖身。签名行为：悬停蓄势顶点迸出三枚追敌星辉
     /// </summary>
     internal class GsEnchantedBoomerang : GsBoomerScheme
     {
@@ -22,22 +18,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
         internal override float DamageMul => 1.05f;
 
         protected override string GsDescFallback =>
-            "Decelerates outbound, gathers starlight while hovering, accelerates home\n" +
-            "At the hover peak it flings three homing star sparks, each dealing 30% damage\n" +
-            "Right click while it flies: command it to dash toward your cursor";
+            "Decelerates outbound, gathers starlight while hovering, accelerates home\nAt the hover peak it flings three homing star sparks, each dealing 30% damage";
     }
 
-    /// <summary>附魔镖体：悬停顶点放星，回程星尘余痕</summary>
+    /// <summary>附魔镖体：悬停顶点放星</summary>
     internal class GsEnchantedBoomerangProj : GsBoomerProjBase
     {
         internal override int SourceItemID => ItemID.EnchantedBoomerang;
-
-        protected override Color GlowColor => new(110, 170, 255);
-
-        protected override Color TrailColor => new(150, 190, 255);
-
-        /// <summary>星辉金，星辉弹与顶点闪光用</summary>
-        internal static readonly Color StarGold = new(255, 228, 140);
 
         protected override int HoverTime => 22;
 
@@ -56,36 +43,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             }
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, StarGold, 0.5f)?.Configure(12, 0.9f);
-            }
-        }
-
-        protected override void FlightFX(Player owner) {
-            base.FlightFX(owner);
-            //回程星尘余痕：闪尘寿命 30 帧，镖回手后仍在空中残留
-            if (Phase == PhaseReturn && PhaseTimer % 3 == 0) {
-                PRTLoader.NewParticle<PRT_Sparkle>(
-                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    -Projectile.velocity * 0.03f, StarGold, 0.4f)
-                    ?.Configure(StarGold * 0.5f, 30, 0.1f, 0.8f);
-            }
-        }
-
-        protected override void HitBurstFX(NPC target, NPC.HitInfo hit) {
-            base.HitBurstFX(target, hit);
-            //星屑迸溅：金蓝双色
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Sparkle>(target.Center,
-                    Main.rand.NextVector2Circular(3f, 3f), StarGold, 0.45f)
-                    ?.Configure(GlowColor * 0.6f, 22, 0.15f);
             }
         }
     }
 
-    /// <summary>追敌星辉：短寿命追踪星屑，四芒星自绘 + 闪尘尾迹</summary>
+    /// <summary>追敌星辉：短寿命追踪星屑，原版坠星贴图</summary>
     internal class GsEnchantedBoomerangStarProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.FallingStar;
 
         private NPC HomingTarget {
             get => Projectile.ai[0] > 0f ? Main.npc[(int)Projectile.ai[0] - 1] : null;
@@ -118,12 +83,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             else {
                 Projectile.velocity *= 0.97f;
             }
-
-            Lighting.AddLight(Projectile.Center, GsEnchantedBoomerangProj.StarGold.ToVector3() * 0.3f);
-            if (!VaultUtils.isServer && Projectile.timeLeft % 4 == 0) {
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero,
-                    GsEnchantedBoomerangProj.StarGold, 0.12f)?.Configure(10, 0.6f);
-            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -131,30 +90,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.35f, Pitch = 0.5f }, target.Center);
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    Main.rand.NextVector2Circular(3f, 3f), GsEnchantedBoomerangProj.StarGold,
-                    Main.rand.NextFloat(0.3f, 0.45f))?.Configure(true, Main.rand.Next(10, 15));
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D star = CWRAsset.StarTexture_White?.Value;
-            if (star == null) {
-                return false;
-            }
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            //外层金芒 + 内层白核，闪烁用 whoAmI 种子
-            float tw = 0.85f + (0.15f * MathF.Sin((Main.GlobalTimeWrappedHourly * 9f) + Projectile.whoAmI));
-            Color outer = GsEnchantedBoomerangProj.StarGold * (0.7f * tw);
-            outer.A = 0;
-            Main.spriteBatch.Draw(star, pos, null, outer, Projectile.rotation,
-                star.Size() / 2f, 0.09f * tw, SpriteEffects.None, 0);
-            Color core = Color.White * 0.85f;
-            core.A = 0;
-            Main.spriteBatch.Draw(star, pos, null, core, -Projectile.rotation * 0.7f,
-                star.Size() / 2f, 0.045f, SpriteEffects.None, 0);
-            return false;
         }
     }
 }

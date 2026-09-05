@@ -21,10 +21,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Mitosis Tide: under the assault order, once three little cells cling to the marked foe, the next cell slam splits into five seeking spores that each deepen the cellular corrosion";
-
-        private static readonly Color CellCyan = new(94, 202, 238);
-        private static readonly Color NucleusBlue = new(58, 118, 236);
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Ring,
             Radius = 54f,
@@ -46,9 +42,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
             => GsMinionCastMotion.ApplyRaise(player);
-
-        public override void GsUseAnimation(Item item, Player player)
-            => GsMinionCastMotion.CastBurst(player, CellCyan, NucleusBlue);
 
         //==================== 签名：有丝分裂 ====================
 

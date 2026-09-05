@@ -27,14 +27,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
 
         public override float DamageTweak => 1.05f;
 
-        /// <summary>圣金</summary>
-        public override Color MarkColor => new(255, 214, 120);
-
         protected override string GsDescFallback =>
-            "Reforged: after three on-beat lashes, every further on-beat swing " +
-            "looses a golden sword-wave from the whip tip; " +
-            "5 scars seal the mark, and the next on-beat hit calls down a holy verdict blade";
-
+            "Reforged: after three on-beat lashes, every further on-beat swing looses a golden sword-wave from the whip tip; 5 scars seal the mark, and the next on-beat hit calls down a holy verdict blade";
         /// <summary>剑意：连击蓄满三层后的踩拍挥击，鞭梢横断剑气</summary>
         protected override void OnWhipApex(Player player, Projectile whipProj, GodSmithProjRouter router, Vector2 tipPos) {
             if (router.MarkData < 4f || router.MarkData2 < 1f) {

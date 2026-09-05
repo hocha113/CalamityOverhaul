@@ -1,25 +1,9 @@
-GsSpiritFlame.Desc:
-	'''
-	Reforja: las llamas espirituales arrastran fuego de alma pálido; al impactar, hay un 50 % de probabilidad de desprender una llama espiritual cazadora
-	Mantén pulsado el clic derecho para cargar; al soltar, despliegas en el cursor un anillo de 5 llamas que se lanzan por turno contra los enemigos que se acercan
-	'''
+GsSpiritFlame.Desc: Reforja: las llamas espirituales arrastran fuego de alma pálido; al impactar, hay un 50 % de probabilidad de desprender una llama espiritual cazadora
 GsSpiritFlameRingProj.DisplayName: Anillo de llamas espirituales
 GsSpiritFlameWispProj.DisplayName: Llama espiritual cazadora
-GsPoisonStaff.Desc:
-	'''
-	Reforja: los colmillos vuelan arrastrando niebla venenosa y, al morder al segundo objetivo, se parten en 2 colmillos finos
-	Mantén pulsado el clic derecho para cargar el Beso de la serpiente: una víbora pequeña y rápida que serpentea al abalanzarse y tiende un corredor de niebla venenosa
-	'''
-GsVenomStaff.Desc:
-	'''
-	Reforja: los colmillos vuelan arrastrando niebla venenosa y, al morder al segundo objetivo, se parten en un colmillo pesado
-	Mantén pulsado el clic derecho para cargar el Beso de la serpiente: una víbora grande y pesada que avanza despacio; al disiparse el cuerpo, funde un charco de ácido persistente
-	'''
-GsShadowFlameHexDoll.Desc:
-	'''
-	Reforja: los tentáculos de llama sombría clavan un sello de maldición en todo lo que tocan; el enemigo marcado sufre más daño de esta muñeca
-	Mantén pulsado el clic derecho para cargar la Gran maldición: clava en el cursor un Dominio de la marca de la muñeca que azota sin cesar a quien entra con tentáculos de llama sombría
-	'''
+GsPoisonStaff.Desc: Reforja: los colmillos vuelan arrastrando niebla venenosa y, al morder al segundo objetivo, se parten en 2 colmillos finos
+GsVenomStaff.Desc: Reforja: los colmillos vuelan arrastrando niebla venenosa y, al morder al segundo objetivo, se parten en un colmillo pesado
+GsShadowFlameHexDoll.Desc: Reforja: los tentáculos de llama sombría clavan un sello de maldición en todo lo que tocan; el enemigo marcado sufre más daño de esta muñeca
 GsLeafBlower.Desc:
 	'''
 	Reforja: las hojas vuelan con una estela verde afilada

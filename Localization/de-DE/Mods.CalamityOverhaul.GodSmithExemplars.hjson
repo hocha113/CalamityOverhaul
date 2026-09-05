@@ -1,6 +1,5 @@
 GsIronBroadsword.Desc:
 	'''
 	Umschmiedung: Drei-Takt-Schlachterkombo, Heben, Innehalten, Hieb, jeder mit eigenem Gewicht;
-	der dritte Takt tritt vor und schlägt einen schwereren Bogen
+	der dritte Takt schlägt einen schwereren, weiteren Bogen
 	'''
-GsGoldArmor.EndowLine: Stein zu Gold: Treffer häufen Vergoldung; bei acht Stapeln spritzt der nächste Schlag drei verfolgende Schmelzgoldperlen aus dem Ziel

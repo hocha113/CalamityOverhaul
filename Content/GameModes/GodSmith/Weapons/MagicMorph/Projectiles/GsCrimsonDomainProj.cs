@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Projectiles
@@ -13,13 +11,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Project
     /// </summary>
     internal class GsCrimsonDomainProj : GsDomainProj
     {
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.BloodCloudRaining;
+
         protected override int DomainRadius => 150;
         protected override int DomainLife => 600;
         protected override bool DealsContactDamage => false;
 
-        protected override Color RingBright => new(255, 120, 120);
-        protected override Color RingMain => new(178, 26, 46);
-        protected override Color RingDeep => new(84, 8, 22);
+        public override void SetStaticDefaults() => Main.projFrames[Type] = Main.projFrames[ProjectileID.BloodCloudRaining];
 
         protected override void DomainAI() {
             //血雨滴：owner 端每 6t 自域顶随机横位落下一滴（Parent 源，标记自动传染）
@@ -36,26 +34,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Project
                 && local.Center.DistanceSQ(Projectile.Center) < (float)DomainRadius * DomainRadius
                 && Projectile.timeLeft % 120 == 0) {
                 local.Heal(1);
-            }
-        }
-
-        protected override void EmitAmbient() {
-            //域内血珠缓落 + 心跳微光（预算 ≤2/帧）
-            if (Projectile.timeLeft % 4 == 0) {
-                Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(DomainRadius * 0.8f, DomainRadius * 0.6f);
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, new Vector2(0f, Main.rand.NextFloat(0.6f, 1.4f)),
-                    new Color(196, 40, 56), Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(20, 32), 0.1f, 0.99f);
-            }
-            Lighting.AddLight(Projectile.Center, 0.32f, 0.06f, 0.1f);
-        }
-
-        protected override void OnMigrateVisual(Vector2 oldCenter) {
-            //迁移反馈：旧址血雾散逸（各端可见）
-            for (int i = 0; i < 6; i++) {
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
-                    oldCenter + Main.rand.NextVector2Circular(40f, 40f),
-                    Main.rand.NextVector2Circular(2f, 2f),
-                    new Color(178, 26, 46), Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(14, 22));
             }
         }
     }

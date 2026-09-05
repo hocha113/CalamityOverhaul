@@ -1,7 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -12,9 +9,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 {
     /// <summary>
     /// 【劫掠连舞·鎏金弯刀】材质：海盗船长的鎏金弯刀，海风与赃金养出的快剑。
-    /// 签名：①四拍流水快斩，拍拍音调攀升，连段命中攒「风头」（金色刻光挂在刀身）
-    /// ②攒足风头后第四拍变旋风双弧斩：绕身整两周、判定两轮、身周环起海风气旋
-    /// ③命中溅金点与海沫，攒层伴金币脆响
+    /// 签名：①四拍流水快斩，拍拍音调攀升，连段命中攒「风头」
+    /// ②攒足风头后第四拍变旋风双弧斩：绕身整两周、判定两轮
+    /// ③攒层伴金币脆响
     /// </summary>
     internal class GsCutlass : GsBroadswordScheme
     {
@@ -25,14 +22,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int ComboBeats => 4;
 
         protected override string GsDescFallback =>
-            "Reforged: a four-beat plunder dance with rising tempo; land hits to build Panache, " +
-            "and with enough swagger the fourth beat becomes a whirling double-arc slash that strikes twice all around";
-
-        //海盗鎏金色板
+            "Reforged: a four-beat plunder dance with rising tempo; land hits to build Panache, and with enough swagger the fourth beat becomes a whirling double-arc slash that strikes twice all around";
         internal static readonly Color GoldBright = new(255, 244, 208); //鎏金刃缘
         internal static readonly Color GoldMain = new(232, 186, 96);    //赃金体色
         internal static readonly Color SeaSpray = new(72, 214, 225);    //海沫青
-        internal static readonly Color BrigDeep = new(30, 22, 12);      //船舱暗棕
 
         /// <summary>风头层数（0~3）；跨玩家共享单例，只在 myPlayer 守门路径读写</summary>
         internal int Panache;
@@ -71,7 +64,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsCutlass.GoldBright;
         protected override Color BodyMain => GsCutlass.GoldMain;
         protected override Color HotAccent => GsCutlass.SeaSpray;
-        protected override Color DeepShadow => GsCutlass.BrigDeep;
 
         //快剑触距略短
         protected override float BaseReach => 112f;
@@ -86,10 +78,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         private GsCutlass Scheme =>
             GodSmithScheme.TryGetScheme(SwordItemID, out GodSmithScheme s) ? s as GsCutlass : null;
-
-        //旋风期残影铺满
-        protected override int GhostCount => Whirl ? 5 : (IsFinisher ? 3 : 2);
-        protected override float GhostSpacing => Whirl ? 0.34f : (IsFinisher ? 0.22f : 0.17f);
 
         /// <summary>四拍流水：三记短促快斩音调渐升，第四拍收官（或旋风）</summary>
         protected override GsBroadBeat GetBeat(int stage) => stage switch {
@@ -149,7 +137,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             for (int i = 0; i < Main.maxNPCs; i++) {
                 Projectile.localNPCImmunity[i] = 0;
             }
-            SetFlash(4);
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.4f, Pitch = 0.25f }, Owner.Center);
             }
@@ -179,73 +166,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             scheme.Panache = Math.Min(3, scheme.Panache + 1);
             if (!VaultUtils.isServer && scheme.Panache > old) {
                 SoundEngine.PlaySound(SoundID.CoinPickup with { Volume = 0.5f, Pitch = 0.05f + 0.18f * scheme.Panache }, Owner.Center);
-            }
-            if (old < 2 && scheme.Panache >= 2) {
-                //够本钱耍旋风了：刃身闪一记
-                SetFlash(5);
-            }
-        }
-
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            if (phase != PhaseSlash) {
-                return;
-            }
-            //海沫沿挥弧洒出，旋风期加密
-            if (Main.rand.NextBool(Whirl ? 1 : 3)) {
-                Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.6f, 1f));
-                PRTLoader.NewParticle<PRT_Light>(at,
-                    (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2() * Main.rand.NextFloat(1.5f, 3.5f),
-                    GsCutlass.SeaSpray, Main.rand.NextFloat(0.05f, 0.09f))?.Configure(8, 0.55f);
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //劫掠快意：金点上蹦、海沫横溅
-            int motes = Whirl ? 5 : 2;
-            for (int i = 0; i < motes; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-4f, -1.5f)),
-                    Main.rand.NextBool() ? GsCutlass.GoldBright : GsCutlass.SeaSpray,
-                    Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(10, 18));
-            }
-        }
-
-        /// <summary>旋风气旋（全端，旋态随 ai 过线）+ 风头刻光（owner 侧，层数不共享）</summary>
-        protected override void DrawExtra(SpriteBatch sb, Color lightColor) {
-            Texture2D air = CWRAsset.Airflow?.Value;
-            Texture2D star = CWRAsset.StarGlow01?.Value;
-            if (air == null || star == null) {
-                return;
-            }
-
-            //旋风期：身周环起海风气旋，起收两头收口
-            if (Whirl && CurrentPhase == PhaseSlash) {
-                Vector2 anchor = Hand - Main.screenPosition;
-                float ring = MathF.Sin(MathHelper.Clamp(slashProgress, 0f, 1f) * MathHelper.Pi);
-                for (int i = 0; i < 2; i++) {
-                    Color c = (i == 0 ? GsCutlass.SeaSpray : GsCutlass.GoldBright) * (0.28f * ring);
-                    c.A = 0;
-                    sb.Draw(air, anchor, null, c, mainAngle + (i * MathHelper.Pi), air.Size() * 0.5f,
-                        new Vector2(mainReach * 2f / air.Width, 0.42f + 0.14f * i), SpriteEffects.None, 0f);
-                }
-            }
-
-            //风头刻光：沿刀身排出金色亮点
-            if (Owner.whoAmI != Main.myPlayer) {
-                return;
-            }
-            int stacks = Scheme?.Panache ?? 0;
-            if (stacks <= 0 || fanFade <= 0.05f) {
-                return;
-            }
-            for (int i = 0; i < stacks; i++) {
-                Vector2 at = Hand + (mainAngle.ToRotationVector2() * (mainReach * (0.22f + 0.1f * i))) - Main.screenPosition;
-                float pulse = 0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * 8f + i * 1.5f);
-                Color c = GsCutlass.GoldBright * (0.55f * fanFade * pulse);
-                c.A = 0;
-                sb.Draw(star, at, null, c, 0f, star.Size() * 0.5f, 0.13f, SpriteEffects.None, 0f);
             }
         }
     }

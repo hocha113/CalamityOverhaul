@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,7 +8,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 {
     /// <summary>
     /// 雪精灵法杖「滚雪成崩」：纵队接力小跳；
-    /// 协同「雪崩撞」= 同目标 90 帧窗内第 4 次滚撞伤害 ×1.5，炸冰尘并挂原版霜火；
+    /// 协同「雪崩撞」= 同目标 90 帧窗内第 4 次滚撞伤害 ×1.5，并挂原版霜火；
     /// 集结 = 旗点堆雪障（0.3× 蹭伤 + 霜火）
     /// </summary>
     internal class GsFlinxStaff : GsMinionScheme
@@ -21,9 +19,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Snowball Avalanche: flinxes bound in a relay column; the fourth tackle on one foe within the window lands half again harder and frostburns, and the rally order piles a snow drift";
-
-        private static readonly Color FrostPale = new(214, 238, 255);
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Column,
             Radius = 40f,
@@ -59,23 +54,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
             if (count < 4) {
                 return;
             }
-            //雪崩撞落地：清窗 + 霜火 + 冰尘爆
+            //雪崩撞落地：清窗 + 霜火
             tally.Reset(target);
             target.AddBuff(BuffID.Frostburn, 240);
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 8; i++) {
-                Dust snow = Dust.NewDustPerfect(target.Center
-                    + Main.rand.NextVector2Circular(14f, 14f), DustID.Snow,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), 60, default, 1.3f);
-                snow.noGravity = Main.rand.NextBool();
-            }
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_DefFrostGlint>(target.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 2.5f),
-                    FrostPale, Main.rand.NextFloat(0.4f, 0.65f))?.Configure(Main.rand.Next(14, 22));
-            }
         }
     }
 }

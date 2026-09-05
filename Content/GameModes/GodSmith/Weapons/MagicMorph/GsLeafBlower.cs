@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
             "Reforged: leaf blades spin with a razor-green wake" +
             "\nHold right click to charge Storm Mode: for six seconds every leaf flies faster, cuts deeper and spirals harder";
 
+        protected override bool HasAltForm => true;
         protected override int ChargeTicksB => 45;
         protected override float ChargeManaMult => 1.7f;
         protected override Color ChargeColor => LeafMain;

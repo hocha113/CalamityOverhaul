@@ -7,44 +7,28 @@ GsLastPrism.Desc:
 GsLastPrismHeldProj.DisplayName: Letztes-Prisma-Bündel
 GsLastPrismBurstProj.DisplayName: Prismenzerfall
 GsLastPrismShardProj.DisplayName: Prismensplitterstrahl
-GsMagicalHarp.Desc:
-	'''
-	Umschmiedung: Ununterbrochenes Spiel häuft Klangkraft, bei voller Lautstärke schwellen die Noten, rasen und fallen wie Regen
-	Rechtsklick bündelt die ganze Klangkraft zu einer dröhnenden Akkord-Stoßwelle; kurze Trefferfolgen hallen als Folgeschaden
-	'''
+GsMagicalHarp.Desc: Umschmiedung: Ununterbrochenes Spiel häuft Klangkraft, bei voller Lautstärke schwellen die Noten, rasen und fallen wie Regen
 GsBubbleGun.Desc:
 	'''
 	Umschmiedung: Dauerndes Sprühen häuft Blasendruck, beim Sieden schwellen die Blasen und platzen in Doppelperlen
 	Bei voller Anzeige verstopft Schaum den Lauf und sperrt ihn kurz
-	Rechtsklick lässt den ganzen Druck als sieben Großblasen-Fächer unterschiedlicher Geschwindigkeit, sie explodieren nacheinander
 	'''
 GsLaserMachinegun.Desc:
 	'''
 	Umschmiedung: Hitze ist Drehzahl, kalte Waffe zögert, Weißglut brüllt, in Weißglut reitet jeder sechste Schuss einen durchschlagenden karmesinroten Schwerstrahl
 	An der roten Linie halten sprengt nicht den Lauf, verdoppelt nur die Manakosten
-	Rechtsklick entlädt das ganze Magazin als fegenden Dreißig-Schuss-Fächer
 	'''
-GsRazorbladeTyphoon.Desc:
-	'''
-	Umschmiedung: Jeder Zauber staut Sturmenergie; in Weißglut geborene Windklingen verirren nie, fliegen sie weit, kehren sie zu dir und jagen erneut
-	Rechtsklick öffnet ein Taifunauge am Cursor: alle Windklingen in der Luft stürzen ins Wirbelherz und jagen gemeinsam, schließt sich das Auge, platzt ein Ring
-	'''
+GsRazorbladeTyphoon.Desc: Umschmiedung: Jeder Zauber staut Sturmenergie; in Weißglut geborene Windklingen verirren nie, fliegen sie weit, kehren sie zu dir und jagen erneut
 GsMagnetSphere.Desc:
 	'''
 	Umschmiedung: Haltest du den Stab, spannt sich eine Magnetbrücke zwischen dir und der Magnetkugel, die Brücke lässt den Magnetfluss steigen
 	Ist der Fluss voll, überlädt die Kugel und gießt schwere Bögen auf alles in der Nähe
-	Rechtsklick zündet einen Magnetsturm um die Kugel und zieht kleine Feinde ins Sturmherz
 	'''
-GsShadowbeamStaff.Desc:
-	'''
-	Umschmiedung: Halten hält einen Schattenstrahl, der an Wänden bricht, Weißglut gibt einen Extra-Knick und einen dickeren Strahl
-	Rechtsklick lässt an jedem Knick Schattenexplosionen nacheinander platzen
-	'''
+GsShadowbeamStaff.Desc: Umschmiedung: Halten hält einen Schattenstrahl, der an Wänden bricht, Weißglut gibt einen Extra-Knick und einen dickeren Strahl
 GsChargedBlasterCannon.Desc:
 	'''
 	Umschmiedung: Halten führt die Ladung, kalt speit sie Plasmaschüsse, Weißglut schickt gebündelte Bogenimpulse
 	Die Ladung hält nie an: an der Decke der Anzeige feuert die Kanone selbst die Vernichtungskanone, eine riesige Plasmakugel, die nahe Feinde mit Bögen leckt
-	Rechtsklick nimmt den Gewinn vorzeitig: ein abgeschwächter Bündelschuss
 	'''
 GsLaserMachinegunLanceProj.DisplayName: Durchschlag-Rotstrahl
 GsShadowbeamStaffHeldProj.DisplayName: Zickzack-Schattenstrahl

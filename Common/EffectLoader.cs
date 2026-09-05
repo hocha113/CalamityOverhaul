@@ -314,6 +314,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DivineSourceTechArc { get; set; }
         public static Asset<Effect> DivineSourceCrescent { get; set; }
         public static Asset<Effect> DivineSourceImpact { get; set; }
+        public static Asset<Effect> TerraBlade { get; set; }
         public static Asset<Effect> OniWorldGrade { get; set; }
         public static Asset<Effect> KikasaGrade { get; set; }
         public static Asset<Effect> KikasaSky { get; set; }

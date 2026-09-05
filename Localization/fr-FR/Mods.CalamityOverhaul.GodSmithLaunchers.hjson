@@ -1,0 +1,49 @@
+GsElectrosphereLauncher: {
+	Desc: Reforged: two or more of your spheres link up with tesla arcs (up to 3, half sphere damage)
+	TipOverload: Surcharge !
+}
+
+GsGrenadeLauncher: {
+	Desc: Reforged: grenades stick to walls and foes (+25% damage when stuck on flesh); up to 6 planted, the oldest pops to make room
+	TipDetonate: Tout faire sauter !
+}
+
+GsJackOLanternLauncher: {
+	Desc: Reforged: every blast leaves a candle field that scorches whoever stands in it
+	TipGrin: Rictus collectif !
+}
+
+GsNailGun: {
+	Desc: Reforged: nails embed into flesh (up to 5 per victim), each making the victim take +3% damage from all sources
+	TipExtract: Arracher les clous !
+}
+
+GsProximityMineLauncher: {
+	Desc: Reforged: mines show their trigger radius to you; mines idle for 60s refund a rocket and self-clear
+	TipChain: Domino !
+	TipRecycle: Mine récupérée
+}
+
+GsRocketLauncher: {
+	Desc: Reforged: shots kick you back, and direct hits hit harder
+	TipDetonate: Explosion aérienne !
+}
+
+GsSnowmanCannon: {
+	Desc: Reforged: hits brand victims with a snowflake (+8% from this weapon)
+	ModeHoming: Vecteur : essaim à tête chercheuse
+	ModeOrbital: Vecteur : orbite de blizzard
+}
+
+GsStarCannon.Desc:
+	'''
+	Reforgé : changer de trajectoire
+	Tir tendu : les étoiles volent droit ; Chute d'étoiles : elles montent d'abord, puis une pluie tombe autour du curseur et éclabousse de poussière d'étoile
+	'''
+
+GsStynger: {
+	Desc: Reforged: detonates on hit, with a kick on the shot. Stynger bolts and shrapnel stay as they were
+	ModeImpact: Fusée : impact
+	ModeRange: Fusée : explosion à distance
+	ModeRicochet: Fusée : ricochet
+}

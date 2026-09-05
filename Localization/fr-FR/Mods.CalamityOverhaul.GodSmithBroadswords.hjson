@@ -7,11 +7,6 @@ GsLightsBane.Desc:
 	Reforgé : chaque taille déchire une entaille d'ombre dans l'air ;
 	la troisième s'enfonce dans l'ombre puis éclate en avant, l'entaille reste un instant et ronge qui la touche
 	'''
-GsNightsEdge.Desc:
-	'''
-	Reforgé : un rite à cinq temps. Les quatre premières tailles appellent chacune une âme des lames qui l'ont forgée : Fléau de lumière, Boucher sanglant, Lame d'herbe, Volcan ;
-	la cinquième fusionne les quatre âmes en une onde de Grande nuit qui perce les rangs
-	'''
 # ===== Wood tier =====
 GsWoodenSword.Desc:
 	'''
@@ -116,7 +111,6 @@ GsCobaltSword.Desc: Reforgé : tant que l'enchaînement tient, la lame de cobalt
 GsCutlass.Desc: Reforgé : danse de pillage à quatre temps, la note monte. Les impacts accumulent le panache ; assez de panache, et le quatrième temps devient un double arc en tourbillon, deux tours autour de vous, un jugement chacun.
 GsDD2SquireBetsySword.Desc: Reforgé : chaque taille relâche une onde de rugissement de dragon. Les impacts accumulent l'âme-dragon ; à quatre charges, l'onde du coup final s'élève en deux dragons entrelacés.
 GsDD2SquireDemonSword.Desc: Reforgé : maintenez le clic droit pour lever le bouclier ; une parade réussie rend la prochaine taille cinq fois plus forte. La parade allume aussi le fil : les trois tailles suivantes jettent des ondes de feu et enflamment.
-GsExcalibur.Desc: Reforgé : enchaînement d'Excalibur à quatre temps, chaque taille jette un court arc de lumière sacrée. Les impacts accumulent l'éclat ; la quatrième, le jugement, fait exploser une nova sacrée, plus forte selon l'éclat.
 GsFetidBaghnakhs.Desc: Reforgé : danse de griffes à quatre temps au corps à corps. Chaque coup grave une entaille pourrie ; la quatrième éclate en pus, empoisonne et enduit de venin qui s'y prend.
 GsFrostbrand.Desc: Reforgé : souffle d'hiver. Chaque taille expire un trait de givre, d'abord lent puis en élan, Brûlure de givre à l'impact. Le trait du coup final s'ouvre en éventail de trois éclats.
 GsGreenPhaseblade.Desc: Reforgé : lame de plasma, chaque ennemi touché charge le fil, plus long et plus clair. À charge pleine, la prochaine taille de fin jette un arc de plasma.
@@ -140,13 +134,9 @@ GsRedPhasesaber.Desc: Reforgé : sabre de plasma affiné, les impacts chargent, 
 GsSeedler.Desc: Reforgé : chaque taille jette une gousse tournoyante qui rebondit puis éclate en un éventail d'épines chasseuses. La gousse du coup final éructe des lianes et dresse un fourré qui pique encore.
 GsSlapHand.Desc: Reforgé : trois claques de châtiment, chaque paume pose une énorme empreinte, recul absurde. Le coup final joint les deux paumes, une petite onde de choc.
 GsStarWrath.Desc: Reforgé : chaque taille appelle du ciel nocturne trois étoiles à queue de comète. Les impacts accumulent la marée d'étoiles ; à marée pleine, le coup final verse une pluie d'étoiles, la grande étoile finale explose en anneau.
-GsTerraBlade.Desc: Reforgé : duo à quatre temps où l'âme de lumière et l'âme de nuit se passent la Lame Terra. Chaque taille jette une onde terra de la couleur de l'âme en cours ; le quatrième fusionne les deux en une grande lame de résonance, un anneau d'étoiles vertes à l'impact.
 GsTheHorsemansBlade.Desc: Reforgé : frapper un ennemi appelle une tête de citrouille en flammes. Frapper la même cible grave des marques de chasse ; à marques pleines, le coup final appelle une cavalerie de quatre citrouilles brûlantes qui piétinent la ligne.
 GsTitaniumSword.Desc: Reforgé : chaque taille laisse une ombre de titane dans l'air, qui rejoue la même coupe une demi-mesure plus tard.
-GsTrueExcalibur.Desc: Reforgé : jugement de jour à trois temps. Chaque taille jette une onde de jour perçante, plus forte à chaque temps. L'onde de la troisième explose en croix de lumière sacrée.
-GsTrueNightsEdge.Desc: Reforgé : marée de nuit à trois temps, ample. Chaque taille jette une énorme onde de nuit, qui ralentit à l'aller, puis accélère et retranche au retour. L'onde du coup final est plus grande et se scinde en deux petites lames de nuit au virage.
 GsWhitePhaseblade.Desc: Reforgé : lame de plasma, chaque ennemi touché charge le fil, plus long et plus clair. À charge pleine, la prochaine taille de fin jette un arc de plasma.
 GsWhitePhasesaber.Desc: Reforgé : sabre de plasma affiné, les impacts chargent, le fil s'étend plus loin. Chaque taille de fin envoie une courte lame de lumière ; à charge pleine, un arc en surcharge qui explose en anneau de plasma.
 GsYellowPhaseblade.Desc: Reforgé : lame de plasma, chaque ennemi touché charge le fil, plus long et plus clair. À charge pleine, la prochaine taille de fin jette un arc de plasma.
 GsYellowPhasesaber.Desc: Reforgé : sabre de plasma affiné, les impacts chargent, le fil s'étend plus loin. Chaque taille de fin envoie une courte lame de lumière ; à charge pleine, un arc en surcharge qui explose en anneau de plasma.
-GsZenith.Desc: Reforgé : pivot des dix mille lames. Chaque taille jette l'ombre d'une lame historique, qui trace un arc vers le curseur, tourne et revient. Les impacts accumulent la Volonté d'épée ; plus elle est haute, plus le coup final ouvre une formation forte ; à volonté pleine, huit lames convergent, le cœur déchire une faille d'espace-temps et explose.

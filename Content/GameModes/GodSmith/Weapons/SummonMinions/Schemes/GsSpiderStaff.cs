@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Web Hunt: three spider breeds hold a triangle watch; concerted bites truss the prey in a binding web that deepens every wound, and every bite now envenoms";
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Triangle,
             Radius = 80f,

@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         protected virtual GsConduitBodyPose BodyPose => GsConduitBodyPose.Staff;
 
         /// <summary>
-        /// 引导期补画武器本体（原版物品贴图）。桥（GodSmithHeldVisualBridge）把 heldItem 换成
+        /// 引导期补画武器本体（原版物品贴图，一笔）。桥（GodSmithHeldVisualBridge）把 heldItem 换成
         /// noUseGraphic 替身压掉第 27 层持物（防阔剑族叠影），引导族 held 此前不画本体 = 空手放束；
         /// 本方法是唯一本体层，桥保持原样故不会与 27 层叠影。
         /// 光照在玩家中心取样（同 27 层 itemColor），塌缩期本体不淡出（武器实物随 held 存亡）
@@ -255,11 +255,22 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
             }
 
             Main.EntitySpriteDraw(tex, drawPos - Main.screenPosition, frame, light, rot, origin, scale, fx, 0);
-            if (sample.glowMask >= 0) {
-                //物品自带辉罩（充能爆破炮 102）同变换叠画，暗处也可读
-                Main.EntitySpriteDraw(TextureAssets.GlowMask[sample.glowMask].Value, drawPos - Main.screenPosition,
-                    frame, new Color(250, 250, 250, sample.alpha), rot, origin, scale, fx, 0);
+        }
+
+        /// <summary>
+        /// 一笔拉伸的原版束流贴图（LastPrismLaser / ChargedBlasterLaser / MedusaHeadRay 这类
+        /// 竖版首-身-尾条，顶端为束根）：起点钉在 start，沿 dir 拉到 length，宽度按 width 缩放，
+        /// lightColor 着色，不加色不叠层
+        /// </summary>
+        protected static void DrawBeamStrip(int projType, Vector2 start, Vector2 dir, float length, float width, Color lightColor) {
+            if (length < 4f || width < 0.5f) {
+                return;
             }
+            Main.instance.LoadProjectile(projType);
+            Texture2D tex = TextureAssets.Projectile[projType].Value;
+            Vector2 scale = new(width / tex.Width, length / tex.Height);
+            Main.EntitySpriteDraw(tex, start - Main.screenPosition, null, lightColor,
+                dir.ToRotation() - MathHelper.PiOver2, new Vector2(tex.Width / 2f, 0f), scale, SpriteEffects.None, 0);
         }
 
         /// <summary>持械姿态（各端，用同步方向）</summary>

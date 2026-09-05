@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -68,7 +66,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
         internal void SuppressNow() => suppressFrame = Main.GameUpdateCount;
     }
 
-    /// <summary>幸运星坠：自高处坠落加速，微微修向目标，砸中迸开一蓬金屑</summary>
+    /// <summary>幸运星坠：自高处坠落加速，微微修向目标</summary>
     internal class GodSmithLuckyStarBolt : ModProjectile
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.FallingStar;
@@ -99,28 +97,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
                 Projectile.velocity.X = MathHelper.Clamp(Projectile.velocity.X + drift, -8f, 8f);
             }
             Projectile.rotation += 0.3f;
-            Lighting.AddLight(Projectile.Center, 0.5f, 0.42f, 0.15f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.YellowStarDust,
-                    -Projectile.velocity * 0.1f, 90, default, 1f);
-                dust.noGravity = true;
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 235, 140, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            //坠速拉出竖向星痕：金橙衬底 + 亮金星体
-            float stretch = 1f + Math.Abs(Projectile.velocity.Y) * 0.04f;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(180, 120, 20, 0) * (0.7f * Projectile.Opacity), Projectile.rotation, origin,
-                new Vector2(1f, stretch) * 1.1f, 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 245, 190, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(0.7f, 0.7f * stretch), 0);
-            return false;
         }
 
         public override void OnKill(int timeLeft) {
@@ -128,11 +104,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = 0.6f }, Projectile.Center);
-            for (int i = 0; i < 10; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldFlame,
-                    Main.rand.NextVector2Circular(4f, 4f), 90, default, 1.2f);
-                dust.noGravity = true;
-            }
         }
     }
 }

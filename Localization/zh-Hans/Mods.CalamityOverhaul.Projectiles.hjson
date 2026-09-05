@@ -797,6 +797,9 @@ KikasaTeleportProj.DisplayName: 鬼伞·墨雨迁跃
 EyetoothDart.DisplayName: 眼齿飞镖
 DivineSourceBoltProjectile.DisplayName: 神圣源泉光辉弹
 BloodButchererBolt.DisplayName: 血腥屠刀死灵弹
+TerraLightProj.DisplayName: 泰拉之光
+TerraSoulJudgmentProj.DisplayName: 真圣剑之魂
+TerraSoulSpinProj.DisplayName: 真永夜之刃之魂
 BloodshotBombHeld.DisplayName: 血涌爆弹
 BloodshotBombThrown.DisplayName: 投掷血涌爆弹
 BloodshotFleshChunk.DisplayName: 血涌碎肉块
@@ -1051,8 +1054,6 @@ GsDD2SquireBetsySwordWaveProj.DisplayName: 双足翼龙剑气
 GsDD2SquireDemonSwordFireWaveProj.DisplayName: 恶魔地狱火剑气
 GsEbonSporeMistProj.DisplayName: 乌木毒孢迷雾
 GsEnchantedSwordBeamProj.DisplayName: 附魔剑气
-GsExcaliburArcProj.DisplayName: 断钢剑神圣弧光
-GsExcaliburNovaProj.DisplayName: 断钢剑神圣新星
 GsFetidBaghnakhsBurstProj.DisplayName: 臭虎爪迅影狂袭
 GsFetidBaghnakhsMarkProj.DisplayName: 臭虎爪撕裂印记
 GsFieryGreatswordPitProj.DisplayName: 炽焰巨剑熔岩火坑
@@ -1067,7 +1068,6 @@ GsLightsBaneScarProj.DisplayName: 魔光剑暗影剑痕
 GsMeowmereCatProj.DisplayName: 彩虹猫飞弹
 GsMeowmereMeteorProj.DisplayName: 彩虹猫坠落陨星
 GsMeowmereStarBurstProj.DisplayName: 彩虹猫耀星爆裂
-GsNightsEdgeWaveProj.DisplayName: 永夜刃夜幕剑气
 GsPalmSandWaveProj.DisplayName: 棕榈木沙浪
 GsPhasebladeArcProj.DisplayName: 晶刃光弧
 GsPhasesaberBurstProj.DisplayName: 陨星晶刃裂空爆
@@ -1082,16 +1082,7 @@ GsSlapHandPrintProj.DisplayName: 拍拍手掌印
 GsStarfuryStarProj.DisplayName: 星怒落星
 GsStarWrathFallProj.DisplayName: 狂星之怒天坠流星
 GsStarWrathRingProj.DisplayName: 狂星之怒星耀环
-GsTerraBladeBurstProj.DisplayName: 泰拉刃共鸣爆发
-GsTerraBladeRingProj.DisplayName: 泰拉刃能量光环
-GsTerraBladeWaveProj.DisplayName: 泰拉超能剑气
 GsTheHorsemansBladeJackProj.DisplayName: 无头骑士之刃南瓜飞魂
-GsTrueExcaliburCrossProj.DisplayName: 真断钢剑圣十字光
-GsTrueExcaliburWaveProj.DisplayName: 真断钢剑圣光剑气
-GsTrueNightsEdgeShardProj.DisplayName: 真永夜刃暗夜碎晶
-GsTrueNightsEdgeWaveProj.DisplayName: 真永夜刃黑夜剑气
-GsZenithPhantomProj.DisplayName: 天顶剑幻影之刃
-GsZenithRiftProj.DisplayName: 天顶虚空裂痕
 GsBallOHurtBarbProj.DisplayName: 致伤球棘刺
 GsBlueMoonCrescentProj.DisplayName: 蓝月弦月光芒
 GsChainGuillotinesShearProj.DisplayName: 连枷断头台飞斩
@@ -1218,11 +1209,15 @@ TempleDiveOmen.DisplayName: 神庙俯冲预警
 TempleDropOmen.DisplayName: 神庙落石预警
 TempleEmberProj.DisplayName: 神庙烈火弹
 BssBreachOmen.DisplayName: 破地突袭预警
+BssDashOmen.DisplayName: 冲刺预警线
 BssCactusBallProj.DisplayName: 仙人掌滚球
 BssNeedleProj.DisplayName: 巨针飞刺
 BssPetalProj.DisplayName: 暴风花瓣
 BssSandGlob.DisplayName: 沙团球
-BssSandVortexProj.DisplayName: 流沙漩涡
+BssSandSurgeProj.DisplayName: 掀沙浪
+BssDustDevilProj.DisplayName: 旋沙龙卷
+BssWindPetalProj.DisplayName: 横风花刃
+BssPincerSnapProj.DisplayName: 巨钳合击
 FssBreachOmen.DisplayName: 腐沙隆包
 FssCascadeDrop.DisplayName: 灵液瀑流
 FssIchorGate.DisplayName: 灵液之门
@@ -1247,6 +1242,14 @@ DeepcrystalJetBeam.DisplayName: 深渊水晶激流光束
 DeepcrystalSeekBubble.DisplayName: 深渊水晶索敌水泡
 DeepcrystalWaterShot.DisplayName: 深渊水晶水弹
 SoulbindingCounterFlame.DisplayName: 缚魂反击烈焰
-BssStormMark.DisplayName: 沙暴风眼印记
 // GsGunHoldPoseProj.DisplayName: Gs Gun Hold Pose Proj
 // CrimsonSweepSlash.DisplayName: Crimson Sweep Slash
+// GsArmorBlastProj.DisplayName: Gs Armor Blast Proj
+// GsJungleStingerProj.DisplayName: Gs Jungle Stinger Proj
+// GsNecroBoneProj.DisplayName: Gs Necro Bone Proj
+// GsOrichalcumPetalProj.DisplayName: Gs Orichalcum Petal Proj
+// GsHallowedStarProj.DisplayName: Gs Hallowed Star Proj
+// GsSpectreSoulProj.DisplayName: Gs Spectre Soul Proj
+// GsStardustShardProj.DisplayName: Gs Stardust Shard Proj
+// GsTikiSpiritFlameProj.DisplayName: Gs Tiki Spirit Flame Proj
+// GsTurtleSpikeProj.DisplayName: Gs Turtle Spike Proj

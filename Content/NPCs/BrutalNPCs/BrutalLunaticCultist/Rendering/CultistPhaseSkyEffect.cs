@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
     }
 
     /// <summary>
-    /// 分相沉浸天幕:身处星球/风暴眼内部(CultistPhaseSky.fx)<br/>
+    /// 分相沉浸天幕:身处星球/风暴眼内部(CultistPhaseSky.fx),全相带极光帘,云雾随场上风漂<br/>
     /// Sky 与 Filter 同名成对注册(ManageSpecialBiomeVisuals 对缺 Filter 直接 NRE);
     /// IsActive 只反映激活态,渐出尾巴由 Driver.Visible 兜住
     /// </summary>
@@ -166,6 +166,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
                 shader.Parameters["uAspect"]?.SetValue(vpW / (float)vpH);
                 //相机视差锚:星野/云雾按层系数取用,背景不再糊在镜头上
                 shader.Parameters["uCam"]?.SetValue(Main.screenPosition / vpH);
+                //同一股风:云盖/雾场/极光帘的漂移与场上风暴粒子同源
+                shader.Parameters["uWind"]?.SetValue(CultistScreenFX.WindOffset);
+                shader.Parameters["uGust"]?.SetValue(CultistScreenFX.Gust);
                 shader.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);
             }

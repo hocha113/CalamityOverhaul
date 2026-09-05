@@ -1,10 +1,7 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,13 +17,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Pro
         /// <summary>引信帧数</summary>
         private const int FuseFrames = 15;
 
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.InfernoFriendlyBlast;
 
         public override string LocalizationCategory => "GodSmithSummonSentries";
-
-        private static readonly Color BlastBright = new(255, 224, 150);
-        private static readonly Color BlastMain = new(255, 132, 44);
-        private static readonly Color BlastDeep = new(122, 44, 16);
 
         private ref float Depth => ref Projectile.ai[0];
         private ref float Radius => ref Projectile.ai[1];
@@ -53,36 +46,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Pro
 
         public override void AI() {
             Age++;
-            //引信期滴答：临爆加快（各端本地演出）
-            if (Age < FuseFrames) {
-                if (!VaultUtils.isServer) {
-                    int beep = Age > FuseFrames - 6 ? 3 : 6;
-                    if (Age % beep == 0f) {
-                        PRTLoader.NewParticle<PRT_Spark>(
-                            Projectile.Center + Main.rand.NextVector2Circular(8f, 6f),
-                            new Vector2(0f, -Main.rand.NextFloat(0.8f, 1.6f)),
-                            BlastBright, Main.rand.NextFloat(0.25f, 0.4f))?.Configure(false, 10);
-                    }
-                    Lighting.AddLight(Projectile.Center, BlastMain.ToVector3() * (0.15f + 0.1f * (Age / FuseFrames)));
-                }
-                return;
-            }
             if (Age != FuseFrames) {
                 return;
             }
-            //起爆帧：演出（各端）+ 链式传播（owner）
+            //起爆帧：音效（各端）+ 链式传播（owner）
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.75f, Pitch = -0.1f, MaxInstances = 5 }, Projectile.Center);
-                PRTLoader.NewParticle<PRT_MechExplosion>(Projectile.Center, Vector2.Zero,
-                    Color.White, Radius / 70f)?.Configure(26, BlastMain);
-                for (int i = 0; i < 8; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 8f),
-                        Main.rand.NextBool() ? BlastBright : BlastMain,
-                        Main.rand.NextFloat(0.3f, 0.55f))?.Configure(true, Main.rand.Next(14, 24));
-                }
-                PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center, new Vector2(0f, -0.8f),
-                    BlastDeep, 0.9f)?.Configure(30, 0.5f);
             }
             if (Projectile.IsOwnedByLocalPlayer() && Depth < 4f) {
                 SentryGrid.PropagateChain(Projectile.Center, Projectile.owner,
@@ -90,29 +59,23 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Pro
             }
         }
 
+        /// <summary>范围提示：引信期按判定框大小画一笔原版贴图，起爆后按爆炸半径缩放并随余帧渐隐</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
-                return false;
-            }
-            Vector2 pos = Projectile.Center - Main.screenPosition;
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float scale;
+            float fade = 1f;
             if (Age < FuseFrames) {
-                //引信红闪：脉冲频率随倒计时加快，identity 去同相
-                float urgency = Age / FuseFrames;
-                float pulse = 0.5f + 0.5f * MathF.Sin(Age * (0.5f + urgency * 0.9f) + Projectile.identity * 0.7f);
-                Color warn = Color.Lerp(BlastMain, Color.Red, urgency) * (0.35f + 0.35f * pulse);
-                warn.A = 0;
-                Main.EntitySpriteDraw(glow, pos, null, warn, 0f, glow.Size() * 0.5f,
-                    0.5f + 0.25f * pulse, SpriteEffects.None, 0);
-                return false;
+                scale = Projectile.width / (float)tex.Width;
             }
-            //爆后冲击环
-            float t = MathHelper.Clamp((Age - FuseFrames) / 14f, 0f, 1f);
-            if (t < 1f) {
-                ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center,
-                    Radius * (0.35f + 0.75f * t), 11f, BlastBright, BlastMain, BlastDeep,
-                    (1f - t) * 0.9f, squish: 0.75f, timeSeed: Projectile.identity * 0.61f);
+            else {
+                scale = MathHelper.Max(Radius, 8f) * 2f / tex.Width;
+                fade = 1f - MathHelper.Clamp((Age - FuseFrames) / 14f, 0f, 1f);
+                if (fade <= 0.01f) {
+                    return false;
+                }
             }
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, 0f,
+                tex.Size() * 0.5f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

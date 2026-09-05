@@ -1,11 +1,10 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -40,12 +39,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
                 return;
             }
             player.GetAttackSpeed(DamageClass.Melee) += 0.01f * claws.FeralStacks;
-            //满层态：腕间掠过兽性红痕（攻击方端本地量，仅佩戴者可见）
-            if (claws.FeralStacks >= MaxStacks && !VaultUtils.isServer && Main.rand.NextBool(12)) {
-                PRTLoader.NewParticle<PRT_Spark>(player.Center + Main.rand.NextVector2Circular(14f, 18f),
-                    new Vector2(player.direction * 1.2f, -0.6f), new Color(230, 60, 50),
-                    Main.rand.NextFloat(0.2f, 0.32f))?.Configure(false, 12);
-            }
         }
 
         public override void OnHitNPC(Item item, Player player, GodSmithPlayer state, NPC target,
@@ -53,36 +46,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             if (!hit.DamageType.CountsAsClass(DamageClass.Melee)) {
                 return;
             }
-            GloveChainPlayer claws = player.GetModPlayer<GloveChainPlayer>();
             if (state.TryUseCooldown(item.type, StackICD)) {
-                claws.AddFeralStack();
-            }
-            //高层数时挥击带兽爪血火花（命中钩子只在攻击方端跑）
-            if (claws.FeralStacks >= 6) {
-                for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(8f, 8f),
-                        hit.HitDirection * new Vector2(Main.rand.NextFloat(2f, 5f), 0f).RotatedByRandom(0.6f),
-                        Main.rand.NextBool() ? new Color(230, 60, 50) : new Color(255, 150, 90),
-                        Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(12, 20));
-                }
+                player.GetModPlayer<GloveChainPlayer>().AddFeralStack();
             }
         }
 
-        public override void OnHurt(Item item, Player player, GodSmithPlayer state, in Player.HurtInfo info) {
-            //受击节奏中断
-            GloveChainPlayer claws = player.GetModPlayer<GloveChainPlayer>();
-            if (claws.FeralStacks <= 0) {
-                return;
-            }
-            claws.ClearFeral();
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 4; i++) {
-                    Dust dust = Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(10f, 14f),
-                        DustID.Blood, Main.rand.NextVector2Circular(2f, 2f), 120);
-                    dust.noGravity = true;
-                }
-            }
-        }
+        //受击节奏中断
+        public override void OnHurt(Item item, Player player, GodSmithPlayer state, in Player.HurtInfo info)
+            => player.GetModPlayer<GloveChainPlayer>().ClearFeral();
     }
 
     /// <summary>
@@ -103,9 +74,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
 
         /// <summary>震击半径（像素，按触发那件的 type 定档）</summary>
         protected abstract int QuakeRadius(int itemType);
-
-        /// <summary>震击火花主色</summary>
-        protected abstract Color SparkColor { get; }
 
         /// <summary>震击是否点燃（狱火）</summary>
         protected virtual bool QuakeIgnites => false;
@@ -134,16 +102,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             float ratio = QuakeRatio(item.type);
             int radius = QuakeRadius(item.type);
 
-            //震击演出：冲击环 + 迸溅钢屑（命中钩子只在攻击方端跑）
+            //震击响声（命中钩子只在攻击方端跑）
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.55f, Pitch = 0.35f }, target.Center);
-            PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, SparkColor, 0.05f)
-                ?.Configure(0.06f, radius / 380f, 16);
-            for (int i = 0; i < 10; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 7f),
-                    Main.rand.NextBool() ? SparkColor : Color.Lerp(SparkColor, Color.White, 0.5f),
-                    Main.rand.NextFloat(0.3f, 0.55f))?.Configure(true, Main.rand.Next(14, 24));
-            }
 
             //范围伤害弹 owner 侧生成，伤害按触发伤害折算并封顶
             if (player.whoAmI == Main.myPlayer) {
@@ -170,8 +130,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
 
         protected override int QuakeRadius(int itemType)
             => itemType == ItemID.TitanGlove ? 140 : itemType == ItemID.PowerGlove ? 160 : 180;
-
-        protected override Color SparkColor => new(200, 210, 230);
     }
 
     /// <summary>熔火护手：震击升格为灼热爆轰，点燃敌人（狱火）</summary>
@@ -186,18 +144,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
 
         protected override int QuakeRadius(int itemType) => 190;
 
-        protected override Color SparkColor => new(255, 140, 40);
-
         protected override bool QuakeIgnites => true;
-
-        protected override void OnQuake(Item item, Player player, GodSmithPlayer state, NPC target) {
-            //熔滴自爆心涌出（攻击方端）
-            for (int i = 0; i < 6; i++) {
-                Dust dust = Dust.NewDustPerfect(target.Center, DustID.Torch,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), 0, default, Main.rand.NextFloat(1.4f, 2f));
-                dust.noGravity = true;
-            }
-        }
     }
 
     /// <summary>狂战护手：震击最重，且每次震击驱入狂暴（近战速度+10%，3 秒）</summary>
@@ -215,19 +162,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
 
         protected override int QuakeRadius(int itemType) => 210;
 
-        protected override Color SparkColor => new(255, 230, 180);
-
         public override void UpdateAccessory(Item item, Player player, bool hideVisual, GodSmithPlayer state) {
-            GloveChainPlayer chain = player.GetModPlayer<GloveChainPlayer>();
-            if (chain.BerserkTimer <= 0) {
-                return;
-            }
-            player.GetAttackSpeed(DamageClass.Melee) += 0.10f;
-            //狂暴态白热余焰
-            if (!VaultUtils.isServer && Main.rand.NextBool(6)) {
-                PRTLoader.NewParticle<PRT_Light>(player.Center + Main.rand.NextVector2Circular(12f, 18f),
-                    new Vector2(0f, -Main.rand.NextFloat(0.4f, 1f)), new Color(255, 230, 180),
-                    Main.rand.NextFloat(0.06f, 0.1f))?.Configure(12, 0.7f);
+            if (player.GetModPlayer<GloveChainPlayer>().BerserkTimer > 0) {
+                player.GetAttackSpeed(DamageClass.Melee) += 0.10f;
             }
         }
 
@@ -236,21 +173,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
     }
 
     /// <summary>
-    /// 泰坦震击波：一记砸进地面的巨力，不是光圈贴纸。
-    /// 短命范围判定 + 三层自绘（扩散环收口、星芒重击闪、暗压边），确定性抖动不掷 Main.rand
+    /// 泰坦震击波：一记砸进地面的巨力。短命范围判定，
+    /// 绘制只有一笔按半径缩放的原版气泡贴图给出范围提示
     /// </summary>
     internal class GodSmithTitanGloveQuakeProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
 
         private ref float Radius => ref Projectile.ai[0];
 
         private ref float IgniteFlag => ref Projectile.ai[1];
 
         private ref float Life => ref Projectile.localAI[0];
-
-        /// <summary>确定性绘制相位，绘制路径不掷 Main.rand</summary>
-        private float Seed => Projectile.identity * 0.6173f % 2.83f;
 
         private const int LifeMax = 14;
 
@@ -278,7 +212,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             if (Life > 6f) {
                 Projectile.friendly = false;
             }
-            Lighting.AddLight(Projectile.Center, new Vector3(0.5f, 0.5f, 0.45f) * (1f - Life / LifeMax));
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -287,33 +220,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             }
         }
 
+        /// <summary>区域弹一笔：原版气泡贴图按判定直径缩放画在中心，随生命淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D ring = CWRAsset.DiffusionCircle?.Value;
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            if (ring == null || star == null) {
-                return false;
-            }
-            float progress = MathHelper.Clamp(Life / LifeMax, 0f, 1f);
-            float fade = 1f - progress;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            float radius = Projectile.width * 0.5f;
-
-            //扩散环：由内向外推，宽度随生命收口
-            float ringScale = radius * 2f / ring.Width * (0.35f + 0.75f * MathF.Sqrt(progress));
-            Color ringColor = new Color(220, 225, 235) with { A = 0 };
-            Main.EntitySpriteDraw(ring, pos, null, ringColor * (0.85f * fade), Seed,
-                ring.Size() * 0.5f, ringScale, SpriteEffects.None, 0);
-            //暗压边：真 alpha 焦灰外缘，给冲击一个重量下缘
-            Main.EntitySpriteDraw(ring, pos, null, new Color(60, 55, 50) * (0.35f * fade), -Seed,
-                ring.Size() * 0.5f, ringScale * 1.08f, SpriteEffects.None, 0);
-            //星芒重击闪：只活前 6 帧
-            if (Life <= 6f) {
-                float flash = 1f - Life / 6f;
-                Color flashColor = new Color(255, 250, 235) with { A = 0 };
-                Main.EntitySpriteDraw(star, pos, null, flashColor * (0.8f * flash),
-                    Seed * 2f + Life * 0.05f, star.Size() * 0.5f,
-                    radius / star.Width * (1.1f + 0.5f * flash), SpriteEffects.None, 0);
-            }
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float fade = 1f - MathHelper.Clamp(Life / LifeMax, 0f, 1f);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, 0f,
+                tex.Size() * 0.5f, Projectile.width / (float)tex.Width, SpriteEffects.None, 0);
             return false;
         }
     }

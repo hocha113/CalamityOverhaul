@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -34,13 +32,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 return;
             }
             player.Heal(2);
-            //月银撕咬痕（命中钩子只在攻击方端跑）
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    hit.HitDirection * new Vector2(Main.rand.NextFloat(1.5f, 4f), 0f).RotatedByRandom(0.5f),
-                    Main.rand.NextBool() ? new Color(200, 210, 235) : new Color(150, 165, 210),
-                    Main.rand.NextFloat(0.26f, 0.42f))?.Configure(false, Main.rand.Next(12, 18));
-            }
         }
     }
 
@@ -59,16 +50,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
             "Lunar Aegis: at night, taking a hit veils you in moonlight for 4s: +8 defense\nTriggers once every 4s";
 
         public override void UpdateAccessory(Item item, Player player, bool hideVisual, GodSmithPlayer state) {
-            TidalMoonPlayer tide = player.GetModPlayer<TidalMoonPlayer>();
-            if (tide.LunarGuardTimer <= 0) {
-                return;
-            }
-            player.statDefense += 8;
-            //月纱垂落（个人读数）
-            if (!VaultUtils.isServer && Main.rand.NextBool(9)) {
-                PRTLoader.NewParticle<PRT_Light>(player.Center + new Vector2(Main.rand.NextFloat(-20f, 20f), -24f),
-                    new Vector2(0f, Main.rand.NextFloat(0.4f, 1f)), new Color(170, 185, 230),
-                    Main.rand.NextFloat(0.05f, 0.09f))?.Configure(16, 0.8f);
+            if (player.GetModPlayer<TidalMoonPlayer>().LunarGuardTimer > 0) {
+                player.statDefense += 8;
             }
         }
 
@@ -77,16 +60,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 return;
             }
             player.GetModPlayer<TidalMoonPlayer>().LunarGuardTimer = LunarGuardDuration;
-            if (VaultUtils.isServer) {
-                return;
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Item25 with { Volume = 0.5f, Pitch = 0.3f }, player.Center);
             }
-            SoundEngine.PlaySound(SoundID.Item25 with { Volume = 0.5f, Pitch = 0.3f }, player.Center);
-            PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
-                new Color(170, 185, 230), 0.05f)?.Configure(0.07f, 0.4f, 16);
         }
     }
 
-    /// <summary>海神贝壳：入水掀潮涌护体，水中命中带潮沫，海是它的主场</summary>
+    /// <summary>海神贝壳：入水掀潮涌护体，海是它的主场</summary>
     internal class GodSmithNeptunesShell : GodSmithAccEffect
     {
         /// <summary>潮涌窗口帧数</summary>
@@ -110,29 +90,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 tide.RaiseTide(6, TideDuration);
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.6f, Pitch = 0.2f }, player.Center);
-                    PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
-                        new Color(90, 190, 220), 0.05f)?.Configure(0.07f, 0.42f, 16);
-                    for (int i = 0; i < 8; i++) {
-                        Dust dust = Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(14f, 18f),
-                            DustID.BubbleBurst_Blue, Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f));
-                        dust.noGravity = true;
-                    }
                 }
-            }
-        }
-
-        public override void OnHitNPC(Item item, Player player, GodSmithPlayer state, NPC target,
-            in NPC.HitInfo hit, int damageDone, bool fromProjectile) {
-            //湿身命中带潮沫（节流，走高位副键），Default 类不触发防自喂
-            if (!player.wet || hit.DamageType == DamageClass.Default
-                || !state.TryUseCooldown(item.type + SecondaryCDKeyOffset, 12)) {
-                return;
-            }
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 3.5f),
-                    Main.rand.NextBool() ? new Color(90, 190, 220) : new Color(200, 240, 250),
-                    Main.rand.NextFloat(0.24f, 0.4f))?.Configure(false, Main.rand.Next(10, 16));
             }
         }
     }
@@ -158,7 +116,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
             CelestialPhaseStrike(target, Main.dayTime);
         }
 
-        /// <summary>昼夜双相打击的共用演出与挂 buff（天界石与天界贝壳共用）</summary>
+        /// <summary>昼夜双相打击的共用音效与挂 buff（天界石与天界贝壳共用）</summary>
         internal static void CelestialPhaseStrike(NPC target, bool day) {
             if (day) {
                 target.AddBuff(BuffID.OnFire3, 180);
@@ -166,16 +124,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
             else {
                 target.AddBuff(BuffID.Frostburn, 240);
             }
-            Color main = day ? new Color(255, 170, 40) : new Color(140, 210, 255);
-            Color soft = day ? new Color(255, 230, 150) : new Color(220, 245, 255);
             SoundEngine.PlaySound((day ? SoundID.Item34 : SoundID.Item30) with { Volume = 0.35f, Pitch = 0.3f },
                 target.Center);
-            for (int i = 0; i < 5; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4.5f),
-                    Main.rand.NextBool() ? main : soft,
-                    Main.rand.NextFloat(0.26f, 0.44f))?.Configure(true, Main.rand.Next(12, 20));
-            }
         }
     }
 
@@ -200,8 +150,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 tide.RaiseTide(8, GodSmithNeptunesShell.TideDuration);
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.6f, Pitch = 0.3f }, player.Center);
-                    PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
-                        new Color(120, 210, 230), 0.05f)?.Configure(0.08f, 0.48f, 18);
                 }
             }
         }
@@ -233,24 +181,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 tide.MythsTimer = MythsDuration;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.4f, Pitch = 0.5f }, player.Center);
-                    for (int i = 0; i < 8; i++) {
-                        PRTLoader.NewParticle<PRT_Spark>(player.Center,
-                            Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 3.5f),
-                            Main.rand.NextBool() ? new Color(90, 220, 130) : new Color(190, 255, 200),
-                            Main.rand.NextFloat(0.26f, 0.42f))?.Configure(false, Main.rand.Next(16, 26));
-                    }
                 }
             }
-            if (tide.MythsTimer <= 0) {
-                return;
-            }
-            player.lifeRegen += 4;
-            //翠愈微旋（个人读数）
-            if (!VaultUtils.isServer && Main.rand.NextBool(10)) {
-                float angle = Main.GameUpdateCount * 0.06f;
-                PRTLoader.NewParticle<PRT_Light>(player.Center + angle.ToRotationVector2() * 22f,
-                    new Vector2(0f, -0.5f), new Color(90, 220, 130),
-                    Main.rand.NextFloat(0.05f, 0.08f))?.Configure(12, 0.8f);
+            if (tide.MythsTimer > 0) {
+                player.lifeRegen += 4;
             }
         }
     }

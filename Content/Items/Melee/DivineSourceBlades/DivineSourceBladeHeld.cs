@@ -79,7 +79,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private int flashTimer;
         private int hitstopTimer;
         private bool hitstopApplied;
-        private bool boltsFired;
+        private int boltsReleased;
+        private int lancesReleased;
         private bool waveFired;
         private bool slashSoundPlayed;
         private bool leanApplied;
@@ -119,8 +120,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private Vector2 EllipseCenter => Hand + baseAngle.ToRotationVector2() * (FullReach * 0.22f);
         private float ViewZ => MathF.Max(900f, FullReach * 2.6f);
 
-        /// <summary>每拍光矢数量，充能期额外 +2</summary>
-        private int BoltCount => ComboStage switch { 0 => 2, 1 => 3, 2 => 4, _ => 5 } + (Empowered ? 2 : 0);
+        /// <summary>常态每拍光矢数量: 快拍甩帘 4/5，环斩绽放 6，终结三对螺旋</summary>
+        private int BoltCount => ComboStage switch { 0 => 4, 1 => 5, _ => 6 };
+        /// <summary>充能期每拍光枪数量: 快拍单枪，椭圆拍双枪钳形</summary>
+        private int LanceCount => IsEllipse ? 2 : 1;
         private float GoldMix => Empowered ? 0.5f : 0f;
 
         public override void SetDefaults() {
@@ -466,10 +469,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 }
             }
 
-            //光矢在斩击中段离手，沿出手瞄准方向扇形散开；高攻速下收势兜底防漏发
-            if (!boltsFired && (phase == PhaseSlash && slashProgress >= 0.3f || phase == PhaseRecover)) {
-                boltsFired = true;
-                FireBolts();
+            //弹幕按刀路进度分批离手，出射点与角度取自刀在排程点的位置；收势阶段兜底放完防漏发
+            if (phase is PhaseSlash or PhaseRecover) {
+                HandleVolley(phase == PhaseRecover ? 1f : sweepT);
             }
 
             //终结拍轰出巨型新月剑气
@@ -479,8 +481,54 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             }
         }
 
-        private void FireBolts() {
-            if (!VaultUtils.isServer) {
+        /// <summary>
+        /// clock 为刀路进度 0~1。常态放光矢、充能期放光枪，各按自己的排程离手；
+        /// 同一帧可放多发，但几何一律按排程点重算，攻速再高弹群也沿刀路均匀铺开
+        /// </summary>
+        private void HandleVolley(float clock) {
+            int boltTotal = Empowered ? 0 : BoltCount;
+            int lanceTotal = Empowered ? LanceCount : 0;
+            while (boltsReleased < boltTotal && clock >= BoltReleaseClock(boltsReleased, boltTotal)) {
+                FireBolt(boltsReleased, boltTotal);
+                boltsReleased++;
+            }
+            while (lancesReleased < lanceTotal && clock >= LanceReleaseClock(lancesReleased, lanceTotal)) {
+                FireLance(lancesReleased, lanceTotal);
+                lancesReleased++;
+            }
+        }
+
+        /// <summary>光矢排程: 沿刀路 0.15~0.92 均布；终结拍两两成对同刻离手</summary>
+        private float BoltReleaseClock(int index, int total) {
+            int groups = IsFinisher ? Math.Max(1, total / 2) : total;
+            int group = IsFinisher ? index / 2 : index;
+            float t = groups <= 1 ? 0.5f : group / (float)(groups - 1);
+            return MathHelper.Lerp(0.15f, 0.92f, t);
+        }
+
+        /// <summary>光枪排程: 单枪落在刀路中段，双枪落在环路 1/4 与 3/4 两侧</summary>
+        private static float LanceReleaseClock(int index, int total) {
+            return total <= 1 ? 0.45f : MathHelper.Lerp(0.25f, 0.75f, index / (float)(total - 1));
+        }
+
+        /// <summary>刀路进度 clock 处的刀尖与刀角，按排程点解算，不受帧率与顿帧影响</summary>
+        private void PoseAt(float clock, out Vector2 tip, out float angle) {
+            if (IsEllipse) {
+                tip = EllipsePoint(LoopPhi(clock), out _, out _);
+                angle = (tip - Hand).ToRotation();
+                return;
+            }
+            angle = ArcStart + (swingDir * TotalSweep * clock);
+            tip = Hand + (angle.ToRotationVector2() * FullReach);
+        }
+
+        /// <summary>刀角 angle 处刃口切向相对瞄准线的偏角，正负跟扫掠方向</summary>
+        private float EdgeTangentOffset(float angle) {
+            return MathHelper.WrapAngle(angle + (swingDir * MathHelper.PiOver2) - baseAngle);
+        }
+
+        private void FireBolt(int index, int total) {
+            if (index == 0 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item12 with {
                     Pitch = 0.35f + (ComboStage * 0.08f),
                     Volume = 0.34f
@@ -489,19 +537,77 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
-            int count = BoltCount;
-            //散射收窄，弹群更聚拢
-            float spread = 0.1f + (count * 0.03f);
-            Vector2 origin = Vector2.Lerp(Hand, mainTip, 0.55f);
-            for (int i = 0; i < count; i++) {
-                float t = count == 1 ? 0.5f : i / (float)(count - 1);
-                float ang = baseAngle + MathHelper.Lerp(-spread, spread, t);
-                Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(9.6f, 11.4f);
-                Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), origin, vel,
-                    ModContent.ProjectileType<DivineSourceBoltProjectile>(),
-                    (int)(Projectile.damage * 0.42f), Projectile.knockBack * 0.35f, Owner.whoAmI,
-                    ai0: Empowered ? 1f : 0f);
+
+            PoseAt(BoltReleaseClock(index, total), out Vector2 tip, out float angle);
+            Vector2 aim = baseAngle.ToRotationVector2();
+            Vector2 origin;
+            Vector2 vel;
+            float weave = 0f;
+            float bloom = 0f;
+
+            switch (ComboStage) {
+                case 0:
+                case 1: {
+                    //快拍甩帘: 交替从刀尖与刀身中段离手，出射角由瞄准线向本刻刃口切线偏转，
+                    //随扫掠推进越甩越开；两拍扫向相反，弹帘便一拍偏左一拍偏右
+                    float along = index % 2 == 0 ? 0.96f : 0.66f;
+                    origin = Vector2.Lerp(Hand, tip, along);
+                    float ang = baseAngle + MathHelper.Clamp(EdgeTangentOffset(angle) * 0.3f, -0.7f, 0.7f);
+                    vel = ang.ToRotationVector2() * Main.rand.NextFloat(9.5f, 11.5f);
+                    weave = (index % 2 == 0 ? 1f : -1f) * 0.035f;
+                    break;
+                }
+                case 2: {
+                    //环斩绽放: 出射点均布在椭圆环上，沿环心径向缓缓抛出，绽放期一过被追踪一齐拽回目标
+                    origin = tip;
+                    vel = (tip - EllipseCenter).SafeNormalize(aim) * 4.6f;
+                    bloom = 12f;
+                    break;
+                }
+                default: {
+                    //终结螺旋: 同刻离手的一对以镜像航向出射并反号蛇行，绕瞄准线交织成螺旋护送剑气；
+                    //初始航向偏置取 幅度/角频率，蛇行正好围着中线对称摆
+                    origin = Vector2.Lerp(Hand, tip, 0.85f);
+                    float side = index % 2 == 0 ? 1f : -1f;
+                    float center = ((Hand + (aim * 520f)) - origin).ToRotation();
+                    const float amp = 0.11f;
+                    weave = side * amp;
+                    float ang = center - (side * (amp / DivineSourceBoltProjectile.WeaveFreq));
+                    vel = ang.ToRotationVector2() * 10.5f;
+                    break;
+                }
             }
+
+            Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), origin, vel,
+                ModContent.ProjectileType<DivineSourceBoltProjectile>(),
+                (int)(Projectile.damage * 0.42f), Projectile.knockBack * 0.35f, Owner.whoAmI,
+                ai0: 0f, ai1: weave, ai2: bloom);
+        }
+
+        private void FireLance(int index, int total) {
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
+
+            PoseAt(LanceReleaseClock(index, total), out Vector2 tip, out float angle);
+            Vector2 aim = baseAngle.ToRotationVector2();
+            Vector2 origin;
+            Vector2 dir;
+            if (IsEllipse) {
+                //双枪从环路两侧起飞，朝前方焦点汇聚成钳形
+                origin = tip;
+                dir = ((Hand + (aim * 420f)) - origin).SafeNormalize(aim);
+            }
+            else {
+                //快拍单枪自刀尖沿瞄准线掷出，带一点刃口切向
+                origin = Vector2.Lerp(Hand, tip, 0.9f);
+                dir = (baseAngle + MathHelper.Clamp(EdgeTangentOffset(angle) * 0.12f, -0.25f, 0.25f)).ToRotationVector2();
+            }
+
+            Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), origin, dir * 7.5f,
+                ModContent.ProjectileType<DivineSourceBoltProjectile>(),
+                (int)(Projectile.damage * 1.3f), Projectile.knockBack * 0.9f, Owner.whoAmI,
+                ai0: 1f);
         }
 
         private void FireWave() {
@@ -691,7 +797,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             //命中充能，重拍喂得更多
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Owner.GetModPlayer<DivineSourcePlayer>().AddCharge(IsEllipse ? 0.028f : 0.02f);
+                Owner.GetModPlayer<DivineSourcePlayer>().AddCharge(IsEllipse ? 0.045f : 0.032f);
             }
 
             ApplyImpactFeedback(target.Center);

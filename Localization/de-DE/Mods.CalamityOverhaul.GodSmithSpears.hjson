@@ -39,11 +39,7 @@ GsTitaniumTrident.Desc:
 	Umschmiedung: Jeder Stich erzeugt parallel über und unter der echten Klinge je einen Titansschatten-Phantomspeer
 	Die Phantomspeere fliegen ein kurzes Stück geradeaus und vergehen
 	'''
-GsGungnir.Desc:
-	'''
-	Umschmiedung: Drei-Takt-Göttergewalt, der dritte trägt Goldring-Nachklang;
-	Rechtsklick wirft den Schwur-Speer, er rastet Beute auf der Bahn ein, knickt durch und verfehlt nie
-	'''
+GsGungnir.Desc: Umschmiedung: Drei-Takt-Göttergewalt, der dritte trägt Goldring-Nachklang;
 GsChlorophytePartisan.Desc:
 	'''
 	Umschmiedung: Bleibt die Schneide am weitesten Punkt, sammeln sich Sporen an der Spitze

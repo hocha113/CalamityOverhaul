@@ -2,7 +2,6 @@ using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph.Projectiles;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -11,7 +10,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
     /// <summary>
     /// 彩虹枪重铸：小领域「棱彩领域」。经典不毁：原版驻留彩虹全程原样保留，只做增强层。<br/>
     /// 彩虹存续期间：弧上方 80px 带内本玩家弹幕 +8% 伤害（攻击方端结算）；
-    /// 彩虹头每 2s 滑出 1 枚微追踪彩虹脉冲；右键收回彩虹并返还一半蓝耗。<br/>
+    /// 彩虹头每 2s 滑出 1 枚微追踪彩虹脉冲。<br/>
     /// 弧位置链存 LocalState（各端自记，由弹幕位置同步驱动）
     /// </summary>
     internal class GsRainbowGun : GsMorphScheme
@@ -19,8 +18,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
         public override int TargetItemID => ItemID.RainbowGun;
 
         protected override string GsDescFallback =>
-            "Reforged: while the rainbow stands, your projectiles inside the band above the arc deal 8% more damage, and the arc sheds homing prism pulses.\nRight click recalls the rainbow and refunds half its mana";
-
+            "Reforged: while the rainbow stands, your projectiles inside the band above the arc deal 8% more damage, and the arc sheds homing prism pulses.";
         protected override float BaseDamageMult => 1.05f;
 
         /// <summary>弧位置链（每弹幕本地状态包，各端自记）</summary>
@@ -30,29 +28,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
         }
 
         private static bool IsRainbow(int type) => type == ProjectileID.RainbowFront || type == ProjectileID.RainbowBack;
-
-        /// <summary>右键：收回彩虹并返还一半蓝耗（owner 端 Kill 广播全端）</summary>
-        protected override void OnAltTrigger(Item item, Player player) {
-            bool recalled = false;
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile p = Main.projectile[i];
-                if (p.active && p.owner == player.whoAmI && IsRainbow(p.type)) {
-                    p.Kill();
-                    recalled = true;
-                }
-            }
-            if (!recalled) {
-                SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.7f, Volume = 0.5f }, player.Center);
-                return;
-            }
-            int refund = item.mana / 2;
-            player.statMana = Utils.Clamp(player.statMana + refund, 0, player.statManaMax2);
-            player.ManaEffect(refund);
-            SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.8f, Pitch = 0.4f }, player.Center);
-        }
-
-        /// <summary>本武器无蓄力形态，右键已改为瞬发收回</summary>
-        protected override void FireMorphB(Item item, Player player) { }
 
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
             if (!IsRainbow(proj.type)) {

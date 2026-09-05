@@ -1,7 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -11,9 +8,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
 {
     /// <summary>
     /// 寒霜九头蛇法杖「九头之怒」：<br/>
-    /// 充能分段 9：每 3 层长出一颗幻影副头（至多 2 颗，owner 端可见），
+    /// 充能分段 9：每 3 层长出一颗幻影副头（至多 2 颗），
     /// 副头随主头开火以 0.5× 齐射 ±8°；超频 300 帧「极寒吐息」= 每 8 帧追加一发锥形冰息；
-    /// 链内哨兵命中附霜（族基类统一实现）。副头只读塔朝向帧，不写其 ai
+    /// 链内哨兵命中附霜（族基类统一实现）。副头不写塔的 ai
     /// </summary>
     internal class GsFrostHydraStaff : GsSentryScheme
     {
@@ -22,11 +19,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override int FamilyIdx => GsSentryFamilyIdx.FrostHydra;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: every 3 charge grows a phantom head (up to 2) that echoes each shot\n" +
-            "Right-click when full to overdrive into a freezing breath; linked sentries inflict frostburn";
-
-        private static readonly Color FrostTint = new(150, 215, 250);
-
+            "Deploy doctrine: every 3 charge grows a phantom head (up to 2) that echoes each shot\nRight-click when full to overdrive into a freezing breath; linked sentries inflict frostburn";
         protected override SentryKit BuildKit() => new() {
             TowerTypes = [ProjectileID.FrostHydra],
             BoltTypes = [ProjectileID.FrostBlastFriendly],
@@ -79,42 +72,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
             Projectile.NewProjectile(SentrySource(tower), tower.Center + dir * 18f - new Vector2(0f, 8f), vel,
                 ModContent.ProjectileType<GsSentryBoltProj>(),
                 (int)(tower.damage * 0.4f), 1f, tower.owner, GsSentryBoltProj.StyleFrostBreath);
-        }
-
-        /// <summary>幻影副头：owner 端按充能分段绘制塔体重影（远端只看真弹幕齐射）</summary>
-        protected override void DrawTowerExtra(Projectile tower, SentryKit kit, GsSentryLocal st, Color lightColor) {
-            if (tower.owner != Main.myPlayer) {
-                return;
-            }
-            int heads = PhantomHeads(tower);
-            if (heads <= 0) {
-                return;
-            }
-            Main.instance.LoadProjectile(tower.type);
-            var tex = Terraria.GameContent.TextureAssets.Projectile[tower.type].Value;
-            Rectangle frame = tex.Frame(1, Main.projFrames[tower.type], 0, tower.frame);
-            SpriteEffects fx = tower.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            for (int i = 0; i < heads; i++) {
-                float side = i == 0 ? 1f : -1f;
-                //identity 相位微浮动，读作悬于主头侧后的冰魄
-                float bob = MathF.Sin(Main.GlobalTimeWrappedHourly * 2.2f + tower.identity * 0.7f + i * 2.1f) * 3f;
-                Vector2 offset = new(side * 24f, -14f + bob);
-                Color ghost = FrostTint * 0.38f;
-                ghost.A = 0;
-                Main.EntitySpriteDraw(tex, tower.Center + offset - Main.screenPosition, frame, ghost,
-                    tower.rotation, frame.Size() * 0.5f, tower.scale * 0.72f, fx, 0);
-            }
-        }
-
-        /// <summary>副头就位时的塔口寒雾（owner 端轻量提示）</summary>
-        protected override void TowerPostAI(Projectile tower, SentryKit kit, GsSentryLocal st) {
-            if (VaultUtils.isServer || tower.owner != Main.myPlayer
-                || PhantomHeads(tower) <= 0 || Main.GameUpdateCount % 30 != 0) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_DefFrostGlint>(
-                tower.Center + Main.rand.NextVector2Circular(20f, 12f),
-                new Vector2(0f, -0.4f), FrostTint, Main.rand.NextFloat(0.3f, 0.5f))?.Configure(Main.rand.Next(12, 20));
         }
     }
 }

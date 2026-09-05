@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     int count = BssDirector.BallCount(ctx.Phase);
                     int damage = BssDirector.ScaleProjectileDamage(npc, BssDirector.CactusBallDamage);
                     int type = ModContent.ProjectileType<BssCactusBallProj>();
-                    Vector2 mouth = npc.Center + new Vector2(throwDir * 24f, -10f);
+                    Vector2 mouth = npc.Center + new Vector2(throwDir * 24f, -10f) * npc.scale;
                     for (int i = 0; i < count; i++) {
                         //落点包夹玩家原位（不追瞄），抛物初速反解共用弹幕重力常数
                         float targetX = ctx.Target.Center.X + BracketOffsets[i];

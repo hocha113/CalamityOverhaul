@@ -9,23 +9,38 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
     /// <summary>
-    /// 金源科技光矢，挥砍时按拍数递增发射。
-    /// ai[0] 充能标记(0/1)，充能弹更大、更快、追踪更强、带金色
+    /// 金源科技光矢与光枪，随挥砍沿刀路分批离手。
+    /// ai[0] 档位(0 常态光矢 / 1 充能光枪，更大更重、可贯穿、金色)，
+    /// ai[1] 蛇行幅度(有符号，弧度/帧，0 直飞)，ai[2] 绽放帧数(先减速外散再追踪，0 走默认延迟)
     /// </summary>
     internal class DivineSourceBoltProjectile : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
+        private const int Lifetime = 150;
         private const int HomingDelay = 8;
-        /// <summary>常规判定箱边长，充能态按 SizeMul 首帧 Resize</summary>
+        /// <summary>常态判定箱边长，各档按 SizeMul 首帧 Resize</summary>
         private const int BaseHitbox = 20;
+        /// <summary>蛇行角频率，周期约 28 帧；发射端用它反推对偶弹的初始航向偏置</summary>
+        public const float WeaveFreq = 0.22f;
+        /// <summary>蛇行在该帧数内衰减归零，末段直扑目标</summary>
+        private const float WeaveDecayFrames = 55f;
+        /// <summary>绽放期每帧速度衰减</summary>
+        private const float BloomDrag = 0.9f;
 
-        private bool Empowered => Projectile.ai[0] > 0.5f;
-        /// <summary>充能态整体放大一档，判定与各绘制层同源</summary>
-        private float SizeMul => Empowered ? 1.5f : 1f;
-        private float MaxSpeed => Empowered ? 22f : 18f;
-        private float TurnRate => Empowered ? 0.13f : 0.06f;
-        private float SeekRange => Empowered ? 1100f : 800f;
+        private bool IsLance => Projectile.ai[0] > 0.5f;
+        private float Weave => Projectile.ai[1];
+        private int BloomFrames => (int)Projectile.ai[2];
+
+        /// <summary>整体尺寸，判定与各绘制层同源</summary>
+        private float SizeMul => IsLance ? 2.6f : 1.25f;
+        private float MaxSpeed => IsLance ? 27f : 22f;
+        private float Accel => IsLance ? 0.34f : 0.3f;
+        private float TurnRate => IsLance ? 0.075f : 0.13f;
+        private float SeekRange => IsLance ? 1300f : 1100f;
+
+        private int Age => Lifetime - Projectile.timeLeft;
+        private int HomingStart => BloomFrames > 0 ? BloomFrames : HomingDelay;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
@@ -39,31 +54,40 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 1;
-            Projectile.timeLeft = 150;
+            Projectile.timeLeft = Lifetime;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = true;
         }
 
         public override void AI() {
-            //首帧按充能标记撑大判定箱(Resize 保持中心)，ai[0] 在 SetDefaults 时还没写入
+            //首帧按档位定型，ai 在 SetDefaults 时还没写入；放在 AI 里各端都跑，出膛特效旁观者也看得到
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
-                if (Empowered) {
-                    int size = (int)(BaseHitbox * SizeMul);
-                    Projectile.Resize(size, size);
-                }
+                InitTier();
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //复利续力，飞行期速度持续攀升
+            int age = Age;
             float speed = Projectile.velocity.Length();
-            if (speed < MaxSpeed) {
-                Projectile.velocity *= 1.024f;
+            if (age < BloomFrames) {
+                //绽放期减速外散，等追踪把整圈一齐拽回
+                Projectile.velocity *= BloomDrag;
+            }
+            else if (speed < MaxSpeed) {
+                //复利加定量续力，越飞越快，慢启动的绽放弹也追得上
+                speed = Math.Min(MaxSpeed, (speed * 1.024f) + Accel);
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * speed;
             }
 
-            //轻微追踪，限转率朝最近目标弯
-            if (Projectile.timeLeft < 150 - HomingDelay) {
+            //蛇行: 航向按正弦摆动，幅度随时间衰减；对偶弹反号便绕瞄准线交织成螺旋
+            if (Weave != 0f && age < WeaveDecayFrames) {
+                float amp = Weave * (1f - (age / WeaveDecayFrames));
+                Projectile.velocity = Projectile.velocity.RotatedBy(amp * MathF.Sin(age * WeaveFreq));
+            }
+
+            //限转率朝最近目标弯，光枪更重、转得慢但看得远
+            if (age >= HomingStart) {
                 NPC target = FindTarget();
                 if (target != null) {
                     float aim = (target.Center - Projectile.Center).ToRotation();
@@ -72,33 +96,72 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 }
             }
 
-            if (!VaultUtils.isServer) {
-                Lighting.AddLight(Projectile.Center,
-                    (Empowered ? new Vector3(0.5f, 0.45f, 0.28f) : new Vector3(0.16f, 0.36f, 0.6f)));
-                //沿途甩数据屑，速度越快甩得越勤
-                int shedGap = speed > 15f ? 3 : 5;
-                if (Projectile.timeLeft % shedGap == 0) {
-                    bool gold = Empowered && Main.rand.NextBool(3);
-                    PRTLoader.NewParticle<PRT_CyberSquare>(
-                        Projectile.Center + Main.rand.NextVector2Circular(5f, 5f) * SizeMul,
-                        -Projectile.velocity * 0.06f,
-                        gold ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
-                        Main.rand.NextFloat(0.55f, 0.9f) * SizeMul)
-                        .Configure(gold ? DivineSourceBladeFX.AuricAmber : DivineSourceBladeFX.AzureBlue,
-                            Main.rand.Next(12, 18));
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            float sizeMul = SizeMul;
+            bool lance = IsLance;
+            Lighting.AddLight(Projectile.Center,
+                lance ? new Vector3(0.6f, 0.52f, 0.3f) : new Vector3(0.16f, 0.36f, 0.6f));
+
+            //沿途甩数据屑，速度越快甩得越勤
+            int shedGap = speed > 15f ? 3 : 5;
+            if (Projectile.timeLeft % shedGap == 0) {
+                bool gold = lance && Main.rand.NextBool(3);
+                PRTLoader.NewParticle<PRT_CyberSquare>(
+                    Projectile.Center + (Main.rand.NextVector2Circular(5f, 5f) * sizeMul),
+                    -Projectile.velocity * 0.06f,
+                    gold ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
+                    Main.rand.NextFloat(0.55f, 0.9f) * sizeMul)
+                    .Configure(gold ? DivineSourceBladeFX.AuricAmber : DivineSourceBladeFX.AzureBlue,
+                        Main.rand.Next(12, 18));
+            }
+            //光枪两粒金屑绕枪身螺旋伴飞，半径随枪体放大
+            if (lance && Projectile.timeLeft % 4 == 0) {
+                float orbit = Projectile.timeLeft * 0.55f;
+                for (int s = 0; s < 2; s++) {
+                    Vector2 at = Projectile.Center
+                        + ((Projectile.rotation + MathHelper.PiOver2).ToRotationVector2()
+                        * MathF.Sin(orbit + (s * MathHelper.Pi)) * 15f * sizeMul);
+                    PRTLoader.NewParticle<PRT_CyberSquare>(at, Projectile.velocity * 0.85f,
+                        DivineSourceBladeFX.AuricGold, Main.rand.NextFloat(0.4f, 0.6f) * sizeMul)
+                        .Configure(DivineSourceBladeFX.AuricAmber, Main.rand.Next(8, 13));
                 }
-                //充能期两粒金屑绕弹体螺旋伴飞，半径随弹体放大
-                if (Empowered && Projectile.timeLeft % 4 == 0) {
-                    float orbit = Projectile.timeLeft * 0.55f;
-                    for (int s = 0; s < 2; s++) {
-                        Vector2 at = Projectile.Center
-                            + (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2()
-                            * MathF.Sin(orbit + s * MathHelper.Pi) * 15f * SizeMul;
-                        PRTLoader.NewParticle<PRT_CyberSquare>(at, Projectile.velocity * 0.85f,
-                            DivineSourceBladeFX.AuricGold, Main.rand.NextFloat(0.4f, 0.6f) * SizeMul)
-                            .Configure(DivineSourceBladeFX.AuricAmber, Main.rand.Next(8, 13));
-                    }
+            }
+        }
+
+        private void InitTier() {
+            int size = (int)(BaseHitbox * SizeMul);
+            Projectile.Resize(size, size);
+            if (IsLance) {
+                //光枪贯穿三名敌人，同一目标只吃一次
+                Projectile.penetrate = 3;
+                Projectile.usesLocalNPCImmunity = true;
+                Projectile.localNPCHitCooldown = -1;
+            }
+
+            if (VaultUtils.isServer) {
+                return;
+            }
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            if (IsLance) {
+                //出膛金环炸开，沿枪身方向甩一撮金三角
+                PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
+                    DivineSourceBladeFX.AuricGold, 0f).Configure(0.04f, 0.55f, 12);
+                for (int i = 0; i < 5; i++) {
+                    PRTLoader.NewParticle<PRT_DivineTechTriangle>(Projectile.Center,
+                        forward.RotatedByRandom(0.5) * Main.rand.NextFloat(3f, 7f),
+                        DivineSourceBladeFX.AuricGold, Main.rand.NextFloat(0.07f, 0.12f))
+                        .Configure(DivineSourceBladeFX.AuricAmber, Main.rand.Next(14, 22));
                 }
+                return;
+            }
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center,
+                    forward.RotatedByRandom(0.7) * Main.rand.NextFloat(1.5f, 3.5f),
+                    DivineSourceBladeFX.CyanBright, Main.rand.NextFloat(0.4f, 0.7f))
+                    .Configure(DivineSourceBladeFX.AzureBlue, Main.rand.Next(10, 16));
             }
         }
 
@@ -119,18 +182,31 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //光矢命中喂一小口充能
-            Main.player[Projectile.owner].GetModPlayer<DivineSourcePlayer>().AddCharge(0.008f);
+            //命中喂充能，光枪一口更大
+            Main.player[Projectile.owner].GetModPlayer<DivineSourcePlayer>().AddCharge(IsLance ? 0.03f : 0.013f);
+            if (!IsLance) {
+                return;
+            }
+
+            //贯穿逐段衰减
+            Projectile.damage = (int)(Projectile.damage * 0.8f);
+            if (Projectile.owner == Main.myPlayer) {
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), target.Center, Vector2.Zero,
+                    ModContent.ProjectileType<DivineSourceHitFXProjectile>(), 0, 0f, Projectile.owner,
+                    ai0: 0.95f, ai1: 1f);
+            }
         }
 
         public override void OnKill(int timeLeft) {
             if (VaultUtils.isServer) {
                 return;
             }
+            bool lance = IsLance;
             //余痕比弹体活得久
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-            for (int i = 0; i < 4; i++) {
-                bool gold = Empowered && Main.rand.NextBool(2);
+            int shards = lance ? 7 : 4;
+            for (int i = 0; i < shards; i++) {
+                bool gold = lance && Main.rand.NextBool(2);
                 PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center,
                     dir.RotatedByRandom(1.1f) * Main.rand.NextFloat(1.5f, 4f),
                     gold ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
@@ -138,16 +214,17 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     .Configure(gold ? DivineSourceBladeFX.AuricAmber : DivineSourceBladeFX.AzureBlue,
                         Main.rand.Next(14, 22));
             }
-            for (int i = 0; i < 2; i++) {
+            int tris = lance ? 4 : 2;
+            for (int i = 0; i < tris; i++) {
                 PRTLoader.NewParticle<PRT_DivineTechTriangle>(Projectile.Center,
                     dir.RotatedByRandom(0.8f) * Main.rand.NextFloat(2f, 5f),
-                    Empowered ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
+                    lance ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright,
                     Main.rand.NextFloat(0.06f, 0.11f))
                     .Configure(DivineSourceBladeFX.AzureBlue, Main.rand.Next(16, 24));
             }
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                Empowered ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright, 0f)
-                .Configure(Empowered ? 0.05f : 0.03f, Empowered ? 0.42f : 0.28f, Empowered ? 14 : 10);
+                lance ? DivineSourceBladeFX.AuricGold : DivineSourceBladeFX.CyanBright, 0f)
+                .Configure(lance ? 0.06f : 0.03f, lance ? 0.7f : 0.3f, lance ? 16 : 10);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -160,12 +237,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float speed = Projectile.velocity.Length();
             float sizeMul = SizeMul;
+            bool lance = IsLance;
             float bodyLen = MathHelper.Clamp(speed * 5.1f, 51f, 111f) * sizeMul;
-            Color core = Empowered ? DivineSourceBladeFX.AuricCream : DivineSourceBladeFX.TechWhite;
-            Color body = Empowered
+            Color core = lance ? DivineSourceBladeFX.AuricCream : DivineSourceBladeFX.TechWhite;
+            Color body = lance
                 ? DivineSourceBladeFX.Blend(DivineSourceBladeFX.CyanBright, DivineSourceBladeFX.AuricGold, 0.55f)
                 : DivineSourceBladeFX.CyanBright;
-            Color halo = Empowered
+            Color halo = lance
                 ? DivineSourceBladeFX.Blend(DivineSourceBladeFX.AzureBlue, DivineSourceBladeFX.AuricAmber, 0.4f)
                 : DivineSourceBladeFX.AzureBlue;
 
@@ -178,21 +256,21 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 if (oldPos == Vector2.Zero) {
                     continue;
                 }
-                Vector2 oldCenter = oldPos + Projectile.Size * 0.5f - Main.screenPosition;
-                float t = 1f - i / 10f;
+                Vector2 oldCenter = oldPos + (Projectile.Size * 0.5f) - Main.screenPosition;
+                float t = 1f - (i / 10f);
                 Color ghost = halo * (0.32f * t);
                 ghost.A = 0;
                 Main.EntitySpriteDraw(shot, oldCenter, null, ghost, Projectile.rotation,
                     shot.Size() * 0.5f,
-                    new Vector2(bodyLen * (0.5f + 0.4f * t) / shot.Width, 13f * t * sizeMul / shot.Height),
+                    new Vector2(bodyLen * (0.5f + (0.4f * t)) / shot.Width, 13f * t * sizeMul / shot.Height),
                     SpriteEffects.None, 0);
             }
 
-            //底辉
+            //底辉，光枪按枪身比例收一点免得糊成球
             Color haloCol = halo * 0.5f;
             haloCol.A = 0;
             Main.EntitySpriteDraw(glow, drawPos, null, haloCol, 0f,
-                glow.Size() * 0.5f, 0.75f * sizeMul, SpriteEffects.None, 0);
+                glow.Size() * 0.5f, (lance ? 0.6f : 0.75f) * sizeMul, SpriteEffects.None, 0);
 
             //主体与白热芯
             Color bodyCol = body * 0.95f;
@@ -206,21 +284,30 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 shot.Size() * 0.5f, new Vector2(bodyLen * 0.62f / shot.Width, 9f * sizeMul / shot.Height),
                 SpriteEffects.None, 0);
 
-            //充能期弹头挂一枚旋转星芒
-            if (Empowered) {
-                Texture2D star = DivineSourceBladeFX.BlankStar;
-                if (star != null) {
-                    float time = (float)Main.timeForVisualEffects * 0.05f;
-                    Vector2 headPos = drawPos + Projectile.velocity.SafeNormalize(Vector2.UnitX) * (bodyLen * 0.32f);
-                    Color starCol = DivineSourceBladeFX.AuricGold * 0.6f;
-                    starCol.A = 0;
-                    Main.EntitySpriteDraw(star, headPos, null, starCol, time * 2.2f,
-                        star.Size() * 0.5f, 0.1f * sizeMul, SpriteEffects.None, 0);
-                    Color starCore = DivineSourceBladeFX.AuricCream * 0.45f;
-                    starCore.A = 0;
-                    Main.EntitySpriteDraw(star, headPos, null, starCore, -time * 1.5f,
-                        star.Size() * 0.5f, 0.06f * sizeMul, SpriteEffects.None, 0);
-                }
+            if (!lance) {
+                return false;
+            }
+
+            //枪脊: 一道更长更细的奶金亮线前后探出枪身，读作矛而非胖弹
+            Color spine = DivineSourceBladeFX.AuricCream * 0.7f;
+            spine.A = 0;
+            Main.EntitySpriteDraw(shot, drawPos, null, spine, Projectile.rotation,
+                shot.Size() * 0.5f, new Vector2(bodyLen * 1.35f / shot.Width, 5f / shot.Height),
+                SpriteEffects.None, 0);
+
+            //枪头双层反向旋转星芒
+            Texture2D star = DivineSourceBladeFX.BlankStar;
+            if (star != null) {
+                float time = (float)Main.timeForVisualEffects * 0.05f;
+                Vector2 headPos = drawPos + (Projectile.velocity.SafeNormalize(Vector2.UnitX) * (bodyLen * 0.32f));
+                Color starCol = DivineSourceBladeFX.AuricGold * 0.6f;
+                starCol.A = 0;
+                Main.EntitySpriteDraw(star, headPos, null, starCol, time * 2.2f,
+                    star.Size() * 0.5f, 0.1f * sizeMul, SpriteEffects.None, 0);
+                Color starCore = DivineSourceBladeFX.AuricCream * 0.45f;
+                starCore.A = 0;
+                Main.EntitySpriteDraw(star, headPos, null, starCore, (-time * 1.5f) + MathHelper.PiOver4,
+                    star.Size() * 0.5f, 0.06f * sizeMul, SpriteEffects.None, 0);
             }
             return false;
         }

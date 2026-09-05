@@ -1,9 +1,7 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,11 +13,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
     /// </summary>
     internal class GsWhipFirecrackerChainProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.InfernoFriendlyBlast;
 
-        private static readonly Color FireBright = new(255, 224, 150);
-        private static readonly Color FireMain = new(255, 110, 40);
-        private static readonly Color FireDeep = new(150, 44, 20);
+        /// <summary>引信期的落点标记尺寸（px）</summary>
+        private const float FuseMarkPx = 24f;
 
         private const int BoomWindow = 4;
         private const int LifeFrames = 52;
@@ -49,54 +46,30 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
             => target.AddBuff(BuffID.OnFire, 180);
 
         public override void AI() {
-            int elapsed = Elapsed;
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //引信期：滋滋火花
-            if (elapsed < Delay && Main.GameUpdateCount % 4 == 0) {
-                PRTLoader.NewParticle<PRT_Spark>(
-                    Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.6f, 1.4f),
-                    FireBright, Main.rand.NextFloat(0.2f, 0.32f))?.Configure(false, Main.rand.Next(8, 12));
-            }
-            //起爆帧：全端主音 + 火团迸溅
-            if (elapsed == Delay) {
+            //起爆帧：全端主音
+            if (Elapsed == Delay && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.85f, Pitch = 0.15f }, Projectile.Center);
-                PRTLoader.NewParticle<PRT_MechExplosion>(Projectile.Center, Vector2.Zero,
-                    FireMain, Main.rand.NextFloat(0.7f, 0.9f));
-                for (int i = 0; i < 6; i++) {
-                    PRTLoader.NewParticle<PRT_HellFire>(Projectile.Center,
-                        Main.rand.NextVector2Circular(5f, 5f) - Vector2.UnitY * 1.5f,
-                        FireMain, Main.rand.NextFloat(0.5f, 0.9f));
-                }
             }
         }
 
+        /// <summary>范围提示：引信期画一枚小落点标记，起爆后原版贴图按判定框缩放画一笔（lightColor 着色）并随余帧渐隐</summary>
         public override bool PreDraw(ref Color lightColor) {
             int elapsed = Elapsed;
-            Texture2D flash = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Flashimpact")?.Value;
-            if (flash == null) {
-                return false;
-            }
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            float seed = Projectile.identity * 0.83f;
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float scale;
+            float fade = 1f;
             if (elapsed < Delay) {
-                //引信读数：微光呼吸渐快
-                float urgency = elapsed / MathF.Max(1f, Delay);
-                float flicker = 0.5f + 0.5f * MathF.Sin(elapsed * (0.5f + urgency) + seed);
-                Main.EntitySpriteDraw(flash, pos, null, FireMain with { A = 0 } * (0.3f * flicker),
-                    seed, flash.Size() * 0.5f, 0.1f + 0.05f * urgency, SpriteEffects.None, 0);
-                return false;
+                scale = FuseMarkPx / tex.Width;
             }
-            //爆闪与余晖
-            float t = MathHelper.Clamp((elapsed - Delay) / (float)(LifeFrames - Delay), 0f, 1f);
-            float fade = 1f - t;
-            float grow = 0.28f + 0.5f * (1f - fade * fade);
-            Main.EntitySpriteDraw(flash, pos, null, FireBright with { A = 0 } * (0.85f * fade),
-                seed + t * 0.6f, flash.Size() * 0.5f, grow, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(flash, pos, null, FireDeep with { A = 0 } * (0.5f * fade),
-                -seed, flash.Size() * 0.5f, grow * 1.4f, SpriteEffects.None, 0);
+            else {
+                scale = Projectile.width / (float)tex.Width;
+                fade = 1f - MathHelper.Clamp((elapsed - Delay) / (float)(LifeFrames - Delay), 0f, 1f);
+                if (fade <= 0.01f) {
+                    return false;
+                }
+            }
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, 0f,
+                tex.Size() * 0.5f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

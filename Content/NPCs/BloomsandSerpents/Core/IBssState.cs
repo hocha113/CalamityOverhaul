@@ -31,28 +31,26 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         Death = 10,
         /// <summary>沙面掠冲</summary>
         SandDash = 11,
-        /// <summary>天游：空中长时间蛇形游荡 + 俯冲砸地</summary>
-        SkyWeave = 12,
-        /// <summary>盘天环猎：绕玩家成环收紧 + 穿心突刺</summary>
-        CoilOrbit = 13,
-        /// <summary>沙爆漩涡冲刺：盘旋搓涡 + 弃涡爆冲，漩涡在身后爆</summary>
-        VortexDash = 14,
-        /// <summary>回环沙瀑：天上画正圆泻沙成帘 + 离心俯冲</summary>
-        LoopCascade = 15,
+        /// <summary>蹲伏扑击：八腿蹲紧 → 预警线 → 抛物跃扑 → 落地沙爆</summary>
+        Pounce = 12,
+        /// <summary>鳌足扬沙：双螯掘沙过顶抡出高弧沙雨（对空答案）</summary>
+        ClawFling = 13,
+        /// <summary>翻身掀浪：潜沙翻身掀起沿地行进的矮沙浪（跳）</summary>
+        SandSurge = 14,
+        /// <summary>沙鳍追猎：沙下鳍浪追踪 → 隆包 → 竖直咬起</summary>
+        FinHunt = 15,
         /// <summary>沙泉行军：立起砸地 + 冲击波沿地行军喷发</summary>
         GeyserMarch = 16,
-        /// <summary>回马甩尾：擦身而过 + 急转离心甩针 + 回马枪连段</summary>
-        TailSweep = 17,
-        /// <summary>沙柱突刺：跺地点名，地刺式沙柱逐根钻出（柱滞留为后续燃料）</summary>
-        PillarSpike = 18,
-        /// <summary>沙柱腾跃：盘柱螺旋而上 + 柱顶盘紧 + 蹬柱爆冲</summary>
-        PillarVault = 19,
-        /// <summary>沙柱爆震：后仰怒吼声波环，全柱裂纹预闪后错拍炸沙球环</summary>
-        PillarBurst = 20,
-        /// <summary>挥掷沙球雨：鳌足交替过顶抖出高弧沙球（距离带半锚定远程压制）</summary>
-        ClawRain = 21,
-        /// <summary>升空祭舞沙尘爆：冲天悬停三拍编舞，环玩家召唤沙尘暴（复用 657）</summary>
-        StormRite = 22,
+        /// <summary>旋沙龙卷：怒吼拧出顺风漂移的沙柱（P2 起）</summary>
+        DustDevil = 17,
+        /// <summary>巨钳合击：张螯 → 前扑 → 钳合（贴脸惩罚）</summary>
+        PincerSnap = 18,
+        /// <summary>横风花刃：上风侧怒吼，花瓣顺风成车道横飞（P2 起）</summary>
+        WindBlade = 19,
+        /// <summary>流沙陷阱：潜到脚下拉沙 → 破土喷发（P2 起）</summary>
+        Quicksand = 20,
+        /// <summary>盘身刺阵：绕玩家盘成巨环，红花沿辐条齐射圈心（P3 压轴）</summary>
+        CoilRing = 21,
     }
 
     /// <summary>荒花沙蟒状态接口</summary>
@@ -147,8 +145,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             if (!ctx.Target.Alives() || npc.velocity.Length() <= speedGate) {
                 return;
             }
-            Vector2 mouth = BssClawScript.MouthPos(npc.Center, npc.rotation);
-            if (Vector2.Distance(mouth, ctx.Target.Center) < 190f) {
+            Vector2 mouth = BssClawScript.MouthPos(npc.Center, npc.rotation, npc.scale);
+            if (Vector2.Distance(mouth, ctx.Target.Center) < 190f * npc.scale) {
                 ctx.ClawCommand = BssClawCommand.Snatch;
                 ctx.ClawAim = ctx.Target.Center;
                 DeclareJaw(ctx, BssJawCommand.Bite, 0f);

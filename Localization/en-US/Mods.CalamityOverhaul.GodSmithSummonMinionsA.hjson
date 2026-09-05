@@ -2,7 +2,11 @@ GsSlimeStaff.Desc: Gel Legion: slimes roll in escort formation; two different sl
 GsFinchStaff.Desc: Finch Phalanx: finches fly a V formation; after the first strike, follow-up pecks on that foe gain stacking power, and the rally order forms a wheeling flock
 GsAbigailsFlower.Desc: Companion Soul: Abigail's strikes leave a soothing soul-light ring that empowers your minions inside it; under the assault order she focuses her wrath on the marked foe
 GsFlinxStaff.Desc: Snowball Avalanche: flinxes bound in a relay column; the fourth tackle on one foe within the window lands half again harder and frostburns, and the rally order piles a snow drift
-GsHornetStaff.Desc: Hive Firenet: hornets hover in a honeycomb lattice; three stingers into one foe burst a venom pod that lingers as poison mist, and the assault order quickens every stinger
+GsHornetStaff.Desc:
+	'''
+	Hive Firenet: hornets climb, dive through their prey and pull up, spitting a short burst of stingers at the bottom of the dive
+	The assault order makes them dive far more often with a longer burst; three stingers into one foe burst a venom pod
+	'''
 GsVampireFrogStaff.Desc: Blood Frog Feast: frogs flank you in twin files; their bites may spill a marrow bead that flies back to heal you, and the blood moon whips them into a crimson frenzy
 GsImpStaff.Desc: Hellfire Battery: imps hold a rear artillery line; under the assault order, three fireballs into one foe raise a pyre column beneath it
 GsSpiderStaff.Desc: Web Hunt: three spider breeds hold a triangle watch; concerted bites truss the prey in a binding web that deepens every wound, and every bite now envenoms

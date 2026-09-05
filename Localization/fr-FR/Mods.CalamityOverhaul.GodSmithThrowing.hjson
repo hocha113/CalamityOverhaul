@@ -43,20 +43,16 @@ GsSpikyBall.Desc:
 	Reforgé : une boule à piques qui expire sur le terrain rentre directement dans le sac
 	Un ennemi qui marche sur au moins trois de vos boules déclenche une explosion en chaîne, 50% chacune, une seule fois par boule
 	'''
-GsGrenade.Desc:
-	'''
-	Reforgé : toucher trois ennemis ou plus d'une même explosion rend une grenade ; dans la fenêtre de combo, la mèche brûle 20% plus vite
-	Clic droit : lancer roulé, mèche réduite à 1.2 s
-	'''
+GsGrenade.Desc: Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window
 GsStickyGrenade.Desc:
 	'''
 	Reforgé : l'explosion grave 3 s de brûlure corrosive ; un ennemi marqué subit +30% de votre prochaine explosion, et c'est un critique assuré
-	Toucher trois ennemis rend une grenade ; clic droit pour un lancer roulé
+	Toucher trois ennemis rend une grenade
 	'''
 GsBouncyGrenade.Desc:
 	'''
 	Reforgé : chaque rebond charge l'explosion, +12%, jusqu'à trois charges
-	Une grenade qui a rebondi trois fois se rend entière si l'explosion touche un ennemi ; clic droit pour un lancer roulé
+	Une grenade qui a rebondi trois fois se rend entière si l'explosion touche un ennemi
 	'''
 GsBeenade.Desc:
 	'''

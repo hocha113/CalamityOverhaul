@@ -46,12 +46,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories._Benchmark
                 return;
             }
             player.GetModPlayer<SharkToothRendPlayer>().AddStack();
-            //撕咬血雾，全用原版 dust（命中钩子只在攻击方端跑，无需 isServer 守门）
-            for (int i = 0; i < 4; i++) {
-                Dust dust = Dust.NewDustPerfect(target.Center, DustID.Blood,
-                    Main.rand.NextVector2Circular(3f, 3f), 100, default, Main.rand.NextFloat(1f, 1.5f));
-                dust.noGravity = Main.rand.NextBool();
-            }
         }
     }
 

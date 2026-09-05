@@ -1,6 +1,6 @@
 // ============================================================================
 //CultistVeil.fx 仪式帷幕全屏后效
-//向心捏聚色散 + 外域压暗 + 符环带(24θ整数谐波) + 元素染色 + 白闪 + 死亡去饱和
+//向心捏聚色散 + 外域压暗 + 全食整屏压暗(uDim) + 符环带(24θ整数谐波) + 元素染色 + 白闪 + 死亡去饱和
 //直线算术 + 普通tex2D（FNA3D法则）；噪声采样走笛卡尔uv
 // ============================================================================
 
@@ -18,6 +18,7 @@ float3 uTint;       //元素主色(0~1)
 float uFlash;       //0~1 白闪
 float uBreak;       //0~1 去饱和（死亡演出）
 float uBandRadius;  //符环半径（屏高归一）
+float uDim;         //0~1 全食整屏压暗(均匀吃亮度,符环/极光等加光层仍照常浮出)
 
 float4 VeilPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -39,6 +40,11 @@ float4 VeilPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     //外域压暗（舞台追光感）
     float dark = smoothstep(uBandRadius * 0.85, uBandRadius * 2.4, r) * (0.44 * uIntensity);
     col *= 1.0 - dark;
+
+    //全食天黑:整屏沉暗略偏冷(食相下的天光是青灰的);亮源按亮度部分豁免,暗下去的是世界不是光
+    float lumD = dot(col, float3(0.30, 0.59, 0.11));
+    float keep = smoothstep(0.45, 1.0, lumD) * 0.7;
+    col *= 1.0 - uDim * (1.0 - keep) * float3(1.0, 0.985, 0.94);
 
     //死亡去饱和
     float lum = dot(col, float3(0.30, 0.59, 0.11));

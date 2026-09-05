@@ -1,7 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -18,23 +15,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override int TargetItemID => ItemID.ThunderStaff;
 
         protected override string GsDescFallback =>
-            "Reforged: on-beat bolts zigzag like true lightning and may fork at each bend, resonance quickens the trigger;" +
-            "\nat full resonance the next hit brands the target and calls down a thunder pillar";
-
+            "Reforged: on-beat bolts zigzag like true lightning and may fork at each bend, resonance quickens the trigger;\nat full resonance the next hit brands the target and calls down a thunder pillar";
         protected override float BaseDamageMult => 1.10f;
-
-        protected override Color ChantColor => new(150, 190, 255);
 
         /// <summary>形态：折点分叉的小电弧</summary>
         private const float FormArc = 10f;
-        /// <summary>形态：落雷印（倒计时载体，预告读数在 GsProjPreDraw）</summary>
+        /// <summary>形态：落雷印（不可见的倒计时载体）</summary>
         private const float FormMark = 11f;
         /// <summary>形态：天降雷柱</summary>
         private const float FormPillar = 12f;
-        /// <summary>雷印倒计时（帧，0.4s）：timeLeft 与预告爬升进度同源</summary>
+        /// <summary>雷印倒计时（帧，0.4s）</summary>
         private const int MarkLifeTicks = 24;
-
-        private static readonly Color VoltWhite = new(226, 240, 255);
 
         /// <summary>正拍折线状态（端本地：折向由 identity 哈希决定，各端一致）</summary>
         private class ZapState
@@ -57,7 +48,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 proj.scale *= 0.7f;
             }
             else if (router.MarkData == FormMark) {
-                //雷印：倒计时载体，不判定不移动（可见层在 GsProjPreDraw）
+                //雷印：倒计时载体，不判定不移动
                 proj.timeLeft = MarkLifeTicks;
                 proj.friendly = false;
             }
@@ -70,39 +61,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         }
 
         public override bool GsProjPreAI(Projectile proj, GodSmithProjRouter router) {
-            //雷印全接管：定身倒数，各端一致静止
+            //雷印全接管：定身倒数，各端一致静止且不可见
             if (router.MarkData == FormMark) {
                 proj.velocity = Vector2.Zero;
                 proj.alpha = 255;
                 return false;
             }
             return true;
-        }
-
-        public override bool? GsProjPreDraw(Projectile proj, ref Color lightColor, GodSmithProjRouter router) {
-            //雷印预告可见层：落点星芒交叉缓对旋 + 呼吸，0.4s 从暗到亮爬升至落雷（预告即倒计时）
-            if (router.MarkData != FormMark) {
-                return null;
-            }
-            Texture2D star = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture_White")?.Value;
-            if (star == null) {
-                return false;
-            }
-            float t = 1f - proj.timeLeft / (float)MarkLifeTicks;
-            float ramp = 0.25f + 0.75f * t;
-            float breath = 1f + 0.1f * MathF.Sin(Main.GlobalTimeWrappedHourly * 34f + proj.identity * 0.7f);
-            float spin = Main.GlobalTimeWrappedHourly * 2.2f + proj.identity * 0.53f;
-            //实体批为预乘 AlphaBlend：A=0 是合法加色技，黑底星贴图不糊黑框
-            Color glow = ChantColor with { A = 0 };
-            Color core = VoltWhite with { A = 0 };
-            Vector2 pos = proj.Center - Main.screenPosition;
-            Vector2 origin = star.Size() * 0.5f;
-            float scale = (0.16f + 0.10f * t) * breath;
-            Main.spriteBatch.Draw(star, pos, null, glow * (0.75f * ramp), spin,
-                origin, scale * 1.2f, SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(star, pos, null, core * ramp, -spin * 0.6f + MathHelper.PiOver4,
-                origin, scale * 0.8f, SpriteEffects.None, 0f);
-            return false;
         }
 
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
@@ -122,35 +87,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                         Projectile.NewProjectile(proj.GetSource_FromThis(), proj.Center, vel,
                             proj.type, Math.Max(1, (int)(proj.damage * 0.5f)), proj.knockBack * 0.4f, proj.owner);
                     }
-                    if (!VaultUtils.isServer) {
-                        PRTLoader.NewParticle<PRT_GraniteVolt>(proj.Center, Vector2.Zero,
-                            VoltWhite, Main.rand.NextFloat(0.5f, 0.8f));
-                    }
                 }
-            }
-
-            if (VaultUtils.isServer || router.MarkData == FormMark) {
-                //雷印不发飞行相粒子：预告读数由 GsProjPreDraw 的星芒交叉承载
-                return;
-            }
-            //飞行相：稀疏电花 + 电蓝光
-            Lighting.AddLight(proj.Center, ChantColor.ToVector3() * 0.3f);
-            if (proj.timeLeft % 4 == 0) {
-                PRTLoader.NewParticle<PRT_Spark>(proj.Center + Main.rand.NextVector2Circular(3f, 3f),
-                    -proj.velocity * 0.06f + Main.rand.NextVector2Circular(0.6f, 0.6f),
-                    Main.rand.NextBool(3) ? VoltWhite : ChantColor,
-                    Main.rand.NextFloat(0.2f, 0.34f))?.Configure(false, Main.rand.Next(6, 12));
             }
         }
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            if (!VaultUtils.isServer) {
-                //命中相：电弧迸裂
-                for (int i = 0; i < 5; i++) {
-                    PRTLoader.NewParticle<PRT_GraniteVolt>(target.Center + Main.rand.NextVector2Circular(6f, 6f),
-                        Main.rand.NextVector2Circular(2f, 2f), ChantColor, Main.rand.NextFloat(0.4f, 0.7f));
-                }
-            }
             //落雷印：强化弹命中处挂 0.4s 雷印，雷柱伤害此刻烘焙进 MarkData2（防换武器后错算）
             if (proj.IsOwnedByLocalPlayer() && router.MarkData == FormEmpower) {
                 QueueForm(Main.player[proj.owner], FormMark, proj.damage * 1.8f);
@@ -160,27 +101,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         }
 
         public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            if (router.MarkData == FormMark) {
-                //雷印倒数完毕：owner 生成雷柱弹（判定），各端自绘天雷视觉
+            //雷印倒数完毕：owner 生成自上而下的雷柱弹
+            if (router.MarkData == FormMark && proj.IsOwnedByLocalPlayer()) {
                 Vector2 strikeFrom = proj.Center - Vector2.UnitY * 320f;
-                if (proj.IsOwnedByLocalPlayer()) {
-                    QueueForm(Main.player[proj.owner], FormPillar);
-                    Projectile.NewProjectile(proj.GetSource_FromThis(), strikeFrom, Vector2.UnitY * 26f,
-                        proj.type, Math.Max(1, (int)router.MarkData2), 4f, proj.owner);
-                }
-                if (!VaultUtils.isServer) {
-                    PRTLoader.NewParticle<PRT_SkyBolt>(proj.Center, Vector2.Zero, ChantColor, 1f)
-                        ?.Configure(strikeFrom, proj.Center, 24);
-                }
-                return;
-            }
-            //余痕相：弹亡处残电一两闪
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 2; i++) {
-                PRTLoader.NewParticle<PRT_GraniteVolt>(proj.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    Vector2.Zero, i == 0 ? VoltWhite : ChantColor, Main.rand.NextFloat(0.35f, 0.55f));
+                QueueForm(Main.player[proj.owner], FormPillar);
+                Projectile.NewProjectile(proj.GetSource_FromThis(), strikeFrom, Vector2.UnitY * 26f,
+                    proj.type, Math.Max(1, (int)router.MarkData2), 4f, proj.owner);
             }
         }
     }

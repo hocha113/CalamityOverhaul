@@ -215,12 +215,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
 
         /// <summary>
         /// 通用折线条带(TechStarLine/TechUmbra):屏幕系点列+逐点半宽/透明度,u 沿线 0~1<br/>
-        /// 调用方须不在 SpriteBatch 批内;闭环时点列首尾重复,uDash 取整数保跨缝连续
+        /// 调用方须不在 SpriteBatch 批内;闭环时点列首尾重复,uDash 取整数保跨缝连续;<br/>
+        /// uAspect 供 TechUmbra 折算恒定像素宽(末端半宽/根部半宽),其余技术不读
         /// </summary>
         public static void DrawTechniqueStrip(string technique, IReadOnlyList<Vector2> screenPts,
             IReadOnlyList<float> halfWidths, IReadOnlyList<float> alphas,
             Color deep, Color mid, Color bright,
-            float uProgress, float uDash, float uCharge, float seed, float uAlpha = 1f) {
+            float uProgress, float uDash, float uCharge, float seed, float uAlpha = 1f, float uAspect = 1f) {
             Effect fx = EffectLoader.CultistOrrery?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             int n = screenPts.Count;
@@ -259,6 +260,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             fx.Parameters["uSeed"]?.SetValue(seed);
             fx.Parameters["uArm"]?.SetValue(0f);
             fx.Parameters["uEnv"]?.SetValue(0f);
+            fx.Parameters["uAspect"]?.SetValue(uAspect);
 
             GraphicsDevice gd = Main.instance.GraphicsDevice;
             gd.BlendState = BlendState.AlphaBlend;

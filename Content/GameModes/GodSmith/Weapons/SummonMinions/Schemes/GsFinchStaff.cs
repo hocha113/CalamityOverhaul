@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,7 +8,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 {
     /// <summary>
     /// 雀鸟法杖「群雀阵」：头顶 V 字雁行；
-    /// 协同「俯冲链」= 首只命中后 60 帧内其余命中逐层 +15%（至多 3 层，带俯冲速度线）；
+    /// 协同「俯冲链」= 首只命中后 60 帧内其余命中逐层 +15%（至多 3 层）；
     /// 集结 = 旗点盘旋鸟群（0.35× 啄击圈）。原版带杖自动召一只的特性不碰
     /// </summary>
     internal class GsFinchStaff : GsMinionScheme
@@ -21,7 +19,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Finch Phalanx: finches fly a V formation; after the first strike, follow-up pecks on that foe gain stacking power, and the rally order forms a wheeling flock";
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Vee,
             Radius = 62f,
@@ -51,19 +48,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
         }
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit,
-            int damageDone, GodSmithProjRouter router) {
-            int count = tally.Bump(target, proj, 60, out _);
-            if (count < 2 || VaultUtils.isServer) {
-                return;
-            }
-            //俯冲链反馈：沿来向拉出速度线（≤3 粒）
-            Vector2 dir = proj.velocity.SafeNormalize(Vector2.UnitX);
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Light>(
-                    target.Center - dir * (14f + i * 10f),
-                    dir * Main.rand.NextFloat(3f, 5f),
-                    new Color(255, 208, 128), Main.rand.NextFloat(0.1f, 0.16f))?.Configure(10, 0.8f);
-            }
-        }
+            int damageDone, GodSmithProjRouter router)
+            => tally.Bump(target, proj, 60, out _);
     }
 }

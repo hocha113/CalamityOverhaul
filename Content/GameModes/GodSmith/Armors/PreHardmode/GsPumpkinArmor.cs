@@ -1,8 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -27,11 +24,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
         protected override string EndowLineFallback =>
             "Gourd Harvest: strikes build vines; at 6 stacks the next strike plants a blast gourd that ripens in 3s (strike the victim again to force it), bursting into three spinning slices";
 
-        //南瓜橙 + 藤绿色板
+        //南瓜橙色板（基类抽象色板签名仍需实现）
         internal static readonly Color PumpkinGlow = new(255, 222, 112);
         internal static readonly Color PumpkinOrange = new(255, 150, 44);
-        internal static readonly Color PumpkinDeep = new(150, 70, 22);
-        internal static readonly Color VineGreen = new(112, 182, 62);
 
         protected override int FullCharge => 6;
 
@@ -97,24 +92,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
     }
 
     /// <summary>
-    /// 爆瓜：种在敌人脚下的诡异圆瓜，藤蔓固定、瓜身随成熟膨胀发烫；
-    /// 三秒熟透自爆（ai[0] 置 999 即被催熟），炸开三瓣飞旋瓜瓣与一圈瓜瓤
+    /// 爆瓜：种在敌人脚下的诡异圆瓜；三秒熟透自爆（ai[0] 置 999 即被催熟），
+    /// 炸开三瓣飞旋瓜瓣。借原版南瓜灯弹贴图默认绘制
     /// </summary>
     internal class GsPumpkinBombProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.JackOLantern;
 
         /// <summary>生长计时；999=被催熟立爆</summary>
         private ref float Life => ref Projectile.ai[0];
 
         private ref float VictimIndex => ref Projectile.ai[1];
 
-        private float Seed => Projectile.identity * 0.8311f % 3.83f;
-
         /// <summary>熟透帧数</summary>
         private const int RipeFrames = 180;
-
-        private float Ripeness => MathHelper.Clamp(Life / RipeFrames, 0f, 1f);
 
         public override void SetDefaults() {
             Projectile.width = 24;
@@ -138,28 +129,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
                 Burst();
                 return;
             }
-
-            //将熟未熟的瓜皮热气（客户端装饰）
-            if (!Main.dedServ && Ripeness > 0.5f && Main.rand.NextBool(9)) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + new Vector2(Main.rand.NextFloat(-8f, 8f), -8f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.4f, 1f),
-                    GsPumpkinArmor.PumpkinGlow, Main.rand.NextFloat(0.16f, 0.28f))?.Configure(false, Main.rand.Next(10, 16));
-            }
-            Lighting.AddLight(Projectile.Center, GsPumpkinArmor.PumpkinOrange.ToVector3() * (0.16f + 0.2f * Ripeness));
         }
 
         private void Burst() {
             if (!Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.45f, Pitch = 0.5f, MaxInstances = 3 }, Projectile.Center);
-                //瓜瓤四溅
-                for (int i = 0; i < 10; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 5f),
-                        Main.rand.NextBool() ? GsPumpkinArmor.PumpkinOrange : GsPumpkinArmor.PumpkinGlow,
-                        Main.rand.NextFloat(0.28f, 0.48f))?.Configure(true, Main.rand.Next(14, 24));
-                }
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero,
-                    GsPumpkinArmor.PumpkinGlow, 0.14f)?.Configure(9, 0.8f);
             }
             //三瓣飞旋瓜瓣：朝受害者所在方向扇开（佩戴者端裁定）
             if (Projectile.owner == Main.myPlayer) {
@@ -177,61 +151,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             }
             Projectile.Kill();
         }
-
-        //==================== 绘制：膨胀圆瓜 + 棱线 + 藤把 + 熟透透光 ====================
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D core = CWRAsset.Extra_98?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            Texture2D shot = CWRAsset.LightShot?.Value;
-            if (core == null || glow == null || shot == null) {
-                return false;
-            }
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            //成熟膨胀 + 将熟抖动
-            float size = 0.55f + Ripeness * 0.45f;
-            float tremble = Ripeness > 0.75f ? MathF.Sin(Life * 0.9f + Seed * 5f) * 0.05f * Ripeness : 0f;
-            Vector2 gourd = new Vector2(1f + tremble, 1f - tremble) * size;
-
-            //瓜身双层（真 alpha 占体积）
-            Main.EntitySpriteDraw(core, pos, null,
-                GsPumpkinArmor.PumpkinDeep * 0.95f, 0f, core.Size() * 0.5f,
-                new Vector2(0.24f, 0.20f) * gourd, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(core, pos, null,
-                GsPumpkinArmor.PumpkinOrange * 0.9f, 0f, core.Size() * 0.5f,
-                new Vector2(0.20f, 0.165f) * gourd, SpriteEffects.None, 0);
-            //棱线两道
-            for (int i = -1; i <= 1; i += 2) {
-                Main.EntitySpriteDraw(core, pos + new Vector2(i * 6f * size, 0f), null,
-                    GsPumpkinArmor.PumpkinDeep * 0.5f, 0f, core.Size() * 0.5f,
-                    new Vector2(0.025f, 0.15f) * gourd, SpriteEffects.None, 0);
-            }
-            //藤把
-            Main.EntitySpriteDraw(shot, pos - new Vector2(0f, 13f * size), null,
-                (GsPumpkinArmor.VineGreen with { A = 0 }) * 0.9f, -MathHelper.PiOver2 + 0.4f + tremble, shot.Size() * 0.5f,
-                new Vector2(0.05f, 0.02f), SpriteEffects.None, 0);
-            //熟透内焰透光
-            Main.EntitySpriteDraw(glow, pos, null,
-                (GsPumpkinArmor.PumpkinGlow with { A = 0 }) * (0.55f * Ripeness), 0f, glow.Size() * 0.5f,
-                0.42f * size * (1f + tremble * 2f), SpriteEffects.None, 0);
-            return false;
-        }
     }
 
     /// <summary>
-    /// 瓜瓣弹：炸开的月牙瓜瓣，飞旋带坠弧，命中溅瓤
+    /// 瓜瓣弹：炸开的瓜瓣，飞旋带坠弧；借原版糖玉米贴图默认绘制
     /// </summary>
     internal class GsPumpkinSliceProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "CrescentEdge01";
-
-        private ref float Life => ref Projectile.ai[0];
-
-        private float Seed => Projectile.identity * 0.9679f % 4.27f;
-
-        private float VisualFade => Math.Min(
-            MathHelper.Clamp(Life / 3f, 0f, 1f),
-            MathHelper.Clamp(Projectile.timeLeft / 5f, 0f, 1f));
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.CandyCorn;
 
         public override void SetDefaults() {
             Projectile.width = 16;
@@ -245,52 +172,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
         }
 
         public override void AI() {
-            Life++;
             //飞旋 + 坠弧
             Projectile.velocity.Y += 0.14f;
             Projectile.rotation += 0.4f * (Projectile.velocity.X >= 0f ? 1f : -1f);
-            if (!Main.dedServ && Life % 4 == 0) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                    -Projectile.velocity * 0.08f, GsPumpkinArmor.PumpkinGlow,
-                    Main.rand.NextFloat(0.16f, 0.26f))?.Configure(false, Main.rand.Next(6, 10));
-            }
-            Lighting.AddLight(Projectile.Center, GsPumpkinArmor.PumpkinOrange.ToVector3() * (0.14f * VisualFade));
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (Main.dedServ) {
-                return;
-            }
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f),
-                    Main.rand.NextBool() ? GsPumpkinArmor.PumpkinOrange : GsPumpkinArmor.PumpkinDeep,
-                    Main.rand.NextFloat(0.22f, 0.36f))?.Configure(true, Main.rand.Next(10, 16));
-            }
-        }
-
-        //==================== 绘制：飞旋月牙瓜瓣三层 ====================
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D crescent = CWRAsset.CrescentEdge01?.Value;
-            if (crescent == null) {
-                return false;
-            }
-            float fade = VisualFade;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = crescent.Size() * 0.5f;
-            float wob = 1f + MathF.Sin(Life * 0.5f + Seed * 4f) * 0.06f;
-
-            Main.EntitySpriteDraw(crescent, pos, null,
-                GsPumpkinArmor.PumpkinDeep * (0.9f * fade), Projectile.rotation, origin,
-                new Vector2(0.10f, 0.07f) * wob, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(crescent, pos, null,
-                (GsPumpkinArmor.PumpkinOrange with { A = 0 }) * fade, Projectile.rotation, origin,
-                new Vector2(0.085f, 0.055f) * wob, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(crescent, pos, null,
-                (GsPumpkinArmor.PumpkinGlow with { A = 0 }) * (0.7f * fade), Projectile.rotation, origin,
-                new Vector2(0.06f, 0.03f) * wob, SpriteEffects.None, 0);
-            return false;
         }
     }
 }

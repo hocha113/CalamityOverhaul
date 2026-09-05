@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
             if (Timer >= ReleaseEnd) {
                 context.AlignCharge = 0f;
-                return new CultistCoilState(43);
+                return new CultistCoilState(30);
             }
             return null;
         }
@@ -225,14 +225,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                             Projectile member = TrioMember(wave);
                             //+1:弹寿在弹相递减,晚一帧上桩才保证出手帧主相仍读得到锁定点
                             if (member != null && it == launchBeat - CultistPlanetAimLine.Lifetime + 1) {
-                                Vector2 aim = CultistMotion.PredictTarget(player, member.Center, 9f, 0.55f);
+                                Vector2 aim = CultistMotion.PredictTarget(player, member.Center,
+                                    CultistPlanetProj.CruiseSpeed, 0.55f);
                                 Projectile.NewProjectile(npc.GetSource_FromAI(), member.Center, Vector2.Zero,
                                     ModContent.ProjectileType<CultistPlanetAimLine>(), 0, 0f, Main.myPlayer,
                                     member.whoAmI, aim.X, aim.Y);
                             }
                             if (member != null && it == launchBeat) {
                                 Vector2 aim = CultistPlanetAimLine.GetLockedAimFor(member.whoAmI)
-                                    ?? CultistMotion.PredictTarget(player, member.Center, 9f, 0.55f);
+                                    ?? CultistMotion.PredictTarget(player, member.Center,
+                                        CultistPlanetProj.CruiseSpeed, 0.55f);
                                 CultistPlanetProj.CommandLaunchPlanet(member, aim);
                             }
                         }

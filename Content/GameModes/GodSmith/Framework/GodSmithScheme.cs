@@ -245,6 +245,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
         public virtual void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) { }
 
         /// <summary>
+        /// 弹幕撞物块。返回 false 压掉原版撞块处理（通常是自杀），由方案自己写反弹/嵌入
+        /// （反弹范式：X 轴被挡则 <c>proj.velocity.X = -oldVelocity.X</c>，Y 轴同理）；
+        /// null/true 走原版。各端都会执行，判定与速度改动是确定性的即可不同步
+        /// </summary>
+        public virtual bool? GsProjOnTileCollide(Projectile proj, Vector2 oldVelocity, GodSmithProjRouter router) => null;
+
+        /// <summary>
         /// 注册按弹幕类型的增强通道（仆从/哨兵/驻场弹幕）。
         /// 与打标通道不同：不需要出生源，模式关闭时在场弹幕即刻退回原版行为。
         /// 在 <see cref="GsSetStaticDefaults"/> 里调用

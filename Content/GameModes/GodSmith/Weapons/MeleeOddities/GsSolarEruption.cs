@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -17,7 +15,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
     /// <summary>
     /// 【日曜熔金锁链刃·A档】材质：太阳碎片锻成的多节链刃，节间喷日冕火舌。
     /// 签名：①保留原版环形甩击身份（穿墙、命中引爆日光、Daybroken）但补收-爆-停加速度曲线
-    /// ②连续命中攒日冕，满 8 次下一鞭整条鞭路点燃连环爆 ③链体逐节自绘+鞭头日冕光斑随充能点亮
+    /// ②连续命中攒日冕，满 8 次下一鞭整条鞭路点燃连环爆
     /// </summary>
     internal class GsSolarEruption : GodSmithScheme
     {
@@ -26,15 +24,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         public override string GsFamily => "MeleeOddities";
 
         protected override string GsDescFallback =>
-            "Reforged: a looping chain-blade lash that pierces walls and detonates sunlight; " +
-            "8 hits charge a corona lash that ignites its whole path";
-
-        //日曜色板：焦暗→深红→橙金→日白 的火冷却斜坡
-        internal static readonly Color SunWhite = new(255, 244, 214); //日白
-        internal static readonly Color SunGold = new(255, 196, 88);   //熔金
-        internal static readonly Color SunRed = new(226, 82, 40);     //日冕深红
-        internal static readonly Color SunChar = new(64, 28, 20);     //焦暗链影
-
+            "Reforged: a looping chain-blade lash that pierces walls and detonates sunlight; 8 hits charge a corona lash that ignites its whole path";
         internal const int CrownChargeMax = 8;
 
         /// <summary>日冕充能；方案单例跨玩家共享，只在 myPlayer 守门路径消费</summary>
@@ -49,14 +39,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             }
             if (player.whoAmI == Main.myPlayer) {
                 bool crown = crownCharge >= CrownChargeMax;
-                int chargeNow = crownCharge;
                 if (crown) {
                     crownCharge = 0;
                     crownDecay = 0;
                 }
                 Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, GsAimUnit(player),
                     ModContent.ProjectileType<GsSolarEruptionHeld>(),
-                    player.GetWeaponDamage(item), item.knockBack, player.whoAmI, chargeNow, crown ? 1f : 0f);
+                    player.GetWeaponDamage(item), item.knockBack, player.whoAmI, 0f, crown ? 1f : 0f);
             }
             //全端返回 false 压掉原版鞭击；远端靠弹幕同步看到动作
             return false;
@@ -87,7 +76,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
     /// <summary>
     /// 日耀链鞭手持：单次完整环形甩击。收链（慢）-爆发（3f 甩满前半环）-余摆（减速回手）。
     /// 链体沿贝塞尔曲线逐节绘制（原版弹幕贴图分段采样），命中引爆日光（4f 冷却）+挂 Daybroken。<br/>
-    /// ai[0]=出手时日冕充能数（鞭头光斑亮度），ai[1]=1 为日冕鞭（完成时沿鞭路生成驻焰连环爆）
+    /// ai[1]=1 为日冕鞭（完成时沿鞭路生成驻焰连环爆）
     /// </summary>
     internal class GsSolarEruptionHeld : BaseHeldProj
     {
@@ -119,11 +108,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         private int blastCooldown;
         private bool sweepDamageActive;
         private readonly HashSet<int> hitNPCs = [];
-        /// <summary>鞭尖轨迹环形缓存（拖尾光带用）</summary>
-        private readonly Vector2[] tipTrail = new Vector2[10];
-        private int tipTrailLen;
 
-        private int CrownCharge => Math.Clamp((int)Projectile.ai[0], 0, GsSolarEruption.CrownChargeMax);
         private bool IsCrown => Projectile.ai[1] >= 1f;
 
         private Vector2 Hand => Owner.GetPlayerStabilityCenter();
@@ -192,7 +177,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             pEff = LashCurve(p);
             lastTip = tipPos;
             UpdateWhipGeometry();
-            PushTipTrail(tipPos);
 
             //伤害窗：行程中段且鞭尖在动
             sweepDamageActive = pEff > 0.06f && pEff < 0.97f
@@ -200,11 +184,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
 
             UpdatePose();
             HandleLashEvents(p);
-            if (!VaultUtils.isServer) {
-                HandleParticles();
-            }
-
-            Lighting.AddLight(tipPos, GsSolarEruption.SunGold.ToVector3() * (0.35f + 0.05f * CrownCharge));
 
             if (timer >= lashDur) {
                 Projectile.Kill();
@@ -225,14 +204,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             Vector2 hand = Hand;
             Vector2 ctrl = hand + ((tipPos - hand) * 0.5f) + (perp * lateral * 0.85f);
             return Vector2.Lerp(Vector2.Lerp(hand, ctrl, s), Vector2.Lerp(ctrl, tipPos, s), s);
-        }
-
-        private void PushTipTrail(Vector2 tip) {
-            tipTrailLen = Math.Min(tipTrailLen + 1, tipTrail.Length);
-            for (int i = tipTrail.Length - 1; i > 0; i--) {
-                tipTrail[i] = tipTrail[i - 1];
-            }
-            tipTrail[0] = tip;
         }
 
         /// <summary>持械姿态：手臂追鞭尖，收链后仰爆发前甩</summary>
@@ -288,26 +259,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                         baseAngle.ToRotationVector2(), ModContent.ProjectileType<GsSolarEruptionCrownProj>(),
                         Projectile.damage, Projectile.knockBack * 0.5f, Owner.whoAmI, bowSign, MaxReach);
                 }
-            }
-        }
-
-        /// <summary>粒子演出（已守非服务器端）：爆发期沿链身喷日冕火舌与金火星</summary>
-        private void HandleParticles() {
-            if (pEff <= 0.10f || pEff >= 0.92f) {
-                return;
-            }
-            int count = IsCrown ? 3 : 1;
-            for (int i = 0; i < count; i++) {
-                Vector2 at = ChainPoint(Main.rand.NextFloat(0.35f, 1f));
-                //原版日曜火（Torch/SolarFlare 双尘）打底
-                Dust d = Dust.NewDustPerfect(at, DustID.SolarFlare, (tipPos - lastTip) * 0.15f, 100, default, Main.rand.NextFloat(0.9f, 1.4f));
-                d.noGravity = true;
-            }
-            if (Main.rand.NextBool(2)) {
-                Vector2 sparkVel = (tipPos - lastTip) * Main.rand.NextFloat(0.2f, 0.45f);
-                Color c = Main.rand.NextBool(3) ? GsSolarEruption.SunRed : GsSolarEruption.SunGold;
-                PRTLoader.NewParticle<PRT_Spark>(tipPos, sparkVel, c, Main.rand.NextFloat(0.4f, 0.62f))
-                    ?.Configure(true, Main.rand.Next(12, 20));
             }
         }
 
@@ -379,17 +330,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                     solar.AddCrownCharge();
                 }
             }
-
-            if (!VaultUtils.isServer) {
-                PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero, GsSolarEruption.SunGold, 0.2f)
-                    ?.Configure(9, 0.8f);
-                for (int i = 0; i < 5; i++) {
-                    Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 8f);
-                    Color c = Main.rand.NextBool(3) ? GsSolarEruption.SunRed : GsSolarEruption.SunGold;
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, c, Main.rand.NextFloat(0.4f, 0.7f))
-                        ?.Configure(true, Main.rand.Next(12, 22));
-                }
-            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -399,56 +339,24 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             }
         }
 
-        /// <summary>绘制路径专用确定性伪随机（identity+salt 播种，禁 Main.rand）</summary>
-        private float DrawRand01(int salt) {
-            uint h = (uint)((Projectile.identity * 374761393) + (salt * 668265263));
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
         private static float SmoothStep01(float x) {
             x = MathHelper.Clamp(x, 0f, 1f);
             return x * x * (3f - (2f * x));
         }
 
-        //==================== 绘制：鞭尖拖尾光带 + 链体逐节 + 日冕光斑 ====================
-
+        /// <summary>链体本体：原版弹幕贴图分段采样（头 0,2,40 / 刺 0,46,18 / 链 0,68,18），
+        /// 沿贝塞尔切向逐节各铺一笔，lightColor 着色</summary>
         public override bool PreDraw(ref Color lightColor) {
             if (timer <= 1) {
                 return false;
             }
             SpriteBatch sb = Main.spriteBatch;
-            DrawTipTrail(sb);
-            DrawChain(sb, lightColor);
-            DrawCoronaGlow(sb);
-            return false;
-        }
-
-        /// <summary>鞭尖拖尾：轨迹缓存上铺渐灭日金光点（加色 A=0），越旧越红越小</summary>
-        private void DrawTipTrail(SpriteBatch sb) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null || pEff <= 0.10f) {
-                return;
-            }
-            Vector2 origin = glow.Size() / 2f;
-            for (int i = 0; i < tipTrailLen; i++) {
-                float fade = 1f - (i / (float)tipTrail.Length);
-                Color c = Color.Lerp(GsSolarEruption.SunRed, GsSolarEruption.SunGold, fade) * (0.34f * fade);
-                c.A = 0;
-                sb.Draw(glow, tipTrail[i] - Main.screenPosition, null, c, 0f, origin,
-                    (0.42f + (0.3f * fade)) * (IsCrown ? 1.5f : 1f), SpriteEffects.None, 0f);
-            }
-        }
-
-        /// <summary>链体：原版弹幕贴图分段采样（头 0,2,40 / 刺 0,46,18 / 链 0,68,18），沿贝塞尔切向逐节铺</summary>
-        private void DrawChain(SpriteBatch sb, Color lightColor) {
             Main.instance.LoadProjectile(ProjectileID.SolarWhipSword);
             Texture2D tex = TextureAssets.Projectile[ProjectileID.SolarWhipSword].Value;
             Rectangle chainRect = new(0, 68, tex.Width, 18);
             Rectangle spikeRect = new(0, 46, tex.Width, 18);
             Rectangle headRect = new(0, 2, tex.Width, 40);
 
-            float fadeIn = MathHelper.Clamp(timer / 3f, 0f, 1f);
             float chainLen = 0f;
             const int segs = 16;
             Vector2 prev = Hand;
@@ -458,7 +366,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                 prev = next;
             }
             if (chainLen < 8f) {
-                return;
+                return false;
             }
 
             //逐节：链节打底，每第 3 节叠日棘
@@ -467,20 +375,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                 Vector2 next = ChainPoint(i / (float)segs);
                 Vector2 mid = (prev + next) / 2f;
                 float rot = (next - prev).ToRotation() + MathHelper.PiOver2;
-                Color lit = Color.Lerp(lightColor, GsSolarEruption.SunGold, 0.18f) * fadeIn;
-                sb.Draw(tex, mid - Main.screenPosition, chainRect, lit, rot,
+                sb.Draw(tex, mid - Main.screenPosition, chainRect, lightColor, rot,
                     new Vector2(chainRect.Width / 2f, chainRect.Height / 2f), 1f, SpriteEffects.None, 0f);
                 if (i % 3 == 0) {
-                    sb.Draw(tex, mid - Main.screenPosition, spikeRect, lit, rot,
+                    sb.Draw(tex, mid - Main.screenPosition, spikeRect, lightColor, rot,
                         new Vector2(spikeRect.Width / 2f, spikeRect.Height / 2f), 1f, SpriteEffects.None, 0f);
-                }
-                //爆发期链节加色辉边（identity 播种错相闪变）
-                if (pEff is > 0.10f and < 0.92f) {
-                    float flick = 0.7f + (0.3f * MathF.Sin((Main.GlobalTimeWrappedHourly * 14f) + (DrawRand01(i) * 6.28f)));
-                    Color hot = (IsCrown ? GsSolarEruption.SunWhite : GsSolarEruption.SunGold) * (0.22f * flick * fadeIn);
-                    hot.A = 0;
-                    sb.Draw(tex, mid - Main.screenPosition, chainRect, hot, rot,
-                        new Vector2(chainRect.Width / 2f, chainRect.Height / 2f), 1.06f, SpriteEffects.None, 0f);
                 }
                 prev = next;
             }
@@ -491,46 +390,27 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                 tipTangent = baseAngle.ToRotationVector2();
             }
             float headRot = tipTangent.ToRotation() + MathHelper.PiOver2;
-            Color headLit = Color.Lerp(lightColor, GsSolarEruption.SunGold, 0.25f) * fadeIn;
-            sb.Draw(tex, tipPos - Main.screenPosition, headRect, headLit, headRot,
+            sb.Draw(tex, tipPos - Main.screenPosition, headRect, lightColor, headRot,
                 new Vector2(headRect.Width / 2f, headRect.Height * 0.8f), 1f, SpriteEffects.None, 0f);
-        }
-
-        /// <summary>鞭头日冕光斑：亮度随充能层数，日冕鞭再套一圈日白</summary>
-        private void DrawCoronaGlow(SpriteBatch sb) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            if (glow == null) {
-                return;
-            }
-            float charge = CrownCharge / (float)GsSolarEruption.CrownChargeMax;
-            float pulse = 0.85f + (0.15f * MathF.Sin((Main.GlobalTimeWrappedHourly * 9f) + (DrawRand01(99) * 6.28f)));
-            Vector2 at = tipPos - Main.screenPosition;
-
-            Color halo = GsSolarEruption.SunGold * ((0.22f + (0.30f * charge)) * pulse);
-            halo.A = 0;
-            sb.Draw(glow, at, null, halo, 0f, glow.Size() / 2f, 0.6f + (0.5f * charge), SpriteEffects.None, 0f);
-
-            if (IsCrown && star != null) {
-                Color cross = GsSolarEruption.SunWhite * (0.5f * pulse);
-                cross.A = 0;
-                sb.Draw(star, at, null, cross, Projectile.rotation * 0.5f, star.Size() / 2f, 0.16f, SpriteEffects.None, 0f);
-            }
+            return false;
         }
     }
 
     /// <summary>
     /// 日光爆：命中点原地引爆的日冕闪（原版 612 的重铸复刻，全额伤害、随机尺度、挂 Daybroken）。
-    /// ai[0]=尺度（生成端随包过线）。自绘：软光核+四芒星十字+扩散残圈，加色批全 A=0
+    /// ai[0]=尺度（生成端随包过线，同原版写入 Projectile.scale）。贴图借原版 612 默认绘制
     /// </summary>
     internal class GsSolarEruptionBlastProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SolarWhipSwordExplosion;
         public override LocalizedText DisplayName => Language.GetText("ItemName.SolarEruption");
 
         private const int Life = 24;
         private float Scale => MathHelper.Clamp(Projectile.ai[0], 0.5f, 2.2f);
-        private float LifeT => 1f - (Projectile.timeLeft / (float)Life);
+
+        public override void SetStaticDefaults() {
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.SolarWhipSwordExplosion];
+        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 90;
@@ -547,25 +427,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
-                //按尺度撑判定箱
+                //按尺度撑判定箱与贴图尺度
                 int size = (int)(90 * Scale);
                 Projectile.Resize(size, size);
+                Projectile.scale = Scale;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
-                    for (int i = 0; i < 10; i++) {
-                        Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2.5f, 7f) * Scale;
-                        Color c = Main.rand.NextBool(3) ? GsSolarEruption.SunRed : GsSolarEruption.SunGold;
-                        PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, vel, c, Main.rand.NextFloat(0.4f, 0.7f))
-                            ?.Configure(true, Main.rand.Next(14, 24));
-                    }
-                    for (int i = 0; i < 6; i++) {
-                        Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.SolarFlare,
-                            Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 4f) * Scale, 100, default, Main.rand.NextFloat(1f, 1.6f));
-                        d.noGravity = true;
-                    }
                 }
             }
-            Lighting.AddLight(Projectile.Center, GsSolarEruption.SunGold.ToVector3() * (0.8f * (1f - LifeT) * Scale));
+            if (++Projectile.frameCounter >= 5) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
         }
 
         /// <summary>伤害窗只开前 10 帧，余下是纯演出</summary>
@@ -573,50 +446,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
             => target.AddBuff(BuffID.Daybreak, 300);
-
-        private float DrawRand01(int salt) {
-            uint h = (uint)((Projectile.identity * 374761393) + (salt * 668265263));
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            if (glow == null || star == null) {
-                return false;
-            }
-            Vector2 at = Projectile.Center - Main.screenPosition;
-            float t = LifeT;
-            float burst = MathF.Pow(1f - t, 1.6f); //出生最亮，快速冷却
-            float expand = 0.35f + (t * 0.85f);
-
-            //日白核（只活前 1/3）
-            if (t < 0.35f) {
-                Color core = GsSolarEruption.SunWhite * ((1f - (t / 0.35f)) * 0.85f);
-                core.A = 0;
-                Main.EntitySpriteDraw(glow, at, null, core, 0f, glow.Size() / 2f, 0.7f * Scale, SpriteEffects.None, 0);
-            }
-            //熔金体
-            Color body = GsSolarEruption.SunGold * (0.6f * burst);
-            body.A = 0;
-            Main.EntitySpriteDraw(glow, at, null, body, 0f, glow.Size() / 2f, expand * 1.5f * Scale, SpriteEffects.None, 0);
-            //深红外晕（冷却端）
-            Color rim = GsSolarEruption.SunRed * (0.4f * burst);
-            rim.A = 0;
-            Main.EntitySpriteDraw(glow, at, null, rim, 0f, glow.Size() / 2f, expand * 2.2f * Scale, SpriteEffects.None, 0);
-            //四芒十字（identity 播种初始角，缓旋收缩）
-            Color cross = Color.Lerp(GsSolarEruption.SunWhite, GsSolarEruption.SunGold, t) * (0.7f * burst);
-            cross.A = 0;
-            float crossRot = (DrawRand01(3) * MathHelper.TwoPi) + (t * 0.6f);
-            Main.EntitySpriteDraw(star, at, null, cross, crossRot, star.Size() / 2f,
-                (0.24f - (t * 0.1f)) * Scale, SpriteEffects.None, 0);
-            return false;
-        }
     }
 
     /// <summary>
-    /// 日冕环：日冕鞭完成时沿鞭路驻焰 0.5 秒，每 6 帧沿路序贯引爆一记 0.55 倍日光爆。
+    /// 日冕环：日冕鞭完成时沿鞭路驻留 0.5 秒的隐形导演，每 6 帧沿路序贯引爆一记 0.55 倍日光爆。
     /// ai[0]=弓侧符号 ai[1]=触及（随生成包过线）；锚定生成瞬间的手位，路径与鞭击同参
     /// </summary>
     internal class GsSolarEruptionCrownProj : ModProjectile
@@ -669,41 +502,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                     (int)(Projectile.damage * 0.55f), 6f, Projectile.owner, 1f + (blastsFired * 0.12f));
                 blastsFired++;
             }
-
-            //驻焰粒子沿路零星喷舌
-            if (!VaultUtils.isServer && Projectile.timeLeft > 8 && Main.rand.NextBool(2)) {
-                Vector2 at = PathPoint(Main.rand.NextFloat());
-                Dust d = Dust.NewDustPerfect(at, DustID.SolarFlare,
-                    -Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.6f), 110, default, Main.rand.NextFloat(0.9f, 1.5f));
-                d.noGravity = true;
-            }
-            Lighting.AddLight(PathPoint(0.5f), GsSolarEruption.SunRed.ToVector3() * 0.5f);
         }
 
-        private float DrawRand01(int salt) {
-            uint h = (uint)((Projectile.identity * 374761393) + (salt * 668265263));
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        /// <summary>驻焰带：沿鞭路铺渐灭日金光珠，加色 A=0，identity 播种错相闪变</summary>
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
-                return false;
-            }
-            float fade = MathHelper.Clamp(Projectile.timeLeft / (float)(Life * 0.6f), 0f, 1f);
-            Vector2 texOrigin = glow.Size() / 2f;
-            const int beads = 22;
-            for (int i = 0; i <= beads; i++) {
-                float s = i / (float)beads;
-                float flick = 0.7f + (0.3f * MathF.Sin((Main.GlobalTimeWrappedHourly * 12f) + (DrawRand01(i) * 6.28f)));
-                Color c = Color.Lerp(GsSolarEruption.SunGold, GsSolarEruption.SunRed, s) * (0.3f * fade * flick);
-                c.A = 0;
-                Main.EntitySpriteDraw(glow, PathPoint(s) - Main.screenPosition, null, c, 0f, texOrigin,
-                    0.38f + (0.14f * flick), SpriteEffects.None, 0);
-            }
-            return false;
-        }
+        /// <summary>隐形导演：占位贴图不画</summary>
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }

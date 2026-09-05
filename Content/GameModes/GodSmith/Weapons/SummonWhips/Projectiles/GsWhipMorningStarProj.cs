@@ -1,6 +1,3 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -14,16 +11,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
     /// <summary>
     /// 晨星处决「星坠锤」：目标头顶显形蓄势后重力砸落（主段 2.0x），
     /// 落点炸 120px 贴地震波（ai[1] 传 0.6x 二段）+ 距离衰减屏震。<br/>
-    /// 锤体 = 原版晨星鞭弹幕贴图的鞭梢段放大 + 下坠自旋 + 速度拖影。
+    /// 锤体 = 原版晨星鞭弹幕贴图的鞭梢段放大 + 下坠自旋。
     /// ai[0] = 目标 npc.whoAmI
     /// </summary>
     internal class GsWhipMorningStarFallProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
-
-        internal static readonly Color StarBright = new(255, 246, 214);
-        internal static readonly Color StarMain = new(255, 226, 150);
-        internal static readonly Color StarDeep = new(150, 104, 46);
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.MaceWhip;
 
         private const int RevealFrames = 8;
         private const int QuakeWindow = 5;
@@ -110,14 +103,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
                             if (shake > 0.1f) {
                                 Main.LocalPlayer.CWR()?.GetScreenShake(shake);
                             }
-                            for (int i = 0; i < 12; i++) {
-                                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                                    Main.rand.NextVector2Circular(8f, 4f) - Vector2.UnitY * Main.rand.NextFloat(1f, 4f),
-                                    i % 3 == 0 ? StarBright : StarMain,
-                                    Main.rand.NextFloat(0.35f, 0.62f))?.Configure(true, Main.rand.Next(15, 26));
-                            }
-                            PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, StarMain, 0.24f)
-                                ?.Configure(12, 0.9f);
                         }
                     }
                     break;
@@ -127,54 +112,22 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
             }
         }
 
+        /// <summary>锤体一笔：原版鞭贴图竖排五段，最底段即链锤头；显形期渐显，落地后随余帧渐隐</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Main.instance.LoadProjectile(ProjectileID.MaceWhip);
-            Texture2D whipTex = TextureAssets.Projectile[ProjectileID.MaceWhip].Value;
-            Texture2D flash = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Flashimpact2")?.Value;
-            if (flash == null) {
-                return false;
-            }
-            //原版鞭贴图竖排五段，最底段即链锤头
+            Texture2D whipTex = TextureAssets.Projectile[Type].Value;
             int segH = whipTex.Height / 5;
             Rectangle tipFrame = new(0, whipTex.Height - segH, whipTex.Width, segH);
-            Vector2 tipOrigin = tipFrame.Size() * 0.5f;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
             const float MaceScale = 2.6f;
-            if (phase == 0) {
-                //显形：锤体从透明拧入 + 顶光渐亮
-                float g = Elapsed / (float)RevealFrames;
-                Main.EntitySpriteDraw(flash, pos, null, StarMain with { A = 0 } * (0.35f * g),
-                    Projectile.identity * 0.5f, flash.Size() * 0.5f, 0.2f * g + 0.05f, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(whipTex, pos, tipFrame, Color.White * g, spin,
-                    tipOrigin, MaceScale * (0.7f + 0.3f * g), SpriteEffects.None, 0);
+            float alpha = phase switch {
+                0 => Elapsed / (float)RevealFrames,
+                1 => 1f,
+                _ => 1f - MathHelper.Clamp(quakeTimer / (float)(LifeFrames - RevealFrames), 0f, 1f),
+            };
+            if (alpha <= 0.01f) {
                 return false;
             }
-            if (phase == 1) {
-                //下坠：速度拖影三重 + 本体 + 金晕
-                for (int i = 3; i >= 1; i--) {
-                    Main.EntitySpriteDraw(whipTex, pos - Projectile.velocity * (i * 0.6f), tipFrame,
-                        StarMain with { A = 0 } * (0.42f - i * 0.11f), spin - i * 0.1f,
-                        tipOrigin, MaceScale, SpriteEffects.None, 0);
-                }
-                Main.EntitySpriteDraw(whipTex, pos, tipFrame, Color.White, spin,
-                    tipOrigin, MaceScale, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(whipTex, pos, tipFrame, StarBright with { A = 0 } * 0.5f, spin,
-                    tipOrigin, MaceScale * 1.12f, SpriteEffects.None, 0);
-                return false;
-            }
-            //落点震波：贴地椭圆震环 + 落锤余像 + 闪光衰减
-            float t = MathHelper.Clamp(quakeTimer / (float)(LifeFrames - RevealFrames), 0f, 1f);
-            float fade = 1f - t;
-            ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center,
-                MathHelper.Lerp(20f, 126f, 1f - fade * fade), 13f,
-                StarBright, StarMain, StarDeep, fade,
-                squish: 0.4f, innerGlow: 0.2f, timeSeed: Projectile.identity * 0.37f);
-            Main.EntitySpriteDraw(whipTex, pos, tipFrame, StarMain with { A = 0 } * (0.55f * fade),
-                spin, tipOrigin, MaceScale, SpriteEffects.None, 0);
-            if (fade > 0.35f) {
-                Main.EntitySpriteDraw(flash, pos, null, StarBright with { A = 0 } * fade,
-                    -Projectile.identity * 0.3f, flash.Size() * 0.5f, 0.5f * fade, SpriteEffects.None, 0);
-            }
+            Main.EntitySpriteDraw(whipTex, Projectile.Center - Main.screenPosition, tipFrame, lightColor * alpha, spin,
+                tipFrame.Size() * 0.5f, MaceScale, SpriteEffects.None, 0);
             return false;
         }
     }
@@ -185,7 +138,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
     /// </summary>
     internal class GsWhipMaceQuakeProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
 
         private const int LifeFrames = 14;
 
@@ -218,24 +171,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
             if (shake > 0.1f) {
                 Main.LocalPlayer.CWR()?.GetScreenShake(shake);
             }
-            for (int i = 0; i < 5; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(
-                    Projectile.Center + new Vector2(Main.rand.NextFloat(-60f, 60f), 0f),
-                    -Vector2.UnitY * Main.rand.NextFloat(1.5f, 3.5f),
-                    GsWhipMorningStarFallProj.StarMain,
-                    Main.rand.NextFloat(0.28f, 0.45f))?.Configure(true, Main.rand.Next(10, 18));
-            }
         }
 
+        /// <summary>范围提示：原版气泡贴图按判定框（宽 160 高 90）拉伸画一笔（lightColor 着色），随寿命渐隐</summary>
         public override bool PreDraw(ref Color lightColor) {
-            float t = Elapsed / (float)LifeFrames;
-            float fade = 1f - t;
-            ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center,
-                MathHelper.Lerp(12f, 84f, 1f - fade * fade), 10f,
-                GsWhipMorningStarFallProj.StarBright,
-                GsWhipMorningStarFallProj.StarMain,
-                GsWhipMorningStarFallProj.StarDeep, fade * 0.9f,
-                squish: 0.4f, innerGlow: 0.15f, timeSeed: Projectile.identity * 0.41f);
+            float fade = 1f - Elapsed / (float)LifeFrames;
+            if (fade <= 0.01f) {
+                return false;
+            }
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, 0f,
+                tex.Size() * 0.5f, new Vector2(Projectile.width / (float)tex.Width, Projectile.height / (float)tex.Height),
+                SpriteEffects.None, 0);
             return false;
         }
     }

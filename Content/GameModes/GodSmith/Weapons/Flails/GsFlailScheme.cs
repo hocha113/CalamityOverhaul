@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -71,7 +69,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
     /// 甩转（ai[0]=0）——角速度沿充能曲线爬升不匀速，链条低速下垂高速拉直；<br/>
     /// 掷出（ai[0]=1）——初速按转速结算，飞行带阻尼减速与微重力，绝不匀速直飞；<br/>
     /// 收链（ai[0]=2）——先回坠（重力主导、链条塌垂）再加速度回卷。<br/>
-    /// 链节沿贝塞尔垂链逐段绘制，禁整条贴图平移。ai[1]=出手转速，ai[2]=武器自定义载荷
+    /// 链节沿贝塞尔垂链用原版链条贴图逐节绘制。ai[1]=出手转速，ai[2]=武器自定义载荷
     /// </summary>
     internal abstract class GsFlailHeadProj : BaseHeldProj
     {
@@ -92,8 +90,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
         public abstract int VanillaProjID { get; }
         /// <summary>链节贴图（原版 TextureAssets.ChainXX，逐节绘制）</summary>
         public abstract Asset<Texture2D> ChainTexture { get; }
-        /// <summary>族调色板重音色（辉光/满转提示/命中光）</summary>
-        public abstract Color GlowColor { get; }
 
         //==================== 手感参数（子类按武器覆写） ====================
 
@@ -155,7 +151,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
         protected float spinCharge;
         protected int swingSign = 1;
         protected bool fullChargeAnnounced;
-        protected int chargeFlashTimer;
         private float lastRevAngle;
         private bool chainGrazeHit;
         private int catchGraceTimer;
@@ -177,8 +172,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
         }
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 8;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 480;
         }
 
@@ -231,16 +224,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                     break;
             }
 
-            if (chargeFlashTimer > 0) {
-                chargeFlashTimer--;
-            }
             UpdatePose();
             BuildChainPoints();
-            Lighting.AddLight(Projectile.Center, GlowColor.ToVector3() * (0.22f + spinCharge * 0.3f));
             PostStateAI();
         }
 
-        /// <summary>状态机之后的每帧钩子（武器专属演出/子弹幕）</summary>
+        /// <summary>状态机之后的每帧钩子（武器专属子弹幕/状态）</summary>
         protected virtual void PostStateAI() { }
 
         /// <summary>甩转：角速度沿充能曲线爬升，链条从下垂到绷直——加速度可见</summary>
@@ -285,10 +274,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
 
             if (spinCharge >= 1f && !fullChargeAnnounced) {
                 fullChargeAnnounced = true;
-                chargeFlashTimer = 9;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.7f, Pitch = 0.25f }, Owner.Center);
-                    PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, GlowColor, 0.4f);
                 }
                 OnFullCharge();
             }
@@ -366,11 +353,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
 
             catchGraceTimer++;
             if (dist <= 46f && catchGraceTimer > 6) {
-                //收回手中：轻拍一声，头上一点余光
+                //收回手中：轻拍一声
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Owner.Center);
-                    PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, GlowColor, 0.12f)
-                        ?.Configure(8, 0.7f);
                 }
                 OnCaught();
                 Projectile.Kill();
@@ -397,11 +382,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
             //撞砖：弹一下再收链，铛
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.7f, Pitch = -0.2f }, Projectile.Center);
-                for (int i = 0; i < 4; i++) {
-                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Smoke,
-                        -oldVelocity.RotatedByRandom(0.6) * Main.rand.NextFloat(0.05f, 0.16f), 120);
-                    d.noGravity = true;
-                }
             }
             Vector2 bounce = Projectile.velocity;
             if (Projectile.velocity.X != oldVelocity.X) {
@@ -571,7 +551,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
             //子类查 State == StateLaunch 的满转 payoff 才可达；反冲收链在钩子之后执行，
             //掷出实打首中即转收链，保证满转 payoff 一掷至多结算一次
             if (!VaultUtils.isServer && headHit) {
-                SpawnHitBurst(target, hit, LaunchCharge);
+                PlayHitSound(target, LaunchCharge);
             }
             OnHeadHit(target, hit, damageDone, headHit);
             //锤头实打命中的物理反冲：弹开并转入收链，链感落地
@@ -583,19 +563,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
             }
         }
 
-        /// <summary>族默认命中反馈：重音色火花+闷响，满转命中升级一圈脉冲</summary>
-        protected virtual void SpawnHitBurst(NPC target, NPC.HitInfo hit, float charge) {
+        /// <summary>族默认命中音：闷响（子类覆写追加武器音色）</summary>
+        protected virtual void PlayHitSound(NPC target, float charge) {
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.5f, Pitch = -0.4f }, target.Center);
-            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-            int sparks = 3 + (int)(charge * 4f);
-            for (int i = 0; i < sparks; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    -dir.RotatedByRandom(0.85) * Main.rand.NextFloat(3f, 6.5f),
-                    GlowColor, Main.rand.NextFloat(0.35f, 0.6f))?.Configure(true, Main.rand.Next(10, 18));
-            }
-            if (charge >= 0.99f && State == StateLaunch) {
-                PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, GlowColor, 0.5f);
-            }
         }
 
         //==================== 武器钩子面 ====================
@@ -617,13 +587,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
         /// <summary>回到手中（Kill 前）</summary>
         protected virtual void OnCaught() { }
 
-        //==================== 绘制（链节逐段 + 锤头三层） ====================
+        //==================== 绘制（链节逐段 + 锤头本体一笔） ====================
 
         /// <summary>链节贴图帧（滴血链等多帧链覆写；linkIndex 从手侧数起）</summary>
         public virtual Rectangle? ChainFrame(int linkIndex) => null;
-
-        /// <summary>链节染色（t: 0=手 1=头；烈焰链近头炽亮之类在此做）</summary>
-        public virtual Color ChainLinkColor(int linkIndex, float t, Color light) => light;
 
         /// <summary>锤头自旋角速度（SelfSpinHead=true 时用）</summary>
         protected virtual float HeadSpinRate =>
@@ -646,11 +613,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
             float linkLen = MathF.Max(6f, ChainFrame(0)?.Height ?? chain.Height);
             float carried = 0f;
             int linkIndex = 0;
-            float total = 0f;
-            for (int i = 0; i < chainPoints.Count - 1; i++) {
-                total += chainPoints[i].Distance(chainPoints[i + 1]);
-            }
-            float walked = 0f;
             for (int i = 0; i < chainPoints.Count - 1; i++) {
                 Vector2 a = chainPoints[i];
                 Vector2 b = chainPoints[i + 1];
@@ -664,22 +626,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                 float pos = carried;
                 while (pos < segLen) {
                     Vector2 at = a + dir * pos;
-                    float t = total > 0f ? (walked + pos) / total : 0f;
                     Rectangle? frame = ChainFrame(linkIndex);
                     Vector2 origin = frame.HasValue
                         ? frame.Value.Size() / 2f : chain.Size() / 2f;
                     Color light = Lighting.GetColor((int)(at.X / 16f), (int)(at.Y / 16f));
                     Main.EntitySpriteDraw(chain, at - Main.screenPosition, frame,
-                        ChainLinkColor(linkIndex, t, light), rot, origin, 1f, SpriteEffects.None, 0);
+                        light, rot, origin, 1f, SpriteEffects.None, 0);
                     pos += linkLen;
                     linkIndex++;
                 }
                 carried = pos - segLen;
-                walked += segLen;
             }
         }
 
-        /// <summary>锤头三层：速度残影垫底 → 本体 → 充能辉光；PostDrawHead 加武器专属层</summary>
+        /// <summary>锤头本体：原版锤头弹幕贴图一笔</summary>
         protected void DrawHead(Color lightColor) {
             Main.instance.LoadProjectile(VanillaProjID);
             Texture2D tex = TextureAssets.Projectile[VanillaProjID].Value;
@@ -692,42 +652,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                     ? Projectile.velocity.ToRotation()
                     : Projectile.rotation;
 
-            //高速期残影：旋转涂抹/直线拖影都吃 oldPos 缓存
-            float speedNow = State == StateSpin
-                ? spinCharge
-                : MathHelper.Clamp(Projectile.velocity.Length() / (LaunchSpeed * 1.2f), 0f, 1f);
-            if (speedNow > 0.35f) {
-                for (int g = 1; g < Projectile.oldPos.Length; g++) {
-                    Vector2 gp = Projectile.oldPos[g];
-                    if (gp == Vector2.Zero) {
-                        continue;
-                    }
-                    float fade = (1f - g / (float)Projectile.oldPos.Length) * 0.28f * speedNow;
-                    Color ghost = GlowColor * fade;
-                    ghost.A = 0;
-                    Main.EntitySpriteDraw(tex, gp + Projectile.Size / 2f - Main.screenPosition,
-                        frame, ghost, Projectile.oldRot[g], origin, Projectile.scale, SpriteEffects.None, 0);
-                }
-            }
-
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition,
                 frame, lightColor, rot, origin, Projectile.scale, SpriteEffects.None, 0);
-
-            //充能/满转辉光罩层
-            float glowAmp = spinCharge * 0.3f + chargeFlashTimer / 9f * 0.4f;
-            if (glowAmp > 0.02f) {
-                Color glow = GlowColor * glowAmp;
-                glow.A = 0;
-                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition,
-                    frame, glow, rot, origin, Projectile.scale * 1.06f, SpriteEffects.None, 0);
-            }
-            PostDrawHead(lightColor, rot, frame, origin);
         }
 
-        /// <summary>锤头之上再叠武器专属层（炽熔皮肤/月晕之类）；绘制禁 Main.rand，抖动用 identity 种子</summary>
-        protected virtual void PostDrawHead(Color lightColor, float headRotation, Rectangle frame, Vector2 origin) { }
-
-        /// <summary>锤头自旋在 AI 前推进（TrailingMode=2 需要 oldRot 逐帧记录）</summary>
+        /// <summary>锤头自旋在 AI 前推进</summary>
         public override bool PreUpdate() {
             if (SelfSpinHead) {
                 Projectile.rotation += HeadSpinRate;

@@ -1,5 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -14,7 +12,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
     /// <summary>
     /// 船锚重铸（本族重坠特化）。材质：锈铁船锚与铁链。签名行为：①抛物去程，过顶点即转直坠，
     /// 砸地轰出震荡波并短暂驻地 ②玩家与锚之间全程铁链逐节可见，回收时沿链加速拽回
-    /// ③砸地时尘浪、震屏与低沉铁鸣
+    /// ③砸地时震屏与低沉铁鸣
     /// </summary>
     internal class GsAnchor : GsBoomerScheme
     {
@@ -27,19 +25,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
         internal override float ThrowSpeedMul => 0.95f;
 
         protected override string GsDescFallback =>
-            "Flies in a heavy arc, then plunges straight down past its peak; the slam quakes the ground\n" +
-            "for 60% area damage and the anchor digs in a moment before reeling home along its chain\n" +
-            "Right click while it flies: command it to dash toward your cursor first";
+            "Flies in a heavy arc, then plunges straight down past its peak; the slam quakes the ground\nfor 60% area damage and the anchor digs in a moment before reeling home along its chain";
     }
 
-    /// <summary>铁锚体：沉锚重坠，链体逐节自绘</summary>
+    /// <summary>铁锚体：沉锚重坠，链体逐节用原版链条贴图画出</summary>
     internal class GsAnchorProj : GsBoomerProjBase
     {
         internal override int SourceItemID => ItemID.Anchor;
-
-        protected override Color GlowColor => new(150, 152, 165);
-
-        protected override Color TrailColor => new(120, 122, 135);
 
         protected override int OutTime => 34;
         protected override float OutDrag => 0.985f;      //空气阻力，重力另加
@@ -47,7 +39,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
         protected override float ReturnAccel => 0.7f;
         protected override float ReturnMaxSpeed => 19f;
         protected override int HitboxSize => 34;
-        protected override bool AllowCommandInOut => true;
         protected override float SpinRateMul => 0.6f;    //铁锚沉重，转不快
         protected override SoundStyle HitSound => SoundID.Tink with { Volume = 0.7f, Pitch = -0.5f };
 
@@ -128,28 +119,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.9f, Pitch = -0.7f }, Projectile.Center);
             Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center,
                 Vector2.UnitY, 5f, 7f, 12, 900f, "GsAnchorSlam"));
-            //尘浪向两侧铺开
-            for (int i = 0; i < 14; i++) {
-                int side = i % 2 == 0 ? 1 : -1;
-                Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(side * Main.rand.NextFloat(4f, 20f), 10f),
-                    DustID.Dirt, new Vector2(side * Main.rand.NextFloat(1.5f, 5f), -Main.rand.NextFloat(1f, 3.5f)),
-                    80, default, Main.rand.NextFloat(1.1f, 1.7f));
-                d.noGravity = Main.rand.NextBool(3);
-            }
-            PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center + new Vector2(0f, 4f),
-                new Vector2(0f, -0.6f), new Color(140, 130, 120), 0.8f)?.Configure(26, 0.5f, 0.02f);
         }
 
-        protected override void FlightFX(Player owner) {
-            //铁锚不发光尘，坠落时拉风声尘线
-            if (Phase == PhaseHover && !Embedded && PhaseTimer % 3 == 0 && !VaultUtils.isServer) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center - new Vector2(0f, 14f), DustID.Smoke,
-                    new Vector2(0f, -0.8f), 140, default, 0.9f);
-                d.noGravity = true;
-            }
-        }
-
-        //==================== 链体逐节自绘 ====================
+        //==================== 链体：原版链条贴图逐节一笔 ====================
 
         protected override void PreDrawUnder(SpriteBatch sb, Vector2 drawPos, Color lightColor) {
             Texture2D chain = TextureAssets.Chain.Value;
@@ -179,7 +151,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
         }
     }
 
-    /// <summary>沉锚震荡波：贴地宽判定，尘浪即视觉本体</summary>
+    /// <summary>沉锚震荡波：贴地宽判定，存活 3 帧的无形判定箱，不画本体</summary>
     internal class GsAnchorQuakeProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -198,23 +170,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             Projectile.localNPCHitCooldown = -1;
         }
 
-        public override void AI() {
-            if (Projectile.localAI[0] != 0f || VaultUtils.isServer) {
-                return;
-            }
-            Projectile.localAI[0] = 1f;
-            //冲击环 + 碎石
-            PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                new Color(190, 185, 175), 1f)?.Configure(0.3f, 1.6f, 16);
-            for (int i = 0; i < 8; i++) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(50f, 12f),
-                    DustID.Stone, new Vector2(Main.rand.NextFloat(-2f, 2f), -Main.rand.NextFloat(2f, 5f)),
-                    60, default, Main.rand.NextFloat(1f, 1.5f));
-                d.noGravity = false;
-            }
-        }
-
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
             => modifiers.HitDirectionOverride = target.Center.X >= Projectile.Center.X ? 1 : -1;
+
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }

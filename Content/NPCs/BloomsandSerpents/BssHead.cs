@@ -60,8 +60,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
             Color duskTile = new(150, 124, 86);
             Color duskBg = new(112, 90, 58);
-            tileColor = Color.Lerp(tileColor, duskTile, AmbientStorm * 0.28f);
-            backgroundColor = Color.Lerp(backgroundColor, duskBg, AmbientStorm * 0.42f);
+            tileColor = Color.Lerp(tileColor, duskTile, AmbientStorm * 0.34f);
+            backgroundColor = Color.Lerp(backgroundColor, duskBg, AmbientStorm * 0.52f);
         }
 
         public override void ClearWorld() {
@@ -71,8 +71,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
     /// <summary>
     /// 荒花沙蟒头部主控：状态机 + 统一血池 + 爬行/钻沙双身体语言 + 四足步态宿主。
+    /// 身份：中速贴地爬行的节肢巨蟒，入场破土即掀起压场沙暴，屏内来回爬、喷沙、
+    /// 带黄色预警线的冲刺与扑击；鳌足掘沙扬雨与合击、沙浪、沙鳍、龙卷、花刃、流沙、
+    /// 盘身刺阵作全套变化（招表见 <see cref="BssHubState"/>）。
     /// 联机契约：转场只在权威端裁决（状态走 ai[3]），各端本地跑同一状态机做表现，
-    /// 弹幕只在权威端生成，粒子音效全走 !dedServ 门，腿是纯本地表现。
+    /// 弹幕只在权威端生成，粒子音效全走 !dedServ 门，腿与鳌足是纯本地表现。
     /// </summary>
     [AutoloadBossHead]
     internal class BssHead : BssModNPC, ICWRLoader
@@ -160,8 +163,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         public override void SetDefaults() {
+            //判定盒写贴图尺度的原值，缩放交给原版 SetDefaults 收尾的 width/height × scale（与脓蕾沙蟒同一写法）
             NPC.width = 56;
             NPC.height = 56;
+            NPC.scale = BssDirector.BodyScale;
             NPC.damage = BssDirector.HeadContact;
             NPC.defense = BssDirector.HeadDefense;
             NPC.lifeMax = BssDirector.HeadLife;
@@ -188,8 +193,20 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot) {
+            //专家：宝藏袋；普通：同池直掉（与袋共享一张掉落表，袋内材料量更足）
+            npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<BssTreasureBag>()));
+            LeadingConditionRule notExpert = new(new Conditions.NotExpert());
+            RegisterSharedLoot(rule => notExpert.OnSuccess(rule), expert: false);
+            npcLoot.Add(notExpert);
+        }
+
+        /// <summary>
+        /// 共享掉落池（普通直掉与专家袋同表）：荒花兵装五取一保底 + 荒漠沙器四取一保底 +
+        /// 沙中曲彩头 + 沙漠材料（蚁狮颚是沙器线与花蕾配方共同的瓶颈，一次击杀够换一把）
+        /// </summary>
+        internal static void RegisterSharedLoot(Action<IItemDropRule> add, bool expert) {
             //荒花兵装五件套：沙蟒的签名武器，每次必出一把
-            npcLoot.Add(ItemDropRule.OneFromOptions(1,
+            add(ItemDropRule.OneFromOptions(1,
                 ModContent.ItemType<BudPiercer>(),
                 ModContent.ItemType<Thornstring>(),
                 ModContent.ItemType<BloomCaller>(),
@@ -197,20 +214,19 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 ModContent.ItemType<BloomTome>()));
             //荒漠沙器四件套：每次必出一把。这四把原本只在灾厄荒漠灾虫身上，
             //挂到这里之后无灾厄环境也有正经来源（原有的无灾厄合成配方仍留作保底）
-            npcLoot.Add(ItemDropRule.OneFromOptions(1,
+            add(ItemDropRule.OneFromOptions(1,
                 ModContent.ItemType<SandDagger>(),
                 ModContent.ItemType<WastelandFang>(),
                 ModContent.ItemType<UnderTheSand>(),
                 ModContent.ItemType<DuneStalker>()));
             //沙中曲：小沙龙卷与本体的旋沙冲同源，越级一档，压低概率当额外彩头
-            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<MelodyTheSand>(), 4));
+            add(ItemDropRule.Common(ModContent.ItemType<MelodyTheSand>(), 4));
 
-            //材料：蚁狮颚是沙器线与花蕾配方共同的瓶颈，一次击杀够换一把
-            npcLoot.Add(ItemDropRule.Common(ItemID.AntlionMandible, 1, 8, 14));
-            npcLoot.Add(ItemDropRule.Common(ItemID.FossilOre, 1, 12, 20));
-            npcLoot.Add(ItemDropRule.Common(ItemID.SandBlock, 1, 40, 70));
-            npcLoot.Add(ItemDropRule.Common(ItemID.Cactus, 1, 20, 40));
-            npcLoot.Add(ItemDropRule.Common(ItemID.Amber, 3, 1, 2));
+            add(ItemDropRule.Common(ItemID.AntlionMandible, 1, expert ? 12 : 8, expert ? 20 : 14));
+            add(ItemDropRule.Common(ItemID.FossilOre, 1, expert ? 18 : 12, expert ? 30 : 20));
+            add(ItemDropRule.Common(ItemID.SandBlock, 1, expert ? 60 : 40, expert ? 100 : 70));
+            add(ItemDropRule.Common(ItemID.Cactus, 1, expert ? 30 : 20, expert ? 60 : 40));
+            add(ItemDropRule.Common(ItemID.Amber, expert ? 2 : 3, 1, expert ? 3 : 2));
         }
 
         public override void OnKill() {
@@ -291,14 +307,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 LegRig.Update(Context);
                 ClawRig.Update(Context);
                 float jawTarget = BssJawDraw.ResolveOpen(Context.JawCommand, Context.JawPhase, Context.JawBurst,
-                    Context.ClawCommand, Context.ClawPhase, Context.ClawBurst, Context.GaitPhase);
+                    Context.ClawCommand, Context.ClawPhase, Context.ClawBurst, Context.BreathPhase);
                 jawSmooth = MathHelper.Lerp(jawSmooth, jawTarget,
                     BssJawDraw.SnapRate(Context.JawCommand, Context.ClawCommand));
             }
 
-            //阶段驱动的沙暴底线（各端从同步的 Phase 推导，确定性）；死亡/撤离让位给演出退场
-            if (CurrentStateIndex is not BssStateIndex.Death and not BssStateIndex.Despawn) {
-                float stormFloor = Context.Phase >= 3 ? 1f : Context.Phase == 2 ? 0.72f : 0f;
+            //沙暴底线：入场破土即掀起、全程压场（各端从同步的 Phase 推导，确定性）；
+            //入场自管爬升，死亡/撤离让位给演出退场
+            if (CurrentStateIndex is not BssStateIndex.Intro and not BssStateIndex.Death and not BssStateIndex.Despawn) {
+                float stormFloor = BssDirector.StormFloor(Context.Phase);
                 if (Context.StormLevel < stormFloor) {
                     Context.StormLevel = MathHelper.Clamp(Context.StormLevel + 0.012f, 0f, stormFloor);
                 }
@@ -372,6 +389,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 return;
             }
 
+            //转阶段演出以立起为主体，头埋在沙里时起演会整场看不见：等出面再转
+            //（钻地类招式都有超时兜底，最迟几十帧内必出面）
+            if (!BssVfx.IsAboveGround(NPC.Center)) {
+                return;
+            }
+
             //60%：沙暴转阶段
             if (Context.Phase == 1 && NPC.life <= NPC.lifeMax * BssDirector.StormThreshold) {
                 stateMachine.ChangeState(new BssStormTransitionState());
@@ -427,15 +450,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         /// <summary>
-        /// 耙沙拍相位修正：0 号髋站走地腿的抓地拍在 GaitPhase ≡ 0 (mod 2π)，
-        /// 功率段约占 [0, PowerFraction·2π]；push 峰值压在功率段中点（≈0.9 弧度）。
+        /// 耙沙拍相位修正：push 峰值压在呼吸相位的功率段中点（≈0.9 弧度）。
         /// 向左走时走地排换到反相侧（时钟槽差 π），由 ApplyCrawl 给 bodyPhase 补相。
         /// </summary>
         private static readonly float PushAlignPhase = MathHelper.PiOver2 - 0.9f;
 
         /// <summary>
-        /// 蜈蚣爬行：沿地形等高线推进。全身起伏与推进涌动读步态时钟（与腿的划桨
-        /// 周期同源同拍）：耙沙功率段身体微抬加速、恢复段回沉滑行——"耙一记、滑一段"。
+        /// 蜈蚣爬行：沿地形等高线推进。全身起伏与推进涌动读呼吸相位（步态时钟的低频，
+        /// 八腿换步是快拍，身体起伏是慢拍，两者同源不同频）：功率段身体微抬加速、
+        /// 恢复段回沉滑行。中速档幅度收敛，身体读作沉稳地被腿托着走，不是上下颠簸。
         /// 急转向时甩一记鞭链行波。
         /// </summary>
         private void ApplyCrawl() {
@@ -445,9 +468,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
 
             //急转检测：行进中掉头 = 鞭波 + 短暂盘紧
-            if (Math.Abs(NPC.velocity.X) > 5f && Math.Sign(NPC.velocity.X) != dir) {
-                Context.PulseWhip(7f);
-                Context.Compression = Math.Min(Context.Compression, 0.93f);
+            if (Math.Abs(NPC.velocity.X) > 4f && Math.Sign(NPC.velocity.X) != dir) {
+                Context.PulseWhip(6f);
+                Context.Compression = Math.Min(Context.Compression, 0.94f);
             }
 
             Vector2 probe = NPC.Center + new Vector2(dir * BssDirector.CrawlLookahead, -150f);
@@ -455,21 +478,19 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             float desiredY = groundY - BssDirector.CrawlRideHeight;
 
             float speedNow = Math.Abs(NPC.velocity.X);
-            //身体节律 = 步态时钟全频（划桨周期本身从容）；向左走时走地排换侧（槽差 π）补相
-            float bodyPhase = Context.GaitPhase + (dir < 0f ? MathHelper.Pi : 0f);
-            //波幅随速：静止近乎不动，快爬时全身起伏（灵动的来源）
-            float waveAmp = 3f + MathHelper.Clamp(speedNow * 0.85f, 0f, 11f);
+            float bodyPhase = Context.BreathPhase + (dir < 0f ? MathHelper.Pi : 0f);
+            //波幅随速：静止近乎不动，爬起来有沉稳的起伏
+            float waveAmp = 2f + MathHelper.Clamp(speedNow * 0.5f, 0f, 6f);
             desiredY += MathF.Sin(bodyPhase) * waveAmp;
 
-            //耙沙拍：尖锐脉冲（pow3），相位对齐 0 号髋站功率段中点（每个划桨周期耙一记）
+            //耙沙拍：尖锐脉冲（pow3），身体高度与推进都骑在这一拍上
             float push = MathF.Pow(Math.Max(0f, MathF.Sin(bodyPhase + PushAlignPhase)), 3f);
-            //耙沙身体微抬、恢复段回沉：身体高度骑在腿的节拍上
-            desiredY -= push * MathHelper.Clamp(3f + speedNow * 0.25f, 0f, 9f);
+            desiredY -= push * MathHelper.Clamp(2f + speedNow * 0.2f, 0f, 5f);
 
-            //步频涌动：推进速度围绕目标值脉动（与贴地呼吸同拍 = 腿在发力的读数）
-            float stridePulse = 0.84f + 0.30f * push;
-            float vx = MathHelper.Lerp(NPC.velocity.X, dir * Context.CrawlSpeed * stridePulse, 0.12f);
-            float vy = MathHelper.Clamp((desiredY - NPC.Center.Y) * 0.1f, -12f, 12f);
+            //步频涌动：推进速度围绕目标值脉动（腿在发力的读数）
+            float stridePulse = 0.9f + 0.2f * push;
+            float vx = MathHelper.Lerp(NPC.velocity.X, dir * Context.CrawlSpeed * stridePulse, 0.1f);
+            float vy = MathHelper.Clamp((desiredY - NPC.Center.Y) * 0.1f, -10f, 10f);
             NPC.velocity = new Vector2(vx, vy);
 
             //行进间攻击：声明了瞄准角就让头看目标，身体继续爬
@@ -554,15 +575,15 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             BssVfx.SandBurst(ground + new Vector2(side * 640f, 0f), 1.2f);
         }
 
-        //漩涡/回环/沙柱腾跃/沙柱爆震/升空祭舞不进回归阀：远距瞬移会把蛇从自己的
-        //漩涡/环/柱/天空编舞上拽走（或打断钉桩怒吼）造成演出脱节，
-        //各招自带超时兜底，收招回 hub 后自然触发回归
+        //入场/转阶段/死亡/撤离不进回归阀（演出不许被瞬移打断）；
+        //流沙与盘身按锁定圆心做参数化运动，瞬移会把几何撕烂，也不进（两招自带超时）；
+        //其余战斗态各招自带超时兜底，收招回 hub 后自然触发回归
         private static bool AllowFarSnap(BssStateBase state) {
             return state is BssHubState or BssBurrowLungeState or BssSandSpitState
                 or BssCactusBallState or BssNeedleRippleState or BssPetalShakeState
-                or BssSandDashState or BssSkyWeaveState or BssCoilOrbitState
-                or BssGeyserMarchState or BssTailSweepState or BssPillarSpikeState
-                or BssClawRainState;
+                or BssSandDashState or BssPounceState or BssGeyserMarchState
+                or BssClawFlingState or BssSandSurgeState or BssFinHuntState
+                or BssDustDevilState or BssPincerSnapState or BssWindBladeState;
         }
         #endregion
 
@@ -645,35 +666,38 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             float storm = MathHelper.Clamp(Context.StormLevel, 0f, 1f);
             BssStormSystem.AmbientStorm = Math.Max(BssStormSystem.AmbientStorm, storm);
 
-            stormSmooth = MathHelper.Lerp(stormSmooth, storm, 0.04f);
+            stormSmooth = MathHelper.Lerp(stormSmooth, storm, 0.05f);
             Filter filter = SceneFilters.Scene[StormFilterName];
             if (stormSmooth > 0.03f) {
                 if (!filter.IsActive()) {
                     SceneFilters.Scene.Activate(StormFilterName, NPC.Center);
                 }
-                filter.GetShader().UseOpacity(0.22f * stormSmooth).UseTargetPosition(NPC.Center);
+                filter.GetShader().UseOpacity(0.3f * stormSmooth).UseTargetPosition(NPC.Center);
             }
             else if (filter.IsActive()) {
                 SceneFilters.Scene.Deactivate(StormFilterName);
             }
 
-            //横风沙尘：镜像沙丘风暴氛围包的贴地扬沙 + 空中平流沙痕
+            //全屏横风沙尘：贴地扬沙 + 空中平流沙痕 + 偶发大片沙幕（整场压场的天气，不是局部特效）
             if (storm > 0.05f && !Main.gamePaused) {
                 float wind = Context.WindSign;
-                int grains = storm > 0.85f ? 3 : storm > 0.4f ? 2 : 1;
+                int grains = storm > 0.85f ? 6 : storm > 0.4f ? 3 : 1;
                 for (int i = 0; i < grains; i++) {
                     if (!Main.rand.NextBool(2)) {
                         continue;
                     }
+                    //从上风侧屏外进入，横穿整屏
                     Vector2 pos = Main.screenPosition + new Vector2(
-                        Main.rand.NextFloat(-60f, Main.screenWidth + 60f),
-                        Main.rand.NextFloat(Main.screenHeight));
-                    float speed = 7f + 8f * storm;
+                        Main.rand.NextFloat(-120f, Main.screenWidth + 120f),
+                        Main.rand.NextFloat(-40f, Main.screenHeight + 20f));
+                    float speed = 8f + 9f * storm;
+                    bool sheet = Main.rand.NextBool(7);
                     Dust dust = Dust.NewDustPerfect(pos, DustID.Sand,
-                        new Vector2(wind * speed * Main.rand.NextFloat(0.7f, 1.15f), -Main.rand.NextFloat(0.1f, 0.7f)),
-                        Main.rand.Next(90, 140), default, Main.rand.NextFloat(0.8f, 1.35f));
+                        new Vector2(wind * speed * Main.rand.NextFloat(0.7f, 1.15f), -Main.rand.NextFloat(0.1f, 0.8f)),
+                        Main.rand.Next(sheet ? 150 : 90, sheet ? 200 : 140), default,
+                        sheet ? Main.rand.NextFloat(1.7f, 2.4f) : Main.rand.NextFloat(0.8f, 1.35f));
                     dust.noGravity = true;
-                    dust.fadeIn = 0.4f;
+                    dust.fadeIn = sheet ? 1.2f : 0.4f;
                 }
             }
         }
@@ -779,7 +803,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             //近层鳌足：盖在头本体之上（螳臂在前的主剪影）
             ClawRig.DrawFront(spriteBatch, screenPos, clawFade);
 
-            //怒吼声波环（沙柱爆震）：共享冲击环换沙色板，环心钉在点火位不随头走
+            //怒吼声波环（入场破土/转阶段怒吼）：共享冲击环换沙色板，环心钉在点火位不随头走
             if (Context.RoarRingAge >= 0f) {
                 float p = MathHelper.Clamp(Context.RoarRingAge / 46f, 0f, 1f);
                 float radius = (1f - MathF.Pow(1f - p, 3f)) * 980f;

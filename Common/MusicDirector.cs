@@ -48,11 +48,15 @@ namespace CalamityOverhaul.Common
         public virtual int HardTimeoutFrames => 0;
         /// <summary>灭声认领（奸奇）：胜出时不写曲目，musicVolume 压 0，存取还原由仲裁器统一做</summary>
         public virtual bool MuteAll => false;
+        /// <summary>音量倍率（月总黑闪死寂的渐变灭声）：&lt;1 时胜出帧目标音量 = 用户基准 × 倍率，
+        /// 认领自己逐帧把它从 1 走到 0 再走回来即得淡出淡入；≥1 不干预。
+        /// 优先级 <see cref="MuteAll"/> &gt; 倍率 &gt; <see cref="VolumeFloor"/>；存取还原仍由仲裁器统一做</summary>
+        public virtual float VolumeScale => 1f;
         /// <summary>音量地板（永燃当下 0.6）：胜出时用户音量低于此值则抬升，负值表示不干预</summary>
         public virtual float VolumeFloor => -1f;
         /// <summary>每帧现算的在场证明；gameMenu 门禁由仲裁器按档位统一处理，无需自查</summary>
         public abstract bool ShouldPlay();
-        /// <summary>胜出帧曲目槽位；<see cref="MuteAll"/> 认领返回 -1。
+        /// <summary>胜出帧曲目槽位；<see cref="MuteAll"/> 认领与只干预音量的认领返回 -1（不写曲目）。
         /// 必须返回模组曲目槽（≥原版曲目数）：游戏内经 musicBox2 承载，
         /// 原版范围的值会被音乐盒映射表错译成别的曲目</summary>
         public abstract int GetMusicSlot();
@@ -189,6 +193,9 @@ namespace CalamityOverhaul.Common
             float target;
             if (winner.MuteAll) {
                 target = 0f;
+            }
+            else if (winner.VolumeScale < 1f) {
+                target = baseVolume * MathHelper.Clamp(winner.VolumeScale, 0f, 1f);
             }
             else if (winner.VolumeFloor >= 0f && baseVolume < winner.VolumeFloor) {
                 target = winner.VolumeFloor;

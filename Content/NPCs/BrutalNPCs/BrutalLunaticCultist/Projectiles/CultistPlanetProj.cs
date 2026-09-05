@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
     /// ai[0]=星球种类 0星旋 1星云 2星尘 3日耀 4月明 ai[1]=宿主npc<br/>
     /// ai[2]=阶段包装(个位:0降临 1常驻 2退场 3被举起 4砸出 5归位 6裂解 7聚阵;十位:幻象序号)<br/>
     /// 运动学:星旋小幅游走/星云漂移(带幻象)/星尘绕滞后圆心公转(缓追教徒,带转向惯性)/日耀月明钉死场心;<br/>
-    /// 举星砸掷:主星被拽到教徒头顶举持(跟随本体的下沉/举升身体语言)→26(月明20)爆发砸出,高速段缓泄保贯穿→归位;<br/>
+    /// 举星砸掷:主星被拽到教徒头顶举持(跟随本体的下沉/举升身体语言)→SmashSpeed 爆发砸出,高速段缓泄保贯穿→归位;<br/>
     /// 砸上黄道结界:全屏等强震+穹膜受击脉冲,反弹计数走 SendExtraAI 广播(远端也看得到撞穹)<br/>
     /// 裂解(转阶段):裂纹生长→坍缩吸气→单帧引爆散尽,残星不留(旧版熔核小球被读成"凭空冒出小星球",已废)<br/>
     /// 聚阵(幻星祭仪):真伪三星滑向品字槽位,实体度蒙面同貌,预瞄锁定拍揭示真容后逐星轮掷<br/>
@@ -48,6 +48,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         private const float SolidityMasked = 0.58f;
         /// <summary>生成宽限帧数:生成 3 秒内不造成接触伤害(公平阀)</summary>
         private const int SpawnGraceFrames = 180;
+
+        //---- 掷出速度(2026-09-05 用户令:掷星速度 +20%,全套同比;月体更沉故各档均慢一截) ----
+        /// <summary>举星砸出爆发速度(px/f),掷星态预判同参</summary>
+        internal const float SmashSpeed = 31.2f;
+        internal const float SmashSpeedMoon = 24f;
+        /// <summary>祭仪掷出离手速度(px/f),快于巡航=离手爆发感</summary>
+        internal const float LaunchSpeed = 15.6f;
+        internal const float LaunchSpeedMoon = 13.2f;
+        /// <summary>掷出段巡航速度(px/f),高速段泄到此值后匀速贯穿;合相预瞄同参</summary>
+        internal const float CruiseSpeed = 10.8f;
+        internal const float CruiseSpeedMoon = 8.4f;
+        /// <summary>高速段慢泄阈值:高于此按 0.988 缓泄(保贯穿),低于此按 0.972 急衰到巡航</summary>
+        private const float SlowBleedThreshold = 16.8f;
 
         private int Kind => (int)Projectile.ai[0];
         private int OwnerWho => (int)Projectile.ai[1];
@@ -216,11 +229,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                     break;
                 case 4: {
                     //砸出:高速段(举星砸的爆发)只缓慢泄速,保住整段进场的贯穿力——反应慢的玩家躲不掉;
-                    //低速段急衰到巡航,祭仪掷(13/11 出手)的离手爆发感维持原样
-                    float cruise = Kind == KindMoon ? 7f : 9f;
+                    //低速段急衰到巡航,祭仪掷(LaunchSpeed 出手)的离手爆发感维持原样
+                    float cruise = Kind == KindMoon ? CruiseSpeedMoon : CruiseSpeed;
                     float speedNow = Projectile.velocity.Length();
                     if (speedNow > cruise) {
-                        Projectile.velocity *= speedNow > 14f ? 0.988f : 0.972f;
+                        Projectile.velocity *= speedNow > SlowBleedThreshold ? 0.988f : 0.972f;
                     }
                     if (Main.GameUpdateCount % 7 == 0) {
                         CultistMotion.Shake(Projectile.Center, 2.4f, 6);
@@ -653,7 +666,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 
         /// <summary>命令指定星球掷出(权威端,幻星祭仪逐星出手):保幻象序号;出手快于巡航,掷出段自然衰到巡航=离手爆发感</summary>
         internal static void CommandLaunchPlanet(Projectile planet, Vector2 aim) {
-            float speed = (int)planet.ai[0] == KindMoon ? 11f : 13f;
+            float speed = (int)planet.ai[0] == KindMoon ? LaunchSpeedMoon : LaunchSpeed;
             planet.velocity = (aim - planet.Center).SafeNormalize(Vector2.UnitY) * speed;
             planet.ai[2] = (int)planet.ai[2] / 10 * 10 + 4;
             planet.localAI[0] = 0f;
@@ -666,7 +679,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             int type = ModContent.ProjectileType<CultistPlanetProj>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.type == type && (int)proj.ai[1] == ownerWho && (int)proj.ai[2] % 10 == 3) {
-                    float speed = (int)proj.ai[0] == KindMoon ? 20f : 26f;
+                    float speed = (int)proj.ai[0] == KindMoon ? SmashSpeedMoon : SmashSpeed;
                     proj.velocity = (aim - proj.Center).SafeNormalize(Vector2.UnitY) * speed;
                     proj.ai[2] = (int)proj.ai[2] / 10 * 10 + 4;
                     proj.localAI[0] = 0f;

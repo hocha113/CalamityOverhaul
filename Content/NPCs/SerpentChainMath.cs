@@ -78,12 +78,15 @@ namespace CalamityOverhaul.Content.NPCs
             return 1f - 0.20f * MathHelper.Clamp(gather, 0f, 1f) * falloff;
         }
 
-        /// <summary>体节竖排款式数（0 绿赘 / 1 干净 / 2 橙囊发射器）</summary>
-        public const int BodyStyleCount = 3;
+        /// <summary>
+        /// 体节竖排款式数（<c>BSS/Body</c> 帧序：0 绿赘 / 1 干净 / 2 橙囊发射器 / 3 褐叶 / 4 青掌）。
+        /// 后两款为荒花专用，排布见 BssDirector.BodyStyleLayout；脓蕾与鬼伞幼蛇仍只用前三款。
+        /// </summary>
+        public const int BodyStyleCount = 5;
 
         /// <summary>
-        /// 体节款式：发射器节锁橙囊帧，其余按链序在绿赘与干净之间交替。
-        /// 纯函数，各端同算，不占网络包。
+        /// 旧三款体节款式（脓蕾 / 鬼伞幼蛇）：发射器节锁橙囊帧，其余按链序在绿赘与干净之间交替。
+        /// 纯函数，各端同算，不占网络包。荒花 Boss 本体改走 BssDirector.BodyStyle 款式表。
         /// </summary>
         public static int BodyStyleIndex(int ordinal, bool isEmitter)
             => isEmitter ? 2 : ordinal & 1;

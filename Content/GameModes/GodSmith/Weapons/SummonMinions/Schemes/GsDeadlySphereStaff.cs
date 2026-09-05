@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +10,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
     /// 致命球法杖「绞锯协议」：致命球结成悬浮三角驻位；
     /// 签名 = 突击令下 45 帧内撞中焦点目标满 3 次，拆下一环锯齿铆进目标原地研磨
     /// （<see cref="GsDeadlySphereSawProj"/>，每段 0.45× 共约 3 段，冷却 90 帧，
-    /// 同一目标同时只铆一环）；增强层 = 高速突进的钢灰残影
+    /// 同一目标同时只铆一环）
     /// </summary>
     internal class GsDeadlySphereStaff : GsMinionScheme
     {
@@ -22,10 +20,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Grinder Protocol: under the assault order, three sphere slams within a breath rivet a whirling saw ring into the marked foe, grinding it with sparking steel teeth";
-
-        private static readonly Color SteelGray = new(168, 172, 186);
-        private static readonly Color FrictionOrange = new(255, 148, 54);
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Triangle,
             Radius = 66f,
@@ -47,20 +41,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
             => GsMinionCastMotion.ApplyRaise(player);
-
-        public override void GsUseAnimation(Item item, Player player)
-            => GsMinionCastMotion.CastBurst(player, SteelGray, FrictionOrange);
-
-        //==================== 增强层：突进残影 ====================
-
-        protected override void GsMinionPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer || proj.type != ProjectileID.DeadlySphere
-                || proj.velocity.Length() < 10f || proj.timeLeft % 3 != 0) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_Light>(proj.Center - proj.velocity * 0.6f,
-                -proj.velocity * 0.05f, SteelGray, 0.12f)?.Configure(9, 0.6f);
-        }
 
         //==================== 签名：铆锯 ====================
 

@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -78,14 +76,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
         internal void ResetHits() => hits = 0;
     }
 
-    /// <summary>威压爪痕：三道黑红爪影自上而下撕开，先撕出再淡收</summary>
+    /// <summary>威压爪痕：一记自上而下撕开的短命爪击判定</summary>
     internal class GodSmithMenaceClaw : ModProjectile
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.NightBeam;
-
-        private float Seed => Projectile.whoAmI * 2.399f;
-
-        private float LifeRatio => 1f - Projectile.timeLeft / 20f;
 
         public override void SetDefaults() {
             Projectile.width = 62;
@@ -106,43 +100,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
         public override void AI() {
             if (Projectile.timeLeft == 19 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.6f, Pitch = -0.5f }, Projectile.Center);
-                for (int i = 0; i < 8; i++) {
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Smoke,
-                        Main.rand.NextVector2Circular(3f, 3f), 170, Color.Black, 1.3f);
-                    dust.noGravity = true;
-                }
-            }
-            Lighting.AddLight(Projectile.Center, 0.35f, 0.05f, 0.08f);
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(220, 40, 60, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float grow = LifeRatio < 0.3f ? LifeRatio / 0.3f : 1f - (LifeRatio - 0.3f) / 0.7f;
-            float rot = Seed % 0.5f - 0.25f + MathHelper.PiOver4 * 0.5f;
-            //三道平行爪影：横向错位，各自双层（黑衬底 + 血红面）
-            for (int i = -1; i <= 1; i++) {
-                Vector2 offset = new Vector2(i * 20f, 0f).RotatedBy(rot);
-                Main.EntitySpriteDraw(tex, Projectile.Center + offset - Main.screenPosition, null,
-                    new Color(30, 5, 10, 0) * (0.85f * grow), rot, origin,
-                    new Vector2(1.2f, 1.5f * (0.5f + grow)), 0);
-                Main.EntitySpriteDraw(tex, Projectile.Center + offset - Main.screenPosition, null,
-                    new Color(210, 40, 55, 0) * grow, rot, origin,
-                    new Vector2(0.55f, 1.3f * (0.5f + grow)), 0);
-            }
-            return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 6; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.CrimsonTorch,
-                    Main.rand.NextVector2Circular(3f, 3f), 110, default, 1.1f);
-                dust.noGravity = true;
             }
         }
     }

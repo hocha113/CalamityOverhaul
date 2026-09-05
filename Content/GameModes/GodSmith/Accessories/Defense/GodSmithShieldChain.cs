@@ -1,7 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -44,16 +41,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 return;
             }
             player.GetModPlayer<BulwarkPlayer>().ShackleTimer = ResolveDuration;
-            if (VaultUtils.isServer) {
-                return;
-            }
-            SoundEngine.PlaySound(SoundID.Item52 with { Volume = 0.5f, Pitch = -0.4f }, player.Center);
-            //铁链环一圈坠地（受击方本地端权威）
-            for (int i = 0; i < 8; i++) {
-                float ang = MathHelper.TwoPi * i / 8f;
-                Dust dust = Dust.NewDustPerfect(player.Center + ang.ToRotationVector2() * 22f,
-                    DustID.Iron, ang.ToRotationVector2() * 1.2f + new Vector2(0f, 0.8f));
-                dust.noGravity = false;
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Item52 with { Volume = 0.5f, Pitch = -0.4f }, player.Center);
             }
         }
     }
@@ -88,17 +77,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
             bulwark.GuardTimer = GuardDuration;
             bulwark.GuardBonus = item.type == ItemID.CobaltShield ? 6 : item.type == ItemID.ObsidianShield ? 8 : 10;
 
-            Color ringColor = item.type == ItemID.CobaltShield ? new Color(70, 130, 255)
-                : item.type == ItemID.ObsidianShield ? new Color(170, 90, 220) : new Color(255, 210, 110);
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.6f, Pitch = -0.2f }, player.Center);
-                PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero, ringColor, 0.05f)
-                    ?.Configure(0.08f, 0.45f, 16);
-                for (int i = 0; i < 6; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(player.Center,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), ringColor,
-                        Main.rand.NextFloat(0.26f, 0.42f))?.Configure(false, Main.rand.Next(12, 20));
-                }
             }
 
             //黑曜石回振：震焰点燃近身敌人（受击方本地端可安全请求上 buff）
@@ -120,10 +100,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                         i--;
                         cleansed++;
                     }
-                }
-                if (cleansed > 0 && !VaultUtils.isServer) {
-                    PRTLoader.NewParticle<PRT_Light>(player.Center, new Vector2(0f, -1f),
-                        new Color(255, 230, 150), 0.14f)?.Configure(18, 0.9f);
                 }
             }
         }
@@ -148,12 +124,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
             }
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.55f, Pitch = -0.1f }, player.Center);
-                for (int i = 0; i < 5; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(player.Center,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f),
-                        Main.rand.NextBool() ? new Color(255, 210, 110) : new Color(255, 245, 200),
-                        Main.rand.NextFloat(0.28f, 0.46f))?.Configure(true, Main.rand.Next(14, 22));
-                }
             }
             //审判之锤 owner 侧生成（受击方本地端权威）
             if (player.whoAmI != Main.myPlayer) {
@@ -216,17 +186,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 return;
             }
             player.GetModPlayer<BulwarkPlayer>().PactTimer = PactDuration;
-            if (VaultUtils.isServer) {
-                return;
-            }
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = -0.3f }, player.Center);
-            //金红十字血光竖起（受击方本地端权威）
-            for (int i = 0; i < 6; i++) {
-                Vector2 vel = (i % 2 == 0 ? Vector2.UnitY : Vector2.UnitX)
-                    * (i < 3 ? 1f : -1f) * Main.rand.NextFloat(1.5f, 3f);
-                PRTLoader.NewParticle<PRT_Spark>(player.Center, vel,
-                    Main.rand.NextBool() ? new Color(230, 80, 60) : new Color(255, 210, 110),
-                    Main.rand.NextFloat(0.28f, 0.44f))?.Configure(false, Main.rand.Next(14, 22));
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = -0.3f }, player.Center);
             }
         }
 
@@ -239,9 +200,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 return;
             }
             player.Heal(1);
-            PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                (player.Center - target.Center).SafeNormalize(Vector2.UnitY) * 3f,
-                new Color(230, 80, 60), 0.3f)?.Configure(false, 14);
         }
     }
 
@@ -256,16 +214,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
         protected override string EffectDescFallback =>
             "Cryo Ward: a killing blow instead freezes into the crystal: you survive at 25% max life,\nnearby foes are blasted with frostburn, and you gain brief immunity\nOnce every 90s";
 
-        public override void UpdateAccessory(Item item, Player player, bool hideVisual, GodSmithPlayer state) {
-            //就绪读数：低血且寒晶就绪时霜光微闪（个人读数）
-            if (VaultUtils.isServer || state.IsOnCooldown(item.type)
-                || player.statLife > player.statLifeMax2 / 2 || !Main.rand.NextBool(16)) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_Light>(player.Center + Main.rand.NextVector2Circular(14f, 20f),
-                new Vector2(0f, -Main.rand.NextFloat(0.2f, 0.6f)), new Color(150, 220, 255),
-                Main.rand.NextFloat(0.05f, 0.09f))?.Configure(14, 0.7f);
-        }
+        public override void UpdateAccessory(Item item, Player player, bool hideVisual, GodSmithPlayer state) { }
 
         public override bool PreKill(Item item, Player player, GodSmithPlayer state, double damage,
             int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {
@@ -281,20 +230,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
             playSound = false;
             genGore = false;
 
-            //寒晶爆发：冰环 + 霜雾 + 近身挫伤
+            //寒晶爆发：碎裂声 + 近身挫伤
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.8f, Pitch = -0.4f }, player.Center);
-            if (!VaultUtils.isServer) {
-                PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
-                    new Color(150, 220, 255), 0.05f)?.Configure(0.1f, 0.75f, 22);
-                PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
-                    new Color(220, 245, 255), 0.05f)?.Configure(0.06f, 0.5f, 16);
-                for (int i = 0; i < 14; i++) {
-                    Dust dust = Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(16f, 20f),
-                        DustID.IceTorch, Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f),
-                        0, default, Main.rand.NextFloat(1.2f, 1.8f));
-                    dust.noGravity = true;
-                }
-            }
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (!npc.friendly && npc.Distance(player.Center) < 200f && npc.CanBeChasedBy()) {
                     npc.AddBuff(BuffID.Frostburn, 300);
@@ -304,18 +241,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
         }
     }
 
-    /// <summary>
-    /// 审判之锤：一柄自旋飞出的圣金战锤，追着最近的罪人去；
-    /// 星芒十字自绘旋转 + 金辉拖尾，命中敲出神圣钟音
-    /// </summary>
+    /// <summary>审判之锤：一柄自旋飞出的圣金战锤，追着最近的罪人去；命中敲出神圣钟音</summary>
     internal class GodSmithPaladinsShieldHammerProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
-
-        private ref float Life => ref Projectile.ai[0];
-
-        /// <summary>确定性绘制相位，绘制路径不掷 Main.rand</summary>
-        private float Seed => Projectile.identity * 0.6947f % 2.41f;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.PaladinsHammerFriendly;
 
         public override void SetDefaults() {
             Projectile.width = 26;
@@ -331,19 +260,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
         }
 
         public override void AI() {
-            Life++;
             //轻追踪最近敌人，锤有意志但不魔法制导
             NPC target = FindTarget();
             if (target != null) {
                 Vector2 want = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX) * 11f;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, want, 0.05f);
             }
-            if (!Main.dedServ && Life % 3 == 0) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    -Projectile.velocity * 0.08f, new Color(255, 220, 130),
-                    Main.rand.NextFloat(0.2f, 0.32f))?.Configure(false, 10);
-            }
-            Lighting.AddLight(Projectile.Center, new Vector3(0.45f, 0.38f, 0.15f));
+            //锤体自旋
+            Projectile.rotation += 0.35f;
         }
 
         private NPC FindTarget() {
@@ -367,32 +291,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = 0.3f }, target.Center);
-            for (int i = 0; i < 5; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
-                    Main.rand.NextBool() ? new Color(255, 220, 130) : new Color(255, 250, 220),
-                    Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(14, 22));
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (star == null || glow == null) {
-                return false;
-            }
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            float spin = Life * 0.35f + Seed;
-            float fade = MathHelper.Clamp(Projectile.timeLeft / 12f, 0f, 1f);
-            //金辉垫底
-            Main.EntitySpriteDraw(glow, pos, null, new Color(255, 190, 80) with { A = 0 } * (0.45f * fade),
-                0f, glow.Size() * 0.5f, 0.9f, SpriteEffects.None, 0);
-            //十字锤体两层错相旋转，读出锤的翻滚
-            Main.EntitySpriteDraw(star, pos, null, new Color(255, 210, 110) with { A = 0 } * (0.9f * fade),
-                spin, star.Size() * 0.5f, 0.24f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(star, pos, null, new Color(255, 250, 220) with { A = 0 } * (0.7f * fade),
-                spin + MathHelper.PiOver4, star.Size() * 0.5f, 0.15f, SpriteEffects.None, 0);
-            return false;
         }
     }
 

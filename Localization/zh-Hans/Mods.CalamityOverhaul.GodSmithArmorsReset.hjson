@@ -1,0 +1,150 @@
+GsCopperArmor: {
+	// Godsmith armor resets: per-piece stat lines and set bonus lines
+	// Pre-hardmode ore sets: chestplates grant mining speed, one set bonus each
+	BodyLine: 挖掘速度提高5%
+	SetBonusLine: 攻击时有30%概率额外造成2点固定伤害
+}
+
+GsTinArmor: {
+	BodyLine: 挖掘速度提高6%
+	SetBonusLine: 移动速度提高10%，最大魔力值增加50
+}
+
+GsIronArmor: {
+	BodyLine: 挖掘速度提高8%
+	SetBonusLine: 防御力增加5，穿甲增加10，但移动速度降低20%
+}
+
+GsLeadArmor: {
+	BodyLine: 挖掘速度提高9%
+	SetBonusLine: 攻击有50%概率造成铅毒，每秒4点伤害，持续6秒；召唤栏增加1
+}
+
+GsSilverArmor: {
+	BodyLine: 挖掘速度提高11%
+	SetBonusLine: 防御力增加3
+}
+
+GsTungstenArmor: {
+	BodyLine: 挖掘速度提高12%
+	SetBonusLine: 防御力增加3
+}
+
+GsGoldArmor: {
+	BodyLine: 挖掘速度提高14%
+	SetBonusLine: 伤害提高15%，但防御力降低20
+}
+
+GsPlatinumArmor: {
+	BodyLine: 挖掘速度提高15%
+	SetBonusLine: 防御力增加10，召唤栏增加1，但伤害降低15%
+}
+
+GsLeadPoisonBuff: {
+	DisplayName: 铅毒
+	Description: 每秒损失4点生命
+}
+
+// The eight wood sets
+GsWoodArmor.SetBonusLine: 砍树时有机会掉落额外的木材
+GsBorealWoodArmor.SetBonusLine: 砍树时有机会掉落额外的木材
+GsRichMahoganyArmor.SetBonusLine: 砍树时有机会掉落额外的木材
+GsPalmWoodArmor.SetBonusLine: 砍树时有机会掉落额外的木材
+GsEbonwoodArmor.SetBonusLine: 砍树时有机会掉落额外的木材
+GsShadewoodArmor.SetBonusLine: 砍树时有机会掉落额外的木材
+GsAshWoodArmor.SetBonusLine: 砍树时有机会掉落额外的木材
+GsPearlwoodArmor.SetBonusLine: 砍树时有机会掉落额外的木材
+// Other pre-hardmode sets
+GsCactusArmor.SetBonusLine: 移动速度提高15%
+GsEskimoArmor.SetBonusLine: 免疫冰冻与寒冷，攻击附带霜冻，防御力增加15
+GsPinkEskimoArmor.SetBonusLine: 免疫冰冻与寒冷，攻击附带霜冻，防御力增加15
+GsAnglerArmor.SetBonusLine: 每次抛竿多甩出3根鱼线；有机会钓到不属于当前环境的鱼，或一次钓上3到7瓶增益药水
+
+GsNinjaArmor: {
+	HeadLine: 暴击率提高10%
+	BodyLine: 召唤栏增加1
+	LegsLine: 移动速度提高10%
+	SetBonusLine: 飞镖、飞刀、手里剑与尖球不再消耗，射速提高20%，伤害增加10并造成流血
+}
+
+GsFossilArmor: {
+	HeadLine: 暴击率提高15%
+	BodyLine: 召唤栏增加2
+	LegsLine: 移动速度提高10%
+	SetBonusLine: 飞镖、飞刀、手里剑与尖球不再消耗，射速提高20%，伤害增加7并造成中毒
+}
+
+GsShadowArmor: {
+	HeadLine: 暴击率提高15%
+	BodyLine: 移动速度提高5%
+	LegsLine: 移动速度提高10%
+	SetBonusLine: 所有武器攻击速度提高15%，召唤栏增加1
+}
+
+GsCrimsonArmor: {
+	HeadLine: 防御力增加5，伤害提高4%
+	BodyLine: 防御力增加5，伤害提高3%
+	LegsLine: 防御力增加5，伤害提高3%
+	SetBonusLine: 攻击时将5%的伤害转化为治疗，最多15点，每5秒一次；生命越低防御越高，30%生命时达到1.05倍
+}
+
+GsMeteorArmor.SetBonusLine: 暴击率提高20%，伤害提高25%，所有武器攻击速度提高60%，召唤栏增加3；最大生命值减少300，不足则变为1，防御力减少25，受到的伤害增加20%
+
+GsNecroArmor: {
+	HeadLine: 伤害提高5%，最大魔力值增加100，魔法暴击率提高5%
+	BodyLine: 伤害提高5%，暴击率提高10%，魔法伤害提高5%
+	LegsLine: 伤害提高5%，穿甲增加10，魔力消耗降低20%
+	SetBonusLine: 造成伤害时有60%概率掷出1到2根骸骨，每根造成10点伤害，受重力影响并可穿透两次
+}
+
+GsJungleArmor: {
+	HeadLine: 攻击伤害增加5
+	BodyLine: 伤害提高10%
+	LegsLine: 移动速度提高10%
+	SetBonusLine: 召唤栏增加2；伤害敌人时立即向其射出一根4点伤害的毒刺
+}
+
+GsBeeArmor: {
+	HeadLine: 魔力消耗降低30%
+	BodyLine: 暴击率提高15%
+	LegsLine: 移动速度提高15%
+	SetBonusLine: 3只大蜜蜂环绕在你周围，扑咬靠近的敌人
+}
+
+GsObsidianArmor: {
+	HeadLine: 防御力增加4，伤害提高7%
+	BodyLine: 防御力增加3，暴击率提高5%
+	LegsLine: 防御力增加3，魔力消耗降低15%
+	SetBonusLine: 完全免疫岩浆；伤害敌人时有30%概率引发爆炸，造成武器面板1.1倍的伤害
+}
+
+GsMoltenArmor: {
+	HeadLine: 防御力增加7，暴击率提高10%
+	BodyLine: 防御力增加7，伤害提高15%
+	LegsLine: 防御力增加6，召唤栏增加3
+	SetBonusLine: 所有攻击附带6秒着火，免疫着火了；伤害敌人时有40%概率引发爆炸，造成武器面板1.5倍的伤害
+}
+
+// Hardmode ore sets and the spider set: vanilla piece stats stay, only the set bonus changes
+GsCobaltArmor.SetBonusLine: 所有伤害增加15，所有武器攻击速度提高15%，魔力消耗降低20%；攻击时有30%概率恢复30点魔力
+GsPalladiumArmor.SetBonusLine: 防御力提高10%，召唤栏增加2，但伤害降低20；攻击时将10%的伤害转化为治疗，最多25点，每5秒一次
+GsMythrilArmor.SetBonusLine: 攻击附带灵液、诅咒焰与着火，暴击率提高10%，伤害提高10%
+GsOrichalcumArmor.SetBonusLine: 召唤栏增加1；攻击时有70%概率迸出2到3片追踪樱花，每片造成100点伤害并可穿透两次
+GsTitaniumArmor.SetBonusLine: 击中敌人时获得钛金屏障，钛金碎片环绕守护；碎片越多，暴击率最多提高15%，伤害最多提高10%，受伤后屏障立即消散
+GsAdamantiteArmor.SetBonusLine: 召唤栏增加3，移动速度提高15%，但魔力消耗提高15%
+GsSpiderArmor.SetBonusLine: 伤害提高15%，暴击率提高15%，移动速度提高15%，召唤栏增加2；使用魔力时有40%概率不消耗魔力
+// Second batch (hardmode/endgame): vanilla piece stats stay, only the set bonus changes; pillar and shroomite sets keep their vanilla mechanics underneath
+GsFrostArmor.SetBonusLine: 所有攻击附带霜冻；免疫霜冻、寒冷与冰冻；伤害敌人时有25%概率在目标处炸开冰晶，造成武器面板1.2倍的伤害并冻结周围敌人1秒；受到伤害时释放寒潮，冻结周围敌人2秒，每10秒一次
+GsCrystalAssassinArmor.SetBonusLine: 可以冲刺，移动速度提高10%；冲刺撞中敌人时引发水晶爆裂，造成武器面板2倍的伤害；每次冲刺后接下来3次攻击必定暴击
+GsHallowedArmor.SetBonusLine: 伤害提高10%，暴击率提高10%；击中敌人后获得圣光护体，完全闪避下一次受到的伤害，闪避时向周围射出6颗圣光星，每颗造成150点伤害；护体每20秒最多获得一次
+GsBeetleScaleArmor.SetBonusLine: 连续命中积攒甲虫之力，每次命中增加1层，最多20层；每层伤害提高1%，所有武器攻击速度提高0.5%，2秒未命中则清零；满层时命中有20%概率引发甲壳冲击，造成武器面板1.5倍的伤害
+GsBeetleShellArmor.SetBonusLine: 防御力提高10%；受到伤害时获得一层甲壳，最多3层，每层防御力增加6、受到的伤害降低6%，10秒未受伤则全部消散；3层时再受伤会震碎甲壳，向周围释放防御力4倍伤害的冲击波
+GsTurtleArmor.SetBonusLine: 防御力提高15%，受到的伤害降低10%，近身攻击你的敌人受到2倍反伤，但移动速度降低10%；受到伤害时向周围迸出8根棘刺，每根造成防御力2倍的伤害，每3秒一次
+GsTikiArmor.SetBonusLine: 召唤栏增加3，召唤伤害提高15%，鞭子范围增加25%；仆从与鞭子命中时有20%概率召来图腾魂火追向目标，造成60点伤害并使其中毒3秒
+GsSpectreHoodArmor.SetBonusLine: 魔法命中仍会释放治疗灵球，魔法伤害降低20%；最大魔力值增加100，魔力再生加快；受到伤害时有40%概率立即回复10%最大生命，每8秒一次
+GsSpectreMaskArmor.SetBonusLine: 魔法命中仍会释放迷失之魂；魔法伤害提高10%，魔法暴击率提高10%，魔力消耗降低15%；魔法暴击时有30%概率再射出一枚幽魂之火追向目标，造成80点伤害
+GsShroomiteArmor.SetBonusLine: 静止时的潜行照旧；远程暴击率提高15%，弹药有30%概率不消耗；深度潜行时远程命中有30%概率炸开孢子云，造成武器面板1.3倍的伤害
+GsSolarArmor.SetBonusLine: 日耀护盾与冲刺照旧；每层护盾额外提供8点防御与4%伤害减免；冲刺撞中敌人时额外引发日耀爆炸，造成武器面板2倍的伤害
+GsVortexArmor.SetBonusLine: 星旋隐身照旧；隐身时弹药不消耗，远程命中有40%概率引发星旋爆裂，造成武器面板1.5倍的伤害；未隐身时移动速度提高15%，远程暴击率提高10%
+GsNebulaArmor.SetBonusLine: 星云增幅照旧；每级伤害增幅额外提高5%魔法伤害，每级生命增幅额外增加2点生命再生，每级魔力增幅额外降低10%魔力消耗；魔法命中有25%概率引发星云脉冲，造成武器面板1.2倍的伤害
+GsStardustArmor.SetBonusLine: 星尘守卫照旧；召唤栏增加3，召唤伤害提高15%；仆从命中时有20%概率召来星尘彗屑追向目标，造成150点伤害

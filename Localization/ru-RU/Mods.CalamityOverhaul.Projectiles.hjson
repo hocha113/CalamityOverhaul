@@ -797,6 +797,9 @@ KikasaTeleportProj.DisplayName: Кикаса: прыжок чернильног�
 EyetoothDart.DisplayName: Зубчатый глазной дротик
 DivineSourceBoltProjectile.DisplayName: Сияющий снаряд золотого источника
 BloodButchererBolt.DisplayName: Некротический снаряд Кровавого мясника
+// TerraLightProj.DisplayName: Terra Light
+// TerraSoulJudgmentProj.DisplayName: True Excalibur Spirit
+// TerraSoulSpinProj.DisplayName: True Night's Edge Spirit
 BloodshotBombHeld.DisplayName: Кровавая бомба
 BloodshotBombThrown.DisplayName: Брошенная кровавая бомба
 BloodshotFleshChunk.DisplayName: Кусок плоти кровавого прилива
@@ -1051,8 +1054,6 @@ GsDD2SquireBetsySwordWaveProj.DisplayName: Мечевая волна Бетси
 GsDD2SquireDemonSwordFireWaveProj.DisplayName: Адская мечевая волна демона
 GsEbonSporeMistProj.DisplayName: Эбонитовый ядовито-споровый туман
 GsEnchantedSwordBeamProj.DisplayName: Зачарованная мечевая волна
-GsExcaliburArcProj.DisplayName: Святая дуга Экскалибура
-GsExcaliburNovaProj.DisplayName: Святая сверхновая Экскалибура
 GsFetidBaghnakhsBurstProj.DisplayName: Стремительный натиск Зловонных багхнаков
 GsFetidBaghnakhsMarkProj.DisplayName: Метка разрыва Зловонных багхнаков
 GsFieryGreatswordPitProj.DisplayName: Лавовая яма Огненного двуручника
@@ -1067,7 +1068,6 @@ GsLightsBaneScarProj.DisplayName: Теневой шрам Погибели св�
 GsMeowmereCatProj.DisplayName: Радужный кошачий снаряд
 GsMeowmereMeteorProj.DisplayName: Падающий метеор Мяумура
 GsMeowmereStarBurstProj.DisplayName: Звёздный взрыв Мяумура
-GsNightsEdgeWaveProj.DisplayName: Ночная мечевая волна Ночной кромки
 GsPalmSandWaveProj.DisplayName: Песчаная волна пальмового дерева
 GsPhasebladeArcProj.DisplayName: Световая дуга фазового клинка
 GsPhasesaberBurstProj.DisplayName: Разрывной взрыв метеоритного фазового меча
@@ -1082,16 +1082,7 @@ GsSlapHandPrintProj.DisplayName: Отпечаток Пощёчины
 GsStarfuryStarProj.DisplayName: Падающая звезда Звёздной ярости
 GsStarWrathFallProj.DisplayName: Падающий метеор Звёздного гнева
 GsStarWrathRingProj.DisplayName: Звёздное кольцо Звёздного гнева
-GsTerraBladeBurstProj.DisplayName: Резонансный взрыв Терра-клинка
-GsTerraBladeRingProj.DisplayName: Энергетическое кольцо Терра-клинка
-GsTerraBladeWaveProj.DisplayName: Сверхэнергетическая мечевая волна Терра-клинка
 GsTheHorsemansBladeJackProj.DisplayName: Тыквенная душа Клинка всадника
-GsTrueExcaliburCrossProj.DisplayName: Святой крест Истинного Экскалибура
-GsTrueExcaliburWaveProj.DisplayName: Святая мечевая волна Истинного Экскалибура
-GsTrueNightsEdgeShardProj.DisplayName: Ночной осколок Истинной ночной кромки
-GsTrueNightsEdgeWaveProj.DisplayName: Ночная мечевая волна Истинной ночной кромки
-GsZenithPhantomProj.DisplayName: Фантомный клинок Зенита
-GsZenithRiftProj.DisplayName: Разлом пустоты Зенита
 GsBallOHurtBarbProj.DisplayName: Шип Шара боли
 GsBlueMoonCrescentProj.DisplayName: Сияние Голубой луны
 GsChainGuillotinesShearProj.DisplayName: Летящий разруб Цепных гильотин
@@ -1218,11 +1209,15 @@ TempleDiveOmen.DisplayName: Предупреждение о пике храма
 TempleDropOmen.DisplayName: Предупреждение о падении камня храма
 TempleEmberProj.DisplayName: Огненный снаряд храма
 BssBreachOmen.DisplayName: Предупреждение о прорыве земли
+// BssDashOmen.DisplayName: Dash Telegraph
 BssCactusBallProj.DisplayName: Катящийся кактусовый шар
 BssNeedleProj.DisplayName: Гигантский летящий шип
 BssPetalProj.DisplayName: Штормовой лепесток
 BssSandGlob.DisplayName: Песчаный шар
-BssSandVortexProj.DisplayName: Вихрь зыбучего песка
+// BssSandSurgeProj.DisplayName: Sand Surge
+// BssDustDevilProj.DisplayName: Dust Devil
+// BssWindPetalProj.DisplayName: Gale Petal
+// BssPincerSnapProj.DisplayName: Pincer Snap
 FssBreachOmen.DisplayName: Гнойный песчаный холм
 FssCascadeDrop.DisplayName: Каскад ихора
 FssIchorGate.DisplayName: Врата ихора
@@ -1247,6 +1242,14 @@ DeepcrystalJetBeam.DisplayName: Струйный луч кристалла бе�
 DeepcrystalSeekBubble.DisplayName: Самонаводящийся пузырь кристалла бездны
 DeepcrystalWaterShot.DisplayName: Водяной снаряд кристалла бездны
 SoulbindingCounterFlame.DisplayName: Контрударное пламя связанной души
-BssStormMark.DisplayName: Метка ока песчаной бури
 // GsGunHoldPoseProj.DisplayName: Gs Gun Hold Pose Proj
 // CrimsonSweepSlash.DisplayName: Crimson Sweep Slash
+// GsArmorBlastProj.DisplayName: Gs Armor Blast Proj
+// GsJungleStingerProj.DisplayName: Gs Jungle Stinger Proj
+// GsNecroBoneProj.DisplayName: Gs Necro Bone Proj
+// GsOrichalcumPetalProj.DisplayName: Gs Orichalcum Petal Proj
+// GsHallowedStarProj.DisplayName: Gs Hallowed Star Proj
+// GsSpectreSoulProj.DisplayName: Gs Spectre Soul Proj
+// GsStardustShardProj.DisplayName: Gs Stardust Shard Proj
+// GsTikiSpiritFlameProj.DisplayName: Gs Tiki Spirit Flame Proj
+// GsTurtleSpikeProj.DisplayName: Gs Turtle Spike Proj

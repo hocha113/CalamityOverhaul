@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -19,7 +17,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.AleThrowingGlove;
         protected override string GsDescFallback =>
             "Reforged: 30% chance to not consume ale\nHits stack Tipsy, +8% damage each up to 5; every 6th throw is a keg blast that dazes non-boss foes";
-
         /// <summary>MarkData 酒桶爆码</summary>
         private const float KegCode = 1f;
 
@@ -28,8 +25,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         private uint aleUntil;
         private int throwCount;
         private bool pendingKeg;
-
-        private static readonly Color AleAmber = new(232, 176, 84);
 
         /// <summary>酒意加伤走伤害行(结算在 owner 端取 owner 的层数)</summary>
         protected override float DamageMul {
@@ -66,17 +61,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             }
         }
 
-        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (router.MarkData != KegCode || VaultUtils.isServer) {
-                return;
-            }
-            //酒桶爆的瓶更沉:琥珀泡沫尾
-            if (Main.rand.NextBool(4)) {
-                PRTLoader.NewParticle<PRT_Spark>(proj.Center - proj.velocity * 0.3f,
-                    -proj.velocity * 0.05f, AleAmber, Main.rand.NextFloat(0.2f, 0.32f))?.Configure(false, 12);
-            }
-        }
-
         protected override void GsThrowOnHit(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone,
             GodSmithProjRouter router, GsThrowProjState st) {
             if (proj.owner != Main.myPlayer || !st.IsPrimary || target.friendly) {
@@ -93,12 +77,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
                     proj.owner, 120f, GsBurstProj.FxConfuse);
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item107 with { Volume = 0.7f, Pitch = 0.2f }, target.Center);
-                    for (int i = 0; i < 9; i++) {
-                        //酒沫飞溅
-                        PRTLoader.NewParticle<PRT_Sparkle>(target.Center + Main.rand.NextVector2Circular(16f, 16f),
-                            Main.rand.NextVector2Circular(2.6f, 2.6f) - Vector2.UnitY * 1.4f,
-                            AleAmber, Main.rand.NextFloat(0.26f, 0.44f))?.Configure(AleAmber, Main.rand.Next(14, 24), 0.05f, 0.6f);
-                    }
                 }
             }
         }

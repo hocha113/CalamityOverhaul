@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 Player target = owner != null && owner.active && owner.target >= 0 && owner.target < 255
                     ? Main.player[owner.target] : null;
                 if (target.Alives()) {
-                    Vector2 aim = CultistMotion.PredictTarget(target, planet.Center, 9f, 0.55f);
+                    Vector2 aim = CultistMotion.PredictTarget(target, planet.Center, CultistPlanetProj.CruiseSpeed, 0.55f);
                     Projectile.ai[1] = aim.X;
                     Projectile.ai[2] = aim.Y;
                     if (Projectile.timeLeft % 4 == 0 || Projectile.timeLeft == LockFrames + 1) {

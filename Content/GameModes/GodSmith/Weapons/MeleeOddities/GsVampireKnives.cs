@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -16,8 +14,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
     /// <summary>
     /// 【吸血鬼刀·A档】材质：猩红古银圣物刀，血是暗红的（禁白热）。
     /// 签名：①命中吸血凝成环绕血珠，40 血一颗、至多 3 颗，每颗让下一掷多一把刀
-    /// ②满 3 珠为处决掷：11 把定数齐射、本轮吸血翻倍、出手手位血雾爆
-    /// ③命中血线回流：暗红火星弧线从伤口流回持刀人
+    /// ②满 3 珠为处决掷：11 把定数齐射、本轮吸血翻倍
     /// </summary>
     internal class GsVampireKnives : GodSmithScheme
     {
@@ -26,16 +23,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         public override string GsFamily => "MeleeOddities";
 
         protected override string GsDescFallback =>
-            "Reforged: hurls 4-8 knives that heal 7.5% of damage dealt; " +
-            "stolen blood condenses into up to 3 orbiting blood pearls, each adding a knife to the next throw; " +
-            "at 3 pearls the next throw is a crimson volley with doubled lifesteal";
-
-        //猩红古银圣物刀色板：血是暗红的
-        internal static readonly Color BloodDeep = new(42, 4, 7);       //凝血暗底
-        internal static readonly Color BloodMain = new(107, 11, 18);    //血珠主体
-        internal static readonly Color BloodBright = new(168, 18, 28);  //鲜血亮缘
-        internal static readonly Color SilverCold = new(214, 216, 224); //古银冷光
-
+            "Reforged: hurls 4-8 knives that heal 7.5% of damage dealt; stolen blood condenses into up to 3 orbiting blood pearls, each adding a knife to the next throw; at 3 pearls the next throw is a crimson volley with doubled lifesteal";
         public override bool? GsCanUseItem(Item item, Player player) {
             //手持弹幕在场即攻击冷却（真实冷却 = max(useTime, 弹幕总帧)，两者都吃攻速）
             if (HeldAlive<GsVampireKnivesHeld>(player)) {
@@ -131,9 +119,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
     }
 
     /// <summary>
-    /// 吸血鬼刀手持投掷。三相 展扇-甩掷-收势；展扇期指间渐显小刀扇（数量预览本次掷数），
+    /// 吸血鬼刀手持投掷。三相 展扇-甩掷-收势；展扇期指间小刀扇（数量预览本次掷数），
     /// 甩掷帧爆发生成全部刀弹并前倾。<br/>
-    /// ai[0]=本次掷刀数（凝珠已加成），ai[1]=1 为处决掷（吸血×2、手位血雾爆）
+    /// ai[0]=本次掷刀数（凝珠已加成），ai[1]=1 为处决掷（吸血×2）
     /// </summary>
     internal class GsVampireKnivesHeld : BaseHeldProj
     {
@@ -222,11 +210,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             UpdateArm(phase);
             UpdatePose(phase);
             HandlePhaseEvents(phase);
-            if (!VaultUtils.isServer) {
-                HandleParticles(phase);
-            }
-
-            Lighting.AddLight(HandPos, GsVampireKnives.BloodMain.ToVector3() * 0.3f);
 
             if (timer >= totalDur) {
                 Projectile.Kill();
@@ -300,9 +283,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             ThrowKnives();
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item39 with { Volume = 0.9f, Pitch = IsExecution ? -0.25f : 0f }, Owner.Center);
-                if (IsExecution) {
-                    ExecutionMistFX();
-                }
             }
         }
 
@@ -327,32 +307,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             }
         }
 
-        /// <summary>处决掷的手位血雾爆（已守非服务器端）</summary>
-        private void ExecutionMistFX() {
-            Vector2 at = HandPos;
-            PRTLoader.NewParticle<PRT_Light>(at, Vector2.Zero, GsVampireKnives.BloodMain, 0.2f)?.Configure(10, 0.85f);
-            for (int i = 0; i < 10; i++) {
-                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f);
-                Color c = Main.rand.NextBool(3) ? GsVampireKnives.BloodBright : GsVampireKnives.BloodMain;
-                PRTLoader.NewParticle<PRT_Spark>(at, vel, c, Main.rand.NextFloat(0.35f, 0.6f))
-                    ?.Configure(true, Main.rand.Next(12, 20));
-            }
-            for (int i = 0; i < 6; i++) {
-                Dust d = Dust.NewDustPerfect(at, DustID.Blood,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3.5f), 80, default, Main.rand.NextFloat(1f, 1.5f));
-                d.noGravity = Main.rand.NextBool();
-            }
-        }
-
-        /// <summary>粒子演出（已守非服务器端）：处决展扇期手位血珠雾升腾</summary>
-        private void HandleParticles(int phase) {
-            if (phase == PhaseFan && IsExecution && Main.rand.NextBool(2)) {
-                Dust d = Dust.NewDustPerfect(HandPos + Main.rand.NextVector2Circular(10f, 10f), DustID.Blood,
-                    new Vector2(0f, -Main.rand.NextFloat(0.5f, 1.2f)), 120, default, Main.rand.NextFloat(0.8f, 1.2f));
-                d.noGravity = true;
-            }
-        }
-
         public override void OnKill(int timeLeft) {
             if (bodyLeanApplied && Owner.active) {
                 Owner.fullRotation = 0f;
@@ -366,87 +320,36 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             return x * x * (3f - (2f * x));
         }
 
-        //==================== 绘制：指间刀扇 + 甩掷银芒 ====================
-
+        /// <summary>展扇期指间小刀本体：原版物品贴图 0.62 缩放扇形排开，每把一笔 lightColor 着色（掷出后手空不画）</summary>
         public override bool PreDraw(ref Color lightColor) {
-            if (timer <= 0) {
+            if (timer <= 0 || CurrentPhase != PhaseFan) {
                 return false;
-            }
-            SpriteBatch sb = Main.spriteBatch;
-            DrawFingerFan(sb, lightColor);
-            DrawThrowSmear(sb);
-            return false;
-        }
-
-        /// <summary>展扇期指间渐显小刀：原版物品贴图 0.62 缩放扇形排开 + 暗银加色辉</summary>
-        private void DrawFingerFan(SpriteBatch sb, Color lightColor) {
-            if (CurrentPhase != PhaseFan) {
-                return;
             }
             Main.instance.LoadItem(ItemID.VampireKnives);
             Texture2D tex = TextureAssets.Item[ItemID.VampireKnives].Value;
             Vector2 origin = tex.Size() / 2f;
-            float p = EaseOutQuad(timer / (float)fanDur);
             int n = FanCount;
             for (int k = 0; k < n; k++) {
                 float ang = armAngle - 0.35f + (0.7f * k / (n - 1));
                 Vector2 at = HandPos + (ang.ToRotationVector2() * 16f) - Main.screenPosition;
-                float rot = ang + MathHelper.PiOver4;
-                //本体渐显
-                sb.Draw(tex, at, null, lightColor * p, rot, origin, 0.62f, SpriteEffects.None, 0f);
-                //暗银加色辉
-                Color glow = GsVampireKnives.SilverCold * (0.30f * p);
-                glow.A = 0;
-                sb.Draw(tex, at, null, glow, rot, origin, 0.66f, SpriteEffects.None, 0f);
-                //处决掷刃口渗血
-                if (IsExecution) {
-                    Color blood = GsVampireKnives.BloodBright * (0.28f * p);
-                    blood.A = 0;
-                    sb.Draw(tex, at, null, blood, rot, origin, 0.70f, SpriteEffects.None, 0f);
-                }
+                Main.spriteBatch.Draw(tex, at, null, lightColor, ang + MathHelper.PiOver4, origin, 0.62f, SpriteEffects.None, 0f);
             }
-        }
-
-        /// <summary>甩掷帧沿出手向拉一道银芒（处决为血芒），加色 A=0</summary>
-        private void DrawThrowSmear(SpriteBatch sb) {
-            if (CurrentPhase != PhaseThrow) {
-                return;
-            }
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            if (star == null) {
-                return;
-            }
-            float p = (timer - fanDur) / (float)throwDur;
-            float a = (1f - p) * 0.55f;
-            Vector2 at = Hand + (baseAngle.ToRotationVector2() * 32f) - Main.screenPosition;
-            float rot = baseAngle + MathHelper.PiOver2;
-            Color c = (IsExecution ? GsVampireKnives.BloodBright : GsVampireKnives.SilverCold) * a;
-            c.A = 0;
-            sb.Draw(star, at, null, c, rot, star.Size() / 2f, new Vector2(0.05f, 0.34f), SpriteEffects.None, 0f);
-            Color c2 = GsVampireKnives.BloodMain * (a * 0.8f);
-            c2.A = 0;
-            sb.Draw(star, at, null, c2, rot, star.Size() / 2f, new Vector2(0.03f, 0.22f), SpriteEffects.None, 0f);
+            return false;
         }
     }
 
     /// <summary>
     /// 猩红飞刀：前 30 帧刃口顺飞行向，20 帧后渐重下坠；30 帧起镜像原版衰减
     /// （翻滚自旋、alpha+10/帧、伤害与击退 ×0.9/帧直至消失）。
-    /// 命中吸血（处决 ×2 经 ai[1] 过线）并向 ModPlayer 凝珠记账。<br/>
-    /// 自绘：原版物品贴图垫底 + 暗银辉光层 + 短血丝拖尾（oldPos 渐淡暗红加色）
+    /// 命中吸血（处决 ×2 经 ai[1] 过线）并向 ModPlayer 凝珠记账。贴图借原版吸血鬼飞刀（304）默认绘制
     /// </summary>
     internal class GsVampireKnifeProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.VampireKnife;
         public override LocalizedText DisplayName => Language.GetText("ItemName.VampireKnives");
 
         private Player Owner => Main.player[Projectile.owner];
         private bool IsExecution => Projectile.ai[1] >= 1f;
-
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 4;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
-        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 20;
@@ -463,7 +366,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             int dir = Projectile.velocity.X >= 0f ? 1 : -1;
 
             if (Projectile.ai[0] < 30f) {
-                //刃口顺飞行向（物品贴图斜 45°）
+                //刃口顺飞行向（原版贴图斜 45°）
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             }
             else {
@@ -482,8 +385,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             if (Projectile.ai[0] > 20f) {
                 Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.1f, 16f);
             }
-
-            Lighting.AddLight(Projectile.Center, GsVampireKnives.BloodMain.ToVector3() * 0.2f);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -498,96 +399,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                     Owner.GetModPlayer<GsVampireKnivesPlayer>().AddBlood((int)heal);
                 }
             }
-            if (!VaultUtils.isServer) {
-                BloodFlowFX(target.Center);
-            }
-        }
-
-        /// <summary>血线回流：命中点→玩家的暗红火星弧线序列 + 血滴迸溅（已守非服务器端）</summary>
-        private void BloodFlowFX(Vector2 from) {
-            Vector2 to = Owner.Center;
-            Vector2 chord = to - from;
-            Vector2 mid = from + (chord * 0.5f)
-                + (chord.SafeNormalize(Vector2.UnitY).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-46f, 46f));
-            int n = Main.rand.Next(6, 9);
-            for (int i = 0; i < n; i++) {
-                float t = i / (float)(n - 1);
-                Vector2 p = Bezier(from, mid, to, t);
-                Vector2 tangent = (Bezier(from, mid, to, Math.Min(1f, t + 0.08f)) - p).SafeNormalize(Vector2.UnitX);
-                Color c = Color.Lerp(GsVampireKnives.BloodBright, GsVampireKnives.BloodMain, t);
-                PRTLoader.NewParticle<PRT_Spark>(p, tangent * (5.5f - (3f * t)), c, 0.42f)
-                    ?.Configure(false, 14);
-            }
-            for (int i = 0; i < 4; i++) {
-                Dust d = Dust.NewDustPerfect(from, DustID.Blood,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), 60, default, Main.rand.NextFloat(0.9f, 1.3f));
-                d.noGravity = Main.rand.NextBool();
-            }
-        }
-
-        private static Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, float t)
-            => Vector2.Lerp(Vector2.Lerp(a, b, t), Vector2.Lerp(b, c, t), t);
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 3; i++) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Blood,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f), 80, default, Main.rand.NextFloat(0.8f, 1.1f));
-                d.noGravity = Main.rand.NextBool();
-            }
-            PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, -Projectile.velocity * 0.1f,
-                GsVampireKnives.SilverCold, 0.3f)?.Configure(true, 10);
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Main.instance.LoadItem(ItemID.VampireKnives);
-            Texture2D tex = TextureAssets.Item[ItemID.VampireKnives].Value;
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            Vector2 origin = tex.Size() / 2f;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            float fade = (255 - Projectile.alpha) / 255f;
-
-            //短血丝拖尾：oldPos 渐淡暗红窄条（禁白热）
-            if (star != null) {
-                for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
-                    if (Projectile.oldPos[i] == Vector2.Zero) {
-                        continue;
-                    }
-                    Vector2 at = Projectile.oldPos[i] + (Projectile.Size / 2f) - Main.screenPosition;
-                    float k = 1f - (i / (float)Projectile.oldPos.Length);
-                    Color c = Color.Lerp(GsVampireKnives.BloodDeep, GsVampireKnives.BloodMain, k) * (0.34f * k * fade);
-                    c.A = 0;
-                    Main.EntitySpriteDraw(star, at, null, c, Projectile.oldRot[i] + MathHelper.PiOver4,
-                        star.Size() / 2f, new Vector2(0.028f, 0.085f), SpriteEffects.None, 0);
-                }
-            }
-
-            //暗银辉光层
-            Color silver = GsVampireKnives.SilverCold * (0.22f * fade);
-            silver.A = 0;
-            Main.EntitySpriteDraw(tex, drawPos, null, silver, Projectile.rotation, origin, 1.06f, SpriteEffects.None, 0);
-            //处决刀渗血辉
-            if (IsExecution) {
-                Color blood = GsVampireKnives.BloodBright * (0.26f * fade);
-                blood.A = 0;
-                Main.EntitySpriteDraw(tex, drawPos, null, blood, Projectile.rotation, origin, 1.10f, SpriteEffects.None, 0);
-            }
-            //本体
-            Main.EntitySpriteDraw(tex, drawPos, null, lightColor * fade, Projectile.rotation, origin, 1f, SpriteEffects.None, 0);
-            return false;
         }
     }
 
     /// <summary>
-    /// 环绕血珠：驻场纯演出（friendly=false），绕玩家公转。
+    /// 环绕血珠：驻场计数标记（friendly=false），绕玩家公转。
     /// owner 端发现珠数小于自己序号或玩家未持吸血鬼刀即自杀（远端等击杀包）。<br/>
-    /// ai[0]=珠序 0~2。自绘：SoftGlow 暗红核双层 + StarTexture 窄高光条（禁圆形大高光）
+    /// ai[0]=珠序 0~2。贴图借原版吸血治疗珠（305）默认绘制
     /// </summary>
     internal class GsVampireBloodOrbProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.VampireHeal;
         public override LocalizedText DisplayName => Language.GetText("ItemName.VampireKnives");
 
         private Player Owner => Main.player[Projectile.owner];
@@ -595,7 +417,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 14;
-            Projectile.friendly = false; //纯演出
+            Projectile.friendly = false; //纯标记不判伤
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Melee;
@@ -620,69 +442,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             }
             Projectile.timeLeft = 120; //常驻，由状态检查决定生死
 
-            //环绕：公转 + 呼吸半径（各端本地演算，纯演出无需过线）
+            //环绕：公转 + 呼吸半径（各端本地演算，无需过线）
             float t = Main.GlobalTimeWrappedHourly;
             float ang = (t * 2.2f) + (PearlIndex * MathHelper.TwoPi / 3f);
             float radius = 42f + (4f * MathF.Sin((t * 3.1f) + PearlIndex));
             Projectile.Center = Owner.MountedCenter + (ang.ToRotationVector2() * radius) - new Vector2(0f, 6f);
-
-            Lighting.AddLight(Projectile.Center, GsVampireKnives.BloodMain.ToVector3() * 0.25f);
-
-            //偶发滴露
-            if (!VaultUtils.isServer && Main.rand.NextBool(30)) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    DustID.Blood, new Vector2(0f, 0.6f), 120, default, 0.8f);
-                d.noGravity = false;
-            }
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, GsVampireKnives.BloodMain, 0.12f)
-                ?.Configure(8, 0.7f);
-            for (int i = 0; i < 5; i++) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Blood,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f), 80, default, Main.rand.NextFloat(0.8f, 1.2f));
-                d.noGravity = Main.rand.NextBool();
-            }
-        }
-
-        /// <summary>绘制路径专用确定性伪随机（identity+salt 播种，禁 Main.rand）</summary>
-        private float DrawRand01(int salt) {
-            uint h = (uint)((Projectile.identity * 374761393) + (salt * 668265263));
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            if (glow == null || star == null) {
-                return false;
-            }
-            Vector2 at = Projectile.Center - Main.screenPosition;
-            float pulse = 0.85f + (0.15f * MathF.Sin((Main.GlobalTimeWrappedHourly * 7f) + (DrawRand01(1) * 6.28f)));
-
-            //暗红核双层
-            Color outer = GsVampireKnives.BloodDeep * (0.6f * pulse);
-            outer.A = 0;
-            Main.EntitySpriteDraw(glow, at, null, outer, 0f, glow.Size() / 2f, 0.46f, SpriteEffects.None, 0);
-            Color core = GsVampireKnives.BloodMain * (0.9f * pulse);
-            core.A = 0;
-            Main.EntitySpriteDraw(glow, at, null, core, 0f, glow.Size() / 2f, 0.26f, SpriteEffects.None, 0);
-
-            //古银窄高光条（缓旋，禁圆形大高光）
-            float rot = (DrawRand01(2) * MathHelper.TwoPi) + (Main.GlobalTimeWrappedHourly * 0.8f);
-            Color spec = GsVampireKnives.SilverCold * (0.5f * pulse);
-            spec.A = 0;
-            Main.EntitySpriteDraw(star, at, null, spec, rot, star.Size() / 2f, new Vector2(0.016f, 0.055f), SpriteEffects.None, 0);
-            //血亮细十字点
-            Color pin = GsVampireKnives.BloodBright * (0.55f * pulse);
-            pin.A = 0;
-            Main.EntitySpriteDraw(star, at, null, pin, rot + MathHelper.PiOver2, star.Size() / 2f, new Vector2(0.012f, 0.032f), SpriteEffects.None, 0);
-            return false;
         }
     }
 }

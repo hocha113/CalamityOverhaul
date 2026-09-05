@@ -38,6 +38,21 @@ GameModeText: {
 		'''
 	GodSmithRecastTitle: Перековка божественного кузнеца
 	GodSmithEndowPrefix: "Дар: "
+	// GodSmithInheritLine: Inherited from {0}: {1}
+	// GodSmithSetPreview: Godsmith set bonus: {0}
+	// GodSmithNestChain: Socketed: {0}
+	// GodSmithNestTitle: Socketed Helmets
+	// GodSmithNestHint: Wear the full set to inherit the set bonus of every socketed helmet
+	// GodSmithNestActive: Full set worn: all socketed set bonuses are active
+	/* GodSmithNestReceiveHint:
+		'''
+		Add {0} when crafting this helmet to socket it in
+		Wear the full set to also inherit the socketed helmet's set bonus
+		''' */
+	// GodSmithNestGiveHint: Can be socketed into {0}: include this helmet when crafting one
+	// GodSmithNestOr: " or "
+	// GodSmithRecipeOn: Divine Artifice active
+	// GodSmithRecipeOff: Divine Artifice dormant
 	StateOn: Активен
 	StateOff: Дремлет
 	HintEnable: Нажмите, чтобы пробудить

@@ -26,14 +26,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
 
         public override float DamageTweak => 1.06f;
 
-        /// <summary>骨白</summary>
-        public override Color MarkColor => new(226, 222, 200);
-
         protected override string GsDescFallback =>
-            "Reforged: an on-beat sweep that tags 3 foes cracks a bone echo " +
-            "into everything it missed; 4 scars seal the mark, " +
-            "and the next on-beat hit erupts a bone spire from below";
-
+            "Reforged: an on-beat sweep that tags 3 foes cracks a bone echo into everything it missed; 4 scars seal the mark, and the next on-beat hit erupts a bone spire from below";
         protected override void OnExecute(Player player, NPC target, Projectile whipProj, WhipMarkState st) {
             int spireDmg = Math.Max(1, (int)MathF.Round(st.MarkDamage * 1.6f));
             int crackDmg = Math.Max(1, (int)MathF.Round(st.MarkDamage * 0.6f));

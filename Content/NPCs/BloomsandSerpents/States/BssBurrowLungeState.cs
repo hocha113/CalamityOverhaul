@@ -7,7 +7,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 {
     /// <summary>
-    /// 破土突袭：潜沙 → 沙丘隆起预告（实体，生成即锁点 = 预告即承诺）→ 直线爆冲跃出 → 回潜循环。
+    /// 破土突袭：潜沙 → 沙丘隆起预告 + 出土黄色预警线（实体，生成即锁点锁向 = 预告即承诺）→
+    /// 直线爆冲跃出 → 回潜循环。追击连接件与对空替补，不进主轮换。
     /// 公平阀：出土直线不再改向；伤害窗 = 速度门槛（可见冲势才咬人）；每循环重新预告。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)BssStateIndex.BurrowLunge, typeof(BssStateContext))]
@@ -115,6 +116,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     Projectile.NewProjectile(npc.GetSource_FromAI(), lockPoint - new Vector2(0f, 4f),
                         Vector2.Zero, ModContent.ProjectileType<BssBreachOmen>(), 0, 0f, Main.myPlayer,
                         BssDirector.BreachTelegraphFrames);
+                    //出土预警线：从隆起点沿计划射向铺出（定向，生成即承诺）
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), lockPoint - new Vector2(0f, 8f),
+                        PlannedBreachDir(npc), ModContent.ProjectileType<BssDashOmen>(), 0, 0f, Main.myPlayer,
+                        -1f, -1f, BssDashOmen.PackParams(0, BssDirector.BreachTelegraphFrames, 8));
                     npc.netUpdate = true;
                 }
                 ctx.Mode = BssMoveMode.Hold;

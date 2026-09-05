@@ -42,6 +42,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
     internal class GsNorthPoleHeld : GsThrustHeldBase
     {
         protected override int TargetItemType => ItemID.NorthPole;
+        protected override bool SelfDrawnVisuals => true;
 
         //极地寒晶色板
         internal static readonly Color IceWhite = new(232, 246, 255);

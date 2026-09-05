@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -19,24 +17,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override int TargetItemID => ItemID.DemonScythe;
 
         protected override string GsDescFallback =>
-            "Reforged: on-beat scythes wind up faster and may boomerang back at high resonance;" +
-            "\nat full resonance the next cast crosses two scythes over your cursor";
-
-        //原版已强，定价 110%
+            "Reforged: on-beat scythes wind up faster and may boomerang back at high resonance;\nat full resonance the next cast crosses two scythes over your cursor";
         protected override float BaseDamageMult => 1.04f;
 
         //滞空节拍原版已慢，正拍返蓝按计划压到 25%
         protected override float OnBeatManaRefund => 0.25f;
-
-        protected override Color ChantColor => new(196, 96, 235);
 
         /// <summary>形态：死神十字镰（MarkData2 = 0 横 / 1 竖）</summary>
         private const float FormCross = 10f;
 
         /// <summary>MarkData2 回旋标志位（层数 + 100）</summary>
         private const float ReturnFlag = 100f;
-
-        private static readonly Color DemonDeep = new(120, 40, 160);
 
         /// <summary>回旋状态（端本地：回旋触发按本地飞行帧计，伤害只认 owner 端）</summary>
         private class ScytheState
@@ -104,25 +95,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                     Player owner = Main.player[proj.owner];
                     proj.velocity = (owner.Center - proj.Center).SafeNormalize(Vector2.UnitX)
                         * Math.Max(6f, proj.velocity.Length() * 0.6f);
-                    if (!VaultUtils.isServer) {
-                        for (int i = 0; i < 4; i++) {
-                            PRTLoader.NewParticle<PRT_HellFlame>(proj.Center,
-                                Main.rand.NextVector2Circular(1.5f, 1.5f), DemonDeep,
-                                Main.rand.NextFloat(0.4f, 0.6f));
-                        }
-                    }
                 }
-            }
-
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Lighting.AddLight(proj.Center, ChantColor.ToVector3() * 0.22f);
-            //飞行相：暗焰曳尾
-            int interval = mark is FormOnBeat or FormEmpower or FormCross ? 4 : 6;
-            if (proj.timeLeft % interval == 0) {
-                PRTLoader.NewParticle<PRT_HellFlame>(proj.Center + Main.rand.NextVector2Circular(5f, 5f),
-                    -proj.velocity * 0.1f, ChantColor, Main.rand.NextFloat(0.35f, 0.6f));
             }
         }
 
@@ -131,31 +104,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             if (router.MarkData2 >= ReturnFlag
                 && router.LocalState is ScytheState { Returning: true }) {
                 modifiers.FinalDamage *= 0.6f;
-            }
-        }
-
-        public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            //命中相：暗焰爆闪
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 5; i++) {
-                PRTLoader.NewParticle<PRT_HellFlame>(target.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    Main.rand.NextVector2Circular(2.5f, 2.5f),
-                    i % 2 == 0 ? ChantColor : DemonDeep, Main.rand.NextFloat(0.4f, 0.65f));
-            }
-            PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero, ChantColor, 0.13f)?.Configure(8, 0.7f);
-        }
-
-        public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            //余痕相：焰屑散落
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(proj.Center + Main.rand.NextVector2Circular(5f, 5f),
-                    Main.rand.NextVector2Circular(1.2f, 1.2f) - Vector2.UnitY * 0.5f,
-                    DemonDeep, Main.rand.NextFloat(0.22f, 0.38f))?.Configure(true, Main.rand.Next(14, 24));
             }
         }
     }

@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -174,10 +172,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         /// <summary>全域回收封顶:任何单通道概率不得超过它</summary>
         public const float RecoverCap = 0.65f;
 
-        /// <summary>族金色(回收体、免耗回声、手部满转读数共用)</summary>
-        internal static readonly Color GsGold = new(255, 214, 120);
-        internal static readonly Color GsGoldPale = new(255, 240, 190);
-
         //==================== 经济参数(子类按计划覆写) ====================
 
         /// <summary>概率不消耗(0~0.30)</summary>
@@ -198,8 +192,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         protected virtual int CritAdd => 0;
         /// <summary>参与族连投轴(攻速与 9 层初速)</summary>
         protected virtual bool JoinsCombo => true;
-        /// <summary>族演出主色(暗影焰刀覆写为紫)</summary>
-        protected virtual Color ComboGlowColor => GsGold;
         /// <summary>消耗接管闸:false 时本次消耗判定不介入(雪球被雪球炮当弹药消耗时关)</summary>
         protected virtual bool ConsumeGateOpen(Item item, Player player) => true;
 
@@ -249,17 +241,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             }
         }
 
-        public sealed override void GsHoldItem(Item item, Player player) {
-            //满转读数:9 层时手位金焰,个人反馈
-            if (player.whoAmI == Main.myPlayer && JoinsCombo && !VaultUtils.isServer
-                && Main.GameUpdateCount % 9 == 0
-                && player.GetModPlayer<GsThrowPlayer>().ComboFor(item.type) >= 9) {
-                PRTLoader.NewParticle<PRT_Spark>(player.itemLocation + Main.rand.NextVector2Circular(4f, 4f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.6f, 1.4f),
-                    ComboGlowColor, Main.rand.NextFloat(0.2f, 0.34f))?.Configure(false, 12);
-            }
-            GsThrowHold(item, player);
-        }
+        public sealed override void GsHoldItem(Item item, Player player) => GsThrowHold(item, player);
 
         //==================== 密封接线:射击与消耗 ====================
 
@@ -288,11 +270,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             }
             if (pendingFree) {
                 pendingFree = false;
-                if (!VaultUtils.isServer) {
-                    //免耗回声:手位金闪(个人反馈)
-                    PRTLoader.NewParticle<PRT_Sparkle>(player.itemLocation, -Vector2.UnitY * 0.6f,
-                        ComboGlowColor, 0.5f)?.Configure(ComboGlowColor, 14, 0.04f, 0.7f);
-                }
                 return false;
             }
             return null;
@@ -369,11 +346,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             player.GiveItem(player.GetSource_Misc("GsThrowRefund"), TargetItemID, 1);
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f }, at);
-                for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(at + Main.rand.NextVector2Circular(6f, 6f),
-                        new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(1f, 2.2f)),
-                        ComboGlowColor, Main.rand.NextFloat(0.25f, 0.4f))?.Configure(false, 16);
-                }
             }
         }
 

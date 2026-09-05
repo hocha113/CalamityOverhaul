@@ -104,7 +104,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             if (Timer == HoistEnd && !VaultUtils.isClient && !aborted) {
                 Projectile planet = FindHeldPlanet(npc.whoAmI);
                 Vector2 from = planet?.Center ?? npc.Center;
-                lockedAim = CultistMotion.PredictTarget(player, from, 26f, 0.5f);
+                float smashSpeed = planet != null && (int)planet.ai[0] == CultistPlanetProj.KindMoon
+                    ? CultistPlanetProj.SmashSpeedMoon : CultistPlanetProj.SmashSpeed;
+                lockedAim = CultistMotion.PredictTarget(player, from, smashSpeed, 0.5f);
             }
 
             //砸出(权威端):沿锁定点爆发掷下,本体顺势前扑

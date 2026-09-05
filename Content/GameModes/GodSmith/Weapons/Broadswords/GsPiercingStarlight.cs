@@ -1,6 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -12,11 +10,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 {
     /// <summary>
-    /// 【昼星终曲】材质：白金星芒淬锋的星光刺剑，淡青彗尾随刺成线。
+    /// 【昼星终曲】材质：白金星芒淬锋的星光刺剑。
     /// 签名：①挥砍换成突刺运动语言：一次使用=一段三连刺（疾出过冲、刺尖驻帧、缓回收），
-    /// 三刺各有伤害窗（原版连刺手感保留升级：刺尖星屑爆点、刺路留星光线）
-    /// ②第三刺射出贯穿星光弹（星核+彗尾+闪烁星屑，减速滑行消散）
-    /// ③连续三段三刺全中，星光弹升格星暴，命中炸开星屑环
+    /// 三刺各有伤害窗
+    /// ②第三刺射出贯穿星光弹（减速滑行消散）
+    /// ③连续三段三刺全中，星光弹升格星暴，命中炸开星暴环
     /// </summary>
     internal class GsPiercingStarlight : GsBroadswordScheme
     {
@@ -28,15 +26,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int ComboBeats => 1;
 
         protected override string GsDescFallback =>
-            "Reforged: each use is a three-thrust starlight cadence; the final thrust " +
-            "fires a piercing star bolt, and three faultless cadences in a row make " +
-            "the bolt burst into a starburst on hit";
-
-        //星光色板
+            "Reforged: each use is a three-thrust starlight cadence; the final thrust fires a piercing star bolt, and three faultless cadences in a row make the bolt burst into a starburst on hit";
         internal static readonly Color StarBright = new(240, 248, 255); //白金星芒
         internal static readonly Color StarMain = new(150, 214, 255);   //淡青彗尾
         internal static readonly Color StarHot = new(255, 244, 198);    //昼星暖芯
-        internal static readonly Color StarDeep = new(16, 20, 34);      //夜幕垫影
 
         /// <summary>连续全中段数（0~3，满 3 段星光弹升格星暴）；跨玩家共享单例，只在 myPlayer 守门路径读写</summary>
         internal int Cadence;
@@ -62,34 +55,21 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsPiercingStarlight.StarBright;
         protected override Color BodyMain => GsPiercingStarlight.StarMain;
         protected override Color HotAccent => GsPiercingStarlight.StarHot;
-        protected override Color DeepShadow => GsPiercingStarlight.StarDeep;
 
         //刺剑：窄刺线判定，贴身兜底小
         protected override float BaseReach => 122f;
         protected override float CollisionWidth => 26f;
         protected override float PointBlankRadius => 36f;
 
-        //星光常辉；角度残影关掉（突刺残影走 DrawExtra 的行程残像）
-        protected override bool GlowAlways => true;
-        protected override int GhostCount => 0;
-        //星光是魔质剑，血肉命中不补血尘
-        protected override bool BleedOnFlesh => false;
-
         /// <summary>三刺完整命中记录</summary>
         private readonly bool[] thrustLanded = new bool[3];
         /// <summary>各刺出手事件已放</summary>
         private readonly bool[] thrustCalled = new bool[3];
-        /// <summary>行程残像环形缓存（X=reach，Y=angle）</summary>
-        private readonly Vector2[] history = new Vector2[4];
-        private int historyCount;
 
         private int thrustIndex = -1;   //当前刺序（-1=未进入连刺）
         private float subPhase;         //当前刺内进度 0~1
         private bool damageActive;      //本帧伤害窗
-        private float laneGlow;         //刺路星光线亮度
-        private float laneReach;        //本刺最远行程
         private bool boltFired;
-        private bool tipBurstDone;      //本刺刺尖爆点已放
 
         private GsPiercingStarlight Scheme =>
             GodSmithScheme.TryGetScheme(SwordItemID, out GodSmithScheme s) ? s as GsPiercingStarlight : null;
@@ -144,10 +124,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     int idx = Math.Min(2, (int)(s * 3f - 0.0001f));
                     float pThird = MathHelper.Clamp(s * 3f - idx, 0f, 1f);
                     if (idx != thrustIndex) {
-                        //新刺开跑：行程记录清零
+                        //新刺开跑
                         thrustIndex = idx;
-                        tipBurstDone = false;
-                        laneReach = 0f;
                     }
                     subPhase = pThird;
                     mainAngle = baseAngle + FanOffset(idx);
@@ -178,42 +156,24 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     mainAngle = baseAngle;
                     damageActive = false;
                     slashProgress = 1f;
-                    fanFade = MathHelper.Clamp(1f - q * 1.2f, 0f, 1f);
                     break;
                 }
             }
             mainReach = FullReach * reach01;
-            laneReach = MathF.Max(laneReach, mainReach);
-            laneGlow *= 0.86f;
-            if (damageActive) {
-                laneGlow = 1f;
-            }
-            //行程残像入环（只在连刺期记录）
-            if (CurrentPhase == PhaseSlash) {
-                for (int i = history.Length - 1; i > 0; i--) {
-                    history[i] = history[i - 1];
-                }
-                history[0] = new Vector2(mainReach, mainAngle);
-                historyCount = Math.Min(historyCount + 1, history.Length);
-            }
             mainTip = Hand + (mainAngle.ToRotationVector2() * mainReach);
         }
 
-        /// <summary>自管事件编排：每刺出手音+刃闪、终刺前压与星光弹（不走基类单次斩切事件）</summary>
+        /// <summary>自管事件编排：每刺出手音与终刺星光弹（不走基类单次斩切事件；阔剑族不做体术位移）</summary>
         protected override void HandlePhaseEvents(int phase) {
             if (phase != PhaseSlash || thrustIndex < 0) {
                 return;
             }
             int idx = thrustIndex;
-            //每刺出手瞬间：星芒短哨 + 刃闪；终刺补一步前压
+            //每刺出手瞬间：星芒短哨
             if (!thrustCalled[idx]) {
                 thrustCalled[idx] = true;
-                SetFlash(4);
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.5f, Pitch = 0.30f + idx * 0.07f }, Owner.Center);
-                }
-                if (idx == 2 && Owner.whoAmI == Main.myPlayer && !Owner.mount.Active) {
-                    Owner.velocity.X += facingDir * 2.2f;
                 }
             }
             //终刺驻帧瞬间射出星光弹（方案段数只在 owner 读）
@@ -262,28 +222,19 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             }
         }
 
-        /// <summary>记录当前刺命中（供整段全中判定）</summary>
+        /// <summary>记录当前刺命中（供整段全中判定）+ 清脆星音</summary>
         protected override void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone) {
             if (thrustIndex >= 0) {
                 thrustLanded[thrustIndex] = true;
             }
-        }
-
-        /// <summary>星屑迸溅 + 清脆星音</summary>
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.3f, Pitch = 0.5f }, target.Center);
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_Light>(
-                    target.Center + Main.rand.NextVector2Circular(10f, 10f),
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.4f, 1.2f),
-                    Main.rand.NextBool() ? GsPiercingStarlight.StarBright : GsPiercingStarlight.StarMain,
-                    Main.rand.NextFloat(0.06f, 0.11f))?.Configure(11, 0.7f);
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.3f, Pitch = 0.5f }, target.Center);
             }
         }
 
         /// <summary>段末记账：三刺窗口走完且三刺全中 → 段数 +1，否则清零（守 myPlayer）</summary>
-        protected override void OnKillEffects() {
+        public override void OnKill(int timeLeft) {
+            base.OnKill(timeLeft);
             if (Owner.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -304,125 +255,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 scheme.Cadence = 0;
             }
         }
-
-        /// <summary>刺尖星屑爆点（驻帧首帧）+ 刺路星尘拂落</summary>
-        protected override void HandleParticles(int phase) {
-            if (phase != PhaseSlash) {
-                return;
-            }
-            if (subPhase >= 0.35f && subPhase < 0.55f && !tipBurstDone) {
-                tipBurstDone = true;
-                int count = thrustIndex == 2 ? 7 : 4;
-                for (int i = 0; i < count; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(mainTip,
-                        (baseAngle + Main.rand.NextFloat(-0.5f, 0.5f)).ToRotationVector2() * Main.rand.NextFloat(2.5f, 6.5f),
-                        Main.rand.NextBool(3) ? GsPiercingStarlight.StarHot : GsPiercingStarlight.StarBright,
-                        Main.rand.NextFloat(0.3f, 0.5f))?.Configure(false, Main.rand.Next(10, 16));
-                }
-            }
-            else if (Main.rand.NextBool(3)) {
-                //刺路星尘
-                Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 1f));
-                PRTLoader.NewParticle<PRT_Light>(at, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 0.6f),
-                    GsPiercingStarlight.StarMain, Main.rand.NextFloat(0.04f, 0.07f))?.Configure(8, 0.55f);
-            }
-        }
-
-        /// <summary>角度涂抹不适用于突刺：改画刺路星光线（沿刺路拉伸的双层软光）</summary>
-        protected override void DrawSmearArc(SpriteBatch sb) {
-            if (laneGlow <= 0.03f) {
-                return;
-            }
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
-                return;
-            }
-            Vector2 dir = mainAngle.ToRotationVector2();
-            float len = laneReach * 1.02f;
-            Vector2 mid = Hand + dir * (len * 0.5f) - Main.screenPosition;
-            Color haze = GsPiercingStarlight.StarMain * (0.28f * laneGlow);
-            haze.A = 0;
-            sb.Draw(glow, mid, null, haze, mainAngle, glow.Size() * 0.5f,
-                new Vector2(len / glow.Width * 1.1f, 0.16f), SpriteEffects.None, 0f);
-            Color core = GsPiercingStarlight.StarBright * (0.45f * laneGlow);
-            core.A = 0;
-            sb.Draw(glow, mid, null, core, mainAngle, glow.Size() * 0.5f,
-                new Vector2(len / glow.Width, 0.06f), SpriteEffects.None, 0f);
-        }
-
-        /// <summary>行程残像 + 驻帧刺尖星芒 + 段数刻星（段数只画给 owner）</summary>
-        protected override void DrawExtra(SpriteBatch sb, Color lightColor) {
-            //行程残像：贴图按旧行程重画，读作速度拉痕
-            if (CurrentPhase == PhaseSlash && historyCount > 1) {
-                Main.instance.LoadItem(SwordItemID);
-                Texture2D tex = TextureAssets.Item[SwordItemID].Value;
-                Vector2 origin = tex.Size() / 2f;
-                GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
-                Vector2 hand = Hand;
-                for (int i = 1; i < historyCount; i++) {
-                    float reach = history[i].X;
-                    float ang = history[i].Y;
-                    float scale = reach * (BladeTipFill - BladePark) * 2f / MathF.Max(new Vector2(tex.Width, tex.Height).Length(), 1f);
-                    Color ghost = GsPiercingStarlight.StarBright * (i switch { 1 => 0.26f, 2 => 0.14f, _ => 0.07f });
-                    ghost.A = 0;
-                    Vector2 at = hand + ang.ToRotationVector2() * (reach * BladePark) - Main.screenPosition;
-                    sb.Draw(tex, at, null, ghost, ang + rotOffset, origin, scale, effect, 0f);
-                }
-            }
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            Texture2D starGlow = CWRAsset.StarGlow01?.Value;
-            if (star == null || starGlow == null) {
-                return;
-            }
-            //驻帧刺尖星芒
-            if (CurrentPhase == PhaseSlash && subPhase >= 0.32f && subPhase < 0.6f) {
-                float k = MathHelper.Clamp(1f - MathF.Abs(subPhase - 0.45f) / 0.14f, 0f, 1f);
-                Vector2 tipAt = mainTip - Main.screenPosition;
-                Color flash = GsPiercingStarlight.StarBright * (0.7f * k);
-                flash.A = 0;
-                sb.Draw(star, tipAt, null, flash, DrawRand01(thrustIndex) * 6.28f + Main.GlobalTimeWrappedHourly * 1.5f,
-                    star.Size() * 0.5f, (thrustIndex == 2 ? 0.22f : 0.15f) + 0.08f * k, SpriteEffects.None, 0f);
-                Color halo = GsPiercingStarlight.StarHot * (0.4f * k);
-                halo.A = 0;
-                sb.Draw(starGlow, tipAt, null, halo, 0f, starGlow.Size() * 0.5f, 0.3f + 0.12f * k, SpriteEffects.None, 0f);
-            }
-            //段数刻星：owner 侧近手处的小星
-            if (Owner.whoAmI != Main.myPlayer) {
-                return;
-            }
-            GsPiercingStarlight scheme = Scheme;
-            int cadence = scheme?.Cadence ?? 0;
-            if (cadence <= 0 || fanFade <= 0.05f) {
-                return;
-            }
-            Vector2 hand2 = Hand;
-            for (int i = 0; i < cadence; i++) {
-                Vector2 at = hand2 + mainAngle.ToRotationVector2() * (mainReach * (0.2f + 0.1f * i)) - Main.screenPosition;
-                float pulse = 0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * 8f + i * 1.5f);
-                Color c = (cadence >= 3 ? GsPiercingStarlight.StarHot : GsPiercingStarlight.StarBright) * (0.5f * fanFade * pulse);
-                c.A = 0;
-                sb.Draw(starGlow, at, null, c, 0f, starGlow.Size() * 0.5f, 0.10f, SpriteEffects.None, 0f);
-            }
-        }
     }
 
     /// <summary>
-    /// 贯穿星光弹：星核+彗尾+闪烁星屑，出膛 16 减速滑行至约 5 后消散，穿透 3。
-    /// ai[0]=星暴旗（三段全中的升格：首次命中炸开星屑环）
+    /// 贯穿星光弹：用原版超级星星贴图，出膛 16 减速滑行至约 5 后消散，穿透 3。
+    /// ai[0]=星暴旗（三段全中的升格：首次命中炸开星暴环）
     /// </summary>
     internal class GsPiercingStarlightBoltProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SuperStar;
 
         private bool Burst => Projectile.ai[0] > 0.5f;
         private ref float Life => ref Projectile.localAI[0];
         /// <summary>星暴已放（owner 端权威，生成走同步包）</summary>
         private ref float BurstDone => ref Projectile.localAI[1];
-
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 12;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
-        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 20;
@@ -446,15 +292,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 Projectile.velocity *= 0.955f;
             }
             Projectile.rotation += 0.22f * (Projectile.velocity.X >= 0f ? 1f : -1f);
-            Lighting.AddLight(Projectile.Center, GsPiercingStarlight.StarMain.ToVector3() * 0.45f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                //彗尾星屑
-                PRTLoader.NewParticle<PRT_Light>(
-                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    -Projectile.velocity * 0.06f,
-                    Main.rand.NextBool() ? GsPiercingStarlight.StarBright : GsPiercingStarlight.StarMain,
-                    Main.rand.NextFloat(0.05f, 0.09f))?.Configure(10, 0.65f);
-            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -472,91 +309,16 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.35f, Pitch = 0.4f }, target.Center);
-            for (int i = 0; i < 5; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5.5f),
-                    Main.rand.NextBool(3) ? GsPiercingStarlight.StarHot : GsPiercingStarlight.StarBright,
-                    Main.rand.NextFloat(0.3f, 0.5f))?.Configure(false, Main.rand.Next(10, 18));
-            }
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //昼星散场：星尘四逸
-            for (int i = 0; i < 6; i++) {
-                PRTLoader.NewParticle<PRT_Light>(
-                    Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.3f, 1f),
-                    GsPiercingStarlight.StarMain, Main.rand.NextFloat(0.05f, 0.09f))?.Configure(12, 0.6f);
-            }
-        }
-
-        /// <summary>绘制路径确定性伪随机</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (star == null || glow == null) {
-                return false;
-            }
-            Vector2 center = Projectile.Center - Main.screenPosition;
-            float fade = MathHelper.Clamp(Projectile.timeLeft / 10f, 0f, 1f);
-            float speed01 = MathHelper.Clamp(Projectile.velocity.Length() / 16f, 0f, 1f);
-
-            //彗尾：旧位置串软光，近粗远细，隔节缀闪烁星屑（确定性相位）
-            for (int i = 1; i < Projectile.oldPos.Length; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) {
-                    continue;
-                }
-                float k = 1f - i / (float)Projectile.oldPos.Length;
-                Vector2 at = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
-                Color tail = GsPiercingStarlight.StarMain * (0.24f * k * fade);
-                tail.A = 0;
-                Main.EntitySpriteDraw(glow, at, null, tail, 0f, glow.Size() * 0.5f, 0.22f * k + 0.05f, SpriteEffects.None, 0);
-                if (i % 3 == 1) {
-                    float tw = 0.5f + 0.5f * MathF.Sin(Main.GlobalTimeWrappedHourly * 9f + SegRand(i) * 6.28f);
-                    Color dust = GsPiercingStarlight.StarBright * (0.4f * k * fade * tw);
-                    dust.A = 0;
-                    Main.EntitySpriteDraw(star, at, null, dust, SegRand(i + 20) * 6.28f, star.Size() * 0.5f,
-                        0.06f + 0.04f * tw, SpriteEffects.None, 0);
-                }
-            }
-
-            //星核：软光晕 + 速度拉伸青尾锥 + 白金星芒自旋 + 暖芯反旋
-            Color haloC = GsPiercingStarlight.StarMain * (0.5f * fade);
-            haloC.A = 0;
-            Main.EntitySpriteDraw(glow, center, null, haloC, 0f, glow.Size() * 0.5f, 0.34f + 0.1f * speed01, SpriteEffects.None, 0);
-            Vector2 back = -Projectile.velocity.SafeNormalize(Vector2.Zero);
-            Color cone = GsPiercingStarlight.StarMain * (0.35f * fade * speed01);
-            cone.A = 0;
-            Main.EntitySpriteDraw(glow, center + back * 10f, null, cone, Projectile.velocity.ToRotation(),
-                glow.Size() * 0.5f, new Vector2(0.5f + 0.5f * speed01, 0.14f), SpriteEffects.None, 0);
-            Color coreC = GsPiercingStarlight.StarBright * (0.85f * fade);
-            coreC.A = 0;
-            Main.EntitySpriteDraw(star, center, null, coreC, Projectile.rotation, star.Size() * 0.5f,
-                (Burst ? 0.17f : 0.13f) + 0.02f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6f), SpriteEffects.None, 0);
-            Color warm = GsPiercingStarlight.StarHot * (0.45f * fade);
-            warm.A = 0;
-            Main.EntitySpriteDraw(star, center, null, warm, -Projectile.rotation * 0.7f, star.Size() * 0.5f,
-                Burst ? 0.11f : 0.08f, SpriteEffects.None, 0);
-            return false;
         }
     }
 
     /// <summary>
     /// 星暴：星光弹升格后的命中爆环。7 帧过冲撑满后回坐，伤害只在扩张期结算一次；
-    /// 绘制全走确定性相位，禁 Main.rand
+    /// 用原版泡泡贴图按半径画一笔作范围提示
     /// </summary>
     internal class GsPiercingStarlightBurstProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
 
         private const int TotalLife = 20;
         private const float MaxRadius = 88f;
@@ -591,21 +353,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             if (Life == 1f && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.55f, Pitch = 0.1f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.4f, Pitch = 0.6f }, Projectile.Center);
-                //爆心星屑喷环
-                for (int i = 0; i < 10; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6.5f),
-                        Main.rand.NextBool(3) ? GsPiercingStarlight.StarHot : GsPiercingStarlight.StarBright,
-                        Main.rand.NextFloat(0.32f, 0.55f))?.Configure(false, Main.rand.Next(12, 20));
-                }
-                for (int i = 0; i < 5; i++) {
-                    PRTLoader.NewParticle<PRT_Light>(
-                        Projectile.Center + Main.rand.NextVector2Circular(14f, 14f),
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.4f, 1.2f),
-                        GsPiercingStarlight.StarMain, Main.rand.NextFloat(0.07f, 0.12f))?.Configure(12, 0.7f);
-                }
             }
-            Lighting.AddLight(Projectile.Center, GsPiercingStarlight.StarMain.ToVector3() * (0.8f * (1f - Life01)));
         }
 
         //伤害只在扩张期结算（一目标一次）
@@ -618,46 +366,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
             => modifiers.HitDirectionOverride = Math.Sign(target.Center.X - Projectile.Center.X);//击退向外
 
-        /// <summary>绘制路径确定性伪随机</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
+        /// <summary>范围提示：原版泡泡贴图按当前半径缩放画一笔，随寿命淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (star == null || glow == null) {
-                return false;
-            }
-            Vector2 center = Projectile.Center - Main.screenPosition;
-            float fade = 1f - Life01;
-            float radius = Radius;
-
-            //爆心星芒：首帧最亮随后蚀散
-            Color flash = GsPiercingStarlight.StarBright * (0.8f * fade * fade);
-            flash.A = 0;
-            Main.EntitySpriteDraw(star, center, null, flash, SegRand(9) * 6.28f + Life * 0.06f,
-                star.Size() * 0.5f, 0.34f, SpriteEffects.None, 0);
-
-            //扩张星屑环：光珠沿当前半径排布，杂小星芒，相位确定性错开
-            const int beads = 12;
-            for (int i = 0; i < beads; i++) {
-                float ang = MathHelper.TwoPi * i / beads + SegRand(i) * 0.4f;
-                Vector2 at = center + ang.ToRotationVector2() * radius;
-                float pulse = 0.75f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 8f + SegRand(i + 30) * 6.28f);
-                Color bead = GsPiercingStarlight.StarMain * (0.5f * fade * pulse);
-                bead.A = 0;
-                Main.EntitySpriteDraw(glow, at, null, bead, 0f, glow.Size() * 0.5f,
-                    0.22f + 0.08f * SegRand(i + 60), SpriteEffects.None, 0);
-                if (i % 3 == 0) {
-                    Color glint = GsPiercingStarlight.StarBright * (0.45f * fade * pulse);
-                    glint.A = 0;
-                    Main.EntitySpriteDraw(star, at, null, glint, SegRand(i + 90) * 6.28f, star.Size() * 0.5f,
-                        0.07f, SpriteEffects.None, 0);
-                }
-            }
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float scale = Radius * 2f / MathF.Max(tex.Width, 1);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * (1f - Life01),
+                0f, tex.Size() * 0.5f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

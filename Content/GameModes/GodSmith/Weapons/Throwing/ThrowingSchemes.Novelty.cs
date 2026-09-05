@@ -1,11 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,7 +16,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.Snowball;
         protected override string GsDescFallback =>
             "Reforged: 30% chance not to consume; each consecutive throw flies 4% faster, up to 8\nEvery 8th throw packs into a great snowball: 2.5x damage and a chilling 90px burst";
-
         protected override float NoConsumeChance => 0.30f;
         protected override float DamageMul => 1.20f;
 
@@ -62,14 +57,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         }
 
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (router.MarkData != BigCode || VaultUtils.isServer) {
-                return;
-            }
-            //大雪团:冰雾尾
-            if (Main.rand.NextBool(3)) {
-                PRTLoader.NewParticle<PRT_Spark>(proj.Center - proj.velocity * 0.3f,
-                    -proj.velocity * 0.04f, new Color(200, 235, 255),
-                    Main.rand.NextFloat(0.2f, 0.34f))?.Configure(false, 12);
+            //大雪团:原版贴图放大 1.8 倍(各端按随包的 MarkData 一致呈现)
+            if (router.MarkData == BigCode) {
+                proj.scale = 1.8f;
             }
         }
 
@@ -83,25 +73,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             Projectile.NewProjectile(proj.GetSource_FromThis(), target.Center, Vector2.Zero,
                 ModContent.ProjectileType<GsBurstProj>(), (int)(proj.damage * 0.6f), 4f,
                 proj.owner, 90f, GsBurstProj.FxFrost);
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 8; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(14f, 14f),
-                        Main.rand.NextVector2Circular(3.5f, 3.5f) - Vector2.UnitY,
-                        new Color(215, 240, 255), Main.rand.NextFloat(0.28f, 0.46f))?.Configure(true, 18);
-                }
-            }
-        }
-
-        public override bool? GsProjPreDraw(Projectile proj, ref Color lightColor, GodSmithProjRouter router) {
-            if (router.MarkData != BigCode) {
-                return null;
-            }
-            //大雪团:放大 1.8 倍画(各端按 MarkData 一致呈现)
-            Main.instance.LoadProjectile(proj.type);
-            Texture2D tex = TextureAssets.Projectile[proj.type].Value;
-            Main.EntitySpriteDraw(tex, proj.Center - Main.screenPosition, null, lightColor,
-                proj.rotation, tex.Size() / 2f, 1.8f, SpriteEffects.None, 0);
-            return false;
         }
     }
 
@@ -111,7 +82,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.RottenEgg;
         protected override string GsDescFallback =>
             "Reforged: the egg bursts into a 4s stench cloud; foes inside take 8% more damage from everything\nCrits refund one egg. It is still a rotten egg";
-
         protected override float NoConsumeChance => 0.20f;
         protected override bool CritRefund => true;
         protected override float DamageMul => 2f;

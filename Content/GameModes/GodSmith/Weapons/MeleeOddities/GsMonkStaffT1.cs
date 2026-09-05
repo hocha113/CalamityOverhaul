@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -15,10 +13,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
 {
     /// <summary>
-    /// 【瞌睡章鱼棒】材质：沉睡章鱼盘踞的硬木长棍。签名：①抡棍起圈慢末圈快的加速度曲线，
-    /// 章鱼头软体滞后拖影两拍 ②收尾砸地（保真原版 3 倍砸击/半程换向/松键提前收棍）掀起
-    /// 压扁冲击环与土屑 ③连砸催眠——同一目标 8 秒内挨第 3 记砸击陷入熟睡
-    /// （1.3 倍伤害+长缓速+头顶淡紫 Z 泡逐个上浮）
+    /// 【瞌睡章鱼棒】材质：沉睡章鱼盘踞的硬木长棍。签名：①抡棍起圈慢末圈快的加速度曲线
+    /// ②收尾砸地（保真原版 3 倍砸击/半程换向/松键提前收棍）
+    /// ③连砸催眠——同一目标 8 秒内挨第 3 记砸击陷入熟睡（1.3 倍伤害+长缓速）
     /// </summary>
     internal class GsMonkStaffT1 : GodSmithScheme
     {
@@ -27,15 +24,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         public override string GsFamily => "MeleeOddities";
 
         protected override string GsDescFallback =>
-            "Reforged: the twirl winds up slow and finishes fast; " +
-            "ground slams stay at triple damage, and the third slam on the same target lulls it into deep drowse";
-
-        //瞌睡章鱼色板：淡紫睡意 + 原版绿光 + 霜乳白 + 硬木深褐
-        internal static readonly Color SleepPurple = new(196, 156, 255); //睡意淡紫
-        internal static readonly Color OctoGreen = new(20, 255, 100);    //原版章鱼绿光
-        internal static readonly Color NapBright = new(236, 228, 255);   //乳白亮芯
-        internal static readonly Color WoodDeep = new(64, 46, 34);       //硬木深影
-
+            "Reforged: the twirl winds up slow and finishes fast; ground slams stay at triple damage, and the third slam on the same target lulls it into deep drowse";
         /// <summary>同目标连砸记忆窗（8 秒）</summary>
         internal const int SlamMemoryFrames = 480;
 
@@ -144,11 +133,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         private int dir = 1;
         private float rot;
         private float prevRot;
-        /// <summary>章鱼头软体滞后角（两拍拖影的第一拍）</summary>
-        private float rotLag;
-        /// <summary>软体拖影第二拍，追第一拍</summary>
-        private float rotLag2;
-        /// <summary>当前角速度权重 0.5~1（涂抹亮度、体态用）</summary>
+        /// <summary>当前角速度权重 0.5~1（体态用）</summary>
         private float speedFrac = 0.5f;
         /// <summary>尾程命中标记（owner 端 OnHitNPC 写，owner 端砸地判定读，同原版 localAI[1]）</summary>
         private bool lateHit;
@@ -161,7 +146,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
 
         private Vector2 Hand => Owner.GetPlayerStabilityCenter();
         private Vector2 RotVec => rot.ToRotationVector2();
-        /// <summary>章鱼头端（+rot 方向端），砸地探测与粒子锚点</summary>
+        /// <summary>章鱼头端（+rot 方向端），砸地探测锚点</summary>
         private Vector2 TipPos => Projectile.Center + (RotVec * PoleHalf);
 
         public override void SetDefaults() {
@@ -201,7 +186,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             lateThresh = (int)(spinDur * 0.84f);
 
             //起角取「杆头前下方压杆」姿态：整 2 圈后收尾时杆头正落在身前下方，砸地探测朝地
-            rot = rotLag = rotLag2 = MirrorAngle(1.44f, dir);
+            rot = MirrorAngle(1.44f, dir);
             prevRot = rot;
 
             if (!VaultUtils.isServer) {
@@ -226,7 +211,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                 rot -= MathHelper.Pi;
             }
 
-            //砸地帧顿：timer 与转角冻结，软体滞后照常回弹
+            //砸地帧顿：timer 与转角冻结
             if (freezeTimer > 0) {
                 freezeTimer--;
             }
@@ -234,15 +219,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                 return; //本帧内已 Kill
             }
 
-            //章鱼头 secondary motion：滞后角以 0.25 追真实角，第二拍再追第一拍
-            rotLag += MathHelper.WrapAngle(rot - rotLag) * 0.25f;
-            rotLag2 += MathHelper.WrapAngle(rotLag - rotLag2) * 0.25f;
-
             UpdatePose();
-            HandleParticles();
-
-            float tail = timer / (float)spinDur;
-            Lighting.AddLight(TipPos, GsMonkStaffT1.OctoGreen.ToVector3() * (tail >= 0.75f ? 0.35f : 0.12f));
         }
 
         /// <summary>推进一帧转角与时间线；返回 false 表示本帧已 Kill</summary>
@@ -315,16 +292,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                 ModContent.ProjectileType<GsMonkStaffT1SlamProj>(),
                 Projectile.damage * 3, Projectile.knockBack, Owner.whoAmI);
             freezeTimer = 2; //砸地帧顿
-
-            //杆尖土屑（owner 客户端路径，非服务器）
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 8; i++) {
-                    Dust d = Dust.NewDustPerfect(tip, DustID.Dirt,
-                        new Vector2(Main.rand.NextFloat(-2.6f, 2.6f), -Main.rand.NextFloat(1.5f, 4f)),
-                        40, default, Main.rand.NextFloat(0.9f, 1.4f));
-                    d.noGravity = false;
-                }
-            }
         }
 
         /// <summary>持械姿态：手臂随杆转，体态随角速度前倾</summary>
@@ -364,34 +331,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             if (bodyLeanApplied && Owner.active) {
                 Owner.fullRotation = 0f;
                 bodyLeanApplied = false;
-            }
-        }
-
-        /// <summary>粒子保真原版：杆尖烟尘常驻，末四分之一程绿光尘，收尾前爆一轮绿光</summary>
-        private void HandleParticles() {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Vector2 tip = TipPos;
-            if (Main.rand.NextBool(2)) {
-                Dust d = Dust.NewDustPerfect(tip, DustID.Smoke,
-                    Projectile.DirectionTo(tip) * 0.4f, 150, default, 1f);
-                d.velocity += Owner.velocity * 0.1f;
-            }
-            float p = timer / (float)spinDur;
-            if (p >= 0.75f) {
-                Dust d = Dust.NewDustPerfect(tip, DustID.Pixie, Vector2.Zero,
-                    50, new Color(20, 255, 100, 160), 1f);
-                d.noGravity = true;
-                d.velocity = Projectile.DirectionTo(tip) * 0.6f;
-            }
-            if (timer >= spinDur - 8 && timer < spinDur - 2) {
-                for (int i = 0; i < 5; i++) {
-                    Dust d = Dust.NewDustPerfect(tip, DustID.Pixie,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 2.4f),
-                        50, new Color(20, 255, 100, 160), 1.1f);
-                    d.noGravity = true;
-                }
             }
         }
 
@@ -435,117 +374,41 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             if (timer >= lateThresh) {
                 lateHit = true;
             }
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 3; i++) {
-                    Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f);
-                    Color c = Main.rand.NextBool(3) ? GsMonkStaffT1.SleepPurple : GsMonkStaffT1.OctoGreen;
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, c, Main.rand.NextFloat(0.32f, 0.5f))
-                        ?.Configure(true, Main.rand.Next(10, 16));
-                }
-                Dust smoke = Dust.NewDustPerfect(target.Center, DustID.Smoke,
-                    Main.rand.NextVector2Unit() * 1.5f, 140, default, 1.1f);
-                smoke.noGravity = true;
-            }
         }
 
-        /// <summary>绘制路径专用确定性伪随机（identity+salt 播种，禁 Main.rand）</summary>
-        private float DrawRand01(int salt) {
-            uint h = (uint)((Projectile.identity * 374761393) + (salt * 668265263));
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        //==================== 绘制：圆周涂抹 + 软体拖影 + 原版物品贴图杆体 ====================
-
+        /// <summary>杆体本体一笔：物品贴图沿对角指向章鱼头，origin 取杆握把端（左下角内缩）</summary>
         public override bool PreDraw(ref Color lightColor) {
             if (timer <= 0) {
                 return false;
             }
-            SpriteBatch sb = Main.spriteBatch;
-            DrawSmearRing(sb);
-            DrawStaffSet(sb, lightColor);
-            return false;
-        }
-
-        /// <summary>圆周涂抹：双层弧形涂抹随杆角走（加色 A=0），亮度∝当前角速度，末圈最亮</summary>
-        private void DrawSmearRing(SpriteBatch sb) {
-            Texture2D wave = CWRAsset.SemiCircularSmear?.Value;
-            if (wave == null || freezeTimer > 0) {
-                return;
-            }
-            float alpha = 0.08f + (0.30f * speedFrac * speedFrac);
-            Vector2 at = Projectile.Center - Main.screenPosition;
-            float smearRot = rot - (dir * 0.8f);
-            Vector2 scale = new Vector2(0.40f, 0.30f) * (PoleHalf / 40f);
-            Color outer = GsMonkStaffT1.OctoGreen * alpha;
-            outer.A = 0;
-            sb.Draw(wave, at, null, outer, smearRot, wave.Size() / 2f, scale, SpriteEffects.None, 0f);
-            Color inner = GsMonkStaffT1.SleepPurple * (alpha * 0.6f);
-            inner.A = 0;
-            sb.Draw(wave, at, null, inner, smearRot + (dir * 0.35f), wave.Size() / 2f, scale * 0.8f, SpriteEffects.None, 0f);
-        }
-
-        /// <summary>杆体：软体拖影两拍 + 暗影垫底 + 本体 + 末段头端绿辉</summary>
-        private void DrawStaffSet(SpriteBatch sb, Color lightColor) {
             Main.instance.LoadItem(ItemID.MonkStaffT1);
             Texture2D tex = TextureAssets.Item[ItemID.MonkStaffT1].Value;
-            //物品贴图沿对角指向章鱼头，origin 取杆握把端（左下角内缩）
             Vector2 origin = new(8f, tex.Height - 8f);
             float diag = new Vector2(tex.Width, tex.Height).Length();
             float scale = ((PoleHalf * 2f) + 14f) / MathF.Max(diag - 16f, 1f);
-            Vector2 center = Projectile.Center;
-
-            //章鱼头软体拖影：头端区域裁切太复杂，改为整贴图低透明滞后两拍（第二拍更淡），注释说明
-            Span<(float ang, float alpha)> ghosts = [(rotLag2, 0.14f), (rotLag, 0.30f)];
-            foreach ((float ang, float alpha) in ghosts) {
-                if (MathF.Abs(MathHelper.WrapAngle(ang - rot)) < 0.05f) {
-                    continue;
-                }
-                Vector2 gPos = center - (ang.ToRotationVector2() * PoleHalf) - Main.screenPosition;
-                sb.Draw(tex, gPos, null, lightColor * alpha, ang + MathHelper.PiOver4, origin, scale, SpriteEffects.None, 0f);
-            }
-
-            Vector2 gripPos = center - (RotVec * PoleHalf) - Main.screenPosition;
-
-            //硬木暗影垫底
-            Color shadow = new Color(14, 12, 18, 190) * 0.45f;
-            sb.Draw(tex, gripPos + new Vector2(dir, 2f), null, shadow, rot + MathHelper.PiOver4, origin, scale * 1.02f, SpriteEffects.None, 0f);
-
-            sb.Draw(tex, gripPos, null, lightColor, rot + MathHelper.PiOver4, origin, scale, SpriteEffects.None, 0f);
-
-            //末段绿光：贴图加色叠影 + 头端软光点（保真原版绿光语言）
-            float p = timer / (float)spinDur;
-            if (p >= 0.72f) {
-                float glowT = MathHelper.Clamp((p - 0.72f) / 0.28f, 0f, 1f);
-                Color glow = GsMonkStaffT1.OctoGreen * (0.28f * glowT);
-                glow.A = 0;
-                sb.Draw(tex, gripPos, null, glow, rot + MathHelper.PiOver4, origin, scale * 1.03f, SpriteEffects.None, 0f);
-                Texture2D soft = CWRAsset.SoftGlow?.Value;
-                if (soft != null) {
-                    float flick = 0.8f + (0.2f * MathF.Sin((Main.GlobalTimeWrappedHourly * 11f) + (DrawRand01(5) * 6.28f)));
-                    Color tipGlow = GsMonkStaffT1.OctoGreen * (0.4f * glowT * flick);
-                    tipGlow.A = 0;
-                    sb.Draw(soft, TipPos - Main.screenPosition, null, tipGlow, 0f, soft.Size() / 2f, 0.4f, SpriteEffects.None, 0f);
-                }
-            }
+            Vector2 gripPos = Projectile.Center - (RotVec * PoleHalf) - Main.screenPosition;
+            Main.spriteBatch.Draw(tex, gripPos, null, lightColor, rot + MathHelper.PiOver4, origin, scale, SpriteEffects.None, 0f);
+            return false;
         }
     }
 
     /// <summary>
     /// 睡意砸击：贴地 130×90 一击 AoE（伤害 = 杆伤 ×3，保真原版），击退纯上抬。
     /// 签名「连砸催眠」：命中挂缓速 120 帧并在方案记账；同目标 8 秒内第 3 砸
-    /// 1.3 倍伤害+缓速 240+头顶淡紫 Z 泡演出。自绘：压扁冲击环双层+慢半拍淡紫涟漪+土屑
+    /// 1.3 倍伤害+缓速 240。贴图借原版砸击爆炸（698）默认绘制
     /// </summary>
     internal class GsMonkStaffT1SlamProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.MonkStaffT1Explosion;
         public override LocalizedText DisplayName => Language.GetText("ItemName.MonkStaffT1");
 
         private const int Life = 12;
         /// <summary>伤害窗：前 6 帧</summary>
         private const int HitWindow = 6;
 
-        private float LifeT => 1f - (Projectile.timeLeft / (float)Life);
+        public override void SetStaticDefaults() {
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.MonkStaffT1Explosion];
+        }
 
         public override void SetDefaults() {
             Projectile.width = 130;
@@ -566,15 +429,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                 if (!VaultUtils.isServer) {
                     //砸地音随弹幕各端自播，旁观者也听得见
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.9f }, Projectile.Center);
-                    for (int i = 0; i < 12; i++) {
-                        Dust d = Dust.NewDustPerfect(Projectile.Bottom + new Vector2(Main.rand.NextFloat(-50f, 50f), -4f),
-                            DustID.Dirt, new Vector2(Main.rand.NextFloat(-3f, 3f), -Main.rand.NextFloat(1.5f, 5f)),
-                            30, default, Main.rand.NextFloat(0.9f, 1.5f));
-                        d.noGravity = false; //土屑带重力
-                    }
                 }
             }
-            Lighting.AddLight(Projectile.Bottom, GsMonkStaffT1.SleepPurple.ToVector3() * (0.4f * (1f - LifeT)));
+            if (++Projectile.frameCounter >= 5) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
         }
 
         public override bool? CanDamage() => Projectile.timeLeft > Life - HitWindow ? null : false;
@@ -598,57 +458,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             }
             //催眠缓速：AddBuff 自带跨端同步
             target.AddBuff(BuffID.Slow, third ? 240 : 120);
-
-            if (third && !VaultUtils.isServer) {
-                //熟睡演出：淡紫 Z 泡三连逐个上浮（小→大、慢→快）
-                for (int i = 0; i < 3; i++) {
-                    Vector2 at = new(target.Center.X + ((i - 1) * 7f), target.position.Y - 8f - (i * 5f));
-                    PRTLoader.NewParticle<PRT_Spark>(at, new Vector2((i - 1) * 0.18f, -0.7f - (i * 0.45f)),
-                        GsMonkStaffT1.SleepPurple, 0.32f + (i * 0.1f))?.Configure(false, 24 + (i * 7));
-                }
-                PRTLoader.NewParticle<PRT_Light>(target.Top, Vector2.Zero, GsMonkStaffT1.SleepPurple, 0.15f)
-                    ?.Configure(12, 0.7f);
-            }
-        }
-
-        /// <summary>确定性伪随机（identity+salt 播种，绘制禁 Main.rand）</summary>
-        private float DrawRand01(int salt) {
-            uint h = (uint)((Projectile.identity * 374761393) + (salt * 668265263));
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        /// <summary>地面压扁冲击环双层扩散渐灭 + 慢半拍淡紫睡意涟漪，加色批全 A=0</summary>
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
-                return false;
-            }
-            float t = LifeT;
-            Vector2 at = Projectile.Bottom - Main.screenPosition - new Vector2(0f, 8f);
-            Vector2 texOrigin = glow.Size() / 2f;
-            //压扁横拉基准比例 (1.6, 0.5)
-            Vector2 aspect = new(1.6f, 0.5f);
-
-            float fade = MathF.Pow(1f - t, 1.3f);
-            float expand = 0.5f + (t * 1.35f);
-            Color bright = GsMonkStaffT1.NapBright * (0.62f * fade);
-            bright.A = 0;
-            Main.EntitySpriteDraw(glow, at, null, bright, 0f, texOrigin, aspect * expand * 0.72f, SpriteEffects.None, 0);
-            Color mid = GsMonkStaffT1.OctoGreen * (0.4f * fade);
-            mid.A = 0;
-            Main.EntitySpriteDraw(glow, at, null, mid, 0f, texOrigin, aspect * expand, SpriteEffects.None, 0);
-
-            //淡紫睡意涟漪：慢半拍出场，扩得更宽更慢灭
-            float t2 = MathHelper.Clamp((t - 0.28f) / 0.72f, 0f, 1f);
-            if (t2 > 0f) {
-                float wobble = 1f + (0.05f * MathF.Sin((Main.GlobalTimeWrappedHourly * 9f) + (DrawRand01(2) * 6.28f)));
-                Color purple = GsMonkStaffT1.SleepPurple * (0.36f * (1f - t2));
-                purple.A = 0;
-                Main.EntitySpriteDraw(glow, at, null, purple, 0f, texOrigin,
-                    aspect * (0.5f + (t2 * 1.75f)) * wobble, SpriteEffects.None, 0);
-            }
-            return false;
         }
     }
 }

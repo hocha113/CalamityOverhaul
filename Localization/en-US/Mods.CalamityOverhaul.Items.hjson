@@ -54,9 +54,9 @@ DivineSourceBlade: {
 		'''
 		Four-beat combo: a counterclockwise cut, a clockwise cut,
 		then a sweeping elliptical slash and a reverse cut along the same orbit
-		Every swing looses a growing volley of homing tech bolts, the reverse cut hurls a colossal azure crescent
+		Every swing flings homing tech bolts along the path of the blade, the reverse cut hurls a colossal azure crescent
 		Damaging enemies slowly builds charge; right click to spend a full bar and empower the blade for 7 seconds
-		While empowered its damage soars, bolts multiply and track harder, and the light turns auric gold
+		While empowered its damage soars and the bolts give way to massive auric lances that pierce up to 3 enemies
 		"Life never ceases"
 		'''
 }
@@ -5241,6 +5241,11 @@ BssBloomBud: {
 		Summons the Bloomsand Serpent when used on the desert surface
 		"The root of the dunes grows hungry when it blooms"
 		'''
+}
+
+BssTreasureBag: {
+	DisplayName: Treasure Bag (Bloomsand Serpent)
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 FssFesterBud: {

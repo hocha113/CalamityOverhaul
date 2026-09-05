@@ -1,0 +1,208 @@
+GsMinishark: {
+	Desc:
+		'''
+		Reforgé : maintenez la détente, le Minirequin goûte le sang ; la cadence grimpe, les trajectoires s'affolent
+		À frénésie pleine, chaque quatrième balle devient une dent de requin qui déchire puis referme la plaie
+		Tambour de 50 cartouches d'un seul geste ; visez la bande lumineuse et le prochain tambour démarre à demi-frénésie
+		'''
+	Frenzy: Raz-de-marée !
+}
+
+GsPhoenixBlaster: {
+	Desc:
+		'''
+		Reforgé : chaque impact nourrit le nid, le Pistolet Phoenix s'embrase ; les kills nourrissent plus vite
+		À 24 braises, le prochain tir renaît en phénix qui plonge, explose et se scinde en trois oisillons chasseurs
+		Le rechargement ramène les étincelles dans la chambre ; visez la bande lumineuse et gagnez 8 braises d'un coup
+		'''
+	Nirvana: Nirvana !
+}
+
+GsBoomstick.Desc:
+	'''
+	Reforgé : chaque canon envoie 4 plombs qui se resserrent sur le viseur, plus de jet sauvage
+	Les plombs se croisent au viseur et mordent ce qui s'y trouve
+	Ouvrez le canon, les deux cartouches partent ; visez la bande lumineuse, +1 plomb par canon au prochain chargement
+	'''
+
+GsHandgun: {
+	Desc:
+		'''
+		Reforgé : 3 impacts d'affilée sur la même cible, le 4e devient une balle de point vital, dégâts nettement plus forts et ignore 15 de défense
+		La dernière balle du chargeur frappe plus lourd et plus loin
+		Rechargement en chargeur : s'il reste des munitions, le chargeur change très vite, et la bande lumineuse est la plus large
+		'''
+	PointShot: Point vital !
+}
+
+GsTheUndertaker.Desc:
+	'''
+	Reforgé : tuer un ennemi, ou le frapper à l'agonie, et le Fossoyeur recueille une lanterne d'âme qui revient vous soigner, une fois par barillet
+	La dernière chambre est une balle de glas, un choc de deuil au recul doublé
+	Chargement chambre par chambre, vous pouvez tirer à tout moment, autant de balles que de chambres remplies
+	'''
+
+GsRedRyder: {
+	Desc:
+		'''
+		Reforgé : les billes de cuivre rebondissent deux fois sur les blocs, chaque saut sonne une clochette
+		Cinq cloches d'affilée sur la même cible, le prochain tir est une balle-cadeau qui explose en confettis lourds
+		Levier cartouche par cartouche, tirez dès que vous voulez
+		'''
+	Gift: Balle-cadeau !
+}
+
+GsPewMaticHorn: {
+	Desc:
+		'''
+		Reforgé : un chargeur de sept notes, une couleur et un son par tir
+		Trois notes d'affilée sur la même cible forment un accord : une explosion de teinte selon la troisième note
+		Le rechargement joue la gamme ascendante ; visez la bande lumineuse sur la note haute, les accords de ce chargeur sont plus larges et plus durs
+		'''
+	Chord: Accord !
+}
+
+GsSandgun: {
+	Desc:
+		'''
+		Reforgé : le jet continu chauffe la trémie ; à chaud, le sable fond en dards de verre
+		Les dards de verre vont plus vite, percent mieux, et éclatent en facettes sonores ; relâcher laisse refroidir
+		Les balles de sable ordinaires gardent leur humeur vanille ; visez la bande lumineuse et la trémie s'enflamme d'un coup
+		'''
+	Molten: Verre fondu !
+}
+
+GsBlowpipe.Desc:
+	'''
+	Reforgé : chaque impact sur la même cible file un mèche de venin ; trois mèches explosent en brouillard toxique persistant
+	Recharger, c'est reprendre souffle, une fléchette par inspiration, interruptible ; immobile, le souffle est 25% plus vite
+	Visez la bande lumineuse : la prochaine fléchette fait exploser les mèches à l'impact
+	'''
+GsBlowgun.Desc:
+	'''
+	Reforgé : un long souffle envoie 5 fléchettes, chacune plus rapide et plus dure que la précédente
+	La cinquième vide les poumons et explose en un large brouillard toxique
+	Reprendre souffle fléchette par fléchette, plus vite à l'arrêt ; visez la bande lumineuse, le chargeur démarre à la force de la troisième
+	'''
+GsHarpoon.Desc:
+	'''
+	Reforgé : le harpon part et revient, le retour de la chaîne, c'est le rechargement
+	Planter un ennemi lourd pose une ancre ; rappuyez la détente, le treuil vous y tire
+	Un ennemi léger, c'est l'inverse : la chaîne le ramène à vous
+	'''
+GsFlareGun.Desc:
+	'''
+	Reforgé : quatre couleurs de fusée, rouge, vert, bleu, blanc, qui se plantent et brûlent
+	Un ennemi planté subit +12% de tous vos dégâts, +16% pour la fusée blanche
+	Deux temps pour changer de cartouche ; visez la bande lumineuse, le prochain tir envoie deux fusées
+	'''
+GsFlintlockPistol.Desc:
+	'''
+	Reforged: two chambers, the second shot comes 40% faster;
+	the last chamber fires a V-shaped double ball from a single bullet with doubled knockback.
+	Hit the sweet spot when reloading for +25% on the next shot
+	'''
+GsMusket.Desc:
+	'''
+	Reforged: a true muzzle-loader; every ball is a stone-piercer that flies faster and punches through one more foe.
+	Reload in three beats: pour, ram, prime
+	'''
+GsQuadBarrelShotgun.Desc:
+	'''
+	Reforgé : les quatre canons tirent à tour de rôle, un par un ; le 4e envoie 8 plombs d'un coup, et le recul vous projette en arrière
+	Tirer vers le bas vous propulse en l'air
+	Brisez le canon et rechargez ; visez la bande lumineuse, chaque canon gagne 2 plombs au tour suivant
+	'''
+GsRevolver.Desc: Reforged: a six-round cylinder; the final chamber always hits +40% harder.
+
+GsCandyCornRifle: {
+	Desc: Reforged: the classic spray now droops on a sweet arc
+	ModeCandyRain: Pluie de bonbons
+}
+
+GsClockworkAssaultRifle: {
+	Desc: Reforged: keeps the classic three round burst, the third round bites 30% harder
+	ModeGearBurst: Rafale d'engrenages
+}
+
+GsGatligator: {
+	Desc: Reforged: keeps the wild spray but every round skips once off blocks
+	ModeSwampRiot: Émeute des marais
+}
+
+GsMegashark: {
+	Desc:
+		'''
+		Reforged: fire rate climbs the longer you hold the trigger
+		Land 50 hits to draw blood: for 3 seconds every hit leaves a bleeding wound
+		'''
+	ModeFrenzy: Frénésie
+}
+
+GsOnyxBlaster: {
+	Desc:
+		'''
+		Reforgé : clic droit pour changer de charge
+		Salve d'onyx : l'explosion laisse une tache sombre qui tire les ennemis vers le centre
+		Charge singularité : cadence réduite, une énorme sphère d'onyx ; l'explosion attire tout vers le noyau et disperse vos balles en anneau
+		'''
+	ModeVolley: Salve d'onyx
+	ModeSingularity: Charge singularité
+}
+
+GsSDMG: {
+	Desc: Reforged: keeps the legendary fire rate
+	ModeDolphinTide: Marée du dauphin
+}
+
+GsShotgun: {
+	Desc:
+		'''
+		Reforged: six drooping pellets in a broad fan; landing 3 pellet hits in one blast bursts a rain of lead over the target
+		Every trigger pull still costs one shell
+		'''
+	ModeWideBore: Âme large
+}
+
+GsSniperRifle: {
+	Desc:
+		'''
+		Reforgé : tapotez clic droit pour changer de mode, maintenez pour viser
+		Tir de précision : une ligne de visée perçante ; restez immobile pour retenir votre souffle, ce tir est alors un critique assuré
+		Tir rapide : échange la puissance contre la cadence
+		'''
+	ModeSnipe: Tir de précision
+	ModeRapid: Tir rapide
+}
+
+GsTacticalShotgun: {
+	Desc: Reforged: paints the spread cone so you know exactly what the six pellets cover
+	ModeFan: Éventail tactique
+}
+
+GsUzi: {
+	Desc:
+		'''
+		Reforged: sprays 30% faster with a loose pattern
+		Every 4th round is an amber tracer: tracer hits light the target up, and your Uzi rounds dig 10% deeper into lit targets
+		'''
+	ModeAkimbo: Tir à deux armes
+}
+
+GsVenusMagnum: {
+	Desc: Reforged: after a crit the next round pierces one extra foe, the aim line lights up for the window
+	ModeFocus: Focalisation
+}
+
+GsVortexBeater: {
+	Desc: Reforged: keeps the classic storm, rockets gently home in
+	ModeSweep: Balayage vortex
+}
+
+GsXenopopper: {
+	Desc: Reforged: pops five bubbles that converge and burst in a crossfire on your cursor
+	ModeCluster: Grappe
+}
+
+GsShotgunLeadRainProj.DisplayName: Pluie de plomb
+GsUziTracerProj.DisplayName: Traceur d'ambre

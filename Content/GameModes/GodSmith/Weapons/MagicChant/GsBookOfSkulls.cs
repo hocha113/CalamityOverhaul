@@ -1,7 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -21,21 +18,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override int TargetItemID => ItemID.BookofSkulls;
 
         protected override string GsDescFallback =>
-            "Reforged: hits brand foes into the registry, on-beat skulls hunt branded prey;" +
-            "\nat full resonance the next cast looses three skulls, three brands detonate into a bone burst";
-
+            "Reforged: hits brand foes into the registry, on-beat skulls hunt branded prey;\nat full resonance the next cast looses three skulls, three brands detonate into a bone burst";
         protected override float BaseDamageMult => 1.10f;
-
-        protected override Color ChantColor => new(168, 196, 214);
 
         /// <summary>形态：骨爆</summary>
         private const float FormBurst = 10f;
 
         /// <summary>名录印持续 3s</summary>
         private const uint MarkDuration = 180;
-
-        private static readonly Color SoulPale = new(190, 226, 232);
-        private static readonly Color BoneGray = new(160, 158, 148);
 
         protected override bool? ChantEmpowerShoot(Item item, Player player, GsChantPlayer chant,
             EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity,
@@ -84,30 +74,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                     }
                 }
             }
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Lighting.AddLight(proj.Center, ChantColor.ToVector3() * 0.2f);
-            //飞行相：幽魂身份是魂焰曳尾与淡烟
-            if (proj.timeLeft % 5 == 0) {
-                PRTLoader.NewParticle<PRT_SoulFire>(proj.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    -proj.velocity * 0.15f, SoulPale, Main.rand.NextFloat(0.3f, 0.5f));
-            }
-            if (proj.timeLeft % 9 == 0) {
-                PRTLoader.NewParticle<PRT_Smoke>(proj.Center, -proj.velocity * 0.05f - Vector2.UnitY * 0.3f,
-                    new Color(70, 76, 88) * 0.5f, Main.rand.NextFloat(0.4f, 0.6f));
-            }
         }
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            if (!VaultUtils.isServer) {
-                //命中相：魂焰散
-                for (int i = 0; i < 4; i++) {
-                    PRTLoader.NewParticle<PRT_SoulFire>(target.Center + Main.rand.NextVector2Circular(6f, 6f),
-                        Main.rand.NextVector2Circular(2f, 2f) - Vector2.UnitY * 0.8f,
-                        SoulPale, Main.rand.NextFloat(0.35f, 0.55f));
-                }
-            }
             if (!proj.IsOwnedByLocalPlayer() || router.MarkData == FormBurst) {
                 return;
             }
@@ -130,46 +99,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         }
 
         public override bool GsProjPreAI(Projectile proj, GodSmithProjRouter router) {
-            //骨爆：定身一跳
+            //骨爆：定身一跳（本体沿用原版骷髅贴图默认绘制）
             if (router.MarkData == FormBurst) {
                 proj.velocity = Vector2.Zero;
-                proj.alpha = 255;
                 return false;
             }
             return true;
-        }
-
-        public override bool? GsProjPreDraw(Projectile proj, ref Color lightColor, GodSmithProjRouter router) {
-            //骨爆自绘：灰白骨环炸开
-            if (router.MarkData != FormBurst) {
-                return null;
-            }
-            float t = 1f - proj.timeLeft / 8f;
-            ShockRingDraw.Draw(Main.spriteBatch, proj.Center, 14f + 44f * t, 8f,
-                Color.White, BoneGray, new Color(60, 58, 54), 0.85f * (1f - t * t),
-                innerGlow: 0.3f, timeSeed: proj.identity * 0.41f);
-            return false;
-        }
-
-        public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            if (router.MarkData == FormBurst) {
-                //骨爆余韵：骨屑魂火四散
-                for (int i = 0; i < 6; i++) {
-                    PRTLoader.NewParticle<PRT_SoulFire>(proj.Center + Main.rand.NextVector2Circular(10f, 10f),
-                        Main.rand.NextVector2Circular(3f, 3f) - Vector2.UnitY,
-                        i % 2 == 0 ? SoulPale : BoneGray, Main.rand.NextFloat(0.4f, 0.6f));
-                }
-                return;
-            }
-            //余痕相：魂火余烬上飘，比骷髅活得久
-            for (int i = 0; i < 2; i++) {
-                PRTLoader.NewParticle<PRT_SoulFire>(proj.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.2f),
-                    SoulPale, Main.rand.NextFloat(0.3f, 0.45f));
-            }
         }
     }
 }

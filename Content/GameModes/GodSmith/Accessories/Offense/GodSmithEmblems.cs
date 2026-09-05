@@ -1,7 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -44,18 +41,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             if (!hit.DamageType.CountsAsClass(DamageClass.Melee)) {
                 return;
             }
-            EmblemWarPlayer war = player.GetModPlayer<EmblemWarPlayer>();
             if (state.TryUseCooldown(item.type, StackICD)) {
-                war.AddWarStack();
-            }
-            //满层战意：金红怒焰迸溅（命中钩子只在攻击方端跑）
-            if (war.WarStacks >= MaxStacks) {
-                for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(10f, 10f),
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
-                        Main.rand.NextBool() ? new Color(255, 190, 60) : new Color(230, 80, 40),
-                        Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(12, 20));
-                }
+                player.GetModPlayer<EmblemWarPlayer>().AddWarStack();
             }
         }
 
@@ -88,18 +75,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             if (!hit.DamageType.CountsAsClass(DamageClass.Ranged)) {
                 return;
             }
-            EmblemWarPlayer war = player.GetModPlayer<EmblemWarPlayer>();
             if (player.Distance(target.Center) >= FocusRange) {
-                war.FocusTimer = FocusDuration;
-            }
-            //专注态命中带银白曳光（节流防糊屏）
-            if (war.FocusTimer > 0 && state.TryUseCooldown(item.type, 12)) {
-                for (int i = 0; i < 2; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f),
-                        new Color(220, 230, 240), Main.rand.NextFloat(0.26f, 0.42f))
-                        ?.Configure(false, Main.rand.Next(10, 16));
-                }
+                player.GetModPlayer<EmblemWarPlayer>().FocusTimer = FocusDuration;
             }
         }
     }
@@ -126,14 +103,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             player.statMana = Math.Min(player.statMana + amount, player.statManaMax2);
             player.ManaEffect(amount);
             SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.4f, Pitch = 0.5f }, target.Center);
-            //紫金符文火花自目标涌回
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    (player.Center - target.Center).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(2f, 4f)
-                        + Main.rand.NextVector2Circular(1f, 1f),
-                    Main.rand.NextBool() ? new Color(150, 90, 240) : new Color(90, 160, 255),
-                    Main.rand.NextFloat(0.28f, 0.45f))?.Configure(false, Main.rand.Next(14, 22));
-            }
         }
     }
 
@@ -169,11 +138,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             EmblemWarPlayer war = player.GetModPlayer<EmblemWarPlayer>();
             bool wasFull = war.LegionStacks >= MaxStacks;
             war.AddLegionStack();
-            //首次集结满编：金色号令环自佩戴者荡开
+            //首次集结满编：号令响声
             if (!wasFull && war.LegionStacks >= MaxStacks) {
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = 0.3f }, player.Center);
-                PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
-                    new Color(255, 210, 110), 0.05f)?.Configure(0.08f, 0.5f, 18);
             }
         }
     }
@@ -195,21 +162,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             }
         }
 
-        public override void OnHurt(Item item, Player player, GodSmithPlayer state, in Player.HurtInfo info) {
-            player.GetModPlayer<EmblemWarPlayer>().VengeanceTimer = VengeanceDuration;
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //血金复仇焰自胸口炸开（受击方本地端权威）
-            PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
-                new Color(220, 90, 50), 0.05f)?.Configure(0.06f, 0.4f, 14);
-            for (int i = 0; i < 5; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(player.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f),
-                    Main.rand.NextBool() ? new Color(220, 90, 50) : new Color(255, 200, 100),
-                    Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(14, 22));
-            }
-        }
+        public override void OnHurt(Item item, Player player, GodSmithPlayer state, in Player.HurtInfo info)
+            => player.GetModPlayer<EmblemWarPlayer>().VengeanceTimer = VengeanceDuration;
     }
 
     /// <summary>毁灭者徽章：对残血目标的任意武器命中追射歼灭脉冲，机械处决协议</summary>
@@ -236,11 +190,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.45f, Pitch = -0.3f }, player.Center);
-            //锁定红光在目标身上一闪
-            for (int i = 0; i < 3; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center, Main.rand.NextVector2Circular(1.5f, 1.5f),
-                    new Color(255, 60, 60), Main.rand.NextFloat(0.3f, 0.45f))?.Configure(false, 10);
-            }
             if (player.whoAmI == Main.myPlayer) {
                 int pulseDamage = Math.Clamp((int)(damageDone * 0.5f), 10, 250);
                 Vector2 vel = (target.Center - player.Center).SafeNormalize(Vector2.UnitX) * 15f;
@@ -276,38 +225,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             if (!hit.Crit || hit.DamageType == DamageClass.Default) {
                 return;
             }
-            EmblemWarPlayer war = player.GetModPlayer<EmblemWarPlayer>();
-            //凝视中的会心带日耀迸溅
-            if (war.GazeTimer > 0) {
-                for (int i = 0; i < 4; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                        Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f),
-                        Main.rand.NextBool() ? new Color(255, 170, 40) : new Color(255, 230, 140),
-                        Main.rand.NextFloat(0.3f, 0.52f))?.Configure(true, Main.rand.Next(14, 22));
-                }
-            }
             if (!state.TryUseCooldown(item.type, GazeCD)) {
                 return;
             }
-            war.GazeTimer = GazeDuration;
+            player.GetModPlayer<EmblemWarPlayer>().GazeTimer = GazeDuration;
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.4f, Pitch = 0.6f }, player.Center);
-            PRTLoader.NewParticle<PRT_Light>(player.Center, Vector2.Zero,
-                new Color(255, 170, 40), 0.16f)?.Configure(16, 0.8f);
         }
     }
 
-    /// <summary>
-    /// 歼灭脉冲：一道有锁定意志的机械红光，直取残血目标；
-    /// 双层曳光自绘 + 速度拉伸，命中迸机械火花
-    /// </summary>
+    /// <summary>歼灭脉冲：一道有锁定意志的机械红光，直取残血目标</summary>
     internal class GodSmithDestroyerEmblemPulseProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.DeathLaser;
 
         private ref float TargetIndex => ref Projectile.ai[0];
-
-        /// <summary>确定性绘制相位，绘制路径不掷 Main.rand</summary>
-        private float Seed => Projectile.identity * 0.5417f % 3.14f;
 
         public override void SetDefaults() {
             Projectile.width = 10;
@@ -330,12 +261,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
                     Projectile.velocity = Vector2.Lerp(Projectile.velocity, want, 0.08f);
                 }
             }
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            if (!Main.dedServ && Projectile.timeLeft % 3 == 0) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, -Projectile.velocity * 0.08f,
-                    new Color(255, 70, 60), Main.rand.NextFloat(0.2f, 0.32f))?.Configure(false, 8);
-            }
-            Lighting.AddLight(Projectile.Center, new Vector3(0.4f, 0.08f, 0.06f));
+            //原版激光贴图竖向朝上，旋转补四分之一圈
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
         public override void OnKill(int timeLeft) {
@@ -343,30 +270,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item10 with { Volume = 0.4f, Pitch = 0.4f }, Projectile.Center);
-            for (int i = 0; i < 6; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 5f),
-                    Main.rand.NextBool() ? new Color(255, 70, 60) : new Color(255, 160, 120),
-                    Main.rand.NextFloat(0.26f, 0.45f))?.Configure(true, Main.rand.Next(12, 20));
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = CWRAsset.LightShot?.Value;
-            if (tex == null) {
-                return false;
-            }
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = tex.Size() * 0.5f;
-            float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.045f, 0.3f, 0.9f);
-            float wob = 1f + MathF.Sin(Projectile.timeLeft * 0.7f + Seed * 4f) * 0.08f;
-            //外层猩红脉冲体
-            Main.EntitySpriteDraw(tex, pos, null, new Color(255, 60, 50) with { A = 0 } * 0.85f,
-                Projectile.rotation, origin, new Vector2(stretch, 0.10f * wob), SpriteEffects.None, 0);
-            //内层白热芯
-            Main.EntitySpriteDraw(tex, pos, null, new Color(255, 220, 200) with { A = 0 } * 0.7f,
-                Projectile.rotation, origin, new Vector2(stretch * 0.55f, 0.05f * wob), SpriteEffects.None, 0);
-            return false;
         }
     }
 

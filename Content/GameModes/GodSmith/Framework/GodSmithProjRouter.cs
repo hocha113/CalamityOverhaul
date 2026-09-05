@@ -176,5 +176,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
             marked?.GsProjOnKill(projectile, timeLeft, this);
             channel?.GsProjOnKill(projectile, timeLeft, this);
         }
+
+        public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity) {
+            //任一方案返回 false 即压掉原版撞块处理（自杀/原版反弹），由方案自管速度
+            Resolve(projectile.type, out GodSmithScheme marked, out GodSmithScheme channel);
+            bool? markedResult = marked?.GsProjOnTileCollide(projectile, oldVelocity, this);
+            bool? channelResult = channel?.GsProjOnTileCollide(projectile, oldVelocity, this);
+            return markedResult != false && channelResult != false;
+        }
     }
 }

@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -12,8 +10,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
     /// <summary>
     /// 海盗法杖「分赃令」：海盗团成船员纵队跟行；每次劫掠命中积攒赃金，
     /// 签名 = 集结令下赃金满 6 份即在旗点开箱分赃，五枚鎏金臼弹抛物洒向近敌
-    /// （<see cref="GsPiratePlunderProj"/>，各 0.7×，点金指附体，间隔 90 帧）；
-    /// 增强层 = 劫掠命中溅掠金火花。公认弱势武器，底伤按公约放宽（注释见下）
+    /// （<see cref="GsPiratePlunderProj"/>，各 0.7×，点金指附体，间隔 90 帧）。
+    /// 公认弱势武器，底伤按公约放宽（注释见下）
     /// </summary>
     internal class GsPirateStaff : GsMinionScheme
     {
@@ -23,10 +21,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Plunder Writ: every pirate strike stashes loot; under the rally order, six shares crack the chest open at the flag and five gilded mortar coins rain toward nearby foes, marking them with the Midas touch";
-
-        private static readonly Color CoinGold = new(255, 210, 96);
-        private static readonly Color CoinDeep = new(178, 122, 32);
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Column,
             Spacing = 34f,
@@ -54,9 +48,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
             => GsMinionCastMotion.ApplyRaise(player);
 
-        public override void GsUseAnimation(Item item, Player player)
-            => GsMinionCastMotion.CastBurst(player, CoinGold, CoinDeep);
-
         //==================== 签名：赃金与分赃 ====================
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit,
@@ -66,13 +57,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
                 return;
             }
             lootStacks = Math.Min(lootStacks + 1, 10);
-            //掠金火花：劫掠得手的即时反馈
-            if (!VaultUtils.isServer) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    -Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f))
-                        * Main.rand.NextFloat(1.2f, 2.6f),
-                    CoinGold, Main.rand.NextFloat(0.18f, 0.28f))?.Configure(true, Main.rand.Next(10, 16));
-            }
 
             //分赃：集结令 + 旗点在场 + 赃金满 6 份
             if (lootStacks < 6 || Main.GameUpdateCount < plunderReadyTick

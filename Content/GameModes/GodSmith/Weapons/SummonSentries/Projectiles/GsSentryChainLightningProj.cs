@@ -1,7 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -16,12 +12,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Pro
     /// </summary>
     internal class GsSentryChainLightningProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.MagnetSphereBolt;
 
         public override string LocalizationCategory => "GodSmithSummonSentries";
-
-        private static readonly Color VoltBright = new(210, 240, 255);
-        private static readonly Color VoltMain = new(120, 190, 255);
 
         private ref float TargetIdx => ref Projectile.ai[0];
         private ref float JumpsLeft => ref Projectile.ai[1];
@@ -53,16 +46,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Pro
                     Projectile.velocity = Vector2.Lerp(Projectile.velocity, want, 0.4f);
                 }
             }
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Lighting.AddLight(Projectile.Center, VoltMain.ToVector3() * 0.35f);
-            if (Age % 3f == 0f) {
-                PRTLoader.NewParticle<PRT_GraniteVolt>(
-                    Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    Projectile.velocity * 0.2f, VoltMain, Main.rand.NextFloat(0.4f, 0.7f))?.Configure(4);
-            }
+            //原版电矢贴图朝上，补四分之一圈对齐飞行方向
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -90,39 +75,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Pro
                 ModContent.ProjectileType<GsSentryChainLightningProj>(),
                 Projectile.damage, Projectile.knockBack, Projectile.owner,
                 next.whoAmI, JumpsLeft - 1f);
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_GraniteVolt>(Projectile.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f),
-                    VoltBright, Main.rand.NextFloat(0.5f, 0.9f))?.Configure(5);
-            }
-            PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, VoltMain, 0.14f)?.Configure(8, 0.8f);
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D arc = CWRAsset.ThunderTrail?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (arc == null || glow == null) {
-                return false;
-            }
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            float speed = Projectile.velocity.Length();
-            //电弧体：速度拉伸 + 帧抖（identity 去同相）
-            float jitter = 0.8f + 0.2f * MathF.Sin(Age * 1.7f + Projectile.identity * 0.9f);
-            Color body = VoltMain * (0.85f * jitter);
-            body.A = 0;
-            Main.EntitySpriteDraw(arc, pos, null, body, Projectile.rotation,
-                new Vector2(arc.Width * 0.7f, arc.Height * 0.5f),
-                new Vector2(MathHelper.Clamp(speed * 0.05f, 0.3f, 0.9f), 0.16f), SpriteEffects.None, 0);
-            Color head = VoltBright * (0.7f * jitter);
-            head.A = 0;
-            Main.EntitySpriteDraw(glow, pos, null, head, 0f, glow.Size() * 0.5f, 0.26f, SpriteEffects.None, 0);
-            return false;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
         protected override string GsDescFallback =>
             "Reforged: with both clouds afield, a rain corridor bridges them, soaking and slowing foes inside.\nRight click toggles warm rain or thunderstorm; the storm calls down bolts along the corridor";
 
+        protected override bool HasAltForm => true;
         protected override float BaseDamageMult => 1.10f;
 
         /// <summary>开云 25 蓝（原版 10 的 2.5 倍）</summary>

@@ -20,10 +20,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Headhunt Drums: under the rally order, a spear strike raises a totem at the flag; inside its war-drum ring your minions hit 10% harder and pygmy spears steep their venom deeper";
-
-        private static readonly Color FeatherGreen = new(112, 200, 96);
-        private static readonly Color TorchOrange = new(255, 156, 60);
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Line,
             Radius = 54f,
@@ -48,9 +44,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
             => GsMinionCastMotion.ApplyRaise(player);
-
-        public override void GsUseAnimation(Item item, Player player)
-            => GsMinionCastMotion.CastBurst(player, FeatherGreen, TorchOrange);
 
         //==================== 战鼓光环增伤 ====================
 

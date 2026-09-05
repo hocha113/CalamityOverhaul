@@ -1,5 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -20,7 +18,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 【木剑】材质：鲜切松木。签名：①回弹连势，命中后 40 帧内的下一斩举刀减半且伤害 +10%，
-    /// 生木弹性越打越顺 ②命中迸溅生木木屑与嫩芽绿微光 ③第三拍前压重劈
+    /// 生木弹性越打越顺 ②第三拍前压重劈
     /// </summary>
     internal class GsWoodenSword : GsBroadswordScheme
     {
@@ -29,14 +27,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsWoodenSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: green wood springs back; landing a hit primes the blade, " +
-            "so the next slash within a breath raises twice as fast and deals 10% more damage";
-
-        //松木色板
+            "Reforged: green wood springs back; landing a hit primes the blade, so the next slash within a breath raises twice as fast and deals 10% more damage";
         internal static readonly Color SapBright = new(232, 214, 166);  //新木亮黄
         internal static readonly Color PineMain = new(176, 138, 90);    //松木体
         internal static readonly Color SproutHot = new(150, 220, 110);  //嫩芽绿
-        internal static readonly Color BarkDeep = new(46, 34, 22);      //树皮深棕
 
         /// <summary>回弹窗口倒计时（命中后 40 帧内下一斩吃增益）；单例静态，只在 myPlayer 路径读写</summary>
         internal static int ReboundTimer;
@@ -74,7 +68,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     }
 
     /// <summary>
-    /// 木剑手持：三拍轻快劈砍，ai[2]=1 时为回弹斩（举相减半 + 伤害 +10% + 嫩芽绿闪）
+    /// 木剑手持：三拍轻快劈砍，ai[2]=1 时为回弹斩（举相减半 + 伤害 +10%）
     /// </summary>
     internal class GsWoodenSwordHeld : GsBroadswordHeldBase
     {
@@ -82,7 +76,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsWoodenSword.SapBright;
         protected override Color BodyMain => GsWoodenSword.PineMain;
         protected override Color HotAccent => GsWoodenSword.SproutHot;
-        protected override Color DeepShadow => GsWoodenSword.BarkDeep;
 
         /// <summary>本斩是否吃到回弹增益（ai[2] 随生成包过线，各端一致）</summary>
         private bool Rebounding => Projectile.ai[2] >= 1f;
@@ -108,51 +101,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override void OnStageInit() {
             base.OnStageInit();
             if (Rebounding) {
-                //生木回弹：举刀相减半，伤害 +10%，起手绿闪可感
+                //生木回弹：举刀相减半，伤害 +10%
                 raiseDur = Math.Max(1, raiseDur / 2);
                 totalDur = raiseDur + holdDur + slashDur + recoverDur;
                 Projectile.damage = (int)(Projectile.damage * 1.10f);
-                SetFlash(5);
             }
         }
-
-        //回弹斩全程渗嫩芽绿
-        protected override bool GlowAlways => IsFinisher || Rebounding;
 
         protected override void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone) {
             //owner 守门写方案侧回弹窗口（myPlayer 消费）
             if (Owner.whoAmI == Main.myPlayer) {
                 GsWoodenSword.ReboundTimer = 40;
             }
-        }
-
-        /// <summary>斩切期甩生木木屑，回弹斩补嫩芽绿光点（替换基类金属火星）</summary>
-        protected override void HandleParticles(int phase) {
-            if (phase != PhaseSlash) {
-                return;
-            }
-            Vector2 sweepVel = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
-            Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.55f, 1.0f));
-            Dust chip = Dust.NewDustPerfect(at, DustID.t_LivingWood,
-                sweepVel * Main.rand.NextFloat(2f, 5f), 60, default, Main.rand.NextFloat(0.8f, 1.2f));
-            chip.noGravity = Main.rand.NextBool();
-            if (Rebounding && Main.rand.NextBool(2)) {
-                PRTLoader.NewParticle<PRT_Light>(at, sweepVel * Main.rand.NextFloat(1.5f, 3f),
-                    GsWoodenSword.SproutHot, Main.rand.NextFloat(0.08f, 0.14f))?.Configure(10, 0.7f);
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //生木木屑迸溅 + 嫩芽绿微光
-            for (int i = 0; i < 5; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.t_LivingWood,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f), 40, default,
-                    Main.rand.NextFloat(0.9f, 1.3f));
-                d.noGravity = Main.rand.NextBool(3);
-            }
-            PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
-                GsWoodenSword.SproutHot, 0.14f)?.Configure(9, 0.6f);
         }
     }
 
@@ -162,7 +122,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 【北极松木剑】材质：北地寒杉。签名：①霜脂，连续命中同一目标叠寒杉脂，
-    /// 第 3 层迸霜雾并点上霜火 ②长滞帧的冻凝节奏，蓄而后发 ③滞帧期呵出霜息
+    /// 第 3 层点上霜火 ②长滞帧的冻凝节奏，蓄而后发
     /// </summary>
     internal class GsBorealWoodSword : GsBroadswordScheme
     {
@@ -171,14 +131,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsBorealWoodSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: repeated hits coat the same target in boreal sap; " +
-            "the third layer bursts into frost mist and sets the target ablaze with frostburn";
-
-        //寒杉色板
+            "Reforged: repeated hits coat the same target in boreal sap; the third layer bursts into frost mist and sets the target ablaze with frostburn";
         internal static readonly Color FrostBright = new(220, 240, 250); //霜白
         internal static readonly Color ColdMain = new(130, 170, 200);    //寒杉青蓝
         internal static readonly Color IceHot = new(150, 230, 255);      //冰芯亮青
-        internal static readonly Color NightDeep = new(26, 38, 52);      //极夜深蓝
 
         /// <summary>寒杉脂层数表：NPC → (层数, 最后命中帧)；单例静态，只在 myPlayer 路径读写</summary>
         internal static readonly Dictionary<int, (int stacks, uint time)> SapStacks = [];
@@ -190,7 +146,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 北极松木剑手持：三拍冻凝斩，滞帧显著拉长（藏行程露停顿），
-    /// 命中在方案侧记寒杉脂层数，第 3 层迸霜雾上霜火
+    /// 命中在方案侧记寒杉脂层数，第 3 层上霜火
     /// </summary>
     internal class GsBorealWoodSwordHeld : GsBroadswordHeldBase
     {
@@ -198,7 +154,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsBorealWoodSword.FrostBright;
         protected override Color BodyMain => GsBorealWoodSword.ColdMain;
         protected override Color HotAccent => GsBorealWoodSword.IceHot;
-        protected override Color DeepShadow => GsBorealWoodSword.NightDeep;
 
         protected override GsBroadBeat GetBeat(int stage) {
             if (stage == 2) {
@@ -219,7 +174,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         }
 
         protected override void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone) {
-            //寒杉脂层数只在 owner 端记（myPlayer 消费）；上到第 3 层迸霜雾并挂霜火
+            //寒杉脂层数只在 owner 端记（myPlayer 消费）；上到第 3 层挂霜火
             if (Owner.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -237,50 +192,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 target.AddBuff(BuffID.Frostburn, 240);
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item30 with { Volume = 0.6f, Pitch = 0.15f }, target.Center);
-                    for (int i = 0; i < 14; i++) {
-                        Dust d = Dust.NewDustPerfect(target.Center, DustID.Frost,
-                            Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f), 40, default,
-                            Main.rand.NextFloat(1f, 1.6f));
-                        d.noGravity = true;
-                    }
-                    PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
-                        GsBorealWoodSword.IceHot, 0.3f)?.Configure(12, 0.85f);
                 }
             }
             else {
                 dict[target.whoAmI] = (stacks, now);
-            }
-        }
-
-        /// <summary>滞帧期沿刃呵出霜息，斩切期洒霜尘（替换基类火星）</summary>
-        protected override void HandleParticles(int phase) {
-            if (phase == PhaseHold && Main.rand.NextBool(2)) {
-                //冻凝的呼吸：刃身周围浮起细霜
-                Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.4f, 1f));
-                Dust d = Dust.NewDustPerfect(at, DustID.Frost,
-                    new Vector2(0f, -Main.rand.NextFloat(0.2f, 0.7f)), 120, default, Main.rand.NextFloat(0.6f, 0.9f));
-                d.noGravity = true;
-            }
-            else if (phase == PhaseSlash) {
-                Vector2 sweepVel = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
-                Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.55f, 1.0f));
-                Dust d = Dust.NewDustPerfect(at, DustID.Frost,
-                    sweepVel * Main.rand.NextFloat(2f, 5f), 80, default, Main.rand.NextFloat(0.7f, 1.1f));
-                d.noGravity = true;
-                if (IsFinisher && Main.rand.NextBool(2)) {
-                    PRTLoader.NewParticle<PRT_Spark>(at, sweepVel * Main.rand.NextFloat(3f, 6f),
-                        GsBorealWoodSword.IceHot, Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(12, 18));
-                }
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            for (int i = 0; i < 4; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.Frost,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), 60, default,
-                    Main.rand.NextFloat(0.8f, 1.2f));
-                d.noGravity = true;
             }
         }
     }
@@ -291,7 +206,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 【棕榈木剑】材质：海滩棕榈木。签名：①拍岸沙浪，终结拍斩切爆发沿挥向甩出
-    /// 3 团扇形沙浪弹幕，快速坠地命中一跳 ②长斩切相的宽弧横扫，像浪拍岸 ③斩切拖沙尘
+    /// 3 团扇形沙浪弹幕，快速坠地命中一跳 ②长斩切相的宽弧横扫，像浪拍岸
     /// </summary>
     internal class GsPalmWoodSword : GsBroadswordScheme
     {
@@ -300,14 +215,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsPalmWoodSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: sweeping shore arcs; the third slash hurls a fan of three sand waves " +
-            "that quickly crash to the ground, each hitting once";
-
-        //棕榈沙金色板
+            "Reforged: sweeping shore arcs; the third slash hurls a fan of three sand waves that quickly crash to the ground, each hitting once";
         internal static readonly Color SandBright = new(245, 225, 170); //浅滩沙白
         internal static readonly Color PalmMain = new(210, 170, 105);   //棕榈木黄
         internal static readonly Color SunHot = new(255, 205, 120);     //日照沙金
-        internal static readonly Color WetDeep = new(60, 45, 26);       //湿沙深褐
 
         //底伤 +4%：终结拍 1.25x（拍均 ~1.08）+ 每 3 斩 3 团 35% 沙浪（摊 ~+8%），
         //综合 DPS 约为原版 116%~120%
@@ -325,7 +236,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsPalmWoodSword.SandBright;
         protected override Color BodyMain => GsPalmWoodSword.PalmMain;
         protected override Color HotAccent => GsPalmWoodSword.SunHot;
-        protected override Color DeepShadow => GsPalmWoodSword.WetDeep;
 
         protected override GsBroadBeat GetBeat(int stage) {
             if (stage == 2) {
@@ -360,30 +270,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 SoundEngine.PlaySound(SoundID.Item21 with { Volume = 0.5f, Pitch = 0.2f }, Owner.Center);
             }
         }
-
-        /// <summary>斩切期拖沙尘（有重力，像扬起的沙）</summary>
-        protected override void HandleParticles(int phase) {
-            if (phase != PhaseSlash) {
-                return;
-            }
-            Vector2 sweepVel = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
-            int count = IsFinisher ? 2 : 1;
-            for (int i = 0; i < count; i++) {
-                Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 1.0f));
-                Dust d = Dust.NewDustPerfect(at, DustID.Sand,
-                    sweepVel * Main.rand.NextFloat(2f, 5f), 60, default, Main.rand.NextFloat(0.8f, 1.2f));
-                d.noGravity = false;
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            for (int i = 0; i < 6; i++) {
-                Dust.NewDustPerfect(target.Center, DustID.Sand,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f), 80, default,
-                    Main.rand.NextFloat(0.9f, 1.3f));
-            }
-        }
     }
 
     #endregion
@@ -392,7 +278,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 【红木剑】材质：丛林红木。签名：①藤蔓延势，四拍藤鞭连击，终结拍触及 1.3 倍
-    /// 且刃尖延伸藤蔓虚影 ②终结拍命中毒藤上毒 ③音高逐拍下行的鞭打节奏
+    /// ②终结拍命中毒藤上毒 ③音高逐拍下行的鞭打节奏
     /// </summary>
     internal class GsRichMahoganySword : GsBroadswordScheme
     {
@@ -403,14 +289,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int ComboBeats => 4;
 
         protected override string GsDescFallback =>
-            "Reforged: a four-beat vine-whip combo; the fourth slash extends a phantom vine " +
-            "for far greater reach and poisons whatever it entangles";
-
-        //丛林红木色板
+            "Reforged: a four-beat vine-whip combo; the fourth slash extends a phantom vine for far greater reach and poisons whatever it entangles";
         internal static readonly Color LeafBright = new(205, 235, 150); //嫩叶浅绿
         internal static readonly Color MahoganyMain = new(150, 95, 65); //红木棕红
         internal static readonly Color VineHot = new(110, 205, 95);     //藤蔓浓绿
-        internal static readonly Color JungleDeep = new(32, 40, 24);    //林荫深绿
 
         //底伤 +8%：终结拍 1.22x（四拍拍均 ~1.06）+ 毒藤 DOT 小额收益，
         //综合 DPS 约为原版 112%~116%
@@ -420,7 +302,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 红木剑手持：四拍藤鞭连击（族内唯一四拍），前三拍快鞭、
-    /// 终结拍触及 1.3 倍并画刃尖藤蔓虚影，命中毒藤上毒
+    /// 终结拍触及 1.3 倍，命中毒藤上毒
     /// </summary>
     internal class GsRichMahoganySwordHeld : GsBroadswordHeldBase
     {
@@ -428,7 +310,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsRichMahoganySword.LeafBright;
         protected override Color BodyMain => GsRichMahoganySword.MahoganyMain;
         protected override Color HotAccent => GsRichMahoganySword.VineHot;
-        protected override Color DeepShadow => GsRichMahoganySword.JungleDeep;
 
         protected override int BeatCount => 4;
 
@@ -456,71 +337,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 target.AddBuff(BuffID.Poisoned, 90);
             }
         }
-
-        /// <summary>斩切期洒丛林叶尘，终结拍补藤绿光点</summary>
-        protected override void HandleParticles(int phase) {
-            if (phase != PhaseSlash) {
-                return;
-            }
-            Vector2 sweepVel = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
-            Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 1.0f));
-            Dust d = Dust.NewDustPerfect(at, DustID.JunglePlants,
-                sweepVel * Main.rand.NextFloat(2f, 4.5f), 80, default, Main.rand.NextFloat(0.8f, 1.2f));
-            d.noGravity = Main.rand.NextBool();
-            if (IsFinisher && Main.rand.NextBool(2)) {
-                PRTLoader.NewParticle<PRT_Light>(Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.9f, 1.25f)),
-                    sweepVel * 1.5f, GsRichMahoganySword.VineHot, Main.rand.NextFloat(0.08f, 0.13f))?.Configure(9, 0.65f);
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            int leaves = IsFinisher ? 8 : 4;
-            for (int i = 0; i < leaves; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.JunglePlants,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), 60, default,
-                    Main.rand.NextFloat(0.9f, 1.4f));
-                d.noGravity = Main.rand.NextBool(3);
-            }
-            if (IsFinisher) {
-                PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
-                    GsRichMahoganySword.VineHot, 0.24f)?.Configure(12, 0.8f);
-            }
-        }
-
-        /// <summary>终结拍刃尖延伸的藤蔓虚影：加色绿虚刀 + 沿延伸段的叶点（确定性抖动）</summary>
-        protected override void DrawExtra(SpriteBatch sb, Color lightColor) {
-            if (!IsFinisher || CurrentPhase < PhaseSlash || fanFade <= 0.05f) {
-                return;
-            }
-            Main.instance.LoadItem(SwordItemID);
-            Texture2D tex = TextureAssets.Item[SwordItemID].Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
-                return;
-            }
-            GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
-            float scale = mainReach * (BladeTipFill - BladePark) * 2f / MathF.Max(new Vector2(tex.Width, tex.Height).Length(), 1f);
-            Vector2 dir = mainAngle.ToRotationVector2();
-
-            //藤影：沿刃向再探出去的加色绿虚刀
-            Vector2 vinePos = Hand + dir * (mainReach * BladePark * 1.30f) - Main.screenPosition;
-            Color vine = GsRichMahoganySword.VineHot * (0.34f * fanFade);
-            vine.A = 0;
-            sb.Draw(tex, vinePos, null, vine, mainAngle + rotOffset, tex.Size() / 2f, scale * 1.22f, effect, 0);
-
-            //延伸段小叶点：确定性侧摆，不掷 Main.rand
-            Vector2 side = (mainAngle + MathHelper.PiOver2).ToRotationVector2();
-            for (int i = 0; i < 3; i++) {
-                float along = 1.02f + 0.12f * (i + 1);
-                Vector2 at = Hand + dir * (mainReach * along)
-                    + side * ((DrawRand01(i * 7 + 1) - 0.5f) * 16f) - Main.screenPosition;
-                Color leaf = GsRichMahoganySword.LeafBright * (0.45f * fanFade);
-                leaf.A = 0;
-                sb.Draw(glow, at, null, leaf, 0f, glow.Size() / 2f,
-                    0.15f + 0.05f * DrawRand01(i + 11), SpriteEffects.None, 0f);
-            }
-        }
     }
 
     #endregion
@@ -530,7 +346,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     /// <summary>
     /// 【乌木剑】材质：腐化乌木。签名：①蚀木孢雾，每拍斩切后在刀路中点留一团
     /// 30 帧驻留圆团孢雾，命中一跳低伤（与暗影蚀刃的弧形蚀痕区分：圆团不是弧痕）
-    /// ②长收势的阴郁拖拍节奏 ③命中溅腐化紫尘
+    /// ②长收势的阴郁拖拍节奏
     /// </summary>
     internal class GsEbonwoodSword : GsBroadswordScheme
     {
@@ -539,14 +355,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsEbonwoodSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: every slash leaves a lingering puff of corrupt spores at the midpoint " +
-            "of its path, dealing one tick of light damage to anything caught inside";
-
-        //腐化乌木色板
+            "Reforged: every slash leaves a lingering puff of corrupt spores at the midpoint of its path, dealing one tick of light damage to anything caught inside";
         internal static readonly Color PaleBright = new(190, 160, 215); //苍紫灰
         internal static readonly Color EbonMain = new(112, 92, 132);    //乌木紫灰
         internal static readonly Color SporeHot = new(150, 90, 200);    //孢子亮紫
-        internal static readonly Color RotDeep = new(24, 18, 34);       //腐暗深紫
 
         //底伤 +3%：终结拍 1.25x（拍均 ~1.08）+ 每拍 15% 孢雾一跳（有效覆盖摊 ~+8%），
         //综合 DPS 约为原版 116%~122%
@@ -564,7 +376,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsEbonwoodSword.PaleBright;
         protected override Color BodyMain => GsEbonwoodSword.EbonMain;
         protected override Color HotAccent => GsEbonwoodSword.SporeHot;
-        protected override Color DeepShadow => GsEbonwoodSword.RotDeep;
 
         private bool mistSpawned;
 
@@ -585,10 +396,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             };
         }
 
-        //乌木吸光
-        protected override Color BodyTint(Color lightColor)
-            => Color.Lerp(lightColor, GsEbonwoodSword.RotDeep, 0.22f);
-
         protected override void HandlePhaseEvents(int phase) {
             base.HandlePhaseEvents(phase);
             //收势首帧在刀路中点留孢雾（每拍都留；SpawnOwnedProj 守 owner）
@@ -600,29 +407,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 SpawnOwnedProj(ModContent.ProjectileType<GsEbonSporeMistProj>(), at, Vector2.Zero, dmg, 0f);
             }
         }
-
-        /// <summary>斩切期渗腐化紫尘（无重力浮尘，非火星）</summary>
-        protected override void HandleParticles(int phase) {
-            if (phase != PhaseSlash || !Main.rand.NextBool(2)) {
-                return;
-            }
-            Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 1f));
-            Dust d = Dust.NewDustPerfect(at, DustID.CorruptPlants,
-                (mainAngle + swingDir * MathHelper.PiOver2).ToRotationVector2() * Main.rand.NextFloat(1.5f, 3.5f),
-                100, default, Main.rand.NextFloat(0.8f, 1.2f));
-            d.noGravity = true;
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            int puffs = IsFinisher ? 7 : 4;
-            for (int i = 0; i < puffs; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.CorruptPlants,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), 80, default,
-                    Main.rand.NextFloat(0.9f, 1.4f));
-                d.noGravity = true;
-            }
-        }
     }
 
     #endregion
@@ -631,7 +415,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 【暗影木剑】材质：猩红暗影木。签名：①嗜血纹，对流血目标伤害 +18% 且触发回弹
-    /// （下一拍举刀 -30%）②终结拍命中施加流血，自铺嗜血循环 ③命中流血目标血雾加倍
+    /// （下一拍举刀 -30%）②终结拍命中施加流血，自铺嗜血循环
     /// </summary>
     internal class GsShadewoodSword : GsBroadswordScheme
     {
@@ -640,14 +424,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsShadewoodSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: the third strike opens a bleeding wound; hits against bleeding targets " +
-            "deal 18% more damage and quicken your next slash";
-
-        //猩红暗影木色板
+            "Reforged: the third strike opens a bleeding wound; hits against bleeding targets deal 18% more damage and quicken your next slash";
         internal static readonly Color FleshBright = new(230, 130, 115); //血肉浅红
         internal static readonly Color ShadeMain = new(145, 58, 58);     //暗影木赤褐
         internal static readonly Color BloodHot = new(255, 64, 72);      //鲜血亮红
-        internal static readonly Color GoreDeep = new(36, 12, 14);       //凝血暗红
 
         /// <summary>嗜血回弹窗口倒计时；单例静态，只在 myPlayer 路径读写</summary>
         internal static int BloodRush;
@@ -686,7 +466,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 暗影木剑手持：三拍凶斩。对流血目标 +18% 伤害；命中流血目标开嗜血回弹窗口
-    /// （ai[2]=1 时举刀 -30% + 血红闪）；终结拍命中施加流血
+    /// （ai[2]=1 时举刀 -30%）；终结拍命中施加流血
     /// </summary>
     internal class GsShadewoodSwordHeld : GsBroadswordHeldBase
     {
@@ -694,7 +474,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsShadewoodSword.FleshBright;
         protected override Color BodyMain => GsShadewoodSword.ShadeMain;
         protected override Color HotAccent => GsShadewoodSword.BloodHot;
-        protected override Color DeepShadow => GsShadewoodSword.GoreDeep;
 
         /// <summary>本斩是否吃到嗜血回弹（ai[2] 随生成包过线）</summary>
         private bool BloodRushing => Projectile.ai[2] >= 1f;
@@ -720,14 +499,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override void OnStageInit() {
             base.OnStageInit();
             if (BloodRushing) {
-                //嗜血回弹：举刀 -30%，血红闪
+                //嗜血回弹：举刀 -30%
                 raiseDur = Math.Max(1, (int)(raiseDur * 0.7f));
                 totalDur = raiseDur + holdDur + slashDur + recoverDur;
-                SetFlash(5);
             }
         }
-
-        protected override bool GlowAlways => IsFinisher || BloodRushing;
 
         protected override void ModifyHitExtra(NPC target, ref NPC.HitModifiers modifiers) {
             //嗜血纹：对流血目标 +18%
@@ -746,41 +522,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 target.AddBuff(BuffID.Bleeding, 300);
             }
         }
-
-        /// <summary>斩切期甩暗影木屑与血红火花</summary>
-        protected override void HandleParticles(int phase) {
-            if (phase != PhaseSlash) {
-                return;
-            }
-            Vector2 sweepVel = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
-            Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.55f, 1.0f));
-            if (Main.rand.NextBool(2)) {
-                Dust d = Dust.NewDustPerfect(at, DustID.Shadewood,
-                    sweepVel * Main.rand.NextFloat(2f, 4.5f), 60, default, Main.rand.NextFloat(0.8f, 1.2f));
-                d.noGravity = Main.rand.NextBool();
-            }
-            else {
-                PRTLoader.NewParticle<PRT_Spark>(at, sweepVel * Main.rand.NextFloat(3f, 6f),
-                    BloodRushing ? GsShadewoodSword.BloodHot : GsShadewoodSword.FleshBright,
-                    Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(12, 18));
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //命中流血目标血雾加倍
-            int mist = target.HasBuff(BuffID.Bleeding) ? 8 : 3;
-            for (int i = 0; i < mist; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.Blood,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f), 60, default,
-                    Main.rand.NextFloat(1f, 1.6f));
-                d.noGravity = Main.rand.NextBool();
-            }
-            if (target.HasBuff(BuffID.Bleeding)) {
-                PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
-                    GsShadewoodSword.BloodHot, 0.26f)?.Configure(10, 0.8f);
-            }
-        }
     }
 
     #endregion
@@ -789,8 +530,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 【灰烬木剑】材质：地狱灰烬木。签名：①余烬拍，每第三拍为灼烧重拍
-    /// （几何独立：更重更慢），命中点燃 3 秒 ②灼烧拍全程灰烬橙热纹常亮 + 飘烬
-    /// ③轻-轻-重的火钳节奏对比
+    /// （几何独立：更重更慢），命中点燃 3 秒 ②轻-轻-重的火钳节奏对比
     /// </summary>
     internal class GsAshWoodSword : GsBroadswordScheme
     {
@@ -799,14 +539,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsAshWoodSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: two quick cuts followed by a slow scorching blow that sets enemies " +
-            "on fire for 3 seconds";
-
-        //地狱灰烬色板
+            "Reforged: two quick cuts followed by a slow scorching blow that sets enemies on fire for 3 seconds";
         internal static readonly Color AshBright = new(212, 206, 198);  //灰烬浅灰
         internal static readonly Color CharMain = new(122, 116, 110);   //焦炭灰
         internal static readonly Color EmberHot = new(255, 150, 60);    //余烬橙
-        internal static readonly Color CinderDeep = new(30, 26, 24);    //焦黑
 
         //底伤 +5%：余烬拍 1.5x（拍均 ~1.17，但余烬拍 30 帧超原版用时、实际摊薄）+ 点燃 DoT，
         //综合 DPS 约为原版 120%~126%（灰烬木剑弱势，允许至 135%）
@@ -816,7 +552,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 灰烬木剑手持：轻-轻-重三拍。0/1 快斩，2 余烬重拍（长举高抬、重顿帧、深前压），
-    /// 余烬拍命中点燃，全程热纹常亮 + 飘烬
+    /// 余烬拍命中点燃
     /// </summary>
     internal class GsAshWoodSwordHeld : GsBroadswordHeldBase
     {
@@ -824,7 +560,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsAshWoodSword.AshBright;
         protected override Color BodyMain => GsAshWoodSword.CharMain;
         protected override Color HotAccent => GsAshWoodSword.EmberHot;
-        protected override Color DeepShadow => GsAshWoodSword.CinderDeep;
 
         protected override GsBroadBeat GetBeat(int stage) {
             if (stage == 2) {
@@ -844,10 +579,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             };
         }
 
-        //焦炭吸光；余烬拍热纹常亮由基类 GlowAlways=IsFinisher 提供
-        protected override Color BodyTint(Color lightColor)
-            => Color.Lerp(lightColor, GsAshWoodSword.CinderDeep, 0.20f);
-
         protected override void PlaySwingSound() {
             base.PlaySwingSound();
             //余烬拍补一记火焰喷吐
@@ -862,58 +593,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 target.AddBuff(BuffID.OnFire, 180);
             }
         }
-
-        /// <summary>余烬拍举相聚热、斩切喷火星飘烬；轻拍只掉灰</summary>
-        protected override void HandleParticles(int phase) {
-            if (IsFinisher) {
-                if (phase is PhaseRaise or PhaseHold && Main.rand.NextBool(2)) {
-                    //聚热：刃身升起火尘
-                    Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.4f, 1f));
-                    Dust d = Dust.NewDustPerfect(at, DustID.Torch,
-                        new Vector2(0f, -Main.rand.NextFloat(0.5f, 1.5f)), 80, default, Main.rand.NextFloat(0.8f, 1.3f));
-                    d.noGravity = true;
-                }
-                else if (phase == PhaseSlash) {
-                    Vector2 sweepVel = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
-                    for (int i = 0; i < 2; i++) {
-                        Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 1f));
-                        Dust d = Dust.NewDustPerfect(at, Main.rand.NextBool() ? DustID.Torch : DustID.Ash,
-                            sweepVel * Main.rand.NextFloat(2.5f, 6f), 60, default, Main.rand.NextFloat(0.9f, 1.4f));
-                        d.noGravity = d.type == DustID.Torch;
-                    }
-                }
-                else if (phase == PhaseRecover && timer % 3 == 0 && fanFade > 0.2f) {
-                    //收势飘烬
-                    Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 0.95f));
-                    Dust d = Dust.NewDustPerfect(at, DustID.Torch,
-                        new Vector2(0f, -Main.rand.NextFloat(0.4f, 1f)), 100, default, Main.rand.NextFloat(0.7f, 1f));
-                    d.noGravity = true;
-                }
-            }
-            else if (phase == PhaseSlash && Main.rand.NextBool(2)) {
-                //轻拍掉灰
-                Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 1f));
-                Dust.NewDustPerfect(at, DustID.Ash,
-                    (mainAngle + swingDir * MathHelper.PiOver2).ToRotationVector2() * Main.rand.NextFloat(1.5f, 3f),
-                    100, default, Main.rand.NextFloat(0.7f, 1f));
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            if (!IsFinisher) {
-                return;
-            }
-            //余烬拍命中喷火
-            for (int i = 0; i < 8; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.Torch,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f), 60, default,
-                    Main.rand.NextFloat(1.1f, 1.7f));
-                d.noGravity = true;
-            }
-            PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
-                GsAshWoodSword.EmberHot, 0.3f)?.Configure(12, 0.85f);
-        }
     }
 
     #endregion
@@ -922,7 +601,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 【仙人掌剑】材质：沙漠仙人掌。签名：①棘刺反噬，终结拍命中自命中点向后上方
-    /// 弹出 2 根自旋仙人掌刺 ②紧凑短弧的干脆刺劈节奏（后摆最小）③命中溅仙人掌碎屑
+    /// 弹出 2 根自旋仙人掌刺 ②紧凑短弧的干脆刺劈节奏（后摆最小）
     /// </summary>
     internal class GsCactusSword : GsBroadswordScheme
     {
@@ -931,14 +610,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsCactusSwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: compact desert cuts; when the third slash connects, two cactus needles " +
-            "burst backward from the wound, each hitting once";
-
-        //沙漠仙人掌色板
+            "Reforged: compact desert cuts; when the third slash connects, two cactus needles burst backward from the wound, each hitting once";
         internal static readonly Color PaleGreen = new(200, 235, 160); //仙人掌浅绿
         internal static readonly Color CactusMain = new(110, 160, 80); //仙人掌肉绿
         internal static readonly Color BloomHot = new(250, 240, 150);  //沙漠花黄
-        internal static readonly Color ThornDeep = new(28, 42, 24);    //刺荫深绿
 
         //底伤 +5%：终结拍 1.28x（拍均 ~1.09）+ 终结命中 2 根 35% 棘刺（摊 ~+6%），
         //综合 DPS 约为原版 118%~123%（仙人掌剑弱势，允许至 125%）
@@ -956,7 +631,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsCactusSword.PaleGreen;
         protected override Color BodyMain => GsCactusSword.CactusMain;
         protected override Color HotAccent => GsCactusSword.BloomHot;
-        protected override Color DeepShadow => GsCactusSword.ThornDeep;
 
         private bool needlesSpawned;
 
@@ -991,29 +665,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 SpawnOwnedProj(type, target.Center, vel, dmg, 1f);
             }
         }
-
-        /// <summary>斩切期溅仙人掌碎屑与沙尘</summary>
-        protected override void HandleParticles(int phase) {
-            if (phase != PhaseSlash) {
-                return;
-            }
-            Vector2 sweepVel = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
-            Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.55f, 1.0f));
-            Dust d = Dust.NewDustPerfect(at, Main.rand.NextBool(3) ? DustID.Sand : DustID.t_Cactus,
-                sweepVel * Main.rand.NextFloat(2f, 4.5f), 60, default, Main.rand.NextFloat(0.8f, 1.2f));
-            d.noGravity = Main.rand.NextBool(3);
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            int bits = IsFinisher ? 8 : 4;
-            for (int i = 0; i < bits; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.t_Cactus,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f), 40, default,
-                    Main.rand.NextFloat(0.9f, 1.3f));
-                d.noGravity = Main.rand.NextBool(3);
-            }
-        }
     }
 
     #endregion
@@ -1021,12 +672,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     #region 支援弹幕
 
     /// <summary>
-    /// 拍岸沙浪：棕榈木剑终结拍甩出的沙团。快速坠地、撞物块即散、命中一跳。
-    /// 自绘：真 alpha 沙团（Extra_98 染沙黄）+ 加色日金边光；抖动全 identity 播种
+    /// 拍岸沙浪：棕榈木剑终结拍甩出的沙团。快速坠地、撞物块即散、命中一跳；用原版沙枪沙球贴图
     /// </summary>
     internal class GsPalmSandWaveProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SandBallGun;
+
+        public override void SetStaticDefaults() {
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.SandBallGun];
+        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 14;
@@ -1045,10 +699,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 Projectile.velocity.Y = 16f;
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
-            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                Dust.NewDustPerfect(Projectile.Center, DustID.Sand,
-                    -Projectile.velocity * 0.15f, 100, default, Main.rand.NextFloat(0.7f, 1.1f));
-            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -1056,51 +706,23 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 return;
             }
             SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.4f, Pitch = 0.3f }, Projectile.Center);
-            for (int i = 0; i < 8; i++) {
-                Dust.NewDustPerfect(Projectile.Center, DustID.Sand,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), 80, default,
-                    Main.rand.NextFloat(0.9f, 1.4f));
-            }
-        }
-
-        /// <summary>确定性伪随机（identity+salt 播种，逐帧稳定）</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D blot = CWRAsset.Extra_98?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (blot == null || glow == null) {
-                return false;
-            }
-            Vector2 at = Projectile.Center - Main.screenPosition;
-            //沙团体：真 alpha 贴图染沙黄，沿速度向压扁
-            float squash = 0.85f + 0.2f * SegRand(1);
-            Color body = new Color(222, 185, 120) * 0.9f;
-            Main.EntitySpriteDraw(blot, at, null, body, Projectile.rotation,
-                blot.Size() * 0.5f, new Vector2(0.20f * squash, 0.13f), SpriteEffects.None, 0);
-            //日金边光：加色 A=0
-            Color rim = GsPalmWoodSword.SunHot * 0.5f;
-            rim.A = 0;
-            Main.EntitySpriteDraw(glow, at, null, rim, 0f,
-                glow.Size() * 0.5f, 0.24f + 0.04f * SegRand(2), SpriteEffects.None, 0);
-            return false;
         }
     }
 
     /// <summary>
-    /// 蚀木孢雾：乌木剑每拍留下的驻留圆团（非弧痕）。30 帧寿命，命中一跳低伤。
-    /// 自绘：多粒真 alpha 暗紫团 + 加色紫边呼吸光；抖动全 identity 播种
+    /// 蚀木孢雾：乌木剑每拍留下的驻留圆团（非弧痕）。30 帧寿命，命中一跳低伤；
+    /// 用原版孢子云贴图按判定半径画一笔作范围提示
     /// </summary>
     internal class GsEbonSporeMistProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SporeCloud;
 
         private const int Life = 30;
-        private float Life01 => 1f - (Projectile.timeLeft / (float)Life);
+        private const float Radius = 36f;
+
+        public override void SetStaticDefaults() {
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.SporeCloud];
+        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
@@ -1118,68 +740,32 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         public override bool? CanDamage() => Projectile.timeLeft > 4 ? null : false;
 
-        public override void AI() {
-            Lighting.AddLight(Projectile.Center, GsEbonwoodSword.SporeHot.ToVector3() * (0.25f * (1f - Life01)));
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                Dust d = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(6f, 26f),
-                    DustID.CorruptPlants, new Vector2(0f, -Main.rand.NextFloat(0.2f, 0.7f)), 120, default,
-                    Main.rand.NextFloat(0.6f, 1f));
-                d.noGravity = true;
-            }
-        }
-
         /// <summary>圆团判定：中心 36px 半径</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-            => targetHitbox.Distance(Projectile.Center) <= 36f;
+            => targetHitbox.Distance(Projectile.Center) <= Radius;
 
-        /// <summary>确定性伪随机（identity+salt 播种，逐帧稳定）</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
+        /// <summary>范围提示：原版孢子云贴图按判定半径缩放画一笔，末 8 帧淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D blot = CWRAsset.Extra_98?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (blot == null || glow == null) {
-                return false;
-            }
-            float life = Life01;
-            //首 4 帧涨起、末 8 帧散去
-            float grow = MathHelper.Clamp(life * Life / 4f, 0f, 1f);
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            Rectangle frame = tex.Frame(1, Math.Max(1, Main.projFrames[Type]), 0, 0);
             float fade = MathHelper.Clamp(Projectile.timeLeft / 8f, 0f, 1f);
-            float vis = grow * fade;
-            Vector2 center = Projectile.Center - Main.screenPosition;
-
-            for (int i = 0; i < 5; i++) {
-                float ang = SegRand(i) * MathHelper.TwoPi;
-                float dist = 6f + 16f * SegRand(i + 20);
-                Vector2 at = center + ang.ToRotationVector2() * dist;
-                float segScale = 0.10f + 0.08f * SegRand(i + 40);
-                //暗紫团体：真 alpha 压暗（加色物理上做不出暗团）
-                Color dark = GsEbonwoodSword.RotDeep * (vis * 0.55f);
-                Main.EntitySpriteDraw(blot, at, null, dark, ang,
-                    blot.Size() * 0.5f, segScale, SpriteEffects.None, 0);
-            }
-            //紫边呼吸光：加色 A=0，各团错相
-            float pulse = 0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5f + SegRand(7) * 6.28f);
-            Color edge = GsEbonwoodSword.SporeHot * (vis * 0.4f * pulse);
-            edge.A = 0;
-            Main.EntitySpriteDraw(glow, center, null, edge, 0f,
-                glow.Size() * 0.5f, 0.6f, SpriteEffects.None, 0);
+            float scale = Radius * 2f / MathF.Max(frame.Width, 1);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor * fade,
+                0f, frame.Size() * 0.5f, scale, SpriteEffects.None, 0);
             return false;
         }
     }
 
     /// <summary>
-    /// 仙人掌棘刺：终结拍命中崩出的自旋小刺。抛物线快坠、撞物块即碎、命中一跳。
-    /// 自绘：细长绿刺（MagicPixel 双层拉伸）+ 尖端亮点；抖动全 identity 播种
+    /// 仙人掌棘刺：终结拍命中崩出的自旋小刺。抛物线快坠、撞物块即碎、命中一跳；用原版松针贴图
     /// </summary>
     internal class GsCactusNeedleProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.PineNeedleFriendly;
+
+        public override void SetStaticDefaults() {
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.PineNeedleFriendly];
+        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 8;
@@ -1198,50 +784,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 Projectile.velocity.Y = 15f;
             }
             Projectile.rotation += 0.38f * (Projectile.velocity.X >= 0f ? 1f : -1f);
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 4; i++) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.t_Cactus,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f), 60, default,
-                    Main.rand.NextFloat(0.8f, 1.1f));
-                d.noGravity = Main.rand.NextBool(3);
-            }
-        }
-
-        /// <summary>确定性伪随机（identity+salt 播种，逐帧稳定）</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
-                return false;
-            }
-            Rectangle src = new(0, 0, 1, 1);
-            Vector2 at = Projectile.Center - Main.screenPosition;
-            Vector2 origin = new(0.5f, 0.5f);
-            float len = 15f + 3f * SegRand(1);
-            //刺体：深绿细杆
-            Main.EntitySpriteDraw(pixel, at, src, GsCactusSword.ThornDeep * 0.95f, Projectile.rotation,
-                origin, new Vector2(len, 3f), SpriteEffects.None, 0);
-            //刺身亮面：靠尖端一半提亮
-            Vector2 dir = Projectile.rotation.ToRotationVector2();
-            Main.EntitySpriteDraw(pixel, at + dir * (len * 0.25f), src, GsCactusSword.CactusMain, Projectile.rotation,
-                origin, new Vector2(len * 0.5f, 1.6f), SpriteEffects.None, 0);
-            //尖端亮点：加色 A=0
-            Color tip = GsCactusSword.BloomHot * 0.6f;
-            tip.A = 0;
-            Main.EntitySpriteDraw(glow, at + dir * (len * 0.5f), null, tip, 0f,
-                glow.Size() * 0.5f, 0.10f, SpriteEffects.None, 0);
-            return false;
         }
     }
 

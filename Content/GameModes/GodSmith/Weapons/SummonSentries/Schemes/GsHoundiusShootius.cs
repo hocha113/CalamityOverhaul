@@ -1,6 +1,3 @@
-using CalamityOverhaul.Content.GameModes.UI;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -20,10 +17,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override int FamilyIdx => GsSentryFamilyIdx.Houndius;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: hits charge the eye, right-click when full to overdrive it into twin-pupil rapid fire\n" +
-            "Its victims are exposed for a moment, linked sentries hit exposed foes harder\n" +
-            "Linked kills feed the eye free charge; redeployed sentries keep a quarter charge";
-
+            "Deploy doctrine: hits charge the eye, right-click when full to overdrive it into twin-pupil rapid fire\nIts victims are exposed for a moment, linked sentries hit exposed foes harder\nLinked kills feed the eye free charge; redeployed sentries keep a quarter charge";
         protected override SentryKit BuildKit() => new() {
             TowerTypes = [ProjectileID.HoundiusShootius],
             BoltTypes = [ProjectileID.HoundiusShootiusFireball],
@@ -44,32 +38,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
             SpawnBoltHandled(tower, bolt.Center, mirrored, bolt.type, bolt.damage, bolt.knockBack);
         }
 
-        /// <summary>命中挂曝光 + 一次性标记反馈（owner 个人读数）</summary>
+        /// <summary>命中挂曝光</summary>
         protected override void OnSentryHit(Projectile proj, Projectile tower, NPC target,
             NPC.HitInfo hit, int damageDone, GsSentryLocal st) {
             if (proj.type != ProjectileID.HoundiusShootiusFireball) {
                 return;
             }
             SentryGrid.MarkExposed(target);
-            if (!VaultUtils.isServer) {
-                PRTLoader.NewParticle<PRT_Light>(target.Top, new Vector2(0f, -0.5f),
-                    GameModeTheme.GodSmithEmber, 0.12f)?.Configure(12, 0.8f);
-            }
-        }
-
-        /// <summary>超频眼弹的灼目重影（各端按出生判定绘制）</summary>
-        protected override void DrawBoltExtra(Projectile bolt, SentryKit kit, GsSentryLocal st, Color lightColor) {
-            if (!st.OverdriveShot) {
-                return;
-            }
-            Main.instance.LoadProjectile(bolt.type);
-            var tex = Terraria.GameContent.TextureAssets.Projectile[bolt.type].Value;
-            Rectangle frame = tex.Frame(1, Main.projFrames[bolt.type], 0, bolt.frame);
-            Color glow = GameModeTheme.GodSmithEmber * 0.45f;
-            glow.A = 0;
-            Main.EntitySpriteDraw(tex, bolt.Center - Main.screenPosition, frame, glow,
-                bolt.rotation, frame.Size() * 0.5f, bolt.scale * 1.3f,
-                Microsoft.Xna.Framework.Graphics.SpriteEffects.None, 0);
         }
     }
 }

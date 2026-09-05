@@ -2,8 +2,9 @@
 //MLordBlackFlashScreen.fx 黑闪爆点全屏后效（月总）
 //采样 uImage0 屏幕；两层门控：一帧黑白反转冲击帧（亮度阈值双色调+红描边）
 //+ 红黑冲击波（环形折射推挤 + 红色波前 + 向红黑压暗的余韵）。
-//波强度超 1（残血底牌拍）时主波加宽、身后显形尾随涟漪列——
-//多圈波纹大幅扫过全屏的天界塔护盾爆碎语法；强度≤1 时涟漪项为零，开幕拍不变
+//波强度超 1（残血底牌拍）时主波加宽加深、身后显形尾随涟漪列、波前之内的空间向爆心塌陷
+//（内陷透镜）——多圈波纹大幅扫过全屏的天界塔护盾爆碎语法叠上一记吞光坍塌；
+//强度≤1 时涟漪与内陷项皆为零，开幕拍与黑闪印记不变
 //纯径向算术，无角向项，无极缝
 // ============================================================================
 
@@ -22,13 +23,16 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 dir = d / r;
     dir.x /= uAspect;
 
-    //―――― 冲击波：主波环形折射推挤（超 1 强度加宽波带）――――
+    //―――― 冲击波：主波环形折射推挤（超 1 强度加宽加深波带）――――
     float over = saturate(uWave.w - 1.0);
     float band = exp(-pow((r - uWave.z) / (0.07 + over * 0.05), 2.0));
     //尾随涟漪列：主波身后 ~0.35 屏高内的正弦波纹，仅超 1 强度显形
     float trail = exp(-pow((r - uWave.z + 0.17) / 0.14, 2.0));
     float ripple = sin((r - uWave.z) * 46.0) * trail * over;
-    float2 off = dir * (band * 0.02 + ripple * 0.013) * uWave.w;
+    float2 off = dir * (band * (0.02 + over * 0.015) + ripple * 0.013) * uWave.w;
+    //内陷透镜：波前之内的画面整体向爆心塌陷，越靠里陷得越深；正中心归零免得方向翻转出针尖
+    float inside = saturate(1.0 - r / max(uWave.z, 1e-3));
+    off -= dir * pow(inside, 1.6) * smoothstep(0.0, 0.05, r) * over * 0.05;
 
     float3 col;
     col.r = tex2D(uImage0, coords - off * 1.3).r;

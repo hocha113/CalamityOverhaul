@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -20,17 +18,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override int TargetItemID => ItemID.FlowerofFire;
 
         protected override string GsDescFallback =>
-            "Reforged: on-beat fireballs burst into fans of flame tongues on first landing;" +
-            "\nat full resonance the next fireball blooms into a burning field where it lands";
-
+            "Reforged: on-beat fireballs burst into fans of flame tongues on first landing;\nat full resonance the next fireball blooms into a burning field where it lands";
         protected override float BaseDamageMult => 1.08f;
-
-        protected override Color ChantColor => new(255, 132, 48);
 
         /// <summary>形态：扇形火舌</summary>
         private const float FormTongue = 10f;
-
-        private static readonly Color EmberDeep = new(200, 72, 26);
 
         /// <summary>落地检测状态（端本地；生成裁决只认 owner 端）</summary>
         private class BounceState
@@ -66,30 +58,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             if (router.MarkData == FormTongue) {
                 proj.velocity.Y += 0.2f;
             }
-
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Lighting.AddLight(proj.Center, ChantColor.ToVector3() * 0.26f);
-            //飞行相：燃焰摆尾
-            bool hot = router.MarkData is FormOnBeat or FormEmpower or FormTongue;
-            int interval = hot ? 3 : 5;
-            if (proj.timeLeft % interval == 0) {
-                PRTLoader.NewParticle<PRT_HellFire>(proj.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    -proj.velocity * 0.1f, Color.White, Main.rand.NextFloat(0.5f, 0.8f));
-            }
         }
 
         /// <summary>首次落地：正拍炸火舌，强化咏唱化火田（owner 裁决，弹幕过线全端可见）</summary>
         private void OnFirstLanding(Projectile proj, GodSmithProjRouter router) {
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 5; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(proj.Center,
-                        (-Vector2.UnitY).RotatedByRandom(0.8) * Main.rand.NextFloat(2f, 5f),
-                        i % 2 == 0 ? ChantColor : EmberDeep,
-                        Main.rand.NextFloat(0.25f, 0.42f))?.Configure(true, Main.rand.Next(12, 20));
-                }
-            }
             if (!proj.IsOwnedByLocalPlayer()) {
                 return;
             }
@@ -114,36 +86,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         }
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            if (!VaultUtils.isServer) {
-                //命中相：火星迸溅
-                Vector2 dir = proj.velocity.SafeNormalize(Vector2.UnitX);
-                for (int i = 0; i < 5; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                        (-dir).RotatedByRandom(0.9) * Main.rand.NextFloat(2f, 5f),
-                        i % 2 == 0 ? ChantColor : EmberDeep,
-                        Main.rand.NextFloat(0.25f, 0.45f))?.Configure(true, Main.rand.Next(10, 18));
-                }
-            }
             //强化火球命中敌人也直接开田（不必等落地）
             if (proj.IsOwnedByLocalPlayer() && router.MarkData == FormEmpower) {
                 Projectile.NewProjectile(proj.GetSource_FromThis(),
                     target.Center, Vector2.Zero, ModContent.ProjectileType<GsChantFlameFieldProj>(),
                     Math.Max(1, (int)(proj.damage * 0.3f)), 1f, proj.owner);
                 proj.Kill();
-            }
-        }
-
-        public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            //余痕相：焦灼余烬回落，比火球活得久
-            if (VaultUtils.isServer) {
-                return;
-            }
-            int count = router.MarkData == FormTongue ? 2 : 3;
-            for (int i = 0; i < count; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(proj.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), -Main.rand.NextFloat(0.4f, 1.1f)),
-                    Main.rand.NextBool() ? EmberDeep : new Color(148, 92, 44),
-                    Main.rand.NextFloat(0.24f, 0.4f))?.Configure(true, Main.rand.Next(16, 28));
             }
         }
     }

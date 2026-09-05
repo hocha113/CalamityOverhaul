@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -93,10 +91,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Offense
         }
     }
 
-    /// <summary>血色连锁电光：一粒饱含杀意的血珠拖着电光，先散后咬，加速扑向下一个目标</summary>
+    /// <summary>血色连锁电光：一粒饱含杀意的血珠，先散后咬，加速扑向下一个目标</summary>
     internal class GodSmithOverkillChainBolt : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SharpTears;
 
         public override void SetDefaults() {
             Projectile.width = 14;
@@ -124,29 +122,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Offense
                 Projectile.velocity *= 0.96f;
                 Projectile.alpha = Math.Min(255, Projectile.alpha + 18);
             }
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            Lighting.AddLight(Projectile.Center, 0.45f, 0.05f, 0.08f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.CrimsonTorch,
-                    -Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(0.6f, 0.6f), 120, default, 1.1f);
-                dust.noGravity = true;
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 40, 60, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            //速度拉伸的双层血光弹体：宽暗芯 + 窄亮尾
-            float stretch = 0.22f + Projectile.velocity.Length() * 0.045f;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(140, 8, 25, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(stretch * 1.6f, 0.3f), 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 90, 110, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(stretch, 0.14f), 0);
-            return false;
+            //原版血刺贴图竖向朝上，旋转补四分之一圈
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
         public override void OnKill(int timeLeft) {
@@ -154,11 +131,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Offense
                 return;
             }
             SoundEngine.PlaySound(SoundID.NPCHit18 with { Volume = 0.5f, Pitch = 0.2f }, Projectile.Center);
-            for (int i = 0; i < 10; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.CrimsonTorch,
-                    Main.rand.NextVector2Circular(4f, 4f), 100, default, 1.3f);
-                dust.noGravity = true;
-            }
         }
     }
 }

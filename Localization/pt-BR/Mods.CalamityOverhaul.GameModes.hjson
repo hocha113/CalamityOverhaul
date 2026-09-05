@@ -19,6 +19,21 @@ GameModeText: {
 	// GodSmithDesc: Vanilla weapons are reforged with brand-new attacks, and vanilla armor sets gain an extra endowment true to their nature. Enemy strength is untouched, and it toggles independently of every other mode
 	// GodSmithRecastTitle: Godsmith Reforged
 	// GodSmithEndowPrefix: "Endowment: "
+	// GodSmithInheritLine: Inherited from {0}: {1}
+	// GodSmithSetPreview: Godsmith set bonus: {0}
+	// GodSmithNestChain: Socketed: {0}
+	// GodSmithNestTitle: Socketed Helmets
+	// GodSmithNestHint: Wear the full set to inherit the set bonus of every socketed helmet
+	// GodSmithNestActive: Full set worn: all socketed set bonuses are active
+	/* GodSmithNestReceiveHint:
+		'''
+		Add {0} when crafting this helmet to socket it in
+		Wear the full set to also inherit the socketed helmet's set bonus
+		''' */
+	// GodSmithNestGiveHint: Can be socketed into {0}: include this helmet when crafting one
+	// GodSmithNestOr: " or "
+	// GodSmithRecipeOn: Divine Artifice active
+	// GodSmithRecipeOff: Divine Artifice dormant
 	StateOn: Ativo
 	StateOff: Adormecido
 	HintEnable: Clique para despertar

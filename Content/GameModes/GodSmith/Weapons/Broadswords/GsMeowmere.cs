@@ -58,6 +58,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     internal class GsMeowmereHeld : GsBroadswordHeldBase
     {
         protected override int SwordItemID => ItemID.Meowmere;
+        protected override bool SelfDrawnVisuals => true;
         protected override int BeatCount => 4;
         protected override float BaseReach => 120f;
 

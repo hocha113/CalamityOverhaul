@@ -1,71 +1,14 @@
-GsBatScepter.Desc:
-	'''
-	Umschmiedung: Treffer häufen Nachthimmel, ist er voll, ruft Rechtsklick den Abgrundschwarm
-	Das Mondrad steigt, Schwärme stürzen in Wellen, der Rest bildet einen Schutzring um dich
-	Jeder 8. Fledermausbiss spaltet eine Phantomfledermaus auf einen nahen anderen Feind
-	'''
-GsRazorpine.Desc:
-	'''
-	Umschmiedung: Treffer häufen Harz, ist es voll, hebt Rechtsklick den Nadelsturm
-	Der Nadelwirbel zieht sich um dich zusammen und legt danach eine Nadelschicht unter deine Füße
-	Nadeln bestreichen mit Harz, bei 5 Stapeln am selben Feind schließen sich vier Nadeln im Ring und stechen
-	'''
-GsBlizzardStaff.Desc:
-	'''
-	Umschmiedung: Treffer häufen Schneesturm, ist er voll, senkt Rechtsklick die Weißkatastrophe auf den Cursor
-	Ein gewaltiger Schneesturm hämmert das Gebiet, danach bleiben Eiskristalldornen am Boden
-	Jeder 5. Eispfeil ist Frostsaat und platzt beim Niedergehen in einer kleinen Frostexplosion
-	'''
-GsStaffofEarth.Desc:
-	'''
-	Umschmiedung: Treffer häufen Erdzorn, ist er voll, setzt Rechtsklick Gebirgshebung am Cursor
-	Felsensäulen heben sich in Wellen, Schutt fliegt, danach bleibt ein Lavaader-Strand
-	Jeder Feind, den der Brocken durchwalzt, steigert den Schaden, am Bruch steigt eine halbe Felsensäule
-	'''
-GsBetsysWrath.Desc:
-	'''
-	Umschmiedung: Treffer häufen Drachenflamme, ist sie voll, ruft Rechtsklick Drachenkönig-Unheil
-	Betsys Schatten stürzt dreimal und zieht einen Flammenschleier, danach bleibt eine Fluchfeuerlache
-	Treffer auf verfluchte Feinde häufen extra Drachenflamme, jeder 4. Fluchfeuer-Treffer hebt eine Unheilexplosion
-	'''
-GsNightglow.Desc:
-	'''
-	Umschmiedung: Treffer häufen Morgenlicht, ist es voll, spannt Rechtsklick einen Polarlichtvorhang über dem Cursor
-	Der Vorhang verbrennt Feinde darin und senkt Lichtlanzen nach unten
-	Jeder 5. Treffer senkt eine Polarlichtlanze vom Kopf des Feindes
-	'''
-GsStellarTune.Desc:
-	'''
-	Umschmiedung: Treffer häufen Satz, ist er voll, spielt Rechtsklick das Sternenmeer-Finale
-	Sternenakkorde spielen automatisch im Takt auf Feinde, währenddessen gehst du leichter
-	Treffer hintereinander steigen die Tonleiter, der 8. Ton fällt als Akkord-Sternexplosion
-	'''
-GsResonanceScepter.Desc:
-	'''
-	Umschmiedung: Treffer häufen Resonanz, ist sie voll, löst Rechtsklick Resonanzkollaps im Cursorgebiet
-	Fünf stehende Wellen kreuzen und bleiben, ihre Knoten schlagen zurückgehaltene Feinde
-	Durchschlägt die Königswelle jeden 3. Feind, erklingt ein Stehwellen-Impuls an ihm
-	'''
-GsNebulaArcanum.Desc:
-	'''
-	Umschmiedung: Treffer häufen Arkanum, ist es voll, öffnet Rechtsklick Nebula-Spiralarme
-	Drei Arme kreisen um dich und mahlen Feinde, kleine Feinde werden langsam zum Armherz gezogen
-	Die Arkanum-Großkugel wächst im Flug und zieht kleine Feinde zum Kugelherz
-	Füllt sich die Anzeige, verdichtet sich Sternennebel an der Spitze
-	'''
-GsNebulaBlaze.Desc:
-	'''
-	Umschmiedung: Treffer häufen Lohe, ist sie voll, markiert Rechtsklick ein Nova-Ziel nahe dem Cursor
-	Drei Ringexplosionen zünden versetzt, das Gravitationsloch in der Mitte schluckt kleine Feinde
-	Verstärkte Nebula-Ausbrüche zünden beim Treffer immer eine Mikronova
-	'''
-GsLunarFlare.Desc:
-	'''
-	Umschmiedung: Treffer häufen Mondphase, ist sie voll, hebt Rechtsklick Mondfinsternis-Gericht
-	Die Finsterscheibe gießt zwölf Mondflammenfälle, jeder dritte Fall ergänzt eine Phantom-Mondlichtsäule
-	Jeder 4. Zauber fällt eine extra bleiche Mondflamme vom Firmament
-	Füllt sich die Anzeige, verdichtet sich Mondglanz auf den Seiten
-	'''
+GsBatScepter.Desc: Reforged: every 8th bat bite splits off a phantom bat that dives at another nearby foe
+GsRazorpine.Desc: Reforged: needle hits smear resin; 5 smears on one foe draw a ring of 4 needles closing in on it
+GsBlizzardStaff.Desc: Reforged: every 5th icicle is a rime seed that bursts into a small frost blast where it dies
+GsStaffofEarth.Desc: Reforged: the boulder grinds harder with every foe it crushes, and a half-height rock pillar erupts where it shatters
+GsBetsysWrath.Desc: Reforged: every 4th cursed hit bursts into hexfire
+GsNightglow.Desc: Reforged: every 5th bolt hit drops an aurora lance from above the target
+GsStellarTune.Desc: Reforged: consecutive hits climb a scale; the 8th note lands as a star chord burst
+GsResonanceScepter.Desc: Reforged: the royal wave rings a standing wave pulse on every 3rd foe it pierces
+GsNebulaArcanum.Desc: Reforged: the arcanum orb itself now swells in flight and slowly drags lesser foes toward its heart
+GsNebulaBlaze.Desc: Reforged: nebula eruption bolts now always ignite a micro nova where they strike
+GsLunarFlare.Desc: Reforged: every 4th cast pours a pale fourth flare from the sky
 GsBatSwarmDirector.DisplayName: Abgrundschwarm
 GsPineStormDirector.DisplayName: Nadelsturm
 GsWhiteoutDirector.DisplayName: Weißkatastrophe
@@ -78,19 +21,10 @@ GsStellarFinaleDirector.DisplayName: Sternenmeer-Finale
 GsResonanceCollapseDirector.DisplayName: Resonanzkollaps
 GsNebulaSpiralDirector.DisplayName: Nebula-Spiralarm
 GsNovaDetonationDirector.DisplayName: Nova-Zündung
-GsSpectreStaff.Desc:
-	'''
-	Umschmiedung: Treffer häufen Seelenernte, ist sie voll, hebt Rechtsklick die Seelenabgrund-Gezeit am Cursor
-	Jede Viertelanzeige spaltet eine Nebenseele auf einen nahen anderen Feind
-	Drei Wogen fegen ringförmig die Schar, Wogentreffer geben Seelenheilung, höchstens 6 Leben pro Sekunde
-	'''
+GsSpectreStaff.Desc: Reforged: every quarter of the gauge banked splits off an echo soul that hunts another nearby foe
 GsLunarEclipseDirector.DisplayName: Mondfinsternis-Gericht
 GsMoonPillarProj.DisplayName: Phantom-Mondlichtsäule
 GsSpectreStaffTideDirector.DisplayName: Seelenabgrund-Gezeit
-GsInfernoFork.Desc:
-	'''
-	Umschmiedung: Feuerbälle kreisen mit Schlackefunken, Treffer häufen Glutstau, ist er voll, zündet Rechtsklick Flächenbrand am Cursor
-	Feuerlinien kriechen am Boden, drei Feuerwogen fegen die Flügel, dazwischen fällt Feuerregen, danach bleibt eine Brandaschlache
-	'''
+GsInfernoFork.Desc: Reforged: fireballs corkscrew with furnace slag
 GsInfernoForkWildfireDirector.DisplayName: Flächenbrand
 GsCataclysmRiderBurstProj.DisplayName: Kataklysmus-Nachwelle

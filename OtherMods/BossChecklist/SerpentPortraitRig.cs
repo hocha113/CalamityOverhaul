@@ -26,10 +26,13 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         [VaultLoaden(CWRConstant.NPC + "BSS/Tail")]
         internal static Asset<Texture2D> TailTex = null;
 
-        /// <summary>体节帧底部隔帧留白（像素），入库贴图每帧 98 内容 + 2 空行</summary>
+        /// <summary>
+        /// 体节帧底部隔帧留白（像素）。帧高 108：旧三款 98 行内容落在 4~102（上留 4 下留 6），
+        /// 去掉底部 2 行后内容居中；褐叶/青掌两款按各自画布对中放置，误差不超过 1px
+        /// </summary>
         internal const int BodyFramePad = 2;
 
-        /// <summary>体节取帧（三帧竖排：0 绿赘 / 1 干净 / 2 橙囊；去掉底部隔帧留白，内容居中）</summary>
+        /// <summary>体节取帧（五帧竖排：0 绿赘 / 1 干净 / 2 橙囊 / 3 褐叶 / 4 青掌；去掉底部隔帧留白，内容居中）</summary>
         internal static Rectangle BodyFrame(Texture2D tex, int style) {
             int frames = Math.Max(SerpentChainMath.BodyStyleCount, 1);
             int frameH = tex.Height / frames;
@@ -194,7 +197,7 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
                 displayHeading = displayHeading.AngleLerp(heading, 0.3f);
             }
 
-            gait += BssStateContext.GaitIncrement(speedNow) * frames;
+            gait += BssStateContext.GaitIncrement(speedNow, BssLegRig.StrideBase) * frames;
             FollowChain();
             UpdateLegs();
             if (WithClaws) {
@@ -202,13 +205,16 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
             }
         }
 
-        /// <summary>鳌足推进：地表待机呼吸摆，埋沙/钻沙自动收拢（跟随头位姿）</summary>
+        /// <summary>鳌足推进：地表待机探路划动，埋沙/钻沙自动收拢（爪基跟 0 号体节位姿，与战斗端同构）</summary>
         private void UpdateClaws() {
             BssClawRig.ClawEnv env = new() {
                 Command = HeadBuried ? BssClawCommand.Tuck : BssClawCommand.Idle,
                 HeadCenter = headPos,
                 HeadRotation = HeadRotation,
+                MountCenter = segs[0].Center,
+                MountRotation = segs[0].Rotation,
                 HeadVelocity = headPos - prevHeadPos,
+                GaitPhase = gait,
                 AllowDust = false,
             };
             clawRig.Advance(in env);
@@ -237,7 +243,8 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         private void UpdateSurface(float frames) {
             headPos.X += CruiseSpeed * frames;
             //贴地呼吸：随步态时钟轻沉浮
-            headPos.Y = SandY - RideHeight + MathF.Sin(gait * 1.1f) * 4f;
+            //贴地呼吸读步态时钟的低频（战斗端同比：腿快拍、身体慢拍）
+            headPos.Y = SandY - RideHeight + MathF.Sin(gait * 0.45f) * 4f;
             if (headPos.X >= patrolHalf) {
                 CurrentStage = Stage.Dive;
             }
@@ -260,7 +267,7 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         private void UpdateBuried(float frames) {
             float breachX = patrolHalf * BreachXFrac;
             headPos.X -= BuriedSpeed * frames;
-            headPos.Y = SandY + BurialDepth + MathF.Sin(gait * 0.7f) * 6f;
+            headPos.Y = SandY + BurialDepth + MathF.Sin(gait * 0.3f) * 6f;
             if (headPos.X <= breachX) {
                 CurrentStage = Stage.Breach;
                 breachVel = BreachLaunch;

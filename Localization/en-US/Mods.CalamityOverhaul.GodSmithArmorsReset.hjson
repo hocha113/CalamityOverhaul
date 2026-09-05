@@ -1,0 +1,150 @@
+GsCopperArmor: {
+	// Godsmith armor resets: per-piece stat lines and set bonus lines
+	// Pre-hardmode ore sets: chestplates grant mining speed, one set bonus each
+	BodyLine: 5% faster mining speed
+	SetBonusLine: Attacks have a 30% chance to deal 2 extra fixed damage
+}
+
+GsTinArmor: {
+	BodyLine: 6% faster mining speed
+	SetBonusLine: 10% increased movement speed and 50 more maximum mana
+}
+
+GsIronArmor: {
+	BodyLine: 8% faster mining speed
+	SetBonusLine: 5 more defense and 10 armor penetration, but 20% reduced movement speed
+}
+
+GsLeadArmor: {
+	BodyLine: 9% faster mining speed
+	SetBonusLine: Attacks have a 50% chance to inflict Lead Poisoning (4 damage per second for 6 seconds); +1 minion slot
+}
+
+GsSilverArmor: {
+	BodyLine: 11% faster mining speed
+	SetBonusLine: 3 more defense
+}
+
+GsTungstenArmor: {
+	BodyLine: 12% faster mining speed
+	SetBonusLine: 3 more defense
+}
+
+GsGoldArmor: {
+	BodyLine: 14% faster mining speed
+	SetBonusLine: 15% increased damage, but 20 less defense
+}
+
+GsPlatinumArmor: {
+	BodyLine: 15% faster mining speed
+	SetBonusLine: 10 more defense and +1 minion slot, but 15% reduced damage
+}
+
+GsLeadPoisonBuff: {
+	DisplayName: Lead Poisoning
+	Description: Losing 4 life per second
+}
+
+// The eight wood sets
+GsWoodArmor.SetBonusLine: Chopping trees has a chance to drop extra lumber
+GsBorealWoodArmor.SetBonusLine: Chopping trees has a chance to drop extra lumber
+GsRichMahoganyArmor.SetBonusLine: Chopping trees has a chance to drop extra lumber
+GsPalmWoodArmor.SetBonusLine: Chopping trees has a chance to drop extra lumber
+GsEbonwoodArmor.SetBonusLine: Chopping trees has a chance to drop extra lumber
+GsShadewoodArmor.SetBonusLine: Chopping trees has a chance to drop extra lumber
+GsAshWoodArmor.SetBonusLine: Chopping trees has a chance to drop extra lumber
+GsPearlwoodArmor.SetBonusLine: Chopping trees has a chance to drop extra lumber
+// Other pre-hardmode sets
+GsCactusArmor.SetBonusLine: 15% increased movement speed
+GsEskimoArmor.SetBonusLine: Immune to Frozen and Chilled, attacks inflict Frostburn, 15 more defense
+GsPinkEskimoArmor.SetBonusLine: Immune to Frozen and Chilled, attacks inflict Frostburn, 15 more defense
+GsAnglerArmor.SetBonusLine: Casts 3 extra fishing lines; chance to catch fish from other biomes or a bundle of 3 to 7 buff potions
+
+GsNinjaArmor: {
+	HeadLine: 10% increased critical strike chance
+	BodyLine: Increases your max number of minions by 1
+	LegsLine: 10% increased movement speed
+	SetBonusLine: Darts, throwing knives, shurikens and spiky balls are not consumed, fire 20% faster, deal 10 more damage and inflict Bleeding
+}
+
+GsFossilArmor: {
+	HeadLine: 15% increased critical strike chance
+	BodyLine: Increases your max number of minions by 2
+	LegsLine: 10% increased movement speed
+	SetBonusLine: Darts, throwing knives, shurikens and spiky balls are not consumed, fire 20% faster, deal 7 more damage and inflict Poisoned
+}
+
+GsShadowArmor: {
+	HeadLine: 15% increased critical strike chance
+	BodyLine: 5% increased movement speed
+	LegsLine: 10% increased movement speed
+	SetBonusLine: 15% increased attack speed for all weapons; +1 minion slot
+}
+
+GsCrimsonArmor: {
+	HeadLine: 5 more defense and 4% increased damage
+	BodyLine: 5 more defense and 3% increased damage
+	LegsLine: 5 more defense and 3% increased damage
+	SetBonusLine: Attacks heal you for 5% of the damage dealt (up to 15, once every 5 seconds); defense rises as your life falls, up to 1.05x at 30% life
+}
+
+GsMeteorArmor.SetBonusLine: 20% increased critical strike chance, 25% increased damage, 60% increased attack speed for all weapons; +3 minion slots; 300 less maximum life (minimum 1), 25 less defense and 20% increased damage taken
+
+GsNecroArmor: {
+	HeadLine: 5% increased damage, 100 more maximum mana and 5% increased magic critical strike chance
+	BodyLine: 5% increased damage, 10% increased critical strike chance and 5% increased magic damage
+	LegsLine: 5% increased damage, 10 armor penetration and 20% reduced mana usage
+	SetBonusLine: Dealing damage has a 60% chance to hurl 1 to 2 bones that deal 10 damage, fall with gravity and pierce twice
+}
+
+GsJungleArmor: {
+	HeadLine: Attacks deal 5 more damage
+	BodyLine: 10% increased damage
+	LegsLine: 10% increased movement speed
+	SetBonusLine: +2 minion slots; damaging an enemy instantly fires a 4-damage poison stinger at it
+}
+
+GsBeeArmor: {
+	HeadLine: 30% reduced mana usage
+	BodyLine: 15% increased critical strike chance
+	LegsLine: 15% increased movement speed
+	SetBonusLine: Three giant bees circle you and sting any enemy that comes close
+}
+
+GsObsidianArmor: {
+	HeadLine: 4 more defense and 7% increased damage
+	BodyLine: 3 more defense and 5% increased critical strike chance
+	LegsLine: 3 more defense and 15% reduced mana usage
+	SetBonusLine: Immune to lava; damaging an enemy has a 30% chance to trigger an explosion dealing 1.1x your weapon's damage
+}
+
+GsMoltenArmor: {
+	HeadLine: 7 more defense and 10% increased critical strike chance
+	BodyLine: 7 more defense and 15% increased damage
+	LegsLine: 6 more defense and +3 minion slots
+	SetBonusLine: All attacks set enemies on fire for 6 seconds and you are immune to On Fire!; damaging an enemy has a 40% chance to trigger an explosion dealing 1.5x your weapon's damage
+}
+
+// Hardmode ore sets and the spider set: vanilla piece stats stay, only the set bonus changes
+GsCobaltArmor.SetBonusLine: All damage increased by 15, 15% increased attack speed for all weapons, 20% reduced mana usage; attacks have a 30% chance to restore 30 mana
+GsPalladiumArmor.SetBonusLine: 10% more defense and +2 minion slots, but all damage reduced by 20; attacks heal you for 10% of the damage dealt (up to 25, once every 5 seconds)
+GsMythrilArmor.SetBonusLine: Attacks inflict Ichor, Cursed Inferno and On Fire!; 10% increased critical strike chance and 10% increased damage
+GsOrichalcumArmor.SetBonusLine: +1 minion slot; attacks have a 70% chance to release 2 to 3 homing petals that deal 100 damage and pierce twice
+GsTitaniumArmor.SetBonusLine: Hitting an enemy raises the Titanium Barrier and summons titanium shards around you; more shards grant up to 15% critical strike chance and 10% damage, but the barrier shatters the moment you take damage
+GsAdamantiteArmor.SetBonusLine: +3 minion slots and 15% increased movement speed, but 15% increased mana usage
+GsSpiderArmor.SetBonusLine: 15% increased damage, critical strike chance and movement speed, +2 minion slots; 40% chance not to consume mana
+// Second batch (hardmode/endgame): vanilla piece stats stay, only the set bonus changes; pillar and shroomite sets keep their vanilla mechanics underneath
+GsFrostArmor.SetBonusLine: All attacks inflict Frostburn; immune to Frostburn, Chilled and Frozen; damaging an enemy has a 25% chance to burst ice crystals for 1.2x your weapon's damage and freeze nearby enemies for 1 second; taking damage unleashes a cold snap that freezes nearby enemies for 2 seconds, once every 10 seconds
+GsCrystalAssassinArmor.SetBonusLine: Grants the ability to dash and 10% increased movement speed; dashing into an enemy bursts crystals for 2x your weapon's damage, and your next 3 attacks after a dash are guaranteed critical strikes
+GsHallowedArmor.SetBonusLine: 10% increased damage and critical strike chance; hitting an enemy grants Holy Ward once every 20 seconds, which fully dodges the next hit and releases 6 holy stars dealing 150 damage each
+GsBeetleScaleArmor.SetBonusLine: Consecutive hits build Beetle Might, +1 stack per hit up to 20; each stack grants 1% damage and 0.5% attack speed, and 2 seconds without hitting resets it; at full stacks hits have a 20% chance to unleash a shell shock for 1.5x your weapon's damage
+GsBeetleShellArmor.SetBonusLine: 10% more defense; taking damage grants a shell layer (up to 3), each layer giving 6 defense and 6% damage reduction, all fading after 10 seconds without being hit; being hit at 3 layers shatters them into a shockwave dealing 4x your defense
+GsTurtleArmor.SetBonusLine: 15% more defense, 10% damage reduction and melee attackers take double damage back, but 10% reduced movement speed; taking damage launches 8 spikes that each deal 2x your defense, once every 3 seconds
+GsTikiArmor.SetBonusLine: +3 minion slots, 15% increased summon damage and 25% increased whip range; minion and whip hits have a 20% chance to call a totem spirit flame that homes in for 60 damage and poisons for 3 seconds
+GsSpectreHoodArmor.SetBonusLine: Magic hits release healing orbs, but magic damage is reduced by 20%; 100 more maximum mana and faster mana regeneration; taking damage has a 40% chance to instantly heal 10% of your maximum life, once every 8 seconds
+GsSpectreMaskArmor.SetBonusLine: Magic hits release lost souls; 10% increased magic damage and critical strike chance, 15% reduced mana usage; magic critical strikes have a 30% chance to loose an extra spectral flame that homes in for 80 damage
+GsShroomiteArmor.SetBonusLine: Standing still turns you stealthy as before; 15% increased ranged critical strike chance and a 30% chance not to consume ammo; while deep in stealth, ranged hits have a 30% chance to burst a spore cloud for 1.3x your weapon's damage
+GsSolarArmor.SetBonusLine: Solar shields and the solar dash work as before; each shield also grants 8 defense and 4% damage reduction, and dashing into an enemy triggers a solar explosion for 2x your weapon's damage
+GsVortexArmor.SetBonusLine: Vortex stealth works as before; while stealthed, ammo is never consumed and ranged hits have a 40% chance to trigger a vortex burst for 1.5x your weapon's damage; while visible, 15% increased movement speed and 10% ranged critical strike chance
+GsNebulaArmor.SetBonusLine: Nebula boosters work as before; each damage booster level also grants 5% magic damage, each life level 2 life regeneration and each mana level 10% reduced mana usage; magic hits have a 25% chance to trigger a nebula pulse for 1.2x your weapon's damage
+GsStardustArmor.SetBonusLine: The Stardust Guardian works as before; +3 minion slots and 15% increased summon damage; minion hits have a 20% chance to call a stardust shard that homes in for 150 damage

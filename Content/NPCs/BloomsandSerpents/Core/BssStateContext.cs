@@ -32,8 +32,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         Flail,
         /// <summary>死亡逐腿失力（配合 CollapsedLegs 计数）</summary>
         Collapse,
-        /// <summary>柱面抓握：足端锚沙柱壁面攀爬（几何由 LegGrip* 声明）</summary>
-        Grip,
         /// <summary>蓄势蹲伏：站距外扩贴地咬定、快步稳桩（起跳前的压缩拍）</summary>
         Brace,
     }
@@ -41,20 +39,22 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
     /// <summary>鳌足姿态指令（纯表现，各端本地模拟；未显式声明时自动跟随腿的收拢/瘫软）</summary>
     internal enum BssClawCommand
     {
-        /// <summary>胸前折叠螳臂待机（呼吸摆）</summary>
+        /// <summary>前伸探路待机（螯尖探在头前两侧，随步态微摆）</summary>
         Idle,
         /// <summary>护嘴：合拢护在嘴前，ClawBurst 拍猛推摊开（配合喷吐）</summary>
         GuardMouth,
         /// <summary>撕咬挣抱：朝 ClawAim 急伸钳合（冲刺伤害窗内玩家贴嘴时）</summary>
         Snatch,
-        /// <summary>过顶挥掷（沙球雨；ClawPhase = 本记进度，ClawActiveSide = 主甩侧）</summary>
-        RainFlick,
-        /// <summary>祭舞三拍（沙尘爆；ClawPhase = 全程进度）</summary>
-        Rite,
+        /// <summary>蹲伏张螯：双螯外张高举，钳口大开（扑击蓄势的威吓姿）</summary>
+        Brace,
         /// <summary>钻沙/掠冲收拢贴体</summary>
         Tuck,
         /// <summary>死亡垂软</summary>
         Collapse,
+        /// <summary>掘沙：双螯探向头前下方沙面插沙舀住（ClawPhase = 插沙进度）</summary>
+        Scoop,
+        /// <summary>过顶抡掷：从掘沙位向后上抡起再鞭向前上（ClawPhase = 抡掷进度）</summary>
+        Fling,
     }
 
     /// <summary>颚开合指令（纯表现，各端本地；未声明回 Idle，Idle 时颚绘制回落到爪映射）</summary>
@@ -101,6 +101,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public bool ChaseValveUsed { get; set; }
         /// <summary>上一手选招的状态号（-1 无；钻地连发闸的判据，权威端裁决量）</summary>
         public int LastPickedState { get; set; } = -1;
+        /// <summary>巡曳折返侧（±1，0 未定；hub 在玩家两侧来回爬，跨 hub 进出持久）</summary>
+        public int PatrolSide { get; set; }
+        /// <summary>本段巡曳已用帧数（地形卡住也要折返的计时）</summary>
+        public int PatrolLegTimer { get; set; }
         /// <summary>死亡演出已完，CheckDead 据此放行</summary>
         public bool DeathPerformanceFinished { get; set; }
         #endregion
@@ -132,25 +136,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public int CollapsedLegs { get; set; }
         /// <summary>腿整体可见度（钻沙期渐隐）</summary>
         public float LegAlpha { get; set; } = 1f;
-
-        /// <summary>柱面抓握声明（Grip 指令的几何，每帧重声明；盘柱状态喂值）</summary>
-        public bool LegGripActive { get; set; }
-        public float LegGripCenterX { get; set; }
-        public float LegGripHalfWidth { get; set; }
-        public float LegGripTopY { get; set; }
-        public float LegGripBottomY { get; set; }
         #endregion
 
         #region 鳌足指令（每帧重声明；Burst 自衰减跨帧）
         public BssClawCommand ClawCommand { get; set; }
-        /// <summary>命令语义相位（挥掷 = 本记 0..1 / 祭舞 = 全程 0..1 / 护嘴 = 合拢度）</summary>
+        /// <summary>命令语义相位（护嘴 = 合拢度 / 蹲伏 = 张螯进度）</summary>
         public float ClawPhase { get; set; }
         /// <summary>猛推包络（齐射拍置 1，逐帧自衰减）</summary>
         public float ClawBurst { get; set; }
         /// <summary>撕咬目标点</summary>
         public Vector2 ClawAim { get; set; }
-        /// <summary>挥掷主甩侧（±1，0 = 双爪同姿）</summary>
-        public int ClawActiveSide { get; set; }
         #endregion
 
         #region 颚指令（每帧重声明；Burst 自衰减跨帧）
@@ -207,10 +202,24 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public float GaitPhase { get; set; }
 
         /// <summary>
-        /// 步态时钟推进速率（弧度/帧）：随体速加快。划桨式步态（镜像坟灾虫臂）端点不钉世界，
-        /// 周期可以放到从容档——巡曳速约 32 帧一个完整划水循环。
+        /// 步态时钟推进速率（弧度/帧）：一个时钟周期 ≈ 身体前进一个步幅
+        /// （<see cref="BssLegRig.StrideWorld"/>），每条腿每周期恰好换一步——
+        /// 世界落足步行的节律只有这样定义才闭合：巡曳速 8 时约 16 帧一周期、
+        /// 追赶速 12 时约 11 帧，静止时留极慢的呼吸底速。身体起伏/颚呼吸等慢表现
+        /// 读它的半频或更低。
         /// </summary>
-        public static float GaitIncrement(float speedX) => 0.045f + speedX * 0.009f;
+        public static float GaitIncrement(float speed)
+            => GaitIncrement(speed, BssLegRig.StrideWorld);
+
+        /// <summary>
+        /// 指定步幅的步态时钟速率（图鉴端腿倍率为 1，传贴图步幅）。体速封顶在步行档上限：
+        /// 冲刺/腾空段腿已收拢或抓空，时钟不必跟着飙到抽搐
+        /// </summary>
+        public static float GaitIncrement(float speed, float stride)
+            => 0.02f + MathHelper.TwoPi * System.Math.Min(speed, 14f) / stride;
+
+        /// <summary>慢表现相位（身体起伏、颚呼吸）：步态时钟的 0.4 倍频</summary>
+        public float BreathPhase => GaitPhase * 0.4f;
 
         /// <summary>
         /// 各髋站落步下沉 0..1（步态系统落足帧置位，客户端表现量）。
@@ -264,9 +273,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         /// <summary>体节总数（体+尾，读 ai[1] 同步槽）</summary>
         public int TotalSegments { get; set; }
 
-        /// <summary>红花节判定（款式2，钉刺/花瓣发射器）</summary>
+        /// <summary>红花节判定（款式表中为款式 2 的体节，钉刺/花瓣发射器；尾节链序 = BodyCount 恒否）</summary>
         public static bool IsFlowerOrdinal(int ordinal)
-            => ordinal % BssDirector.FlowerStep == BssDirector.FlowerStep - 1;
+            => ordinal < BssDirector.BodyCount && BssDirector.BodyStyle(ordinal) == BssDirector.StyleBloom;
 
         /// <summary>重扫体节链（按 ai[0] 链序排序）</summary>
         public void RefreshSegments() {
@@ -292,10 +301,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
             Slither = 0f;
             AimAngle = float.NaN;
             LegCommand = BssLegCommand.March;
-            LegGripActive = false;
             ClawCommand = BssClawCommand.Idle;
             ClawPhase = 0f;
-            ClawActiveSide = 0;
             ClawBurst *= 0.84f;
             if (ClawBurst < 0.02f) {
                 ClawBurst = 0f;

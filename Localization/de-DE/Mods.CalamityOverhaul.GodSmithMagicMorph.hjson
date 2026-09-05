@@ -1,25 +1,9 @@
-GsSpiritFlame.Desc:
-	'''
-	Umschmiedung: Geisterflamme schleppt bleiches Seelenfeuer, beim Treffer spaltet sich mit 50% Chance ein jagendes Flämmchen
-	Rechtsklick halten lädt, Loslassen legt einen Fünf-Flammen-Ring am Cursor, die Ringflammen stürzen nacheinander auf nahende Feinde
-	'''
+GsSpiritFlame.Desc: Umschmiedung: Geisterflamme schleppt bleiches Seelenfeuer, beim Treffer spaltet sich mit 50% Chance ein jagendes Flämmchen
 GsSpiritFlameRingProj.DisplayName: Geisterflammen-Ring
 GsSpiritFlameWispProj.DisplayName: Seelenjagd-Flämmchen
-GsPoisonStaff.Desc:
-	'''
-	Umschmiedung: Giftzähne ziehen Giftnebel, beim zweiten Ziel spalten sie zwei feine Zähne
-	Rechtsklick halten lädt und schickt einen Schlangenkuss: eine kleine, schnelle Schlange schlängelt und beißt, unterwegs legt sie einen Giftnebel-Gang
-	'''
-GsVenomStaff.Desc:
-	'''
-	Umschmiedung: Giftzähne ziehen Giftnebel, beim zweiten Ziel spalten sie einen schweren Zahn
-	Rechtsklick halten lädt und schickt einen Schlangenkuss: eine große, schwere Otter walzt langsam, wo der Leib vergeht, bleibt ein Säureteich
-	'''
-GsShadowFlameHexDoll.Desc:
-	'''
-	Umschmiedung: Schattenflammen-Tentakel nageln ein Fluchpuppen-Mal in alles, was sie berühren, gezeichnete Feinde erleiden mehr Schaden von dieser Puppe
-	Rechtsklick halten lädt den Großfluch: am Cursor nagelt sich ein Fluchpuppen-Brandmalfeld, darin peitschen ständig Schattenflammen-Tentakel auf Kommende
-	'''
+GsPoisonStaff.Desc: Umschmiedung: Giftzähne ziehen Giftnebel, beim zweiten Ziel spalten sie zwei feine Zähne
+GsVenomStaff.Desc: Umschmiedung: Giftzähne ziehen Giftnebel, beim zweiten Ziel spalten sie einen schweren Zahn
+GsShadowFlameHexDoll.Desc: Umschmiedung: Schattenflammen-Tentakel nageln ein Fluchpuppen-Mal in alles, was sie berühren, gezeichnete Feinde erleiden mehr Schaden von dieser Puppe
 GsLeafBlower.Desc:
 	'''
 	Umschmiedung: Blattklingen fliegen mit scharfgrünem Wirbelmal

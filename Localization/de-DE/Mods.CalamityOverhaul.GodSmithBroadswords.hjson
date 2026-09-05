@@ -7,11 +7,6 @@ GsLightsBane.Desc:
 	Umschmiedung: Jeder Hieb reißt eine Schattenwunde in die Luft;
 	der dritte taucht in den Schatten und bricht nach vorn aus, die Schnittspur bleibt kurz und ätzt, wen sie berührt
 	'''
-GsNightsEdge.Desc:
-	'''
-	Umschmiedung: Ein Fünf-Takt-Ritual. Die ersten vier Hiebe rufen je eine Werkstoffseele — Schatten, Fleisch, Dschungel, Höllenfeuer;
-	der fünfte vereint die vier Seelen und schneidet eine Nachtschneidewelle durch die Feindreihe
-	'''
 # ===== Wood tier =====
 GsWoodenSword.Desc:
 	'''
@@ -116,7 +111,6 @@ GsCobaltSword.Desc: Umschmiedung: Je länger die Kombo, desto schneller die Koba
 GsCutlass.Desc: Umschmiedung: Vier-Takt-Plünderertanz, die Tonleiter steigt. Triffst du genug Schwung, wird der vierte Takt zum Wirbel-Doppelbogen, zwei Runden um dich, jede wertet einmal Schaden.
 GsDD2SquireBetsySword.Desc: Umschmiedung: Jeder Hieb sendet eine Drachenruf-Schallwelle. Treffer häufen Drachenseele, bei vier Stapeln steigt die Schallwelle des Abschlusshiebs zur Doppeldrachen-Wirbelwelle auf.
 GsDD2SquireDemonSword.Desc: Umschmiedung: Halte Rechtsklick, um den Schild zu heben; nach erfolgreichem Block richtet der nächste Hieb fünffachen Schaden an. Ein gelungener Block entzündet die Klinge, die nächsten drei Schwünge schicken Feuerklingenwellen und entzünden Feinde.
-GsExcalibur.Desc: Umschmiedung: Vier-Takt-Tagesurteil-Kombo, jeder Hieb sendet einen kurzen Heiliglichtbogen und schließt die Distanz außerhalb der Schneide. Treffer häufen Heiligenschein, trifft der Urteilshieb des vierten Takts, detoniert eine Heiliglichtnova, je mehr Schein, desto stärker der Ausbruch.
 GsFetidBaghnakhs.Desc: Umschmiedung: Enge Vier-Takt-Klauenkombo. Jeder Schlag reißt eitrige Kratzspuren ins Ziel, die vierte platzt zu Eiter, berührte Feinde werden vergiftet und tragen Toxin.
 GsFrostbrand.Desc: Umschmiedung: Winteratem. Jeder Hieb haucht ein Frostgeschoss, das erst zögert, dann vorschießt, Treffer legen Frostbrand auf. Das Frostgeschoss des Abschlusstakts wird zum Dreizack-Eisfächer.
 GsGreenPhaseblade.Desc: Umschmiedung: Plasmastrahlklinge, Treffer häufen Ladung, die Klinge wird länger und heller. Ist die Ladung voll, schleudert der nächste Abschlusshieb einen Plasmabogen.
@@ -140,13 +134,9 @@ GsRedPhasesaber.Desc: Umschmiedung: Veredelte Plasmaklinge, Treffer häufen Ladu
 GsSeedler.Desc: Umschmiedung: Jeder Hieb wirft eine rotierende Samenkapsel, die nach dem Hüpfen in einen verfolgenden Dornenfächer platzt. Die Kapsel des Abschlusstakts sprüht Ranken und stellt am Einschlag ein dauerstechendes Dornenfeld auf.
 GsSlapHand.Desc: Umschmiedung: Drei-Takt-Himmelsstrafe-Klaps, jede Hand hinterlässt einen riesigen Handabdruck, absurder Rückstoß. Der Abschlusstakt faltet beide Hände und schlägt eine kleine Stoßwelle.
 GsStarWrath.Desc: Umschmiedung: Jeder Hieb ruft drei kometenschweifende Meteore vom Nachthimmel. Treffer häufen Sternenflut, ist sie voll, gießt der Abschlusshieb stattdessen einen Sternenregen, der große Schlussstern platzt beim Aufschlag einen Sternenring.
-GsTerraBlade.Desc: Umschmiedung: Vier-Takt-Duett, Lichtseele und Nachtseele reichen sich die Klinge. Jeder Hieb sendet eine Terra-Klingenwelle in der aktuellen Seelenfarbe, der vierte vereint beide und schneidet eine gewaltige Resonanzgroßklinge, die beim Treffer einen smaragdgrünen Sternenring sprengt.
 GsTheHorsemansBlade.Desc: Umschmiedung: Treffer rufen einen Flammenkürbiskopf, der das Ziel rammt. Wiederholte Schläge auf dasselbe Ziel brennen ein Kopfgeldmal, ist es voll, ruft der Abschlusshieb vier brennende Kürbisse als Reiterreihe, die die Ziellinie überrollen.
 GsTitaniumSword.Desc: Umschmiedung: Jeder Hieb hinterlässt einen Titansschatten in der Luft, einen halben Takt später wiederholt er denselben Schnitt.
-GsTrueExcalibur.Desc: Umschmiedung: Drei-Takt-Tagesurteil. Jeder Hieb wirft eine durchschlagende Tagesklingenwelle, jeder Takt stärker. Trifft die Welle des dritten Takts, platzt Kreuzheiliglicht.
-GsTrueNightsEdge.Desc: Umschmiedung: Drei-Takt-Nachtflut, weit und schwer. Jeder Hieb wirft eine riesige Nachtklingenwelle, die im Hinweg verlangsamt und nach dem Höhepunkt beschleunigt zurückkehrt und noch einmal schneidet. Die Welle des Abschlusstakts ist größer und spaltet beim Zurückkehren zwei kleine Nachtklingen ab.
 GsWhitePhaseblade.Desc: Umschmiedung: Plasmastrahlklinge, Treffer häufen Ladung, die Klinge wird länger und heller. Ist die Ladung voll, schleudert der nächste Abschlusshieb einen Plasmabogen.
 GsWhitePhasesaber.Desc: Umschmiedung: Veredelte Plasmaklinge, Treffer häufen Ladung, die Klinge reicht weiter. Jeder Abschlusshieb schickt eine kurze Lichtklinge, bei voller Ladung stattdessen einen Überladungslichtbogen, der beim Treffer einen Plasmaring sprengt.
 GsYellowPhaseblade.Desc: Umschmiedung: Plasmastrahlklinge, Treffer häufen Ladung, die Klinge wird länger und heller. Ist die Ladung voll, schleudert der nächste Abschlusshieb einen Plasmabogen.
 GsYellowPhasesaber.Desc: Umschmiedung: Veredelte Plasmaklinge, Treffer häufen Ladung, die Klinge reicht weiter. Jeder Abschlusshieb schickt eine kurze Lichtklinge, bei voller Ladung stattdessen einen Überladungslichtbogen, der beim Treffer einen Plasmaring sprengt.
-GsZenith.Desc: Umschmiedung: Nabe aller Schwerter. Jeder Hieb wirft das Nachbild einer historischen Klinge, das im Bogen zum Mauszeiger streicht, kreist und zurückkehrt. Treffer häufen Schwertgeist, je mehr, desto stärker die Schwertformation des Abschlusshiebs, ist er voll, rufst du die Acht-Schwerter-Heimkehr-Formation, die umschließt, im Zentrum reißt ein Raumzeitriss auf und explodiert.

@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -116,39 +114,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Rescue
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.timeLeft < 10) {
                 Projectile.alpha = Math.Min(255, Projectile.alpha + 26);
-            }
-            Lighting.AddLight(Projectile.Center, 0.35f, 0.35f, 0.4f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.SilverFlame,
-                    -Projectile.velocity * 0.05f, 120, default, 0.8f);
-                dust.noGravity = true;
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(235, 240, 255, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float stretch = 0.7f + Projectile.velocity.Length() * 0.07f;
-            //雪白刀线：冷灰衬底 + 雪白刃光，速度全在拉伸里
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(90, 100, 130, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(1.1f, stretch * 1.2f), 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 255, 255, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(0.45f, stretch), 0);
-            return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 6; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.SilverFlame,
-                    Main.rand.NextVector2Circular(2f, 2f), 100, default, 0.9f);
-                dust.noGravity = true;
             }
         }
     }

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -31,9 +33,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         public float LeanAmp;
         /// <summary>本拍伤害倍率（进 DPS 包络预算）</summary>
         public float DamageMult;
-        /// <summary>命中顿帧帧数（从收势尾巴等量扣回）</summary>
+        /// <summary>命中顿帧帧数（从收势尾巴等量扣回）；&gt;0 时基类按 <see cref="GsBroadswordHeldBase.MinHitstop"/> 兜底，0 = 本拍不顿</summary>
         public int Hitstop;
-        /// <summary>爆发首帧体术前压速度（0=无）</summary>
+        /// <summary>已停用：阔剑族体术位移整体删除，字段只为各拍表兼容保留，基类不再读取</summary>
         public float LungeSpeed;
         /// <summary>挥砍音高</summary>
         public float SwingPitch;
@@ -54,9 +56,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     }
 
     /// <summary>
-    /// 阔剑族手持基类：把 GsIronBroadswordHeld 的骨架抽象为可参数化的相位时间线。<br/>
-    /// 固定资产：举-滞-斩-收四相、SwingCurve 过冲回坐、命中顿帧记账扣回、
-    /// 贪婪逐段采样判定、体态倾斜（钉脚底、坐骑冲刺让位）、双层涂抹刀光+姿态残影+辉光绘制。<br/>
+    /// 阔剑族手持基类：可参数化的相位时间线，全族挥砍武器共用。<br/>
+    /// 固定资产：举-滞-斩-收四相（收-爆-停：举刀蓄势、滞帧静止、斩切首帧吃掉大半弧程并过冲、
+    /// 收势前段几何完全冻结的硬停顿，之后才收刀回守位）、命中顿帧记账扣回（带下限）、
+    /// 贪婪逐段采样判定、体态倾斜（举刀后仰、爆发前甩、停顿保持，钉脚底、坐骑冲刺让位）、
+    /// 重拍命中震屏、族级节奏倍率、原版物品贴图一笔绘制。玩家位移一律不做（体术前压已删）。<br/>
+    /// 自绘层默认关闭；保留 R2 重做的件把 <see cref="SelfDrawnVisuals"/> 打开后，
+    /// 涂抹刀光、姿态残影、垫影、辉光闪、族色火星、命中反馈与 <see cref="DrawExtra"/> 整层复活，
+    /// 其余件对这一层零足迹。<br/>
     /// 子类填拍表（<see cref="GetBeat"/>）与色板，签名行为走虚钩子；
     /// 需要整替几何的异形（太刀闪现/双弧钳咬）重写 <see cref="UpdateBladeTransform"/>。<br/>
     /// 联机纪律：ai[0]=拍号 ai[1]=交替符号 随生成包过线；签名弹幕用
@@ -79,15 +86,23 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         /// <summary>目标物品 ID（手上物品切换即自杀；也是刀身贴图来源）</summary>
         protected abstract int SwordItemID { get; }
 
-        /// <summary>刃缘亮色（残影/涂抹外层）</summary>
+        /// <summary>刃缘亮色（残影/涂抹外层；自绘层关闭时无消费者）</summary>
         protected abstract Color EdgeBright { get; }
-        /// <summary>体色（涂抹内层/光照）</summary>
+        /// <summary>体色（涂抹内层/光照；自绘层关闭时无消费者）</summary>
         protected abstract Color BodyMain { get; }
-        /// <summary>重击强调色（终结辉光/蓄力闪）</summary>
+        /// <summary>重击强调色（终结辉光/蓄力闪；自绘层关闭时无消费者）</summary>
         protected abstract Color HotAccent { get; }
 
         /// <summary>拍表：按拍号返回本拍参数</summary>
         protected abstract GsBroadBeat GetBeat(int stage);
+
+        //==================== 自绘层开关（R2 保留件） ====================
+
+        /// <summary>是否启用自绘层：涂抹刀光/残影/垫影/辉光/火星/命中反馈/DrawExtra。默认关，只画原版贴图一笔</summary>
+        protected virtual bool SelfDrawnVisuals => false;
+
+        /// <summary>垫影色（自绘层）</summary>
+        protected virtual Color DeepShadow => new(14, 14, 20);
 
         //==================== 可调几何与节奏 ====================
 
@@ -105,8 +120,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected virtual float CollisionWidth => 40f;
         /// <summary>贴身兜底判定半径</summary>
         protected virtual float PointBlankRadius => 42f;
-        /// <summary>垫影色</summary>
-        protected virtual Color DeepShadow => new(14, 14, 20);
+        /// <summary>族级节奏倍率：所有相位时长再除以此值（略微提升全族攻速，拍表数字不动）</summary>
+        protected virtual float FamilyTempo => 1.12f;
+        /// <summary>收势前几成是硬停顿：刀角刀距全部冻结在终角，停过了才收刀</summary>
+        protected virtual float StopRatio => 0.35f;
+        /// <summary>命中顿帧下限（真实帧）：拍表 Hitstop&gt;0 时至少冻这么多帧，让每一下都有咬住感</summary>
+        protected virtual int MinHitstop => 2;
+        /// <summary>本拍是否算重拍（终结拍或拍表伤害倍率 ≥1.2）：重拍首次命中震屏</summary>
+        protected virtual bool IsHeavyBeat => IsFinisher || beat.DamageMult >= 1.2f;
 
         //==================== 运行时状态（子类只读消费） ====================
 
@@ -128,6 +149,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected float mainReach;
         protected Vector2 mainTip;
         protected float slashProgress;
+        /// <summary>收势蚀散度 1→0（自绘层的刀光/刻纹随之淡出）</summary>
         protected float fanFade = 1f;
         protected int flashTimer;
         protected int flashDur = 7;
@@ -135,10 +157,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected int hitstopSpent;
         protected bool hitstopApplied;
         protected bool slashStarted;
-        protected bool lungeApplied;
         protected bool sweepDamageActive;
         protected float bodyLean;
         private bool bodyLeanApplied;
+        private bool punchFired;
         protected readonly HashSet<int> hitNPCs = [];
 
         protected int timer;
@@ -170,6 +192,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected float ArcStart => baseAngle - (swingDir * raiseBack);
         protected float ArcEnd => baseAngle + (swingDir * follow);
         protected Vector2 Hand => Owner.GetPlayerStabilityCenter();
+        /// <summary>收势进度 0~1（非收势相为 0）</summary>
+        protected float RecoverProgress => CurrentPhase == PhaseRecover
+            ? MathHelper.Clamp((timer - raiseDur - holdDur - slashDur) / (float)recoverDur, 0f, 1f) : 0f;
+        /// <summary>正处于收势前段的硬停顿</summary>
+        protected bool InHardStop => CurrentPhase == PhaseRecover && RecoverProgress <= StopRatio;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 44;
@@ -192,7 +219,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>按拍号写入时长与几何；各相时长除以攻速，攻速词条真实生效</summary>
+        /// <summary>按拍号写入时长与几何；各相时长除以攻速再除以族节奏倍率，攻速词条真实生效</summary>
         protected void InitStage() {
             baseAngle = Projectile.velocity.ToRotation();
             float cos = MathF.Cos(baseAngle);
@@ -204,6 +231,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             if (speed <= 0f) {
                 speed = 1f;
             }
+            speed *= MathF.Max(FamilyTempo, 0.1f);
             int D(int frames) => Math.Max(1, (int)MathF.Round(frames / speed));
 
             raiseDur = D(beat.Raise);
@@ -248,16 +276,19 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             int phase = CurrentPhase;
             lastAngle = mainAngle;
             UpdateBladeTransform(phase);
+            UpdateFanFade(phase);
+            //高攻速把斩切压成单帧时 slashProgress 直达 1.0，伤害窗放开到全程，别让一刀白挥
             sweepDamageActive = phase == PhaseSlash
-                && slashProgress <= DamageWindowEnd
+                && (slashProgress <= DamageWindowEnd || slashDur <= 1)
                 && MathF.Abs(mainAngle - lastAngle) > 0.004f;
             UpdatePose(phase);
             HandlePhaseEvents(phase);
-            if (!VaultUtils.isServer) {
-                HandleParticles(phase);
+            if (SelfDrawnVisuals) {
+                if (!VaultUtils.isServer) {
+                    HandleParticles(phase);
+                }
+                Lighting.AddLight(Vector2.Lerp(Hand, mainTip, 0.7f), BodyMain.ToVector3() * (0.5f * fanFade));
             }
-
-            Lighting.AddLight(Vector2.Lerp(Hand, mainTip, 0.7f), BodyMain.ToVector3() * (0.5f * fanFade));
 
             //顿帧从收势尾巴等量扣回，命中不延长真实冷却
             int effectiveTotal = Math.Max(raiseDur + holdDur + slashDur + 4, totalDur - hitstopSpent);
@@ -266,56 +297,71 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             }
         }
 
-        /// <summary>斩切行程曲线：爆发过冲再回坐（收-爆-停）</summary>
+        /// <summary>斩切行程曲线：出生猛烈——前 60% 时间走幂 1.6 的 ease-out（四帧斩首帧即吃掉六成弧程），
+        /// 冲过终角 6% 后回坐钉住（收-爆-停）。曲线不再从零速起步，去掉了「软绵绵」的加速尾</summary>
         protected virtual float SwingCurve(float p) {
-            const float burstEnd = 0.56f;
-            const float overshoot = 1.045f;
+            const float burstEnd = 0.6f;
+            const float overshoot = 1.06f;
             if (p < burstEnd) {
-                return overshoot * SmoothStep01(p / burstEnd);
+                float t = MathHelper.Clamp(p / burstEnd, 0f, 1f);
+                return overshoot * (1f - MathF.Pow(1f - t, 1.6f));
             }
             return MathHelper.Lerp(overshoot, 1f, SmoothStep01((p - burstEnd) / (1f - burstEnd)));
         }
 
         /// <summary>
-        /// 相位几何：写 mainAngle/mainReach/slashProgress/fanFade，尾部必须更新 mainTip。
+        /// 相位几何：写 mainAngle/mainReach/slashProgress，尾部必须更新 mainTip。
+        /// 默认语言：举刀拖回架位（末段越拖越慢的蓄势）→ 滞帧近乎静止再收一点 → 斩切首帧爆发、过冲、钉住
+        /// → 收势前 <see cref="StopRatio"/> 几何完全冻结（硬停顿）→ 收刀回到身前守位。
         /// 异形（闪现太刀/双弧）整体重写本方法即可换掉运动语言，判定与体态照常工作
         /// </summary>
         protected virtual void UpdateBladeTransform(int phase) {
             float arcStart = ArcStart;
-            float heldAngle = arcStart - (swingDir * 0.08f);
+            float heldAngle = arcStart - (swingDir * 0.10f);
 
             switch (phase) {
                 case PhaseRaise: {
                     float p = timer / (float)raiseDur;
                     float eased = 1f - MathF.Pow(1f - p, 3f);
-                    float liftFrom = arcStart + (swingDir * raiseBack * 0.68f);
+                    float liftFrom = arcStart + (swingDir * raiseBack * 0.62f);
                     mainAngle = MathHelper.Lerp(liftFrom, arcStart, eased);
-                    mainReach = FullReach * MathHelper.Lerp(0.58f, 0.92f, eased);
+                    mainReach = FullReach * MathHelper.Lerp(0.6f, 0.9f, eased);
                     slashProgress = 0f;
                     break;
                 }
                 case PhaseHold: {
+                    //滞帧：几乎静止，只再往后收一丁点（收-爆-停里的「收」）
                     float p = (timer - raiseDur) / (float)holdDur;
                     mainAngle = MathHelper.Lerp(arcStart, heldAngle, EaseOutQuad(p));
-                    mainReach = FullReach * MathHelper.Lerp(0.92f, 0.96f, EaseOutQuad(p));
+                    mainReach = FullReach * MathHelper.Lerp(0.9f, 0.92f, EaseOutQuad(p));
                     slashProgress = 0f;
                     break;
                 }
                 case PhaseSlash: {
+                    //爆发：刀角按曲线甩出，刀身随之从架位甩到全长
                     float p = (timer - raiseDur - holdDur) / (float)slashDur;
                     slashProgress = p;
-                    mainAngle = MathHelper.Lerp(heldAngle, ArcEnd, SwingCurve(p));
-                    mainReach = FullReach * (0.96f + 0.04f * MathF.Sin(MathHelper.Clamp(p * 1.8f, 0f, 1f) * MathHelper.Pi));
+                    float curve = SwingCurve(p);
+                    mainAngle = MathHelper.Lerp(heldAngle, ArcEnd, curve);
+                    mainReach = FullReach * MathHelper.Lerp(0.92f, 1f, MathHelper.Clamp(curve, 0f, 1f));
                     break;
                 }
                 default: {
                     float q = (timer - raiseDur - holdDur - slashDur) / (float)recoverDur;
-                    float settle = EaseOutQuad(Math.Min(1f, q * 2.2f));
-                    mainAngle = ArcEnd + (swingDir * 0.09f * (1f - settle));
-                    mainReach = FullReach * MathHelper.Lerp(0.96f, 0.82f, q * q);
                     slashProgress = 1f;
-                    float fadeDur = MathF.Max(4f, recoverDur * 0.7f);
-                    fanFade = MathHelper.Clamp(1f - ((timer - raiseDur - holdDur - slashDur) / fadeDur), 0f, 1f);
+                    if (q <= StopRatio) {
+                        //硬停顿：刀钉在终角纹丝不动，力量感来自这一静
+                        mainAngle = ArcEnd;
+                        mainReach = FullReach;
+                    }
+                    else {
+                        //收刀：温柔回到身前守位，等下一拍的举刀接手
+                        float r = (q - StopRatio) / (1f - StopRatio);
+                        float settle = SmoothStep01(r);
+                        float guard = baseAngle + (swingDir * follow * 0.35f);
+                        mainAngle = MathHelper.Lerp(ArcEnd, guard, settle);
+                        mainReach = FullReach * MathHelper.Lerp(1f, 0.78f, settle);
+                    }
                     break;
                 }
             }
@@ -323,18 +369,31 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             mainTip = Hand + (mainAngle.ToRotationVector2() * mainReach);
         }
 
+        /// <summary>收势蚀散度：硬停顿过后开始淡出，收刀到位归零；其余相恒 1。独立于几何覆写，异形件也照常淡</summary>
+        private void UpdateFanFade(int phase) {
+            if (phase != PhaseRecover) {
+                fanFade = 1f;
+                return;
+            }
+            float stopFrames = recoverDur * StopRatio;
+            float elapsed = timer - raiseDur - holdDur - slashDur - stopFrames;
+            float fadeDur = MathF.Max(4f, recoverDur * (1f - StopRatio) * 0.85f);
+            fanFade = MathHelper.Clamp(1f - (elapsed / fadeDur), 0f, 1f);
+        }
+
         public override bool? CanDamage() => sweepDamageActive ? null : false;
 
-        /// <summary>持械姿态，体态收势后仰爆发前甩</summary>
+        /// <summary>持械姿态：举刀滞帧收臂，爆发与硬停顿全伸；体态举刀后仰、爆发一记前甩、停顿期保持前倾，收刀才回正</summary>
         protected virtual void UpdatePose(int phase) {
             Owner.ChangeDir(facingDir);
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = Owner.itemAnimation = 2;
             Owner.itemRotation = (mainAngle.ToRotationVector2() * Owner.direction).ToRotation();
 
-            Player.CompositeArmStretchAmount stretch = phase is PhaseRaise or PhaseRecover
-                ? Player.CompositeArmStretchAmount.ThreeQuarters
-                : Player.CompositeArmStretchAmount.Full;
+            bool hardStop = InHardStop;
+            Player.CompositeArmStretchAmount stretch = phase == PhaseSlash || hardStop
+                ? Player.CompositeArmStretchAmount.Full
+                : Player.CompositeArmStretchAmount.ThreeQuarters;
             Owner.SetCompositeArmFront(true, stretch, mainAngle - MathHelper.PiOver2);
 
             Projectile.Center = Vector2.Lerp(Hand, mainTip, 0.6f);
@@ -346,8 +405,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             (float target, float rate) = phase switch {
                 PhaseRaise => (-facingDir * leanAmp * 0.8f, 0.22f),
                 PhaseHold => (-facingDir * leanAmp, 0.30f),
-                PhaseSlash => (facingDir * leanAmp * 1.5f, 0.70f),
-                _ => (0f, 0.16f),
+                PhaseSlash => (facingDir * leanAmp * 1.6f, 0.85f),
+                _ => hardStop ? (facingDir * leanAmp * 1.6f, 0.5f) : (0f, 0.18f),
             };
             bodyLean = MathHelper.Lerp(bodyLean, target, rate);
             ApplyBodyLean();
@@ -373,46 +432,30 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             OnKillEffects();
         }
 
-        /// <summary>消亡追加（余痕/收刀演出）</summary>
+        /// <summary>消亡追加（余痕/收刀演出；自绘层件用）</summary>
         protected virtual void OnKillEffects() { }
 
-        /// <summary>相位事件：终结蓄力闪、斩切起手音+前压。重写可换事件编排（记得调 base 或自管 slashStarted）</summary>
+        /// <summary>相位事件：斩切起手音与爆发钩子，自绘层件另带终结蓄力闪。重写可换事件编排（记得调 base 或自管 slashStarted）。
+        /// 玩家位移不在这里也不在任何子类：阔剑族不做体术前压</summary>
         protected virtual void HandlePhaseEvents(int phase) {
-            //终结拍蓄力完成的瞬间刃身闪一记
-            if (IsFinisher && timer == raiseDur + 1) {
+            //终结拍蓄力完成的瞬间刃身闪一记（自绘层）
+            if (SelfDrawnVisuals && IsFinisher && timer == raiseDur + 1) {
                 SetFlash(7);
             }
 
             if (phase == PhaseSlash && !slashStarted) {
                 slashStarted = true;
-                flashTimer = Math.Max(flashTimer, 5);
+                if (SelfDrawnVisuals) {
+                    flashTimer = Math.Max(flashTimer, 5);
+                }
                 if (!VaultUtils.isServer) {
                     PlaySwingSound();
                 }
                 OnSlashBegin();
             }
-
-            //体术前压：爆发首帧沿出手向踏步（owner 端权威，位置随原版同步）
-            if (beat.LungeSpeed > 0f && !lungeApplied && phase == PhaseSlash) {
-                lungeApplied = true;
-                if (Owner.whoAmI == Main.myPlayer && !Owner.mount.Active) {
-                    Owner.velocity.X += facingDir * beat.LungeSpeed;
-                }
-            }
         }
 
-        /// <summary>斩切起手音；默认 Item1 按拍调音高，终结拍补一记厚响</summary>
-        protected virtual void PlaySwingSound() {
-            SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = beat.SwingPitch }, Owner.Center);
-            if (IsFinisher) {
-                SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.4f, Pitch = -0.45f }, Owner.Center);
-            }
-        }
-
-        /// <summary>斩切爆发首帧（签名弹幕/驻场生成放这，内部用 SpawnOwnedProj 守 owner）</summary>
-        protected virtual void OnSlashBegin() { }
-
-        /// <summary>点亮刃身闪光</summary>
+        /// <summary>点亮刃身闪光（自绘层）</summary>
         protected void SetFlash(int frames) {
             flashDur = Math.Max(1, frames);
             flashTimer = Math.Max(flashTimer, frames);
@@ -421,7 +464,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         /// <summary>当前闪光强度 0~1</summary>
         protected float FlashStrength => flashDur > 0 ? flashTimer / (float)flashDur : 0f;
 
-        /// <summary>粒子演出（已在非服务器端调用）：默认斩切期沿切线甩族色火星</summary>
+        /// <summary>粒子演出（自绘层；已在非服务器端调用）：默认斩切期沿切线甩族色火星</summary>
         protected virtual void HandleParticles(int phase) {
             if (phase != PhaseSlash) {
                 return;
@@ -435,6 +478,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     , Main.rand.NextFloat(0.35f, 0.6f))?.Configure(true, Main.rand.Next(12, 20));
             }
         }
+
+        /// <summary>斩切起手音；默认 Item1 按拍调音高，终结拍补一记厚响</summary>
+        protected virtual void PlaySwingSound() {
+            SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = beat.SwingPitch }, Owner.Center);
+            if (IsFinisher) {
+                SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.4f, Pitch = -0.45f }, Owner.Center);
+            }
+        }
+
+        /// <summary>斩切爆发首帧（签名弹幕/驻场生成放这，内部用 SpawnOwnedProj 守 owner）</summary>
+        protected virtual void OnSlashBegin() { }
 
         //==================== 判定 ====================
 
@@ -495,15 +549,26 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
             }
 
-            //命中顿帧一拍只吃一次，扣回额度记账
+            //命中顿帧一拍只吃一次，扣回额度记账；拍表给了顿帧就至少冻 MinHitstop，让每一下都咬得住
             if (!hitstopApplied && CurrentPhase == PhaseSlash && beat.Hitstop > 0) {
                 hitstopApplied = true;
-                hitstopTimer = beat.Hitstop;
-                hitstopSpent = beat.Hitstop;
+                int stop = Math.Max(beat.Hitstop, MinHitstop);
+                hitstopTimer = stop;
+                hitstopSpent = stop;
+            }
+
+            //重拍首次命中：沿挥砍切向震一下屏幕（只在本地玩家的镜头上，受客户端震屏开关约束）
+            if (!punchFired && IsHeavyBeat) {
+                punchFired = true;
+                if (!VaultUtils.isServer && Owner.whoAmI == Main.myPlayer && CWRClientConfig.Instance.ScreenVibration) {
+                    Vector2 tangent = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
+                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(
+                        target.Center, tangent, 2.6f, 5f, 7, 480f, FullName));
+                }
             }
 
             OnHitTarget(target, hit, damageDone);
-            if (!VaultUtils.isServer) {
+            if (SelfDrawnVisuals && !VaultUtils.isServer) {
                 OnHitFX(target, hit, damageDone);
             }
         }
@@ -511,7 +576,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         /// <summary>命中逻辑追加（挂 buff/标记，各端一致量才写；owner 独占量守 myPlayer）</summary>
         protected virtual void OnHitTarget(NPC target, NPC.HitInfo hit, int damageDone) { }
 
-        /// <summary>命中反馈（已守非服务器端）：默认材质分流，钢质弹跳钢屑、血肉补原版血尘</summary>
+        /// <summary>命中反馈（自绘层；已守非服务器端）：默认材质分流，钢质弹跳钢屑、血肉补原版血尘</summary>
         protected virtual void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
             bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
             Vector2 aimDir = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2();
@@ -535,7 +600,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             }
         }
 
-        /// <summary>血肉目标是否补原版血尘（魔法质感的剑可关）</summary>
+        /// <summary>血肉目标是否补原版血尘（魔法质感的剑可关；自绘层）</summary>
         protected virtual bool BleedOnFlesh => true;
 
         //==================== 工具 ====================
@@ -550,7 +615,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 , Owner.whoAmI, ai0, ai1, ai2);
         }
 
-        /// <summary>绘制路径专用确定性伪随机 0~1（identity+timer+salt 播种，各端一致且逐帧稳定）</summary>
+        /// <summary>确定性伪随机 0~1（identity+salt 播种；各端一致，供子类定签名弹幕落点）</summary>
         protected float DrawRand01(int salt) {
             uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
             h = (h ^ (h >> 13)) * 1274126177u;
@@ -563,16 +628,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             return x * x * (3f - 2f * x);
         }
 
-        //==================== 绘制（原版物品贴图垫底 + 自绘层） ====================
+        //==================== 绘制（默认原版物品贴图一笔；自绘层件加涂抹/残影/垫影/辉光） ====================
 
         public override bool PreDraw(ref Color lightColor) {
-            DrawSmearArc(Main.spriteBatch);
+            if (SelfDrawnVisuals) {
+                DrawSmearArc(Main.spriteBatch);
+            }
             DrawBladeSet(Main.spriteBatch, lightColor);
-            DrawExtra(Main.spriteBatch, lightColor);
+            if (SelfDrawnVisuals) {
+                DrawExtra(Main.spriteBatch, lightColor);
+            }
             return false;
         }
 
-        /// <summary>追加自绘层（驻场符光/延伸虚影），在刀身之上</summary>
+        /// <summary>追加自绘层（驻场符光/延伸虚影），在刀身之上；仅自绘层件调用</summary>
         protected virtual void DrawExtra(SpriteBatch sb, Color lightColor) { }
 
         /// <summary>涂抹带外层色</summary>
@@ -606,8 +675,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected virtual int GhostCount => IsFinisher ? 3 : 2;
         /// <summary>残影角间距</summary>
         protected virtual float GhostSpacing => IsFinisher ? 0.24f : 0.18f;
-        /// <summary>残影透明度倍率，与 BladeAlpha 解耦：藏刀入影时刀身隐没、残影仍承弧；
-        /// 需要残影随刀身一起隐没的件显式覆写</summary>
+        /// <summary>残影透明度倍率，与 BladeAlpha 解耦：藏刀入影时刀身隐没、残影仍承弧</summary>
         protected virtual float GhostAlphaScale => 1f;
         /// <summary>刀身整体透明度（藏刀入影类演出用）</summary>
         protected virtual float BladeAlpha => 1f;
@@ -618,7 +686,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         /// <summary>辉光色</summary>
         protected virtual Color GlowColor => HotAccent;
 
-        /// <summary>残影+暗影垫底+本体+辉光</summary>
+        /// <summary>刀身绘制：默认原版物品贴图按触及缩放摆到手上一笔；自绘层件加残影+垫影+辉光闪</summary>
         protected virtual void DrawBladeSet(SpriteBatch sb, Color lightColor) {
             Main.instance.LoadItem(SwordItemID);
             Texture2D tex = TextureAssets.Item[SwordItemID].Value;
@@ -626,6 +694,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
             float scale = mainReach * (BladeTipFill - BladePark) * 2f / MathF.Max(new Vector2(tex.Width, tex.Height).Length(), 1f);
             Vector2 hand = Hand;
+            Vector2 drawPos = hand + (mainAngle.ToRotationVector2() * mainReach * BladePark) - Main.screenPosition;
+            if (!SelfDrawnVisuals) {
+                sb.Draw(tex, drawPos, null, lightColor, mainAngle + rotOffset, origin, scale, effect, 0);
+                return;
+            }
+
             float bladeAlpha = MathHelper.Clamp(BladeAlpha, 0f, 1f);
 
             //斩切期姿态残影，最近的最亮；透明度走 GhostAlphaScale 不乘 BladeAlpha（藏刀时残影承弧）
@@ -640,8 +714,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     sb.Draw(tex, gPos, null, ghost, ghostAngle + rotOffset, origin, scale, effect, 0);
                 }
             }
-
-            Vector2 drawPos = hand + (mainAngle.ToRotationVector2() * mainReach * BladePark) - Main.screenPosition;
 
             //垫影
             Color shadow = new Color(DeepShadow.R, DeepShadow.G, DeepShadow.B, (byte)190) * (0.5f * bladeAlpha);

@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
         internal int OverloadLockLeft;
         /// <summary>硬禁施法剩余（书自燃/泡管堵塞等武器专属窗口）</summary>
         internal int HardLockLeft;
-        /// <summary>泄压内置冷却（防连点）</summary>
+        /// <summary>泄压内置冷却（防连点；仅开了右键泄压的 R2 保留件消费）</summary>
         internal int VentCooldownLeft;
         /// <summary>停火后冷却延迟剩余</summary>
         internal int CoolDelayLeft;
@@ -165,29 +165,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
         }
     }
 
-    /// <summary>族内共享绘制与命中工具</summary>
+    /// <summary>族内共享判定、命中工具与 R2 保留件的绘制色板</summary>
     internal static class GsConduitVFX
     {
         //石化绿灰色板（美杜莎/蛇发射线）
         internal static readonly Color StoneBright = new(214, 234, 196);
         internal static readonly Color StoneMain = new(150, 192, 142);
         internal static readonly Color StoneDeep = new(78, 100, 74);
-        //炉橙色板（地狱叉/热射线）
+        //炉橙色板（热射线）
         internal static readonly Color ForgeBright = new(255, 214, 128);
         internal static readonly Color ForgeMain = new(255, 122, 42);
         internal static readonly Color ForgeDeep = new(140, 44, 16);
-        //血红色板（生命吸取）
-        internal static readonly Color BloodBright = new(255, 120, 110);
-        internal static readonly Color BloodMain = new(196, 34, 40);
-        internal static readonly Color BloodDeep = new(88, 10, 18);
-        //磁品红色板（磁球）
-        internal static readonly Color MagnetBright = new(255, 150, 235);
-        internal static readonly Color MagnetMain = new(214, 62, 196);
-        internal static readonly Color MagnetDeep = new(96, 22, 92);
-        //海沫蓝色板（泡泡枪/台风，Duke 血统）
-        internal static readonly Color SeaBright = new(170, 240, 232);
-        internal static readonly Color SeaMain = new(66, 196, 188);
-        internal static readonly Color SeaDeep = new(18, 74, 92);
 
         /// <summary>圆域对命中盒判定（最近点法），判定与可见半径同源的共用入口</summary>
         internal static bool CircleVsRect(Vector2 center, float radius, Rectangle rect) {

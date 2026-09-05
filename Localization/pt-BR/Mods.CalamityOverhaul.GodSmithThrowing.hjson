@@ -43,20 +43,16 @@
 	Reforged: balls that expire on the field return straight to your bag
 	A foe standing on 3 or more of your balls sets off a chain spike-burst, 50% each, once per ball
 	''' */
-/* GsGrenade.Desc:
-	'''
-	Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window
-	Right click for a low roll-throw with a 1.2s fuse
-	''' */
+// GsGrenade.Desc: Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window
 /* GsStickyGrenade.Desc:
 	'''
 	Reforged: blasts brand foes for 3s; branded foes take 30% more from your next blast and it always crits
-	Hitting 3+ foes refunds one; right click to roll-throw
+	Hitting 3+ foes refunds one
 	''' */
 /* GsBouncyGrenade.Desc:
 	'''
 	Reforged: each bounce charges the blast +12%, up to 3 stacks
-	A grenade that bounced 3 times refunds itself when its blast finds a foe; right click to roll-throw
+	A grenade that bounced 3 times refunds itself when its blast finds a foe
 	''' */
 /* GsBeenade.Desc:
 	'''

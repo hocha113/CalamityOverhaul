@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -81,7 +79,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Speed
         internal void ResetUse() => uses = 0;
     }
 
-    /// <summary>苍白残影：从持有者身后掠出，先蓄后掠的追斩，掠速远快于出速，尾迹是幽蓝魂尘</summary>
+    /// <summary>苍白残影：从持有者身后掠出，先蓄后掠的追斩，掠速远快于出速</summary>
     internal class GodSmithAfterimageBolt : ModProjectile
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.LightBeam;
@@ -114,39 +112,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Speed
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.timeLeft < 10) {
                 Projectile.alpha = Math.Min(255, Projectile.alpha + 26);
-            }
-            Lighting.AddLight(Projectile.Center, 0.2f, 0.3f, 0.45f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.DungeonSpirit,
-                    -Projectile.velocity * 0.1f, 120, default, 0.9f);
-                dust.noGravity = true;
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(150, 200, 255, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float stretch = 0.9f + Projectile.velocity.Length() * 0.05f;
-            //残影双层：暗青底 + 苍白面，速度越快拉得越长
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(50, 90, 140, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(1.3f, stretch * 1.25f), 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(190, 225, 255, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(0.6f, stretch), 0);
-            return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 6; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.DungeonSpirit,
-                    Main.rand.NextVector2Circular(2.5f, 2.5f), 120, default, 1f);
-                dust.noGravity = true;
             }
         }
     }

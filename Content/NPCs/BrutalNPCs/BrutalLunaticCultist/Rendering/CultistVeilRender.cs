@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Rendering
 {
-    /// <summary>仪式帷幕全屏合成：向心捏聚+舞台压暗+符环带+元素染色，screenTarget ping-pong</summary>
+    /// <summary>仪式帷幕全屏合成：向心捏聚+舞台压暗+全食整屏压暗+符环带+元素染色，screenTarget ping-pong</summary>
     internal class CultistVeilRender : RenderHandle
     {
         /// <summary>权重 1.412，本路频段 1.412~1.418 起点</summary>
@@ -35,6 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             shader.Parameters["uFlash"]?.SetValue(CultistScreenFX.Flash);
             shader.Parameters["uBreak"]?.SetValue(CultistScreenFX.BreakDesat);
             shader.Parameters["uBandRadius"]?.SetValue(PixelsToHeightNorm(CultistScreenFX.BandRadiusPx));
+            shader.Parameters["uDim"]?.SetValue(CultistScreenFX.Dim);
             //噪声显式绑 s1：SpriteBatch.Draw 会把 s0 覆写成拷屏贴图（合同同 EocFogRender）
             gd.Textures[1] = CWRAsset.PerlinNoise.Value;
             gd.SamplerStates[1] = SamplerState.LinearWrap;

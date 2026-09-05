@@ -1,8 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -14,7 +10,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
     /// <summary>
     /// 【农夫麦秋镰】材质：铁灰镰身、麦金刃口的农具镰。签名：①割草掉干草的原版身份完整镜像
     /// （Player.ItemCheck_CutTiles 的 sItem.type==1786 路径）②丰收层：斩草成功/命中敌人各攒一层、
-    /// 每层挥速 +4%，满 5 层下一斩化为加宽大横扫 ③刃口收割弧薄光随层数点亮 + 挥砍麦壳碎屑
+    /// 每层挥速 +4%，满 5 层下一斩化为加宽大横扫
     /// </summary>
     internal class GsSickle : GsOdditiesComboScheme
     {
@@ -23,30 +19,22 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         protected override int HeldProjID => ModContent.ProjectileType<GsSickleHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: still harvests hay from grass.\n" +
-            "Slashes build Harvest, each stack swinging a little faster;\n" +
-            "at 5 stacks the next slash becomes a widened reaping sweep";
-
-        //麦秋色板
+            "Reforged: still harvests hay from grass.\nSlashes build Harvest, each stack swinging a little faster;\nat 5 stacks the next slash becomes a widened reaping sweep";
         internal static readonly Color StrawGold = new(232, 210, 140);    //麦金刃口
         internal static readonly Color IronGray = new(150, 148, 140);     //铁灰镰身
         internal static readonly Color HarvestOrange = new(255, 178, 80); //丰收橙强调
-        internal static readonly Color DeepChaff = new(40, 36, 26);       //深糠暗
 
         /// <summary>满层大横扫的特殊拍号（自然循环只走 0/1/2，本拍只由满层注入）</summary>
         internal const int SweepBeat = 3;
 
-        /// <summary>出手前记账：满层改打大横扫并清层；层数打包进拍号高位随生成包过线</summary>
+        /// <summary>出手前记账：满层改打大横扫并清层</summary>
         protected override void ModifyLocalSwing(Item item, Player player, ref int beat, ref float swingSign) {
             GsSicklePlayer mp = player.GetModPlayer<GsSicklePlayer>();
             mp.NotifySlash();
-            int tier = mp.HarvestTier;
-            if (tier >= GsSicklePlayer.HarvestMax) {
+            if (mp.HarvestTier >= GsSicklePlayer.HarvestMax) {
                 beat = SweepBeat;
                 mp.ClearHarvest();
             }
-            //held 首帧解码：低位拍号还给基类，高位层数只作刃光显示（大横扫因此带满层辉光出手）
-            beat += tier * 8;
         }
 
         /// <summary>丰收攻速：每层 +4%。钩子各端都跑，远端读本端 ModPlayer 恒 0 层得 1f，仅动画观感差异</summary>
@@ -68,8 +56,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
     }
 
     /// <summary>
-    /// 丰收层每玩家状态：上限 5，4 秒（240 帧）无斩击衰减一层。
-    /// 只在 myPlayer 路径写读，跨端不同步——远端观感由 held 的 ai[0] 高位打包承载
+    /// 丰收层每玩家状态：上限 5，4 秒（240 帧）无斩击衰减一层。只在 myPlayer 路径写读，跨端不同步
     /// </summary>
     internal class GsSicklePlayer : ModPlayer
     {
@@ -116,7 +103,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
 
     /// <summary>
     /// 麦秋镰手持：四拍。0/1/2 快割三连（Raise 逐拍 -1 加快），3 = 满层大横扫（加宽判定、前压、重顿帧）。
-    /// ai[0] = 拍号 + 丰收层×8（首帧解码），ai[1] = 交替符号。<br/>
+    /// ai[0] = 拍号，ai[1] = 交替符号。<br/>
     /// 割草掉干草：引擎切割的盒切（CutTilesAt）跑在模组钩子之前，会把刃心的草无干草地清掉，
     /// 故 CanCutTiles=false 封掉引擎路径，AI 里自调 CutTiles——先按原版 1786 路径收割干草类，
     /// 再走基类线切清其余可切物
@@ -127,15 +114,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
         protected override Color EdgeBright => GsSickle.StrawGold;
         protected override Color BodyMain => GsSickle.IronGray;
         protected override Color HotAccent => GsSickle.HarvestOrange;
-        protected override Color DeepShadow => GsSickle.DeepChaff;
 
         protected override int BeatCount => 4;
 
         /// <summary>大横扫拍加宽贪婪判定线宽</summary>
         protected override float CollisionWidth => ComboStage == GsSickle.SweepBeat ? 52f : 40f;
-
-        /// <summary>首帧从 ai[0] 高位解出的丰收层数（纯显示量，各端同式解码）</summary>
-        private int harvestShown;
 
         protected override GsBroadBeat GetBeat(int stage) {
             if (stage == GsSickle.SweepBeat) {
@@ -153,16 +136,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
             return b;
         }
 
-        protected override Color BodyTint(Color lightColor) => Color.Lerp(lightColor, GsSickle.IronGray, 0.15f);
-
         public override void AI() {
-            //首帧解包：方案把丰收层打进拍号高位（beat + tier*8），低位还给基类当拍号；
-            //各端都在自己的首帧做同式解码，后续 netUpdate 重发的干净拍号对已解码端幂等
-            if (timer == 0) {
-                int packed = (int)Projectile.ai[0];
-                harvestShown = Math.Clamp(packed / 8, 0, GsSicklePlayer.HarvestMax);
-                Projectile.ai[0] = packed % 8;
-            }
             base.AI();
             //引擎切割路径已被 CanCutTiles=false 封掉，改由这里自调（内部有伤害窗与 owner 守门）
             CutTiles();
@@ -242,46 +216,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
                 NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, x, y);
             }
             return true;
-        }
-
-        //==================== 演出 ====================
-
-        /// <summary>挥砍期追加麦壳碎屑：短命暗黄小屑带重力，低密度（已在非服务器端调用）</summary>
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            if (phase != PhaseSlash || !Main.rand.NextBool(2)) {
-                return;
-            }
-            Vector2 at = Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 0.95f));
-            Vector2 vel = ((mainAngle + swingDir * MathHelper.PiOver2).ToRotationVector2() * Main.rand.NextFloat(1.2f, 2.6f))
-                + new Vector2(0f, -0.4f);
-            PRTLoader.NewParticle<PRT_Spark>(at, vel, new Color(186, 158, 88), Main.rand.NextFloat(0.22f, 0.34f))
-                ?.Configure(true, Main.rand.Next(8, 14));
-        }
-
-        /// <summary>刃口收割弧薄光：沿刀角一线软光，亮度与厚度随丰收层数（确定量，不掷绘制 rand）</summary>
-        protected override void DrawExtra(SpriteBatch sb, Color lightColor) {
-            if (harvestShown <= 0 || fanFade <= 0.02f) {
-                return;
-            }
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
-                return;
-            }
-            float t = harvestShown / (float)GsSicklePlayer.HarvestMax;
-            Vector2 dir = mainAngle.ToRotationVector2();
-            Vector2 at = Hand + dir * (mainReach * 0.68f) - Main.screenPosition;
-            float len = mainReach * (0.5f + 0.22f * t);
-            //宽暗一笔打底
-            Color under = Color.Lerp(GsSickle.StrawGold, GsSickle.HarvestOrange, 0.45f) * ((0.08f + 0.26f * t) * fanFade);
-            under.A = 0;
-            sb.Draw(glow, at, null, under, mainAngle, glow.Size() / 2f,
-                new Vector2(len / glow.Width, (7f + 3f * harvestShown) / glow.Height), SpriteEffects.None, 0f);
-            //刃口亮芯一线
-            Color core = GsSickle.StrawGold * ((0.12f + 0.30f * t) * fanFade);
-            core.A = 0;
-            sb.Draw(glow, at + dir * (mainReach * 0.08f), null, core, mainAngle, glow.Size() / 2f,
-                new Vector2(len * 0.7f / glow.Width, 3.5f / glow.Height), SpriteEffects.None, 0f);
         }
     }
 }

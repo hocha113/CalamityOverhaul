@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -28,7 +26,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
     /// 踩拍叠连击（上限 5，每层挥速 +4%），空挥按政策罚，超窗归零。
     /// W 按实际动画帧数动态换算（攻速 buff 生效时窗口同步缩短，节奏感不漂）。<br/>
     /// 标记口径：鞭命中叠「鞭痕」层（自家召唤物对其 +2%/层），满层转「处决印」，
-    /// 下一次踩拍命中引爆：owner 生成真弹幕演出（全端可见）+ 120f 鞭刑余韵。<br/>
+    /// 下一次踩拍命中引爆：owner 生成真弹幕（全端可见）+ 120f 鞭刑余韵。<br/>
     /// 九鞭全部保留原版鞭弹幕与原版 tag buff（GsShoot 返回 null 直通，
     /// 不压原版 AI），增强全走路由打标 + 类型通道
     /// </summary>
@@ -56,18 +54,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
         /// <summary>面板伤微调旋钮（±10% 内，机制层承担主要强度）</summary>
         public virtual float DamageTweak => 1f;
 
-        /// <summary>标记主题色：印记、升温拖尾、拍点微光的基色</summary>
-        public abstract Color MarkColor { get; }
-
-        /// <summary>鞭痕层数点的逐层配色（万花筒五色专用重写点）</summary>
-        public virtual Color MarkLayerColor(int layer) => MarkColor;
-
         /// <summary>处决印是否由「踩拍鞭击」引爆；火鞭改由原版爆炸引爆故关掉</summary>
         protected virtual bool ExecuteByWhipHit => true;
-
-        /// <summary>按物品 ID 反查鞭族方案（印记绘制/脉冲配色用）</summary>
-        internal static GsWhipScheme SchemeOfItem(int itemType)
-            => TryGetScheme(itemType, out GodSmithScheme scheme) ? scheme as GsWhipScheme : null;
 
         //==================== 数值 ====================
 
@@ -163,13 +151,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
             }
             uint now = Main.GameUpdateCount;
             SettleSwing(mp, now);
-            //窗口开启瞬间：鞭柄一记拍点微光（归属者的个人节奏读数）
-            if (now == mp.SwingEndTick && !VaultUtils.isServer) {
-                PRTLoader.NewParticle<PRT_GsWhipBeatSpark>(
-                    player.MountedCenter + new Vector2(player.direction * 14f, -6f),
-                    -Vector2.UnitY * 0.4f,
-                    Color.Lerp(new Color(255, 232, 170), MarkColor, 0.35f), 0.72f);
-            }
             //超窗：节拍归零并合窗
             if (now > mp.SwingEndTick + (uint)mp.WindowFrames) {
                 mp.BeatCombo = 0;
@@ -179,7 +160,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
 
         //==================== 打标与命中流转 ====================
 
-        /// <summary>owner 端打标窗口：节拍快照随生成包过线，各端按同一层数渲染升温</summary>
+        /// <summary>owner 端打标窗口：节拍快照随生成包过线，各端读到同一层数</summary>
         public sealed override void GsProjOnSpawnMarked(Projectile proj, GodSmithProjRouter router) {
             if (proj.type == WhipProjType) {
                 GsWhipPlayer mp = Main.player[proj.owner].GetModPlayer<GsWhipPlayer>();
@@ -216,7 +197,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
             if (st == null) {
                 return;
             }
-            st.SourceItemType = TargetItemID;
             bool onBeat = router.MarkData2 >= 1f;
             //引爆：命中前已挂印且本挥踩拍（满层那一击只转印，下一踩拍击才爆）
             if (st.ExecuteReady && onBeat && ExecuteByWhipHit) {
@@ -256,17 +236,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
             if (!VaultUtils.isServer) {
                 //个人确认 tick：主演出音由处决弹幕在各端播（命中钩子只在攻击方端跑）
                 SoundEngine.PlaySound(SoundID.Item153 with { Volume = 0.45f, Pitch = -0.4f }, target.Center);
-                for (int i = 0; i < 6; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                        Main.rand.NextVector2Circular(5f, 5f),
-                        i % 2 == 0 ? new Color(255, 92, 46) : new Color(255, 206, 96),
-                        Main.rand.NextFloat(0.3f, 0.5f))?.Configure(true, Main.rand.Next(12, 20));
-                }
             }
             OnExecute(player, target, sourceProj, st);
         }
 
-        //==================== 鞭体演出（升温拖尾 + 鞭梢顶点回调） ====================
+        //==================== 鞭梢顶点回调 ====================
 
         /// <summary>鞭弹幕的每弹幕本地包：鞭梢顶点回调的一次性闩锁</summary>
         private sealed class WhipProjLocal
@@ -276,30 +250,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
 
         public sealed override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
             if (proj.type == WhipProjType && router.IsMarked) {
-                HeatTrail(proj, router);
                 ApexCheck(proj, router);
             }
             OnWhipProjPostAI(proj, router);
-        }
-
-        /// <summary>升温拖尾：节拍层数越高鞭梢火星越炽白（归属者本地视觉，预算每帧 1 粒）</summary>
-        private void HeatTrail(Projectile proj, GodSmithProjRouter router) {
-            int combo = (int)router.MarkData;
-            if (combo <= 0 || VaultUtils.isServer || proj.owner != Main.myPlayer
-                || Main.GameUpdateCount % 3 != 0) {
-                return;
-            }
-            List<Vector2> pts = proj.GetWhipControlPoints();
-            if (pts.Count < 6) {
-                return;
-            }
-            //只在鞭梢后 1/3 段撒点，层数决定色温与个头
-            int idx = pts.Count - 1 - Main.rand.Next(pts.Count / 3);
-            Color heat = Color.Lerp(new Color(255, 170, 80), new Color(255, 244, 214), combo / 5f);
-            heat = Color.Lerp(MarkColor, heat, 0.55f);
-            PRTLoader.NewParticle<PRT_Spark>(pts[idx],
-                Main.rand.NextVector2Circular(0.6f, 0.6f), heat,
-                0.26f + 0.05f * combo)?.Configure(false, Main.rand.Next(8, 13));
         }
 
         /// <summary>鞭梢最远点一次性回调（owner 端）：杜兰达尔剑气/晨星蓄势震荡的出手点</summary>
@@ -336,7 +289,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
         /// <summary>鞭痕满层转处决印瞬间（owner 端）</summary>
         protected virtual void OnSealLit(Player player, NPC target, WhipMarkState st) { }
 
-        /// <summary>处决引爆（owner 端）：生成真弹幕演出，伤害基数用 st.MarkDamage</summary>
+        /// <summary>处决引爆（owner 端）：生成真弹幕，伤害基数用 st.MarkDamage</summary>
         protected abstract void OnExecute(Player player, NPC target, Projectile whipProj, WhipMarkState st);
 
         /// <summary>鞭梢最远点（owner 端一次性）：踩拍专属出手挂这里</summary>

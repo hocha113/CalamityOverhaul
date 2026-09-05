@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
         protected override string GsDescFallback =>
             "Reforged: blades tear a flash of fracture as they launch.\nHold right click to charge; release to open three rifts around the cursor that loose converging blades";
 
+        protected override bool HasAltForm => true;
         protected override int ChargeTicksB => 45;
         protected override float ChargeManaMult => 1.8f;
         protected override Color ChargeColor => new(150, 220, 255);

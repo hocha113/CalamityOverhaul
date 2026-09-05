@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             //剑气命中也喂充能
             if (Projectile.owner == Main.myPlayer) {
-                Main.player[Projectile.owner].GetModPlayer<DivineSourcePlayer>().AddCharge(0.03f);
+                Main.player[Projectile.owner].GetModPlayer<DivineSourcePlayer>().AddCharge(0.048f);
             }
 
             if (!Main.dedServ) {

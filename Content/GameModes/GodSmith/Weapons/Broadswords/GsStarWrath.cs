@@ -64,6 +64,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     internal class GsStarWrathHeld : GsBroadswordHeldBase
     {
         protected override int SwordItemID => ItemID.StarWrath;
+        protected override bool SelfDrawnVisuals => true;
         protected override Color EdgeBright => GsStarWrath.NightBright;
         protected override Color BodyMain => GsStarWrath.NightMain;
         protected override Color HotAccent => GsStarWrath.NightHot;

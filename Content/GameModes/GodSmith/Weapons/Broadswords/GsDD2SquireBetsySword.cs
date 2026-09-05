@@ -1,7 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -11,8 +8,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 {
     /// <summary>
-    /// 【龙魂蓄啸】材质：铸入贝西龙魂的僦卒龙锋，剑身常燃龙焰，每一斩都带龙吟。
-    /// 签名：①每一斩放出龙吟音爆波（原版音爆波保留升级：龙弧双层波+音爆震纹，出膛快后缓）
+    /// 【龙魂蓄啸】材质：铸入贝西龙魂的僦卒龙锋，每一斩都带龙吟。
+    /// 签名：①每一斩放出龙吟音爆波（原版音爆波保留升级：出膛快后缓）
     /// ②连段命中积攒龙魂（上限 4），攒满后终结拍的音爆波升格为双龙缠旋波
     /// ③挥砍音保留 DD2_SonicBoomBladeSlash 身份
     /// </summary>
@@ -23,15 +20,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsDD2SquireBetsySwordHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: every slash looses a sonic dragon-roar wave; " +
-            "hits feed the Dragon Soul, and at 4 souls the finisher's wave " +
-            "ascends into twin coiling dragons";
-
-        //龙焰色板
+            "Reforged: every slash looses a sonic dragon-roar wave; hits feed the Dragon Soul, and at 4 souls the finisher's wave ascends into twin coiling dragons";
         internal static readonly Color DragonBright = new(255, 232, 178); //鎏金刃缘
         internal static readonly Color DragonMain = new(255, 148, 64);    //龙焰橙体色
         internal static readonly Color DragonHot = new(255, 84, 36);      //龙怒赤红
-        internal static readonly Color DragonDeep = new(42, 22, 16);      //焦鳞垫影
 
         /// <summary>龙魂满层数</summary>
         internal const int FullSouls = 4;
@@ -55,14 +47,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsDD2SquireBetsySword.DragonBright;
         protected override Color BodyMain => GsDD2SquireBetsySword.DragonMain;
         protected override Color HotAccent => GsDD2SquireBetsySword.DragonHot;
-        protected override Color DeepShadow => GsDD2SquireBetsySword.DragonDeep;
 
         //龙锋大剑：触及与判定都比基准宽
         protected override float BaseReach => 128f;
         protected override float CollisionWidth => 46f;
-
-        //龙焰常燃
-        protected override bool GlowAlways => true;
 
         private bool waveFired;
 
@@ -135,56 +123,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             scheme.DragonSoul = Math.Min(GsDD2SquireBetsySword.FullSouls, scheme.DragonSoul + 1);
             if (old < GsDD2SquireBetsySword.FullSouls && scheme.DragonSoul == GsDD2SquireBetsySword.FullSouls) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsysWrathShot with { Volume = 0.55f, Pitch = 0.3f }, Owner.Center);
-                SetFlash(6);
-            }
-        }
-
-        /// <summary>龙啸拍蓄势：龙焰自四周汇入刀身；平时斩切照基类甩火星</summary>
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            if (!IsFinisher || phase > PhaseHold) {
-                return;
-            }
-            Vector2 hand = Hand;
-            Vector2 at = hand + Main.rand.NextVector2Unit() * Main.rand.NextFloat(42f, 76f);
-            PRTLoader.NewParticle<PRT_Light>(at, (Vector2.Lerp(hand, mainTip, 0.6f) - at) * 0.16f,
-                GsDD2SquireBetsySword.DragonMain, Main.rand.NextFloat(0.06f, 0.11f))?.Configure(9, 0.6f);
-        }
-
-        /// <summary>龙魂刻焰：沿刀脊排出已攒层数（只画给 owner，层数不跨端共享）</summary>
-        protected override void DrawExtra(SpriteBatch sb, Color lightColor) {
-            if (Owner.whoAmI != Main.myPlayer) {
-                return;
-            }
-            Texture2D glow = CWRAsset.StarGlow01?.Value;
-            if (glow == null) {
-                return;
-            }
-            GsDD2SquireBetsySword scheme = Scheme;
-            int souls = scheme?.DragonSoul ?? 0;
-            if (souls <= 0 || fanFade <= 0.05f) {
-                return;
-            }
-            bool full = souls >= GsDD2SquireBetsySword.FullSouls;
-            Vector2 hand = Hand;
-            for (int i = 0; i < souls; i++) {
-                Vector2 at = hand + mainAngle.ToRotationVector2() * (mainReach * (0.30f + 0.14f * i)) - Main.screenPosition;
-                float pulse = 0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6.5f + i * 1.4f);
-                Color c = (full ? GsDD2SquireBetsySword.DragonHot : GsDD2SquireBetsySword.DragonMain) * (0.55f * fanFade * pulse);
-                c.A = 0;
-                sb.Draw(glow, at, null, c, 0f, glow.Size() * 0.5f, 0.16f, SpriteEffects.None, 0f);
             }
         }
     }
 
     /// <summary>
-    /// 龙吟音爆波：龙弧双层波前行，出膛快后缓（21 → 约 8.5），身后拖音爆震纹。
+    /// 龙吟音爆波：用原版飞龙音爆波贴图，出膛快后缓（21 → 约 8.5）。
     /// 原版音爆波的宽波判定（波心垂直线段）与穿透 5 保留。
-    /// ai[0]=0 单龙 / 1 双龙股（正弦缠旋交错前进）；ai[1]=股相位符号（单龙时为月牙弯向）
+    /// ai[0]=0 单龙 / 1 双龙股（正弦缠旋交错前进）；ai[1]=股相位符号
     /// </summary>
     internal class GsDD2SquireBetsySwordWaveProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.DD2SquireSonicBoom;
 
         private bool Twin => Projectile.ai[0] > 0.5f;
         private float StrandSign => Projectile.ai[1] >= 0f ? 1f : -1f;
@@ -194,8 +144,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         private float HalfSpan => Twin ? 30f : 44f;
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 10;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.DD2SquireSonicBoom];
         }
 
         public override void SetDefaults() {
@@ -229,16 +178,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 Projectile.position += perp * (now - prev);
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
-            Lighting.AddLight(Projectile.Center, GsDD2SquireBetsySword.DragonMain.ToVector3() * 0.4f);
-
-            if (!VaultUtils.isServer && Main.rand.NextBool(Twin ? 2 : 3)) {
-                //龙焰余烬自波身洒落
-                PRTLoader.NewParticle<PRT_Spark>(
-                    Projectile.Center + Main.rand.NextVector2Circular(14f, 14f),
-                    -Projectile.velocity * 0.08f + Main.rand.NextVector2Circular(0.8f, 0.8f),
-                    Main.rand.NextBool(3) ? GsDD2SquireBetsySword.DragonHot : GsDD2SquireBetsySword.DragonMain,
-                    Main.rand.NextFloat(0.3f, 0.5f))?.Configure(false, Main.rand.Next(10, 16));
-            }
         }
 
         public override bool? CanDamage() => Life >= 1f ? null : false;
@@ -249,97 +188,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             Vector2 span = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedBy(-MathHelper.PiOver2) * HalfSpan;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
                 Projectile.Center - span, Projectile.Center + span, 16f, ref cp);
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 5; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2.5f, 6f),
-                    Main.rand.NextBool() ? GsDD2SquireBetsySword.DragonBright : GsDD2SquireBetsySword.DragonHot,
-                    Main.rand.NextFloat(0.32f, 0.55f))?.Configure(true, Main.rand.Next(10, 18));
-            }
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //波散：龙焰光尘缓浮
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_Light>(
-                    Projectile.Center + Main.rand.NextVector2Circular(16f, 16f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.3f, 0.9f),
-                    GsDD2SquireBetsySword.DragonMain, Main.rand.NextFloat(0.05f, 0.09f))?.Configure(11, 0.6f);
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D smear = CWRAsset.SemiCircularSmear?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (smear == null || glow == null) {
-                return false;
-            }
-            Vector2 center = Projectile.Center - Main.screenPosition;
-            float rot = Projectile.rotation + StrandSign * 0.22f;
-            float fade = MathHelper.Clamp(Projectile.timeLeft / 12f, 0f, 1f) * MathHelper.Clamp(Life / 2f, 0f, 1f);
-            float speed01 = MathHelper.Clamp(Projectile.velocity.Length() / 21f, 0f, 1f);
-            //速度拉伸：快时沿行进向拉长，慢时回缩堆厚
-            Vector2 stretch = new(0.30f + 0.26f * speed01, 0.52f - 0.10f * speed01);
-            float sizeMul = Twin ? 0.78f : 1.05f;
-
-            //音爆震纹：身后旧位置的扩张残环，越远越薄越透
-            for (int i = 1; i <= 3; i++) {
-                int idx = i * 3;
-                if (idx >= Projectile.oldPos.Length || Projectile.oldPos[idx] == Vector2.Zero) {
-                    continue;
-                }
-                Vector2 at = Projectile.oldPos[idx] + Projectile.Size * 0.5f - Main.screenPosition;
-                Color ring = GsDD2SquireBetsySword.DragonMain * (0.16f * (1f - i / 4f) * fade);
-                ring.A = 0;
-                Main.EntitySpriteDraw(smear, at, null, ring, rot, smear.Size() * 0.5f,
-                    stretch * sizeMul * (1f + i * 0.22f), SpriteEffects.None, 0);
-            }
-
-            //双龙缠旋轨迹：近段旧位置串珠光
-            if (Twin) {
-                for (int i = 1; i < Projectile.oldPos.Length; i++) {
-                    if (Projectile.oldPos[i] == Vector2.Zero) {
-                        continue;
-                    }
-                    Vector2 at = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
-                    float k = 1f - i / (float)Projectile.oldPos.Length;
-                    Color bead = GsDD2SquireBetsySword.DragonHot * (0.22f * k * fade);
-                    bead.A = 0;
-                    Main.EntitySpriteDraw(glow, at, null, bead, 0f, glow.Size() * 0.5f, 0.22f * k + 0.06f, SpriteEffects.None, 0);
-                }
-            }
-
-            //龙弧双层波：橙体宽弧 + 鎏金刃缘前压细弧 + 龙怒芯线
-            Color body = GsDD2SquireBetsySword.DragonMain * (0.5f * fade);
-            body.A = 0;
-            Main.EntitySpriteDraw(smear, center, null, body, rot, smear.Size() * 0.5f, stretch * sizeMul, SpriteEffects.None, 0);
-            Vector2 ahead = Projectile.velocity.SafeNormalize(Vector2.Zero) * 6f;
-            Color edge = GsDD2SquireBetsySword.DragonBright * (0.72f * fade);
-            edge.A = 0;
-            Main.EntitySpriteDraw(smear, center + ahead, null, edge, rot, smear.Size() * 0.5f,
-                new Vector2(stretch.X * 0.8f, stretch.Y * 0.55f) * sizeMul, SpriteEffects.None, 0);
-            Color core = GsDD2SquireBetsySword.DragonHot * (0.35f * fade);
-            core.A = 0;
-            Main.EntitySpriteDraw(smear, center - ahead * 0.5f, null, core, rot, smear.Size() * 0.5f,
-                new Vector2(stretch.X * 0.6f, stretch.Y * 0.3f) * sizeMul, SpriteEffects.None, 0);
-
-            //波角亮点：波面两端的龙目光斑
-            Vector2 side = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2();
-            for (int i = -1; i <= 1; i += 2) {
-                Color horn = GsDD2SquireBetsySword.DragonBright * (0.4f * fade);
-                horn.A = 0;
-                Main.EntitySpriteDraw(glow, center + side * (i * (HalfSpan - 8f)) - ahead * 0.6f,
-                    null, horn, 0f, glow.Size() * 0.5f, 0.22f * sizeMul + 0.04f, SpriteEffects.None, 0);
-            }
-            return false;
         }
     }
 }

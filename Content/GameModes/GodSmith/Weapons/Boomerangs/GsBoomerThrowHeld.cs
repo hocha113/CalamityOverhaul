@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.GameContent.BaseEntity;
-using InnoVault.PRT;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -13,7 +11,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
 {
     /// <summary>
     /// 回旋镖族 A 档蓄力掷手持基类。相位时间线 举臂蓄势-掷出-跟随收势；
-    /// 蓄势期武器在手中可见、辉光渐亮，释放帧 owner 端真正掷出镖弹，
+    /// 蓄势期武器在手中可见，释放帧 owner 端真正掷出镖弹，
     /// 全身配套：体态后仰前倾（fullRotation 钉脚底、坐骑冲刺让位）+ 出手后坐踏步。<br/>
     /// 方案侧用法镜像 GsIronBroadsword：GsCanUseItem 里 HeldAlive 守门 + myPlayer 生成 + 全端返 false
     /// </summary>
@@ -31,9 +29,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
 
         /// <summary>释放帧掷出的镖弹类型</summary>
         protected abstract int BoomerangType { get; }
-
-        /// <summary>主题辉光色</summary>
-        protected abstract Color GlowColor { get; }
 
         //==================== 参数面 ====================
 
@@ -136,14 +131,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             }
         }
 
-        /// <summary>释放瞬间演出（各端；粒子音效自守服务器）</summary>
+        /// <summary>释放瞬间演出（各端；音效自守服务器）</summary>
         protected virtual void OnReleaseFX() {
             if (VaultUtils.isServer) {
                 return;
             }
             SoundEngine.PlaySound(ThrowSound, Owner.Center);
-            PRTLoader.NewParticle<PRT_Light>(Hand + (aimAngle.ToRotationVector2() * HoldDist),
-                aimAngle.ToRotationVector2() * 2f, GlowColor, 0.35f)?.Configure(8, 0.85f);
         }
 
         /// <summary>臂姿 + 体态时间线：举臂后仰，掷出前倾</summary>
@@ -196,7 +189,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             }
         }
 
-        //==================== 绘制：蓄势期手中武器 + 辉光 ====================
+        //==================== 绘制：蓄势期手中武器本体一笔 ====================
 
         public override bool PreDraw(ref Color lightColor) {
             if (thrown) {
@@ -222,14 +215,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
                 MathF.Cos((timer * 1.3f) + Projectile.whoAmI) * charge * 0.8f);
 
             sb.Draw(tex, pos + shake, null, lightColor, rot, origin, 1f, fx, 0);
-            Color glow = GlowColor * (0.15f + (0.5f * charge));
-            glow.A = 0;
-            sb.Draw(tex, pos + shake, null, glow, rot, origin, 1.05f, fx, 0);
-            PostDrawHeld(sb, pos + shake, rot, charge);
             return false;
         }
-
-        /// <summary>蓄势期追加绘制层（满蓄光辉等）</summary>
-        protected virtual void PostDrawHeld(SpriteBatch sb, Vector2 drawPos, float rot, float charge) { }
     }
 }

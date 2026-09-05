@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -19,20 +17,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override int TargetItemID => ItemID.WandofFrosting;
 
         protected override string GsDescFallback =>
-            "Reforged: on-beat frost bolts refract into ice shards on hit;" +
-            "\nat full resonance the next cast breathes a wide cone of freezing mist that inflicts frostbite";
-
-        //公认弱势武器，定价 135%
+            "Reforged: on-beat frost bolts refract into ice shards on hit;\nat full resonance the next cast breathes a wide cone of freezing mist that inflicts frostbite";
         protected override float BaseDamageMult => 1.15f;
-
-        protected override Color ChantColor => new(150, 216, 255);
 
         /// <summary>形态：折射冰片</summary>
         private const float FormShard = 10f;
         /// <summary>形态：冰雾锥霜弹</summary>
         private const float FormMist = 11f;
-
-        private static readonly Color FrostDeep = new(96, 150, 214);
 
         protected override bool? ChantEmpowerShoot(Item item, Player player, GsChantPlayer chant,
             EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity,
@@ -57,27 +48,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             }
         }
 
-        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Lighting.AddLight(proj.Center, ChantColor.ToVector3() * 0.22f);
-            //飞行相：冰晶身份是碎晶闪，不是火苗
-            bool hot = router.MarkData is FormOnBeat or FormEmpower or FormShard;
-            int interval = router.MarkData == FormMist ? 2 : hot ? 4 : 6;
-            if (proj.timeLeft % interval == 0) {
-                PRTLoader.NewParticle<PRT_DefFrostGlint>(proj.Center + Main.rand.NextVector2Circular(3f, 3f),
-                    -proj.velocity * 0.05f, ChantColor, Main.rand.NextFloat(0.4f, 0.7f))
-                    ?.Configure(Main.rand.Next(10, 18));
-            }
-            //冷雾形态：拖出雾团
-            if (router.MarkData == FormMist && proj.timeLeft % 4 == 0) {
-                PRTLoader.NewParticle<PRT_DefCryoMist>(proj.Center, -proj.velocity * 0.1f,
-                    FrostDeep * 0.5f, Main.rand.NextFloat(0.5f, 0.8f))
-                    ?.Configure(Main.rand.Next(14, 22), proj.Center, 20f);
-            }
-        }
-
         public override void GsProjModifyHitNPC(Projectile proj, NPC target, ref NPC.HitModifiers modifiers, GodSmithProjRouter router) {
             //冷雾霜弹附霜噬 1.5s（AddBuff 原生入同步）
             if (router.MarkData == FormMist) {
@@ -86,16 +56,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         }
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            if (!VaultUtils.isServer) {
-                //命中相：冰片迸散
-                for (int i = 0; i < 4; i++) {
-                    PRTLoader.NewParticle<PRT_DefCrystalShard>(target.Center,
-                        Main.rand.NextVector2Circular(3f, 3f) - Vector2.UnitY * 1.5f,
-                        ChantColor, Main.rand.NextFloat(0.4f, 0.65f))
-                        ?.Configure(Main.rand.Next(14, 22), Main.rand.NextFloat(-0.2f, 0.2f));
-                }
-            }
-
             //霜晶折射：正拍原生弹命中时斜向散冰片，层数 3 以上加散中路一枚
             if (!proj.IsOwnedByLocalPlayer() || router.MarkData is not (FormOnBeat or FormEmpower)) {
                 return;
@@ -109,21 +69,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 QueueForm(Main.player[proj.owner], FormShard);
                 Projectile.NewProjectile(proj.GetSource_FromThis(), target.Center, vel,
                     proj.type, shardDamage, proj.knockBack * 0.4f, proj.owner);
-            }
-        }
-
-        public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            //余痕相：弹亡处滞留一小团冷雾，比弹体活得久
-            if (VaultUtils.isServer) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_DefCryoMist>(proj.Center, Vector2.Zero,
-                FrostDeep * 0.45f, Main.rand.NextFloat(0.6f, 0.9f))
-                ?.Configure(Main.rand.Next(20, 30), proj.Center, 26f);
-            for (int i = 0; i < 2; i++) {
-                PRTLoader.NewParticle<PRT_DefFrostGlint>(proj.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.3f, 0.8f),
-                    ChantColor, Main.rand.NextFloat(0.35f, 0.55f))?.Configure(Main.rand.Next(16, 26));
             }
         }
     }

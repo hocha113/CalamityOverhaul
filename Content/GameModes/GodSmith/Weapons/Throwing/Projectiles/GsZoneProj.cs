@@ -1,18 +1,16 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectiles
 {
     /// <summary>
-    /// 参数化领域(掷瓶三域 + 臭云)。判定圈与可见雾体同半径。<br/>
+    /// 参数化领域(掷瓶三域 + 臭云)。判定圈与范围提示同半径。<br/>
     /// ai[0]=域类型;ai[1]=半径 px;ai[2]=覆盖 ≥3 个不同敌后返还的物品 ID(0=不返还)。<br/>
     /// 敌侧效果各端一致执行(服务器权威落地);玩家侧效果只处理本机玩家;
     /// 域增伤由 <see cref="DamageTakenMulFor"/> 在伤害结算端做几何查询,天然跨端一致
@@ -28,10 +26,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectil
         /// <summary>臭云:敌受所有来源 +8%</summary>
         public const int KindStench = 3;
 
-        public override string Texture => CWRConstant.VaultPlaceholder;
-
-        [VaultLoaden(CWRConstant.Masking + "Extra_98")]
-        internal static Asset<Texture2D> FogTex = null;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
 
         //owner 端点名(圣水返还):记覆盖过的敌编号
         private HashSet<int> touched;
@@ -48,7 +43,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectil
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 300;
-            Projectile.alpha = 255;
             Projectile.netImportant = true;
         }
 
@@ -76,8 +70,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectil
             }
             Projectile.velocity = Vector2.Zero;
             float r = Radius;
-            Color tint = TintOf(Kind);
-            Lighting.AddLight(Projectile.Center, tint.ToVector3() * 0.32f);
 
             //敌侧效果:各端一致跑,服务器权威落地
             if (Kind == KindUnholy) {
@@ -123,52 +115,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectil
                     }
                 }
             }
-
-            //域内漂浮粒子(客户端)
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(r * 0.9f, r * 0.9f);
-                PRTLoader.NewParticle<PRT_Spark>(pos,
-                    -Vector2.UnitY * Main.rand.NextFloat(0.2f, 0.7f),
-                    tint, Main.rand.NextFloat(0.16f, 0.3f))?.Configure(false, Main.rand.Next(12, 20));
-            }
         }
 
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //散场:一圈淡尘
-            Color tint = TintOf(Kind);
-            for (int i = 0; i < 6; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(
-                    Projectile.Center + Main.rand.NextVector2Circular(Radius * 0.6f, Radius * 0.6f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.3f, 0.8f),
-                    tint, Main.rand.NextFloat(0.18f, 0.3f))?.Configure(false, 16);
-            }
-        }
-
+        /// <summary>范围提示:原版气泡贴图按域半径缩放画一笔,按域色调色,起 12f 涨开、末 30f 收拢</summary>
         public override bool PreDraw(ref Color lightColor) {
-            if (FogTex == null) {
+            int life = LifeOf(Kind);
+            float env = MathHelper.Clamp((life - Projectile.timeLeft) / 12f, 0f, 1f)
+                * MathHelper.Clamp(Projectile.timeLeft / 30f, 0f, 1f);
+            if (env <= 0.01f) {
                 return false;
             }
-            Texture2D fog = FogTex.Value;
-            float r = Radius;
-            //生命周期:起 12f 涨开,末 30f 收拢
-            int life = LifeOf(Kind);
-            float grow = MathHelper.Clamp((life - Projectile.timeLeft) / 12f, 0f, 1f);
-            float fade = MathHelper.Clamp(Projectile.timeLeft / 30f, 0f, 1f);
-            float baseScale = r * 2f / fog.Width * grow;
-            //呼吸与自转用 identity 定种,不掷随机
-            float breath = 1f + 0.06f * MathF.Sin(Main.GlobalTimeWrappedHourly * 2.3f + Projectile.identity * 0.71f);
-            float spin = Main.GlobalTimeWrappedHourly * 0.35f + Projectile.identity * 1.13f;
-            Color tint = TintOf(Kind);
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = fog.Size() / 2f;
-            //真 alpha 雾片双层对转,判定圈与可见体同半径
-            Main.EntitySpriteDraw(fog, pos, null, tint * (0.4f * fade), spin,
-                origin, baseScale * breath, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(fog, pos, null, tint * (0.26f * fade), -spin * 0.7f,
-                origin, baseScale * 0.72f * breath, SpriteEffects.FlipHorizontally, 0);
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float scale = Radius * 2f / tex.Width;
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
+                lightColor.MultiplyRGB(TintOf(Kind)) * env, 0f, tex.Size() / 2f, scale, SpriteEffects.None, 0);
             return false;
         }
 

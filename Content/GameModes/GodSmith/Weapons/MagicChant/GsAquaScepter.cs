@@ -1,8 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -13,7 +9,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
 {
     /// <summary>
     /// 碧水权杖重铸：潮汐节拍（持续流变体）。连续喷洒 45 帧蓄潮，随后开 20 帧
-    /// 「涨潮窗」：窗内水压增幅（伤害 1.3 倍、击退 1.5 倍、蓝耗 0.8 倍、水花加密），
+    /// 「涨潮窗」：窗内水压增幅（伤害 1.3 倍、击退 1.5 倍、蓝耗 0.8 倍），
     /// 三息一涌。完整渡过一个涨潮窗积 1 层（上限 3），满层后下一次施法拍出「浪破」：
     /// 扇形五道重浪（合计约 2.5 倍）并清层。材质身份：流体（水压）。<br/>
     /// 节拍窗语义由喷洒时长驱动，不走标准就绪窗（UsesStandardBeat = false）
@@ -23,16 +19,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override int TargetItemID => ItemID.AquaScepter;
 
         protected override string GsDescFallback =>
-            "Reforged: sustained spraying swells into a surge window of crushing water pressure;" +
-            "\nride three full surges and the next cast breaks into a fan of tidal slams";
-
+            "Reforged: sustained spraying swells into a surge window of crushing water pressure;\nride three full surges and the next cast breaks into a fan of tidal slams";
         protected override float BaseDamageMult => 1.08f;
 
         protected override int MaxResonance => 3;
 
         protected override bool UsesStandardBeat => false;
-
-        protected override Color ChantColor => new(80, 190, 230);
 
         /// <summary>形态：浪破重浪</summary>
         private const float FormWaveBreak = 10f;
@@ -41,8 +33,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         private const int ChargeTicks = 45;
         /// <summary>涨潮窗时长</summary>
         private const int SurgeTicks = 20;
-
-        private static readonly Color FoamWhite = new(216, 242, 250);
 
         /// <summary>涨潮窗是否在期（CounterA = 喷洒帧计数，TimerA = 窗关闭时刻）</summary>
         private static bool InSurge(GsChantPlayer chant) => Main.GameUpdateCount < chant.TimerA;
@@ -64,8 +54,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                         chant.CounterA = 0;
                         chant.TimerA = now + SurgeTicks;
                         SoundEngine.PlaySound(SoundID.Item21 with { Volume = 0.7f, Pitch = -0.2f }, player.Center);
-                        PRTLoader.NewParticle<PRT_ProcRing>(player.MountedCenter + GsAimUnit(player) * 26f,
-                            Vector2.Zero, ChantColor, 1f)?.Configure(20f, 6f, 12);
                     }
                 }
             }
@@ -146,62 +134,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             ref float reduce, ref float mult) {
             if (chant.BoundItemType == item.type && InSurge(chant)) {
                 mult *= 0.8f;
-            }
-        }
-
-        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Lighting.AddLight(proj.Center, ChantColor.ToVector3() * 0.18f);
-            //飞行相：涨潮弹与重浪的水花更密更重
-            bool surge = router.MarkData is FormOnBeat or FormEmpower;
-            bool slam = router.MarkData == FormWaveBreak;
-            int interval = slam ? 2 : surge ? 3 : 7;
-            if (proj.timeLeft % interval == 0) {
-                PRTLoader.NewParticle<PRT_CampfireBubble>(proj.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    -proj.velocity * 0.12f - Vector2.UnitY * 0.3f,
-                    (slam ? FoamWhite : ChantColor) * 0.7f,
-                    Main.rand.NextFloat(0.28f, 0.5f) * (slam ? 1.5f : 1f));
-            }
-        }
-
-        public override bool? GsProjPreDraw(Projectile proj, ref Color lightColor, GodSmithProjRouter router) {
-            //浪破头浪：弹体前压一道贴地浪环
-            if (router.MarkData != FormWaveBreak) {
-                return null;
-            }
-            float t = 1f - proj.timeLeft / 18f;
-            ShockRingDraw.Draw(Main.spriteBatch, proj.Center, 10f + 26f * t, 7f,
-                FoamWhite, ChantColor, new Color(24, 80, 120), 0.7f * (1f - t * t),
-                squish: 0.4f, innerGlow: 0.25f, timeSeed: proj.identity * 0.29f);
-            return null;
-        }
-
-        public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            //命中相：水压拍溅
-            if (VaultUtils.isServer) {
-                return;
-            }
-            int count = router.MarkData == FormWaveBreak ? 6 : 4;
-            Vector2 dir = proj.velocity.SafeNormalize(Vector2.UnitX);
-            for (int i = 0; i < count; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    (-dir).RotatedByRandom(1.1) * Main.rand.NextFloat(2f, 5f),
-                    i % 2 == 0 ? ChantColor : FoamWhite,
-                    Main.rand.NextFloat(0.25f, 0.42f))?.Configure(true, Main.rand.Next(10, 18));
-            }
-        }
-
-        public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            //余痕相：泡沫上浮
-            if (VaultUtils.isServer || !Main.rand.NextBool(2)) {
-                return;
-            }
-            for (int i = 0; i < 2; i++) {
-                PRTLoader.NewParticle<PRT_CampfireBubble>(proj.Center + Main.rand.NextVector2Circular(5f, 5f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.4f, 1f),
-                    ChantColor * 0.6f, Main.rand.NextFloat(0.25f, 0.45f));
             }
         }
     }

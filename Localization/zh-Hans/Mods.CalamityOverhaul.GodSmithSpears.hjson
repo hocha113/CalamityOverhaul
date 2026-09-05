@@ -39,11 +39,7 @@ GsTitaniumTrident.Desc:
 	重铸：每次刺出都会在真刃上下各生成一道平行的钛影幻矛
 	幻矛直飞一小段距离后消散
 	'''
-GsGungnir.Desc:
-	'''
-	重铸：神威三段刺，第三刺附上金环重音；
-	右键掷出誓约之枪，出手便锁定枪路上的猎物，弯折贯穿，从不落空
-	'''
+GsGungnir.Desc: 重铸：神威三段刺，第三刺附上金环重音
 GsChlorophytePartisan.Desc:
 	'''
 	重铸：矛刃停在最远处时，孢子会向矛尖聚集

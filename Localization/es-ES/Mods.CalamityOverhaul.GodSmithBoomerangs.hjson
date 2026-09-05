@@ -1,98 +1,69 @@
-GsWoodenBoomerang.Desc:
-	'''
-	La madera viva recuerda la fuerza de la mano que la lanza: tras el primer impacto, rebota hacia otro enemigo cercano
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
-	'''
+GsWoodenBoomerang.Desc: La madera viva recuerda la fuerza de la mano que la lanza: tras el primer impacto, rebota hacia otro enemigo cercano
 GsEnchantedBoomerang.Desc:
 	'''
 	En la ida frena, se queda en el aire cargando y en la vuelta acelera hacia la mano
 	En el vértice de la suspensión dispara tres destellos estelares que persiguen enemigos, 30% de daño cada uno
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
 GsFruitcakeChakram.Desc:
 	'''
 	Los impactos de ida bañan al objetivo en almíbar, hasta tres capas
 	Si en la vuelta vuelves a golpear a un objetivo azucarado, detonas el almíbar: +25% de daño por capa
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
 GsBloodyMachete.Desc:
 	'''
 	Al acertar aplica hemorragia y deja una marca; tres marcas en el mismo objetivo lo desangran
 	Ese golpe de sangría añade un 40% de daño y te recupera 2 de vida
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
 GsIceBoomerang.Desc:
 	'''
 	Al acertar aplica quemadura gélida y dispara dos esquirlas de hielo que atraviesan, 25% de daño cada una
 	Al suspenderse, el disco se escarcha y lo rodea una niebla gélida
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
 GsShroomerang.Desc:
 	'''
 	En el vértice de la suspensión expulsa una nube de esporas que se queda y quema sin parar a los enemigos dentro
 	Por la trayectoria van cayendo esporas luminosas
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-GsThornChakram.Desc:
-	'''
-	Al acertar envenena al objetivo y dispara tres púas de zarza hacia afuera, 22% de daño cada una
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
-	'''
+GsThornChakram.Desc: Al acertar envenena al objetivo y dispara tres púas de zarza hacia afuera, 22% de daño cada una
 GsCombatWrench.Desc:
 	'''
 	Cada tercer impacto al mismo objetivo es un golpe de perno: +80% de daño
 	Si el perno cae sobre un ensamblaje de acero, añade otro 25%
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
 GsFlamarang.Desc:
 	'''
 	Cada impacto prende al objetivo
 	En el vértice de la suspensión estalla un anillo de llamas; en la vuelta va dejando ascuas por el camino
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-GsTrimarang.Desc:
-	'''
-	Hasta tres discos a la vez; por cada disco extra en el aire, todos ganan un 8% de daño
-	Clic derecho: todo el equipo embiste a la vez hacia el cursor
-	'''
+GsTrimarang.Desc: Hasta tres discos a la vez; por cada disco extra en el aire, todos ganan un 8% de daño
 GsFlyingKnife.Desc:
 	'''
 	Mantener pulsado el botón de ataque: el cuchillo sigue virando para perseguir el cursor
 	Al soltar, danza y taja en el sitio y luego corta en línea recta de vuelta a la mano
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
-GsBananarang.Desc:
-	'''
-	Hasta diez a la vez; dentro de un mismo lanzamiento, cada impacto madura ese plátano: +6% de daño por capa, hasta cinco
-	Clic derecho: los plátanos en el aire embisten a la vez hacia el cursor
-	'''
+GsBananarang.Desc: Hasta diez a la vez; dentro de un mismo lanzamiento, cada impacto madura ese plátano: +6% de daño por capa, hasta cinco
 GsLightDisc.Desc:
 	'''
 	Al acertar a un enemigo se refracta y sigue volando hacia el otro más cercano, hasta tres veces
 	Cada refracción recorta un 10% del daño
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
 GsPossessedHatchet.Desc:
 	'''
 	Lanzamiento con carga: el hacha poseída acelera a la caza; al acertar se enreda en el objetivo y taja a su alrededor
 	Cada tajo deja una capa de marca de alma rencorosa; la quinta estalla e inflige un 150% de daño
-	En vuelo, clic derecho: ordénalo a cambiar de rumbo y embestir
 	'''
 GsPaladinsHammer.Desc:
 	'''
 	Lanzamiento a dos manos por encima de la cabeza; el martillo vuela en un arco pesado
 	Al llegar al final primero sube y luego cae, suelta una onda de choque e inflige un 65% de daño en área
-	En vuelo, clic derecho: primero embiste hacia el cursor y luego inicia la caída allí
 	'''
 GsSergeantUnitedShield.Desc:
 	'''
 	En la ida rebota entre enemigos hasta cuatro veces; cada salto empuja más fuerte
 	Tras recoger el escudo con la mano, durante un instante paras un golpe recibido
-	En vuelo, clic derecho: ordénalo a embestir hacia el cursor
 	'''
 GsAnchor.Desc:
 	'''
 	Vuela en una parábola pesada; pasada la cima cae en vertical y golpea el suelo
 	El impacto suelta una onda de choque del 60% de daño en área; el ancla se queda un instante y luego vuelve por la cadena
-	En vuelo, clic derecho: ordénalo a embestir primero hacia el cursor
 	'''

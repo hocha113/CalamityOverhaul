@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -11,8 +9,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
     /// <summary>
     /// 风暴海龙卷法杖「合流潮涌」：龙卷列成高空风暴横线；
     /// 签名 = 突击令下龙卷本体卷击与迷你鲨撞击在 45 帧内先后咬中焦点目标，
-    /// 两股杀意合流成横扫浪墙（<see cref="GsTempestSurgeProj"/>，1.1×、重击退，冷却 150 帧）；
-    /// 增强层 = 迷你鲨飞行拖水沫尾迹
+    /// 两股杀意合流成横扫浪墙（<see cref="GsTempestSurgeProj"/>，1.1×、重击退，冷却 150 帧）
     /// </summary>
     internal class GsTempestStaff : GsMinionScheme
     {
@@ -22,10 +19,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Confluence Surge: under the assault order, a tempest lash and a mini shark bite landing on one foe in quick succession merge into a sweeping tidal wall that batters everything in its path";
-
-        private static readonly Color SeaBody = new(64, 140, 220);
-        private static readonly Color FoamWhite = new(230, 246, 255);
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Line,
             Radius = 104f,
@@ -57,20 +50,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
             => GsMinionCastMotion.ApplyRaise(player);
-
-        public override void GsUseAnimation(Item item, Player player)
-            => GsMinionCastMotion.CastBurst(player, SeaBody, FoamWhite);
-
-        //==================== 增强层：鲨行水沫 ====================
-
-        protected override void GsMinionPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer || proj.type != ProjectileID.MiniSharkron
-                || proj.timeLeft % 3 != 0) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_Light>(proj.Center - proj.velocity * 0.5f,
-                -proj.velocity * 0.04f, SeaBody, 0.11f)?.Configure(9, 0.65f);
-        }
 
         //==================== 签名：合流潮涌 ====================
 

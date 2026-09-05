@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Hellfire Battery: imps hold a rear artillery line; under the assault order, three fireballs into one foe raise a pyre column beneath it";
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Line,
             Radius = 70f,

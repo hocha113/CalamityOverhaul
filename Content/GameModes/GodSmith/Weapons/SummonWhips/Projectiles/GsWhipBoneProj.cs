@@ -1,10 +1,9 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -17,11 +16,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
     /// </summary>
     internal class GsWhipBoneSpireProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
-
-        internal static readonly Color BoneBright = new(255, 250, 236);
-        internal static readonly Color BoneMain = new(226, 222, 200);
-        internal static readonly Color BoneDeep = new(140, 132, 108);
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bone;
 
         private const int OmenFrames = 6;      //地面预兆
         private const int RiseFrames = 8;      //窜刺段（主伤窗）
@@ -74,22 +69,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.NPCDeath2 with { Volume = 0.6f, Pitch = 0.2f },
                         Projectile.Center - new Vector2(0f, SpireHeight));
-                    for (int i = 0; i < 6; i++) {
-                        PRTLoader.NewParticle<PRT_MarbleChip>(
-                            Projectile.Center - new Vector2(0f, SpireHeight),
-                            Main.rand.NextVector2Circular(4.5f, 3.5f) - Vector2.UnitY * 2f,
-                            BoneMain, Main.rand.NextFloat(0.5f, 0.8f));
-                    }
-                }
-            }
-            //窜刺期骨屑贴地迸溅
-            if (elapsed >= OmenFrames && elapsed < OmenFrames + RiseFrames && !VaultUtils.isServer) {
-                for (int i = 0; i < 2; i++) {
-                    Dust d = Dust.NewDustPerfect(
-                        Projectile.Center + new Vector2(Main.rand.NextFloat(-SpireWidth, SpireWidth) * 0.5f, 0f),
-                        DustID.Bone, new Vector2(Main.rand.NextFloat(-2f, 2f), -Main.rand.NextFloat(2f, 5f)),
-                        0, default, 1.1f);
-                    d.noGravity = false;
                 }
             }
         }
@@ -101,43 +80,23 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
             }
         }
 
+        /// <summary>柱体一笔：原版骨头贴图自地基向上拉伸到当前柱高（lightColor 着色），尾段渐隐</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D edge = CWRUtils.GetT2DAsset(CWRConstant.Masking + "CrescentEdge01")?.Value;
-            Texture2D jag = CWRUtils.GetT2DAsset(CWRConstant.Masking + "HitJagged01")?.Value;
-            if (edge == null || jag == null) {
-                return false;
-            }
             int elapsed = Elapsed;
-            Vector2 basePos = Projectile.Center - Main.screenPosition;
-            float seed = Projectile.identity * 0.47f;
             if (elapsed < OmenFrames) {
-                //预兆：地基骨白微光渐亮
-                float g = elapsed / (float)OmenFrames;
-                Main.EntitySpriteDraw(jag, basePos, null, BoneMain with { A = 0 } * (0.45f * g),
-                    seed, jag.Size() * 0.5f, 0.35f * g + 0.1f, SpriteEffects.None, 0);
                 return false;
             }
-            //柱体：三片骨白竖弧交错、微开叉堆成刺柱；整体渐隐在尾段
             float fade = elapsed >= OmenFrames + RiseFrames + CrackFrames
                 ? 1f - (elapsed - OmenFrames - RiseFrames - CrackFrames) / (float)(LifeFrames - OmenFrames - RiseFrames - CrackFrames)
                 : 1f;
-            float rise = RiseT;
-            for (int i = 0; i < 3; i++) {
-                float lean = (i - 1) * 0.16f;
-                float hScale = (0.55f + 0.5f * rise) * (1f - MathF.Abs(lean) * 0.7f);
-                Vector2 tipOffset = new(lean * 46f, -SpireHeight * rise * (1f - MathF.Abs(lean) * 0.35f) * 0.5f);
-                Main.EntitySpriteDraw(edge, basePos + tipOffset, null,
-                    (i == 1 ? BoneBright : BoneMain) with { A = 0 } * (0.8f * fade),
-                    -MathHelper.PiOver2 + lean, edge.Size() * 0.5f,
-                    new Vector2(hScale * 1.1f, 0.5f), SpriteEffects.None, 0);
+            if (fade <= 0.01f) {
+                return false;
             }
-            //迸裂闪
-            if (elapsed >= OmenFrames + RiseFrames && elapsed < OmenFrames + RiseFrames + CrackFrames + 4) {
-                float f = 1f - (elapsed - OmenFrames - RiseFrames) / (float)(CrackFrames + 4);
-                Main.EntitySpriteDraw(jag, basePos - new Vector2(0f, SpireHeight * rise), null,
-                    BoneBright with { A = 0 } * (0.85f * f), -seed,
-                    jag.Size() * 0.5f, 0.5f * f + 0.12f, SpriteEffects.None, 0);
-            }
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float h = MathF.Max(SpireHeight * RiseT, 8f);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, 0f,
+                new Vector2(tex.Width * 0.5f, tex.Height), new Vector2(SpireWidth / tex.Width, h / tex.Height),
+                SpriteEffects.None, 0);
             return false;
         }
     }
@@ -149,7 +108,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
     /// </summary>
     internal class GsWhipBoneEchoProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
 
         private const int LifeFrames = 14;
         private readonly HashSet<int> excludedNPCs = [];
@@ -187,30 +146,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
         public override void AI() {
             if (Elapsed == 2 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item2 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
-                for (int i = 0; i < 4; i++) {
-                    PRTLoader.NewParticle<PRT_MarbleChip>(Projectile.Center,
-                        Main.rand.NextVector2Circular(5f, 3f),
-                        GsWhipBoneSpireProj.BoneMain, Main.rand.NextFloat(0.4f, 0.7f));
-                }
             }
         }
 
+        /// <summary>范围提示：原版气泡贴图按判定框缩放画一笔（lightColor 着色），随寿命渐隐</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D edge = CWRUtils.GetT2DAsset(CWRConstant.Masking + "CrescentEdge01")?.Value;
-            if (edge == null) {
+            float fade = 1f - Elapsed / (float)LifeFrames;
+            if (fade <= 0.01f) {
                 return false;
             }
-            //一道骨白横弧快扫后渐隐
-            float t = Elapsed / (float)LifeFrames;
-            float fade = 1f - t;
-            float sweep = MathHelper.Lerp(-0.7f, 0.7f, MathF.Min(1f, t * 2.2f));
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            Main.EntitySpriteDraw(edge, pos, null,
-                GsWhipBoneSpireProj.BoneBright with { A = 0 } * (0.75f * fade),
-                sweep, edge.Size() * 0.5f, new Vector2(1.15f, 0.7f), SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(edge, pos, null,
-                GsWhipBoneSpireProj.BoneMain with { A = 0 } * (0.45f * fade),
-                sweep - 0.25f, edge.Size() * 0.5f, new Vector2(0.9f, 0.55f), SpriteEffects.None, 0);
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, 0f,
+                tex.Size() * 0.5f, Projectile.width / (float)tex.Width, SpriteEffects.None, 0);
             return false;
         }
     }

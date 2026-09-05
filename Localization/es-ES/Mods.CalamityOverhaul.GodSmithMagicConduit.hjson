@@ -7,44 +7,28 @@ GsLastPrism.Desc:
 GsLastPrismHeldProj.DisplayName: Haz del Último prisma
 GsLastPrismBurstProj.DisplayName: Disgregación prismática
 GsLastPrismShardProj.DisplayName: Esquirlas de prisma
-GsMagicalHarp.Desc:
-	'''
-	Reforja: un fraseo ininterrumpido acumula ímpetu; al llegar al fortissimo las notas se hinchan, corren y caen como lluvia
-	Clic derecho: todo el ímpetu se concentra en una Onda de acorde retumbante; los impactos seguidos y rápidos hacen eco y hieren de nuevo
-	'''
+GsMagicalHarp.Desc: Reforja: un fraseo ininterrumpido acumula ímpetu; al llegar al fortissimo las notas se hinchan, corren y caen como lluvia
 GsBubbleGun.Desc:
 	'''
 	Reforja: el chorro continuo acumula presión de burbujas; al hervir, las burbujas se hinchan y al impactar estallan en 2 perlas
 	Al tope del medidor, la espuma atasca el cañón y lo bloquea un instante
-	Clic derecho: toda la presión se ventila en un abanico de 7 burbujas grandes a velocidades distintas que estallan en cadena
 	'''
 GsLaserMachinegun.Desc:
 	'''
 	Reforja: el calor es el régimen; el cañón frío se arrastra y, al rojo blanco, ruge; al rojo blanco, de cada 6 disparos uno monta un haz carmesí perforante
 	Mantenerse en la línea roja no revienta el cañón, solo duplica el consumo de maná
-	Clic derecho: todo el tambor se ventila en un abanico de 30 disparos que barre
 	'''
-GsRazorbladeTyphoon.Desc:
-	'''
-	Reforja: cada conjuro acumula potencial de tormenta; las cuchillas nacidas al rojo blanco no se pierden nunca: si se alejan, vuelven a tu lado y cazan de nuevo
-	Clic derecho: abre el Ojo del tifón en el cursor; todas las cuchillas en el aire se arremolinan en el vórtice y, al cerrarse el ojo, estalla en anillo
-	'''
+GsRazorbladeTyphoon.Desc: Reforja: cada conjuro acumula potencial de tormenta; las cuchillas nacidas al rojo blanco no se pierden nunca: si se alejan, vuelven a tu lado y cazan de nuevo
 GsMagnetSphere.Desc:
 	'''
 	Reforja: al sostener el bastón se tiende un nexo magnético entre tú y la esfera; mientras el nexo aguanta, el flujo no deja de subir
 	A flujo pleno, la esfera se sobrecarga y vierte arcos pesados sobre todo lo cercano
-	Clic derecho: detona una tormenta magnética centrada en la esfera que arrastra a los enemigos pequeños hacia el núcleo
 	'''
-GsShadowbeamStaff.Desc:
-	'''
-	Reforja: mantén pulsado para sostener un haz de sombra que se refracta en las paredes; al rojo blanco, un quiebro más y el haz se engrosa
-	Clic derecho: en cada quiebro del haz estallan explosiones de sombra en cadena
-	'''
+GsShadowbeamStaff.Desc: Reforja: mantén pulsado para sostener un haz de sombra que se refracta en las paredes; al rojo blanco, un quiebro más y el haz se engrosa
 GsChargedBlasterCannon.Desc:
 	'''
 	Reforja: mantén pulsado para canalizar la carga; en frío escupe proyectiles de plasma, al rojo blanco dispara pulsos de arco concentrado
 	La carga no se detiene nunca: al tope del medidor, el cañón dispara solo el Cañón de aniquilación, una esfera de plasma enorme que lame con arcos a los enemigos cercanos
-	Clic derecho: suelta antes de tiempo un proyectil concentrado de potencia reducida
 	'''
 GsLaserMachinegunLanceProj.DisplayName: Haz rojo perforante
 GsShadowbeamStaffHeldProj.DisplayName: Haz de sombra quebrado

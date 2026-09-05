@@ -70,26 +70,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes._Benchmark
             if (Projectile.timeLeft < 12) {
                 Projectile.alpha = Math.Min(255, Projectile.alpha + 24);
             }
-            Lighting.AddLight(Projectile.Center, 0.42f, 0.34f, 0.12f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldFlame,
-                    -Projectile.velocity * 0.15f, 100, default, 1.1f);
-                dust.noGravity = true;
-            }
-        }
-
-        //鎏金自发光，随渐隐收敛
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 226, 142, 80) * Projectile.Opacity;
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 8; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldFlame,
-                    Main.rand.NextVector2Circular(3.5f, 3.5f), 100, default, 1.2f);
-                dust.noGravity = true;
-            }
         }
     }
 }

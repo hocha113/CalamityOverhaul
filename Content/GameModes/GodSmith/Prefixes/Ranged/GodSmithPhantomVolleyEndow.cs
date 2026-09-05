@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -106,38 +104,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Ranged
                 Projectile.alpha = Math.Min(255, Projectile.alpha + 14);
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-            Lighting.AddLight(Projectile.Center, 0.15f, 0.25f, 0.5f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(4)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Wraith,
-                    -Projectile.velocity * 0.1f, 150, default, 0.8f);
-                dust.noGravity = true;
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(110, 160, 255, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float stretch = 0.8f + Projectile.velocity.Length() * 0.04f;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(40, 60, 160, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(1.2f, stretch * 1.2f), 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(170, 200, 255, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(0.55f, stretch), 0);
-            return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 5; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Wraith,
-                    Main.rand.NextVector2Circular(2f, 2f), 150, default, 0.9f);
-                dust.noGravity = true;
-            }
         }
     }
 }

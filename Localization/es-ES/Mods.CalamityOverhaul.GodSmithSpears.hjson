@@ -39,11 +39,7 @@ GsTitaniumTrident.Desc:
 	Reforja: cada estocada crea, encima y debajo del filo verdadero, una lanza fantasma de titanio en paralelo
 	las lanzas fantasma vuelan un tramo corto y se disipan
 	'''
-GsGungnir.Desc:
-	'''
-	Reforja: tres estocadas de poder divino; la tercera lleva el acento grave del anillo de oro;
-	clic derecho lanza la lanza del juramento, que al salir ya fija a la presa de su trayectoria, se curva para atravesarla y no falla nunca
-	'''
+GsGungnir.Desc: Reforja: tres estocadas de poder divino; la tercera lleva el acento grave del anillo de oro;
 GsChlorophytePartisan.Desc:
 	'''
 	Reforja: cuando el filo se detiene en el alcance máximo, las esporas se concentran en la punta

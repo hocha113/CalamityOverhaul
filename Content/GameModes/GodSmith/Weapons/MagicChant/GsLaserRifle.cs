@@ -1,7 +1,4 @@
-﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -19,15 +16,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override int TargetItemID => ItemID.LaserRifle;
 
         protected override string GsDescFallback =>
-            "Reforged: every third on-beat shot splits into twin parallel lasers;" +
-            "\nat full resonance the next shot ignites a sweeping overdrive burst, then the barrel wilts briefly";
-
+            "Reforged: every third on-beat shot splits into twin parallel lasers;\nat full resonance the next shot ignites a sweeping overdrive burst, then the barrel wilts briefly";
         protected override float BaseDamageMult => 1.06f;
 
         //困难入门武器，正拍返蓝压到 20%
         protected override float OnBeatManaRefund => 0.20f;
-
-        protected override Color ChantColor => new(216, 96, 255);
 
         /// <summary>形态：双联激光</summary>
         private const float FormTwin = 10f;
@@ -36,8 +29,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         private const int OverdriveTicks = 48;
         /// <summary>疲软窗</summary>
         private const int WiltTicks = 40;
-
-        private static readonly Color CoherentWhite = new(240, 214, 255);
 
         public override float GsUseSpeedMultiplier(Item item, Player player) {
             if (player.whoAmI != Main.myPlayer) {
@@ -98,46 +89,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             chant.TimerA = now + OverdriveTicks;
             chant.TimerB = now + OverdriveTicks + WiltTicks;
             return null;
-        }
-
-        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            bool hot = router.MarkData is FormOnBeat or FormEmpower or FormTwin;
-            Lighting.AddLight(proj.Center, ChantColor.ToVector3() * (hot ? 0.28f : 0.16f));
-            //飞行相：紫曳光
-            int interval = hot ? 3 : 6;
-            if (proj.timeLeft % interval == 0) {
-                PRTLoader.NewParticle<PRT_SparkAlpha>(proj.Center + Main.rand.NextVector2Circular(2.5f, 2.5f),
-                    -proj.velocity * 0.04f, hot ? ChantColor : ChantColor * 0.7f,
-                    Main.rand.NextFloat(0.22f, 0.4f));
-            }
-        }
-
-        public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            //命中相：光爆
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_SparkAlpha>(target.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    Main.rand.NextVector2Circular(2.2f, 2.2f),
-                    i % 2 == 0 ? ChantColor : CoherentWhite, Main.rand.NextFloat(0.28f, 0.46f));
-            }
-            PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero, ChantColor, 0.11f)?.Configure(7, 0.65f);
-        }
-
-        public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            //余痕相：光屑衰散
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 2; i++) {
-                PRTLoader.NewParticle<PRT_SparkAlpha>(proj.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    Main.rand.NextVector2Circular(0.8f, 0.8f), ChantColor * 0.75f,
-                    Main.rand.NextFloat(0.2f, 0.34f));
-            }
         }
     }
 }

@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -11,8 +9,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
     /// <summary>
     /// 血红法杖「血弧回航」：光蝠原版扇形绕主已是强势编队，不入阵型系统；
     /// 签名 = 突击令下光蝠咬中焦点目标时撕下一弯回航血弧
-    /// （<see cref="GsSanguineArcProj"/>，0.8×，飞回主人沿途割伤，冷却 50 帧）；
-    /// 增强层 = 高速俯冲的猩红涂抹尾迹（速度阈值驱动）
+    /// （<see cref="GsSanguineArcProj"/>，0.8×，飞回主人沿途割伤，冷却 50 帧）
     /// </summary>
     internal class GsSanguineStaff : GsMinionScheme
     {
@@ -22,10 +19,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Sanguine Homing: under the assault order, each bat bite tears a crescent of clotted blood off the marked prey that wings back to you, cutting whatever stands in its path";
-
-        private static readonly Color BloodBright = new(255, 92, 92);
-        private static readonly Color BloodDeep = new(150, 22, 34);
-
         /// <summary>光蝠原版扇形绕主编队保留，不注册阵型 kit</summary>
         protected override GsMinionKit Kit => null;
 
@@ -41,20 +34,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
             => GsMinionCastMotion.ApplyRaise(player);
-
-        public override void GsUseAnimation(Item item, Player player)
-            => GsMinionCastMotion.CastBurst(player, BloodBright, BloodDeep);
-
-        //==================== 增强层：俯冲涂抹 ====================
-
-        protected override void GsMinionPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer || proj.velocity.Length() < 6.5f
-                || proj.timeLeft % 3 != 0) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_Light>(proj.Center - proj.velocity * 0.5f,
-                -proj.velocity * 0.05f, BloodDeep, 0.12f)?.Configure(10, 0.7f);
-        }
 
         //==================== 签名：血弧回航 ====================
 

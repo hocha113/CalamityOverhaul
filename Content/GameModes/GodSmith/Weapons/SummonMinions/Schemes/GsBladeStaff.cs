@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Bagua Blade Wheel: daggers orbit as a slow-turning wheel; a dagger's sixth consecutive strike on one foe cuts armor-deep and flashes a phantom cross-slash for 40% more, and the rally order raises a gate of blades";
-
         private static readonly GsMinionKit kit = new() {
             Formation = GsFormationKind.Ring,
             Radius = 90f,

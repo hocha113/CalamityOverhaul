@@ -7,7 +7,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
     /// <summary>
     /// 金源灭却刃，四拍连击(逆时针/顺时针/椭圆环斩/椭圆反斩)。
-    /// 命中缓慢充能，右键消耗整条充能进入 7 秒强化
+    /// 常态每拍沿刀路甩出追踪光矢(快拍甩帘/环斩绽放/终结螺旋)，
+    /// 命中缓慢充能，右键消耗整条充能进入 7 秒强化，期间光矢换成可贯穿的巨型光枪
     /// </summary>
     internal class DivineSourceBlade : ModItem
     {

@@ -38,6 +38,21 @@ GameModeText: {
 		'''
 	GodSmithRecastTitle: 神匠重铸
 	GodSmithEndowPrefix: 神赋：
+	GodSmithInheritLine: 继承自{0}：{1}
+	GodSmithSetPreview: 神匠套装奖励：{0}
+	GodSmithNestChain: 镶嵌：{0}
+	GodSmithNestTitle: 镶嵌的头盔
+	GodSmithNestHint: 穿好整套后，额外继承这些头盔的套装奖励
+	GodSmithNestActive: 整套已穿好，镶嵌头盔的套装奖励全部生效
+	GodSmithNestReceiveHint:
+		'''
+		合成这顶头盔时加入{0}，即可将其镶入
+		整套穿好后，额外继承镶嵌头盔的套装奖励
+		'''
+	GodSmithNestGiveHint: 可镶入{0}：合成它们时把这顶头盔一并放入
+	GodSmithNestOr: 或
+	GodSmithRecipeOn: 神匠模式开启时
+	GodSmithRecipeOff: 神匠模式关闭时
 	StateOn: 已开启
 	StateOff: 沉眠中
 	HintEnable: 点击唤醒

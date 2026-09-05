@@ -1,11 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,7 +16,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.Bone;
         protected override string GsDescFallback =>
             "Reforged: the bone arcs back to your hand and deals damage both ways; catch it to reclaim it outright\nMisses can be picked back up; crits split off two half-damage shards";
-
         protected override float NoConsumeChance => 0.10f;
         protected override float RecoverOnTileChance => 0.40f;
         protected override float RecoverOnFadeChance => 0.40f;
@@ -77,13 +72,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
                     return false;
                 }
             }
-            //飞行尾迹:速度拉伸淡痕
-            if (!VaultUtils.isServer && Main.rand.NextBool(5)) {
-                PRTLoader.NewParticle<PRT_Spark>(proj.Center - proj.velocity * 0.3f,
-                    -proj.velocity * 0.05f, new Color(226, 220, 200),
-                    Main.rand.NextFloat(0.16f, 0.26f))?.Configure(false, 10);
-            }
             return false;
+        }
+
+        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
+            //分裂片:原版贴图七成大小(各端按随包的 MarkData2 一致呈现)
+            if (proj.type == ProjectileID.Bone && router.MarkData2 == FragmentCode) {
+                proj.scale = 0.7f;
+            }
         }
 
         protected override void GsThrowOnHit(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone,
@@ -106,18 +102,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
                 router.MarkData2 = FragmentCode;
             }
         }
-
-        public override bool? GsProjPreDraw(Projectile proj, ref Color lightColor, GodSmithProjRouter router) {
-            if (proj.type != ProjectileID.Bone || router.MarkData2 != FragmentCode) {
-                return null;
-            }
-            //分裂片:七成大小
-            Main.instance.LoadProjectile(proj.type);
-            Texture2D tex = TextureAssets.Projectile[proj.type].Value;
-            Main.EntitySpriteDraw(tex, proj.Center - Main.screenPosition, null, lightColor,
-                proj.rotation, tex.Size() / 2f, 0.7f, SpriteEffects.None, 0);
-            return false;
-        }
     }
 
     /// <summary>标枪:助跑掷更狠更快;同目标连击叠伤;嵌墙的枪大多能捡回</summary>
@@ -126,7 +110,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.Javelin;
         protected override string GsDescFallback =>
             "Reforged: crits refund one; javelins left in walls are usually reclaimable\nThrowing while sprinting adds 25% damage and 30% velocity; consecutive hits on one target stack +12% up to 3";
-
         protected override float NoConsumeChance => 0.10f;
         protected override float RecoverOnTileChance => 0.25f;
         protected override float RecoverOnFadeChance => 0.60f;
@@ -139,10 +122,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             if (System.Math.Abs(player.velocity.X) >= 4f) {
                 damage = (int)(damage * 1.25f);
                 velocity *= 1.3f;
-                if (!VaultUtils.isServer) {
-                    PRTLoader.NewParticle<PRT_Spark>(position, velocity * 0.1f,
-                        GsGold, 0.32f)?.Configure(false, 12);
-                }
             }
         }
 
@@ -173,7 +152,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.BoneJavelin;
         protected override string GsDescFallback =>
             "Reforged: crits refund one\nWith 3 javelins embedded in one foe your javelins hit 15% harder; each embedded javelin has a 60% chance to drop a recovery pickup when it dies";
-
         protected override float NoConsumeChance => 0.10f;
         protected override float RecoverOnTileChance => 0.25f;
         protected override float RecoverOnFadeChance => 0.40f;
@@ -197,7 +175,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.SpikyBall;
         protected override string GsDescFallback =>
             "Reforged: balls that expire on the field return straight to your bag\nA foe standing on 3 or more of your balls sets off a chain spike-burst, 50% each, once per ball";
-
         protected override float NoConsumeChance => 0f;
         protected override float RecoverOnFadeChance => 0.70f;
         protected override bool DirectRefundOnFade => true;
@@ -236,13 +213,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
                 ps.Latch = true;
                 Projectile.NewProjectile(p.GetSource_FromThis(), p.Center, Vector2.Zero,
                     burstType, (int)(proj.damage * 0.5f), 2f, proj.owner, 60f, GsBurstProj.FxNone);
-                if (!VaultUtils.isServer) {
-                    for (int k = 0; k < 4; k++) {
-                        PRTLoader.NewParticle<PRT_Spark>(p.Center,
-                            Main.rand.NextVector2Circular(3f, 3f),
-                            new Color(200, 205, 215), Main.rand.NextFloat(0.24f, 0.4f))?.Configure(true, 16);
-                    }
-                }
             }
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.7f }, target.Center);

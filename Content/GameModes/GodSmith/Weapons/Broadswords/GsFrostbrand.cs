@@ -1,6 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -11,8 +8,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 {
     /// <summary>
     /// 【凛冬呼吸·霜痕剑】材质：冰霜巨人肺腑里淬出的霜痕剑，每一斩都是一次吐息。
-    /// 签名：①每一斩呼出一枚霜弹（晶芯彗体+冰雾拖尾），飞行先滞后涌、绝不匀速
-    /// ②命中叠霜火，终结拍霜弹化作三叉冰片扇 ③终结拍蓄力时寒雾倒吸入刃，命中碎冰迸溅无血尘
+    /// 签名：①每一斩呼出一枚霜弹，飞行先滞后涌、绝不匀速
+    /// ②命中叠霜火，终结拍霜弹化作三叉冰片扇
     /// </summary>
     internal class GsFrostbrand : GsBroadswordScheme
     {
@@ -21,14 +18,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsFrostbrandHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: winter's breath; every slash exhales a frost bolt that stalls and surges in flight, " +
-            "hits inflict Frostburn, and the finishing beat fans the bolt into three ice shards";
-
-        //凛冬色板
+            "Reforged: winter's breath; every slash exhales a frost bolt that stalls and surges in flight, hits inflict Frostburn, and the finishing beat fans the bolt into three ice shards";
         internal static readonly Color RimeBright = new(222, 244, 255); //霜白刃缘
         internal static readonly Color RimeMain = new(96, 144, 216);    //冰渊蓝体色
         internal static readonly Color RimeHot = new(146, 236, 226);    //极光青强调
-        internal static readonly Color RimeDeep = new(14, 24, 44);      //深渊垫影
 
         //底伤不加成（原版 49/useAnim23 每挥一发全伤霜弹）：刀身拍均 1.03x + 霜弹 0.75x
         //（终结拍换 0.45x×3 三叉扇，散射难全中），按三拍循环约 66 帧摊算，
@@ -38,8 +31,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
     /// <summary>
     /// 凛冬呼吸手持：三拍。0 呼斩 / 1 吸斩（音调回升）/ 2 凛冬吐息
-    /// （长举倒吸寒雾+前压+三叉冰扇）。每拍斩切爆发呼出霜弹。
-    /// 魔法霜质：BleedOnFlesh 关闭。ai[0]=拍号 ai[1]=交替符号
+    /// （长举+前压+三叉冰扇）。每拍斩切爆发呼出霜弹。
+    /// ai[0]=拍号 ai[1]=交替符号
     /// </summary>
     internal class GsFrostbrandHeld : GsBroadswordHeldBase
     {
@@ -47,15 +40,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsFrostbrand.RimeBright;
         protected override Color BodyMain => GsFrostbrand.RimeMain;
         protected override Color HotAccent => GsFrostbrand.RimeHot;
-        protected override Color DeepShadow => GsFrostbrand.RimeDeep;
-
-        /// <summary>魔法霜刃不喷血，命中反馈全走碎冰</summary>
-        protected override bool BleedOnFlesh => false;
-
-        protected override Color BodyTint(Color lightColor)
-            => Color.Lerp(lightColor, GsFrostbrand.RimeMain, 0.2f);
-        protected override bool GlowAlways => true;
-        protected override Color GlowColor => IsFinisher ? GsFrostbrand.RimeHot : GsFrostbrand.RimeBright;
 
         private bool boltFired;
 
@@ -99,7 +83,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             int type = ModContent.ProjectileType<GsFrostbrandBoltProj>();
             Vector2 aim = baseAngle.ToRotationVector2();
             if (IsFinisher) {
-                SetFlash(6);
                 int dmg = Math.Max(1, (int)(Projectile.damage * 0.45f));
                 for (int i = -1; i <= 1; i++) {
                     SpawnOwnedProj(type, Hand + aim * 26f, aim.RotatedBy(i * 0.22f) * 13f, dmg, 1.5f, 1f);
@@ -121,51 +104,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             }
             target.AddBuff(BuffID.Frostburn, IsFinisher ? 240 : 150);
         }
-
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            //挥弧沿途飘散冰雾
-            if (phase == PhaseSlash && Main.rand.NextBool(2)) {
-                Dust d = Dust.NewDustPerfect(Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 1f)),
-                    DustID.IceTorch, Vector2.Zero, 100, default, Main.rand.NextFloat(0.8f, 1.2f));
-                d.noGravity = true;
-                d.velocity = (mainAngle + (swingDir * MathHelper.PiOver2)).ToRotationVector2() * 1.5f;
-            }
-            //终结拍蓄力：寒雾自四周倒吸入刃，像剑在深吸一口凛冬
-            if (IsFinisher && phase <= PhaseHold) {
-                Vector2 at = Hand + Main.rand.NextVector2Unit() * Main.rand.NextFloat(42f, 74f);
-                Vector2 toBlade = (Vector2.Lerp(Hand, mainTip, 0.6f) - at) * 0.16f;
-                Dust d = Dust.NewDustPerfect(at, DustID.IceTorch, toBlade, 110, default,
-                    Main.rand.NextFloat(0.9f, 1.3f));
-                d.noGravity = true;
-                if (Main.rand.NextBool(3)) {
-                    PRTLoader.NewParticle<PRT_Light>(at, toBlade, GsFrostbrand.RimeHot,
-                        Main.rand.NextFloat(0.06f, 0.1f))?.Configure(9, 0.6f);
-                }
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //碎冰迸溅
-            int shards = IsFinisher ? 9 : 5;
-            for (int i = 0; i < shards; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.Ice,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f), 60, default,
-                    Main.rand.NextFloat(0.9f, 1.4f));
-                d.noGravity = Main.rand.NextBool();
-            }
-        }
     }
 
     /// <summary>
-    /// 霜弹：呼出的晶芯彗体。飞行走呼吸节律：出膛 13、先滞（14 帧减速到约 7）、
-    /// 再涌（5 帧提速回约 10）、后稳，绝不匀速；冰雾拖尾，命中叠霜火，消亡碎冰。
-    /// 自绘：软光芯+星贴图晶十字+涌相沿速度拉长。ai[0]=三叉扇成员（体型略小）
+    /// 霜弹：用原版霜痕剑霜弹贴图。飞行走呼吸节律：出膛 13、先滞（14 帧减速到约 7）、
+    /// 再涌（5 帧提速回约 10）、后稳，绝不匀速；命中叠霜火。ai[0]=三叉扇成员（体型略小）
     /// </summary>
     internal class GsFrostbrandBoltProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.FrostBoltSword;
 
         private bool FanShard => Projectile.ai[0] > 0.5f;
         private ref float Life => ref Projectile.localAI[0];
@@ -175,8 +122,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         private const int SurgeEnd = 19;
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 6;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.FrostBoltSword];
         }
 
         public override void SetDefaults() {
@@ -191,6 +137,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         public override void AI() {
             Life++;
+            if (Life == 1f && FanShard) {
+                //三叉扇成员体型略小
+                Projectile.scale = 0.8f;
+            }
             //呼吸节律：滞相减速，涌相回涌
             if (Life <= StallEnd) {
                 Projectile.velocity *= 0.955f;
@@ -198,16 +148,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             else if (Life <= SurgeEnd) {
                 Projectile.velocity *= 1.075f;
             }
-            Projectile.rotation = Projectile.velocity.ToRotation();
-
-            Lighting.AddLight(Projectile.Center, GsFrostbrand.RimeMain.ToVector3() * 0.35f);
-
-            //冰雾拖尾，涌相喷得更急
-            if (!VaultUtils.isServer && Main.rand.NextBool(Life > StallEnd && Life <= SurgeEnd ? 1 : 2)) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch,
-                    -Projectile.velocity * 0.1f, 120, default, Main.rand.NextFloat(0.7f, 1.1f));
-                d.noGravity = true;
-            }
+            //原版霜弹贴图为斜向弹形，补 45 度
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -218,71 +160,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.5f, Pitch = 0.25f }, Projectile.Center);
-            //碎冰与残雾
-            for (int i = 0; i < 7; i++) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Ice,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 5f), 60, default,
-                    Main.rand.NextFloat(0.8f, 1.3f));
-                d.noGravity = Main.rand.NextBool();
-            }
-            PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, GsFrostbrand.RimeHot, 0.16f)
-                ?.Configure(9, 0.7f);
-        }
-
-        /// <summary>绘制路径确定性伪随机</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D star = CWRAsset.StarTexture?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (star == null || glow == null) {
-                return false;
-            }
-            float scaleMul = FanShard ? 0.8f : 1f;
-            //涌相：弹体沿速度拉长、亮度上探（运动的必须被运动拉伸）
-            float surge = Life > StallEnd && Life <= SurgeEnd + 3 ? 1f : 0f;
-            float stretch = 1f + 0.55f * surge;
-            float pulse = 0.85f + 0.15f * MathF.Sin(Main.GlobalTimeWrappedHourly * 7f + SegRand(1) * 6.28f);
-
-            //雾迹：旧位置的淡青光点
-            for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
-                if (Projectile.oldPos[i] == Vector2.Zero) {
-                    continue;
-                }
-                Vector2 at = Projectile.oldPos[i] + (Projectile.Size * 0.5f) - Main.screenPosition;
-                float t = 1f - (i / (float)Projectile.oldPos.Length);
-                Color mist = GsFrostbrand.RimeHot * (0.16f * t);
-                mist.A = 0;
-                Main.EntitySpriteDraw(glow, at, null, mist, 0f, glow.Size() * 0.5f,
-                    0.22f * t * scaleMul, SpriteEffects.None, 0);
-            }
-
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-
-            //软光芯
-            Color core = GsFrostbrand.RimeHot * (0.55f * pulse);
-            core.A = 0;
-            Main.EntitySpriteDraw(glow, drawPos, null, core, 0f, glow.Size() * 0.5f,
-                0.42f * scaleMul, SpriteEffects.None, 0);
-
-            //晶体彗身：顺速度长笔 + 横短笔叠出冰晶十字
-            Color body = Color.Lerp(GsFrostbrand.RimeMain, GsFrostbrand.RimeBright, 0.5f) * pulse;
-            body.A = 0;
-            Main.EntitySpriteDraw(star, drawPos, null, body, Projectile.rotation,
-                star.Size() * 0.5f, new Vector2(0.05f, 0.17f * stretch) * scaleMul, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(star, drawPos, null, body * 0.75f, Projectile.rotation + MathHelper.PiOver2,
-                star.Size() * 0.5f, new Vector2(0.04f, 0.09f) * scaleMul, SpriteEffects.None, 0);
-
-            //霜白高光
-            Color spec = GsFrostbrand.RimeBright * (0.9f * pulse);
-            spec.A = 0;
-            Main.EntitySpriteDraw(star, drawPos, null, spec, Projectile.rotation,
-                star.Size() * 0.5f, new Vector2(0.025f, 0.07f * stretch) * scaleMul, SpriteEffects.None, 0);
-            return false;
         }
     }
 }

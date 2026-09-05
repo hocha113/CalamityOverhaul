@@ -50,7 +50,7 @@ KikasaInkTag: {
 
 DivineSourceChargeBuff: {
 	// DisplayName: Auric Surge
-	// Description: The Divine Source Blade runs at full output, damage soars and bolts rain
+	// Description: The Divine Source Blade runs at full output, damage soars and its bolts become piercing lances
 }
 
 VoidErosion: {

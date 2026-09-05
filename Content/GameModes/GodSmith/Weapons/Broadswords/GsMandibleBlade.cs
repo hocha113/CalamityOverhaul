@@ -42,6 +42,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     internal class GsMandibleBladeHeld : GsBroadswordHeldBase
     {
         protected override int SwordItemID => ItemID.AntlionClaw;
+        protected override bool SelfDrawnVisuals => true;
         protected override Color EdgeBright => GsMandibleBlade.ChitinBright;
         protected override Color BodyMain => GsMandibleBlade.ChitinMain;
         protected override Color HotAccent => GsMandibleBlade.ChitinHot;

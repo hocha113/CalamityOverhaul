@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 {
     /// <summary>
     /// 繁花怒放连接段（25%）：全花齐闪 + 怒吼，沙暴拉满，此后提速并解锁连击。
-    /// 短促（约 1.5 秒），是终局宣言不是二次转阶段。
+    /// 短促（约 1.5 秒），是终局宣言不是二次转阶段；宣言后直接接盘身刺阵亮相。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)BssStateIndex.ApexBloom, typeof(BssStateContext))]
     internal class BssApexBloomState : BssStateBase
@@ -67,10 +67,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Timer++;
 
             if (t > EndFrame || t > 80) {
-                //终局首秀即热身阀：怒放直接接回环沙瀑（蹲跳 + 入环 + 画环的长无伤前摇，
-                //P3 回环落地还会连击掠冲 = 宣言之后立刻两连演出）
+                //终局宣言后直接盘身刺阵：压轴招在此保证亮相一次，合围的 1.5 秒本身就是热身阀
                 ctx.AttackCooldown = 12;
-                return new BssLoopCascadeState();
+                ctx.LastPickedState = (int)BssStateIndex.CoilRing;
+                return new BssCoilRingState();
             }
             return null;
         }

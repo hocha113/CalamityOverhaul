@@ -1,7 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -60,14 +57,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectil
                 Projectile.rotation += Projectile.velocity.X * 0.04f;
                 Projectile.tileCollide = true;
             }
-            Lighting.AddLight(Projectile.Center, GsThrowScheme.GsGold.ToVector3() * 0.2f);
-            //待拾金尘:低频上飘
-            if (!VaultUtils.isServer && Main.rand.NextBool(22)) {
-                PRTLoader.NewParticle<PRT_Spark>(
-                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    -Vector2.UnitY * Main.rand.NextFloat(0.4f, 0.9f),
-                    GsThrowScheme.GsGold, Main.rand.NextFloat(0.18f, 0.3f))?.Configure(false, 14);
-            }
             //触碰返还:owner 权威,写自己背包
             if (Projectile.owner == Main.myPlayer && owner.active && !owner.dead
                 && Projectile.Hitbox.Intersects(owner.Hitbox)) {
@@ -85,45 +74,19 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectil
             return false;
         }
 
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //收取/消散余痕:金尘上飘(各端可见)
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(
-                    Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), -Main.rand.NextFloat(0.8f, 1.8f)),
-                    Main.rand.NextBool() ? GsThrowScheme.GsGold : GsThrowScheme.GsGoldPale,
-                    Main.rand.NextFloat(0.22f, 0.38f))?.Configure(false, 18);
-            }
-        }
-
+        /// <summary>本体一笔:画返还物品的原版贴图(弹幕自身无贴图,此为必要绘制);将逝 2s 闪烁提示</summary>
         public override bool PreDraw(ref Color lightColor) {
             int itemType = ItemType;
             if (itemType <= 0) {
                 return false;
             }
-            //将逝 2s:闪烁提示
             if (Projectile.timeLeft < 120 && Projectile.timeLeft / 6 % 2 == 0) {
                 return false;
             }
             Main.instance.LoadItem(itemType);
             Texture2D tex = TextureAssets.Item[itemType].Value;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = tex.Size() / 2f;
-            //呼吸相位用 identity 定种,绘制路径不掷随机
-            float pulse = 0.6f + 0.4f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5f + Projectile.identity * 0.83f);
-            //金色 shimmer 重影(加色 A=0)垫底
-            Color glow = GsThrowScheme.GsGold * (0.55f * pulse);
-            glow.A = 0;
-            Main.EntitySpriteDraw(tex, pos, null, glow, Projectile.rotation, origin, 1.16f, SpriteEffects.None, 0);
-            //物品本体
-            Main.EntitySpriteDraw(tex, pos, null, lightColor, Projectile.rotation, origin, 1f, SpriteEffects.None, 0);
-            //亮芯
-            Color core = GsThrowScheme.GsGoldPale * (0.25f * pulse);
-            core.A = 0;
-            Main.EntitySpriteDraw(tex, pos, null, core, Projectile.rotation, origin, 1f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor,
+                Projectile.rotation, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
             return false;
         }
     }

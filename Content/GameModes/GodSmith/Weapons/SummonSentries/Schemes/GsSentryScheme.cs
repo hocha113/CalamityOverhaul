@@ -63,7 +63,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
                 FirstFrame(proj, kit, isTower, st);
             }
             if (isTower) {
-                SentryGrid.EmitFullChargeIdle(proj, kit, st);
                 TowerPostAI(proj, kit, st);
             }
             else {
@@ -146,21 +145,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
             OnBoltKilled(proj, tower, st);
         }
 
-        public sealed override void GsProjPostDraw(Projectile proj, Color lightColor, GodSmithProjRouter router) {
-            if (!SentryGrid.TryGetKit(proj.type, out SentryKit kit, out bool isTower)) {
-                return;
-            }
-            GsSentryLocal st = router.GetOrCreateState<GsSentryLocal>();
-            if (isTower) {
-                SentryGrid.DrawTowerLinks(proj, st);
-                SentryGrid.DrawTowerCharge(proj, kit, st);
-                DrawTowerExtra(proj, kit, st, lightColor);
-            }
-            else {
-                DrawBoltExtra(proj, kit, st, lightColor);
-            }
-        }
-
         //==================== 子类虚点 ====================
 
         /// <summary>超频窗内弹体出膛升格（owner 生成端；补发用 SpawnBoltHandled 防递归）</summary>
@@ -169,7 +153,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         /// <summary>弹体第一帧（各端；归属已解析）</summary>
         protected virtual void OnBoltFirstFrame(Projectile bolt, Projectile tower, GsSentryLocal st) { }
 
-        /// <summary>塔每帧后置（原版 AI 之后；粒子守 !VaultUtils.isServer）</summary>
+        /// <summary>塔每帧后置（原版 AI 之后）</summary>
         protected virtual void TowerPostAI(Projectile tower, SentryKit kit, GsSentryLocal st) { }
 
         /// <summary>弹体每帧后置</summary>
@@ -186,12 +170,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         /// <summary>弹体消亡（owner 端；殉爆链入口）</summary>
         protected virtual void OnBoltKilled(Projectile bolt, Projectile tower, GsSentryLocal st) { }
 
-        /// <summary>塔追加绘制（副头/背门等；充能辉光与链线已由框架画好）</summary>
-        protected virtual void DrawTowerExtra(Projectile tower, SentryKit kit, GsSentryLocal st, Color lightColor) { }
-
-        /// <summary>弹体追加绘制（超频弹特效等）</summary>
-        protected virtual void DrawBoltExtra(Projectile bolt, SentryKit kit, GsSentryLocal st, Color lightColor) { }
-
         /// <summary>超频周期技（GsOverdriveProj 每帧驱动，owner 端；age 从 1 数起）</summary>
         internal virtual void OverdrivePulse(Projectile tower, Projectile odProj, int age) { }
 
@@ -201,7 +179,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected static IEntitySource SentrySource(Projectile anchor)
             => Main.player[anchor.owner].GetSource_Misc("GsSentry");
 
-        /// <summary>owner 端补发原版类型弹并登记（跳过第一帧升格防递归，继承归属与超频视觉态）</summary>
+        /// <summary>owner 端补发原版类型弹并登记（跳过第一帧升格防递归，继承归属与超频态）</summary>
         protected static Projectile SpawnBoltHandled(Projectile tower, Vector2 pos, Vector2 vel,
             int type, int damage, float knockback, bool overdriveShot = true) {
             int idx = Projectile.NewProjectile(SentrySource(tower), pos, vel, type,

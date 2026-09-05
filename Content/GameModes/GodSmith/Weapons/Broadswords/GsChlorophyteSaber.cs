@@ -2,6 +2,7 @@
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -10,8 +11,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     /// <summary>
     /// 【孢子迷雾】材质：叶绿锭锻的轻军刀，刃面覆生孢子苔。
     /// 签名：①原版孢子云保留升级：每一斩都在挥弧外缘留下驻留孢子雾
-    /// （软噪声云缓慢漂移，触之中毒）②雾中的目标被刀刃命中会叠上剧毒并吃额外伤害
-    /// ③快拍轻剑手感：三拍短举快出，斩切飘散叶绿孢尘
+    /// （缓慢漂移，触之中毒）②雾中的目标被刀刃命中会叠上剧毒并吃额外伤害
+    /// ③快拍轻剑手感：三拍短举快出
     /// </summary>
     internal class GsChlorophyteSaber : GsBroadswordScheme
     {
@@ -20,15 +21,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override int HeldProjID => ModContent.ProjectileType<GsChlorophyteSaberHeld>();
 
         protected override string GsDescFallback =>
-            "Reforged: a swift three-beat saber; every slash seeds a lingering spore shroud " +
-            "along the arc's edge, and blade strikes on shrouded targets " +
-            "deal bonus damage and stack venom";
-
-        //叶绿色板
+            "Reforged: a swift three-beat saber; every slash seeds a lingering spore shroud along the arc's edge, and blade strikes on shrouded targets deal bonus damage and stack venom";
         internal static readonly Color SporeBright = new(208, 255, 170); //苔绿亮缘
         internal static readonly Color SporeMain = new(96, 200, 90);     //叶绿体色
         internal static readonly Color SporeHot = new(150, 255, 80);     //剧毒亮绿
-        internal static readonly Color SporeDeep = new(16, 40, 22);      //幽林暗绿
 
         //原版每斩附带孢子云（驻留毒云），这里以 0.32x 雾团驻留 150 帧多跳对位替代
         //（30 帧跳一次，实战 2~3 跳 ≈ 0.6~1.0x/斩）；拍均 1.05x、三拍循环 ~51 帧
@@ -47,7 +43,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override Color EdgeBright => GsChlorophyteSaber.SporeBright;
         protected override Color BodyMain => GsChlorophyteSaber.SporeMain;
         protected override Color HotAccent => GsChlorophyteSaber.SporeHot;
-        protected override Color DeepShadow => GsChlorophyteSaber.SporeDeep;
 
         //轻军刀：触及略短、判定略窄
         protected override float BaseReach => 108f;
@@ -75,10 +70,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 DamageMult = 1.15f, Hitstop = 1, LungeSpeed = 1.4f, SwingPitch = -0.1f,
             },
         };
-
-        //苔生刀身微微渗绿
-        protected override Color BodyTint(Color lightColor)
-            => Color.Lerp(lightColor, GsChlorophyteSaber.SporeMain, 0.12f);
 
         protected override void HandlePhaseEvents(int phase) {
             base.HandlePhaseEvents(phase);
@@ -130,48 +121,27 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.55f, Pitch = -0.2f }, Owner.Center);
             }
         }
-
-        protected override void HandleParticles(int phase) {
-            base.HandleParticles(phase);
-            if (phase == PhaseSlash && Main.rand.NextBool(2)) {
-                //斩切期刃面抖落叶绿孢尘
-                Dust d = Dust.NewDustPerfect(Vector2.Lerp(Hand, mainTip, Main.rand.NextFloat(0.5f, 1f)),
-                    DustID.ChlorophyteWeapon, Vector2.Zero, 100, default, Main.rand.NextFloat(0.7f, 1.1f));
-                d.noGravity = true;
-                d.velocity = (mainAngle + swingDir * MathHelper.PiOver2).ToRotationVector2() * 1.8f;
-            }
-        }
-
-        protected override void OnHitFX(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitFX(target, hit, damageDone);
-            //孢尘扑溅：雾内命中更浓
-            int motes = TargetInMist(target) ? 6 : 3;
-            for (int i = 0; i < motes; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.ChlorophyteWeapon,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), 80, default,
-                    Main.rand.NextFloat(0.9f, 1.4f));
-                d.noGravity = true;
-            }
-        }
     }
 
     /// <summary>
-    /// 驻留孢子雾：每一斩留在挥弧外缘的软雾团。缓慢漂移渐停，150 帧寿命，
+    /// 驻留孢子雾：每一斩留在挥弧外缘的雾团。缓慢漂移渐停，150 帧寿命，
     /// 30 帧一跳并挂中毒；ai[0]=浓雾旗（终结拍更大更浓）。
-    /// 暗绿雾体用真 alpha 压暗背景，苔绿光点走加色；绘制抖动全部 identity 播种
+    /// 用原版叶绿军刀孢子云贴图按雾域半径缩放画一笔作范围提示
     /// </summary>
     internal class GsChlorophyteSaberMistProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SporeCloud;
 
         internal const float MistRadius = 74f;
         private const int TotalLife = 150;
-        private const int Blobs = 4;
 
         private bool Dense => Projectile.ai[0] > 0.5f;
         private float SizeMul => Dense ? 1.22f : 1f;
         private ref float Life => ref Projectile.localAI[0];
-        private float Life01 => MathHelper.Clamp(Life / TotalLife, 0f, 1f);
+
+        public override void SetStaticDefaults() {
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.SporeCloud];
+        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 24;
@@ -189,17 +159,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             Life++;
             //漂移渐停：雾团出弧后慢慢驻定
             Projectile.velocity *= 0.965f;
-
-            Lighting.AddLight(Projectile.Center,
-                GsChlorophyteSaber.SporeMain.ToVector3() * (0.35f * (1f - Life01) * SizeMul));
-
-            if (!VaultUtils.isServer && Main.rand.NextBool(5)) {
-                //雾内孢尘缓浮
-                Vector2 at = Projectile.Center + Main.rand.NextVector2Circular(MistRadius * 0.8f, MistRadius * 0.8f);
-                Dust d = Dust.NewDustPerfect(at, DustID.ChlorophyteWeapon,
-                    new Vector2(0f, -Main.rand.NextFloat(0.2f, 0.7f)), 140, default, Main.rand.NextFloat(0.5f, 0.9f));
-                d.noGravity = true;
-            }
         }
 
         //出生 6 帧成形后才开始跳伤
@@ -214,57 +173,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             target.AddBuff(BuffID.Poisoned, Dense ? 240 : 150);
         }
 
-        /// <summary>绘制路径确定性伪随机</summary>
-        private float SegRand(int salt) {
-            uint h = (uint)(Projectile.identity * 374761393 + salt * 668265263);
-            h = (h ^ (h >> 13)) * 1274126177u;
-            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
-        }
-
+        /// <summary>范围提示：原版孢子云贴图按雾域半径缩放画一笔，出生 8 帧撑开、末段随寿命淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D blot = CWRAsset.Extra_98?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (blot == null || glow == null) {
-                return false;
-            }
-            Vector2 center = Projectile.Center - Main.screenPosition;
-            float life = Life01;
-            //出生 8 帧带 8% 过冲撑开
-            float grow = Life <= 8f ? 1.08f * (Life / 8f)
-                : MathHelper.Lerp(1.08f, 1f, MathHelper.Clamp((Life - 8f) / 6f, 0f, 1f));
-            float baseAlpha = Dense ? 0.55f : 0.42f;
-
-            //雾体：数团真 alpha 暗绿噪斑，各团独立漂移与蚀散次序
-            for (int i = 0; i < Blobs; i++) {
-                float dieAt = 0.55f + 0.45f * SegRand(i);
-                float segFade = MathHelper.Clamp((dieAt - life) / 0.3f, 0f, 1f);
-                if (segFade <= 0.01f) {
-                    continue;
-                }
-                float drift = Main.GlobalTimeWrappedHourly * (0.25f + 0.2f * SegRand(i + 10)) + SegRand(i) * 6.28f;
-                Vector2 at = center + drift.ToRotationVector2() * (MistRadius * 0.4f * SizeMul * SegRand(i + 20));
-                float scale = (0.42f + 0.22f * SegRand(i + 30)) * SizeMul * grow;
-                Color dark = GsChlorophyteSaber.SporeDeep * (baseAlpha * segFade);
-                Main.EntitySpriteDraw(blot, at, null, dark, SegRand(i + 40) * 6.28f + Life * 0.004f,
-                    blot.Size() * 0.5f, scale, SpriteEffects.None, 0);
-            }
-
-            //苔绿光点：雾内几粒缓慢明灭的孢子光
-            for (int i = 0; i < 5; i++) {
-                float dieAt = 0.6f + 0.4f * SegRand(i + 50);
-                float segFade = MathHelper.Clamp((dieAt - life) / 0.25f, 0f, 1f);
-                if (segFade <= 0.01f) {
-                    continue;
-                }
-                float orbit = Main.GlobalTimeWrappedHourly * (0.3f + 0.25f * SegRand(i + 60)) + SegRand(i + 70) * 6.28f;
-                Vector2 at = center + orbit.ToRotationVector2() * (MistRadius * 0.55f * SizeMul * SegRand(i + 80));
-                float pulse = 0.6f + 0.4f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5f + SegRand(i + 90) * 6.28f);
-                Color c = (SegRand(i) > 0.5f
-                    ? GsChlorophyteSaber.SporeHot : GsChlorophyteSaber.SporeBright) * (0.4f * segFade * pulse);
-                c.A = 0;
-                Main.EntitySpriteDraw(glow, at, null, c, 0f, glow.Size() * 0.5f,
-                    0.16f + 0.1f * SegRand(i + 95), SpriteEffects.None, 0);
-            }
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            Rectangle frame = tex.Frame(1, Math.Max(1, Main.projFrames[Type]), 0, 0);
+            float grow = MathHelper.Clamp(Life / 8f, 0f, 1f);
+            float fade = MathHelper.Clamp(Projectile.timeLeft / 20f, 0f, 1f);
+            float scale = MistRadius * SizeMul * 2f * grow / MathF.Max(frame.Width, 1);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor * (0.7f * fade),
+                0f, frame.Size() * 0.5f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

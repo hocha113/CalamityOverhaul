@@ -1,0 +1,49 @@
+GsElectrosphereLauncher: {
+	Desc: Reforged: two or more of your spheres link up with tesla arcs (up to 3, half sphere damage)
+	TipOverload: ¡Sobrecarga!
+}
+
+GsGrenadeLauncher: {
+	Desc: Reforged: grenades stick to walls and foes (+25% damage when stuck on flesh); up to 6 planted, the oldest pops to make room
+	TipDetonate: ¡Detonación total!
+}
+
+GsJackOLanternLauncher: {
+	Desc: Reforged: every blast leaves a candle field that scorches whoever stands in it
+	TipGrin: ¡Risa al unísono!
+}
+
+GsNailGun: {
+	Desc: Reforged: nails embed into flesh (up to 5 per victim), each making the victim take +3% damage from all sources
+	TipExtract: ¡Arrancar con carne!
+}
+
+GsProximityMineLauncher: {
+	Desc: Reforged: mines show their trigger radius to you; mines idle for 60s refund a rocket and self-clear
+	TipChain: ¡Dominó!
+	TipRecycle: Mina recuperada
+}
+
+GsRocketLauncher: {
+	Desc: Reforged: shots kick you back, and direct hits hit harder
+	TipDetonate: ¡Explosión aérea!
+}
+
+GsSnowmanCannon: {
+	Desc: Reforged: hits brand victims with a snowflake (+8% from this weapon)
+	ModeHoming: Vehículo: enjambre perseguidor
+	ModeOrbital: Vehículo: órbita de ventisca
+}
+
+GsStarCannon.Desc:
+	'''
+	Reforja: cambiar la trayectoria
+	Tiro tenso: las estrellas vuelan en línea recta; Estrella caída: las estrellas suben y luego llueven alrededor del cursor; al acertar salpican polvo estelar
+	'''
+
+GsStynger: {
+	Desc: Reforged: detonates on hit, with a kick on the shot. Stynger bolts and shrapnel stay as they were
+	ModeImpact: Espoleta: impacto
+	ModeRange: Espoleta: explosión a distancia
+	ModeRicochet: Espoleta: rebote
+}

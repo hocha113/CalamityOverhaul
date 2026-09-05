@@ -15,7 +15,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
     /// 四条幻影臂物化→合拢环抱→揉搓压缩黑球（打断窗：集火核心可令其失手）→
     /// 一拍寂静锁定掷向→掷出黑洞→长硬直余波。
     /// 全程清场先行、预告超长、掷向锁定即承诺。
-    /// 残血底牌拍附加重震屏：蓄力全程中幅持续撼动，黑洞爆点大幅震撼；开幕拍保持正常演出。
+    /// 残血底牌拍：蓄力全程大幅震屏随蓄力渐强；蓄力一秒起全世界的声音被球渐渐吸走（<see cref="MLordSilence"/>），
+    /// 只剩嗡鸣直到爆点；掷出的是会长大、会缓慢追人、引力渐强到无法逃离的黑洞，爆点秒杀（详见弹体）。
+    /// 开幕拍保持正常演出。
     /// Timer 各端本地推进；打断分支经 OvBlackFlashBeat 槽广播，各端跳至失手段
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.BlackFlash, typeof(MLordContext))]
@@ -32,6 +34,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         internal const int SilenceEnd = KneadEnd + 18;
         internal const int ThrowEnd = SilenceEnd + 12;
         internal const int AftermathEnd = ThrowEnd + 96;
+        /// <summary>残血底牌拍死寂起点：蓄力开始一秒后，整个世界的声音开始被球渐渐吸走（约 1.3 秒归零）</summary>
+        internal const int SilenceOnset = 60;
+        /// <summary>死寂期嗡鸣张力：蓄力段从此值爬到 <see cref="SilenceTensionAtThrow"/>，飞行段由弹体接着爬到 1</summary>
+        private const float SilenceTensionAtOnset = 0.15f;
+        internal const float SilenceTensionAtThrow = 0.6f;
         //―――― 失手段（打断分支）：远离主时间轴的独立区段，各端经 beat 槽跳入 ――――
         internal const int FumbleStart = 10000;
         internal const int FumbleEnd = FumbleStart + 128;
@@ -41,12 +48,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
         /// <summary>本拍是否残血底牌版：开幕拍在满血裸露帧触发、底牌拍在残血门线下触发，
         /// 半血分界各端可确定性复判（状态槽与生命值同包同步）。
-        /// 底牌版附加重震屏 + 失控膨胀巨球（2.5 倍体量）+ 更快掷速</summary>
+        /// 底牌版附加重震屏 + 死寂 + 出手后长大到 3.5 倍、缓慢追人、引力渐强的秒杀黑洞</summary>
         private bool desperate;
 
-        /// <summary>本拍出手初速（残血底牌拍更快，预告即承诺的锁定语法不变）</summary>
-        private float LaunchSpeedNow => desperate
-            ? MLordBlackHoleProj.DesperateLaunchSpeed : MLordBlackHoleProj.LaunchSpeed;
+        /// <summary>本拍出手初速：开幕拍慢起步复合加速；残血拍按锚距反推极速起手，减速后恰好停在锚点附近
+        /// （预告即承诺的锁定语法不变）</summary>
+        private float LaunchSpeedNow(MLordContext context) {
+            if (!desperate) {
+                return MLordBlackHoleProj.LaunchSpeed;
+            }
+            Vector2 anchor = new(context.Owner.ai[MLordAiSlots.OvAnchorX], context.Owner.ai[MLordAiSlots.OvAnchorY]);
+            return MLordBlackHoleProj.DesperateLaunchSpeedFor(Vector2.Distance(anchor, BallCenter(context.Npc)));
+        }
 
         public override void OnEnter(MLordContext context) {
             base.OnEnter(context);
@@ -91,6 +104,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
         public override void OnExit(MLordContext context) {
             base.OnExit(context);
+            //残血拍未掷出就被迫退场（失手/死亡演出/脱战）：死寂由本状态持有，走人前放回声音；
+            //已掷出则由飞行中的黑洞接着持有，爆点自己放行
+            if (!VaultUtils.isServer && desperate && (Timer < ThrowEnd || Timer >= FumbleStart)) {
+                MLordSilence.Release();
+            }
             if (!VaultUtils.isClient) {
                 //残血拍失手不消耗底牌：清回未用位，重试门线（OvBlackFlashRearm）已在打断帧写入；
                 //开幕拍失手即算放过——重试会循环成打断刷子，残血底牌拍照旧会来
@@ -189,9 +207,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             //―――― 以下客户端表现 ――――
             float charge = Timer / (float)KneadEnd;
             MLordScreenEffects.PushGravityDim(BallCenter(npc), charge * 0.9f);
-            //残血底牌拍：蓄力全程中幅持续震屏随蓄力渐强（寂静拍骤停，反差压出爆发）
+            //残血底牌拍：蓄力全程大幅持续震屏随蓄力渐强（寂静拍骤停，反差压出爆发）；
+            //蓄力一秒起世界的声音渐渐被吸走，嗡鸣随之浮上来，张力随蓄力爬升
             if (desperate) {
-                Main.LocalPlayer.CWR()?.GetScreenShake(2.5f + charge * 3.5f);
+                Main.LocalPlayer.CWR()?.GetScreenShake(4f + charge * 9f);
+                if (Timer >= SilenceOnset) {
+                    float t = (Timer - SilenceOnset) / (float)(KneadEnd - SilenceOnset);
+                    MLordSilence.Hold(MathHelper.Lerp(SilenceTensionAtOnset, SilenceTensionAtThrow, t));
+                }
             }
 
             if (Timer == ManifestEnd) {
@@ -201,13 +224,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             if (Timer == EmbraceEnd) {
                 //黑球诞生
                 SoundEngine.PlaySound(CWRSound.BlackHole with { Volume = 0.95f, Pitch = -0.35f }, npc.Center);
-                MLordScreenFX.Punch(npc.Center, 4f, 10);
+                MLordScreenFX.Punch(npc.Center, desperate ? 7f : 4f, 10);
             }
-            //揉搓升调节拍：30f 固定周期，音调爬升+震屏渐强（玩家可内化的倒计时）
+            //揉搓升调节拍：30f 固定周期，音调爬升+震屏渐强（玩家可内化的倒计时；残血拍死寂中只剩震动在数拍）
             if (Timer > EmbraceEnd && (Timer - EmbraceEnd) % 30 == 0) {
                 int beat = (Timer - EmbraceEnd) / 30;
                 SoundEngine.PlaySound(SoundID.Item15 with { Volume = 0.85f, Pitch = -0.5f + beat * 0.18f }, npc.Center);
-                MLordScreenFX.Punch(npc.Center, 1.5f + beat * 0.8f, 8);
+                MLordScreenFX.Punch(npc.Center, (1.5f + beat * 0.8f) * (desperate ? 1.8f : 1f), desperate ? 10 : 8);
             }
         }
 
@@ -219,6 +242,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
             if (VaultUtils.isServer) {
                 return;
+            }
+            if (desperate) {
+                MLordSilence.Hold(SilenceTensionAtThrow);
             }
             if (Timer == KneadEnd) {
                 //吸气：所有声音的截断由这一声短促的收干标出
@@ -232,6 +258,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             NPC npc = context.Npc;
             npc.velocity *= 0.86f;
 
+            if (!VaultUtils.isServer && desperate) {
+                //交棒期继续持有死寂，弹体到场后由它接手
+                MLordSilence.Hold(SilenceTensionAtThrow);
+            }
+
             if (Timer == SilenceEnd) {
                 Vector2 anchor = new(context.Owner.ai[MLordAiSlots.OvAnchorX],
                     context.Owner.ai[MLordAiSlots.OvAnchorY]);
@@ -241,10 +272,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.BlackHole with { Volume = 1.1f, Pitch = 0.25f }, ballPos);
                     SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.3f }, ballPos);
-                    //残血底牌拍掷出更重：方向冲击加深并叠一记余震
-                    MLordScreenFX.Punch(ballPos, desperate ? 14f : 11f, 16, dir);
+                    //残血底牌拍掷出更重：方向冲击加深并叠一记余震（死寂中这一下只剩画面在晃）
+                    MLordScreenFX.Punch(ballPos, desperate ? 18f : 11f, 16, dir);
                     if (desperate) {
-                        Main.LocalPlayer.CWR()?.GetScreenShake(8f);
+                        Main.LocalPlayer.CWR()?.GetScreenShake(12f);
                     }
                     //掷出反冲的红黑星尘
                     MLordScreenFX.StarBurst(ballPos, 1.2f, 10);
@@ -252,7 +283,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 if (!VaultUtils.isClient) {
                     int damage = ScaleDamage(context, MLordDirector.BlackHoleContactDamage);
                     Projectile.NewProjectile(npc.GetSource_FromAI(), ballPos,
-                        dir * LaunchSpeedNow,
+                        dir * LaunchSpeedNow(context),
                         ModContent.ProjectileType<MLordBlackHoleProj>(), damage, 0f, Main.myPlayer,
                         anchor.X, anchor.Y, desperate ? 1f : 0f);
                 }
@@ -270,6 +301,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
             NPC npc = context.Npc;
             Vector2 ballPos = BallCenter(npc);
+            //残血拍被打断：死寂先放行，掌中崩散的炸点才听得见
+            if (desperate) {
+                MLordSilence.Release();
+            }
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1f, Pitch = -0.55f }, ballPos);
             SoundEngine.PlaySound(SoundID.NPCDeath59 with { Volume = 0.7f, Pitch = -0.3f }, ballPos);
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1f, Pitch = -0.6f }, ballPos);
@@ -333,9 +368,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 d.Phase = MLordUltArmPhase.Knead;
                 d.PhaseT = t;
                 if (desperate) {
-                    //残血底牌拍：失控膨胀，越搓越大、脉动越强（孤注一掷把一切灌进球里）
-                    float swell = 9f * t * (float)Math.Sin(Timer * 0.37f);
-                    d.BallRadius = MathHelper.Lerp(124f, 168f, t) + swell;
+                    //残血底牌拍：压成一颗憋不住的致密核，脉动越搓越剧（出手后才在飞行中长到 3.5 倍）
+                    float swell = 11f * t * (float)Math.Sin(Timer * 0.37f);
+                    d.BallRadius = MathHelper.Lerp(124f, 84f, t) + swell;
                 }
                 else {
                     //开幕拍：压缩中带阻抗脉动，球在抵抗，越压越小、脉动越弱
@@ -355,8 +390,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 float t = (Timer - KneadEnd) / (float)(SilenceEnd - KneadEnd);
                 d.Phase = MLordUltArmPhase.Silence;
                 d.PhaseT = t;
-                //残血巨球寂静拍轻收一档锁定，开幕拍延续压缩收束
-                d.BallRadius = desperate ? MathHelper.Lerp(168f, 160f, t) : MathHelper.Lerp(64f, 56f, t);
+                //寂静拍轻收一档锁定：两拍都延续压缩收束（残血拍收到弹体出手体量 78，与飞行起始体量接棒）
+                d.BallRadius = desperate ? MathHelper.Lerp(84f, 78f, t) : MathHelper.Lerp(64f, 56f, t);
                 d.BallVisible = 1f;
                 d.Collapse = 0.85f + 0.15f * t;
                 return d;
@@ -365,9 +400,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 float t = (Timer - SilenceEnd) / (float)(ThrowEnd - SilenceEnd);
                 d.Phase = MLordUltArmPhase.Throw;
                 d.PhaseT = t;
-                d.BallRadius = desperate ? 160f : 56f;
-                //交棒：弹体已生成，手中球沿掷向外推并快速隐去（覆盖生成包延迟的几帧）
-                d.BallCenter += d.ThrowDir * (LaunchSpeedNow * (Timer - SilenceEnd));
+                d.BallRadius = desperate ? 78f : 56f;
+                //交棒：弹体已生成，手中球沿掷向外推并快速隐去（覆盖生成包延迟的几帧）；
+                //残血拍按弹体同一条减速曲线外推，手中球与真弹体不错位
+                float speed = LaunchSpeedNow(context);
+                int frames = Timer - SilenceEnd;
+                float travel = desperate ? MLordBlackHoleProj.DesperateTravel(speed, frames) : speed * frames;
+                d.BallCenter += d.ThrowDir * travel;
                 d.BallVisible = MathHelper.Clamp(1f - t * 2.4f, 0f, 1f);
                 d.Collapse = 1f;
                 return d;

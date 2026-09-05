@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -28,14 +26,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
 
         public override float DamageTweak => 1.06f;
 
-        /// <summary>冰蓝</summary>
-        public override Color MarkColor => new(120, 210, 255);
-
         protected override string GsDescFallback =>
-            "Reforged: snowflakes born from on-beat lashes grow larger and pierce one more foe; " +
-            "4 frost scars seal the mark, and the next on-beat hit blooms it " +
-            "into a frost burst that inflicts Frostbite";
-
+            "Reforged: snowflakes born from on-beat lashes grow larger and pierce one more foe; 4 frost scars seal the mark, and the next on-beat hit blooms it into a frost burst that inflicts Frostbite";
         protected override void OnExecute(Player player, NPC target, Projectile whipProj, WhipMarkState st) {
             int dmg = Math.Max(1, (int)MathF.Round(st.MarkDamage * 1.5f));
             int crackDmg = Math.Max(1, (int)MathF.Round(st.MarkDamage * 0.5f));
@@ -66,13 +58,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
                 //体积 +30% 是视觉与判定的同源缩放：各端按同步快照首帧重演，无需过线
                 local.Applied = true;
                 proj.scale *= 1.3f;
-            }
-            //冰晶使者描边：低频白晶闪
-            if (!VaultUtils.isServer && Main.GameUpdateCount % 5 == 0) {
-                PRTLoader.NewParticle<PRT_DefFrostGlint>(
-                    proj.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    -proj.velocity * 0.08f, new Color(200, 240, 255),
-                    Main.rand.NextFloat(0.3f, 0.5f))?.Configure(Main.rand.Next(12, 20));
             }
         }
     }

@@ -797,6 +797,9 @@ KikasaTeleportProj.DisplayName: Kikasa Rain Teleport
 EyetoothDart.DisplayName: Eyetooth Dart
 DivineSourceBoltProjectile.DisplayName: Divine Source Bolt
 BloodButchererBolt.DisplayName: Blood Butcherer Bolt
+TerraLightProj.DisplayName: Terra Light
+TerraSoulJudgmentProj.DisplayName: True Excalibur Spirit
+TerraSoulSpinProj.DisplayName: True Night's Edge Spirit
 BloodshotBombHeld.DisplayName: Bloodshot Bomb
 BloodshotBombThrown.DisplayName: Thrown Bloodshot Bomb
 BloodshotFleshChunk.DisplayName: Bloodshot Flesh Chunk
@@ -1051,8 +1054,6 @@ GsDD2SquireBetsySwordWaveProj.DisplayName: Betsy Sword Wave
 GsDD2SquireDemonSwordFireWaveProj.DisplayName: Demon Sword Fire Wave
 GsEbonSporeMistProj.DisplayName: Ebon Spore Mist
 GsEnchantedSwordBeamProj.DisplayName: Enchanted Sword Beam
-GsExcaliburArcProj.DisplayName: Excalibur Arc
-GsExcaliburNovaProj.DisplayName: Excalibur Nova
 GsFetidBaghnakhsBurstProj.DisplayName: Fetid Baghnakhs Burst
 GsFetidBaghnakhsMarkProj.DisplayName: Fetid Baghnakhs Mark
 GsFieryGreatswordPitProj.DisplayName: Fiery Greatsword Pit
@@ -1067,7 +1068,6 @@ GsLightsBaneScarProj.DisplayName: Lights Bane Scar
 GsMeowmereCatProj.DisplayName: Meowmere Cat Projectile
 GsMeowmereMeteorProj.DisplayName: Meowmere Meteor
 GsMeowmereStarBurstProj.DisplayName: Meowmere Star Burst
-GsNightsEdgeWaveProj.DisplayName: Nights Edge Wave
 GsPalmSandWaveProj.DisplayName: Palm Sand Wave
 GsPhasebladeArcProj.DisplayName: Phaseblade Arc
 GsPhasesaberBurstProj.DisplayName: Phasesaber Burst
@@ -1082,16 +1082,7 @@ GsSlapHandPrintProj.DisplayName: Slap Hand Print
 GsStarfuryStarProj.DisplayName: Starfury Star
 GsStarWrathFallProj.DisplayName: Star Wrath Fall Star
 GsStarWrathRingProj.DisplayName: Star Wrath Star Ring
-GsTerraBladeBurstProj.DisplayName: Terra Blade Burst
-GsTerraBladeRingProj.DisplayName: Terra Blade Ring
-GsTerraBladeWaveProj.DisplayName: Terra Blade Wave
 GsTheHorsemansBladeJackProj.DisplayName: Horsemans Blade Pumpkin Soul
-GsTrueExcaliburCrossProj.DisplayName: True Excalibur Holy Cross
-GsTrueExcaliburWaveProj.DisplayName: True Excalibur Wave
-GsTrueNightsEdgeShardProj.DisplayName: True Nights Edge Shard
-GsTrueNightsEdgeWaveProj.DisplayName: True Nights Edge Wave
-GsZenithPhantomProj.DisplayName: Zenith Phantom Blade
-GsZenithRiftProj.DisplayName: Zenith Void Rift
 GsBallOHurtBarbProj.DisplayName: Ball O Hurt Barb
 GsBlueMoonCrescentProj.DisplayName: Blue Moon Crescent
 GsChainGuillotinesShearProj.DisplayName: Chain Guillotine Shear
@@ -1218,11 +1209,15 @@ TempleDiveOmen.DisplayName: Temple Dive Telegraph
 TempleDropOmen.DisplayName: Temple Drop Telegraph
 TempleEmberProj.DisplayName: Temple Ember
 BssBreachOmen.DisplayName: Breach Telegraph
+BssDashOmen.DisplayName: Dash Telegraph
 BssCactusBallProj.DisplayName: Cactus Rolling Ball
 BssNeedleProj.DisplayName: Giant Needle
 BssPetalProj.DisplayName: Storm Petal
 BssSandGlob.DisplayName: Sand Glob
-BssSandVortexProj.DisplayName: Sand Vortex
+BssSandSurgeProj.DisplayName: Sand Surge
+BssDustDevilProj.DisplayName: Dust Devil
+BssWindPetalProj.DisplayName: Gale Petal
+BssPincerSnapProj.DisplayName: Pincer Snap
 FssBreachOmen.DisplayName: Fester Breach Mound
 FssCascadeDrop.DisplayName: Ichor Cascade
 FssIchorGate.DisplayName: Ichor Gate
@@ -1247,6 +1242,14 @@ DeepcrystalJetBeam.DisplayName: Deepcrystal Jet Beam
 DeepcrystalSeekBubble.DisplayName: Deepcrystal Seek Bubble
 DeepcrystalWaterShot.DisplayName: Deepcrystal Water Shot
 SoulbindingCounterFlame.DisplayName: Soulbinding Counter Flame
-BssStormMark.DisplayName: Storm Eye Mark
 GsGunHoldPoseProj.DisplayName: Gs Gun Hold Pose Proj
 CrimsonSweepSlash.DisplayName: Crimson Sweep Slash
+GsArmorBlastProj.DisplayName: Gs Armor Blast Proj
+GsJungleStingerProj.DisplayName: Gs Jungle Stinger Proj
+GsNecroBoneProj.DisplayName: Gs Necro Bone Proj
+GsOrichalcumPetalProj.DisplayName: Gs Orichalcum Petal Proj
+GsHallowedStarProj.DisplayName: Gs Hallowed Star Proj
+GsSpectreSoulProj.DisplayName: Gs Spectre Soul Proj
+GsStardustShardProj.DisplayName: Gs Stardust Shard Proj
+GsTikiSpiritFlameProj.DisplayName: Gs Tiki Spirit Flame Proj
+GsTurtleSpikeProj.DisplayName: Gs Turtle Spike Proj

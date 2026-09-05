@@ -11,9 +11,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
     /// <summary>
     /// 魔法·书与引导族共享框架：持续束通道 + 热量/过载管理。<br/>
     /// 热量是资源不是惩罚条：射击/引导积热，白热带（65~99）吃增益
-    /// （伤害乘区 + 蓝耗 ×0.7 + 武器专属白热特效），顶到 100 按政策分流
-    /// （Lock 爆发进锁 / Sustain 临界维持 / NoBreak 只涨蓝耗）；
-    /// 右键泄压把当前热量转化为一次泄压技（威力 ∝ 热量，0 蓝耗，无锁）。<br/>
+    /// （伤害乘区 + 蓝耗 ×0.7 + 武器专属白热机制），顶到 100 按政策分流
+    /// （Lock 爆发进锁 / Sustain 临界维持 / NoBreak 只涨蓝耗）。<br/>
+    /// R2 保留件（<see cref="VentEnabled"/>）另有右键泄压：把当前热量转化为一次泄压技
+    /// （威力 ∝ 热量，0 蓝耗，无锁）；自绘层（<see cref="SelfDrawnVisuals"/>）带杖尖热量读数与过载烟。
+    /// 两者默认关闭，其余件零足迹。<br/>
     /// 联机纪律：热量全量只存在于 owner 端（GsHeatPlayer），
     /// 远端呈现走弹幕 MarkData（出生热段）与通道弹幕 ai[]（热段里程碑）
     /// </summary>
@@ -46,11 +48,16 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
 
         internal virtual GsOverloadPolicy OverloadPolicy => GsOverloadPolicy.Lock;
 
-        /// <summary>是否启用右键泄压（原生右键武器如无限智慧巨著给 false）</summary>
-        internal virtual bool VentEnabled => true;
+        //==================== R2 保留件开关 ====================
+
+        /// <summary>是否启用右键泄压（默认关；R2 保留件覆写为 true）</summary>
+        internal virtual bool VentEnabled => false;
 
         /// <summary>泄压所需最低热量</summary>
         internal virtual float VentMinHeat => 25f;
+
+        /// <summary>是否启用自绘层：杖尖热量读数、过载烟（默认关；R2 保留件覆写为 true）</summary>
+        internal virtual bool SelfDrawnVisuals => false;
 
         /// <summary>杖尖读数主题色（个人读数，仅 owner 可见）</summary>
         internal virtual Color MuzzleTheme => GsConduitVFX.ForgeMain;
@@ -112,10 +119,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
                 return;
             }
             GsHeatPlayer hp = player.GetModPlayer<GsHeatPlayer>();
-            HoldReadout(item, player, hp);
+            if (SelfDrawnVisuals) {
+                HoldReadout(item, player, hp);
+            }
             TickHold(item, player, hp);
 
-            //右键泄压：走独立输入路径不占用 use 链（0 蓝、不打断左键节奏）
+            //右键泄压（仅 R2 保留件）：走独立输入路径不占用 use 链（0 蓝、不打断左键节奏）
             if (!VentEnabled || hp.VentCooldownLeft > 0 || hp.HardLocked || player.dead || player.CCed) {
                 return;
             }
@@ -145,7 +154,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
         //==================== 过载 ====================
 
         /// <summary>
-        /// 过载爆发（Lock 政策触顶，owner 端）。基类给通用演出，
+        /// 过载爆发（Lock 政策触顶，owner 端）。基类给通用音效（自绘层件另冒烟），
         /// 子类覆写加专属爆发（先调 base）
         /// </summary>
         internal virtual void OnOverload(Player player, GsHeatPlayer hp) {
@@ -154,6 +163,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
             }
             SoundEngine.PlaySound(SoundID.Item20 with { Volume = 0.9f, Pitch = -0.55f }, player.Center);
             SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.5f, Pitch = -0.3f }, player.Center);
+            if (!SelfDrawnVisuals) {
+                return;
+            }
             for (int i = 0; i < 8; i++) {
                 PRTLoader.NewParticle<PRT_Smoke>(player.MountedCenter + Main.rand.NextVector2Circular(10f, 14f),
                     new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), -Main.rand.NextFloat(0.8f, 1.8f)),
@@ -172,7 +184,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
             router.MarkData = player.GetModPlayer<GsHeatPlayer>().HeatStage;
         }
 
-        //==================== 个人读数（杖尖色温，owner 屏独有） ====================
+        //==================== 个人读数（自绘层；杖尖色温，owner 屏独有） ====================
 
         private void HoldReadout(Item item, Player player, GsHeatPlayer hp) {
             if (VaultUtils.isServer || Main.gameMenu) {

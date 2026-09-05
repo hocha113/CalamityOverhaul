@@ -217,9 +217,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             }
 
             //提速版补偿:出招与间隔更短,单位时间充能率同步上调,大祭频率大体不变
-            //(2026-08-28 间隔再缩 30%,盘转段充能率 0.32→0.46 同步补偿)
+            //(2026-08-28 间隔缩 30%,盘转段 0.32→0.46;2026-09-05 再缩 30%,0.46→0.66)
             float rate = stateMachine.CurrentState switch {
-                CultistCoilState => 0.46f,
+                CultistCoilState => 0.66f,
                 CultistOrbitLanceState or CultistRingHurlState or CultistStarChartState
                     or CultistEclipseState or CultistGazeState or CultistPlanetHurlState
                     or CultistCometVolleyState or CultistZodiacSealState or CultistStasisMinesState
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             }
         }
 
-        /// <summary>常驻氛围:体光、连珠逼近预告与分相环境层</summary>
+        /// <summary>常驻氛围:体光、连珠逼近预告与分相环境层(灰烬/极光/风暴,见 Rendering.CultistAmbience)</summary>
         private void UpdateAmbientVisuals() {
             Color core = CultistMotion.PhaseCore(stateContext.Phase);
             Lighting.AddLight(npc.Center, core.ToVector3() * (0.5f + stateContext.CastAura * 0.5f));
@@ -246,68 +246,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 }
             }
 
-            UpdatePhaseAmbience();
-        }
-
-        /// <summary>
-        /// 分相环境(各端本地演出量,无网络):<br/>
-        /// 星旋=远雷白闪+雷声;星云=画面阴森去饱和;星尘=晶尘缓降;日耀=余烬上浮+暖幕;月明=冷暗低鸣
-        /// </summary>
-        private void UpdatePhaseAmbience() {
-            if (VaultUtils.isServer || stateContext == null || !stateContext.ArenaSpawned) {
-                return;
-            }
-            Vector2 arena = stateContext.ArenaCenter;
-            switch (stateContext.Phase) {
-                case 0: {
-                    //远雷:不规则白闪+闷雷声
-                    if (Main.rand.NextBool(240)) {
-                        CultistScreenFX.PushFlash(0.10f + Main.rand.NextFloat(0.08f));
-                        SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.35f, Pitch = -0.5f },
-                            arena + Main.rand.NextVector2Circular(900f, 500f));
-                    }
-                    break;
-                }
-                case 1:
-                    //阴森:轻度去饱和垫底
-                    CultistScreenFX.BreakDesat = MathHelper.Max(CultistScreenFX.BreakDesat, 0.16f);
-                    break;
-                case 2: {
-                    //晶尘缓降:落星阶段的天在飘星屑
-                    if (Main.rand.NextBool(5)) {
-                        Vector2 pos = Main.screenPosition + new Vector2(Main.rand.NextFloat(Main.screenWidth), -20f);
-                        InnoVault.PRT.PRTLoader.NewParticle<Rendering.PRT_CultistFrostMote>(pos,
-                            new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(1.4f, 2.6f)),
-                            Color.Lerp(CultistMotion.StardustCore, CultistMotion.StardustEdge, Main.rand.NextFloat()),
-                            Main.rand.NextFloat(0.5f, 1.0f))?.Configure(Main.rand.Next(80, 140));
-                    }
-                    break;
-                }
-                case 3: {
-                    //炙烤:全场余烬上浮+持续暖幕
-                    CultistScreenFX.SetVeil(0.22f, arena, CultistMotion.SolarEdge, 1100f);
-                    if (Main.rand.NextBool(4)) {
-                        Vector2 pos = Main.screenPosition + new Vector2(Main.rand.NextFloat(Main.screenWidth),
-                            Main.screenHeight + 16f);
-                        InnoVault.PRT.PRTLoader.NewParticle<Rendering.PRT_CultistEmber>(pos,
-                            new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(1.6f, 3.4f)),
-                            Color.Lerp(CultistMotion.SolarCore, CultistMotion.SolarEdge, Main.rand.NextFloat()),
-                            Main.rand.NextFloat(0.7f, 1.4f))?.Configure(Main.rand.Next(60, 110), 0.02f);
-                    }
-                    break;
-                }
-                default: {
-                    if (stateContext.Phase >= 4) {
-                        //月明:冷暗压场+低鸣
-                        CultistScreenFX.BreakDesat = MathHelper.Max(CultistScreenFX.BreakDesat, 0.10f);
-                        CultistScreenFX.SetVeil(0.18f, arena, CultistMotion.MoonCore, 1200f);
-                        if (Main.GameUpdateCount % 300 == 0) {
-                            SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.4f, Pitch = -0.9f }, arena);
-                        }
-                    }
-                    break;
-                }
-            }
+            //分相环境层(风场/灰烬/风暴流线/云絮/远雷/暖幕,各端本地)见 CultistAmbience
+            Rendering.CultistAmbience.Update(stateContext);
         }
 
         /// <summary>远端玩家周期性全量刷新,防长战漂移</summary>

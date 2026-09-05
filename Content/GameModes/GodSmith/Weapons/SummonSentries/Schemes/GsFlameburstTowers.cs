@@ -96,9 +96,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.12f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: hits charge the tower, right-click when full for saturation barrage\n" +
-            "Overdriven shots fly in triples and scorch a fire ring on hit; linking a ballista widens the blast";
-
+            "Deploy doctrine: hits charge the tower, right-click when full for saturation barrage\nOverdriven shots fly in triples and scorch a fire ring on hit; linking a ballista widens the blast";
         protected override SentryKit BuildKit() => new() {
             TowerTypes = [ProjectileID.DD2FlameBurstTowerT1, ProjectileID.DD2FlameBurstTowerT2, ProjectileID.DD2FlameBurstTowerT3],
             BoltTypes = [ProjectileID.DD2FlameBurstTowerT1Shot, ProjectileID.DD2FlameBurstTowerT2Shot, ProjectileID.DD2FlameBurstTowerT3Shot],
@@ -115,9 +113,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.10f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: hits charge the tower, right-click when full for saturation barrage\n" +
-            "Overdriven shots fly in triples and scorch a wider fire ring; linking a ballista widens the blast";
-
+            "Deploy doctrine: hits charge the tower, right-click when full for saturation barrage\nOverdriven shots fly in triples and scorch a wider fire ring; linking a ballista widens the blast";
         protected override SentryKit BuildKit() => null;
     }
 
@@ -129,9 +125,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.08f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: hits charge the tower, right-click when full for saturation barrage\n" +
-            "Overdrive adds mortar rain every 1.5s on top of triple shots and fire rings";
-
+            "Deploy doctrine: hits charge the tower, right-click when full for saturation barrage\nOverdrive adds mortar rain every 1.5s on top of triple shots and fire rings";
         protected override SentryKit BuildKit() => null;
     }
 }

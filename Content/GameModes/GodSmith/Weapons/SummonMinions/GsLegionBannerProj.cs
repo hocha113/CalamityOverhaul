@@ -1,7 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -35,9 +31,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions
         internal static LocalizedText CommandHint { get; private set; }
 
         private int Command => (int)Projectile.ai[0];
-
-        /// <summary>确定性微闪相位</summary>
-        private float Seed => Projectile.identity * 0.6173f % MathHelper.TwoPi;
 
         public override void SetStaticDefaults() {
             GuardTip = this.GetLocalization("GuardTip", () => "Guard");
@@ -96,19 +89,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions
                     return;
                 }
             }
-
-            //旗焰微光与粒子（identity 定相，各端本地）
-            if (!VaultUtils.isServer) {
-                Color hue = Command == MinionDoctrine.CommandAssault
-                    ? MinionDoctrine.AssaultRed : MinionDoctrine.RallyCyan;
-                Lighting.AddLight(Projectile.Center, hue.ToVector3() * 0.28f);
-                if (Main.rand.NextBool(9)) {
-                    PRTLoader.NewParticle<PRT_Light>(
-                        Projectile.Center + new Vector2(Main.rand.NextFloat(-5f, 5f), -20f),
-                        new Vector2(0f, -Main.rand.NextFloat(0.4f, 0.9f)),
-                        hue, Main.rand.NextFloat(0.08f, 0.13f))?.Configure(14, 0.65f);
-                }
-            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -122,17 +102,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions
                             number: Projectile.owner);
                     }
                 }
-            }
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //撤旗散光
-            Color hue = Command == MinionDoctrine.CommandAssault
-                ? MinionDoctrine.AssaultRed : MinionDoctrine.RallyCyan;
-            for (int i = 0; i < 6; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f),
-                    hue, Main.rand.NextFloat(0.25f, 0.4f))?.Configure(false, Main.rand.Next(10, 18));
             }
         }
 
@@ -152,37 +121,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions
             }
         }
 
-        //==================== 旗桩绘制（全程序化，禁新增贴图；绘制路径禁 Main.rand） ====================
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D pole = CWRAsset.MaskLaserLine?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            Texture2D flare = CWRAsset.StarFlare01?.Value;
-            if (pole == null || glow == null || flare == null) {
-                return false;
-            }
-            Color hue = Command == MinionDoctrine.CommandAssault
-                ? MinionDoctrine.AssaultRed : MinionDoctrine.RallyCyan;
-            float flick = 0.82f + 0.18f * (float)Math.Sin(
-                Main.GlobalTimeWrappedHourly * 7.3f + Seed);
-            Vector2 basePos = Projectile.Center + new Vector2(0f, 10f) - Main.screenPosition;
-
-            //底光（黑底贴图走 A=0 加色）
-            Color under = hue with { A = 0 };
-            Main.EntitySpriteDraw(glow, basePos, null, under * (0.35f * flick), 0f,
-                glow.Size() / 2f, new Vector2(0.9f, 0.45f), SpriteEffects.None, 0);
-            //旗桩光柱：竖立短柱，底锚地面
-            Vector2 poleScale = new(46f / pole.Width, 5f / pole.Height);
-            Main.EntitySpriteDraw(pole, basePos - new Vector2(0f, 23f), null, under * (0.85f * flick),
-                MathHelper.PiOver2, pole.Size() / 2f, poleScale, SpriteEffects.None, 0);
-            //顶部旗焰星芒
-            float breathe = 0.9f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.4f + Seed * 1.7f);
-            Main.EntitySpriteDraw(flare, basePos - new Vector2(0f, 46f), null, under * (0.9f * flick),
-                Seed, flare.Size() / 2f, 0.34f * breathe, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, basePos - new Vector2(0f, 46f), null,
-                (Color.White with { A = 0 }) * (0.4f * flick), 0f,
-                glow.Size() / 2f, 0.22f * breathe, SpriteEffects.None, 0);
-            return false;
-        }
+        /// <summary>纯编排弹幕，不画本体</summary>
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }

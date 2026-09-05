@@ -1,0 +1,208 @@
+GsMinishark: {
+	Desc:
+		'''
+		Перековка: удерживайте спуск — акулий голод разгоняет темп, трассы всё диче
+		На полном бешенстве каждый четвёртый выстрел становится зубом акулы: рвёт рану и дожимает укусом
+		Барабан на пятьдесят патронов меняется целиком; попадите в яркую полосу — следующий барабан стартует с половиной бешенства
+		'''
+	Frenzy: Прилив!
+}
+
+GsPhoenixBlaster: {
+	Desc:
+		'''
+		Перековка: попадания кормят гнездо, перья на стволе ярче от искр, убийства кормят быстрее
+		На 24 искрах следующий выстрел — пикирующий феникс, что рвётся и делит трёх охотящихся птенцов
+		При зарядке искры влетают обратно в патронник; попадите в яркую полосу — сразу +8 искр
+		'''
+	Nirvana: Нирвана!
+}
+
+GsBoomstick.Desc:
+	'''
+	Перековка: 4 дробины в каждом стволе сходятся к прицелу, не веером впустую
+	Дробины смыкаются в точке прицела и жёстко кусают того, кто там стоит
+	Переламывает и меняет оба патрона разом; попадите в яркую полосу — в следующем магазине +1 дробина на ствол
+	'''
+
+GsHandgun: {
+	Desc:
+		'''
+		Перековка: 3 попадания по одной цели — 4-й выстрел сам становится точечным: урон резко выше и игнорирует 15 защиты
+		Последний патрон магазина тяжелее и летит дальше
+		Скоростная смена магазина: при запасе магазин меняется очень быстро, яркая полоса шире всего
+		'''
+	PointShot: Точка!
+}
+
+GsTheUndertaker.Desc:
+	'''
+	Перековка: убийство или удар по при смерти забирает лампу души — она летит к вам и лечит, раз за магазин
+	Последний выстрел — похоронный колокол: попадание бьёт скорбной волной, отбрасывание удвоено
+	Поштучная зарядка прерывается выстрелом — сколько зарядили, столько и стреляете
+	'''
+
+GsRedRyder: {
+	Desc:
+		'''
+		Перековка: медные шарики скачут между блоками дважды, каждый отскок звенит колокольчиком
+		Пять звонков по одной цели за короткое окно — следующий выстрел становится подарком и рвётся конфетти
+		Рычаг заряжает по одному — сколько нажали, столько и стреляете
+		'''
+	Gift: Подарок!
+}
+
+GsPewMaticHorn: {
+	Desc:
+		'''
+		Перековка: магазин из семи нот идёт вверх по гамме, каждый выстрел — свой цвет и звук
+		Три ноты по одной цели складываются в аккорд и взрываются цветом третьей
+		Зарядка — восходящая гамма; попадите в яркую полосу на высокой ноте — аккорд этого магазина крупнее и больнее
+		'''
+	Chord: Аккорд!
+}
+
+GsSandgun: {
+	Desc:
+		'''
+		Перековка: непрерывный песок греет ковш; на полном жаре песок в стволе спекается в стеклянные дротики
+		Стеклянные дротики быстрее и пронзают, при попадании сыплют звонкой крошкой; простой остывает
+		Обычный песок ведёт себя по-старому; попадите в яркую полосу — ковш сразу раскалён
+		'''
+	Molten: Стекло!
+}
+
+GsBlowpipe.Desc:
+	'''
+	Перековка: попадания по одной цели вбивают ядовитый фитиль; три фитиля взрывают стоячий ядовитый туман
+	Зарядка — вдох, по дротику за глоток, можно прервать; стоя на месте вдох на четверть быстрее
+	Попадите в яркую полосу — следующий дротик сразу подрывает фитили
+	'''
+GsBlowgun.Desc:
+	'''
+	Перековка: один долгий выдох гонит пять дротиков, каждый быстрее и злее предыдущего
+	Пятый выдыхает лёгкие целиком и взрывает большое облако яда
+	Вдох по глотку прерывается, стоя быстрее; попадите в яркую полосу — магазин стартует с темпа третьего глотка
+	'''
+GsHarpoon.Desc:
+	'''
+	Перековка: гарпун уходит и возвращается, возврат цепи и есть зарядка
+	Укол тяжёлого врага ставит якорь — ещё один спуск лебёдкой швыряет вас к нему
+	Лёгкого врага наоборот: обратная цепь тащит его к вам
+	'''
+GsFlareGun.Desc:
+	'''
+	Перековка: красный, зелёный, синий, белый сигналы крутятся и впиваются, горят и светят
+	Меченый враг получает +12% всего вашего урона, белый финальный сигнал поднимает до 16%
+	Крутит баллон за два такта; попадите в яркую полосу — следующий выстрел двойной
+	'''
+GsFlintlockPistol.Desc:
+	'''
+	Reforged: two chambers, the second shot comes 40% faster;
+	the last chamber fires a V-shaped double ball from a single bullet with doubled knockback.
+	Hit the sweet spot when reloading for +25% on the next shot
+	'''
+GsMusket.Desc:
+	'''
+	Reforged: a true muzzle-loader; every ball is a stone-piercer that flies faster and punches through one more foe.
+	Reload in three beats: pour, ram, prime
+	'''
+GsQuadBarrelShotgun.Desc:
+	'''
+	Перековка: четыре ствола стреляют по очереди, по одному; 4-й ствол бьёт 8 дробин сразу, отдача резко отбрасывает вас
+	Выстрел вниз даёт прыжок от отдачи
+	Перелом и перезарядка; поймайте светящуюся полосу — в следующем цикле каждый ствол даёт на 2 дробины больше
+	'''
+GsRevolver.Desc: Reforged: a six-round cylinder; the final chamber always hits +40% harder.
+
+GsCandyCornRifle: {
+	Desc: Reforged: the classic spray now droops on a sweet arc
+	ModeCandyRain: Конфетный дождь
+}
+
+GsClockworkAssaultRifle: {
+	Desc: Reforged: keeps the classic three round burst, the third round bites 30% harder
+	ModeGearBurst: Шестерённая очередь
+}
+
+GsGatligator: {
+	Desc: Reforged: keeps the wild spray but every round skips once off blocks
+	ModeSwampRiot: Болотная свара
+}
+
+GsMegashark: {
+	Desc:
+		'''
+		Reforged: fire rate climbs the longer you hold the trigger
+		Land 50 hits to draw blood: for 3 seconds every hit leaves a bleeding wound
+		'''
+	ModeFrenzy: Бешеная кормёжка
+}
+
+GsOnyxBlaster: {
+	Desc:
+		'''
+		Перековка: ПКМ переключает заряд
+		Ониксовый залп: в точке взрыва тёмного шара остаётся пятно, тянущее врагов внутрь
+		Заряд сингулярности: стрельба медленнее, вместо этого летит огромный ониксовый шар; взрыв тянет всё к ядру и кольцом разбрасывает ваши пули
+		'''
+	ModeVolley: Ониксовый залп
+	ModeSingularity: Заряд сингулярности
+}
+
+GsSDMG: {
+	Desc: Reforged: keeps the legendary fire rate
+	ModeDolphinTide: Прилив дельфина
+}
+
+GsShotgun: {
+	Desc:
+		'''
+		Reforged: six drooping pellets in a broad fan; landing 3 pellet hits in one blast bursts a rain of lead over the target
+		Every trigger pull still costs one shell
+		'''
+	ModeWideBore: Широкий чок
+}
+
+GsSniperRifle: {
+	Desc:
+		'''
+		Перековка: короткое нажатие ПКМ переключает режим, удерживание ПКМ открывает прицел
+		Снайперский: рисует пробивающую линию прицела; стойте неподвижно, чтобы задержать дыхание, после этого выстрел всегда критический
+		Скорострельный: меняет силу на темп
+		'''
+	ModeSnipe: Снайперский
+	ModeRapid: Скорострельный
+}
+
+GsTacticalShotgun: {
+	Desc: Reforged: paints the spread cone so you know exactly what the six pellets cover
+	ModeFan: Тактический веер
+}
+
+GsUzi: {
+	Desc:
+		'''
+		Reforged: sprays 30% faster with a loose pattern
+		Every 4th round is an amber tracer: tracer hits light the target up, and your Uzi rounds dig 10% deeper into lit targets
+		'''
+	ModeAkimbo: Парный разброс
+}
+
+GsVenusMagnum: {
+	Desc: Reforged: after a crit the next round pierces one extra foe, the aim line lights up for the window
+	ModeFocus: Золотая сердцевина
+}
+
+GsVortexBeater: {
+	Desc: Reforged: keeps the classic storm, rockets gently home in
+	ModeSweep: Вихревой обстрел
+}
+
+GsXenopopper: {
+	Desc: Reforged: pops five bubbles that converge and burst in a crossfire on your cursor
+	ModeCluster: Кластер
+}
+
+GsShotgunLeadRainProj.DisplayName: Падающий свинцовый дождь
+GsUziTracerProj.DisplayName: Янтарная трассирующая

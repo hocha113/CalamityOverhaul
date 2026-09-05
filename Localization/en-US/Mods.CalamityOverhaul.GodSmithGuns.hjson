@@ -1,0 +1,208 @@
+GsMinishark: {
+	Desc:
+		'''
+		Reforged: hold the trigger and the shark tastes blood; fire rate climbs while the spread runs wild.
+		At full frenzy every fourth round becomes a shark-tooth bite that tears the wound open.
+		A 50-round drum swaps in one piece; nail the sweet spot to start the next drum half-frenzied
+		'''
+	Frenzy: Frenzy!
+}
+
+GsPhoenixBlaster: {
+	Desc:
+		'''
+		Reforged: every hit feeds the ember nest and the gun glows brighter; kills feed it faster.
+		At 24 sparks the next shot is reborn as a phoenix that dives, detonates, and splits into three seeking chicks.
+		Reloading breathes the stray sparks back into the chamber; a sweet-spot reload grants 8 sparks outright
+		'''
+	Nirvana: Nirvana!
+}
+
+GsBoomstick.Desc:
+	'''
+	Reforged: each barrel throws 4 slugs that converge on your cursor instead of spraying.
+	Where they cross, the jaws snap shut: a delayed bite tears whatever stands at the aim point.
+	Break open to reload both shells; nail the sweet spot for +1 slug per barrel
+	'''
+
+GsHandgun: {
+	Desc:
+		'''
+		Reforged: land 3 shots on the same target and the 4th becomes a pressure-point round;
+		it hits 80% harder and ignores 15 armor. The last round racks the slide with extra punch.
+		Box-magazine drills: tactical reload is nearly instant, and the sweet spot is generous
+		'''
+	PointShot: Pressure point!
+}
+
+GsTheUndertaker.Desc:
+	'''
+	Reforged: fell a foe, or wound one near death, and the gun collects a soul lantern
+	that drifts back to mend you once per cylinder.
+	The final chamber tolls the burial bell: a heavy blood round with doubled knockback
+	'''
+
+GsRedRyder: {
+	Desc:
+		'''
+		Reforged: copper BBs ricochet off blocks twice, jingling a bell with every bounce.
+		Ring the same target five times in quick succession and the next shot is a gift round
+		that bursts into festive shrapnel. Lever-load one BB at a time; fire whenever you like
+		'''
+	Gift: Gift round!
+}
+
+GsPewMaticHorn: {
+	Desc:
+		'''
+		Reforged: a seven-note magazine, do to ti, each pew tinted by its note.
+		Land three notes in a row on the same target to strike a chord: a paint burst in the third note's color.
+		Reloading plays the scale back up; catch the sweet spot on the high note for bigger chords
+		'''
+	Chord: Chord!
+}
+
+GsSandgun: {
+	Desc:
+		'''
+		Reforged: sustained fire heats the hopper; keep pouring and the sand melts in the chamber.
+		While molten, rounds leave as glass bolts that fly faster, pierce deeper, and shatter into razor facets.
+		Reload pours in three rustling beats; a sweet-spot pour ignites the hopper instantly
+		'''
+	Molten: Molten!
+}
+
+GsBlowpipe.Desc:
+	'''
+	Reforged: each hit on the same target threads in a venom fuse; three fuses burst into a lingering toxic cloud.
+	Reloading is catching your breath, one dart per gulp; stand still to breathe 25% faster.
+	A sweet-spot breath envenoms the next dart to detonate the fuses on contact
+	'''
+GsBlowgun.Desc:
+	'''
+	Reforged: one long breath drives 5 darts, each flying harder and faster than the last.
+	The fifth dart empties the lungs: a heavy bolt that bursts into a broad toxic cloud on impact.
+	Breathe back one dart per gulp, faster while standing still; a sweet-spot breath starts you at third-dart strength
+	'''
+GsHarpoon.Desc:
+	'''
+	Reforged: the harpoon flies out and winds back; the reload IS the chain coming home.
+	Spear a heavy foe to set an anchor, then pull the trigger again to winch yourself to it.
+	Light foes get dragged back to you on the return pass
+	'''
+GsFlareGun.Desc:
+	'''
+	Reforged: a four-color canister, red, green, blue, then white, each flare pinning into flesh and burning there.
+	A pinned foe takes 12% more damage from you (16% for the white flare).
+	Swap canisters in two beats; a sweet-spot swap fires the next pull as a double flare
+	'''
+GsFlintlockPistol.Desc:
+	'''
+	Reforged: two chambers, the second shot comes 40% faster;
+	the last chamber fires a V-shaped double ball from a single bullet with doubled knockback.
+	Hit the sweet spot when reloading for +25% on the next shot
+	'''
+GsMusket.Desc:
+	'''
+	Reforged: a true muzzle-loader; every ball is a stone-piercer that flies faster and punches through one more foe.
+	Reload in three beats: pour, ram, prime
+	'''
+GsQuadBarrelShotgun.Desc:
+	'''
+	Reforged: fire one barrel at a time in a rapid four-count;
+	the fourth barrel roars all at once with 8 pellets and hurls you backward.
+	Aim down to rocket-jump. Break open to reload; nail the sweet spot for +2 pellets
+	'''
+GsRevolver.Desc: Reforged: a six-round cylinder; the final chamber always hits +40% harder.
+
+GsCandyCornRifle: {
+	Desc: Reforged: the classic spray now droops on a sweet arc
+	ModeCandyRain: Candy Rain
+}
+
+GsClockworkAssaultRifle: {
+	Desc: Reforged: keeps the classic three round burst, the third round bites 30% harder
+	ModeGearBurst: Gear Burst
+}
+
+GsGatligator: {
+	Desc: Reforged: keeps the wild spray but every round skips once off blocks
+	ModeSwampRiot: Swamp Riot
+}
+
+GsMegashark: {
+	Desc:
+		'''
+		Reforged: fire rate climbs the longer you hold the trigger
+		Land 50 hits to draw blood: for 3 seconds every hit leaves a bleeding wound
+		'''
+	ModeFrenzy: Feeding Frenzy
+}
+
+GsOnyxBlaster: {
+	Desc:
+		'''
+		Reforged: right click to switch charge
+		Onyx Volley leaves a lingering dark stain at the blast that drags foes inward
+		Singularity Charge fires slower but hurls one huge onyx orb: its blast pulls everything toward the core and sprays your bullets in a ring
+		'''
+	ModeVolley: Onyx Volley
+	ModeSingularity: Singularity Charge
+}
+
+GsSDMG: {
+	Desc: Reforged: keeps the legendary fire rate
+	ModeDolphinTide: Dolphin Tide
+}
+
+GsShotgun: {
+	Desc:
+		'''
+		Reforged: six drooping pellets in a broad fan; landing 3 pellet hits in one blast bursts a rain of lead over the target
+		Every trigger pull still costs one shell
+		'''
+	ModeWideBore: Wide Bore
+}
+
+GsSniperRifle: {
+	Desc:
+		'''
+		Reforged: tap right click to switch fire mode, hold to scope
+		Snipe mode paints a piercing aim line; stand still to steady your breath, a steadied shot always crits
+		Rapid mode trades power for speed
+		'''
+	ModeSnipe: Snipe
+	ModeRapid: Rapid Fire
+}
+
+GsTacticalShotgun: {
+	Desc: Reforged: paints the spread cone so you know exactly what the six pellets cover
+	ModeFan: Tactical Fan
+}
+
+GsUzi: {
+	Desc:
+		'''
+		Reforged: sprays 30% faster with a loose pattern
+		Every 4th round is an amber tracer: tracer hits light the target up, and your Uzi rounds dig 10% deeper into lit targets
+		'''
+	ModeAkimbo: Akimbo
+}
+
+GsVenusMagnum: {
+	Desc: Reforged: after a crit the next round pierces one extra foe, the aim line lights up for the window
+	ModeFocus: Magnum Focus
+}
+
+GsVortexBeater: {
+	Desc: Reforged: keeps the classic storm, rockets gently home in
+	ModeSweep: Vortex Sweep
+}
+
+GsXenopopper: {
+	Desc: Reforged: pops five bubbles that converge and burst in a crossfire on your cursor
+	ModeCluster: Cluster Pop
+}
+
+GsShotgunLeadRainProj.DisplayName: Gs Shotgun Lead Rain Proj
+GsUziTracerProj.DisplayName: Gs Uzi Tracer Proj

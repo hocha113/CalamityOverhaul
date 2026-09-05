@@ -1,13 +1,11 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
 {
     /// <summary>
-    /// 雷火组中间类:右键滚投(低平抛 + 1.2s 短引信)、连投窗内引信 -20%、引信将尽红光预警。
+    /// 雷火组中间类:连投窗内引信 -20%。
     /// 引信帧数经 MarkData2 随生成包过线,各端首帧统一重设 timeLeft,预测一致;
     /// 爆炸伤害与判定全部保留原版(增强只做路由层)。AoE 返还:单次爆炸命中 ≥3 敌返还一件
     /// </summary>
@@ -17,42 +15,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         protected abstract int GrenadeProjType { get; }
         /// <summary>原版引信帧数</summary>
         protected virtual int BaseFuse => 180;
-        /// <summary>允许右键滚投</summary>
-        protected virtual bool RollThrowEnabled => true;
 
         protected override bool AoERefund => true;
 
-        /// <summary>MarkData 形态码:1=滚雷</summary>
-        protected const float RollCode = 1f;
-
-        private bool pendingRoll;
-
-        public sealed override bool? GsAltFunctionUse(Item item, Player player) => RollThrowEnabled ? true : null;
-
-        protected override void GsThrowModifyShoot(Item item, Player player, ref Vector2 position,
-            ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
-            pendingRoll = RollThrowEnabled && player.altFunctionUse == 2;
-            if (pendingRoll) {
-                //滚投:压低抛物,贴地滚进
-                velocity *= 0.72f;
-                if (velocity.Y < -3.5f) {
-                    velocity.Y = -3.5f;
-                }
-            }
-        }
-
         protected override void GsThrowOnSpawn(Projectile proj, GodSmithProjRouter router, GsThrowProjState st) {
-            bool roll = pendingRoll;
-            pendingRoll = false;
             int fuse = BaseFuse;
-            if (roll) {
-                fuse = 72;
-            }
-            else if (Main.player[proj.owner].GetModPlayer<GsThrowPlayer>().ComboFor(TargetItemID) > 0) {
+            if (Main.player[proj.owner].GetModPlayer<GsThrowPlayer>().ComboFor(TargetItemID) > 0) {
                 //连投窗内:引信 -20%
                 fuse = (int)(fuse * 0.8f);
             }
-            router.MarkData = roll ? RollCode : 0f;
             router.MarkData2 = fuse == BaseFuse ? 0f : fuse;
             GsGrenadeOnSpawn(proj, router, st);
         }
@@ -74,35 +45,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             }
             return true;
         }
-
-        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (proj.type != GrenadeProjType || !router.IsMarked) {
-                return;
-            }
-            if (router.MarkData == RollCode) {
-                //滚雷:贴地滚动读作旋转
-                proj.rotation += proj.velocity.X * 0.06f;
-            }
-            //引信将尽:红光渐强 + 零星火星
-            if (proj.timeLeft < 30) {
-                float heat = 1f - proj.timeLeft / 30f;
-                Lighting.AddLight(proj.Center, 0.5f * heat, 0.12f * heat, 0.04f * heat);
-                if (!VaultUtils.isServer && proj.timeLeft % 6 == 0) {
-                    PRTLoader.NewParticle<PRT_Spark>(proj.Center, -Vector2.UnitY * 0.8f,
-                        new Color(255, 120, 60), 0.24f)?.Configure(false, 8);
-                }
-            }
-        }
     }
 
-    /// <summary>手榴弹:连投窗内引信更短;右键滚雷低平抛短引信;一炸三敌返还一枚</summary>
+    /// <summary>手榴弹:连投窗内引信更短;一炸三敌返还一枚</summary>
     internal class GsGrenade : GsGrenadeLikeScheme
     {
         public override int TargetItemID => ItemID.Grenade;
         protected override int GrenadeProjType => ProjectileID.Grenade;
         protected override string GsDescFallback =>
-            "Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window\nRight click for a low roll-throw with a 1.2s fuse";
-
+            "Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window";
         protected override float NoConsumeChance => 0.10f;
         protected override float DamageMul => 1.05f;
     }
@@ -113,8 +64,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.StickyGrenade;
         protected override int GrenadeProjType => ProjectileID.StickyGrenade;
         protected override string GsDescFallback =>
-            "Reforged: blasts brand foes for 3s; branded foes take 30% more from your next blast and it always crits\nHitting 3+ foes refunds one; right click to roll-throw";
-
+            "Reforged: blasts brand foes for 3s; branded foes take 30% more from your next blast and it always crits\nHitting 3+ foes refunds one";
         protected override float NoConsumeChance => 0.10f;
         protected override float DamageMul => 1.06f;
 
@@ -145,13 +95,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.BouncyGrenade;
         protected override int GrenadeProjType => ProjectileID.BouncyGrenade;
         protected override string GsDescFallback =>
-            "Reforged: each bounce charges the blast +12%, up to 3 stacks\nA grenade that bounced 3 times refunds itself when its blast finds a foe; right click to roll-throw";
-
+            "Reforged: each bounce charges the blast +12%, up to 3 stacks\nA grenade that bounced 3 times refunds itself when its blast finds a foe";
         protected override float NoConsumeChance => 0.10f;
         protected override float DamageMul => 1.05f;
 
         public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            base.GsProjPostAI(proj, router);
             if (proj.type != GrenadeProjType || !router.IsMarked) {
                 return;
             }
@@ -159,10 +107,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             GsThrowProjState st = router.GetOrCreateState<GsThrowProjState>();
             if (st.CustomF > 1f && proj.velocity.Y < -0.5f) {
                 st.Bounces++;
-                if (!VaultUtils.isServer && st.Bounces <= 3) {
-                    PRTLoader.NewParticle<PRT_Spark>(proj.Center + Vector2.UnitY * 6f,
-                        -Vector2.UnitY * 1.2f, GsGold, 0.3f)?.Configure(false, 10);
-                }
             }
             st.CustomF = proj.velocity.Y;
         }
@@ -191,10 +135,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
     {
         public override int TargetItemID => ItemID.Beenade;
         protected override int GrenadeProjType => ProjectileID.Beenade;
-        protected override bool RollThrowEnabled => false;
         protected override string GsDescFallback =>
             "Reforged: bursts release 2 extra bees; stung foes take 25% more from your bees for 4s\nHitting 3+ foes in one burst refunds one";
-
         protected override float NoConsumeChance => 0.10f;
 
         private static bool IsBee(int type) => type == ProjectileID.Bee || type == ProjectileID.GiantBee;
@@ -239,10 +181,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
     {
         public override int TargetItemID => ItemID.PartyGirlGrenade;
         protected override int GrenadeProjType => ProjectileID.PartyGirlGrenade;
-        protected override bool RollThrowEnabled => false;
         protected override string GsDescFallback =>
             "Reforged: the confetti blast leaves non-boss foes wandering confused for 1s\nCrits refund one grenade; the party never has to end";
-
         protected override float NoConsumeChance => 0.15f;
         protected override bool AoERefund => false;
         protected override bool CritRefund => true;
@@ -255,19 +195,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             }
             //迷向:原版混乱对 NPC 有实装,AddBuff 自动同步
             target.AddBuff(BuffID.Confused, 60);
-        }
-
-        protected override void GsThrowOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            if (VaultUtils.isServer || proj.type != GrenadeProjType) {
-                return;
-            }
-            //彩屑余兴(各端可见)
-            for (int i = 0; i < 8; i++) {
-                Color c = Main.hslToRgb(Main.rand.NextFloat(), 0.9f, 0.62f);
-                PRTLoader.NewParticle<PRT_Sparkle>(proj.Center + Main.rand.NextVector2Circular(20f, 20f),
-                    Main.rand.NextVector2Circular(3f, 3f) - Vector2.UnitY * 1.5f,
-                    c, Main.rand.NextFloat(0.3f, 0.5f))?.Configure(c, Main.rand.Next(16, 26), 0.08f, 0.7f);
-            }
         }
     }
 }

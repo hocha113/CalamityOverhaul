@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -59,9 +57,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
 
         /// <summary>基础伤害乘区（强度定价，残酷 +50% 敌强下允许原版 100%~135%）</summary>
         protected virtual float BaseDamageMult => 1f;
-
-        /// <summary>节拍读数与出手演出的主题色（各武器材质身份色板）</summary>
-        protected virtual Color ChantColor => new(255, 214, 120);
 
         //==================== 形态码基线 ====================
 
@@ -158,7 +153,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public sealed override bool? GsShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             GsChantPlayer chant = Chant(player);
-            SpawnCastMuzzle(player, position, velocity, chant);
             if (UsesStandardBeat && chant.CurrentBeat == ChantBeat.Empower) {
                 SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.8f, Pitch = -0.1f }, position);
                 return ChantEmpowerShoot(item, player, chant, source, position, velocity, type, damage, knockback);
@@ -166,24 +160,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             return ChantShoot(item, player, chant, source, position, velocity, type, damage, knockback);
         }
 
-        /// <summary>出手相：杖尖迸出本色法花（owner 端调用，粒子天然只在客户端）</summary>
-        protected virtual void SpawnCastMuzzle(Player player, Vector2 position, Vector2 velocity, GsChantPlayer chant) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Vector2 dir = velocity.SafeNormalize(Vector2.UnitX);
-            int count = chant.CurrentBeat == ChantBeat.Empower ? 5 : 3;
-            for (int i = 0; i < count; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(position + dir * 8f,
-                    dir.RotatedByRandom(0.5) * Main.rand.NextFloat(1.5f, 4f),
-                    ChantColor, Main.rand.NextFloat(0.2f, 0.35f))?.Configure(false, Main.rand.Next(8, 14));
-            }
-            if (chant.CurrentBeat != ChantBeat.Straight) {
-                PRTLoader.NewParticle<PRT_Light>(position, dir * 1.5f, ChantColor, 0.14f)?.Configure(10, 0.8f);
-            }
-        }
-
-        //==================== 手持：衰减与读数（密封，子类走 ChantHoldItem） ====================
+        //==================== 手持：衰减（密封，子类走 ChantHoldItem） ====================
 
         public sealed override void GsHoldItem(Item item, Player player) {
             if (player.whoAmI == Main.myPlayer) {
@@ -192,7 +169,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 if (UsesStandardBeat) {
                     TickDecay(chant);
                 }
-                DrawChantReadout(chant, item, player);
             }
             ChantHoldItem(item, player);
         }
@@ -219,34 +195,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             }
             if (chant.Resonance <= 0) {
                 chant.EmpowerArmed = false;
-            }
-        }
-
-        /// <summary>杖尖读数：窗开一闪 + 环绕光点记层 + 武装金辉。全部只有本人可见（myPlayer 路径）</summary>
-        private void DrawChantReadout(GsChantPlayer chant, Item item, Player player) {
-            if (VaultUtils.isServer || !UsesStandardBeat) {
-                return;
-            }
-            uint now = Main.GameUpdateCount;
-            Vector2 tip = player.MountedCenter + GsAimUnit(player) * 26f;
-            //节拍窗开启瞬间：杖尖一圈收缩环，这就是鼓点
-            if (now == chant.WindowOpenAt && chant.WindowCloseAt > 0) {
-                PRTLoader.NewParticle<PRT_ProcRing>(tip, Vector2.Zero, ChantColor, 1f)
-                    ?.Configure(18f, 5f, 10);
-            }
-            //环绕光点记层：低频补充，在场数量与层数同阶
-            if (chant.Resonance > 0 && now % 9 == 0) {
-                for (int i = 0; i < chant.Resonance; i++) {
-                    float ang = MathHelper.TwoPi * i / MaxResonance + now * 0.045f;
-                    Vector2 orbit = player.MountedCenter + ang.ToRotationVector2() * 24f;
-                    PRTLoader.NewParticle<PRT_Light>(orbit, player.velocity * 0.4f,
-                        ChantColor, 0.07f)?.Configure(8, 0.55f, 0f, 1.2f, 0f, player);
-                }
-            }
-            //武装态：手部金辉呼吸
-            if (chant.EmpowerArmed && now % 6 == 0) {
-                PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(4f, 4f),
-                    -Vector2.UnitY * 0.5f, new Color(255, 226, 142), 0.1f)?.Configure(12, 0.7f);
             }
         }
 

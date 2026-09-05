@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
 {
     /// <summary>
     /// 回旋镖族方案基类。主题锚：三相轨迹——去程持续减速、悬停原地蓄势、回程持续加速追手，
-    /// 禁匀速直飞；飞行中按右键可命令镖冲向光标处再回手。<br/>
+    /// 禁匀速直飞。<br/>
     /// 接管方式：GsShoot 压掉原版镖弹改发 <see cref="GsBoomerProjBase"/> 子类；
     /// 同场上限逻辑与原版 ItemCheck 对齐（单发表 / 光盘 6 / 香蕉 10 / 三重 3）。<br/>
     /// 掷姿：族层 GsUseItemFrame 提供后引-甩出-跟随三段臂弧；

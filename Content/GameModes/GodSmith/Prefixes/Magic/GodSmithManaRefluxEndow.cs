@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -71,7 +69,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Magic
     /// ai[0] = 返还魔力量，补魔只在 owner 端结算</summary>
     internal class GodSmithManaRefluxWisp : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SpiritHeal;
 
         public override void SetDefaults() {
             Projectile.width = 12;
@@ -96,13 +94,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Magic
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, want * speed, 0.16f);
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
-            Lighting.AddLight(Projectile.Center, 0.1f, 0.25f, 0.5f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.BlueCrystalShard,
-                    -Projectile.velocity * 0.1f, 120, default, 0.9f);
-                dust.noGravity = true;
-            }
-            //触及持有者：补魔（owner 端结算）并散作蓝尘
+            //触及持有者：补魔（owner 端结算）
             if (Projectile.Hitbox.Intersects(owner.Hitbox)) {
                 if (Projectile.owner == Main.myPlayer) {
                     int manaBack = Math.Max(1, (int)Projectile.ai[0]);
@@ -113,31 +105,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Magic
             }
         }
 
-        public override Color? GetAlpha(Color lightColor) => new Color(120, 190, 255, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float stretch = 0.16f + Projectile.velocity.Length() * 0.03f;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(30, 70, 160, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(stretch * 1.6f, 0.26f), 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(170, 220, 255, 0) * Projectile.Opacity, Projectile.rotation, origin,
-                new Vector2(stretch, 0.13f), 0);
-            return false;
-        }
-
         public override void OnKill(int timeLeft) {
             if (VaultUtils.isServer) {
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item28 with { Volume = 0.4f, Pitch = 0.4f }, Projectile.Center);
-            for (int i = 0; i < 7; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.BlueCrystalShard,
-                    Main.rand.NextVector2Circular(2.5f, 2.5f), 100, default, 1f);
-                dust.noGravity = true;
-            }
         }
     }
 }

@@ -1,5 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -13,7 +11,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
 {
     /// <summary>
     /// 【连枷·滴血链锤】滴血者血瘤锤：猩红血肉黑血渗液。签名行为：①高转速与掷出期沿途滴落带重力血珠
-    /// ②血珠触敌或落地炸成小血刺爆 ③六帧血肉链节逐节轮播、飞行拖血
+    /// ②血珠触敌或落地炸成小血刺爆 ③六帧血肉链节逐节轮播
     /// </summary>
     internal class GsDripplerFlail : GsFlailScheme
     {
@@ -22,10 +20,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
         protected override int FlailProjType => ModContent.ProjectileType<GsDripplerFlailHead>();
 
         protected override string GsDescFallback =>
-            "Reforged: at high spin and through every throw, the head weeps gravity-bound blood beads" +
-            "\nBeads burst into stinging blood spikes on contact or landing";
-
-        //血珠群（35%×至多 10 颗在场）收益可观但落点被动，底伤补 8%
+            "Reforged: at high spin and through every throw, the head weeps gravity-bound blood beads\nBeads burst into stinging blood spikes on contact or landing";
         public override void GsModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
             => damage *= 1.08f;
     }
@@ -36,17 +31,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
     /// </summary>
     internal class GsDripplerFlailHead : GsFlailHeadProj
     {
-        /// <summary>猩红</summary>
-        internal static readonly Color BloodRed = new(198, 36, 48);
-        /// <summary>黑血</summary>
-        internal static readonly Color BloodDark = new(84, 16, 26);
-        /// <summary>血珠高光</summary>
-        internal static readonly Color BloodShine = new(255, 128, 130);
-
         public override int SourceItemID => ItemID.DripplerFlail;
         public override int VanillaProjID => ProjectileID.DripplerFlail;
         public override Asset<Texture2D> ChainTexture => TextureAssets.Extra[99];
-        public override Color GlowColor => BloodRed;
 
         /// <summary>滴珠间隔帧</summary>
         private const int DripInterval = 6;
@@ -83,35 +70,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                 ModContent.ProjectileType<GsDripplerFlailBeadProj>(),
                 Math.Max(1, (int)(Projectile.damage * BeadDamageMul)), 0.8f, Projectile.owner);
         }
-
-        protected override void OnLaunchTick(int flightTime) {
-            //飞行期额外拖血
-            if (!VaultUtils.isServer && flightTime % 2 == 0) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Blood,
-                    -Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(1f, 1f),
-                    60, default, Main.rand.NextFloat(1f, 1.5f));
-                d.noGravity = false;
-            }
-        }
-
-        protected override void SpawnHitBurst(NPC target, NPC.HitInfo hit, float charge) {
-            base.SpawnHitBurst(target, hit, charge);
-            //血肉质感补层：溅血
-            for (int i = 0; i < 5; i++) {
-                Dust d = Dust.NewDustPerfect(target.Center, DustID.Blood,
-                    Main.rand.NextVector2Circular(4f, 4f), 60, default, Main.rand.NextFloat(1.1f, 1.6f));
-                d.noGravity = Main.rand.NextBool();
-            }
-        }
     }
 
     /// <summary>
     /// 血珠：带重力坠落（0.3/帧），触敌或落地炸成小血刺爆；
-    /// 自绘：血红椭球（真 alpha）+加色高光点+按速度拉伸，绘制用速度向量不掷 Main.rand
+    /// 原版血弹贴图一笔，爆裂窗按判定箱放大作范围提示
     /// </summary>
     internal class GsDripplerFlailBeadProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.BloodShot;
 
         private const int LifeFrames = 90;
         /// <summary>爆裂窗帧数</summary>
@@ -119,8 +86,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
 
         /// <summary>ai[0]=1 进入爆裂态（owner 触发 + netUpdate 过线）；ai[1]=爆裂计时</summary>
         private bool Bursting => Projectile.ai[0] >= 1f;
-
-        private float Seed => Projectile.identity * 0.917f;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 14;
@@ -145,8 +110,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
             //坠落：重力 0.3，横向微阻尼
             Projectile.velocity.Y = MathF.Min(Projectile.velocity.Y + 0.3f, 15f);
             Projectile.velocity.X *= 0.995f;
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            Lighting.AddLight(Projectile.Center, GsDripplerFlailHead.BloodRed.ToVector3() * 0.12f);
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
         /// <summary>进入爆裂：判定盒撑大成小血刺爆，短窗结伤后消亡</summary>
@@ -161,16 +125,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
             Projectile.netUpdate = true;
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.4f, Pitch = 0.3f }, Projectile.Center);
-                for (int i = 0; i < 5; i++) {
-                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Blood,
-                        Main.rand.NextVector2Circular(3.5f, 3.5f), 60, default, Main.rand.NextFloat(1f, 1.5f));
-                    d.noGravity = Main.rand.NextBool();
-                }
-                for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                        Main.rand.NextVector2Circular(3f, 3f), GsDripplerFlailHead.BloodRed,
-                        Main.rand.NextFloat(0.3f, 0.45f))?.Configure(true, Main.rand.Next(8, 14));
-                }
             }
         }
 
@@ -183,39 +137,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => Burst();
 
+        /// <summary>本体一笔：坠落态原尺寸，爆裂窗按判定箱放大并随窗淡出作范围提示</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D body = CWRAsset.Fog?.Value;
-            Texture2D shine = CWRAsset.SoftGlow?.Value;
-            Texture2D burst = CWRAsset.RayBurst01?.Value;
-            if (body == null || shine == null || burst == null) {
-                return false;
-            }
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float scale = 1f;
+            Color color = lightColor;
             if (Bursting) {
-                //血刺爆：放射尖刺（加色）+黑血溅斑（真 alpha），随窗扩张淡出
                 float t = Projectile.ai[1] / BurstFrames;
-                float grow = MathHelper.Lerp(0.10f, 0.24f, 1f - (1f - t) * (1f - t));
-                Color spike = GsDripplerFlailHead.BloodRed * (0.9f * (1f - t));
-                spike.A = 0;
-                Main.EntitySpriteDraw(burst, pos, null, spike, Seed, burst.Size() / 2f, grow, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(body, pos, null, GsDripplerFlailHead.BloodDark * (0.6f * (1f - t)),
-                    Seed * 0.5f, body.Size() / 2f, 0.16f + t * 0.08f, SpriteEffects.None, 0);
-                return false;
+                scale = Projectile.width / MathF.Max(tex.Width, 1);
+                color *= 1f - t;
             }
-
-            //坠落态：按速度拉伸的血红椭球（真 alpha），绘制方向取速度向量
-            float vLen = Projectile.velocity.Length();
-            float stretch = 1f + MathHelper.Clamp(vLen * 0.05f, 0f, 0.9f);
-            Vector2 beadScale = new(0.075f * stretch, 0.055f / MathF.Sqrt(stretch));
-            Color deep = Color.Lerp(GsDripplerFlailHead.BloodDark, GsDripplerFlailHead.BloodRed, 0.45f);
-            Main.EntitySpriteDraw(body, pos, null, deep, Projectile.rotation,
-                body.Size() / 2f, beadScale, SpriteEffects.None, 0);
-            //加色高光点，偏上模拟湿润反光
-            Color glint = GsDripplerFlailHead.BloodShine * 0.65f;
-            glint.A = 0;
-            Main.EntitySpriteDraw(shine, pos - new Vector2(2f, 3f), null, glint, 0f,
-                shine.Size() / 2f, 0.07f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, color,
+                Projectile.rotation, tex.Size() / 2f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

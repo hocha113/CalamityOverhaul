@@ -1,6 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,7 +7,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
 {
     /// <summary>
     /// 闪电光环三档「力场发生器」共享基类（联动核心件）：<br/>
-    /// 谐振区 = 两自家光环重叠处 tick ×1.5（owner 端判定，重叠带电弧桥视觉）；
+    /// 谐振区 = 两自家光环重叠处 tick ×1.5（owner 端判定）；
     /// 充能 20 tick，超频 300 帧「过载力场」= 外扩 40% 的过载电环（0.5× tick），
     /// tick 附 90 帧感电（链内其他哨兵对感电目标 +10%）；T3 超频每 60 帧放链状闪电（跳 4 目标各 0.8×）
     /// </summary>
@@ -83,33 +81,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
                 ModContent.ProjectileType<GsSentryChainLightningProj>(),
                 (int)(tower.damage * 0.8f), 1f, tower.owner, target.whoAmI, 3f);
         }
-
-        /// <summary>谐振电弧桥：重叠光环对之间撒微电弧（identity 小端执行防双份，各端本地）</summary>
-        protected sealed override void TowerPostAI(Projectile tower, SentryKit kit, GsSentryLocal st) {
-            if (VaultUtils.isServer || !IsAuraType(tower.type) || st.LinkedTowers == null
-                || Main.GameUpdateCount % 6 != 0) {
-                return;
-            }
-            foreach (int who in st.LinkedTowers) {
-                if (who < 0 || who >= Main.maxProjectiles) {
-                    continue;
-                }
-                Projectile other = Main.projectile[who];
-                if (!other.active || other.owner != tower.owner || !IsAuraType(other.type)
-                    || other.identity <= tower.identity) {
-                    continue;
-                }
-                float span = other.Center.Distance(tower.Center);
-                if (span > AuraRadius(tower) + AuraRadius(other)) {
-                    continue;
-                }
-                //沿桥线随机点起弧，方向顺桥
-                Vector2 dir = (other.Center - tower.Center) / span;
-                Vector2 at = tower.Center + dir * span * Main.rand.NextFloat(0.25f, 0.75f);
-                PRTLoader.NewParticle<PRT_GraniteVolt>(at + Main.rand.NextVector2Circular(10f, 10f),
-                    dir * 2f, new Color(150, 205, 255), Main.rand.NextFloat(0.45f, 0.8f))?.Configure(5);
-            }
-        }
     }
 
     /// <summary>闪电光环杆 T1（kit 宿主）</summary>
@@ -120,9 +91,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.14f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: overlap two auras to form a resonance zone dealing half again as much\n" +
-            "Ticks charge the aura, right-click when full to overload it wider with a static field";
-
+            "Deploy doctrine: overlap two auras to form a resonance zone dealing half again as much\nTicks charge the aura, right-click when full to overload it wider with a static field";
         protected override SentryKit BuildKit() => new() {
             TowerTypes = [ProjectileID.DD2LightningAuraT1, ProjectileID.DD2LightningAuraT2, ProjectileID.DD2LightningAuraT3],
             BoltTypes = [],
@@ -139,9 +108,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.12f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: overlap two auras to form a resonance zone dealing half again as much\n" +
-            "Ticks charge the aura, right-click when full to overload it wider with a static field";
-
+            "Deploy doctrine: overlap two auras to form a resonance zone dealing half again as much\nTicks charge the aura, right-click when full to overload it wider with a static field";
         protected override SentryKit BuildKit() => null;
     }
 
@@ -153,9 +120,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override float DamageMult => 1.10f;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: overlap auras for resonance, overload adds a static field and shock marks\n" +
-            "While overdriven the aura hurls chain lightning arcing through four foes";
-
+            "Deploy doctrine: overlap auras for resonance, overload adds a static field and shock marks\nWhile overdriven the aura hurls chain lightning arcing through four foes";
         protected override SentryKit BuildKit() => null;
     }
 }

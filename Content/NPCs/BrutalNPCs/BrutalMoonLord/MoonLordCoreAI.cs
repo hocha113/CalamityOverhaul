@@ -48,6 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             MLordArmIK.Reset();
             MLordUltArms.Reset();
             MLordBlackFlashFX.Clear();
+            MLordSilence.Clear();
             MLordLocomotion.Reset();
         }
 

@@ -55,14 +55,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
             if (fury.SuppressedThisFrame) {
                 return;
             }
-            int stacks = fury.AddStack();
-            if (!VaultUtils.isServer && stacks > FullStacks / 2) {
-                //过半后见红：狂性读数只攻击方本端可见
-                Dust dust = Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(16f, 20f),
-                    DustID.CrimsonTorch, -Vector2.UnitY * 1.5f, 100, default, 0.9f);
-                dust.noGravity = true;
-            }
-            if (stacks < FullStacks) {
+            if (fury.AddStack() < FullStacks) {
                 return;
             }
             fury.ResetStacks();
@@ -97,10 +90,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
         internal void ResetStacks() => stacks = 0;
     }
 
-    /// <summary>血色刃环：狂性炸成一圈血刃气浪，环沿溅血珠</summary>
+    /// <summary>血色刃环：狂性炸成一圈扩张的血刃气浪；绘制只有一笔按当前半径缩放的原版气泡贴图</summary>
     internal class GodSmithViolentArc : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
 
         /// <summary>扩张终末半径（像素）</summary>
         internal const float MaxRadius = 110f;
@@ -132,29 +125,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Accessory
             if (size > Projectile.width) {
                 Projectile.Resize(size, size);
             }
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 5; i++) {
-                    float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center + ang.ToRotationVector2() * radius,
-                        DustID.Blood, ang.ToRotationVector2() * 2.5f, 60, default, 1.3f);
-                    dust.noGravity = false;
-                }
-            }
-            Lighting.AddLight(Projectile.Center, 0.45f, 0.08f, 0.1f);
         }
 
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 60, 70, 0) * Projectile.Opacity;
-
+        /// <summary>区域弹一笔：原版气泡贴图按当前判定直径缩放画在中心，随生命淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float radius = MaxRadius * (float)Math.Sqrt(LifeRatio);
-            float fade = 1f - LifeRatio;
-            float scale = radius * 2.4f / tex.Width;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(120, 10, 20, 0) * (0.6f * fade), 0f, origin, scale, 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 90, 100, 0) * (0.4f * fade), 0f, origin, scale * 0.7f, 0);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * (1f - LifeRatio), 0f,
+                tex.Size() * 0.5f, Projectile.width / (float)tex.Width, SpriteEffects.None, 0);
             return false;
         }
     }

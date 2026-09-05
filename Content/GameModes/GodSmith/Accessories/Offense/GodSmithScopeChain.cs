@@ -1,7 +1,4 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -49,9 +46,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             steady.Stability = 0;
             int tier = Math.Max(steady.BestTier, 1);
             SoundEngine.PlaySound(SoundID.Item40 with { Volume = 0.45f, Pitch = 0.5f }, player.Center);
-            //镜面反光一闪（命中钩子只在攻击方端跑）
-            PRTLoader.NewParticle<PRT_Light>(player.Center + new Vector2(player.direction * 10f, -4f),
-                Vector2.Zero, new Color(220, 235, 245), 0.12f)?.Configure(10, 0.9f);
             if (player.whoAmI == Main.myPlayer) {
                 float ratio = tier == 1 ? 0.45f : tier == 2 ? 0.60f : 0.75f;
                 int pierce = tier + 1;
@@ -64,18 +58,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
         }
     }
 
-    /// <summary>
-    /// 精准曳光：一发被稳像压出的贯穿弹道，笔直、快、不回头；
-    /// 银白双层曳光自绘 + 穿透衰减，命中弹出弹道火花
-    /// </summary>
+    /// <summary>精准曳光：一发被稳像压出的贯穿弹道，笔直、快、不回头</summary>
     internal class GodSmithRifleScopeTracerProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.BulletHighVelocity;
 
         private ref float PierceParam => ref Projectile.ai[0];
-
-        /// <summary>确定性绘制相位，绘制路径不掷 Main.rand</summary>
-        private float Seed => Projectile.identity * 0.4931f % 2.19f;
 
         public override void SetDefaults() {
             Projectile.width = 8;
@@ -97,26 +85,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
                 Projectile.localAI[0] = 1f;
                 Projectile.penetrate = (int)MathHelper.Clamp(PierceParam <= 0f ? 2f : PierceParam, 1f, 5f);
             }
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            if (!Main.dedServ && Projectile.timeLeft % 6 == 0) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, -Projectile.velocity * 0.03f,
-                    new Color(225, 235, 245), Main.rand.NextFloat(0.14f, 0.24f))?.Configure(false, 8);
-            }
-            Lighting.AddLight(Projectile.Center, new Vector3(0.35f, 0.37f, 0.4f));
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Main.dedServ) {
-                return;
-            }
-            //穿体火花顺弹道向前迸
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(target.Center,
-                    Projectile.velocity.SafeNormalize(Vector2.UnitX).RotatedByRandom(0.5f)
-                        * Main.rand.NextFloat(2f, 5f),
-                    Main.rand.NextBool() ? new Color(225, 235, 245) : new Color(255, 230, 170),
-                    Main.rand.NextFloat(0.24f, 0.4f))?.Configure(true, Main.rand.Next(10, 16));
-            }
+            //原版子弹贴图竖向朝上，旋转补四分之一圈
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
         public override void OnKill(int timeLeft) {
@@ -124,23 +94,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item10 with { Volume = 0.3f, Pitch = 0.3f }, Projectile.Center);
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = CWRAsset.LightShot?.Value;
-            if (tex == null) {
-                return false;
-            }
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = tex.Size() * 0.5f;
-            //高速弹道拉得极长，宽度极窄
-            float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.09f, 0.6f, 1.6f);
-            float wob = 1f + MathF.Sin(Projectile.timeLeft * 0.9f + Seed * 6f) * 0.06f;
-            Main.EntitySpriteDraw(tex, pos, null, new Color(200, 215, 230) with { A = 0 } * 0.8f,
-                Projectile.rotation, origin, new Vector2(stretch, 0.05f * wob), SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(tex, pos, null, new Color(255, 255, 250) with { A = 0 } * 0.75f,
-                Projectile.rotation, origin, new Vector2(stretch * 0.6f, 0.025f * wob), SpriteEffects.None, 0);
-            return false;
         }
     }
 
@@ -174,8 +127,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             //蓄满一瞬：镜心咔哒定格（个人读数，仅佩戴者本端）
             if (full && !wasFull && Player.whoAmI == Main.myPlayer && !Main.dedServ) {
                 SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.35f, Pitch = 0.7f }, Player.Center);
-                PRTLoader.NewParticle<PRT_Light>(Player.Center + new Vector2(Player.direction * 10f, -4f),
-                    Vector2.Zero, new Color(180, 230, 200), 0.1f)?.Configure(12, 0.9f);
             }
             wasFull = full;
         }

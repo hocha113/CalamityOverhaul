@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
     internal class GsChlorophytePartisanHeld : GsThrustHeldBase
     {
         protected override int TargetItemType => ItemID.ChlorophytePartisan;
+        protected override bool SelfDrawnVisuals => true;
 
         //活体叶绿色板
         internal static readonly Color ChloroBright = new(178, 255, 96);   //叶绿荧光

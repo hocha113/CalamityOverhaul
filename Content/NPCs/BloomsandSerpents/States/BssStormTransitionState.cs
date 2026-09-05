@@ -5,8 +5,9 @@ using Terraria;
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 {
     /// <summary>
-    /// 沙暴转阶段（60%）：清弹 → 后腿+尾锚地、前身高高立起 → 怒吼召唤沙尘暴 → 落回。
-    /// 全程无伤害；收招挂 70 帧冷却 = 转阶段后的攻速热身阀。
+    /// 沙暴加剧转阶段（60%）：清弹 → 后腿+尾锚地、前身高高立起 → 怒吼（声波环）把入场
+    /// 就有的沙暴催到满级、全身红花齐颤落瓣 → 落回巡曳。
+    /// 全程无伤害；收招挂冷却 = 转阶段后的攻速热身阀。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)BssStateIndex.StormTransition, typeof(BssStateContext))]
     internal class BssStormTransitionState : BssStateBase
@@ -81,10 +82,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 BssVfx.SandTrickle(npc.Center + Main.rand.NextVector2Circular(30f, 40f), 1f + raise);
             }
 
-            //怒吼拍：沙暴起（全场唯一的大震拍）
+            //怒吼拍：沙暴催满（转阶段的大震拍）
             if (t >= RoarFrame && !roared) {
                 roared = true;
                 ctx.Phase = 2;
+                ctx.FireRoarRing(npc.Center);
                 if (!Main.dedServ) {
                     BssVfx.Roar(npc.Center, -0.6f, 1.2f);
                     BssVfx.Roar(npc.Center, -0.1f, 0.8f);
@@ -102,8 +104,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 }
             }
             if (roared) {
-                //沙暴强度手动爬升（此后由头部的阶段底线保持）
-                ctx.StormLevel = Math.Max(ctx.StormLevel, MathHelper.Clamp((t - RoarFrame) / 46f, 0f, 0.72f));
+                //沙暴催满（此后由头部的阶段底线保持）
+                ctx.StormLevel = Math.Max(ctx.StormLevel, MathHelper.Clamp(0.9f + (t - RoarFrame) / 46f * 0.1f, 0f, 1f));
                 ctx.PulseKind = 4;
                 ctx.BloomGlow = Math.Max(ctx.BloomGlow, 0.8f * MathHelper.Clamp(1.4f - (t - RoarFrame) / 40f, 0f, 1f));
             }
@@ -111,10 +113,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Timer++;
 
             if (t > EndFrame || t > 160) {
-                //旗舰首秀即热身阀：沙暴起后直接盘涡（漩涡自带就位 + 盘旋近 90 帧无伤蓄力，
-                //比原 40 帧空冷却读招期更长，且沙暴与漩涡在同一口气里登场）
-                ctx.AttackCooldown = 12;
-                return new BssVortexDashState();
+                //转阶段后的热身阀：回巡曳缓一口气再出招，P2 首手是轮换表的掠冲
+                ctx.AttackCooldown = 40;
+                return new BssHubState();
             }
             return null;
         }

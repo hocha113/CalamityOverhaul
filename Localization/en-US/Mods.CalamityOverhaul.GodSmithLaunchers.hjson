@@ -1,0 +1,49 @@
+GsElectrosphereLauncher: {
+	Desc: Reforged: two or more of your spheres link up with tesla arcs (up to 3, half sphere damage)
+	TipOverload: Overload!
+}
+
+GsGrenadeLauncher: {
+	Desc: Reforged: grenades stick to walls and foes (+25% damage when stuck on flesh); up to 6 planted, the oldest pops to make room
+	TipDetonate: Blast them all!
+}
+
+GsJackOLanternLauncher: {
+	Desc: Reforged: every blast leaves a candle field that scorches whoever stands in it
+	TipGrin: Grin in unison!
+}
+
+GsNailGun: {
+	Desc: Reforged: nails embed into flesh (up to 5 per victim), each making the victim take +3% damage from all sources
+	TipExtract: Rip them out!
+}
+
+GsProximityMineLauncher: {
+	Desc: Reforged: mines show their trigger radius to you; mines idle for 60s refund a rocket and self-clear
+	TipChain: Domino!
+	TipRecycle: Mine reclaimed
+}
+
+GsRocketLauncher: {
+	Desc: Reforged: shots kick you back, and direct hits hit harder
+	TipDetonate: Airburst!
+}
+
+GsSnowmanCannon: {
+	Desc: Reforged: hits brand victims with a snowflake (+8% from this weapon)
+	ModeHoming: Carrier: homing swarm
+	ModeOrbital: Carrier: blizzard orbit
+}
+
+GsStarCannon.Desc:
+	'''
+	Reforged: stars bounce off blocks once instead of shattering, growing bigger and faster
+	Bank shots: a star that has bounced deals 45% more damage
+	'''
+
+GsStynger: {
+	Desc: Reforged: detonates on hit, with a kick on the shot. Stynger bolts and shrapnel stay as they were
+	ModeImpact: Fuze: impact
+	ModeRange: Fuze: range airburst
+	ModeRicochet: Fuze: ricochet
+}

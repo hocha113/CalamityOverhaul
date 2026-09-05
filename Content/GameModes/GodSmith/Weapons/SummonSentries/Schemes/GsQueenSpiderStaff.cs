@@ -1,6 +1,4 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -20,9 +18,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
         protected override int FamilyIdx => GsSentryFamilyIdx.QueenSpider;
 
         protected override string GsDescFallback =>
-            "Deploy doctrine: hits charge the hive, right-click when full to overdrive into a full swarm\n" +
-            "Eggs leave webbed ground where they land; linking a lightning aura magnetizes the spiders";
-
+            "Deploy doctrine: hits charge the hive, right-click when full to overdrive into a full swarm\nEggs leave webbed ground where they land; linking a lightning aura magnetizes the spiders";
         protected override SentryKit BuildKit() => new() {
             TowerTypes = [ProjectileID.SpiderHiver],
             BoltTypes = [ProjectileID.SpiderEgg, ProjectileID.BabySpider],
@@ -56,14 +52,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
                 SpawnBoltHandled(tower, tower.Center + new Vector2(Main.rand.NextFloat(-12f, 12f), 6f),
                     vel, ProjectileID.BabySpider, tower.damage, 2f);
             }
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 4; i++) {
-                    PRTLoader.NewParticle<PRT_ToxicBubble>(
-                        tower.Center + Main.rand.NextVector2Circular(14f, 10f),
-                        new Vector2(0f, -Main.rand.NextFloat(0.5f, 1f)),
-                        new Color(150, 220, 90), Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(16, 26));
-                }
-            }
         }
 
         /// <summary>蛛蛋落地：留蛛网带（owner 真弹幕，队友可见）</summary>
@@ -88,10 +76,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Sch
                 return;
             }
             bolt.velocity.X = MathHelper.Clamp(bolt.velocity.X * 1.3f, -8f, 8f);
-            if (!VaultUtils.isServer && Main.GameUpdateCount % 6 == 0) {
-                PRTLoader.NewParticle<PRT_GraniteVolt>(bolt.Center, -bolt.velocity * 0.1f,
-                    new Color(140, 200, 255), Main.rand.NextFloat(0.3f, 0.5f))?.Configure(4);
-            }
         }
     }
 }

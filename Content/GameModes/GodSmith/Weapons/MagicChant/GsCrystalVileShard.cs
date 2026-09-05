@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -15,23 +13,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
     /// 晶邪碎片重铸：嵌晶引爆。材质身份：粉紫邪晶（脆而锋利的水晶尖矛）。<br/>
     /// ①「嵌晶」：正拍晶矛命中在敌人体内嵌下晶籽；晶矛消亡瞬间所有嵌晶之敌
     /// 炸成十字四向晶芒（0.3 倍短程光线）；<br/>
-    /// ②满层强化「晶狱丛生」：以自身为心六向晶矛齐出；③施法有前刺推压体感与命中晶屑
+    /// ②满层强化「晶狱丛生」：以自身为心六向晶矛齐出；③施法有前刺推压体感
     /// </summary>
     internal class GsCrystalVileShard : GsChantScheme
     {
         public override int TargetItemID => ItemID.CrystalVileShard;
 
         protected override string GsDescFallback =>
-            "Reforged: on-beat spears embed crystal seeds; when the spear shatters, every seeded foe erupts in a cross of shard rays" +
-            "\nAt full resonance the next cast raises six crystal spears around you";
-
+            "Reforged: on-beat spears embed crystal seeds; when the spear shatters, every seeded foe erupts in a cross of shard rays\nAt full resonance the next cast raises six crystal spears around you";
         protected override float BaseDamageMult => 1.08f;
-
-        protected override Color ChantColor => CrystalMain;
-
-        internal static readonly Color CrystalBright = new(255, 178, 244);
-        internal static readonly Color CrystalMain = new(214, 96, 224);
-        internal static readonly Color CrystalDeep = new(108, 40, 132);
 
         /// <summary>私有形态：嵌晶引爆的十字晶芒</summary>
         private const float FormCrossRay = 10f;
@@ -71,36 +61,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             return null;
         }
 
-        //==================== 飞行相：晶棱折光 ====================
-
-        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer || !IsSpearSegment(proj.type)) {
-                return;
-            }
-            Lighting.AddLight(proj.Center, CrystalMain.ToVector3() * 0.18f);
-            //晶棱折光：延展段上闪烁的粉紫晶芒，正拍与晶芒形态更密
-            bool hot = router.MarkData is FormOnBeat or FormEmpower || router.MarkData == FormCrossRay;
-            if (proj.timeLeft % (hot ? 6 : 10) == 0 && Main.rand.NextBool(2)) {
-                PRTLoader.NewParticle<PRT_Sparkle>(proj.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    Main.rand.NextVector2Circular(0.4f, 0.4f), CrystalBright, Main.rand.NextFloat(0.3f, 0.5f))
-                    ?.Configure(CrystalBright, Main.rand.Next(10, 16), 0.06f, 0.7f);
-            }
-        }
-
         //==================== 命中：嵌晶 ====================
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
             if (!IsSpearSegment(proj.type)) {
                 return;
-            }
-            if (!VaultUtils.isServer) {
-                //命中反馈：晶屑迸散（晶芒形态更细碎）
-                int count = router.MarkData == FormCrossRay ? 2 : 4;
-                for (int i = 0; i < count; i++) {
-                    PRTLoader.NewParticle<PRT_Sparkle>(target.Center + Main.rand.NextVector2Circular(6f, 6f),
-                        Main.rand.NextVector2Circular(2.4f, 2.4f), i % 2 == 0 ? CrystalMain : CrystalBright,
-                        Main.rand.NextFloat(0.4f, 0.7f))?.Configure(CrystalMain, Main.rand.Next(12, 18), 0.1f, 0.8f);
-                }
             }
             if (!proj.IsOwnedByLocalPlayer() || router.MarkData == FormCrossRay) {
                 return;
@@ -117,12 +82,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
             if (!IsSpearSegment(proj.type)) {
                 return;
-            }
-            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                //余痕相：晶屑冷光缓落
-                PRTLoader.NewParticle<PRT_Light>(proj.Center + Main.rand.NextVector2Circular(6f, 6f),
-                    new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(0.3f, 0.8f)),
-                    CrystalMain, Main.rand.NextFloat(0.06f, 0.1f))?.Configure(Main.rand.Next(14, 22), 0.6f);
             }
             //嵌晶引爆：任一正拍延展段碎裂即引爆（首段引爆后清籽，后续段消亡找不到籽，天然去重）
             if (!proj.IsOwnedByLocalPlayer() || router.MarkData is not (FormOnBeat or FormEmpower)) {
@@ -149,13 +108,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 QueueForm(Main.player[proj.owner], FormCrossRay);
                 Projectile.NewProjectile(proj.GetSource_FromThis(), target.Center + dir * 10f, dir * 0.5f,
                     ProjectileID.CrystalVileShardHead, rayDamage, proj.knockBack * 0.3f, proj.owner);
-            }
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 6; i++) {
-                    PRTLoader.NewParticle<PRT_Sparkle>(target.Center + Main.rand.NextVector2Circular(8f, 8f),
-                        Main.rand.NextVector2Circular(3f, 3f), CrystalBright, Main.rand.NextFloat(0.5f, 0.8f))
-                        ?.Configure(CrystalBright, Main.rand.Next(14, 22), 0.12f, 0.9f);
-                }
             }
         }
     }
@@ -184,20 +136,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         internal void ClearSeeds() {
             SeedStacks = 0;
             SeedUntil = 0;
-        }
-
-        public override void DrawEffects(NPC npc, ref Color drawColor) {
-            //嵌晶体表可见：晶籽在皮下折光闪烁（层数只在攻击方端存在，个人读数合法）
-            if (SeedStacks <= 0 || Main.GameUpdateCount >= SeedUntil || Main.dedServ) {
-                return;
-            }
-            if (Main.rand.NextBool(Math.Max(3, 12 - SeedStacks * 3))) {
-                PRTLoader.NewParticle<PRT_Sparkle>(
-                    npc.Center + Main.rand.NextVector2Circular(npc.width * 0.35f, npc.height * 0.35f),
-                    Main.rand.NextVector2Circular(0.3f, 0.3f),
-                    GsCrystalVileShard.CrystalBright, Main.rand.NextFloat(0.3f, 0.45f))
-                    ?.Configure(GsCrystalVileShard.CrystalBright, Main.rand.Next(10, 16), 0.05f, 0.6f);
-            }
         }
     }
 }

@@ -55,6 +55,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MeleeOddities
     internal class GsDeathSickleHeld : GsBroadswordHeldBase
     {
         protected override int SwordItemID => ItemID.DeathSickle;
+        protected override bool SelfDrawnVisuals => true;
         protected override Color EdgeBright => GsDeathSickle.SoulGreen;
         protected override Color BodyMain => GsDeathSickle.SoulDim;
         protected override Color HotAccent => GsDeathSickle.BoneWhite;

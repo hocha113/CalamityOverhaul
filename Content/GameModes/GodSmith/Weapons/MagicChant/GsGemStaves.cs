@@ -1,7 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -27,27 +24,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             ProjectileID.AmberBolt,
         ];
 
-        /// <summary>七色宝石主题色（色环序）</summary>
-        internal static readonly Color[] GemColors = [
-            new(196, 122, 255), new(255, 214, 92), new(96, 152, 255),
-            new(112, 235, 146), new(255, 104, 116), new(224, 242, 255),
-            new(255, 172, 72),
-        ];
-
         /// <summary>形态：棱彩碎晶（黄玉杖 MarkData2 = 追踪目标 whoAmI，其余杖无参）</summary>
         protected const float FormShard = 10f;
         /// <summary>形态：红玉小爆</summary>
         protected const float FormBurst = 12f;
-        /// <summary>红玉小爆判定边长（px）：Resize 与爆环绘制同源</summary>
+        /// <summary>红玉小爆判定边长（px）</summary>
         protected const int BurstBoxPx = 80;
-        /// <summary>红玉小爆判定窗（帧）：timeLeft 与爆环扩张进度同源</summary>
+        /// <summary>红玉小爆判定窗（帧）</summary>
         protected const int BurstLifeTicks = 6;
         /// <summary>形态：钻石折光短线</summary>
         protected const float FormRay = 13f;
         /// <summary>形态：琥珀滞留尘域</summary>
         protected const float FormAmberField = 14f;
-
-        protected sealed override Color ChantColor => GemColors[GemIndex];
 
         //==================== 全彩咏唱 ====================
 
@@ -68,17 +56,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         //==================== 棱彩分裂 ====================
 
         public sealed override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
-            Color gem = ColorOfProj(proj.type);
-            if (!VaultUtils.isServer) {
-                //命中相：棱晶迸散
-                for (int i = 0; i < 4; i++) {
-                    PRTLoader.NewParticle<PRT_Sparkle>(target.Center + Main.rand.NextVector2Circular(6f, 6f),
-                        Main.rand.NextVector2Circular(2.5f, 2.5f), gem, Main.rand.NextFloat(0.5f, 0.8f))
-                        ?.Configure(gem, Main.rand.Next(12, 20), 0.1f, 0.8f);
-                }
-                PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero, gem, 0.13f)?.Configure(8, 0.7f);
-            }
-
             if (!proj.IsOwnedByLocalPlayer()) {
                 return;
             }
@@ -127,7 +104,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         /// <summary>碎晶追加 AI（黄玉追踪；各端执行）</summary>
         protected virtual void ShardPostAI(Projectile shard, GodSmithProjRouter router) { }
 
-        //==================== 四相演出 ====================
+        //==================== 形态行为 ====================
 
         public sealed override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
             if (router.MarkData == FormShard) {
@@ -137,41 +114,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 //驻场形态定身
                 proj.velocity = Vector2.Zero;
             }
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Color gem = ColorOfProj(proj.type);
-            Lighting.AddLight(proj.Center, gem.ToVector3() * 0.24f);
-            //飞行相：棱晶折光闪，正拍与碎晶更密
-            bool hot = router.MarkData is FormOnBeat or FormEmpower or FormShard;
-            int interval = hot ? 5 : 8;
-            if (proj.timeLeft % interval == 0) {
-                PRTLoader.NewParticle<PRT_Sparkle>(proj.Center + Main.rand.NextVector2Circular(4f, 4f),
-                    -proj.velocity * 0.04f, gem, Main.rand.NextFloat(0.35f, 0.6f))
-                    ?.Configure(gem, Main.rand.Next(10, 16), 0.08f, 0.7f);
-            }
-            //琥珀尘域：滞留期的尘粒缓旋
-            if (router.MarkData == FormAmberField && proj.timeLeft % 3 == 0) {
-                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                PRTLoader.NewParticle<PRT_Light>(proj.Center + ang.ToRotationVector2() * Main.rand.NextFloat(6f, 30f),
-                    ang.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 0.8f,
-                    GemColors[6], 0.07f)?.Configure(10, 0.6f);
-            }
-        }
-
-        public sealed override bool? GsProjPreDraw(Projectile proj, ref Color lightColor, GodSmithProjRouter router) {
-            //红玉小爆自绘：判定同源的扩张爆环替代未放大的弹体（镜像水矢涟漪画法），
-            //半径终点 = BurstBoxPx/2，与 Resize 的判定框同一常量
-            if (router.MarkData != FormBurst) {
-                return null;
-            }
-            float t = 1f - proj.timeLeft / (float)BurstLifeTicks;
-            Color gem = ColorOfProj(proj.type);
-            ShockRingDraw.Draw(Main.spriteBatch, proj.Center,
-                MathHelper.Lerp(12f, BurstBoxPx * 0.5f, t), 7f,
-                Color.Lerp(gem, Color.White, 0.6f), gem, Color.Lerp(gem, Color.Black, 0.65f),
-                0.85f * (1f - t * t), squish: 1f, innerGlow: 0.35f, timeSeed: proj.identity * 0.37f);
-            return false;
         }
 
         public sealed override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
@@ -190,27 +132,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                     field.netUpdate = true;
                 }
             }
-            //余痕相：光屑缓落，活得比弹体久
-            if (VaultUtils.isServer) {
-                return;
-            }
-            Color gem = ColorOfProj(proj.type);
-            int count = router.MarkData == FormShard ? 2 : 3;
-            for (int i = 0; i < count; i++) {
-                PRTLoader.NewParticle<PRT_Light>(proj.Center + Main.rand.NextVector2Circular(5f, 5f),
-                    new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(0.3f, 0.9f)),
-                    gem, Main.rand.NextFloat(0.07f, 0.11f))?.Configure(Main.rand.Next(16, 26), 0.65f);
-            }
-        }
-
-        /// <summary>按弹幕类型取宝石色（全彩咏唱的异色弹用各自本色演出）</summary>
-        protected static Color ColorOfProj(int projType) {
-            for (int i = 0; i < GemBoltTypes.Length; i++) {
-                if (GemBoltTypes[i] == projType) {
-                    return GemColors[i];
-                }
-            }
-            return GemColors[5];
         }
     }
 
@@ -221,9 +142,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         protected override int GemIndex => 0;
         protected override float BaseDamageMult => 1.12f;
         protected override string GsDescFallback =>
-            "Reforged: on-beat bolts shatter into piercing amethyst shards on hit;" +
-            "\nat full resonance the next cast fires three gem bolts of neighboring hues";
-
+            "Reforged: on-beat bolts shatter into piercing amethyst shards on hit;\nat full resonance the next cast fires three gem bolts of neighboring hues";
         protected override void ConfigureShard(Projectile shard) {
             base.ConfigureShard(shard);
             if (shard.penetrate > 0) {
@@ -239,9 +158,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         protected override int GemIndex => 1;
         protected override float BaseDamageMult => 1.11f;
         protected override string GsDescFallback =>
-            "Reforged: on-beat bolts shatter into homing topaz shards on hit;" +
-            "\nat full resonance the next cast fires three gem bolts of neighboring hues";
-
+            "Reforged: on-beat bolts shatter into homing topaz shards on hit;\nat full resonance the next cast fires three gem bolts of neighboring hues";
         protected override float ShardParamFor(NPC hitTarget) {
             //追踪目标 owner 端锁定进 MarkData2 随生成包过线，各端一致转向
             NPC next = FindNearestEnemy(hitTarget.Center, 260f, hitTarget.whoAmI);
@@ -267,9 +184,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         protected override int GemIndex => 2;
         protected override float BaseDamageMult => 1.10f;
         protected override string GsDescFallback =>
-            "Reforged: on-beat bolts shatter into swift sapphire lances on hit;" +
-            "\nat full resonance the next cast fires three gem bolts of neighboring hues";
-
+            "Reforged: on-beat bolts shatter into swift sapphire lances on hit;\nat full resonance the next cast fires three gem bolts of neighboring hues";
         protected override float ShardSpeedMult => 1.5f;
     }
 
@@ -280,9 +195,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         protected override int GemIndex => 3;
         protected override float BaseDamageMult => 1.09f;
         protected override string GsDescFallback =>
-            "Reforged: on-beat bolts burst into one extra emerald shard on hit;" +
-            "\nat full resonance the next cast fires three gem bolts of neighboring hues";
-
+            "Reforged: on-beat bolts burst into one extra emerald shard on hit;\nat full resonance the next cast fires three gem bolts of neighboring hues";
         protected override int ShardCountBonus => 1;
     }
 
@@ -293,9 +206,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         protected override int GemIndex => 4;
         protected override float BaseDamageMult => 1.08f;
         protected override string GsDescFallback =>
-            "Reforged: on-beat bolts shatter into ruby shards that detonate in a small blast;" +
-            "\nat full resonance the next cast fires three gem bolts of neighboring hues";
-
+            "Reforged: on-beat bolts shatter into ruby shards that detonate in a small blast;\nat full resonance the next cast fires three gem bolts of neighboring hues";
         protected override void OnShardHit(Projectile shard, NPC target) {
             QueueForm(Main.player[shard.owner], FormBurst);
             int idx = Projectile.NewProjectile(shard.GetSource_FromThis(), target.Center, Vector2.Zero,
@@ -316,9 +227,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         protected override int GemIndex => 5;
         protected override float BaseDamageMult => 1.06f;
         protected override string GsDescFallback =>
-            "Reforged: on-beat bolts shatter into diamond shards that refract twin light rays;" +
-            "\nat full resonance the next cast fires three gem bolts of neighboring hues";
-
+            "Reforged: on-beat bolts shatter into diamond shards that refract twin light rays;\nat full resonance the next cast fires three gem bolts of neighboring hues";
         protected override void OnShardHit(Projectile shard, NPC target) {
             Vector2 dir = shard.velocity.SafeNormalize(Vector2.UnitX);
             for (int i = 0; i < 2; i++) {
@@ -342,8 +251,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         protected override int GemIndex => 6;
         protected override float BaseDamageMult => 1.12f;
         protected override string GsDescFallback =>
-            "Reforged: on-beat bolts shatter into amber shards that linger as motes of stinging dust;" +
-            "\nat full resonance the next cast fires three gem bolts of neighboring hues";
-        //尘域行为在模板 GsProjOnKill 按 GemIndex 分支实现
+            "Reforged: on-beat bolts shatter into amber shards that linger as motes of stinging dust;\nat full resonance the next cast fires three gem bolts of neighboring hues";
     }
 }

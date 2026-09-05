@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -78,10 +76,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Ranged
         internal void ResetUse() => uses = 0;
     }
 
-    /// <summary>金白曳光弹：出膛即全速，穿透中缓缓减速降温（亮度随速度衰减），尾焰是金色火线</summary>
+    /// <summary>金白曳光弹：出膛即全速，穿透中缓缓减速失能</summary>
     internal class GodSmithBallisticTracer : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.BulletHighVelocity;
 
         public override void SetDefaults() {
             Projectile.width = 10;
@@ -103,43 +101,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Ranged
             }
             //贯穿途中逐渐降速失能，不做匀速直飞
             Projectile.velocity *= 0.995f;
-            Projectile.rotation = Projectile.velocity.ToRotation();
+            //原版子弹贴图竖向朝上，旋转补四分之一圈
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.timeLeft < 16) {
                 Projectile.alpha = Math.Min(255, Projectile.alpha + 18);
-            }
-            Lighting.AddLight(Projectile.Center, 0.5f, 0.42f, 0.2f);
-            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldFlame,
-                    -Projectile.velocity * 0.08f, 100, default, 0.8f);
-                dust.noGravity = true;
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 230, 150, 0) * Projectile.Opacity;
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            //高速弹体拉成长条光线：暗金衬底 + 白金亮芯
-            float stretch = 0.3f + Projectile.velocity.Length() * 0.06f;
-            float heat = Projectile.Opacity;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(160, 110, 20, 0) * heat, Projectile.rotation, origin,
-                new Vector2(stretch * 1.5f, 0.22f), 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 245, 200, 0) * heat, Projectile.rotation, origin,
-                new Vector2(stretch, 0.1f), 0);
-            return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 8; i++) {
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldFlame,
-                    Main.rand.NextVector2Circular(3f, 3f), 100, default, 1.1f);
-                dust.noGravity = true;
             }
         }
     }

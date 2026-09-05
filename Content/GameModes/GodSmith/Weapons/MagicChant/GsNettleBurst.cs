@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -24,16 +22,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         public override int TargetItemID => ItemID.NettleBurst;
 
         protected override string GsDescFallback =>
-            "Reforged: on-beat vines take root where they bite, leaving stinging nettle thickets (up to three)" +
-            "\nAt full resonance the next cast unleashes a great vine dragon that sweeps through the field";
-
+            "Reforged: on-beat vines take root where they bite, leaving stinging nettle thickets (up to three)\nAt full resonance the next cast unleashes a great vine dragon that sweeps through the field";
         protected override float BaseDamageMult => 1.08f;
-
-        protected override Color ChantColor => NettleGreen;
-
-        internal static readonly Color NettleBright = new(196, 240, 120);
-        internal static readonly Color NettleGreen = new(110, 190, 60);
-        internal static readonly Color NettleDeep = new(44, 104, 30);
 
         /// <summary>owner 端在场荨麻丛上限</summary>
         private const int MaxThickets = 3;
@@ -69,35 +59,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             return false;
         }
 
-        //==================== 飞行相：孢绿荧尘 ====================
-
-        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            if (VaultUtils.isServer || !IsVineSegment(proj.type)) {
-                return;
-            }
-            Lighting.AddLight(proj.Center, NettleGreen.ToVector3() * 0.15f);
-            //藤段荧尘：正拍藤的倒刺间渗出孢绿微光
-            bool hot = router.MarkData is FormOnBeat or FormEmpower;
-            if (proj.timeLeft % (hot ? 6 : 10) == 0 && Main.rand.NextBool(2)) {
-                PRTLoader.NewParticle<PRT_Light>(proj.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    Main.rand.NextVector2Circular(0.4f, 0.4f), NettleBright,
-                    Main.rand.NextFloat(0.05f, 0.09f))?.Configure(Main.rand.Next(10, 18), 0.6f);
-            }
-        }
-
         //==================== 命中：生根荨麻 ====================
 
         public override void GsProjOnHitNPC(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone, GodSmithProjRouter router) {
             if (!IsVineSegment(proj.type)) {
                 return;
-            }
-            if (!VaultUtils.isServer) {
-                //命中反馈：棘叶迸散
-                for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_ToxicMist>(target.Center + Main.rand.NextVector2Circular(6f, 6f),
-                        Main.rand.NextVector2Circular(1.2f, 1.2f), NettleGreen * 0.55f,
-                        Main.rand.NextFloat(0.35f, 0.55f))?.Configure(Main.rand.Next(10, 16));
-                }
             }
             if (!proj.IsOwnedByLocalPlayer()) {
                 return;
@@ -139,24 +105,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             Projectile.NewProjectile(proj.GetSource_FromThis(), pos, Vector2.Zero,
                 thicketType, thicketDamage, 0f, proj.owner);
         }
-
-        public override void GsProjOnKill(Projectile proj, int timeLeft, GodSmithProjRouter router) {
-            //余痕相：藤段枯散的孢尘比藤活得久
-            if (VaultUtils.isServer || !IsVineSegment(proj.type) || !Main.rand.NextBool(2)) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_ToxicMist>(proj.Center, -Vector2.UnitY * 0.3f,
-                NettleGreen * 0.45f, Main.rand.NextFloat(0.3f, 0.5f))?.Configure(Main.rand.Next(14, 24));
-        }
     }
 
     /// <summary>
-    /// 荨麻丛：生根滞留的带刺灌丛，多跳低伤（判定圆与可见丛团同源）；
-    /// 自绘三层呼吸丛影 + 倒刺閃光，孢雾缓升
+    /// 荨麻丛：生根滞留的带刺灌丛，多跳低伤（判定圆与可见尺寸同源）
     /// </summary>
     internal class GsNettleBurstThicketProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.NettleBurstEnd;
 
         public override string LocalizationCategory => "GodSmithMagicChant";
 
@@ -186,18 +142,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
 
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
-            if (VaultUtils.isServer) {
-                return;
-            }
-            //丛间孢雾缓升
-            if (Projectile.timeLeft % 6 == 0) {
-                float r = RadiusNow;
-                PRTLoader.NewParticle<PRT_ToxicMist>(
-                    Projectile.Center + new Vector2(Main.rand.NextFloat(-r, r) * 0.8f, Main.rand.NextFloat(-6f, 10f)),
-                    new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), -Main.rand.NextFloat(0.4f, 0.9f)),
-                    GsNettleBurst.NettleGreen * 0.5f, Main.rand.NextFloat(0.3f, 0.5f))?.Configure(Main.rand.Next(14, 22));
-            }
-            Lighting.AddLight(Projectile.Center, GsNettleBurst.NettleGreen.ToVector3() * 0.25f * (RadiusNow / Radius));
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -214,50 +158,31 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //三层呼吸丛影（A=0 加色批）+ 沿缘倒刺星芒，identity 定相错开
-            Texture2D glow = CWRAsset.SoftGlow.Value;
-            Texture2D star = CWRAsset.StarTexture.Value;
+            //原版藤尖贴图一笔按判定半径缩放（尺寸提示与判定同源）
             float r = RadiusNow;
             if (r < 4f) {
                 return false;
             }
-            Vector2 basePos = Projectile.Center - Main.screenPosition;
-            for (int i = 0; i < 3; i++) {
-                float phase = Main.GlobalTimeWrappedHourly * 2.8f + Projectile.identity * 0.57f + i * 2.1f;
-                Vector2 off = new(MathF.Sin(phase) * r * 0.24f, -MathF.Abs(MathF.Cos(phase * 0.8f)) * 4f);
-                float s = r / glow.Width * (2.0f - i * 0.42f);
-                Color c = (i == 2 ? GsNettleBurst.NettleBright : i == 1 ? GsNettleBurst.NettleGreen : GsNettleBurst.NettleDeep) with { A = 0 };
-                Main.EntitySpriteDraw(glow, basePos + off, null, c * (0.3f + i * 0.09f), 0f,
-                    glow.Size() / 2f, new Vector2(s, s * 0.8f), SpriteEffects.None, 0);
-            }
-            //倒刺星芒：五根尖刺沿丛缘定相摆动
-            for (int i = 0; i < 5; i++) {
-                float ang = MathHelper.TwoPi * i / 5f + MathF.Sin(Main.GlobalTimeWrappedHourly * 1.7f + Projectile.identity * 0.9f + i) * 0.2f;
-                Vector2 tip = basePos + ang.ToRotationVector2() * r * 0.72f;
-                Main.EntitySpriteDraw(star, tip, null, GsNettleBurst.NettleBright with { A = 0 } * 0.5f,
-                    ang, star.Size() / 2f, 0.1f, SpriteEffects.None, 0);
-            }
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            float scale = r * 2f / Math.Max(tex.Width, tex.Height);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor,
+                0f, tex.Size() / 2f, scale, SpriteEffects.None, 0);
             return false;
         }
     }
 
     /// <summary>
     /// 藤龙：强化咏唱放出的巨型荨麻藤龙。owner 端每 30t 锁定近敌写 ai[1] 过线，
-    /// 各端向同一目标缓转横扫；身躯自绘（拖尾史分节，原版藤段贴图作节体 + 绿棘辉光）
+    /// 各端向同一目标缓转横扫；本体沿用原版藤段贴图默认绘制
     /// </summary>
     internal class GsNettleBurstDragonProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.NettleBurstRight;
 
         public override string LocalizationCategory => "GodSmithMagicChant";
 
         private ref float SteerTimer => ref Projectile.localAI[0];
         private int TargetWho => (int)Projectile.ai[1] - 1;
-
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 18;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
-        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 34;
@@ -272,8 +197,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
         }
 
         public override void AI() {
-            //蜿蜒横扫：基速上叠正弦摆身（identity 定相，各端确定性）
-            Projectile.rotation = Projectile.velocity.ToRotation();
+            //蜿蜒横扫：基速上叠正弦摆身（identity 定相，各端确定性）；原版藤段贴图竖向朝上
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Projectile.velocity = Projectile.velocity.RotatedBy(
                 MathF.Sin(Projectile.timeLeft * 0.18f + Projectile.identity * 1.1f) * 0.05f);
 
@@ -296,29 +221,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                         .ToRotationVector2() * Projectile.velocity.Length();
                 }
             }
-
-            if (!VaultUtils.isServer) {
-                //龙息孢雾：头部两侧甩出的绿尘
-                if (Projectile.timeLeft % 3 == 0) {
-                    Vector2 side = Projectile.velocity.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2)
-                        * MathF.Sin(Projectile.timeLeft * 0.55f) * 7f;
-                    PRTLoader.NewParticle<PRT_ToxicMist>(Projectile.Center + side,
-                        -Projectile.velocity * 0.1f, GsNettleBurst.NettleGreen * 0.55f,
-                        Main.rand.NextFloat(0.35f, 0.55f))?.Configure(Main.rand.Next(12, 18));
-                }
-                Lighting.AddLight(Projectile.Center, GsNettleBurst.NettleGreen.ToVector3() * 0.5f);
-            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Poisoned, 360);
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.NPCHit32 with { Volume = 0.5f, Pitch = 0.2f, MaxInstances = 3 }, target.Center);
-                for (int i = 0; i < 5; i++) {
-                    PRTLoader.NewParticle<PRT_ToxicMist>(target.Center + Main.rand.NextVector2Circular(10f, 10f),
-                        Main.rand.NextVector2Circular(2f, 2f), GsNettleBurst.NettleGreen * 0.6f,
-                        Main.rand.NextFloat(0.45f, 0.7f))?.Configure(Main.rand.Next(12, 20));
-                }
             }
         }
 
@@ -327,40 +235,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                 return;
             }
             SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.8f, Pitch = -0.3f }, Projectile.Center);
-            for (int i = 0; i < 10; i++) {
-                PRTLoader.NewParticle<PRT_ToxicMist>(Projectile.Center + Main.rand.NextVector2Circular(14f, 14f),
-                    Main.rand.NextVector2Circular(2.5f, 2.5f), GsNettleBurst.NettleGreen * 0.55f,
-                    Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(16, 26));
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            //龙身自绘：拖尾史取节，原版藤段贴图作节体 + 绿棘辉光（A=0 加色），identity 定相脉动
-            int vineType = ProjectileID.NettleBurstRight;
-            Main.instance.LoadProjectile(vineType);
-            Texture2D tex = TextureAssets.Projectile[vineType].Value;
-            Rectangle frame = tex.Frame(1, Main.projFrames[vineType], 0, 0);
-            for (int i = Projectile.oldPos.Length - 1; i >= 0; i--) {
-                Vector2 pos = Projectile.oldPos[i];
-                if (pos == Vector2.Zero) {
-                    continue;
-                }
-                pos += Projectile.Size / 2f;
-                float shrink = 1.2f - i * 0.05f;
-                float pulse = 0.82f + 0.18f * MathF.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.identity * 0.83f + i * 0.7f);
-                Color glow = GsNettleBurst.NettleGreen with { A = 0 } * (0.5f * shrink * pulse);
-                float rot = Projectile.oldRot[i] + MathHelper.PiOver2;
-                Main.EntitySpriteDraw(tex, pos - Main.screenPosition, frame, glow, rot,
-                    frame.Size() / 2f, shrink * 1.3f, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(tex, pos - Main.screenPosition, frame, Color.White with { A = 50 } * (0.55f * shrink), rot,
-                    frame.Size() / 2f, shrink * 0.9f, SpriteEffects.None, 0);
-            }
-            //龙首绿芒
-            Texture2D star = CWRAsset.StarTexture.Value;
-            Main.EntitySpriteDraw(star, Projectile.Center - Main.screenPosition, null,
-                GsNettleBurst.NettleBright with { A = 0 } * 0.85f, Projectile.rotation,
-                star.Size() / 2f, 0.32f, SpriteEffects.None, 0);
-            return false;
         }
     }
 }

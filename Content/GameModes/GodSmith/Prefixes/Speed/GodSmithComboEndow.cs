@@ -57,16 +57,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Speed
             if (sourceProj != null && sourceProj.type == ModContent.ProjectileType<GodSmithComboBurstRing>()) {
                 return;
             }
-            int stacks = player.GetModPlayer<GodSmithComboEndowPlayer>().AddHit(player.HeldItem?.type ?? 0);
-            if (!VaultUtils.isServer && stacks > 1) {
-                //连势读数：层数越高火花越多，只攻击方本端可见
-                for (int i = 0; i < stacks; i++) {
-                    Dust dust = Dust.NewDustPerfect(target.Center + Main.rand.NextVector2Circular(14f, 14f),
-                        DustID.AmberBolt, -Vector2.UnitY * 1.2f, 80, default, 0.8f);
-                    dust.noGravity = true;
-                }
-            }
-            if (stacks < FullCombo) {
+            if (player.GetModPlayer<GodSmithComboEndowPlayer>().AddHit(player.HeldItem?.type ?? 0) < FullCombo) {
                 return;
             }
             player.GetModPlayer<GodSmithComboEndowPlayer>().ResetCombo();
@@ -100,10 +91,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Speed
         internal void ResetCombo() => stacks = 0;
     }
 
-    /// <summary>连击迸发环：琥珀色气浪一鼓而散，火星贴着环沿蹦跳</summary>
+    /// <summary>连击迸发环：一圈扩张的气浪判定；绘制只有一笔按当前半径缩放的原版气泡贴图</summary>
     internal class GodSmithComboBurstRing : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bubble;
 
         /// <summary>扩张终末半径（像素）</summary>
         internal const float MaxRadius = 120f;
@@ -126,32 +117,19 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Speed
         public override void AI() {
             if (Projectile.timeLeft == 17 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.55f, Pitch = 0.4f }, Projectile.Center);
-                for (int i = 0; i < 14; i++) {
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.AmberBolt,
-                        Main.rand.NextVector2Circular(6f, 6f), 60, default, 1.2f);
-                    dust.noGravity = true;
-                }
             }
             float radius = MaxRadius * (float)Math.Sqrt(LifeRatio);
             int size = (int)(radius * 2f);
             if (size > Projectile.width) {
                 Projectile.Resize(size, size);
             }
-            Lighting.AddLight(Projectile.Center, 0.5f, 0.35f, 0.1f);
         }
 
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 190, 90, 0) * Projectile.Opacity;
-
+        /// <summary>区域弹一笔：原版气泡贴图按当前判定直径缩放画在中心，随生命淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() * 0.5f;
-            float radius = MaxRadius * (float)Math.Sqrt(LifeRatio);
-            float fade = 1f - LifeRatio;
-            float scale = radius * 2.4f / tex.Width;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(180, 90, 20, 0) * (0.55f * fade), 0f, origin, scale, 0);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null,
-                new Color(255, 220, 130, 0) * (0.4f * fade), 0f, origin, scale * 0.7f, 0);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * (1f - LifeRatio), 0f,
+                tex.Size() * 0.5f, Projectile.width / (float)tex.Width, SpriteEffects.None, 0);
             return false;
         }
     }

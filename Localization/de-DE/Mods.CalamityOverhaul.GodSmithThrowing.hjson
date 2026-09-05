@@ -43,20 +43,16 @@ GsSpikyBall.Desc:
 	Umschmiedung: Abgelaufene Stachelbälle auf dem Feld kehren direkt ins Inventar
 	Treten Feinde zugleich auf mehr als drei deiner Bälle, löst sich eine Kettenexplosion aus, jeder 50% Schaden, jeder Ball explodiert im Leben nur einmal
 	'''
-GsGrenade.Desc:
-	'''
-	Umschmiedung: Triffst du drei oder mehr Feinde mit einer Explosion, erstattest du eine; im Wurf-Fenster brennt die Zündschnur 20% schneller
-	Rechtsklick: flacher Rollwurf, Zündschnur auf 1,2 s
-	'''
+GsGrenade.Desc: Reforged: hitting 3+ foes in one blast refunds a grenade; fuses burn 20% faster inside your combo window
 GsStickyGrenade.Desc:
 	'''
 	Umschmiedung: Die Explosion brennt 3 s ein Ätzmal; Feinde mit Mal erleiden von deinen Explosionen +30% Schaden und sind immer kritisch
-	Triffst du drei Feinde, erstattest du eine; Rechtsklick: Rollwurf
+	Triffst du drei Feinde, erstattest du eine
 	'''
 GsBouncyGrenade.Desc:
 	'''
 	Umschmiedung: Jeder Absprung lädt die Explosion, +12% Schaden, höchstens drei Stapel
-	Platzt eine dreimal gehüpfte Granate an Feinden, erstattest du sie ganz; Rechtsklick: Rollwurf
+	Platzt eine dreimal gehüpfte Granate an Feinden, erstattest du sie ganz
 	'''
 GsBeenade.Desc:
 	'''

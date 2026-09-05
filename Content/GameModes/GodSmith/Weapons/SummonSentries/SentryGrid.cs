@@ -1,10 +1,7 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries.Schemes;
 using CalamityOverhaul.Content.GameModes.UI;
-using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.TimeFreezes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -102,7 +99,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries
     /// <summary>
     /// 哨兵族「阵地工程」共享框架：联动图重算、充能记账、超频调度、敌怪标记表。<br/>
     /// 联动图各端每 10 帧从场上弹幕确定性重算（不发包）；充能是 owner 本地权威，
-    /// owner 端画全量辉光，远端只在超频触发时看到 GsOverdriveProj 真弹幕（表现拆分刻意为之）。<br/>
+    /// 远端只在超频触发时看到 GsOverdriveProj 真弹幕。<br/>
     /// 模式关闭：路由闸门停发一切回调，本类也停止重算并清标记，在场哨兵即刻回原版
     /// </summary>
     internal class SentryGrid : ModSystem
@@ -337,7 +334,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries
             }
         }
 
-        /// <summary>触发超频：清充能、开排气窗、owner 生成全端可见的超频光环弹幕</summary>
+        /// <summary>触发超频：清充能、开排气窗、owner 生成全端同步的超频驻场弹幕</summary>
         internal static void TriggerOverdrive(Projectile tower, SentryKit kit) {
             if (!tower.IsOwnedByLocalPlayer()) {
                 return;
@@ -551,88 +548,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonSentries
             if (bestEye != null && TryGetTowerKit(bestEye.type, out SentryKit eyeKit)) {
                 AddCharge(bestEye, eyeKit, 3);
             }
-        }
-
-        //==================== 族共享视觉（链线 + 充能辉光） ====================
-
-        /// <summary>
-        /// 链线：小 identity 端向大 identity 端画一次，LightShot 拉伸 + 端点微光。
-        /// 各端由同一确定性图重画；月门参与的链染月青。呼吸相位用 identity 哈希去同相
-        /// </summary>
-        internal static void DrawTowerLinks(Projectile tower, GsSentryLocal st) {
-            if (st.LinkedTowers == null || st.LinkedTowers.Count == 0) {
-                return;
-            }
-            Texture2D line = CWRAsset.LightShot?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (line == null || glow == null) {
-                return;
-            }
-            foreach (int who in st.LinkedTowers) {
-                if (who < 0 || who >= Main.maxProjectiles) {
-                    continue;
-                }
-                Projectile other = Main.projectile[who];
-                if (!other.active || other.owner != tower.owner
-                    || !kitByTower.ContainsKey(other.type) || other.identity <= tower.identity) {
-                    continue;
-                }
-                bool lunar = tower.type == ProjectileID.MoonlordTurret || other.type == ProjectileID.MoonlordTurret;
-                Color tint = lunar ? new Color(120, 190, 235) : GameModeTheme.GodSmithAccent;
-                float pulse = 0.55f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f
-                    + (tower.identity * 0.83f + other.identity * 0.47f) % 6.28f);
-                Color c = tint * (0.34f * pulse);
-                c.A = 0;
-                Vector2 span = other.Center - tower.Center;
-                float len = span.Length();
-                Main.EntitySpriteDraw(line, tower.Center - Main.screenPosition, null, c,
-                    span.ToRotation(), new Vector2(0f, line.Height * 0.5f),
-                    new Vector2(len / line.Width, 6f / line.Height), SpriteEffects.None, 0);
-                Color end = tint * (0.5f * pulse);
-                end.A = 0;
-                Main.EntitySpriteDraw(glow, tower.Center - Main.screenPosition, null, end, 0f,
-                    glow.Size() * 0.5f, 0.22f, SpriteEffects.None, 0);
-            }
-        }
-
-        /// <summary>充能辉光：owner 全量（远端无数据不画，里程碑另由超频弹幕承载）</summary>
-        internal static void DrawTowerCharge(Projectile tower, SentryKit kit, GsSentryLocal st) {
-            if (tower.owner != Main.myPlayer || IsOverdriven(st)) {
-                return;
-            }
-            int max = kit.ChargeMaxOf(kit.TierOf(tower.type));
-            float ratio = Math.Clamp(st.Charge / (float)max, 0f, 1f);
-            if (ratio <= 0.01f) {
-                return;
-            }
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
-                return;
-            }
-            bool full = st.Charge >= max;
-            //满充呼吸脉动，未满恒稳弱光；相位按 identity 去同相
-            float pulse = full
-                ? 0.75f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6f + tower.identity * 0.91f)
-                : 1f;
-            Color c = Color.Lerp(GameModeTheme.GodSmithAccent, GameModeTheme.GodSmithEmber, ratio)
-                * ((0.10f + 0.24f * ratio) * pulse);
-            c.A = 0;
-            Main.EntitySpriteDraw(glow, tower.Center - Main.screenPosition, null, c, 0f,
-                glow.Size() * 0.5f, tower.width / 34f + 0.9f, SpriteEffects.None, 0);
-        }
-
-        /// <summary>满充待机粒子：owner 端每 20 帧一粒上升光屑（TowerPostAI 调）</summary>
-        internal static void EmitFullChargeIdle(Projectile tower, SentryKit kit, GsSentryLocal st) {
-            if (VaultUtils.isServer || tower.owner != Main.myPlayer || IsOverdriven(st)) {
-                return;
-            }
-            if (st.Charge < kit.ChargeMaxOf(kit.TierOf(tower.type)) || Main.GameUpdateCount % 20 != 0) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_Light>(
-                tower.Center + Main.rand.NextVector2Circular(tower.width * 0.4f, 8f),
-                new Vector2(0f, -Main.rand.NextFloat(0.5f, 1.1f)),
-                GameModeTheme.GodSmithEmber, Main.rand.NextFloat(0.08f, 0.13f))?.Configure(16, 0.75f);
         }
     }
 }

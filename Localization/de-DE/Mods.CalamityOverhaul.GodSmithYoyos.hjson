@@ -1,112 +1,109 @@
+# GodSmith mode - Yoyos family descriptions
+# Keys are composed by the framework: Mods.CalamityOverhaul.GodSmithYoyos.{SchemeClassName}.Desc
+# Every yoyo shares the same right-click orbit command, so all entries carry the same text
+
 GsWoodYoyo.Desc:
 	'''
-	Rechtsklick: Stationieren, das Jojo ankert am Mauszeiger und patrouilliert
-	Stationieren auf dasselbe Ziel häuft Hitze, Schaden steigt um höchstens 40%
-	Jeder 4. Stationierungs-Treffer schleudert 2 Holzsplitter-Sterne, je 25% Schaden
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsRallyYoyo.Desc:
 	'''
-	Rechtsklick: Stationieren und patrouillieren
-	Alle 5 Stationierungs-Treffer steigt eine Schlagrampe, höchstens drei, Einholen setzt zurück
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsMalaiseYoyo.Desc:
 	'''
-	Rechtsklick: Stationieren und patrouillieren
-	Um den Anker liegt ein Siechfeld, Feinde −8% Bewegungsgeschwindigkeit
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsArteryYoyo.Desc:
 	'''
-	Rechtsklick: Stationieren und patrouillieren
-	Stationierungs-Treffer haben 20% Chance, Blutperlen zu spritzen, 15% Schaden
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsAmazonYoyo.Desc:
 	'''
-	Rechtsklick: Stationieren und patrouillieren
-	Stationierungs-Treffer vergiften, bei voller Hitze verdoppelt sich die Giftdauer
-	Bei voller Hitze wachsen Giftranken am Ball, alle 0,75 s peitschen sie den nächsten Feind, 20% Schaden plus Gift
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsCode1Yoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick sticht umkehrend zur Hand (2,2-fache Ballgeschwindigkeit, 135% Schaden)
-	Umkehr-Treffer setzen 3 s einen Bruchpunkt, Stationierungs-Treffer gegen Bruchpunkt-Ziele +30% Schaden
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsValorYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um
-	Umkehr-Rückstoß verdoppelt; stehen mindestens 3 Feinde nah am Anker, Stationierungsschaden +15%
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsCascadeYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um
-	Treffer spritzen Funkenfälle, der Umkehrpfad hinterlässt eine Brennlinie
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsHiveFiveYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um
-	Stationiert wird es zum Bienenstock, alle 0,8 s eine Biene, Bienen nutzen deine Bienenausrüstungs-Boni
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsFormatCYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um
-	Umkehr-Treffer formatieren die Zielhitze direkt auf voll, 6 s Abklingzeit, ein weißer Stern leuchtet wenn bereit
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsGradientYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um
-	Hitzeobergrenze steigt auf 60%, beim Steigen wechselt der Ball von Gold über Orange nach Rot
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsChikYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um
-	Die Umkehr schießt mit 2,6-facher Ballgeschwindigkeit, der Start trägt einen Knallring
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsHelFireYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um
-	Stationiert zündet es alle 2 s einen Hel-Feuerring am Boden direkt darunter
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsAmarokYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten geht in die Umlaufbahn
-	Der Umlauf zieht Frostnebel, Feinde in der Domäne −12% Tempo (in der Umlaufzeit läuft die Frist schneller)
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsCode2Yoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
-	Die Umkehr spaltet eine parallele Spiegelbahn, 40 Pixel versetzt, 50% Schaden
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsYeletsYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
-	Alle 6 Stationierungs-Treffer fliegt ein Ring aus 8 Sporen, je 40% Schaden
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsRedsThrowYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
-	Umkehr-Treffer laden 3 Lagen Rotanzeige; solange Rotanzeige bleibt, sind Stationierungs-Treffer auf dieses Ziel immer kritisch, jeder Treffer verbraucht eine Lage
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsValkyrieYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
-	Die Umlaufbahn kippt zum Walkürenwirbel, Treffer streuen Federlicht
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsKrakenYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
-	Stationiert streckt er zu den nächsten zwei Feinden je einen Tintententakel, jeder Riss 30% Schaden
-	Unbegrenzte Flugzeit, Kern der Stellung
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsEyeOfCthulhuYoyo.Desc:
 	'''
-	Rechtsklick: Klick stationiert, Doppelklick kehrt um, Halten umkreist
-	Stationiert starrt er den nächsten Feind an und speit alle 2 s 3 Bluttränen; die Umkehr wird zum vergrößerten Rammstoß, 160% Schaden
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
 GsTerrarianYoyo.Desc:
 	'''
-	Rechtsklick in Folge: markiere höchstens 3 Wegpunkte, das Jojo patrouilliert die Bézier-Route, unterwegs verdoppelt sich die Grünperlen-Kadenz
-	Jeder Hin-und-Rück löst 1 s Patrouillenresonanz aus: Nachschuss der Grünperlen wird schneller, Schaden +30%
-	Doppelklick kehrt um, Halten umkreist; ist die Route voll, löscht ein weiterer Klick die Bahn
+	Rechtsklick, während das Jojo draußen ist: es kreist um den Mauszeiger
+	Erneuter Rechtsklick oder Loslassen: zurück zum normalen Verhalten
 	'''
-GsYoyoPelletProj.DisplayName: Jojo-Geschoss
-GsYoyoBurnZoneProj.DisplayName: Brennzone
-GsYoyoMirrorProj.DisplayName: Spiegelbahn

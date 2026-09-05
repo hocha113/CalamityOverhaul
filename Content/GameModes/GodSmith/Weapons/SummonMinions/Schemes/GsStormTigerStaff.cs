@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Projectiles;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +10,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
     /// 沙漠虎杖「伏杀爪撕」：沙漠虎是独兽（宝石计槽 831 不认领、也不入阵型，
     /// 地面扑杀 AI 全权原版）；签名 = 突击令下虎爪 50 帧内抓中焦点目标满 3 次，
     /// 施展伏杀仪式：三道风沙爪痕序贯撕开（<see cref="GsStormTigerRendProj"/>，
-    /// 每道 0.55×，冷却随虎阶缩短 150/120/90 帧）；增强层 = 高速扑击的扬沙尾迹
+    /// 每道 0.55×，冷却随虎阶缩短 150/120/90 帧）
     /// </summary>
     internal class GsStormTigerStaff : GsMinionScheme
     {
@@ -22,10 +20,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         protected override string GsDescFallback =>
             "Ambush Rend: under the assault order, three tiger strikes within a breath unleash the kill rite; three storm-sand claw tears rip through the marked prey, and a mightier tiger stalks a shorter cooldown";
-
-        private static readonly Color SandAmber = new(232, 186, 108);
-        private static readonly Color SandDeep = new(150, 108, 56);
-
         /// <summary>独兽不入阵型，扑杀路线全权原版 AI</summary>
         protected override GsMinionKit Kit => null;
 
@@ -44,24 +38,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Sche
 
         public override void GsUseStyle(Item item, Player player, Rectangle heldItemFrame)
             => GsMinionCastMotion.ApplyRaise(player);
-
-        public override void GsUseAnimation(Item item, Player player)
-            => GsMinionCastMotion.CastBurst(player, SandAmber, SandDeep);
-
-        //==================== 增强层：扑击扬沙 ====================
-
-        protected override void GsMinionPostAI(Projectile proj, GodSmithProjRouter router) {
-            //只有虎体（各阶）高速扑击时扬沙，攻击斩击弹不加
-            if (VaultUtils.isServer || proj.type == ProjectileID.StormTigerAttack
-                || proj.velocity.Length() < 8f || proj.timeLeft % 3 != 0) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_Spark>(
-                proj.Center - proj.velocity * 0.4f + new Vector2(0f, proj.height * 0.3f),
-                new Vector2(-proj.velocity.X * 0.06f, -Main.rand.NextFloat(0.4f, 1f)),
-                Main.rand.NextBool() ? SandAmber : SandDeep,
-                Main.rand.NextFloat(0.18f, 0.3f))?.Configure(true, Main.rand.Next(10, 16));
-        }
 
         //==================== 签名：伏杀爪撕 ====================
 

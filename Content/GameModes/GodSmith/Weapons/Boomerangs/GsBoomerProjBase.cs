@@ -1,5 +1,3 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -12,12 +10,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
 {
     /// <summary>
-    /// 回旋镖族镖弹基类：三相轨迹状态机 + 旋转残影绘制。<br/>
-    /// 去程持续减速（OutDrag），悬停急停蓄势（自旋攀升、辉光渐亮），回程向玩家持续加速；
-    /// 悬停/回程期 owner 按右键下达改向冲刺（每掷 RedirectCharges 次）。<br/>
+    /// 回旋镖族镖弹基类：三相轨迹状态机。<br/>
+    /// 去程持续减速（OutDrag），悬停急停蓄势（自旋攀升），回程向玩家持续加速。<br/>
     /// 跨端契约：ai[0]=相位 ai[1]=相位计时 ai[2]=武器私用槽，全走 netUpdate 过线；
-    /// 计时类转相各端确定性推进，命中/输入类转相 owner 权威 + netUpdate 校正；
-    /// 输入只在 IsOwnedByLocalPlayer() 读，粒子守 !VaultUtils.isServer，绘制不掷 Main.rand
+    /// 计时类转相各端确定性推进，命中类转相 owner 权威 + netUpdate 校正
     /// </summary>
     internal abstract class GsBoomerProjBase : ModProjectile
     {
@@ -38,13 +34,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
         /// <summary>对应的原版物品 ID（贴图与显示名来源）</summary>
         internal abstract int SourceItemID { get; }
 
-        /// <summary>主题辉光色（材质身份的颜色面）</summary>
-        protected abstract Color GlowColor { get; }
-
         //==================== 三相参数面 ====================
-
-        protected virtual Color TrailColor => GlowColor;
-        protected virtual Color SmearColor => GlowColor;
 
         /// <summary>去程帧数</summary>
         protected virtual int OutTime => 26;
@@ -60,14 +50,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
         protected virtual float ReturnAccel => 0.55f;
         /// <summary>回程速度上限</summary>
         protected virtual float ReturnMaxSpeed => 17f;
-        /// <summary>指令冲刺速度</summary>
+        /// <summary>冲刺速度（回弹/折射/折跳等机制借冲刺相位续飞）</summary>
         protected virtual float DashSpeed => 19f;
-        /// <summary>指令冲刺时长帧</summary>
+        /// <summary>冲刺时长帧</summary>
         protected virtual int DashTime => 16;
-        /// <summary>每掷可用指令次数</summary>
-        protected virtual int RedirectCharges => 1;
-        /// <summary>去程也允许下达指令</summary>
-        protected virtual bool AllowCommandInOut => false;
         /// <summary>去程首次命中即转悬停（命中滞空读法）</summary>
         protected virtual bool HoverOnFirstHit => true;
         /// <summary>撞墙折回（false 交由子类 HandleTileCollide 全权）</summary>
@@ -80,8 +66,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
         protected virtual float BodyScale => 1f;
         /// <summary>自旋倍率</summary>
         protected virtual float SpinRateMul => 1f;
-        /// <summary>残影基础透明度</summary>
-        protected virtual float GhostBaseAlpha => 0.22f;
         /// <summary>命中音（族默认金属轻鸣，木质武器覆写）</summary>
         protected virtual SoundStyle HitSound => SoundID.Tink with { Volume = 0.5f, Pitch = 0.2f };
 
@@ -101,18 +85,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
 
         protected Player Owner => Main.player[Projectile.owner];
 
-        /// <summary>当前自旋角速度（各端确定性推进，绘制涂抹用）</summary>
+        /// <summary>当前自旋角速度（各端确定性推进）</summary>
         protected float spinSpeed;
         /// <summary>自旋方向，由初速 X 符号决定</summary>
         protected int spinDir = 1;
-        /// <summary>已用指令次数（owner 权威本地量）</summary>
-        protected int redirectsUsed;
-        private bool prevRight;
-
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 9;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
-        }
 
         public sealed override void SetDefaults() {
             Projectile.width = Projectile.height = HitboxSize;
@@ -148,7 +124,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
 
             PhaseTimer++;
             UpdateSpin();
-            ReadOwnerCommand(owner);
 
             switch (Phase) {
                 case PhaseOut:
@@ -186,11 +161,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
                     }
                     break;
             }
-
-            if (!VaultUtils.isServer) {
-                FlightFX(owner);
-            }
-            Lighting.AddLight(Projectile.Center, GlowColor.ToVector3() * 0.35f);
 
             //超距保险：拉得太远直接消散（回程速度上限追不上传送等极端位移）
             if (Projectile.Distance(owner.Center) > 2600f) {
@@ -232,44 +202,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             _ => 0.42f,
         };
 
-        //==================== 指令改向 ====================
-
-        private void ReadOwnerCommand(Player owner) {
-            if (!Projectile.IsOwnedByLocalPlayer()) {
-                return;
-            }
-            bool right = Main.mouseRight && !owner.mouseInterface;
-            bool edge = right && !prevRight;
-            prevRight = right;
-            if (!edge || owner.HeldItem == null || owner.HeldItem.type != SourceItemID) {
-                return;
-            }
-            if (redirectsUsed >= RedirectCharges) {
-                return;
-            }
-            bool phaseOk = Phase == PhaseHover || Phase == PhaseReturn || (AllowCommandInOut && Phase == PhaseOut);
-            if (!phaseOk) {
-                return;
-            }
-            redirectsUsed++;
-            CommandDash(Main.MouseWorld, owner);
-        }
-
-        /// <summary>下达改向冲刺（owner 端调用，netUpdate 带 ai 与速度过线）</summary>
-        protected virtual void CommandDash(Vector2 aim, Player owner) {
-            Projectile.velocity = (aim - Projectile.Center).SafeNormalize(Vector2.UnitX * spinDir) * DashSpeed;
-            Projectile.tileCollide = true;
-            EnterPhase(PhaseDash, owner);
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.5f, Pitch = 0.25f }, Projectile.Center);
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, GlowColor, 0.4f)?.Configure(10, 0.9f);
-            }
-            OnCommandFX(owner);
-        }
-
-        /// <summary>改向瞬间的个性演出（owner 端）</summary>
-        protected virtual void OnCommandFX(Player owner) { }
-
         //==================== 碰撞与命中 ====================
 
         public sealed override bool OnTileCollide(Vector2 oldVelocity) => HandleTileCollide(oldVelocity);
@@ -281,11 +213,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             }
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.4f, Pitch = 0.3f }, Projectile.Center);
-                for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                        -oldVelocity.RotatedByRandom(0.6) * Main.rand.NextFloat(0.1f, 0.25f),
-                        TrailColor, Main.rand.NextFloat(0.3f, 0.45f))?.Configure(true, Main.rand.Next(10, 16));
-                }
             }
             //弹开一点防卡角
             if (Projectile.velocity.X != oldVelocity.X) {
@@ -304,7 +231,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             OnHitEffects(target, hit, damageDone);
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(HitSound, target.Center);
-                HitBurstFX(target, hit);
             }
             if (HoverOnFirstHit && Phase == PhaseOut) {
                 //命中滞空：去程撞上目标就停在它身边打转
@@ -315,18 +241,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
         /// <summary>命中骑士钩（owner 端；叠层/折射/处决逻辑放这）</summary>
         protected virtual void OnHitEffects(NPC target, NPC.HitInfo hit, int damageDone) { }
 
-        /// <summary>命中粒子默认：主题色火星迸溅 + 点光</summary>
-        protected virtual void HitBurstFX(NPC target, NPC.HitInfo hit) {
-            PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero, GlowColor, 0.22f)?.Configure(9, 0.8f);
-            for (int i = 0; i < 4; i++) {
-                Vector2 vel = Projectile.velocity.SafeNormalize(Vector2.UnitX)
-                    .RotatedByRandom(0.8) * Main.rand.NextFloat(2.5f, 6f);
-                PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, GlowColor,
-                    Main.rand.NextFloat(0.35f, 0.55f))?.Configure(true, Main.rand.Next(12, 18));
-            }
-        }
-
-        /// <summary>回手：接住瞬间（格挡窗/收尾演出放这），随后消亡</summary>
+        /// <summary>回手：接住瞬间（格挡窗放这），随后消亡</summary>
         private void CatchBack(Player owner) {
             OnCatch(owner);
             if (!VaultUtils.isServer) {
@@ -349,31 +264,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
         protected virtual void OnReturnTick(Player owner) { }
         /// <summary>冲刺每帧</summary>
         protected virtual void OnDashTick(Player owner) { }
-        /// <summary>进相瞬间（各端；音效粒子自守 !VaultUtils.isServer）</summary>
+        /// <summary>进相瞬间（各端；音效自守 !VaultUtils.isServer）</summary>
         protected virtual void OnEnterPhase(int phase, Player owner) { }
 
-        /// <summary>飞行粒子默认：低频点缀，悬停期加密（蓄势第二读法）</summary>
-        protected virtual void FlightFX(Player owner) {
-            int interval = Phase switch { PhaseHover => 3, PhaseDash => 2, PhaseReturn => 4, _ => 5 };
-            if (PhaseTimer % interval == 0) {
-                PRTLoader.NewParticle<PRT_Light>(
-                    Projectile.Center - (Projectile.velocity * 0.4f),
-                    -Projectile.velocity * 0.05f, TrailColor, 0.12f)?.Configure(12, 0.55f);
-            }
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            for (int i = 0; i < 4; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
-                    Main.rand.NextVector2Circular(2.5f, 2.5f), TrailColor,
-                    Main.rand.NextFloat(0.3f, 0.45f))?.Configure(true, Main.rand.Next(8, 14));
-            }
-        }
-
-        //==================== 绘制：残影 + 旋转涂抹 + 本体 + 蓄势辉光 ====================
+        //==================== 绘制：原版物品贴图本体一笔 ====================
 
         public sealed override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
@@ -384,58 +278,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             PreDrawUnder(sb, drawPos, lightColor);
-
-            //位置残影：越旧越淡越小
-            int len = ProjectileID.Sets.TrailCacheLength[Type];
-            for (int i = len - 1; i >= 1; i--) {
-                if (Projectile.oldPos[i] == Vector2.Zero) {
-                    continue;
-                }
-                float k = 1f - (i / (float)len);
-                Color gc = TrailColor * (GhostBaseAlpha * k * k);
-                gc.A = 0;
-                Vector2 gpos = Projectile.oldPos[i] + (Projectile.Size / 2f) - Main.screenPosition;
-                sb.Draw(tex, gpos, null, gc, Projectile.oldRot[i], origin,
-                    scale * (0.9f + (0.1f * k)), SpriteEffects.None, 0);
-            }
-
-            //旋转涂抹：亮度跟角速度走，双瓣对称
-            float spinNorm = MathF.Min(1f, MathF.Abs(spinSpeed) / 0.9f);
-            Texture2D smear = CWRAsset.SemiCircularSmear?.Value;
-            if (spinNorm > 0.15f && smear != null) {
-                float smearScale = tex.Size().Length() * scale / smear.Width * 1.5f;
-                Color sc = SmearColor * (0.34f * spinNorm);
-                sc.A = 0;
-                sb.Draw(smear, drawPos, null, sc, Projectile.rotation,
-                    smear.Size() / 2f, smearScale, SpriteEffects.None, 0);
-                Color sc2 = sc * 0.55f;
-                sc2.A = 0;
-                sb.Draw(smear, drawPos, null, sc2, Projectile.rotation + MathHelper.Pi,
-                    smear.Size() / 2f, smearScale * 0.92f, SpriteEffects.None, 0);
-            }
-
-            //本体（原版物品贴图只当本体垫底，残影辉光全是自绘层）
             sb.Draw(tex, drawPos, null, lightColor, Projectile.rotation, origin, scale, SpriteEffects.None, 0);
-
-            //蓄势辉光：悬停攀升、冲刺满亮、回程余亮
-            float charge = Phase switch {
-                PhaseHover => MathHelper.Clamp(PhaseTimer / (float)HoverTime, 0f, 1f),
-                PhaseDash => 1f,
-                PhaseReturn => 0.35f,
-                _ => 0.12f,
-            };
-            Color glow = GlowColor * (0.14f + (0.42f * charge));
-            glow.A = 0;
-            sb.Draw(tex, drawPos, null, glow, Projectile.rotation, origin, scale * 1.06f, SpriteEffects.None, 0);
-
-            PostDrawLayers(sb, drawPos, lightColor);
             return false;
         }
 
-        /// <summary>本体之下的自绘层（链条/领域等）</summary>
+        /// <summary>本体之下的结构层（船锚链条）</summary>
         protected virtual void PreDrawUnder(SpriteBatch sb, Vector2 drawPos, Color lightColor) { }
-
-        /// <summary>本体之上的自绘层（光环/印记等）</summary>
-        protected virtual void PostDrawLayers(SpriteBatch sb, Vector2 drawPos, Color lightColor) { }
     }
 }

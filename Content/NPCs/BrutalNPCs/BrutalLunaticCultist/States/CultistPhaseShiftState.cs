@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 return null;
             }
             if (Timer >= Duration) {
-                return new CultistCoilState(10);
+                return new CultistCoilState(7);
             }
             return null;
         }

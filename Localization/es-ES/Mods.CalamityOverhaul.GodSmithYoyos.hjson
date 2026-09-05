@@ -1,112 +1,109 @@
+# GodSmith mode - Yoyos family descriptions
+# Keys are composed by the framework: Mods.CalamityOverhaul.GodSmithYoyos.{SchemeClassName}.Desc
+# Every yoyo shares the same right-click orbit command, so all entries carry the same text
+
 GsWoodYoyo.Desc:
 	'''
-	Clic derecho: ancla; el yoyó patrulla en el sitio del cursor
-	Los golpes anclados al mismo objetivo acumulan Calor y el daño sube hasta un 40%
-	Cada 4.º impacto anclado lanza 2 dardos de astilla, 25% de daño cada uno
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsRallyYoyo.Desc:
 	'''
-	Clic derecho: ancla y patrulla
-	Cada 5 impactos anclados sube un grado el ritmo de golpe, hasta tres grados; al recoger el yoyó se pone a cero
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsMalaiseYoyo.Desc:
 	'''
-	Clic derecho: ancla y patrulla
-	Alrededor del ancla se cierne un campo de languidez que baja un 8% la velocidad de movimiento de los enemigos
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsArteryYoyo.Desc:
 	'''
-	Clic derecho: ancla y patrulla
-	Los impactos anclados tienen un 20% de probabilidad de salpicar una perla de sangre que inflige un 15% de daño
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsAmazonYoyo.Desc:
 	'''
-	Clic derecho: ancla y patrulla
-	Los impactos anclados aplican veneno; a Calor máximo la duración del veneno se duplica
-	A Calor máximo el orbe echa lianas venenosas que, cada 0.75 segundos, azotan al enemigo más cercano: 20% de daño y veneno
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsCode1Yoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza un retorno que atraviesa de vuelta a la mano (2.2 veces la velocidad del orbe, 135% de daño)
-	El retorno que acierta deja 3 segundos de Punto de quiebre; los impactos anclados a un objetivo con Punto de quiebre hacen un 30% más de daño
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsValorYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno
-	El retroceso del retorno se duplica; si hay no menos de 3 enemigos cerca del ancla, el daño anclado sube un 15%
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsCascadeYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno
-	Al acertar cae una cascada de chispas; la trayectoria del retorno deja una línea de fuego que quema
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsHiveFiveYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno
-	Al anclarse se vuelve un panal y, cada 0.8 segundos, suelta una abeja; las abejas reciben las mejoras de tu equipo de abejas
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsFormatCYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno
-	El retorno que acierta formatea de golpe el Calor del objetivo al máximo; 6 segundos de enfriamiento; una estrella blanca encendida indica que está listo
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsGradientYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno
-	El tope de Calor sube al 60%; al trepar el Calor, el orbe pasa de oro a naranja y luego a rojo
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsChikYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno
-	El retorno sale a 2.6 veces la velocidad del orbe, con un anillo de estampido al disparar
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsHelFireYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno
-	Cada 2 segundos, el ancla enciende un anillo de fuego abisal en el suelo justo debajo
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsAmarokYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno; mantener pulsado entra en órbita
-	La órbita arrastra niebla de escarcha; los enemigos dentro del dominio se ralentizan un 12% (durante la órbita el límite de tiempo corre más rápido)
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsCode2Yoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno; mantener pulsado orbita
-	El retorno se parte en una trayectoria espejo paralela, desfasada 40 píxeles, que inflige un 50% de daño
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsYeletsYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno; mantener pulsado orbita
-	Cada 6 impactos anclados lanza un anillo de 8 esporas, 40% de daño cada una
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsRedsThrowYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno; mantener pulsado orbita
-	El retorno que acierta carga 3 capas de Marca roja en el objetivo; mientras quede Marca roja, los impactos anclados a ese objetivo son críticos seguros y cada impacto gasta una capa
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsValkyrieYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno; mantener pulsado orbita
-	La órbita se inclina en el giro de una valquiria y, al acertar, esparce luz de plumas
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsKrakenYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno; mantener pulsado orbita
-	Al anclarse, extiende un tentáculo de tinta hacia cada uno de los dos enemigos más cercanos; cada desgarro inflige un 30% de daño
-	Tiempo de vuelo ilimitado; el núcleo de un combate de posición
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsEyeOfCthulhuYoyo.Desc:
 	'''
-	Clic derecho: un clic ancla; doble clic lanza el retorno; mantener pulsado orbita
-	Al anclarse vigila al enemigo más cercano y, cada 2 segundos, escupe 3 lágrimas de sangre; el retorno se vuelve una embestida ampliada que inflige un 160% de daño
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
 GsTerrarianYoyo.Desc:
 	'''
-	Clic derecho repetido: marca hasta 3 puntos de ruta; el yoyó patrulla por una curva de Bézier y, en la ronda, la cadencia de perlas verdes se duplica
-	Cada ida y vuelta completa activa 1 segundo de Resonancia de ronda: las perlas verdes de refuerzo salen más rápido y el daño sube un 30%
-	Doble clic lanza el retorno; mantener pulsado orbita; con la ruta llena, otro clic la borra
+	Clic derecho con el yoyó fuera: gira en círculo alrededor del cursor
+	Otro clic derecho o soltar: vuelve al comportamiento normal
 	'''
-GsYoyoPelletProj.DisplayName: Proyectil de yoyó
-GsYoyoBurnZoneProj.DisplayName: Zona abrasadora
-GsYoyoMirrorProj.DisplayName: Trayectoria espejo

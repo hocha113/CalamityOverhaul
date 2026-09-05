@@ -1,9 +1,8 @@
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -20,9 +19,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         public override int TargetItemID => ItemID.PlatinumShortsword;
 
         protected override string GsDescFallback =>
-            "Reforged: the thrust outruns its own light, leaving a platinum afterimage hanging along the line;" +
-            "\nfoes that brush the lingering light take 40% damage";
-
+            "Reforged: the thrust outruns its own light, leaving a platinum afterimage hanging along the line;\nfoes that brush the lingering light take 40% damage";
         protected override int HeldProjType => ModContent.ProjectileType<GsPlatinumShortswordHeld>();
 
         public override void GsModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
@@ -37,11 +34,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
     {
         protected override int TargetItemType => ItemID.PlatinumShortsword;
 
-        //冷铂色板
-        internal static readonly Color PlatBright = new(242, 247, 255);
-        internal static readonly Color PlatMain = new(198, 210, 230);
-        internal static readonly Color PlatCold = new(150, 182, 242);
-
         protected override float WindupFrames => 4f;
         protected override float ThrustFrames => 4f;//刺出仍是族内最锐
         protected override float DwellFrames => 3f;
@@ -53,9 +45,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
         protected override int HitstopFrames => 2;
         protected override float LeanAmp => 0.042f;
         protected override float ThrustPitch => -0.28f;//铂金厚重低音
-
-        protected override Color EdgeColor => PlatBright;
-        protected override Color CoreColor => PlatCold;
 
         /// <summary>尖端定格瞬间：在刺线驻留铂光残像（owner 端生成，几何随 ai/velocity 过线）</summary>
         protected override void OnDwellStart() {
@@ -71,32 +60,15 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
                 ModContent.ProjectileType<GsPlatinumShortswordAfterProj>(),
                 Math.Max(1, (int)(BaseDamage * 0.40f)), Projectile.knockBack * 0.3f, Owner.whoAmI, halfLen);
         }
-
-        /// <summary>命中反馈：冷铂碎光，蓝白双色</summary>
-        protected override void SpawnHitEffects(NPC target, NPC.HitInfo hit) {
-            Vector2 pos = Vector2.Lerp(TipPos, target.Center, 0.5f);
-            for (int i = 0; i < 6; i++) {
-                Vector2 vel = stabUnit.RotatedByRandom(0.55) * Main.rand.NextFloat(3.5f, 8f);
-                Color c = Main.rand.NextBool(3) ? PlatCold : PlatBright;
-                PRTLoader.NewParticle<PRT_Spark>(pos, vel, c, Main.rand.NextFloat(0.35f, 0.6f))
-                    ?.Configure(true, Main.rand.Next(12, 20));
-            }
-            PRTLoader.NewParticle<PRT_Light>(pos, Vector2.Zero, PlatCold, 0.18f)?.Configure(9, 0.7f);
-            if (!CWRLoad.NPCValue.ISTheofSteel(target)) {
-                Dust d = Dust.NewDustPerfect(pos, DustID.Blood,
-                    stabUnit.RotatedByRandom(0.8) * Main.rand.NextFloat(1.5f, 3.5f), 100, default, Main.rand.NextFloat(0.9f, 1.2f));
-                d.noGravity = Main.rand.NextBool();
-            }
-        }
     }
 
     /// <summary>
     /// 铂光残像：刺线位置驻留的静止光刃，约 0.63 秒；撞上的敌人吃 40% 伤害（对每个目标单次判定）。<br/>
-    /// ai[0]=半长；velocity 只作方向载体不推进。自绘 LightShot 拉丝 + SoftGlow 端点，尾段渐隐停判
+    /// ai[0]=半长；velocity 只作方向载体不推进。用原版附魔剑光束贴图沿刺线拉伸一笔，尾段渐隐停判
     /// </summary>
     internal class GsPlatinumShortswordAfterProj : ModProjectile
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.EnchantedBeam;
         public override LocalizedText DisplayName => Language.GetText("ItemName.PlatinumShortsword");
 
         private const int LifeFrames = 38;
@@ -123,7 +95,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
 
         public override void AI() {
             Projectile.rotation = Unit.ToRotation();
-            Lighting.AddLight(Projectile.Center, GsPlatinumShortswordHeld.PlatCold.ToVector3() * (0.30f * (1f - LifeT)));
 
             //出生一声冷冽余音（各端自演一次）
             if (Projectile.localAI[0] == 0f) {
@@ -149,46 +120,22 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             if (VaultUtils.isServer) {
                 return;
             }
-            //残像割痕：轻脆冷响 + 两粒冷铂火花
+            //残像割痕：轻脆冷响
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.35f, Pitch = 0.5f }, target.Center);
-            for (int i = 0; i < 2; i++) {
-                Vector2 vel = Unit.RotatedByRandom(0.6) * Main.rand.NextFloat(2f, 5f);
-                PRTLoader.NewParticle<PRT_Spark>(target.Center, vel,
-                    GsPlatinumShortswordHeld.PlatCold, Main.rand.NextFloat(0.3f, 0.5f))
-                    ?.Configure(true, Main.rand.Next(10, 16));
-            }
         }
 
-        /// <summary>自绘残像：双层 LightShot 拉丝沿线 + SoftGlow 端点亮斑；渐隐用寿命进度，无随机</summary>
+        /// <summary>残像线本体：原版光束贴图沿刺线拉伸一笔，寿命进度渐隐</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D streak = CWRAsset.LightShot?.Value;
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (streak == null || glow == null) {
-                return false;
-            }
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
             float fade = 1f - LifeT;
             fade *= fade;//二次曲线：前段亮足、尾段快速熄灭
             if (fade <= 0.02f) {
                 return false;
             }
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            float rot = Projectile.rotation;
-            Vector2 texSize = streak.Size();
-            float len = HalfLen * 2f;
-
-            //外层宽拉丝（冷蓝）
-            Color outer = GsPlatinumShortswordHeld.PlatCold with { A = 0 } * (0.45f * fade);
-            Main.spriteBatch.Draw(streak, drawPos, null, outer, rot, texSize / 2f,
-                new Vector2(len / texSize.X, 0.22f * fade + 0.05f), SpriteEffects.None, 0f);
-            //内层细芯（铂白）
-            Color inner = GsPlatinumShortswordHeld.PlatBright with { A = 0 } * (0.60f * fade);
-            Main.spriteBatch.Draw(streak, drawPos, null, inner, rot, texSize / 2f,
-                new Vector2(len / texSize.X * 0.94f, 0.10f * fade + 0.03f), SpriteEffects.None, 0f);
-            //尖端亮斑（残像的「刀尖」）
-            Vector2 tip = drawPos + Unit * HalfLen;
-            Main.spriteBatch.Draw(glow, tip, null,
-                GsPlatinumShortswordHeld.PlatBright with { A = 0 } * (0.55f * fade), 0f,
-                glow.Size() / 2f, 0.20f * fade + 0.04f, SpriteEffects.None, 0f);
+            Vector2 texSize = tex.Size();
+            Main.spriteBatch.Draw(tex, drawPos, null, lightColor * fade, Projectile.rotation, texSize / 2f,
+                new Vector2(HalfLen * 2f / texSize.X, 1f), SpriteEffects.None, 0f);
             return false;
         }
     }

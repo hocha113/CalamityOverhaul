@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
     internal class GsSwordfishHeld : GsThrustHeldBase
     {
         protected override int TargetItemType => ItemID.Swordfish;
+        protected override bool SelfDrawnVisuals => true;
 
         //剑鱼银蓝色板
         internal static readonly Color FishSilver = new(218, 232, 242); //鱼身银

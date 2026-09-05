@@ -1,8 +1,3 @@
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -112,22 +107,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
             if (Projectile.localAI[1] % 45 == 0 && collapse01 <= 0f && targetCache[0] != EmptySlot) {
                 SoundEngine.PlaySound(SoundID.Item13 with { Volume = 0.3f, Pitch = -0.35f, MaxInstances = 2 }, Projectile.Center);
             }
-            Lighting.AddLight(Projectile.Center, GsConduitVFX.BloodMain.ToVector3() * 0.35f);
-
-            //血珠沿丝回流（各端从同一份锁定列表发散，预算 ≤3/帧）
-            if (Main.GameUpdateCount % 3 != 0 || collapse01 > 0f) {
-                return;
-            }
-            for (int i = 0; i < MaxTargets; i++) {
-                NPC npc = LockedTarget(i);
-                if (npc == null) {
-                    continue;
-                }
-                Vector2 at = Vector2.Lerp(npc.Center, Projectile.Center, Main.rand.NextFloat(0.1f, 0.5f));
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(at,
-                    (Projectile.Center - at).SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(1.5f, 3f),
-                    GsConduitVFX.BloodMain, Main.rand.NextFloat(0.4f, 0.7f));
-            }
         }
 
         protected override bool? DamageGate() => Projectile.localAI[1] >= 4f ? null : false;
@@ -143,43 +122,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
             return false;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-            PRTLoader.NewParticle<PRT_CrimsonBloodStain>(target.Center + Main.rand.NextVector2Circular(8f, 8f),
-                Main.rand.NextVector2Circular(1.2f, 1.2f), GsConduitVFX.BloodDeep, Main.rand.NextFloat(0.5f, 0.8f));
-        }
-
         public override bool PreDraw(ref Color lightColor) {
-            //先画法器本体（法杖斜握），血丝与血泵核压在其上
+            //先画法器本体（法杖斜握），每条血丝一笔拉伸原版束条压在其上（与判定读同一份锁定列表）
             DrawWeaponBody();
             Decode();
-            bool whiteHot = HeatStageSync >= 1;
             float alpha = 0.9f - 0.7f * MathHelper.Clamp(Projectile.localAI[0] / CollapseTicks, 0f, 1f);
-            SpriteBatch sb = Main.spriteBatch;
             Vector2 muzzle = Projectile.Center;
-
-            bool anyTarget = false;
             for (int i = 0; i < MaxTargets; i++) {
                 NPC npc = LockedTarget(i);
                 if (npc == null) {
                     continue;
                 }
-                anyTarget = true;
-                //粘稠血丝（灾厄僧帽水母 VFX 的在册共享画法），白热加一道亮芯
-                FishBloodyManowarVFX.DrawBloodThread(sb, muzzle, npc.Center, 0.55f, alpha, npc.whoAmI * 0.37f);
-                if (whiteHot) {
-                    FishBloodyManowarVFX.DrawBloodThread(sb, muzzle, npc.Center, 0.4f, alpha * 0.6f, npc.whoAmI * 0.37f + 3.1f);
-                }
+                Vector2 delta = npc.Center - muzzle;
+                DrawBeamStrip(ProjectileID.LastPrismLaser, muzzle, delta, delta.Length(), 6f, lightColor * alpha);
             }
-
-            //杖尖血泵光核；无目标时是暗淡待机脉
-            Texture2D glow = CWRAsset.SoftGlow.Value;
-            float pump = 0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * (anyTarget ? 10f : 4f) + Projectile.identity);
-            Color core = (whiteHot ? GsConduitVFX.BloodBright : GsConduitVFX.BloodMain) with { A = 0 };
-            sb.Draw(glow, muzzle - Main.screenPosition, null, core * (0.75f * alpha * pump),
-                0f, glow.Size() / 2f, anyTarget ? 0.5f : 0.32f, SpriteEffects.None, 0f);
             return false;
         }
     }
