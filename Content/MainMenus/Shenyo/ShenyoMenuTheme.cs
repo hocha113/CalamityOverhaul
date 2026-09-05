@@ -40,11 +40,21 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
         public static readonly Vector2 ParallaxMax = new(0.016f, 0.007f);
 
         //====== 立绘映射（Shenyo.png 258×544，沙盒校准）======
-        public static readonly Vector2 PortraitTexel = new(1f / 258f, 1f / 544f);
+        public const int PortraitWidth = 258;
+        public const int PortraitHeight = 544;
+        public static readonly Vector2 PortraitTexel = new(1f / PortraitWidth, 1f / PortraitHeight);
         /// <summary>双目中心（立绘uv），瞳孔实测像素 (130,107)/(156,109) 的中点</summary>
         public static Vector2 EyeUv => new(0.5543f, 0.1985f);
         /// <summary>目距半宽（uv），瞳距 26px 之半</summary>
         public const float EyeSep = 0.0504f;
+        /// <summary>
+        /// 湖水线所在的立绘像素行：实测网袜 y≈452~463、靴口花边 y≈463~478、踝部 y≈505、鞋底 y=544。
+        /// 取 464 即水淹到袜子中段：网袜露出上半截，花边袜口与整只靴子没入湖中（用户裁定 2026-09，
+        /// 原 484 只没过脚踝、整段袜子外露，判为不够深）；此行以下没入湖中
+        /// </summary>
+        public const int WaterlineRow = 464;
+        /// <summary>水线立绘 v（与 ShenyoMenuGhost.fx 的 uWaterV 共享）</summary>
+        public const float WaterlineV = WaterlineRow / (float)PortraitHeight;
 
         /// <summary>湖上立影排布：X=uv横位 Depth=0远1近 Flip=翻面 Clarity=澄出本色量 Anchor=常驻锚影</summary>
         public readonly struct FigureDef(float x, float depth, bool flip, float clarity, bool anchor = false)
@@ -58,6 +68,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
 
         //分镜：远排四影散在水线月光路两侧，中排两影拉开纵深，
         //近中一影压在光路旁，右侧大近影为常驻锚——左列留给标题与按钮
+        //顺序即 uFeet 槽位：前四槽须是远影（着色器对这四槽只算涟漪波包、不算颤纹）
         public static readonly FigureDef[] Figures = [
             new(0.545f, 0.05f, false, 0.00f),
             new(0.615f, 0.09f, true, 0.00f),
@@ -101,11 +112,14 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
         /// <summary>立影身高（屏高占比）</summary>
         public static float FigureHeight(float depth) => 0.055f + 0.545f * MathF.Pow(depth, 1.32f);
 
-        /// <summary>立影足点 y（uv）</summary>
-        public static float FigureFeetY(float depth) => HorizonY + 0.012f + 0.42f * MathF.Pow(depth, 1.6f);
+        /// <summary>
+        /// 立影水线接触点 y（uv）：身体在此没入湖面（立绘 <see cref="WaterlineV"/> 行对齐此处）。
+        /// 系数 0.36 让锚影（depth 0.93）落在 0.953，屏底留出约 5% 高的水面画涟漪
+        /// </summary>
+        public static float FigureWaterlineY(float depth) => HorizonY + 0.012f + 0.36f * MathF.Pow(depth, 1.6f);
 
-        /// <summary>足下接触涟漪半径（uv 纵向尺度，与湖面着色器约定一致）</summary>
-        public static float FigureRingRadius(float depth) => 0.02f + FigureHeight(depth) * 0.22f;
+        /// <summary>足下接触涟漪半径（透视空间尺度：横向半径≈此值×屏高像素，与湖面着色器约定一致）</summary>
+        public static float FigureRingRadius(float depth) => 0.02f + FigureHeight(depth) * 0.20f;
 
         /// <summary>大气透视：越远越向潮雾靠拢</summary>
         public static float FigureHaze(float depth) => 0.55f * (1f - MathF.Pow(depth, 0.6f));
@@ -122,7 +136,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
 
         /// <summary>立影视差系数：与湖面月光路的透视视差同源（水线0.18→近岸0.85）</summary>
         public static float FigureParallax(float depth) {
-            float dLake = MathHelper.Clamp((FigureFeetY(depth) - HorizonY) / (1f - HorizonY), 0f, 1f);
+            float dLake = MathHelper.Clamp((FigureWaterlineY(depth) - HorizonY) / (1f - HorizonY), 0f, 1f);
             return MathHelper.Lerp(0.18f, 0.85f, dLake);
         }
     }

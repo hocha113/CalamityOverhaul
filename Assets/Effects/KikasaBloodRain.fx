@@ -7,14 +7,15 @@
 //           双模态张力抖动(顶点滞空放大),一侧噪声撕胖,一侧窄反射带,
 //           uSubmerged 入水转凝血(红进红靠更沉的色读轮廓),uGhost 追击穿透态鬼青缘。
 //           头在 quad 上缘(y 负=运动方向):C# 侧 rotation = 速度角 + PiOver2
-//TechColumn:血柱。自湖面拔起的上升射流,液体感四件(2026-09-04 二稿,一稿被判"湖里升起个红东西"):
-//           芯股=x 高频 y 低频快速上涌的纵向丝流(边与浓淡都吃它)+上行鼓包泵动,
-//           头=推进的球状液团+其上 3~5 根液指、指尖断滴,
-//           两翼=uFallback 回落帘(与芯反向、向下流的血丝,液体到顶后往回落),
-//           根=被顶起的薄溅裙+搅浊沫环;厚处沉、薄处透亮(薄膜血是亮红)+外沿一线暗轮廓;
-//           uCollapse 塌回=根部颈缩断供+整柱下坠+球头先脱离,不淡出。
+//TechColumn:血柱。自湖面拔起的上升射流,三稿(2026-09-04):液体感的重点是**离散与解离**,不是圆润——
+//           一稿(撕碎毛边)被判"湖里升起个红东西",二稿加球头反而读成"窜出来的红拳头",整体感更重。
+//           三稿把柱拆散:柱身=四股各自摆动的液股,离根越远越散开,每股沿高度按噪声颈缩成珠链、
+//           越高越碎,到自己的股高断成渐小的滴串;根部诸股并成一段主干;股外散着随流上涌的碎滴;
+//           两翼=uFallback 回落帘(向下流的离散细丝);根=离散的溅刺(不是实心丘)+薄沫环;
+//           厚(叠合)处沉、单股薄处透亮(薄膜血是亮红)+外沿一线暗轮廓;
+//           uCollapse 塌回=根部颈缩断供+整柱下坠+断裂阈值抬升(整束崩解),不淡出。
 //           纵坐标以水线为原点按柱宽标定(y=(uRootV-v)/uWScale,正=水上)。
-//           飞沫另由 C# 有物理粒子(PRT_KikasaBloodSpray)承担,着色器只画"连续的那一股"
+//           飞沫另由 C# 有物理粒子(PRT_KikasaBloodSpray)承担,着色器只画"连续的那几股"
 //TechSiphon:血索。倒撑蓄墨期从湖面抽进碗口的细索:足=张力尖锥,身=两股拧绳,
 //           顶=喇叭进碗(禁平切);uFill 越满越粗越亮
 //坐标全笛卡尔(无 atan2),直线算术+普通 tex2D,FNA3D 安全;预乘输出进 AlphaBlend 批。
@@ -157,6 +158,23 @@ float4 PSBead(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0
 
 //==================== 血柱 ====================
 
+//单股液股:中心 cx、基准半径 R、股高 hI;沿高度按噪声颈缩成珠链(低于断裂阈值处半径归零=股断成珠),
+//超过股高后滴串渐小渐散;brk 越大断得越碎(随高度与塌回增长);thick 回报该股在此像素的相对厚度
+float strandMask(float dx, float yb, float cx, float R, float hI, float brk, float neckAmp, float phase, float eN, out float thick)
+{
+    //颈缩用解析正弦(Plateau-Rayleigh 的波长本就规则,珠是圆的),噪声只扰相位与幅度让珠链不机械;
+    //阈值切在波谷=股断成一颗颗圆珠,而不是噪声阈值切出的平顶片;neckAmp 随高度增长,低处仍是连续的股
+    float nb = nrm(tex2D(uNoiseTex, float2(phase, yb * 0.12 - uTime * 0.9)).r);
+    float wave = 0.5 + 0.5 * sin(yb * 5.2 - uTime * 36.0 + phase * 6.0 + (nb - 0.5) * 2.5);
+    float bead = smoothstep(brk - 0.18, brk + 0.18, wave);
+    float rad = R * (1.0 - neckAmp * (1.0 - wave)) * (0.85 + 0.3 * nb) * bead;
+    rad *= 1.0 - smoothstep(hI, hI + 1.4, yb);
+    float d = abs(dx - cx) + (eN - 0.5) * 0.06;
+    float m = 1.0 - smoothstep(rad - 0.035, rad + 0.02, d);
+    thick = m * 0.5 * saturate(rad / max(R, 1e-3));
+    return m;
+}
+
 float4 PSColumn(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0
 {
     float ws = max(uWScale, 0.004);
@@ -170,118 +188,115 @@ float4 PSColumn(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0
     float t = yb / H;                         //0 根 → 1 头
     float tc = saturate(t);
 
-    float rise = 1.0 - uCollapse;
-
-    //中轴:根钉死,向上放大的行波+噪声游走,液体甩头不是刚体摆
-    float swayEnv = pow(tc, 1.4);
+    //整束中轴:根钉死,向上放大的游走;各股再各自摆
+    float swayEnv = pow(tc, 1.3);
     float nSp = nrm(tex2D(uNoiseTex, float2(uSeed * 3.1, yb * 0.12 - uTime * 0.35)).r);
     float spine = sin(yb * 1.9 + uTime * 3.0 + uSeed) * 0.05 * swayEnv
                 + (nSp - 0.5) * 0.14 * swayEnv;
     float dx = xc - spine;
-    float sideSign = step(0.0, dx);
 
-    //纵向丝流:x 高频、y 低频、快速上涌——"液体在流"的最强证据,边与密度都吃它
-    float fil = nrm(tex2D(uNoiseTex, float2(dx * 4.0 + uSeed * 1.7, yb * 0.08 - uTime * 2.6)).r);
-    float fil2 = nrm(tex2D(uNoiseTex, float2(dx * 2.2 + uSeed * 4.3, yb * 0.14 - uTime * 1.7)).g);
+    //共享蚀边(中频、略毛:一稿的毛边比二稿的光滑读得更像液体)
+    float eL = nrm(tex2D(uNoiseTex, float2(uSeed * 2.1 + 0.13, yb * 0.6 - uTime * 1.4)).g);
+    float eR = nrm(tex2D(uNoiseTex, float2(uSeed * 3.7 + 0.57, yb * 0.7 - uTime * 1.6 + 4.2)).b);
+    float eN = lerp(eL, eR, step(0.0, dx));
 
-    //剖面:根粗头细(上升射流减速签名)+ 上行鼓包(泵动)+ 根部裙 + 一侧撕
-    float prof = lerp(0.95, 0.52, tc);
-    prof *= 1.0 + 0.10 * sin(yb * 2.4 - uTime * 10.0 + uSeed) * smoothstep(0.0, 0.8, yb);
-    prof += exp2(-yb * yb * 2.2) * 0.75 * uMound;
-    float eL = nrm(tex2D(uNoiseTex, float2(uSeed * 2.1 + 0.13, yb * 0.22 - uTime * 0.55)).g);
-    float eR = nrm(tex2D(uNoiseTex, float2(uSeed * 3.7 + 0.57, yb * 0.26 - uTime * 0.65 + 4.2)).b);
-    float eN = lerp(eL, eR, sideSign);
-    float asym = lerp(0.05, -0.09, sideSign) * tc;
-    float halfW = 0.31 * (prof + asym);
-
-    //塌回时根部颈缩断供
+    //股束几何:四股,离根越远越散开(解离随高度增长),塌回时更散;
+    //断裂阈值根部近零(连续)、越高越碎、塌回整束崩解;根部断供收颈
+    float spread = (0.30 + 0.70 * smoothstep(0.0, 0.9, tc)) * (1.0 + 0.5 * uCollapse);
+    float taper = lerp(0.95, 0.42, tc);
+    //断裂阈值与颈缩幅度都随高度增长:下三分之一是连续的股,越高越碎;塌回整束崩解
+    float brk = lerp(-0.25, 0.55, smoothstep(0.25, 1.0, tc)) + 0.45 * uCollapse;
+    float neckAmp = lerp(0.12, 0.6, smoothstep(0.15, 0.9, tc)) + 0.25 * uCollapse;
     float neck = lerp(1.0, smoothstep(0.0, 1.6, yb) * 0.9 + 0.1, uCollapse);
-    halfW *= neck;
 
-    //柱身(芯股):块状撕边 + 丝流细撕;自水下根起,到头止(头交给球头与指状冠)
-    float rr = abs(dx) + (eN - 0.5) * 0.12 * (0.4 + 0.8 * tc) + (fil - 0.5) * 0.05;
-    float stem = 1.0 - smoothstep(halfW - 0.05, halfW + 0.02, rr);
-    stem *= smoothstep(-1.2, -0.2, y);
-    stem *= 1.0 - smoothstep(H - 0.15, H + 0.05, yb);
+    //每股各自的横向摆:相位、频率、方向都不同,股间不同步=不是一体
+    float sw0 = sin(yb * 1.6 + uTime * 2.4) * 0.06 * swayEnv;
+    float sw1 = sin(yb * 1.3 - uTime * 2.9 + 1.9) * 0.05 * swayEnv;
+    float sw2 = sin(yb * 1.9 + uTime * 2.1 + 3.7) * 0.06 * swayEnv;
+    float sw3 = sin(yb * 1.5 - uTime * 2.6 + 5.1) * 0.05 * swayEnv;
 
-    //头:推进的液团(球头),塌回时脱离柱身先落
-    float headY = H - drop * H * 0.6;
-    float2 hp = float2(dx / (0.31 * 1.05), (yb - headY) / 0.62);
-    float nH = nrm(tex2D(uNoiseTex, float2(dx * 2.0 + uSeed * 6.3, uTime * 1.3)).b);
-    float head = (1.0 - smoothstep(0.72, 1.02, length(hp) + (nH - 0.5) * 0.25))
-        * (1.0 - smoothstep(0.5, 1.0, uCollapse));
-    head *= 1.0 - stem;
-    //球头一侧的窄湿光
-    float headSheen = exp2(-pow((hp.x + 0.45) * 3.0, 2.0) - pow((hp.y + 0.25) * 4.0, 2.0)) * head;
+    float th0, th1, th2, th3;
+    float s0 = strandMask(dx, yb, -0.42 * spread + sw0, 0.31 * 0.50 * taper * neck, H * 0.78, brk, neckAmp, uSeed * 1.3 + 0.1, eN, th0);
+    float s1 = strandMask(dx, yb, -0.12 * spread + sw1, 0.31 * 0.72 * taper * neck, H * 1.00, brk, neckAmp, uSeed * 1.3 + 0.9, eN, th1);
+    float s2 = strandMask(dx, yb,  0.15 * spread + sw2, 0.31 * 0.66 * taper * neck, H * 0.90, brk, neckAmp, uSeed * 1.3 + 1.7, eN, th2);
+    float s3 = strandMask(dx, yb,  0.40 * spread + sw3, 0.31 * 0.46 * taper * neck, H * 0.68, brk, neckAmp, uSeed * 1.3 + 2.5, eN, th3);
+    float strands = max(max(s0, s1), max(s2, s3));
+    //叠合厚度:多股重叠处厚(沉),单股薄处透亮
+    float thick = saturate(th0 + th1 + th2 + th3);
 
-    //指状冠:头上 3~5 根竖向液指,长度随 x 噪声,尖端断成滴
-    float above = yb - headY;
-    float fx = nrm(tex2D(uNoiseTex, float2(xc * 2.6 + uSeed * 5.1, 0.37 + uTime * 0.05)).r);
-    float fLen = 0.2 + fx * 1.3;
-    float fingerCore = smoothstep(0.60, 0.76, nrm(tex2D(uNoiseTex, float2(xc * 5.0 + uSeed * 8.9, yb * 0.1 - uTime * 1.2)).g));
-    float finger = fingerCore * smoothstep(-0.1, 0.05, above) * (1.0 - smoothstep(fLen - 0.25, fLen, above))
-        * (1.0 - smoothstep(0.30, 0.55, abs(dx))) * rise;
-    finger *= (1.0 - stem) * (1.0 - head);
-    float nDrop = nrm(tex2D(uNoiseTex, float2(xc * 1.4 + uSeed * 5.1, yb * 0.45 - uTime * 1.1)).r);
-    float crownZone = smoothstep(fLen - 0.2, fLen + 0.2, above) * (1.0 - smoothstep(fLen + 0.6, fLen + 1.4, above));
-    float crown = crownZone * smoothstep(0.58, 0.78, nDrop)
-        * (1.0 - smoothstep(0.30, 0.55, abs(dx))) * rise * (0.7 + 0.5 * uKe);
-    crown *= (1.0 - stem) * (1.0 - head) * (1.0 - finger);
+    //根部主干:诸股在此并成一股(带上行鼓包泵动),自水下起、沿高度收窄,下三分之一处交给分股
+    float trunkW = 0.31 * 0.95 * lerp(1.0, 0.7, saturate(yb / (H * 0.4)))
+        * (1.0 + 0.10 * sin(yb * 2.4 - uTime * 10.0 + uSeed)) * neck;
+    float trunk = 1.0 - smoothstep(trunkW - 0.05, trunkW + 0.02, abs(dx) + (eN - 0.5) * 0.10);
+    trunk *= 1.0 - smoothstep(H * 0.22, H * 0.42, yb);
+    float body = max(strands, trunk);
+    body *= smoothstep(-1.2, -0.2, y);
 
-    //回落帘:芯外两翼与芯反向(向下)流的血丝,自顶端挂下、越靠根越密;液体到顶后开始往回落
-    float curtainX = smoothstep(halfW * 0.7, halfW * 1.0, abs(dx)) * (1.0 - smoothstep(halfW * 1.5, halfW * 2.1, abs(dx)));
-    float cur = nrm(tex2D(uNoiseTex, float2(xc * 3.6 + uSeed * 2.9, yb * 0.11 + uTime * 1.9)).b);
-    float curtain = curtainX * smoothstep(0.58, 0.80, cur) * uFallback
-        * (1.0 - smoothstep(headY * 0.85, headY, yb)) * smoothstep(-0.3, 0.6, yb);
-    curtain *= 1.0 - stem;
+    //股外碎滴:随流上涌的离散小团,离束越远越稀;塌回时噪声反向=改为下落
+    float outer = 0.31 * (taper * 0.7 + 0.45 * spread);
+    float dropZone = smoothstep(outer * 0.7, outer * 1.1, abs(dx))
+        * (1.0 - smoothstep(outer * 1.6, outer * 2.6, abs(dx)));
+    float scroll = lerp(-uTime * 2.4, uTime * 1.6, uCollapse);
+    float nSat = nrm(tex2D(uNoiseTex, float2(xc * 2.6 + uSeed * 5.1, yb * 0.55 + scroll)).r);
+    float satDrops = dropZone * smoothstep(0.70, 0.80, nSat)
+        * smoothstep(0.2, 1.0, yb) * (1.0 - smoothstep(H, H * 1.5, yb));
+    satDrops *= 1.0 - body;
 
-    //根部:被顶起的薄溅裙(宽而薄的片)+ 搅浊的沫环;只补体外
-    float2 sp = float2(xc / 0.95, (y - 0.06) / 0.20);
+    //回落帘:两翼向下流的细丝,高阈值=离散的丝不是幕;液体到顶后开始往回落
+    float curtainX = smoothstep(outer * 0.6, outer * 0.9, abs(dx))
+        * (1.0 - smoothstep(outer * 1.5, outer * 2.2, abs(dx)));
+    float cur = nrm(tex2D(uNoiseTex, float2(xc * 3.8 + uSeed * 2.9, yb * 0.11 + uTime * 1.9)).b);
+    float curtain = curtainX * smoothstep(0.64, 0.82, cur) * uFallback
+        * (1.0 - smoothstep(H * 0.8, H, yb)) * smoothstep(-0.3, 0.6, yb);
+    curtain *= 1.0 - body;
+
+    //根部:几根离散的溅刺(疏、长短不一,不是梳齿也不是实心丘)+ 一圈薄沫环;只补体外
+    float nSpk = nrm(tex2D(uNoiseTex, float2(xc * 1.6 + uSeed * 7.1, uTime * 0.7)).g);
+    float spikeLen = (0.2 + nSpk * 1.3) * uMound;
+    float spike = smoothstep(0.55, 0.75, nSpk) * (1.0 - smoothstep(spikeLen * 0.5, spikeLen, y))
+        * step(-0.25, y) * smoothstep(0.75, 0.25, abs(xc)) * uMound;
     float nS = nrm(tex2D(uNoiseTex, float2(xc * 1.3 + uSeed * 7.1, uTime * 0.5)).g);
-    float skirt = (1.0 - smoothstep(0.55, 1.0, length(sp) + (nS - 0.5) * 0.35)) * uMound * step(-0.3, y);
     float ringR = abs(abs(xc) - 0.78 + (nS - 0.5) * 0.12);
-    float foamRing = (1.0 - smoothstep(0.03, 0.12, ringR)) * (1.0 - smoothstep(0.0, 0.25, abs(y - 0.02))) * uMound;
-    skirt *= 1.0 - stem;
-    foamRing *= 1.0 - stem;
+    float foamRing = (1.0 - smoothstep(0.03, 0.12, ringR))
+        * (1.0 - smoothstep(0.0, 0.2, abs(y - 0.02))) * uMound;
+    spike *= 1.0 - body;
+    foamRing *= 1.0 - body;
 
-    //浓淡由丝流决定:细丝之间透光,厚处沉
-    float density = saturate(0.30 + 0.55 * fil + 0.25 * fil2);
-    float edgeT = smoothstep(halfW * 0.45, halfW, rr);
+    //纵向丝流:股内的浓淡起伏与闪
+    float fil = nrm(tex2D(uNoiseTex, float2(dx * 4.0 + uSeed * 1.7, yb * 0.08 - uTime * 2.6)).r);
 
-    //体色:厚处沉、薄处透亮(薄膜血是亮红),外沿一线暗轮廓
-    float3 col = lerp(uColBody, uColDeep, density * 0.55 * (1.0 - edgeT));
-    col = lerp(col, uColBright, edgeT * 0.55 + (1.0 - density) * 0.25);
-    float outline = smoothstep(halfW - 0.035, halfW - 0.005, rr) * stem;
-    col = lerp(col, uColDeep, outline * 0.8);
+    //体色:厚(叠合)处沉、单股薄处透亮(薄膜血是亮红),体缘一线暗轮廓
+    float3 col = lerp(uColBright, uColBody, smoothstep(0.1, 0.55, thick));
+    col = lerp(col, uColDeep, smoothstep(0.55, 1.0, thick) * 0.6 + trunk * 0.25);
+    col *= 0.9 + 0.2 * fil;
+    float outline = smoothstep(0.1, 0.45, body) * (1.0 - smoothstep(0.45, 0.9, body));
+    col = lerp(col, uColDeep, outline * 0.7);
 
-    //各向异性窄反射带(偏一侧)+ 丝上闪
-    float bx = (dx + halfW * 0.40) / max(halfW * 0.10, 0.01);
-    float sheenBand = exp2(-bx * bx * 1.5) * stem
-        * smoothstep(0.10, 0.50, tc) * (1.0 - smoothstep(0.75, 0.95, tc));
-    sheenBand *= 0.6 + 0.4 * fil;
-    float glint = smoothstep(0.86, 0.96, fil) * stem * (1.0 - edgeT) * 0.5;
+    //主股一侧的窄反光 + 丝上闪
+    float mainCx = -0.12 * spread + sw1;
+    float mainR = 0.31 * 0.72 * taper;
+    float bx = (dx - mainCx + mainR * 0.4) / max(mainR * 0.12, 0.01);
+    float sheen = exp2(-bx * bx * 1.5) * s1
+        * smoothstep(0.1, 0.5, tc) * (1.0 - smoothstep(0.75, 0.95, tc)) * (0.6 + 0.4 * fil);
+    float glint = smoothstep(0.86, 0.96, fil) * body * 0.45;
 
     //水线挂边:入水口一线更暗
-    float waterLine = (1.0 - smoothstep(0.0, 0.18, abs(y + 0.05))) * stem * 0.5;
+    float waterLine = (1.0 - smoothstep(0.0, 0.18, abs(y + 0.05))) * body * 0.5;
 
-    //预乘合成:芯股近实心,其余层只补芯外
-    float aStem = stem * (0.86 + 0.14 * density);
-    float aHead = head * 0.95;
-    float aFinger = finger * 0.9;
-    float aCrown = crown * 0.85;
+    //预乘合成:股体近实心,其余层只补体外
+    float aBody = body * (0.84 + 0.14 * thick);
+    float aSat = satDrops * 0.85;
     float aCurtain = curtain * 0.7;
-    float aSkirt = skirt * 0.9;
-    float aFoam = foamRing * 0.6;
-    float a = saturate(aStem + aHead + aFinger + aCrown + aCurtain + aSkirt + aFoam);
-    float3 headCol = lerp(uColBody, uColBright, 0.25 + 0.3 * nH);
-    float3 outCol = col * aStem
-                  + headCol * aHead
-                  + lerp(uColBody, uColBright, 0.4) * (aFinger + aCrown)
+    float aSpike = spike * 0.85;
+    float aFoam = foamRing * 0.55;
+    float a = saturate(aBody + aSat + aCurtain + aSpike + aFoam);
+    float3 outCol = col * aBody
+                  + lerp(uColBody, uColBright, 0.45) * aSat
                   + lerp(uColBright, uColBody, 0.4) * aCurtain
-                  + lerp(uColBody, uColDeep, 0.4) * aSkirt
+                  + lerp(uColBody, uColBright, 0.3) * aSpike
                   + uColSheen * aFoam * 0.6;
     outCol = lerp(outCol, uColDeep * a, waterLine);
-    outCol += uColSheen * (sheenBand * 0.55 + glint + headSheen * 0.5 + skirt * 0.05);
+    outCol += uColSheen * (sheen * 0.55 + glint);
 
     //画布护栏:左右/上下缘归零,内容在此之前已自然收零
     float guard = smoothstep(1.0, 0.86, abs(xc))
