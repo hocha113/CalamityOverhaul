@@ -34,6 +34,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>散花单枚折扣（一把好几枚）</summary>
         internal const float FanMul = 0.65f;
 
+        /// <summary>
+        /// 单掷对单个目标的伤害预算，以该掷出物的期望单发为单位。
+        /// 掷奴转发的是原武器弹幕，一掷可能裂成一群或反复命中（蜂巢手雷 15~24 只蜂各继承整枚伤害、
+        /// 燃烧瓶 6 团火、尖刺球 7 次穿透），而 <see cref="ThrowDamage"/> 是按一掷一中写的。
+        /// 手里剑一掷一中正好用满 1 份，裂群类最多再多吃 1 份就封顶；预算按目标各记，群体 AoE 不受影响。
+        /// 由 <see cref="KikasaServantBalanceGlobal"/> 在命中端结算
+        /// </summary>
+        internal const float ThrowHitBudget = 2f;
+
         /// <summary>编队硬上限</summary>
         internal const int MaxHands = 3;
 
