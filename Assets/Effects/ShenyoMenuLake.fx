@@ -3,7 +3,8 @@
 //TechLake：倒置明度压顶天穹（头顶近黑沉云、地平尸青雾光）+ 溺月（画云前被云吞）
 //         + 双层流动沉云 + 倾斜雨幡 + 低平远岸一线 + 镜面鬼湖
 //         （月光路铺向观者、碎波挂亮、三档深度带雨砸溅环+雨点碎闪、
-//          立影足下接触涟漪与压暗）+ 水线溅雾/潮雾带 + 雷闪惨白，Opaque 整幅铺底
+//          立影足下涟漪高度场：波包扩张+毛细颤纹，解析梯度定坡向——朝月坡亮/背月坡暗、
+//          月光路与碎波被坡度折弯、接触处压暗）+ 水线溅雾/潮雾带 + 雷闪惨白，Opaque 整幅铺底
 //TechRain：视差雨幕层（溺月逆光挂亮）；uRainCfg/uRainBottom 参数化后
 //         由C#按远/中/近三次插层绘制——远雨止于水线、近雨盖顶，纵深由遮挡读出
 //uGust=风暴脉动：雨幕密度斜度、湖面溅环、雨幡同源呼吸
@@ -24,7 +25,7 @@ float uFlash;       //0-1 雷闪包络
 float uGust;        //0-1 风暴脉动
 float uHorizon;     //水线 y（uv）
 float2 uMoonUv;     //溺月圆心（uv）
-float4 uFeet[8];    //立影足点：xy=uv z=在场0-1 w=接触半径（uv 纵向尺度）
+float4 uFeet[8];    //立影水线接触点：xy=uv z=在场（可>1，入水/沉湖时激波增幅） w=涟漪半径（透视空间尺度）
 float4 uRainCfg;    //雨幕层配置 x=频率倍率 y=速度倍率 z=透明度倍率 w=附加斜度
 float uRainBottom;  //雨幕下缘软截止（uv y）：远雨止于水线读出纵深
 
@@ -80,6 +81,76 @@ float lakeSplash(float2 pos, float cell, float seed, float gateTh) {
     float2 cd = (f - c - float2(0.0, -0.10 * t)) * float2(6.0, 2.2);
     float crown = exp(-dot(cd, cd) * 3.0) * (1.0 - smoothstep(0.10, 0.30, t));
     return (ring * 0.85 + crown * 0.90) * gate;
+}
+
+//====== 立影足下涟漪场（与 ShenyoMenuGhost.fx 的 feetRippleGrad 同源，改动须两处同步）======
+//水面高度场 h 由两拍向外扩张的波包（身体晃动激起，随行程衰减）+ 接触点周围的毛细颤纹叠成，
+//直接对 dist 求导得解析坡度再乘 ∇dist，返回 xyz=(h, ∂h/∂u, ∂h/∂v)（坡度已按半径归一） w=接触压暗
+//透视：接触点越近岸椭圆越圆（yr 4.6→2.6），与月光路展宽同一套透视读法
+//编译预算：fx_2_0 旧编译器对展开循环里每份内联拷贝各占一套常量，8 影×(2拍+颤纹)标量写法即撑爆
+//ps_3_0 的 224 常量寄存器（2026-09 实测）——两拍波包并成 float2 向量算，逐影相位种子取运行期值
+//而非按 i 折常量；颤纹只给 uFeet[4..7]（C# 契约：前四槽为远影，其半径本就小到颤纹渐隐为零）
+//单影：两拍波包（h, ∂h/∂dist）——u=(dist-rk)/sg，h=sin(2.6u)·e^(-u²)·(1-ph)^1.5
+float2 ripplePulses(float dist, float rw, float seed) {
+    float2 ph = frac(uTime * 0.30 + seed + float2(0.0, 0.5));
+    float2 rk = rw * (0.03 + 0.97 * ph);
+    float2 sg = rw * (0.11 + 0.06 * ph);
+    float2 u = (dist - rk) / sg;
+    float2 env = exp(-u * u) * pow(1.0 - ph, 1.5);
+    float2 s = sin(u * 2.6);
+    float2 c = cos(u * 2.6);
+    float2 dh = (2.6 * c - 2.0 * u * s) * env / sg;
+    return float2(dot(s * env, 1.0), dot(dh, 1.0));
+}
+
+//毛细颤纹：身体微颤在接触点周围持续激起的短波，随距离指数衰减
+//幅度压得很低：它只是波包之间的细肌理，抬高就成靶心（2026-09 沙盒实测）
+float2 rippleTremor(float dist, float rw, float seed) {
+    float kk = 6.2831853 / (rw * 0.13);
+    float L = rw * 0.24;
+    float att = exp(-dist / L);
+    float phs = dist * kk - uTime * 7.0 + seed;
+    float ts = sin(phs);
+    float tc = cos(phs);
+    return float2(ts * att, kk * tc * att - ts * att / L) * 0.07;
+}
+
+//单影几何：xy=∇dist（uv 空间） z=dist w=rw
+float4 rippleGeo(float2 uv, float aspect, float4 f) {
+    float dl = saturate((f.y - uHorizon) / max(1.0 - uHorizon, 0.001));
+    float yr = lerp(4.6, 2.6, dl);
+    float2 dv = (uv - f.xy) * float2(aspect, yr);
+    float dist = max(length(dv), 1e-4);
+    return float4(dv * float2(aspect, yr) / dist, dist, max(f.w, 0.001));
+}
+
+float4 feetRipple(float2 uv, float aspect) {
+    float4 acc = 0.0;
+    //远影四槽：只有两拍波包
+    [unroll]
+    for (int i = 0; i < 4; i++) {
+        float4 f = uFeet[i];
+        float4 g = rippleGeo(uv, aspect, f);
+        float2 hd = ripplePulses(g.z, g.w, f.y * 37.0 + f.w * 91.0);
+        float blob = saturate(1.0 - g.z / (g.w * 0.50));
+        acc.x += hd.x * f.z;
+        acc.yz += hd.y * g.xy * g.w * 0.25 * f.z;
+        acc.w += blob * blob * 0.55 * saturate(f.z);
+    }
+    //近影四槽：波包 + 颤纹
+    [unroll]
+    for (int j = 4; j < 8; j++) {
+        float4 f = uFeet[j];
+        float4 g = rippleGeo(uv, aspect, f);
+        float seed = f.y * 37.0 + f.w * 91.0;
+        float2 hd = ripplePulses(g.z, g.w, seed) + rippleTremor(g.z, g.w, seed);
+        float blob = saturate(1.0 - g.z / (g.w * 0.50));
+        acc.x += hd.x * f.z;
+        //坡度按半径归一：远小近大的环在屏上读出同一档对比
+        acc.yz += hd.y * g.xy * g.w * 0.25 * f.z;
+        acc.w += blob * blob * 0.55 * saturate(f.z);
+    }
+    return acc;
 }
 
 float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
@@ -147,15 +218,19 @@ float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
     //水线一线亮
     lakeCol += WATER_SHINE * exp2(-d * 130.0) * 0.50;
 
+    //立影足下涟漪场先算：坡度把镜面里的月光路与碎波一起折弯
+    float4 rip = feetRipple(uv, aspect);
+    float2 ruv = uv + rip.yz * 0.0009;
+
     //月光路：随透视向观者展宽，横向微摆
     float pathX = uMoonUv.x + uParallax.x * lerp(0.18, 0.85, d);
     float pw = lerp(0.014, 0.170, pow(d, 1.35));
     float pWob = (noiseTex(float2(uv.y * 3.0 - uTime * 0.05, 0.77)) - 0.5) * 0.030 * d;
-    float lp = exp(-pow(abs(uv.x - pathX + pWob) / max(pw, 0.001), 1.7));
+    float lp = exp(-pow(abs(ruv.x - pathX + pWob) / max(pw, 0.001), 1.7));
 
     //碎波挂亮：横向拉丝的滚动噪声，近水线密、近岸疏
-    float shim = nrm(noiseTex(float2(uv.x * 7.0 + uTime * 0.02,
-        uv.y * lerp(46.0, 9.0, d) - uTime * 0.33)));
+    float shim = nrm(noiseTex(float2(ruv.x * 7.0 + uTime * 0.02,
+        ruv.y * lerp(46.0, 9.0, d) - uTime * 0.33)));
     float glint = smoothstep(0.55, 0.95, shim);
     lakeCol += MOON_PALE * lp * (0.10 + glint * 0.55) * breathe;
     lakeCol += WATER_SHINE * glint * 0.07 * (0.30 + d * 0.70);
@@ -177,24 +252,20 @@ float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
         uv * float2(34.0 * aspect, 30.0) + floor(uTime * 7.0) * 0.37)));
     lakeCol += MOON_PALE * spark * (0.05 + lp * 0.18 + d * 0.10) * (0.70 + uGust * 0.50);
 
-    //====== 立影足下：接触压暗 + 双圈扩散涟漪 ======
-    [unroll]
-    for (int i = 0; i < 8; i++) {
-        float4 f = uFeet[i];
-        float2 dv = (uv - f.xy) * float2(aspect, 3.2);
-        float dist = length(dv);
-        float rw = max(f.w, 0.001);
-        float ph1 = frac(uTime * 0.42 + (float)i * 0.373);
-        float ph2 = frac(ph1 + 0.5);
-        float r1 = rw * (0.20 + 0.80 * ph1);
-        float r2 = rw * (0.20 + 0.80 * ph2);
-        float ring1 = saturate(1.0 - abs(dist - r1) / (rw * 0.14));
-        float ring2 = saturate(1.0 - abs(dist - r2) / (rw * 0.14));
-        float rings = ring1 * ring1 * (1.0 - ph1) + ring2 * ring2 * (1.0 - ph2) * 0.7;
-        float blob = saturate(1.0 - dist / (rw * 0.55));
-        lakeCol = lerp(lakeCol, WATER_DEEP, blob * blob * 0.55 * f.z);
-        lakeCol += RING_PALE * rings * 0.26 * f.z;
-    }
+    //====== 立影足下涟漪着色：坡向决定镜面里映到哪片天 ======
+    //朝溺月/水线倾斜的坡面映到低空雾光与月晕→亮；朝观者倾斜的坡面映到头顶黑云→暗。
+    //环因此不是等宽亮圈：远弧外亮内暗、近弧内亮外暗，月光路上再挑一层锐芒
+    float2 toMoon = (uMoonUv - uv) * float2(aspect, 1.0);
+    toMoon /= max(length(toMoon), 0.001);
+    float slope = -dot(rip.yz, toMoon);
+    float ripLit = 0.55 + lp * 1.10 + flashQ * 0.80;
+    float ripBright = saturate(slope * 0.16);
+    float ripDark = saturate(-slope * 0.16);
+    lakeCol = lerp(lakeCol, WATER_DEEP, ripDark * 0.55);
+    lakeCol += RING_PALE * ripBright * 0.42 * ripLit;
+    lakeCol += MOON_PALE * ripBright * ripBright * ripBright * 0.45 * (lp + flashQ * 0.5) * breathe;
+    //接触压暗：身体压住的水面与水中黑影
+    lakeCol = lerp(lakeCol, WATER_DEEP, saturate(rip.w));
 
     //====== 雷闪（水侧）：月光路与水线回照 ======
     lakeCol += FLASH_PALE * flashQ * (0.09 + lp * 0.22);
