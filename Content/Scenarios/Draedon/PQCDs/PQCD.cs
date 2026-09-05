@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
     //便携式量子通讯装置
     internal class PQCD : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => CWRConstant.Item + "Tools/PQCD";
 
         /// <summary>需要的信号塔数量</summary>

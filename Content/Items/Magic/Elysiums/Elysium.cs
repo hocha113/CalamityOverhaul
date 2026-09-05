@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
     /// <summary>天国极乐，与万魔殿相对的教皇权杖</summary>
     internal class Elysium : ModItem, IWeaponSkillProvider
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "Elysium";
 
         //技能按钮身份色：天雷雷霆金，审判炽印橙红

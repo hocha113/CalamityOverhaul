@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class WastelandFang : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "WastelandFang";
         public override void SetDefaults() {
             Item.width = 40;

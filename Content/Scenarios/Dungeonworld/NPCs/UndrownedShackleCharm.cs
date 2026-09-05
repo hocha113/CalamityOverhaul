@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// </summary>
     internal class UndrownedShackleCharm : UndrownedModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => "Terraria/Images/Item_" + ItemID.Shackle;
 
         /// <summary>水藻绿重染色</summary>

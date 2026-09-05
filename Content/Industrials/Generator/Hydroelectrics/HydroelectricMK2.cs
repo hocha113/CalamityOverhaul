@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
 {
     internal class HydroelectricMK2 : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Generators";
+
         public override string Texture => CWRConstant.Asset + "Generator/HydroelectricMK2";
         public override void SetDefaults() {
             Item.width = 32;

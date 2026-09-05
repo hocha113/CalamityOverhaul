@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     /// 寰宇咏叹调
     internal class AriaofTheCosmos : ModItem, IWeaponSkillProvider
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "AriaofTheCosmos";
 
         /// <summary>星环技能冷却(帧) 2秒</summary>

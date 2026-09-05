@@ -1,0 +1,181 @@
+ScapegoatDoll: {
+	DisplayName: 替死娃娃
+	Tooltip:
+		'''
+		放在背包里，可替你挡下一次死亡
+		挡下后娃娃碎裂消失
+		'''
+	ShatterText: 替死娃娃碎了
+}
+
+ConstructionBlueprintQET: {
+	DisplayName: 构造蓝图(量子纠缠塔)
+	Tooltip:
+		'''
+		使用后学习制作[i:CalamityOverhaul/CQETConstructor]自我搭建器的知识
+		"你的双手将因此能够铸造连接两个世界的基石与高塔"
+		'''
+	L1: 已获得制作自我搭建器(量子纠缠塔)的知识!
+	L2: 你已经学习过这个图纸了!
+}
+
+CQETConstructor: {
+	DisplayName: 自我搭建器(量子纠缠塔)
+	Tooltip:
+		'''
+		放置后用于搭建量子纠缠塔
+		需要消耗大量[i:CalamityOverhaul/StarflowPlatedBlock]星流电镀块
+		'''
+	UseConstructionBlueprint: 学习构造蓝图(量子纠缠塔)
+}
+
+DeploySignaltower: {
+	DisplayName: 量子纠缠塔
+	Tooltip:
+		'''
+		重要的通讯设备，可以充当亚空间中的灯塔
+		"野孩子在森林中举起火把，大喊我在这里"
+		'''
+}
+
+PQCD: {
+	DisplayName: 便携式量子通讯器
+	Tooltip:
+		'''
+		使用以联络嘉登，开启嘉登工业的全息购物界面
+		"理论上可以用来发起灭绝令，但似乎权限不足"
+		'''
+	NeedSignalTowersText: 量子纠缠链路未完成！需要部署全部 {0} 座信号塔才能使用
+	SignalTowerProgressText: 信号塔部署进度: {0}/{1}
+}
+
+Oceanfragments: {
+	DisplayName: 海洋残片
+	Tooltip: 一种神秘的小物件，老公爵可能会对它感兴趣
+}
+
+OceanRaiders: {
+	WorkingText: 正在工作中...
+	NoWaterText: 需要放置在水域上方才能工作！
+	NoEnergyText: 能量不足！
+	DisplayName: 海洋吞噬者
+	Tooltip:
+		'''
+		消耗电力从水域中提取资源
+		右键打开内部存储箱
+		'''
+}
+
+OldDuchest: {
+	StorageText: 大型储物箱
+	DisplayName: 老箱子
+	Tooltip:
+		'''
+		一个容量巨大的储物箱
+		"老公爵从前的储物箱，如果他在附近，他可能会往里面扔些东西"
+		'''
+}
+
+MermanRod: {
+	Text1: 世界中已经放置了一座鱼人钓!
+	DisplayName: 鱼人钓
+	Tooltip:
+		'''
+		在附近钓鱼时增加20点渔力
+		老公爵会将营地搬来此处
+		'''
+}
+
+Mewtwo: {
+	DisplayName: 超梦芯片
+	Tooltip: 使用后进入超梦
+}
+
+GaolCellKey: {
+	DisplayName: 深牢禁室之钥
+	Tooltip:
+		'''
+		就地筑起深牢禁室，祭坛上会安放一颗蛰伏的枯颅（测试物品）
+		走近祭坛就能唤醒它，战斗期间两侧门洞会被幽粉的能量栅封死
+		击败深牢怨灵后禁室永久熄灯，逃走的怨灵会在数秒后重新蛰伏
+		"钥匙一转，墙就想起了自己的形状"
+		'''
+	BuiltHint: 禁室已筑成，祭坛上的枯颅在等你走近
+}
+
+RustedGaolIrons: {
+	DisplayName: 锈蚀的镣铐
+	Tooltip:
+		'''
+		防御力提高 3 点，免疫击退
+		受击后短暂提高移动速度
+		"铐环内侧的狱号已经磨平了"
+		'''
+}
+
+UndrownedShackleCharm: {
+	DisplayName: 沉锚镣环
+	Tooltip:
+		'''
+		水中行动如履平地，获得游泳能力
+		水下呼吸时间大幅延长
+		"锚沉到底，人还在喘"
+		'''
+}
+
+GaolAnchorWeapon: {
+	DisplayName: 狱锚
+	Tooltip:
+		'''
+		掷出巨锚，钉进墙面时短暂绷出一道伤害锁链
+		"行刑工具没有退休一说"
+		'''
+}
+
+SumpPearl: {
+	DisplayName: 狱水明珠
+	Tooltip:
+		'''
+		狱水在死囚骨缝里凝出的哑光珠子
+		亡灵集市认这个
+		'''
+}
+
+FloodGalleryKey: {
+	DisplayName: 泄洪堂之钥
+	Tooltip:
+		'''
+		就地筑起泄洪堂并安放沉锚的死囚（测试物品）
+		"墙上的水位刻度就是他的心跳表"
+		'''
+	Placed: 泄洪堂已就地筑起。想叫醒他，就站上左侧的阀台别动。
+}
+
+ProofSealCharm: {
+	DisplayName: 验工印章
+	Tooltip:
+		'''
+		陷阱类弹幕伤害降低 25%，且有 15% 概率哑火
+		"盖过章的工件，机关一律放行"
+		'''
+	Misfire: 哑火
+}
+
+OverseerLogger: {
+	DisplayName: 监工的记录仪
+	Tooltip:
+		'''
+		获得危险感知，附近的陷阱与机关无所遁形
+		"每一道镖口的班表它都记着"
+		'''
+}
+
+ProofingHallKey: {
+	DisplayName: 验收堂之钥
+	Tooltip:
+		'''
+		就地筑起验收堂并挂上蒙尘的吊臂（测试物品）
+		"点检台的班铃还能响"
+		'''
+	Placed: 验收堂已就地筑起。想开工验收，就站上左侧的点检台别动，等班铃数完。
+}

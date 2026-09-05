@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 {
     internal class Observer : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "Observer";
         [VaultLoaden(CWRConstant.Item_Melee + "ObserverGlow")]
         public static Asset<Texture2D> Glow = null;

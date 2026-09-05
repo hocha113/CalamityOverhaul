@@ -1,0 +1,181 @@
+ScapegoatDoll: {
+	DisplayName: Boneca substituta
+	Tooltip:
+		'''
+		No inventário, pode bloquear uma morte no seu lugar
+		Depois de bloquear, a boneca se parte e some
+		'''
+	ShatterText: A boneca substituta se partiu
+}
+
+ConstructionBlueprintQET: {
+	DisplayName: Planta de Construcao (Torre de Entrelacamento Quantico)
+	Tooltip:
+		'''
+		Use para aprender a fabricar o [i:CalamityOverhaul/CQETConstructor] Auto-Construtor
+		"Suas maos forjarão a pedra angular e a torre que conectam dois mundos"
+		'''
+	L1: Aprendeu a fabricar o Auto-Construtor (Torre de Entrelacamento Quantico)!
+	L2: Voce ja aprendeu esta planta!
+}
+
+CQETConstructor: {
+	DisplayName: Auto-Construtor (Torre de Entrelacamento Quantico)
+	Tooltip:
+		'''
+		Coloque para construir uma Torre de Entrelacamento Quantico
+		Requer uma grande quantidade de [i:CalamityOverhaul/StarflowPlatedBlock] Blocos Revestidos de Fluxo Estelar
+		'''
+	UseConstructionBlueprint: Aprenda a Planta de Construcao (Torre de Entrelacamento Quantico)
+}
+
+DeploySignaltower: {
+	DisplayName: Torre de Entrelacamento Quantico
+	Tooltip:
+		'''
+		Um importante dispositivo de comunicacao que atua como um farol no sub-espaco
+		"Uma crianca selvagem ergue uma tocha na floresta, gritando Estou aqui"
+		'''
+}
+
+PQCD: {
+	DisplayName: Comunicador Quantico Portatil
+	Tooltip:
+		'''
+		Use para contatar Draedon e abrir a interface de compras holografica do Arsenal de Draedon
+		"Teoricamente capaz de emitir uma Ordem de Exterminio, mas a autorizacao parece insuficiente"
+		'''
+	NeedSignalTowersText: Link de entrelacamento quantico incompleto! Requer todas as {0} Torres de Sinal implantadas.
+	SignalTowerProgressText: Progresso da Implantacao da Torre de Sinal: {0}/{1}
+}
+
+Oceanfragments: {
+	DisplayName: Fragmentos do Oceano
+	Tooltip: Um adereco misterioso. O Velho Duque pode estar interessado nele.
+}
+
+OceanRaiders: {
+	WorkingText: Trabalhando...
+	NoWaterText: Deve ser colocado acima da agua para operar!
+	NoEnergyText: Energia Insuficiente!
+	DisplayName: Devorador do Oceano
+	Tooltip:
+		'''
+		Consome energia para extrair recursos de corpos d'agua
+		Clique direito para abrir o armazenamento interno
+		'''
+}
+
+OldDuchest: {
+	StorageText: Bau de Armazenamento Grande
+	DisplayName: Velho Duque Bau
+	Tooltip:
+		'''
+		Um bau de armazenamento com imensa capacidade
+		"O antigo bau do Velho Duque. Se ele estiver por perto, pode jogar algumas coisas dentro."
+		'''
+}
+
+MermanRod: {
+	Text1: Um Poleiro do Sereiano ja foi colocado no mundo!
+	DisplayName: Poleiro do Sereiano
+	Tooltip:
+		'''
+		Aumenta o poder de pesca em 20 ao pescar nas proximidades
+		O Velho Duque moverah seu acampamento para ca
+		'''
+}
+
+Mewtwo: {
+	DisplayName: Chip Mewtwo
+	Tooltip: Usar para entrar em Mewtwo
+}
+
+GaolCellKey: {
+	// DisplayName: Deep Gaol Cell Key
+	/* Tooltip:
+		'''
+		Builds the Deep Gaol cell on the spot and seats a dormant skull on the altar (test item)
+		Approach the altar to wake it; during the fight both doorways are sealed by pale-pink energy bars
+		Defeat the Deep Gaol Wraith to snuff the cell for good; a wraith that escapes goes dormant again after a few seconds
+		"One turn of the key, and the walls remember their shape"
+		''' */
+	// BuiltHint: The cell has been raised. The dormant skull on the altar is waiting for you to come closer.
+}
+
+RustedGaolIrons: {
+	// DisplayName: Rusted Gaol Irons
+	/* Tooltip:
+		'''
+		3 defense and immunity to knockback
+		Briefly boosts movement speed after taking damage
+		"The cell number inside the cuff has been worn smooth"
+		''' */
+}
+
+UndrownedShackleCharm: {
+	// DisplayName: Sunken Shackle Band
+	/* Tooltip:
+		'''
+		Water no longer slows you down; grants the ability to swim
+		Greatly extends underwater breathing time
+		"The anchor sank. The man kept breathing"
+		''' */
+}
+
+GaolAnchorWeapon: {
+	// DisplayName: Gaol Anchor
+	/* Tooltip:
+		'''
+		Hurls a great anchor; while pinned into a wall, its chain becomes a damaging line
+		"Execution tools do not retire"
+		''' */
+}
+
+SumpPearl: {
+	// DisplayName: Sump Pearl
+	/* Tooltip:
+		'''
+		A matte pearl curdled from gaol water in a convict's bones
+		The undead market accepts these
+		''' */
+}
+
+FloodGalleryKey: {
+	// DisplayName: Flood Gallery Key
+	/* Tooltip:
+		'''
+		Builds the flood gallery on the spot and seats the anchored convict (test item)
+		"The depth scale on the wall is his heartbeat chart"
+		''' */
+	// Placed: The Flood Gallery has been raised on the spot. To wake him, stand on the valve dais to the left and hold your ground.
+}
+
+ProofSealCharm: {
+	// DisplayName: Proofing Seal
+	/* Tooltip:
+		'''
+		Trap projectiles deal 25% less damage and have a 15% chance to misfire
+		"Stamped goods pass every mechanism unharassed"
+		''' */
+	// Misfire: Misfire
+}
+
+OverseerLogger: {
+	// DisplayName: Overseer's Logbook
+	/* Tooltip:
+		'''
+		Grants danger sense; nearby traps and mechanisms are laid bare
+		"It keeps the duty roster of every dart port"
+		''' */
+}
+
+ProofingHallKey: {
+	// DisplayName: Proofing Hall Key
+	/* Tooltip:
+		'''
+		Builds the proofing hall on the spot and hangs the dust-caked rig (test item)
+		"The inspection bell still rings"
+		''' */
+	// Placed: The Proofing Hall has been raised on the spot. To start the inspection, stand on the check-in dais to the left and hold still until the shift bell finishes counting.
+}

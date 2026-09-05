@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.Thornstrings
     /// </summary>
     internal class Thornstring : BssModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "Thornstring";
 
         public override void SetDefaults() {

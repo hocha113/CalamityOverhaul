@@ -1,0 +1,425 @@
+DivineSourceBlade: {
+	DisplayName: Lame d'anéantissement aurique
+	Tooltip:
+		'''
+		Combo à quatre temps : deux tailles rapides, d'abord dans le sens inverse des aiguilles puis dans le sens des aiguilles
+		Puis une taille circulaire sur une ellipse en volume, et à la fin une contre-taille sur le même trajet
+		Chaque swing lâche de plus en plus de traits de lumière à tête chercheuse ; la contre-taille projette un gigantesque croissant azur
+		Blesser les ennemis accumule lentement une charge ; clic droit pour dépenser toute la jauge et renforcer l'arme 7 secondes
+		Pendant le renforcement, les dégâts s'envolent, les traits sont plus nombreux et plus durs, et les effets se dorent d'or aurique
+		"La vie ne s'arrête jamais"
+		'''
+}
+
+CursedflameBloodfist: {
+	DisplayName: Poing de sang en flamme maudite
+	Tooltip:
+		'''
+		Mêlée et magie à la fois, les bonus des deux camps sont pris en entier
+		Maintenir le clic gauche enchaîne un déluge de coups, vous pouvez courir pendant les frappes
+		Chaque coup inflige des dégâts de zone autour de vous, le recul est faible mais le rythme est très dense
+		Des poings de flamme volants fusent aussi vers le réticule ; les cibles touchées s'enflamment de l'Enfer maudit
+		Le déluge consomme du mana en continu et s'arrête tout seul quand la réserve est à sec
+		"À qui appartenait ce bras, le feu l'a déjà rendu illisible"
+		'''
+}
+
+Arbiter: {
+	DisplayName: Arbitre
+	ManifestInteractHint: "[Clic droit] Extraire cette hache"
+	ManifestInventoryFullHint: Inventaire plein, libérez un emplacement avant d'extraire la hache
+	Tooltip:
+		'''
+		Maintenir le clic gauche pour charger et lever la hache du jugement
+		Relâcher pour frapper vers le bas, libérant une onde de flammes qui épouse le sol et se propage des deux côtés
+		Plus la charge est longue, plus les flammes gagnent en portée et en puissance
+		"Le jugement descend dans les flammes"
+		'''
+}
+
+Cloudwalking: {
+	DisplayName: Marcheur des Nuages
+	Tooltip:
+		'''
+		Maintenir le clic gauche pour charger et lever la grande hache
+		Relâcher pour lancer la hache vers l'avant, laissant des nuages dans son sillage
+		La hache revient automatiquement vers vous
+		'''
+}
+
+DawnshatterAzure: {
+	DisplayName: Éclat de l'Aube Azurée
+	Tooltip:
+		'''
+		Libère l'ombre de la couronne solaire, invoque des flammes explosives de dragon après avoir touché un ennemi
+		Maintenez le clic droit pour foncer avec le fusil
+		Le feu purifie l'âme, dépossède complètement vos ennemis
+		'''
+}
+
+Flawless: {
+	DisplayName: Transcendance
+	Tooltip:
+		'''
+		Combo en quatre temps : balayage, estoc, contre-balayage, estoc final, chaque temps plus lourd que le précédent
+		Les estocs changent pour une pointe fine, portent plus loin et éclaboussent de cristaux de givre à l'impact
+		"La pointe a été changée sept fois, la cible n'a qu'un trou"
+		'''
+}
+
+StormGoddessSpear: {
+	DisplayName: Lance de la Déesse de l'Orage
+	Tooltip:
+		'''
+		Lance un baiser de tempête avec des arcs destructeurs
+		Lorsqu'elle est tenue, invoque le vestige de la Déesse de la tempête pour combattre à vos côtés
+		[legend]
+		'''
+	Legend:
+		'''
+		Dans les ténèbres du continent de Terraria, l'ancienne guerrière divine, Alina, est désormais plongée dans le chaos infini et le désespoir, devenue la déesse de l'orage, murmure dans les rues sombres.
+		Autrefois, elle était une combattante sans égale sur le continent, sa bravoure sans peur et son tranchant aussi vif que la foudre régnaient sur un ciel paisible.
+		Cependant, l'ombre du destin s'étendait à ses pieds. Lors de la bataille finale entre la lumière et les ténèbres, le paradis a sombré et la lumière a été consommée par les ténèbres.
+		La déesse de l'orage a personnellement subi la cruauté du dieu suprême. L'orgueilleux divin a pris ses camarades, ses proches, et détruit tout ce qu'elle avait protégé.
+		Le péché du dieu suprême l'a fait douter de la justice qu'elle avait autrefois adorée, la plongeant finalement dans un abîme de désespoir insondable.
+		Avec les cendres de la guerre qui s'envolent, Alina est revenue à Terraria, mais elle n'est plus la guerrière héroïque d'autrefois.
+		La douleur intérieure et le désespoir infini l'ont poussée à abandonner sa foi sublime et à chercher de nouvelles sources de pouvoir.
+		Lors d'un rituel sanglant, elle a finalement obtenu cette bénédiction interdite. Le pouvoir infini a afflué vers elle, mais au prix de la damnation éternelle de son âme.
+		Aujourd'hui, la déesse de l'orage est devenue le symbole de l'abîme de Terraria, avec des obsidiennes incrustées dans son armure, des éclairs de décadence scintillant dans ses yeux, le chaos bouillonnant, ses émotions de haine projetées sur le continent de Terraria.
+		Sa lame est comme la foudre dans la nuit, entourée d'arcs destructeurs. Elle ne combat plus pour la justice, mais est devenue une force obscure détruisant tout sur son passage.
+		Bien qu'elle conserve ses compétences martiales et son art de la guerre d'antan, elle est désormais l'ennemie publique de Terraria, méprisée et rejetée sans fin.
+		La déesse de l'orage commence son voyage solitaire et décadent, errant dans les ténèbres. Sa simple existence est une moquerie de la gloire passée de Terraria, devenant une tempête dévorant tout espoir.
+		'''
+}
+
+DragonsScaleGreatsword: {
+	DisplayName: Grande lame d'algue draconique
+	Tooltip:
+		'''
+		Les coups suivent un combo en trois frappes ; la troisième déclenche un finish draconique plus puissant
+		Les coups libèrent des vagues d'algues en spirale qui explosent en nuages toxiques à l'impact
+		Les attaques de mêlée véritables génèrent de nombreux nuages d'algues toxiques
+		Clic droit invoque une âme draconique émeraude qui fond sur le curseur, semant des nuages toxiques sur son passage
+		'''
+}
+
+CosmicCalamity: {
+	DisplayName: Calamité Cosmique
+	Tooltip: Attaque génère une vague de choc de type croissant
+}
+
+SpearOfLonginus: {
+	DisplayName: Lance de Longinus
+	Tooltip:
+		'''
+		Tant que la lance est en main, une croix sacrée apparaît sous vos pieds et se remplit d'énergie divine
+		Chaque fois que la barre est pleine, la lance gagne une charge, jusqu'à six champs sacrés au maximum
+		Marque l'ennemi le plus proche d'une croix du destin pendant que vous la portez
+		Frapper un ennemi marqué avec un jet chargé déclenche la Fureur du Pèlerin
+		[legend]
+		'''
+	Legend:
+		'''
+		"Dieu brisé, pardonnez-moi et retournez mon péché."
+		La guerre s'est propagée sur plusieurs siècles. Je, un déchu qui a fui la grande civilisation, ai survécu seul sur cette planète désolée à la frontière de l'univers.
+		Des milliers de milliers d'années-lumière, les machines de guerre écrasaient les étoiles, des attaques cruelles et terribles pouvaient effacer les étoiles des années-lumière en un instant, les transformant en un domaine silencieux.
+		Cette guerre a duré des centaines d'années, et maintenant ma grande civilisation est en danger. Je vais devenir un criminel dans l'univers, devenir le blasphémateur le plus irrévérencieux.
+		Ma chair est déjà pourrie, mes os sont ridés comme les rides du temps, et je vais bientôt devenir l'un des mécanismes les plus faibles que j'ai créés.
+		Avant cela, que Dieu me pardonne et pardonne mon manque de respect pour cette créature suprême, permettant que mon âme tombe dans les abysses de l'enfer et endure une douleur infinie.
+		Cependant, quoi qu'il en soit, pour ma civilisation, pour remporter la victoire dans cette guerre qui a duré des siècles, je dois absorber la puissance restante de cet être suprême.
+		Pour guider le mystérieux pouvoir, je n'ai pas d'autre choix que de verser dans son corps de dieu brisé un mécanisme froid.
+		C'est un blasphème inévitable, pour la continuité de la civilisation, pour la victoire de la guerre, je dois devenir le plus fidèle des fidèles de cet être suprême, le blasphémateur le plus irrévérencieux de l'histoire.
+		'''
+}
+
+NeutronGlaive: {
+	DisplayName: Lame à Neutrons
+	Tooltip:
+		'''
+		Brandit une épée à ondes de gravité puissantes qui génère une explosion d'étoile à neutrons après avoir touché une cible
+		Clic droit pour charger l'épée, la relâcher à pleine charge pour provoquer une explosion massive d'étoile à neutrons à l'emplacement du curseur
+		Si vous relâchez l'épée avant la pleine charge, l'énergie s'échappera
+		'''
+}
+
+NeutronScythe: {
+	DisplayName: Messager du trou noir
+	Tooltip:
+		'''
+		Une faux à neutrons en rotation à grande vitesse qui tire des rayons gamma sur les ennemis proches et laisse des points de détonation par distorsion le long de sa trajectoire
+		Clic droit : déclenche une Explosion de Trou Noir, projetant treize faux en cercle complet
+		'''
+}
+
+RebelBlade: {
+	DisplayName: Lame Rebelle
+	Tooltip:
+		'''
+		Une véritable attaque au corps à corps générera un grand nombre d'orbes de lumière démoniaques autour de la cible
+		Clic droit pour contrôler le vol de la lame et effectuer une coupe vers le curseur
+		'''
+}
+
+WeaverGrievances: {
+	DisplayName: Tissu des griefs
+	RitualInteractHint: "[Clic droit] Extraire cette lame"
+	RitualInventoryFullHint: Inventaire plein, libérez un emplacement avant d'extraire la lame
+	Tooltip:
+		'''
+		Déchaîne de nombreuses griffes d'esprits du ressentiment avec des effets spéciaux en Enfer et au donjon
+		Clic droit pour rouler vers le curseur ; toucher un ennemi pendant la roulade accorde une frame d'invincibilité
+		Une roulade courte compte comme une esquive parfaite
+		[legend]
+		'''
+	Legend:
+		'''
+		Depuis toujours, le donjon s'étend sur la terre, ses murs gravés d'inscriptions et de cris d'anciens guerriers. Chaque pierre est imprégnée de rancune, comme des chaînes des damnés liées à l'obscurité sans fin à la fin des temps.
+		Ces guerriers furent autrefois les lames de leur roi et parcoururent le monde. Leur épée illumina les champs de bataille, leur sang éleva les tours de Terra. Leur loyauté était étoilée, leur foi de fer.
+		Mais quand les guerres cessèrent et que les bannières du Seigneur démon furent déchirées aux pieds du roi, au moment de la paix, le roi les condamna aux ténèbres.
+		« Nous n'avons pas trahi, mais le roi nous a trahis ! » Les lamentations des damnés déchirèrent le silence de l'éternité.
+		Leurs nobles esprits ne retournèrent pas à la terre mais devinrent témoins de la nuit éternelle dans le vide.
+		Le roi, craignant leur loyauté et leur fureur, suivit les murmures des sorciers du Seigneur démon pour les effacer de l'histoire.
+		Mais la rancune, comme une marée, tordit la réalité du donjon. Leur souffrance ébranla les barrières du temps et tissa une prophétie de vengeance :
+		« Le Seigneur démon reviendra, le vide se déchirera, et nos flammes tout consumeront ! »
+		Quand Terra frôlera de nouveau l'annihilation, ces morts agités sortiront des ténèbres. Leurs lames ne combattront plus pour la gloire d'un empire, mais pour juger le traître.
+		Gloire et loyauté sont depuis longtemps anéanties — il ne reste que les flammes de la vengeance.
+		'''
+}
+
+SandDagger: {
+	DisplayName: Dague de sable
+	Tooltip:
+		'''
+		Lancée en ligne droite, légèrement attirée vers le bas par la gravité
+		Se plante à l'impact ; si elle touche du sable, elle se charge avant de jaillir vers le haut, libérant une onde de choc tellurique et une volée de pointes de sable
+		'''
+}
+
+WastelandFang: {
+	DisplayName: Croc du désert
+	Tooltip:
+		'''
+		Rebondit sur les blocs et accélère au retrait
+		Ouvre la gueule et crache plusieurs orbes de sable
+		'''
+}
+
+SeasonalKunai: {
+	DisplayName: Kunai des saisons
+	Tooltip:
+		'''
+		Lance quatre kunai principaux en éventail ; chacun perfore profondément et grandit pendant son vol
+		À l'impact ou en fin de vie, chaque lame se divise en trois kunai secondaires balayant en éventail
+		Aube le jour, Flétrissure nocturne la nuit
+		"Reflet des quatre saisons"
+		'''
+}
+
+WraithKunai: {
+	DisplayName: Kunai spectral
+	Tooltip:
+		'''
+		Lance trois lames cramoisies en éventail ; chacune flotte brièvement avant de foncer à grande vitesse sur l'ennemi le plus proche
+		Les charges libèrent étincelles cramoisies et tremblement d'écran ; en fin de vol, les lames explosent en ondes de choc brûle-âme
+		Embrase le jour, brûle l'âme la nuit
+		'''
+}
+
+CommandersChainsaw: {
+	DisplayName: Tronçonneuse du commandant
+	Tooltip:
+		'''
+		Génère des étincelles à l'impact
+		"Ajoutez plus de diesel"
+		'''
+}
+
+GeminisTribute: {
+	DisplayName: Au-delà des Jumeaux
+	Tooltip:
+		'''
+		Lance tour à tour une faux de Retinazer et une faux de Spazmatism, lacérant d'avant en arrière le long d'une trajectoire sinusoïdale
+		Clic droit : lance les deux faux en arc croisé ; à l'impact, un œil fusionné des Jumeaux se condense et déchaîne des impulsions bicolores dans la zone
+		"Une seule personnalité dominante peut exister, et il est clair que l'Œil de magmaflamme a gagné."
+		'''
+}
+
+DestroyersBlade: {
+	DisplayName: Lame du Destructeur
+	Tooltip:
+		'''
+		Tire des salves thermiques
+		"Contient l'immense noyau énergétique du Destructeur."
+		'''
+}
+
+Observer: {
+	DisplayName: Observateur
+	Tooltip: Il vous observe encore
+}
+
+Shatterfang: {
+	DisplayName: Lame-croc brisé
+	Tooltip:
+		'''
+		Trois coups ordinaires puis un coup de choc qui use fortement la lame
+		Le coup qui vide la lame la brise sur place et projette un énorme éclat de dent
+		Les coups ordinaires lancent par moments de petits éclats de dent soumis à la gravité
+		À demi-lame, les coups sont plus vifs, mais les dégâts baissent et plus aucun éclat n'est tiré
+		Attaquer trop longtemps fait aussi perdre la stabilité, jusqu'à une rupture silencieuse
+		Clic droit pour passer un instant à réparer la lame ; au repos elle se referme aussi lentement, et tinte une fois pleine
+		"Un croc tombé de la gueule du démon-pupille, encore habité par l'obsession de mordre"
+		'''
+}
+
+CommandersClaw: {
+	DisplayName: Griffe du commandant
+	Tooltip:
+		'''
+		Lance une lance de commandant ouvragée dont la pointe reste toujours orientée vers l'avant
+		Chaque impact libère des étincelles métalliques, des ondes de choc et une brève secousse de l'écran
+		Plusieurs lances peuvent voler à la fois, se planter dans le terrain ou rester brièvement fichées dans les ennemis touchés
+		'''
+}
+
+CommandersChainsawEX: {
+	DisplayName: Tronçonneuse du commandant EX
+	Tooltip: Déchiquette tout sur votre chemin
+}
+
+DestroyersBladeEX: {
+	DisplayName: Lame du Destructeur EX
+	Tooltip:
+		'''
+		Lance une salve thermique
+		"Détruire est toujours plus facile que construire"
+		'''
+}
+
+EnergySword: {
+	DisplayName: Épée énergétique
+	Tooltip:
+		'''
+		Consomme de l'énergie pour tirer des lasers traversant plusieurs ennemis
+		"Le taux d'utilisation n'est pas très élevé."
+		'''
+}
+
+SporeboundRoller: {
+	DisplayName: Rouleur à spores
+	Tooltip:
+		'''
+		Génère un petit champignon flottant après avoir touché un ennemi
+		"Ils adorent rouler sans arrêt"
+		'''
+}
+
+SporeburstPouch: {
+	DisplayName: Bourse à spores
+	Tooltip:
+		'''
+		Lance une grenade à spores qui détone à l'impact ou à la fin de sa durée
+		Libère une onde de choc toxique et un essaim d'éclats de spores à tête chercheuse ; les ennemis touchés sont Empoisonnés
+		'''
+}
+
+Heartcarver: {
+	DisplayName: Sculpteur de cœurs
+	Tooltip:
+		'''
+		Génère trois dagues rituelles supplémentaires tournant autour du joueur
+		Une fois la charge terminée, elles foncent vers la cible
+		Clic droit pour une poussée à courte portée
+		'''
+	CarveTip:
+		'''
+		Tenue en main, la lame bat avec votre cœur
+		Un coup porté dans l'intervalle entre deux battements devient une Frappe d'éviscération
+		Terminer le combo par une Frappe d'éviscération arrache le cœur entier
+		'''
+}
+
+OniMachete: {
+	DisplayName: Machette oni
+	Tooltip:
+		'''
+		Lorsqu'elle est tenue, six mains oni apparaissent pour combattre à vos côtés
+		Les attaques de mêlée réelles libèrent des flammes spectrales
+		'''
+	SuppressTip:
+		'''
+		Coups et impacts accumulent la suppression de soufre ; chaque frappe des six mains oni la consomme
+		Quand la flamme s'éteint, les mains s'agitent : elles frappent plus fort, et peuvent se retourner pour vous serrer la gorge
+		'''
+}
+
+AncientStormGoddessSpear: {
+	DisplayName: Lance de l'ancienne déesse de la tempête
+	Tooltip:
+		'''
+		Une lance capable d'envoyer des Baisers foudroyants qui rebondissent sur les ennemis
+		"Elle appartient déjà au passé, mais elle fonctionne encore"
+		[legend]
+		'''
+	Legend:
+		'''
+		Alina, jadis la lame la plus tranchante de Terra.
+		Sa foi était inébranlable, son combat intrépide. Fer et argent, cheveux au vent. La lame de l'orage hurlait en passant.
+		Mais même la lame la plus aiguisée finit par se briser ; la foi n'obtint que l'indifférence des dieux.
+		Quand le Suprême prononça son jugement, ses compagnons, sa parenté, ses serments et sa gloire devinrent cendres.
+		De ses propres yeux, elle vit la prétendue justice tout piétiner… sang et larmes… poussière… comment l'ordre servait de voile à la destruction la plus basse.
+		Dieux… Alina ne leva plus les yeux vers eux.
+		Elle recula dans l'abîme, se détruisit elle-même et laissa des forces interdites dévorer son âme.
+		Son armure fondit en un corps de fer des profondeurs.
+		Vieux nuages, soleil ensanglanté et passé s'entremêlèrent ; le regard de ses compagnons… et de sa parenté à l'heure de la mort… Alina… tout était fini.
+		Elle n'était plus l'Alina d'autrefois, la déesse de guerre de Terra.
+		Sa fureur revint comme une tempête, emportant les insectes du champ de bataille ; son tonnerre fendit ciel et nuages, trônes et terre.
+		La déesse de la tempête, Alina, apporta sans pitié destruction et vengeance.
+		'''
+}
+
+Abyssrend: {
+	DisplayName: Déchirure abyssale
+	Tooltip:
+		'''
+		Clic gauche : estocs de pointe et tailles de flanc en alternance, chaque coup arrache un courant marin à tête chercheuse
+		Clic droit : un reflux abyssal tire les ennemis devant vous dans les pinces, puis les écrase au sol proche et déclenche une cavitation
+		Ceux frappés par le coup ou l'onde de cavitation sombrent sous la pression de l'abîme et se meuvent très lentement
+		"Il se souvient du bruit que fait l'abîme quand il écrase tout"
+		'''
+}
+
+TideReaper: {
+	DisplayName: Faucheuse des marées
+	Tooltip:
+		'''
+		Lance une faux abyssale tournoyante qui revient d'elle-même
+		En vol elle jette des croissants de marée qui chassent les ennemis proches
+		Clic droit : ancre-vortex, la faux se plante devant et tourne en maelström
+		Le maelström tire les ennemis vers le centre, accélère les croissants, puis revient
+		"Quand la mer se retire, il ne reste que des os sur la plage"
+		'''
+}
+
+BudPiercer: {
+	DisplayName: Perce-bourgeon
+	Tooltip:
+		'''
+		Vole droit un instant, puis plonge
+		Frapper un ennemi y plante un bourgeon, qui s'ouvre bientôt en anneau de pétales
+		Plusieurs dagues peuvent empiler des bourgeons sur la même cible
+		Planté au sol, il fleurit sur place et projette trois aiguilles vers le haut
+		"Sous les écailles du serpent, chacune veut fleurir"
+		'''
+}
+
+Budcrown: {
+	DisplayName: Couronne de bourgeon
+	Tooltip:
+		'''
+		Maintenir l'attaque fait tourner la tête autour de vous ; relâcher la jette vers le réticule
+		La tête secoue des aiguilles en frappant les ennemis
+		Tous les trois impacts, la tête s'emporte, explose en anneau de pétales et recule fort
+		"Le bourgeon le plus lourd s'ouvre le plus fort"
+		'''
+}

@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 右键双镰齐发，交汇处生成融合魔眼同步攻击全场
     internal class GeminisTribute : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item + "Melee/GeminisTribute";
 
         /// 下次投掷眼 0激光 1魔焰

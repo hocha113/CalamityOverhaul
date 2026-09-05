@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {
     internal class MiningMachine : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/MiningMachine";
         public static LocalizedText DontWork { get; set; }
         public override void SetStaticDefaults() {

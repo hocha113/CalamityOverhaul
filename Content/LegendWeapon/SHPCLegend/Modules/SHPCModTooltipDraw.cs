@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
     /// </summary>
     internal class SHPCModTooltipDraw : GlobalItem, ILocalizedModType
     {
-        public string LocalizationCategory => "Items";
+        public string LocalizationCategory => "SHPCModules";
 
         public static LocalizedText InstalledHeader { get; private set; }
         public static LocalizedText NoModules { get; private set; }

@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// <summary>蛙跃闪耀靴:泰拉闪耀靴与两栖靴的融合,继承两条子合成树的全部效果</summary>
     internal class FrogsparkBoots : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "FrogsparkBoots";
 
         //融合来源,按顺序生效:跑速取决于最后生效的靴子,故泰拉闪耀靴放最后

@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// </summary>
     internal class SumpPearl : UndrownedModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => "Terraria/Images/Item_" + ItemID.BlackPearl;
 
         public override void SetDefaults() {

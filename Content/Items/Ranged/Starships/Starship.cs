@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
 {
     internal class Starship : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "Starship";
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;

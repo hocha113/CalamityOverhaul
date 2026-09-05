@@ -1,0 +1,88 @@
+ThermalBattery: {
+	DisplayName: Batterie thermique
+	Tooltip: Stocke une certaine quantité d'énergie électrique
+}
+
+FluidPipeline: {
+	DisplayName: Canalisation de fluide
+	Tooltip:
+		'''
+		Transporte l'eau, la lave, le miel ou le Chatoyant
+		Une canalisation ne porte qu'un seul fluide à la fois ; elle doit se vider avant d'en changer
+		Clic droit pour démonter rapidement
+		'''
+}
+
+FluidTank: {
+	DisplayName: Réservoir de fluide
+	Tooltip:
+		'''
+		Stocke jusqu'à 32 cases de liquide ; le hublot affiche le niveau
+		Communique avec les pompes et les machines par les canalisations
+		Le démontage vide le contenu
+		'''
+}
+
+LargeFluidTank: {
+	DisplayName: Grand réservoir de fluide
+	Tooltip:
+		'''
+		Stocke jusqu'à 128 cases de liquide ; le hublot affiche le niveau
+		Communique avec les pompes et les machines par les canalisations
+		Le démontage vide le contenu
+		'''
+}
+
+FluidText: {
+	WaterName: Eau
+	LavaName: Lave
+	HoneyName: Miel
+	ShimmerName: Chatoyant
+	EmptyName: Vide
+	BarFormat: "{0} {1}/{2}"
+}
+
+CapacitorMatrix: {
+	DisplayName: Matrice de condensateurs
+	Tooltip:
+		'''
+		Grande réserve capable de stocker 40000 d'électricité
+		Charge et décharge bien au-delà de la Batterie thermique, le volant d'inertie d'un grand réseau
+		'''
+}
+
+UEPipeline: {
+	DisplayName: Canalisation énergétique
+	Tooltip:
+		'''
+		Sert à transmettre l'électricité
+		Clic droit pour démonter et récupérer rapidement la canalisation à la position du curseur
+		Relie les générateurs et autres sources d'énergie aux batteries ou appareils électriques
+		'''
+}
+
+LaserEnergyTrans: {
+	DisplayName: Transmetteur laser d'énergie
+	Tooltip:
+		'''
+		Transmission d'électricité à distance
+		Après placement, clic droit pour activer la navigation laser, puis clic droit sur d'autres bâtiments électriques pour les relier
+		Plus la distance est grande, plus les pertes d'énergie sont importantes, jusqu'à 100 %
+		'''
+}
+
+CreativeUEPipeline: {
+	DisplayName: Canalisation énergétique créative
+	Tooltip: ""
+}
+
+ItemPipeline: {
+	DisplayName: Canalisation logistique
+	Tooltip:
+		'''
+		Sert à transporter des objets
+		Clic droit pour démonter et récupérer rapidement la canalisation ciblée (uniquement en tenant une canalisation)
+		Clic droit sur une extrémité pour basculer entre mode sortie et mode entrée (uniquement sans canalisation en main)
+		Les canalisations en mode sortie extraient les objets des conteneurs connectés et les transfèrent vers les conteneurs reliés aux canalisations en mode entrée
+		'''
+}

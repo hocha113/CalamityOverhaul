@@ -1,0 +1,195 @@
+ElementMuzzleBrake: {
+	DisplayName: Estabilizador elemental
+	Tooltip:
+		'''
+		El daño a distancia aumenta un 12%
+		La probabilidad de crítico a distancia aumenta un 15%
+		La velocidad de disparo a distancia aumenta un 12%
+		A los enemigos les costará más detectarte
+		'''
+}
+
+EyeOfSingularity: {
+	DisplayName: Visión de la singularidad
+	Tooltip:
+		'''
+		El daño a distancia aumenta un 100%
+		La probabilidad de crítico a distancia aumenta un 100%
+		La velocidad de disparo a distancia aumenta un 100% y dejas de consumir munición
+		Eleva el multiplicador de daño crítico de todas las armas a distancia al 500%
+		Tus proyectiles a distancia rasgan el espacio y, al impactar, generan un microagujero negro que atrae y desgarra a los enemigos cercanos
+		Si permaneces inmóvil, entras en el estado Horizonte de sucesos:
+		  Te vuelves invisible e inmune a todo daño por contacto
+		  Al disparar sueltas además ráfagas de rayos gamma que persiguen a los enemigos
+		Obtienes salto cuántico: pulsa [KEY] para teleportarte al cursor y borrar los proyectiles enemigos a tu paso
+		Clic derecho activa el Protocolo de colapso:
+		  Gasta todo el maná; durante los siguientes 10 segundos todos tus ataques a distancia ignoran los fotogramas de invencibilidad y critican de forma forzada
+		  Enfriamiento de 60 segundos
+		Si recibes un golpe letal, te conviertes en una supernova que inflige daño de área enorme y te recompones 3 segundos después en un lugar seguro
+		Este efecto tiene 60 segundos de enfriamiento
+		[c/33ff33:"El dios dragón dormido toca tus nervios; en Sus ojos el alma de todas las máquinas ya no guarda secretos"]
+		[c/ffaa00:"La constelación avariciosa bebe la llama de la boca del cañón; el brillo de las estrellas antes de apagarse acaba en su vientre"]
+		[c/00ffff:"La Muerte te sigue en silencio y cobra cada nombre que habrá de pagarse"]
+		'''
+}
+
+ArcaneThroneOfEternity: {
+	DisplayName: Trono del arcano eterno
+	Tooltip:
+		'''
+		El daño mágico aumenta un 100%
+		La probabilidad de crítico mágico aumenta un 100%
+		La velocidad de ataque mágico aumenta un 100%
+		El maná máximo aumenta en 1000 puntos; la regeneración de maná se dispara y nunca se interrumpe
+		Todos los proyectiles mágicos obtienen penetración infinita
+		Tus ataques mágicos rasgan el velo de la realidad y, en el punto de impacto, abren una fisura arcana que estalla sin cesar
+		Todos los ataques mágicos aplican una maldición prohibida aleatoria:
+		  Erosión del Vacío, parada temporal, combustión del alma, colapso gravitatorio, desintegración hiperespacial
+		Cuando el maná supera el 90% obtienes el estado «Omnisciencia»:
+		  Todos los proyectiles mágicos bloquean enemigos por sí solos y el multiplicador de daño crítico sube al 1000%
+		Obtienes salto de la verdad: pulsa [KEY] para rasgar el espacio y entrar en un dominio de dimensión superior:
+		  Durante un instante eres inmune a todo daño y te mueves con libertad; al salir sueltas una sacudida de realidad devastadora
+		  Enfriamiento de 30 segundos
+		Clic derecho activa el Cálculo de la raíz:
+		  Durante los siguientes 10 segundos todos tus ataques mágicos sueltan a la vez 5 hechizos espejo
+		  Enfriamiento de 60 segundos
+		Si recibes un golpe letal, el tiempo retrocede al estado de hace 5 segundos y recuperas la vida, el maná y la posición de entonces
+		Este efecto tiene 60 segundos de enfriamiento
+		Los enemigos tienen más probabilidades de apuntarte a ti
+		[c/b84dff:"El sabio sin nombre abre tu cráneo y, más allá de las estrellas, escribe verdades olvidadas"]
+		[c/ffdd66:"El Señor del Cambio tira de la urdimbre del destino y trata la realidad como un borrador inacabado"]
+		[c/66ffff:"El cadáver sentado en el Trono Dorado te observa, y hace tiempo que olvidó qué es la muerte"]
+		'''
+}
+
+PrecisionMuzzleBrake: {
+	DisplayName: Estabilizador de alta precisión
+	Tooltip:
+		'''
+		El daño a distancia aumenta un 8%
+		La probabilidad de crítico a distancia aumenta un 10%
+		La velocidad de disparo a distancia aumenta un 8%
+		A los enemigos les costará más detectarte
+		'''
+}
+
+SimpleMuzzleBrake: {
+	DisplayName: Estabilizador tosco
+	Tooltip:
+		'''
+		El daño a distancia aumenta un 5%
+		La probabilidad de crítico a distancia aumenta un 5%
+		La velocidad de disparo a distancia aumenta un 5%
+		A los enemigos les costará más detectarte
+		'''
+}
+
+JusticeUnveiled: {
+	DisplayName: Manifestación de la justicia
+	Tooltip:
+		'''
+		Los ataques a distancia acumulan usos de «Golpe de justicia», hasta un máximo de cinco
+		Pulsa [UP] para gastar uno y convocar un impacto sagrado gigante que aplasta a los enemigos
+		"Si la justicia es necesaria, iré a donde haga falta"
+		'''
+}
+
+EmblemOfDread: {
+	DisplayName: Emblema del que teme la muerte
+	Tooltip:
+		'''
+		Aumenta un 100% el daño cuerpo a cuerpo
+		Aumenta un 100% la probabilidad de crítico cuerpo a cuerpo
+		Aumenta un 100% la velocidad de ataque cuerpo a cuerpo
+		Aumenta 100 puntos de defensa e ignora toda merma de defensa
+		Reduce un 75% el daño recibido y refleja al atacante 100 veces ese daño
+		Todos los ataques cuerpo a cuerpo aplican Erosión del Vacío
+		Si el enemigo tiene menos de 250 000 de vida, los ataques cuerpo a cuerpo verdaderos pueden borrarlo del todo
+		Al moverte a gran velocidad dejas varios puntos de distorsión en el camino que infligen daño extremo a quien los toca
+		Obtienes la capacidad de Estocada gravitatoria: pulsa [KEY] para una estocada de gran distancia y suelta gran cantidad de rayos gravitatorios
+		Si recibes un golpe letal, recuperas al instante toda la vida y obtienes un escudo gravitatorio; este efecto tiene 60 segundos de enfriamiento
+		Los enemigos tienen más probabilidades de apuntarte a ti
+		[c/d94fff:"Un ángel santo cubre tus ojos y susurra mentiras eternas y empalagosas"]
+		[c/ff4d4d:"El carnicero bañado en sangre toma tus dos hojas y declara que solo la matanza otorga gloria"]
+		[c/4da6ff:"Una paloma azul picotea tu frente y se ríe de tu lucha insignificante"]
+		'''
+}
+
+Proverbs: {
+	DisplayName: Proverbios
+	Tooltip:
+		'''
+		Genera a tu espalda una pequeña runa de fuego de azufre
+		Inmunidad a la mayoría de penalizaciones de fuego
+		La gran mayoría de tus ataques aplican la maldición Decaimiento
+		[Content]
+		'''
+	L1: Inflige el doble de daño a la Bruja de azufre; sus ataques pueden criticarte
+	L2:
+		'''
+		Si puedes leer esto, yo ya no debería estar.
+		Este anillo fue, en mis largos años, lo único que me hacía sentir frío.
+		Pero no sé desde cuándo se impregnó del calor de los mortales y empezó a… quemar la mano.
+		He vuelto al fuego de azufre y me he hecho ceniza de una época.
+		Debí irme con las manos vacías, pero de esta temperatura nació una avaricia: quise conservarla.
+		Llévalo.
+		En el instante en que alces la espada contra un dios…
+		aunque el mundo entero sea invierno, yo seguiré ardiendo en la punta de tus dedos.
+		'''
+}
+
+Unsunghero: {
+	DisplayName: Héroe sin corona
+	Tooltip:
+		'''
+		Al caminar, a tu espalda se extiende un tablero de casillas blancas y negras
+		"¿Y si no vuelves?"
+		"Entonces no vuelvo."
+		'''
+}
+
+GodslayerScabbard: {
+	DisplayName: Vaina del matadioses
+	Tooltip:
+		'''
+		Al empuñar un arma cuerpo a cuerpo sin atacar, acumulas valor de desenvaine
+		Con el valor lleno, el ataque otorga 2 segundos de invencibilidad
+		"La hoja aún no ha salido, pero la voluntad de matar ya es gélida
+		Cuando llegue el momento, cortar a un dios es un instante"
+		'''
+}
+
+FrogsparkBoots: {
+	DisplayName: Botas rana resplandecientes
+	Tooltip:
+		'''
+		Permiten volar y correr a gran velocidad; en el hielo resbalas con más firmeza y ya no rompes el hielo fino
+		Puedes caminar sobre agua, miel y lava; inmunidad a En llamas
+		Al tocar lava obtienes 7 segundos de inmunidad; después, el daño de lava que recibes baja mucho
+		La velocidad de salto sube un 48%; permiten el salto automático y aumentan mucho la resistencia a las caídas
+		"Un impulso de pata de rana, y el fuego abre camino"
+		'''
+}
+
+CthulsparkBoots: {
+	DisplayName: Botas Cthulhu resplandecientes
+	Tooltip:
+		'''
+		Tienen todas las capacidades de las Botas rana resplandecientes
+		Obtienen tres saltos extra de nube, ventisca y tormenta de arena; la altura de salto sube; inmunidad al daño por caída
+		Pulsa dos veces una dirección para embestir con el Ojo gigante y apartar a los enemigos del camino
+		"Flota sobre tu cabeza y vigila cada paso por ti"
+		'''
+}
+
+NinjaCthulsparkBoots: {
+	DisplayName: Botas ninja Cthulhu resplandecientes
+	Tooltip:
+		'''
+		Tienen todas las capacidades de las Botas Cthulhu resplandecientes
+		Un 10% de probabilidad de esquivar ataques; puedes aferrarte a los muros y deslizarte hacia abajo
+		Pulsa dos veces una dirección para la embestida ninja de sombra escarlata: más rápida, más lejos, con un rastro carmesí
+		La embestida aparta enemigos como el Escudo de Cthulhu y, al chocar, otorga invencibilidad breve
+		"El Ojo gigante se ató un pañuelo y juró no volver a pestañear"
+		'''
+}

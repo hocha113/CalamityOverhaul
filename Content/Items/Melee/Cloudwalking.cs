@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 云端漫步 蓄力举斧投出拖云雾后飞回
     internal class Cloudwalking : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "Cloudwalking";
 
         public override void SetDefaults() {

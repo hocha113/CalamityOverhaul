@@ -1,0 +1,294 @@
+MeltdownChip: {
+	DisplayName: Chip de protocolo de fusión
+	// Tooltip: ""
+}
+
+ProjectileHijackChip: {
+	DisplayName: Chip de toma de proyectiles
+	// Tooltip: ""
+}
+
+ProjectileFreezeChip: {
+	DisplayName: Chip de congelación de proyectiles
+	// Tooltip: ""
+}
+
+DataPurgeChip: {
+	DisplayName: Chip de purga de datos
+	// Tooltip: ""
+}
+
+BallisticOverclockChip: {
+	DisplayName: Chip de sobreclock balístico
+	// Tooltip: ""
+}
+
+ElectrolysisChip: {
+	DisplayName: Chip de electrólisis de aguas
+	// Tooltip: ""
+}
+
+CryostasisChip: {
+	DisplayName: Chip de solidificación criogénica
+	// Tooltip: ""
+}
+
+LiquidPurgeChip: {
+	DisplayName: Chip de drenaje de líquidos
+	// Tooltip: ""
+}
+
+ItemRecallChip: {
+	DisplayName: Chip de recuperación a distancia
+	// Tooltip: ""
+}
+
+ReappraiseChip: {
+	DisplayName: Chip de relanzamiento de calidad
+	// Tooltip: ""
+}
+
+ArmorParseChip: {
+	DisplayName: Chip de análisis de armadura
+	// Tooltip: ""
+}
+
+ExorciseChip: {
+	DisplayName: Chip de cierre forzado de sesión
+	// Tooltip: ""
+}
+
+DataLeechChip: {
+	DisplayName: Chip de extracción de datos
+	// Tooltip: ""
+}
+
+SwarmLinkChip: {
+	DisplayName: Chip de enlace de enjambre
+	// Tooltip: ""
+}
+
+TurretHijackChip: {
+	DisplayName: Chip de secuestro de torretas
+	// Tooltip: ""
+}
+
+MachineOverclockChip: {
+	DisplayName: Chip de sobreclock de máquinas
+	// Tooltip: ""
+}
+
+GridBlackoutChip: {
+	DisplayName: Chip de apagón de la red
+	// Tooltip: ""
+}
+
+PowerTransmuteChip: {
+	DisplayName: Chip de conversión de electricidad
+	// Tooltip: ""
+}
+
+NeuralOverclockChip: {
+	DisplayName: Chip de sobreclock neural
+	// Tooltip: ""
+}
+
+WraithForceDriveChip: {
+	DisplayName: Chip de impulso forzado de espectros sirvientes
+	// Tooltip: ""
+}
+
+IndexPrereadChip: {
+	DisplayName: Chip de prelectura de índice
+	// Tooltip: ""
+}
+
+LockBurnChip: {
+	DisplayName: Chip de quemado de cerradura
+	// Tooltip: ""
+}
+
+DielSkipChip: {
+	DisplayName: Chip de salto día-noche
+	// Tooltip: ""
+}
+
+StormInjectChip: {
+	DisplayName: Chip de inyección de tormenta
+	// Tooltip: ""
+}
+
+GravityInvertChip: {
+	DisplayName: Chip de inversión de gravedad
+	// Tooltip: ""
+}
+
+SegmentDelinkChip: {
+	DisplayName: Chip de desconexión de segmentos
+	// Tooltip: ""
+}
+
+LimbSeizureChip: {
+	DisplayName: Chip de requisición de extremidades
+	// Tooltip: ""
+}
+
+CommandLinkCutChip: {
+	DisplayName: Chip de corte de enlace táctico
+	// Tooltip: ""
+}
+
+MunitionSwapChip: {
+	DisplayName: Chip de intercambio de munición
+	// Tooltip: ""
+}
+
+TurretMeshChip: {
+	DisplayName: Chip de red de torretas
+	// Tooltip: ""
+}
+
+BeaconForgeChip: {
+	DisplayName: Chip de falsificación de balizas
+	// Tooltip: ""
+}
+
+PrivilegeEscalateChip: {
+	DisplayName: Chip de escalada de privilegios
+	// Tooltip: ""
+}
+
+ItemSalvageChip: {
+	DisplayName: Chip de desmontaje
+	// Tooltip: ""
+}
+
+DataBrandChip: {
+	DisplayName: Chip de marca de datos
+	// Tooltip: ""
+}
+
+EntityMasqueradeChip: {
+	DisplayName: Chip de disfraz de identidad
+	// Tooltip: ""
+}
+
+TileConscriptChip: {
+	DisplayName: Chip de requisición de bloques
+	// Tooltip: ""
+}
+
+VeinResonanceChip: {
+	DisplayName: Chip de resonancia de vetas
+	// Tooltip: ""
+}
+
+StressInvertChip: {
+	DisplayName: Chip de inversión de tensión
+	// Tooltip: ""
+}
+
+PressureSurgeChip: {
+	DisplayName: Chip de sobrepresión de aguas
+	// Tooltip: ""
+}
+
+MirrorSurfaceChip: {
+	DisplayName: Chip de superficie espejo
+	// Tooltip: ""
+}
+
+DelayFuseChip: {
+	DisplayName: Chip de espoleta retardada
+	// Tooltip: ""
+}
+
+ProjectileTitheChip: {
+	DisplayName: Chip de diezmo de proyectiles
+	// Tooltip: ""
+}
+
+ProjectileSampleChip: {
+	DisplayName: Chip de muestreo de proyectiles
+	// Tooltip: ""
+}
+
+CompensationProtocolChip: {
+	DisplayName: Chip de protocolo de compensación
+	// Tooltip: ""
+}
+
+PayloadRewriteChip: {
+	DisplayName: Chip de reescritura de carga
+	// Tooltip: ""
+}
+
+PhaseDesyncChip: {
+	DisplayName: Chip de desfase
+	// Tooltip: ""
+}
+
+LiveCellTapChip: {
+	DisplayName: Chip de fuente viva
+	// Tooltip: ""
+}
+
+FirmwareRollbackChip: {
+	DisplayName: Chip de reversión de firmware
+	// Tooltip: ""
+}
+
+ShellRequisitionChip: {
+	DisplayName: Chip de requisición de caparazón
+	// Tooltip: ""
+}
+
+MemoryScorchChip: {
+	DisplayName: Chip de ablación de memoria
+	// Tooltip: ""
+}
+
+BuffSiphonChip: {
+	DisplayName: Chip de extracción de beneficios
+	// Tooltip: ""
+}
+
+CombatSiphonChip: {
+	DisplayName: Chip de extracción táctica
+	// Tooltip: ""
+}
+
+BallisticTurncoatChip: {
+	DisplayName: Chip de traición balística
+	// Tooltip: ""
+}
+
+MeltdownBrandChip: {
+	DisplayName: Chip de marca de fusión
+	// Tooltip: ""
+}
+
+MapBlackoutChip: {
+	DisplayName: Chip de apagado del mapa
+	// Tooltip: ""
+}
+
+ChannelScrambleChip: {
+	DisplayName: Chip de interferencia de canal
+	// Tooltip: ""
+}
+
+StealthStripChip: {
+	DisplayName: Chip de despojo de sigilo
+	// Tooltip: ""
+}
+
+CooldownInjectChip: {
+	DisplayName: Chip de inyección de enfriamiento
+	// Tooltip: ""
+}
+
+CyberwareOfflineChip: {
+	DisplayName: Chip de desconexión de ciberimplantes
+	// Tooltip: ""
+}

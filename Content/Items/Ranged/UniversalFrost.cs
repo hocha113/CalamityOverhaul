@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// 万象霜天 左键连发霜辉弹蓄能 右键满蓄展开极光霜幕
     internal class UniversalFrost : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "UniversalFrost";
         internal const float MaxCharge = 100f;
 

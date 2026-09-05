@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidInjectors
     /// <summary>灌注机:抽液泵的逆向,消耗储液向世界放液(占位贴图沿用热力发电机)</summary>
     internal class FluidInjector : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "Generator/ThermalGenerator";
         public override void SetDefaults() {
             Item.width = 32;

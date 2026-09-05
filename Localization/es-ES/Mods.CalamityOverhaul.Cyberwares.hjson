@@ -1,0 +1,128 @@
+SandevistansItem: {
+	DisplayName: Sandevistan Mk5
+	Tooltip: Ralentiza un 70% el flujo del tiempo percibido durante 5 segundos. Enfriamiento de 15 segundos.
+}
+
+Sandevistan: {
+	SkillName: Ralentización · Sandevistan
+	SkillDesc:
+		'''
+		Al activarlo, ralentiza mucho el flujo del tiempo que percibes y te permite moverte y atacar a velocidad múltiple
+		Cuando la barra de enfriamiento se agota, se cierra solo y hay que esperar a que se recupere
+		Puedes cerrarlo a propósito si lo vuelves a seleccionar en el radar
+		'''
+}
+
+MimicPerchedAuxBrain: {
+	DisplayName: Cerebro auxiliar mímico posado
+	Tooltip:
+		'''
+		Descompone al implantado en cuatro ilusiones que vagan alrededor del cuerpo
+		Al recibir un golpe, el cuerpo verdadero oculto en las ilusiones provoca confusión e inmuniza ese ataque
+		A la vez, las ilusiones se lanzan contra el agresor y detonan; el daño depende del ataque original del enemigo
+		'''
+}
+
+CstmVisualEye: {
+	DisplayName: Ojo visual CSTM
+	Tooltip:
+		'''
+		Ciberimplante óptico de red que conecta el Tiempo de hackeo a la red neural craneal
+		Aumenta 4 puntos el tope de RAM
+		En la esquina inferior izquierda se muestra una barra de RAM independiente en arco
+		'''
+}
+
+PrimePlasama: {
+	DisplayName: Armadura subcutánea de plasma prototipo
+	Tooltip:
+		'''
+		Una capa de gel electroactivo extendida bajo toda la piel
+		Aumenta 25 puntos de defensa y un 6% de reducción de daño
+		Aumenta mucho la resistencia al retroceso; un impacto corriente no te mueve el paso
+		'''
+}
+
+OmniElectricFoot: {
+	DisplayName: Pie eléctrico omnidireccional
+	Tooltip:
+		'''
+		Ciberimplante de movimiento de alta resistencia, hecho de retroceso electromagnético y gel propulsor denso
+		Al equiparlo obtienes un segundo salto en el aire; en el aire puedes dar otra patada y, si mantienes el salto, empujas un tramo más
+		Mantén la tecla de habilidad para cargar bajo los pies; al soltar, saltas del suelo; a carga máxima alcanza 3 veces un salto normal
+		El gel propulsor absorbe el impacto de tu propia patada al aterrizar; ese vuelo no cuenta como caída
+		Durante la carga se bloquean el paso y el salto; en cuanto dejas el suelo, se corta la corriente
+		'''
+	SkillHint: Mantén pulsado {0} para cargar; suelta para saltar del suelo
+	SkillName: Salto cargado
+	SkillDesc:
+		'''
+		Un salto explosivo de propulsión electromagnética de alta presión
+		Debes tener los pies en el suelo; mantén la tecla de habilidad para empezar a cargar; se llena en 60 fotogramas
+		Al soltar, saltas en proporción; a carga máxima, 3 veces la altura de un salto; durante la propulsión el giro en el aire es más ágil
+		'''
+}
+
+PlowSteelClampArm: {
+	DisplayName: Brazo de pinza de acero de arado
+	Tooltip:
+		'''
+		Ciberimplante industrial, con recogida magnética y una pinza de alta rigidez
+		Amplía mucho el alcance de excavación y de colocación de bloques
+		Activa de forma permanente la atracción magnética de objetos y monedas
+		Habilidad del implante: lanza desde la palma un hilo monomolecular al rojo
+		Pulsación corta → hilo corto; mantener pulsado → hilo largo; los enemigos del trayecto arden sin cesar
+		'''
+	SkillHint: "[c/8AC4E8:{1}] abre el radar de implantes para cambiar de habilidad · [c/F5C56A:{0}] suelta el hilo monomolecular (pulsación corta = corto / mantener pulsado = largo)"
+	SkillName: Hilo monomolecular
+	SkillDesc:
+		'''
+		Lanza desde la palma un hilo monomolecular al rojo; los enemigos del trayecto arden sin cesar
+		[c/8AC4E8:Pulsación corta]: tiende un hilo corto de unos 12 bloques en la dirección actual del cursor, dura 2 segundos, no necesita ancla
+		[c/F5C56A:Mantener pulsado]: al llenar la carga intenta clavarse en un bloque sólido cerca del cursor y dura 5 segundos; si no hay ancla, baja solo a hilo corto
+		El daño crece con tu bonificación de daño general
+		'''
+}
+
+SelfHealingSkelent: {
+	DisplayName: Esqueleto autorreparable
+	Tooltip:
+		'''
+		Ciberimplante biológico de alto rango que sustituye el esqueleto nativo por una red de nanocristales
+		Otorga de forma continua +2 PV/s de regeneración y 40 de vida máxima
+		Tras 4 segundos fuera de combate entra en reparación nanométrica y la regeneración se dispara
+		La estructura de hueso metálico es del todo inmune al daño por caída
+		'''
+}
+
+SelfHackCrystal: {
+	DisplayName: Cristal de autohackeo
+	Tooltip:
+		'''
+		Ciberimplante de red de alto rango para la ranura del sistema
+		Invierte el puerto de hackeo y lo apunta al propio implantado
+		Otorga de forma continua velocidad extra de recuperación de RAM
+		Habilidad del implante: gasta RAM para borrar al instante todos los estados negativos
+		y otorga invencibilidad breve, útil para escapar de una situación letal
+		'''
+	SkillHint: Activa el protocolo de autohackeo en el radar {0}; gasta RAM para borrar estados negativos
+	SkillName: Protocolo de autohackeo
+	SkillDesc:
+		'''
+		Invoca al revés el puerto de hackeo y ejecuta una limpieza de emergencia sobre ti mismo
+		Gasta 3 de RAM para borrar al instante todos los estados negativos y otorga unos 1.5 segundos de invencibilidad
+		Enfriamiento de 12 segundos; si no hay RAM o está en enfriamiento, se atenúa solo
+		'''
+}
+
+SCCA32CRP: {
+	DisplayName: SCCA-32 CRP
+	Tooltip:
+		'''
+		Coprocesador muscular
+		Salta el cerebro y envía la predicción de ataque y el reflejo de las fibras directo a la orden
+		Otorga de forma continua +8% de crítico y +8% de velocidad de movimiento
+		Al recibir un ataque, un 18% de probabilidad de esquiva refleja que inmuniza del todo ese daño
+		Tras el reflejo entra 3 segundos en euforia, con crítico y velocidad extra
+		'''
+}

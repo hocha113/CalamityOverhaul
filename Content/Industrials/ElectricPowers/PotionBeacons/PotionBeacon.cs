@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.PotionBeacons
     /// <summary>药剂弥散信标,存入增益药水并向范围内玩家持续弥散效果;贴图复用特斯拉塔,靠紫色调区分</summary>
     internal class PotionBeacon : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/PotionBeacon";
 
         /// <summary>系列色调:药雾紫,用于提示文本与弥散粒子</summary>

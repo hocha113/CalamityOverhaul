@@ -25,6 +25,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Biomass
     /// </summary>
     internal class BiomassGenerator : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Generators";
+
         public override string Texture => CWRConstant.Asset + "Generator/ThermalGenerator";
 
         /// <summary>系列色调:苔绿,同贴图靠它与热电机区分</summary>

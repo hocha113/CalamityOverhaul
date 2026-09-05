@@ -1,0 +1,99 @@
+ThermalGenerator: {
+	DisplayName: Thermogenerator
+	Tooltip:
+		'''
+		Brennstoff einlegen zur Stromerzeugung
+		Rechtsklick auf den Block legt Brennstoff schnell ein, Umschalt+Rechtsklick entnimmt
+		'''
+}
+
+MagmaThermalGenerator: {
+	DisplayName: Magma-Wärmekraftwerk
+	Tooltip:
+		'''
+		Langsame Erzeugung, wenn das Gehäuse an Lava liegt; volle Leistung bei Lavareserve im Tank
+		Lava kommt über Rohre oder per Rechtsklick mit einem Lavaeimer
+		Das erste Kraftwerk für die Fabrik in der Unterwelt
+		'''
+}
+
+WindGrivenGenerator: {
+	DisplayName: Windkraftgenerator
+	Tooltip: Folgt dem Wind und erzeugt Strom
+	UnderstandWindGriven: Grundlegendes Verständnis der Windkraft nötig
+	UnderstandWindGriven2: Auf Asteroiden alte Windmaschinen ausgraben, um ihre Herstellung zu verstehen
+}
+
+WindGrivenGeneratorMK2: {
+	DisplayName: Windkraftgenerator MK2
+	Tooltip: Folgt dem Wind und erzeugt Strom
+	UnderstandWindGrivenMK2: Tiefes Verständnis der Windkraft nötig
+	UnderstandWindGrivenMK2Remind: Riesige Windturbinen auf Asteroiden abbauen, um ihre Herstellungsprinzipien zu lernen
+}
+
+ThermalGeneratorMK2: {
+	DisplayName: Thermogenerator MK2
+	Tooltip:
+		'''
+		Brennstoff einlegen zur Stromerzeugung
+		Rechtsklick auf den Block legt Brennstoff schnell ein, Umschalt+Rechtsklick entnimmt
+		'''
+}
+
+WGGMK2Wilderness: {
+	DisplayName: Riesige Windkraftanlage in der Wildnis
+	Tooltip: ""
+}
+
+WGGWilderness: {
+	DisplayName: Windkraftanlage in der Wildnis
+	Tooltip: ""
+}
+
+SolarPanel: {
+	DisplayName: Solarplatte
+	Tooltip:
+		'''
+		Erzeugt bei Tag, Höchstleistung mittags
+		Bei Regen stark schwächer, bei Sonnenfinsternis ganz still
+		Solide Blöcke über dem Kopf legen sie lahm
+		'''
+}
+
+SolarPanelMK2: {
+	DisplayName: Solarplatte MK2
+	Tooltip:
+		'''
+		Erzeugt bei Tag, Höchstleistung mittags, dreimal so effizient wie die erste
+		Bei Regen stark schwächer, bei Sonnenfinsternis ganz still
+		Solide Blöcke über dem Kopf legen sie lahm
+		'''
+}
+
+Hydroelectric: {
+	DisplayName: Wasserkraftwerk
+	Tooltip:
+		'''
+		Im Wasser platzieren zur Stromerzeugung
+		„Eine Anwendung der Strömungsmechanik“
+		'''
+}
+
+HydroelectricMK2: {
+	DisplayName: Wasserkraftwerk MK2
+	Tooltip:
+		'''
+		Im Wasser platzieren zur Stromerzeugung
+		„Eine Anwendung der Strömungsmechanik“
+		'''
+}
+
+BiomassGenerator: {
+	DisplayName: Biomassegenerator
+	Tooltip:
+		'''
+		Verbrennt Samen, Kräuter, Pilze, Fang und anderen Agrarabfall und erzeugt dauernd Strom
+		Stabile Leistung zwischen Wind und Feuer, bildet mit Agrarmaschinen einen Kreis aus Erzeugen und Verbrennen
+		Biomasse in der Hand, Rechtsklick wirft direkt ein; Rechtsklick öffnet das Panel
+		'''
+}

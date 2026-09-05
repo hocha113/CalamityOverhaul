@@ -1,0 +1,294 @@
+MeltdownChip: {
+	DisplayName: Kernschmelzprotokoll-Chip
+	Tooltip: ""
+}
+
+ProjectileHijackChip: {
+	DisplayName: Flugbahn-Übernahme-Chip
+	Tooltip: ""
+}
+
+ProjectileFreezeChip: {
+	DisplayName: Flugbahn-Frost-Chip
+	Tooltip: ""
+}
+
+DataPurgeChip: {
+	DisplayName: Datenlösch-Chip
+	Tooltip: ""
+}
+
+BallisticOverclockChip: {
+	DisplayName: Ballistik-Overclock-Chip
+	Tooltip: ""
+}
+
+ElectrolysisChip: {
+	DisplayName: Gewässer-Elektrolyse-Chip
+	Tooltip: ""
+}
+
+CryostasisChip: {
+	DisplayName: Kryostase-Chip
+	Tooltip: ""
+}
+
+LiquidPurgeChip: {
+	DisplayName: Flüssigkeits-Abpump-Chip
+	Tooltip: ""
+}
+
+ItemRecallChip: {
+	DisplayName: Fernrückhol-Chip
+	Tooltip: ""
+}
+
+ReappraiseChip: {
+	DisplayName: Qualitätswurf-Chip
+	Tooltip: ""
+}
+
+ArmorParseChip: {
+	DisplayName: Rüstungsanalyse-Chip
+	Tooltip: ""
+}
+
+ExorciseChip: {
+	DisplayName: Zwangsabmelde-Chip
+	Tooltip: ""
+}
+
+DataLeechChip: {
+	DisplayName: Datenabsaug-Chip
+	Tooltip: ""
+}
+
+SwarmLinkChip: {
+	DisplayName: Schwarmkoppel-Chip
+	Tooltip: ""
+}
+
+TurretHijackChip: {
+	DisplayName: Geschützturm-Kaper-Chip
+	Tooltip: ""
+}
+
+MachineOverclockChip: {
+	DisplayName: Maschinen-Overclock-Chip
+	Tooltip: ""
+}
+
+GridBlackoutChip: {
+	DisplayName: Netz-Lähmungs-Chip
+	Tooltip: ""
+}
+
+PowerTransmuteChip: {
+	DisplayName: Stromumrechnungs-Chip
+	Tooltip: ""
+}
+
+NeuralOverclockChip: {
+	DisplayName: Nerven-Overclock-Chip
+	Tooltip: ""
+}
+
+WraithForceDriveChip: {
+	DisplayName: Dienstgeist-Zwangsantrieb-Chip
+	Tooltip: ""
+}
+
+IndexPrereadChip: {
+	DisplayName: Index-Vorlese-Chip
+	Tooltip: ""
+}
+
+LockBurnChip: {
+	DisplayName: Kernschloss-Durchbrand-Chip
+	Tooltip: ""
+}
+
+DielSkipChip: {
+	DisplayName: Tag-Nacht-Sprung-Chip
+	Tooltip: ""
+}
+
+StormInjectChip: {
+	DisplayName: Gewitter-Injektions-Chip
+	Tooltip: ""
+}
+
+GravityInvertChip: {
+	DisplayName: Gravitationsumkehr-Chip
+	Tooltip: ""
+}
+
+SegmentDelinkChip: {
+	DisplayName: Segment-Entkoppel-Chip
+	Tooltip: ""
+}
+
+LimbSeizureChip: {
+	DisplayName: Gliedmaßen-Einziehungs-Chip
+	Tooltip: ""
+}
+
+CommandLinkCutChip: {
+	DisplayName: Koordinations-Kapp-Chip
+	Tooltip: ""
+}
+
+MunitionSwapChip: {
+	DisplayName: Munitions-Tausch-Chip
+	Tooltip: ""
+}
+
+TurretMeshChip: {
+	DisplayName: Geschützturm-Netz-Chip
+	Tooltip: ""
+}
+
+BeaconForgeChip: {
+	DisplayName: Bake-Fälschungs-Chip
+	Tooltip: ""
+}
+
+PrivilegeEscalateChip: {
+	DisplayName: Rechteerweiterungs-Chip
+	Tooltip: ""
+}
+
+ItemSalvageChip: {
+	DisplayName: Zerlege-Chip
+	Tooltip: ""
+}
+
+DataBrandChip: {
+	DisplayName: Datenbrandmal-Chip
+	Tooltip: ""
+}
+
+EntityMasqueradeChip: {
+	DisplayName: Identitätsmasken-Chip
+	Tooltip: ""
+}
+
+TileConscriptChip: {
+	DisplayName: Block-Rekrutierungs-Chip
+	Tooltip: ""
+}
+
+VeinResonanceChip: {
+	DisplayName: Aderresonanz-Chip
+	Tooltip: ""
+}
+
+StressInvertChip: {
+	DisplayName: Spannungsumkehr-Chip
+	Tooltip: ""
+}
+
+PressureSurgeChip: {
+	DisplayName: Gewässer-Druckstoß-Chip
+	Tooltip: ""
+}
+
+MirrorSurfaceChip: {
+	DisplayName: Spiegelwasser-Chip
+	Tooltip: ""
+}
+
+DelayFuseChip: {
+	DisplayName: Verzögerungszünder-Chip
+	Tooltip: ""
+}
+
+ProjectileTitheChip: {
+	DisplayName: Projektil-Zehent-Chip
+	Tooltip: ""
+}
+
+ProjectileSampleChip: {
+	DisplayName: Projektil-Abtast-Chip
+	Tooltip: ""
+}
+
+CompensationProtocolChip: {
+	DisplayName: Kompensationsprotokoll-Chip
+	Tooltip: ""
+}
+
+PayloadRewriteChip: {
+	DisplayName: Nutzlast-Umschreib-Chip
+	Tooltip: ""
+}
+
+PhaseDesyncChip: {
+	DisplayName: Phasenversatz-Chip
+	Tooltip: ""
+}
+
+LiveCellTapChip: {
+	DisplayName: Lebendstrom-Chip
+	Tooltip: ""
+}
+
+FirmwareRollbackChip: {
+	DisplayName: Firmware-Rückroll-Chip
+	Tooltip: ""
+}
+
+ShellRequisitionChip: {
+	DisplayName: Hüllen-Requirier-Chip
+	Tooltip: ""
+}
+
+MemoryScorchChip: {
+	DisplayName: Speicherätz-Chip
+	Tooltip: ""
+}
+
+BuffSiphonChip: {
+	DisplayName: Stärkungs-Abzapf-Chip
+	Tooltip: ""
+}
+
+CombatSiphonChip: {
+	DisplayName: Gefechts-Abzapf-Chip
+	Tooltip: ""
+}
+
+BallisticTurncoatChip: {
+	DisplayName: Flugbahn-Überläufer-Chip
+	Tooltip: ""
+}
+
+MeltdownBrandChip: {
+	DisplayName: Schmelzmarkierungs-Chip
+	Tooltip: ""
+}
+
+MapBlackoutChip: {
+	DisplayName: Karten-Lösch-Chip
+	Tooltip: ""
+}
+
+ChannelScrambleChip: {
+	DisplayName: Kanal-Verwürfel-Chip
+	Tooltip: ""
+}
+
+StealthStripChip: {
+	DisplayName: Tarnungs-Abzieh-Chip
+	Tooltip: ""
+}
+
+CooldownInjectChip: {
+	DisplayName: Abkling-Injektions-Chip
+	Tooltip: ""
+}
+
+CyberwareOfflineChip: {
+	DisplayName: Cyberware-Offline-Chip
+	Tooltip: ""
+}

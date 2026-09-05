@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// 左键发射，命中或至最远距回收；右键强制拽回
     internal class DuneStalker : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "DuneStalker";
 
         public override void SetDefaults() {

@@ -26,7 +26,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
         internal const float CircleDiskFrac = 0.42f;
 
         private const int RibbonSegments = 64;
-        private static readonly List<int> sortBuf = new(TiroFinaleRig.SlotCount);
+        /// <summary>姿态表容量:前 SlotCount 个是活层，后 SlotCount 个是同槽残影</summary>
+        private const int PoseCount = TiroFinaleRig.SlotCount * 2;
+        private static readonly List<int> sortBuf = new(PoseCount);
         private static VertexPositionColorTexture[] stripBuf = new VertexPositionColorTexture[(RibbonSegments + 2) * 2];
 
         internal static bool ShaderReady => EffectLoader.TiroFinaleFX?.Value != null
@@ -44,11 +46,11 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             //丝带轨道压最底
             DrawRibbonBand(held, zSign);
 
-            //收集本半的枪位并按 z 远→近排序
+            //收集本半的活枪与残影并按 z 远→近排序
             sortBuf.Clear();
-            Span<TiroFinaleHeld.MusketPose> poses = stackalloc TiroFinaleHeld.MusketPose[TiroFinaleRig.SlotCount];
-            for (int i = 0; i < TiroFinaleRig.SlotCount; i++) {
-                if (!held.ComputeMusketPose(i, out poses[i])) {
+            Span<TiroFinaleHeld.MusketPose> poses = stackalloc TiroFinaleHeld.MusketPose[PoseCount];
+            for (int i = 0; i < PoseCount; i++) {
+                if (!held.ComputeMusketPose(i % TiroFinaleRig.SlotCount, i >= TiroFinaleRig.SlotCount, out poses[i])) {
                     continue;
                 }
                 bool inHalf = zSign > 0 ? poses[i].Z >= 0f : poses[i].Z < 0f;
@@ -76,14 +78,14 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            foreach (int slot in sortBuf) {
-                if (held.slotPhase[slot] != TiroFinaleHeld.PhaseEmpty) {
-                    DrawMusket(held, in poses[slot], slot);
-                }
-                if (held.slotCircle[slot] > 0f && held.slotPhase[slot] != TiroFinaleHeld.PhaseEmpty) {
+            foreach (int idx in sortBuf) {
+                int slot = idx % TiroFinaleRig.SlotCount;
+                DrawMusket(held, in poses[idx], slot);
+                //枪口阵余辉跟着鸣响后的残影走
+                if (idx >= TiroFinaleRig.SlotCount && held.slotCircle[slot] > 0f) {
                     float t = 1f - held.slotCircle[slot] / TiroFinaleHeld.CircleLife;
-                    DrawCircle(poses[slot].MuzzleWorld, poses[slot].Rotation
-                        , 26f * poses[slot].PScale, TiroFinaleRig.CircleMinorRatio(poses[slot].AxialK)
+                    DrawCircle(poses[idx].MuzzleWorld, poses[idx].Rotation
+                        , 26f * poses[idx].PScale, TiroFinaleRig.CircleMinorRatio(poses[idx].AxialK)
                         , CircleEnvelope(t), 0f, slot * 0.61f);
                 }
             }

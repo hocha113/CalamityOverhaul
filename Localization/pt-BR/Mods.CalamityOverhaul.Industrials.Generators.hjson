@@ -1,0 +1,99 @@
+ThermalGenerator: {
+	DisplayName: Gerador Termico
+	Tooltip:
+		'''
+		Coloque combustivel para gerar energia.
+		Clicar com o botao direito no bloco pode inserir combustivel rapidamente, e Shift+botao direito pode remove-lo.
+		'''
+}
+
+MagmaThermalGenerator: {
+	// DisplayName: Magma Thermal Generator
+	/* Tooltip:
+		'''
+		Generates a little power while touching lava, and full power while its tank holds magma
+		Feed it through fluid pipelines, or right-click with a lava bucket to pour directly
+		The first workhorse power source for a hell factory
+		''' */
+}
+
+WindGrivenGenerator: {
+	DisplayName: Gerador Eolico
+	Tooltip: Mova-se com o vento e gere eletricidade
+	UnderstandWindGriven: E necessario um entendimento inicial de como a energia eolica funciona
+	UnderstandWindGriven2: Precisa escavar maquinas de vento antigas em asteroides para entender como sao feitas
+}
+
+WindGrivenGeneratorMK2: {
+	DisplayName: Gerador Eolico MK2
+	Tooltip: Mova-se com o vento e gere eletricidade
+	UnderstandWindGrivenMK2: E necessario um entendimento profundo da energia eolica
+	UnderstandWindGrivenMK2Remind: Precisa minerar as turbinas eolicas gigantes em asteroides para entender seus principios de fabricacao
+}
+
+ThermalGeneratorMK2: {
+	DisplayName: Gerador Termico MK2
+	Tooltip:
+		'''
+		Coloque combustivel para gerar energia.
+		Clicar com o botao direito no bloco pode inserir combustivel rapidamente, e Shift+botao direito pode remove-lo.
+		'''
+}
+
+WGGMK2Wilderness: {
+	DisplayName: Turbinas Eolicas Gigantes no Ermo
+	Tooltip: ""
+}
+
+WGGWilderness: {
+	DisplayName: Turbinas Eolicas no Ermo
+	Tooltip: ""
+}
+
+SolarPanel: {
+	// DisplayName: Solar Panel
+	/* Tooltip:
+		'''
+		Generates power during the day, peaking at noon.
+		Heavily reduced in rain, completely offline during eclipses.
+		Stops working when solid blocks cover it overhead.
+		''' */
+}
+
+SolarPanelMK2: {
+	// DisplayName: Solar Panel MK2
+	/* Tooltip:
+		'''
+		Generates power during the day, peaking at noon, three times as efficient as the original.
+		Heavily reduced in rain, completely offline during eclipses.
+		Stops working when solid blocks cover it overhead.
+		''' */
+}
+
+Hydroelectric: {
+	DisplayName: Hidreletrica
+	Tooltip:
+		'''
+		Gera eletricidade ao ser colocada na agua
+		"Uma aplicacao da mecanica dos fluidos"
+		'''
+}
+
+HydroelectricMK2: {
+	DisplayName: Hidreletrica MK2
+	Tooltip:
+		'''
+		Gera eletricidade ao ser colocada na agua
+		"Uma aplicacao da mecanica dos fluidos"
+		'''
+}
+
+BiomassGenerator: {
+	// DisplayName: Biomass Generator
+	/* Tooltip:
+		'''
+		Burns seeds, herbs, mushrooms, fish and other farm surplus for steady power
+		Output sits between wind and thermal, pairing with farming machines for a closed loop
+		Right-click with biomass in hand to load fuel, or right-click to open the panel
+		''' */
+}

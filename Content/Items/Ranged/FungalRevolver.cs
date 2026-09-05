@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class FungalRevolver : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "FungalRevolver";
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.Revolver);

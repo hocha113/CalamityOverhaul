@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class SpearOfLonginus : ModItem, ICWRLoader
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public static SoundStyle BelCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 3.5f };
         public static SoundStyle AT = new("CalamityOverhaul/Assets/Sounds/AT") { Volume = 1.5f };
         [VaultLoaden(CWRConstant.Item + "Melee/Longinus")]
@@ -87,7 +89,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = ItemGroup.MeleeWeapon;
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
+        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, this);
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= ChargeGrade + 1;
 
         public override void HoldItem(Player player) {

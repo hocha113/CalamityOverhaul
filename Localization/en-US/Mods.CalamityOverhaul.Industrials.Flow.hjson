@@ -1,0 +1,90 @@
+ThermalBattery: {
+	DisplayName: Thermal Battery
+	Tooltip: Store a certain amount of electrical energy
+}
+
+FluidPipeline: {
+	DisplayName: Fluid Pipeline
+	Tooltip:
+		'''
+		Transports water, lava, honey or shimmer
+		Each pipe carries only one fluid at a time; it must run empty before switching to another
+		Right-click to quickly remove
+		'''
+}
+
+FluidTank: {
+	DisplayName: Fluid Tank
+	Tooltip:
+		'''
+		Stores up to 32 tiles of fluid; the window shows the fill level
+		Connects to pumps and machines through fluid pipelines
+		Breaking the tank vents its contents
+		'''
+}
+
+LargeFluidTank: {
+	DisplayName: Large Fluid Tank
+	Tooltip:
+		'''
+		Stores up to 128 tiles of fluid; the window shows the fill level
+		Connects to pumps and machines through fluid pipelines
+		Breaking the tank vents its contents
+		'''
+}
+
+FluidText: {
+	WaterName: Water
+	LavaName: Lava
+	HoneyName: Honey
+	ShimmerName: Shimmer
+	EmptyName: Empty
+	BarFormat: "{0} {1}/{2}"
+}
+
+CapacitorMatrix: {
+	DisplayName: Capacitor Matrix
+	Tooltip:
+		'''
+		A large energy bank storing up to 40000 power.
+		Far higher charge and discharge throughput than the Thermal Battery, the flywheel of any large grid.
+		'''
+}
+
+UEPipeline: {
+	DisplayName: Energy Pipeline
+	Tooltip:
+		'''
+		Used for transmitting electrical energy
+		Right-click to quickly dismantle and retrieve the pipeline at the cursor position
+		Connects to generators and other power sources to transfer energy to batteries or electrical devices
+		'''
+}
+
+LaserEnergyTrans: {
+	DisplayName: Laser Energy Trans
+	Tooltip:
+		'''
+		Remote power transmission.
+		After placement, right-click to activate the laser navigation, 
+		and then right-click on other power buildings to link them.
+		The farther the transmission distance, the greater the energy loss. 
+		The maximum loss is 100%.
+		'''
+}
+
+CreativeUEPipeline: {
+	DisplayName: Energy Creative Pipeline
+	Tooltip: ""
+}
+
+ItemPipeline: {
+	DisplayName: Item Pipeline
+	Tooltip:
+		'''
+		Used to transport items
+		Right-click to quickly dismantle and retrieve the target pipe (only when holding a pipeline)
+		Right-click a pipe endpoint to switch between Output and Input modes (only when NOT holding a pipeline)
+		Pipes in Output mode extract items from connected containers and transfer them to containers connected to Input mode pipes
+		'''
+}

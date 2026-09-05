@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Melee.CursedflameBloodfists
     /// </summary>
     internal class CursedflameBloodfist : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CursedflameFX.ItemTexture;
 
         public override void SetDefaults() {

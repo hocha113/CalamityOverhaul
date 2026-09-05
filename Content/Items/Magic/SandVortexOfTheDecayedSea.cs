@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// <summary>腐化深海漩涡，光标处吸扯并抛追踪珠</summary>
     internal class SandVortexOfTheDecayedSea : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "SandVortexOfTheDecayedSea";
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Magic;

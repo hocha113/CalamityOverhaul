@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShimmerTransmuters
     /// <summary>微光转化槽:自动化原版微光转化的困难模式机器(占位贴图沿用热能电池,待专属美术)</summary>
     internal class ShimmerTransmuter : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryLegacy";
         public override void SetDefaults() {
             Item.width = 32;

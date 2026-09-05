@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// </summary>
     internal class RustedGaolIrons : GaolModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => "Terraria/Images/Item_" + ItemID.Shackle;
 
         /// <summary>锈粉重染色（铁具冷紫锈 + 一点狱火粉）</summary>

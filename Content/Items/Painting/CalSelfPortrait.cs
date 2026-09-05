@@ -24,6 +24,6 @@ namespace CalamityOverhaul.Content.Items.Painting
             Item.createTile = ModContent.TileType<CalSelfPortraitTile>();
         }
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
+        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, this);
     }
 }

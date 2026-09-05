@@ -14,10 +14,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         public static readonly OmniElectricFootSkill Instance = new();
 
         public override string DisplayName => Language.GetTextValue(
-            "Mods.CalamityOverhaul.Items.OmniElectricFoot.SkillName");
+            "Mods.CalamityOverhaul.Cyberwares.OmniElectricFoot.SkillName");
 
         public override string Description => Language.GetTextValue(
-            "Mods.CalamityOverhaul.Items.OmniElectricFoot.SkillDesc");
+            "Mods.CalamityOverhaul.Cyberwares.OmniElectricFoot.SkillDesc");
 
         public override int IconItemType => ModContent.ItemType<OmniElectricFoot>();
 

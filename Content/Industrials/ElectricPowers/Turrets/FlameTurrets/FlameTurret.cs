@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
     /// <summary>火焰喷射塔,近距锥形持续喷火对群;贴图复用特斯拉塔,靠橙红色调区分</summary>
     internal class FlameTurret : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTower";
 
         /// <summary>系列色调:橙红,同贴图靠它与特斯拉塔区分</summary>

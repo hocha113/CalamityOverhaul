@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 {
     internal class Collector : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Collector";
         internal static LocalizedText Text1;
         internal static LocalizedText Text2;

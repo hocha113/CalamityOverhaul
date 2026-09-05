@@ -1,0 +1,181 @@
+ScapegoatDoll: {
+	DisplayName: Poupée substitut
+	Tooltip:
+		'''
+		Dans l'inventaire, elle encaisse une mort à votre place
+		Après le coup, la poupée se brise et disparaît
+		'''
+	ShatterText: La poupée substitut s'est brisée
+}
+
+ConstructionBlueprintQET: {
+	DisplayName: Plan de construction (Tour d'intrication quantique)
+	Tooltip:
+		'''
+		Utiliser pour apprendre à fabriquer l'[i:CalamityOverhaul/CQETConstructor] auto-constructeur
+		"Vos mains forgeront la pierre angulaire et la tour qui relient deux mondes"
+		'''
+	L1: Connaissance acquise pour fabriquer l'auto-constructeur (Tour d'intrication quantique) !
+	L2: Vous avez déjà appris ce plan !
+}
+
+CQETConstructor: {
+	DisplayName: Auto-constructeur (Tour d'intrication quantique)
+	Tooltip:
+		'''
+		Placer pour construire une tour d'intrication quantique
+		Nécessite une grande quantité de [i:CalamityOverhaul/StarflowPlatedBlock] blocs plaqués de flux stellaire
+		'''
+	UseConstructionBlueprint: Apprendre le plan de construction (Tour d'intrication quantique)
+}
+
+DeploySignaltower: {
+	DisplayName: Tour d'intrication quantique
+	Tooltip:
+		'''
+		Appareil de communication essentiel servant de phare dans le sous-espace
+		"Un enfant sauvage lève une torche dans la forêt et crie : je suis là"
+		'''
+}
+
+PQCD: {
+	DisplayName: Communicateur quantique portable
+	Tooltip:
+		'''
+		Utiliser pour contacter Draedon et ouvrir l'interface holographique d'achat de l'Arsenal de Draedon
+		"Théoriquement capable d'émettre un ordre d'extermination, mais l'autorisation semble insuffisante"
+		'''
+	NeedSignalTowersText: Liaison d'intrication quantique incomplète ! Nécessite le déploiement des {0} tours de signal.
+	SignalTowerProgressText: Progression du déploiement des tours : {0}/{1}
+}
+
+Oceanfragments: {
+	DisplayName: Débris océaniques
+	Tooltip: Un bibelot mystérieux. Le Vieux Duc pourrait s'y intéresser.
+}
+
+OceanRaiders: {
+	WorkingText: En fonctionnement...
+	NoWaterText: Doit être placé au-dessus de l'eau pour fonctionner !
+	NoEnergyText: Énergie insuffisante !
+	DisplayName: Dévoreur des océans
+	Tooltip:
+		'''
+		Consomme de l'électricité pour extraire des ressources des étendues d'eau
+		Clic droit pour ouvrir le stockage interne
+		'''
+}
+
+OldDuchest: {
+	StorageText: Grand coffre de stockage
+	DisplayName: Vieux coffre
+	Tooltip:
+		'''
+		Un coffre de stockage à capacité immense
+		"L'ancien coffre du Vieux Duc. S'il est à proximité, il pourrait y jeter quelques objets."
+		'''
+}
+
+MermanRod: {
+	Text1: Un perchoir de triton est déjà placé dans le monde !
+	DisplayName: Perchoir de triton
+	Tooltip:
+		'''
+		Augmente la puissance de pêche de 20 lorsque vous pêchez à proximité
+		Le Vieux Duc déplacera son campement ici
+		'''
+}
+
+Mewtwo: {
+	DisplayName: Puce braindance
+	Tooltip: Utiliser pour entrer dans une braindance
+}
+
+GaolCellKey: {
+	DisplayName: Clé de cellule de la Geôle profonde
+	Tooltip:
+		'''
+		Dresse sur place la cellule de la Geôle profonde, un crâne dormant se pose sur l'autel (objet de test)
+		Approchez l'autel pour le réveiller ; pendant le combat, les deux portes sont scellées par des barreaux d'énergie rose pâle
+		Vaincre l'Âme vengeresse des geôles éteint la cellule pour de bon ; un spectre qui s'enfuit se rendort après quelques secondes
+		"Un tour de clé, et les murs se souviennent de leur forme"
+		'''
+	BuiltHint: La cellule est dressée, le crâne de l'autel attend que vous approchiez
+}
+
+RustedGaolIrons: {
+	DisplayName: Fers rouillés
+	Tooltip:
+		'''
+		Défense +3, immunité au recul
+		Après un coup reçu, vitesse de déplacement brièvement accrue
+		"Le numéro de cellule à l'intérieur du bracelet s'est usé"
+		'''
+}
+
+UndrownedShackleCharm: {
+	DisplayName: Anneau d'ancre engloutie
+	Tooltip:
+		'''
+		L'eau ne vous ralentit plus et vous pouvez nager
+		La respiration sous l'eau dure beaucoup plus longtemps
+		"L'ancre a coulé, l'homme respire encore"
+		'''
+}
+
+GaolAnchorWeapon: {
+	DisplayName: Ancre de geôle
+	Tooltip:
+		'''
+		Lance une grande ancre ; plantée dans un mur, sa chaîne devient une ligne de dégâts
+		"Un outil d'exécution ne prend pas sa retraite"
+		'''
+}
+
+SumpPearl: {
+	DisplayName: Perle d'eau de geôle
+	Tooltip:
+		'''
+		Une perle mate coagulée dans les os d'un condamné, à partir de l'eau de geôle
+		Le marché des morts-vivants accepte ça
+		'''
+}
+
+FloodGalleryKey: {
+	DisplayName: Clé de la Galerie de crue
+	Tooltip:
+		'''
+		Dresse sur place la Galerie de crue et y place le condamné à l'ancre (objet de test)
+		"Les graduations de niveau sur le mur sont son tableau de pouls"
+		'''
+	Placed: La Galerie de crue est dressée. Pour le réveiller, tenez-vous sur le podium de vanne à gauche et ne bougez pas.
+}
+
+ProofSealCharm: {
+	DisplayName: Sceau de contrôle
+	Tooltip:
+		'''
+		Les projectiles de pièges infligent 25% de dégâts en moins et ont 15% de chances de rater
+		"Les pièces tamponnées passent tous les mécanismes"
+		'''
+	Misfire: Raté
+}
+
+OverseerLogger: {
+	DisplayName: Registre du contremaître
+	Tooltip:
+		'''
+		Accorde le sens du danger ; pièges et mécanismes proches n'ont plus où se cacher
+		"Il tient le tableau de service de chaque meurtrière à dards"
+		'''
+}
+
+ProofingHallKey: {
+	DisplayName: Clé de la Salle de contrôle
+	Tooltip:
+		'''
+		Dresse sur place la Salle de contrôle et y accroche le palan couvert de poussière (objet de test)
+		"La cloche de pointage sonne encore"
+		'''
+	Placed: La Salle de contrôle est dressée. Pour commencer l'inspection, tenez-vous sur le podium de pointage à gauche et attendez que la cloche ait fini de compter.
+}

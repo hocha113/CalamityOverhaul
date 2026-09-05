@@ -1,0 +1,88 @@
+ThermalBattery: {
+	DisplayName: 热能电池
+	Tooltip: 存储一定的电能
+}
+
+FluidPipeline: {
+	DisplayName: 液体管道
+	Tooltip:
+		'''
+		输送水、岩浆、蜂蜜或微光
+		一根管道同一时间只运载一种液体，排空后才会改运其他液体
+		右键可快速拆除
+		'''
+}
+
+FluidTank: {
+	DisplayName: 液体储罐
+	Tooltip:
+		'''
+		储存最多32格液体，罐身观察窗会显示液面高度
+		通过液体管道与泵和机器互通
+		拆除时罐内液体会流失
+		'''
+}
+
+LargeFluidTank: {
+	DisplayName: 大型液体储罐
+	Tooltip:
+		'''
+		储存最多128格液体，罐身观察窗会显示液面高度
+		通过液体管道与泵和机器互通
+		拆除时罐内液体会流失
+		'''
+}
+
+FluidText: {
+	WaterName: 水
+	LavaName: 岩浆
+	HoneyName: 蜂蜜
+	ShimmerName: 微光
+	EmptyName: 空
+	BarFormat: "{0} {1}/{2}"
+}
+
+CapacitorMatrix: {
+	DisplayName: 电容矩阵
+	Tooltip:
+		'''
+		可储存 40000 电力的大型储能柜
+		充放电吞吐远超热能电池，是大电网的缓冲中枢
+		'''
+}
+
+UEPipeline: {
+	DisplayName: 能量管道
+	Tooltip:
+		'''
+		用于传输电能
+		右键可快速拆除目标位置的管道并回收
+		连接发电机等能量来源，将电能传输至电池或其他用电设备
+		'''
+}
+
+LaserEnergyTrans: {
+	DisplayName: 激光传导器
+	Tooltip:
+		'''
+		远程传输电力
+		放置后右键启动激光导航，再右键其他电力建筑进行链接
+		传输距离越远能量损耗越大，最大为100%损耗
+		'''
+}
+
+CreativeUEPipeline: {
+	DisplayName: 上帝能量管道
+	Tooltip: ""
+}
+
+ItemPipeline: {
+	DisplayName: 物流管道
+	Tooltip:
+		'''
+		用于传输物品
+		右键可快速拆除目标位置的管道并回收，此功能在手持管道时可用
+		右键端点位置的管道可以在输出模式和输入模式之间切换，此功能在手持管道时不可用
+		输出模式的管道会抽取连接的容器内的物品，传输到连接的输入模式管道连接的物品中
+		'''
+}

@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
 {
     internal class OceanRaiders : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => CWRConstant.Item_Placeable + "OceanRaiders";
         [VaultLoaden(CWRConstant.Item_Placeable + "OceanRaidersGlow")]
         public static Asset<Texture2D> Glow = null;

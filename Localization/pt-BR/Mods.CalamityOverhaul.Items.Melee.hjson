@@ -1,0 +1,431 @@
+DivineSourceBlade: {
+	DisplayName: Lamina Aniquiladora da Fonte Divina
+	Tooltip:
+		'''
+		Encadeia dois golpes rapidos em um corte pesado carregado
+		O corte pesado libera uma colossal meia-lua dourada de energia de espada
+		"A vida nunca cessa"
+		'''
+}
+
+CursedflameBloodfist: {
+	// DisplayName: Cursedflame Bloodfist
+	/* Tooltip:
+		'''
+		Counts as both melee and magic, and takes the full bonus from each
+		Hold left click to pour out a rapid flurry of punches, and keep running while you do
+		Every punch lands one hit of area damage around you with very low knockback
+		Each punch also scatters a stream of flying flame fists along your cursor
+		Targets are set ablaze with Cursed Inferno
+		The flurry drains mana as it runs and stops once you run dry
+		"Whoever this arm belonged to, the fire has burned that away"
+		''' */
+}
+
+Arbiter: {
+	DisplayName: Sentenciador
+	// ManifestInteractHint: "[Right Click] Wrench the axe free"
+	// ManifestInventoryFullHint: Inventory full - free up a slot before pulling the axe
+	Tooltip:
+		'''
+		Segure o botão esquerdo para carregar e erguer o machado do julgamento
+		Solte para golpear para baixo, liberando uma onda de choque flamejante que se espalha pelo chão
+		Quanto mais tempo carregar, maior o alcance e a força das chamas
+		"O julgamento desce pelas chamas"
+		'''
+}
+
+Cloudwalking: {
+	DisplayName: Caminhante das Nuvens
+	Tooltip:
+		'''
+		Segure o botão esquerdo para carregar e erguer o grande machado
+		Solte para arremessá-lo à frente, deixando nuvens em seu rastro
+		O machado retorna automaticamente a você
+		'''
+}
+
+DawnshatterAzure: {
+	DisplayName: Romper-Aurora Azure
+	Tooltip:
+		'''
+		Dispara uma sombra da coroa, invocando chamas de dragao explosivas ao atingir inimigos
+		Segure o botao direito do mouse para investir enquanto levanta sua arma
+		"Deixe as chamas purificarem sua alma e saquearem completamente seus inimigos"
+		'''
+}
+
+Flawless: {
+	// DisplayName: Flawless
+	/* Tooltip:
+		'''
+		A four-beat combo: sweep, thrust, back-sweep, finishing lunge, each landing heavier than the last
+		The thrust beats swap in the slender head for extra reach, scattering frost crystal on impact
+		"He changed the head seven times. The target has one hole."
+		''' */
+}
+
+StormGoddessSpear: {
+	DisplayName: Lanca da Deusa da Tempestade
+	Tooltip:
+		'''
+		Lanca beijos de tempestade com arcos eletricos destrutivos
+		Ao segurar, invoca o espirito remanescente da Deusa da Tempestade para auxiliar no combate
+		[legend]
+		'''
+	Legend:
+		'''
+		Alina foi um dia a guerreira mais afiada de Terra, empunhando uma lamina de trovao para cortar a escuridao,
+		sua fe inabalavel e absoluta. Mas a fe nao pôde protege-la da indiferenca dos deuses.
+		Quando o Deus Supremo passou o julgamento, seus companheiros, parentes, juramentos e gloria foram reduzidos a cinzas.
+		Ela testemunhou em primeira mao como a chamada justica pisoteava tudo em po, como a ordem era meramente um veu para a mais cruel das destruicoes.
+		Deuses... Alina nao olha mais para os deuses.
+		Ela recuou para o abismo, destruiu a si mesma e deixou um poder antigo e proibido consumir sua alma.
+		A armadura de Alina fundiu-se em um corpo forjado nas profundezas do abismo.
+		Restos de nuvens antigas, sol ensanguentado e o passado entreteceram-se; o olhar de seus companheiros... e de sua parentela antes da morte... Alina... tudo acabou.
+		Ela nao era mais a Alina de outrora, a deusa da guerra de Terra.
+		Sua furia voltou como uma tempestade, arrastando insetos pelo campo de batalha; seu trovao rasgou ceu e nuvens, tronos e terra.
+		A Deusa da Tempestade, Alina, trouxe implacavelmente destruicao e vinganca.
+		'''
+}
+
+DragonsScaleGreatsword: {
+	DisplayName: Espada Grande de Alga Draconica
+	Tooltip:
+		'''
+		Os golpes seguem um combo de tres ataques; o terceiro libera um finalizador draconico mais poderoso
+		Os golpes liberam ondas espirais de algas que explodem em nuvens toxicas ao acertar
+		Ataques corpo a corpo verdadeiros geram muitas nuvens de algas venenosas
+		Clique direito invoca uma alma draconica esmeralda que avanca em direcao ao cursor, espalhando nuvens toxicas pelo caminho
+		'''
+}
+
+CosmicCalamity: {
+	DisplayName: Calamidade Galactica
+	Tooltip: Os ataques geram ondas de choque em forma de crescente
+}
+
+SpearOfLonginus: {
+	DisplayName: Lanca de Longinus
+	Tooltip:
+		'''
+		Ao segurar a lanca, uma cruz sagrada surge abaixo de voce, absorvendo energia sagrada automaticamente
+		Cada vez que a barra enche, completa uma carga, ate um maximo de seis camadas
+		Ao segurar, marca o inimigo mais proximo com o destino
+		Um arremesso carregado contra um inimigo marcado desencadeia a Furia do Peregrino
+		[legend]
+		'''
+	Legend:
+		'''
+
+		O deus estilhaçado, permita-me expiar meus pecados.
+		A guerra se espalhou por seculos, e eu, um fugitivo fugindo da grande civilizacao,
+		ganho uma existencia modesta neste planeta desolado na borda do universo.
+		A milhares de anos-luz de distancia, as maquinas de guerra colossais do conflito moem estrelas ate virarem po.
+		Ataques selvagens e terriveis apagam anos-luz de extensao estelar num piscar de olhos, transformando-a em um dominio de silencio.
+		Por incontaveis seculos, esta guerra tem assolado. Agora, a poderosa civilizacao a qual pertenco esta a beira do colapso,
+		e eu me tornarei um pecador cosmico, a mais desrespeitosa blasfemia.
+		Minha carne apodreceu, meus ossos espelhando as rugas das eras passadas.
+		Estou prestes a me tornar uma das maquinas fracas que criei.
+		Antes que esse destino me atinja, que os deuses me concedam perdao e perdoem meu desrespeito a este ser supremo.
+		Deixe-me descer ao abismo do purgatorio, suportando tormento sem fim enquanto minha alma cai.
+		Ainda assim, pelo bem da minha civilizacao, pela vitoria nesta guerra que dura seculos, devo aproveitar o poder fragmentado desta entidade divina.
+		Para guiar sua forca misteriosa, nao tenho escolha senao infundir sua forma divina estilhaçada com o abraco frio da maquinaria.
+		Esta e uma profanacao inevitavel. Pela continuidade da civilizacao, pelo triunfo da guerra,
+		devo me tornar o seguidor mais devoto desta entidade suprema, o mais desrespeitoso blasfemo da historia.
+		'''
+}
+
+NeutronGlaive: {
+	DisplayName: Corte da Zona Negra
+	Tooltip:
+		'''
+		Balancar libera ondas de choque gravitacionais poderosas; ao acertar, gera uma explosao de estrela de neutrons
+		Clique direito para carregar a lamina; soltar totalmente carregado causa uma grande explosao de estrela de neutrons no cursor, senao a energia se espalha
+		'''
+}
+
+NeutronScythe: {
+	DisplayName: Mensageiro do Buraco Negro
+	Tooltip:
+		'''
+		Foices de neutrons giram em alta velocidade, disparando raios gama contra inimigos proximos e deixando pontos de detonacao de dobra ao longo da trajetoria
+		Clique direito libera uma erupcao de buraco negro, arremessando treze foices em um circulo completo
+		'''
+}
+
+RebelBlade: {
+	DisplayName: Lamina Rebelde
+	Tooltip:
+		'''
+		Corpo a corpo verdadeiro gera muitas bolas de luz demoniaca ao redor do alvo
+		Clique direito controla o voo da lamina e corta em direcao ao cursor
+		'''
+}
+
+WeaverGrievances: {
+	DisplayName: Rancor Enredado
+	// RitualInteractHint: "[Right-click] Pull the blade free"
+	// RitualInventoryFullHint: Your inventory is full. Make room before pulling the blade.
+	Tooltip:
+		'''
+		Libera muitas garras de espiritos rancorosos; tem efeitos especiais em ambientes infernais e de masmorra
+		Clique direito rola em direcao ao cursor; acertar um inimigo durante o rolamento concede invencibilidade
+		Um rolamento proximo conta como esquiva perfeita
+		[legend]
+		'''
+	Legend:
+		'''
+		A masmorra eterna se estende pela terra, suas paredes gravadas com as inscricoes e gritos de guerreiros antigos.
+		Cada pedra esta saturada de malicia remanescente, como correntes dos condenados, ligando-a a escuridao sem fim no fim do tempo.
+		Estes guerreiros foram outrora as laminas de seu rei, travando guerra atraves dos reinos.
+		Suas espadas tinham iluminado inumeros campos de batalha, seu sangue forjou o imperio imponente.
+		Sua lealdade era tao duradoura quanto as estrelas, sua conviccao tao inabalavel quanto o ferro.
+		Ainda assim, quando as guerras cessaram, e as bandeiras do Senhor Demonio foram rasgadas aos pes do rei,
+		no momento em que a paz desceu, o rei decretou sua consignacao ao abismo.
+		"Nos nao traimos, mas o rei nos traiu!" Os gemidos angustiados dos condenados rasgaram o vazio, perfurando o silencio da eternidade.
+		Seus espiritos nobres nao retornaram ao po, mas foram aprisionados no abismo do vazio, condenados como testemunhas da noite eterna.
+		As lamentacoes incessantes se transformaram em uma acusacao silenciosa, uma que alcancou os confins mais distantes das estrelas.
+		Reza a lenda que o rei, temendo sua lealdade inabalavel e o inferno de sua ira,
+		atendeu aos sussurros dos feiticeiros do Senhor Demonio, escolhendo consignar estes guerreiros as sombras da historia.
+		Mas a malicia, como uma mare, distorceu a realidade da masmorra. Seu sofrimento abalou as barreiras do tempo e espaco, tecendo uma profecia de vinganca:
+		"O Senhor Demonio retornara; o vazio sera rasgado, e nossa ira consumira tudo!"
+		Quando Terra mais uma vez enfrentar a beira da aniquilacao, estes mortos inquietos se levantarao da escuridao.
+		Suas laminas nao lutarao mais pela gloria de um imperio, mas pelo julgamento do traidor.
+		Gloria e lealdade estao ha muito obliteradas—apenas as chamas da vinganca permanecem, destinadas a engolir tudo.
+		'''
+}
+
+SandDagger: {
+	DisplayName: Adaga das Areias
+	Tooltip:
+		'''
+		Lancada em linha reta, caindo levemente pela gravidade
+		Perfura o chao ao impacto; se cravar na areia, carrega e dispara para cima, detonando uma onda sismica e espinhos de areia
+		'''
+}
+
+WastelandFang: {
+	DisplayName: Presa do Ermo
+	Tooltip:
+		'''
+		Ricocheteia em blocos e acelera ao recuar
+		Abre a boca e cospe varios orbes de areia
+		'''
+}
+
+SeasonalKunai: {
+	DisplayName: Kunai Sazonal
+	Tooltip:
+		'''
+		Lanca tres kunai homing nos inimigos
+		Ataques furtivos lancam um kunai grande que se divide no final de sua trajetoria
+		"Refletindo as Quatro Estacoes"
+		'''
+}
+
+WraithKunai: {
+	DisplayName: Kunai Espectral
+	Tooltip:
+		'''
+		Lanca tres kunai homing nos inimigos
+		Ataques furtivos invocam um grupo de adagas fantasmagoricas pairando ao redor do jogador
+		'''
+}
+
+CommandersChainsaw: {
+	DisplayName: Moto Serra do Comandante
+	Tooltip:
+		'''
+		Gera faiscas ao atingir um alvo
+		"Adicione mais diesel"
+		'''
+}
+
+GeminisTribute: {
+	DisplayName: Tributo dos Gemeos
+	Tooltip:
+		'''
+		Lanca uma foice que gira rapidamente e corta para frente e para tras
+		Ataques furtivos liberam um enxame de misseis de cruzeiro do Destruidor
+		"Apenas uma personalidade dominante pode existir, e claramente, Olho de Chama Magma venceu."
+		'''
+}
+
+DestroyersBlade: {
+	DisplayName: Lamina do Destruidor
+	Tooltip:
+		'''
+		Dispara saraivadas termicas
+		"Contem o nucleo de energia imenso do Destruidor."
+		'''
+}
+
+Observer: {
+	DisplayName: Observador
+	Tooltip: '''"Ainda esta assistindo voce"'''
+}
+
+Shatterfang: {
+	// DisplayName: Shatterfang
+	/* Tooltip:
+		'''
+		Chain three swings into a staggering cleave that heavily grinds down the blade
+		The cleave that drains the blade shatters it outright, hurling a huge broken-off tooth fragment
+		Regular swings intermittently fling small gravity-bound tooth shards
+		The half-bladed sword swings faster, but hits weaker and no longer fires shards
+		Sustained attacks also destabilize the blade until it quietly crumbles
+		Right-click to spend a moment mending the blade; it also knits back slowly while resting, chiming once whole
+		"A fang broken from the gnashing maw, still aching to bite"
+		''' */
+}
+
+CommandersClaw: {
+	DisplayName: Garra do Comandante
+	Tooltip:
+		'''
+		Lance-os nos inimigos e restrinja-os.
+		O ataque furtivo gerara varias Granadas do Destruidor.
+		'''
+}
+
+CommandersChainsawEX: {
+	DisplayName: Moto Serra do Comandante EX
+	Tooltip: '''"Despedaca tudo em seu caminho"'''
+}
+
+DestroyersBladeEX: {
+	DisplayName: Lamina do Destruidor EX
+	Tooltip:
+		'''
+		Lanca uma saraivada termica
+		"E sempre mais facil destruir do que construir"
+		'''
+}
+
+EnergySword: {
+	DisplayName: Espada de Energia
+	Tooltip:
+		'''
+		Gasta energia para disparar lasers e penetrar multiplos inimigos
+		"A utilizacao nao e alta."
+		'''
+}
+
+SporeboundRoller: {
+	DisplayName: Rolo Esporo- Vinculado
+	Tooltip:
+		'''
+		Gera um pequeno cogumelo flutuante apos acertar um inimigo
+		"Eles adoram continuar rolando"
+		'''
+}
+
+SporeburstPouch: {
+	DisplayName: Bolsa de Explosao de Esporos
+	Tooltip:
+		'''
+		Lanca uma bolsa volatil de esporos fungicos que explode no impacto
+		Golpes furtivos desencadeiam uma detonacao fungica muito maior e um enxame de espiritos de esporos homing
+		'''
+}
+
+Heartcarver: {
+	DisplayName: Escavador de Coracoes
+	Tooltip:
+		'''
+		Gera tres adagas rituais adicionais para girar ao redor do jogador.
+		Apos o carregamento ser concluido, voam em direcao ao alvo.
+		Clique direito para realizar uma estocada de curto alcance.
+		'''
+	/* CarveTip:
+		'''
+		While held, the blade beats in time with your heart
+		Strikes landing in the gap between two heartbeats become Carving Strikes
+		Finish the combo with a Carving Strike to carve the heart out whole
+		''' */
+}
+
+OniMachete: {
+	DisplayName: Machete Oni
+	Tooltip:
+		'''
+		Quando segurada, seis maos oni serao geradas para auxiliar no combate.
+		Ataques corpo a corpo verdadeiros liberarao chamas fantasmas.
+		'''
+	/* SuppressTip:
+		'''
+		Swings and hits stoke the brimstone suppression; every strike the six oni hands make burns it away
+		When the flame gutters out the hands grow restless: they fight harder, and may turn back to squeeze your throat
+		''' */
+}
+
+AncientStormGoddessSpear: {
+	DisplayName: Lanca Antiga da Deusa da Tempestade
+	Tooltip:
+		'''
+		Uma Lanca capaz de enviar Beijos de Relampago Ferozes que ricocheteiam nos inimigos.
+		"Ja e uma coisa do passado, mas ainda funciona."
+		[legend]
+		'''
+	Legend:
+		'''
+		Alina foi um dia a guerreira mais afiada de Terra, empunhando uma lamina de trovao para cortar a escuridao,
+		sua fe inabalavel e absoluta. Mas a fe nao pôde protege-la da indiferenca dos deuses.
+		Quando o Deus Supremo passou o julgamento, seus companheiros, parentes, juramentos e gloria foram reduzidos a cinzas.
+		Ela testemunhou em primeira mao como a chamada justica pisoteava tudo em po, como a ordem era meramente um veu para a mais cruel das destruicoes.
+		Ela nao buscava mais a luz, mas se reforgejou no abismo. Um poder antigo e proibido consumiu sua alma,
+		concedendo-lhe forca alem da compreensao mortal.
+		Sua armadura se tornou os destrocos forjados nas profundezas, seus olhos ardiam com os restos de trovao e escuridao entrelacados.
+		Ela nao era mais a guardia de Terra, mas a propria tempestade—uma vinganca que nao podia ser impedida.
+		Sua furia varreu o campo de batalha como uma tempestade uivante, sua trovao destruiu tronos e templos.
+		Ela lutou nao por justica, nao por Terra, nao pelos deuses.
+		Ela lutou por vinganca, por aniquilacao—para fazer aqueles que se consideravam justos entenderem o verdadeiro significado do medo.
+		'''
+}
+
+Abyssrend: {
+	// DisplayName: Abyssrend
+	/* Tooltip:
+		'''
+		Left-click alternates tip thrusts and side cuts; each strike tears off a homing ocean undercurrent
+		Right-click stirs an abyssal undertow that drags foes ahead of you onto the pincer, then slams them into the nearby ground, detonating a cavitation burst
+		Foes caught by the slam or the burst sink into abyssal pressure, severely slowing them
+		"It remembers the sound the deep makes when it breaks things"
+		''' */
+}
+
+TideReaper: {
+	// DisplayName: Tide Reaper
+	/* Tooltip:
+		'''
+		Hurls a spinning abyssal scythe that boomerangs back to you
+		In flight it flings tide crescents that hunt nearby enemies
+		Right click to throw a vortex anchor: the scythe pins ahead and spins into a maelstrom
+		The maelstrom drags enemies inward and flings crescents faster before returning
+		"When the tide goes out, only bones are left on the shore"
+		''' */
+}
+
+BudPiercer: {
+	// DisplayName: Budpiercer
+	/* Tooltip:
+		'''
+		Flies straight for a moment, then dips
+		Striking an enemy plants a bud that soon blooms into a ring of petals
+		Multiple daggers can stack buds on the same target
+		Sticking into the ground blooms on the spot, spraying three needles upward
+		"Under the serpent's scales, every one of them wants to bloom"
+		''' */
+}
+
+Budcrown: {
+	// DisplayName: Budcrown
+	/* Tooltip:
+		'''
+		Hold the attack key to whirl the head around you, release to hurl it at your cursor
+		The head sheds needles when it strikes enemies
+		Every third strike bursts into full bloom, blasting a ring of petals with heavy knockback
+		"The heaviest bud blooms the loudest"
+		''' */
+}

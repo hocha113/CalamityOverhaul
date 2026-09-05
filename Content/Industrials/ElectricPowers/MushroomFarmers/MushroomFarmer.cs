@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
     /// <summary>蘑菇农场机,在草地与蘑菇草上自动培育并采收蘑菇</summary>
     internal class MushroomFarmer : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/MushroomFarmer";
 
         /// <summary>系列色调:菌蓝紫,用于提示文本与 UI 点缀</summary>

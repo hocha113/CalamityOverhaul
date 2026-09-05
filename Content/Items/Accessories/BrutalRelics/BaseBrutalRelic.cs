@@ -10,6 +10,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics
     /// </summary>
     internal abstract class BaseBrutalRelic : ModItem
     {
+        public override string LocalizationCategory => "BrutalRelics";
+
         public override string Texture => CWRConstant.Item_BrutalRelic + GetType().Name;
 
         public override void SetDefaults() {

@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.FluidPumps
     /// <summary>抽液泵:耗电抽取世界液体入内部缓冲,液体网络的源头</summary>
     internal class FluidPump : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/FluidPump";
         public override void SetDefaults() {
             Item.width = 32;

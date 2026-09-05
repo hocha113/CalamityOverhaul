@@ -1,0 +1,181 @@
+ScapegoatDoll: {
+	DisplayName: Sündenbockpuppe
+	Tooltip:
+		'''
+		Im Inventar fängt sie einmal den Tod für dich ab
+		Danach zerbricht die Puppe und ist weg
+		'''
+	ShatterText: Die Sündenbockpuppe ist zerbrochen
+}
+
+ConstructionBlueprintQET: {
+	DisplayName: Konstruktionsbauplan (Quantenverschränkungsturm)
+	Tooltip:
+		'''
+		Nach Gebrauch lernst du, den [i:CalamityOverhaul/CQETConstructor] Selbstkonstruktor herzustellen
+		„Deine Hände werden den Grundstein und den Turm schmieden, die zwei Welten verbinden“
+		'''
+	L1: Wissen zum Herstellen des Selbstkonstruktors (Quantenverschränkungsturm) erlangt!
+	L2: Du hast diesen Bauplan bereits gelernt!
+}
+
+CQETConstructor: {
+	DisplayName: Selbstkonstruktor (Quantenverschränkungsturm)
+	Tooltip:
+		'''
+		Nach dem Platzieren zum Bau eines Quantenverschränkungsturms
+		Benötigt große Mengen [i:CalamityOverhaul/StarflowPlatedBlock] Sternstrom-Plattierungsblöcke
+		'''
+	UseConstructionBlueprint: Konstruktionsbauplan lernen (Quantenverschränkungsturm)
+}
+
+DeploySignaltower: {
+	DisplayName: Quantenverschränkungsturm
+	Tooltip:
+		'''
+		Wichtiges Kommunikationsgerät, das als Leuchtfeuer im Subraum dient
+		„Ein Wildkind hebt eine Fackel im Wald und ruft: Ich bin hier“
+		'''
+}
+
+PQCD: {
+	DisplayName: Tragbarer Quantenkommunikator
+	Tooltip:
+		'''
+		Benutzen kontaktiert Draedon und öffnet Draedons Arsenal-Hologramm-Shop
+		„Theoretisch für ein Exterminationsdekret – scheinbar fehlt die Berechtigung“
+		'''
+	NeedSignalTowersText: Quantenverschränkungsverbindung unvollständig! Alle {0} Signaltürme müssen deployt sein
+	SignalTowerProgressText: Signalturm-Fortschritt: {0}/{1}
+}
+
+Oceanfragments: {
+	DisplayName: Meeresfragmente
+	Tooltip: Ein mysteriöses Kleinod – Der Alte Herzog könnte Interesse haben
+}
+
+OceanRaiders: {
+	WorkingText: Arbeitet …
+	NoWaterText: Muss über Wasser platziert werden!
+	NoEnergyText: Energiemangel!
+	DisplayName: Meeresverschlinger
+	Tooltip:
+		'''
+		Verbraucht Strom, um Ressourcen aus Gewässern zu extrahieren
+		Rechtsklick öffnet internen Speicher
+		'''
+}
+
+OldDuchest: {
+	StorageText: Große Lagerkiste
+	DisplayName: Alte Kiste
+	Tooltip:
+		'''
+		Eine Kiste mit enormer Kapazität
+		„Die frühere Kiste des Alten Herzogs – in seiner Nähe wirft er vielleicht etwas hinein“
+		'''
+}
+
+MermanRod: {
+	Text1: In der Welt steht bereits eine Meermensch-Angel!
+	DisplayName: Meermensch-Angel
+	Tooltip:
+		'''
+		Erhöht Angelkraft um 20 beim Angeln in der Nähe
+		Der Alte Herzog verlegt sein Lager hierher
+		'''
+}
+
+Mewtwo: {
+	DisplayName: Braindance-Chip
+	Tooltip: Nutzen, um eine Braindance zu betreten
+}
+
+GaolCellKey: {
+	DisplayName: Schlüssel der Tiefenzelle
+	Tooltip:
+		'''
+		Errichtet an Ort und Stelle die Tiefenzelle; auf dem Altar liegt ein schlummernder Dörrschädel (Testgegenstand)
+		Tritt an den Altar, um ihn zu wecken; während des Kampfs versiegeln Geisterpulver-Gitter die Seitentüren
+		Nach dem Sieg über den Zellengeist erlischt die Zelle für immer; ein entkommener Geist schlummert nach wenigen Sekunden wieder
+		"Dreh den Schlüssel, und die Wände erinnern sich an ihre Form"
+		'''
+	BuiltHint: Die Zelle steht; der Dörrschädel auf dem Altar wartet, bis du näherkommst
+}
+
+RustedGaolIrons: {
+	DisplayName: Verrostete Fußfesseln
+	Tooltip:
+		'''
+		Verteidigung +3, immun gegen Rückstoß
+		Nach einem Treffer kurz höheres Bewegungstempo
+		"Die Zellennummer innen am Ring ist schon glattgeschliffen"
+		'''
+}
+
+UndrownedShackleCharm: {
+	DisplayName: Ankerring der Versunkenen
+	Tooltip:
+		'''
+		Im Wasser wie auf festem Boden, Schwimmfähigkeit
+		Atemzeit unter Wasser stark verlängert
+		"Der Anker liegt am Grund, der Mensch atmet noch"
+		'''
+}
+
+GaolAnchorWeapon: {
+	DisplayName: Kerkeranker
+	Tooltip:
+		'''
+		Wirft einen Riesenanker; nistet er in der Wand, spannt sich kurz eine Schadenskette
+		"Ein Hinrichtungswerkzeug geht nicht in den Ruhestand"
+		'''
+}
+
+SumpPearl: {
+	DisplayName: Kerkerwasserperle
+	Tooltip:
+		'''
+		Eine matte Perle, die Kerkerwasser in den Knochennähten der Toten verdichtet hat
+		Der Totenmarkt nimmt sie
+		'''
+}
+
+FloodGalleryKey: {
+	DisplayName: Schlüssel der Fluthalle
+	Tooltip:
+		'''
+		Errichtet an Ort und Stelle die Fluthalle und setzt den Anker-Toten ein (Testgegenstand)
+		"Die Wasserstandsmarken an der Wand sind seine Pulsuhr"
+		'''
+	Placed: Die Fluthalle steht. Willst du ihn wecken, stell dich auf das linke Ventilpodest und rühr dich nicht.
+}
+
+ProofSealCharm: {
+	DisplayName: Prüfstempel
+	Tooltip:
+		'''
+		Fallenschaden -25 %, 15 % Chance auf Versager
+		"Was den Stempel trägt, lassen die Fallen durch"
+		'''
+	Misfire: Versager
+}
+
+OverseerLogger: {
+	DisplayName: Aufseher-Schreiber
+	Tooltip:
+		'''
+		Gefahrenwahrnehmung: nahe Fallen und Mechaniken haben keinen Winkel mehr
+		"Den Schichtplan jeder Bolzenluke hat er im Kopf"
+		'''
+}
+
+ProofingHallKey: {
+	DisplayName: Schlüssel der Abnahmehalle
+	Tooltip:
+		'''
+		Errichtet an Ort und Stelle die Abnahmehalle und hängt den staubigen Kran auf (Testgegenstand)
+		"Die Schichtglocke am Prüftisch kann noch läuten"
+		'''
+	Placed: Die Abnahmehalle steht. Willst du die Abnahme beginnen, stell dich auf den linken Prüftisch und rühr dich nicht, bis die Glocke fertig gezählt hat.
+}

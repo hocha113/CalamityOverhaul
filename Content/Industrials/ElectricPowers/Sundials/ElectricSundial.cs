@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sundials
     /// <summary>电动日晷,储满电力即可把时间快进到黎明;贴图复用投掷者,靠晨曦金色调区分</summary>
     internal class ElectricSundial : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Thrower";
 
         /// <summary>系列色调:晨曦金</summary>

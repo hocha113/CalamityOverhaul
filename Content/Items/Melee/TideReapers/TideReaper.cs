@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Items.Melee.TideReapers
     /// </summary>
     internal class TideReaper : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "TideReaper";
 
         public override void SetStaticDefaults() {

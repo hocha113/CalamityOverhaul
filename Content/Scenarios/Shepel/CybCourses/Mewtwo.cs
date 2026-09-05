@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
     //超梦接入凭证，消耗后进入CybCourse子世界
     internal class Mewtwo : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => CWRConstant.Item_Tools + "Mewtwo";
         public override void SetDefaults() {
             Item.width = 28;

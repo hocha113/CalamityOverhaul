@@ -1,0 +1,113 @@
+GraniteTome: {
+	DisplayName: Tomo de granito
+	Tooltip:
+		'''
+		El canto reúne tres puntos de carga; al llenarse dispara en abanico tres esferas de energía de granito de rastreo ligero
+		Al impactar, las esferas se rompen en fragmentos de cristal que persiguen
+		'''
+}
+
+GraniteFlower: {
+	DisplayName: Flor de granito
+	Tooltip:
+		'''
+		Lanza una semilla de cristal que, al caer, florece en una flor de energía fija
+		La flor pulsa tres veces y dispara pétalos de cristal al enemigo más cercano
+		Al marchitarse, los pétalos se rompen del todo y salpican esquirlas a su alrededor
+		'''
+}
+
+GraniteThrowingKnife: {
+	DisplayName: Cuchillo arrojadizo de granito
+	Tooltip:
+		'''
+		Lanza un cuchillo perforante que arrastra un arco eléctrico azul verdoso
+		Al golpear a un enemigo, salta un microarco a otro enemigo cercano
+		Al final del vuelo o al chocar con el terreno se rompe en fragmentos de cristal
+		'''
+}
+
+GraniteWalkingBoots: {
+	DisplayName: Botas de marcha de granito
+	Tooltip:
+		'''
+		Aumentan mucho la velocidad de carrera y la aceleración
+		En el instante de alcanzar la velocidad máxima, la suela se electrifica y suelta arcos
+		Al correr a tope, el suelo echa chispas y a tu espalda queda un rastro azul verdoso
+		'''
+}
+
+MarbleClub: {
+	DisplayName: Maza de mármol
+	Tooltip:
+		'''
+		Un mazazo lento y pesado de arriba abajo, con retroceso enorme
+		El impacto petrifica un instante al enemigo y lo deja rígido como fósil
+		Si golpea el suelo, levanta una onda de mármol a pleno poder y una ola de polvo
+		Si golpeas en el aire, solo queda una sacudida de aire debilitada
+		'''
+}
+
+MarbleHuntingKnife: {
+	DisplayName: Cuchillo de caza de mármol
+	Tooltip:
+		'''
+		Tajos cruzados y rápidos
+		Cada tercer golpe se convierte en un tajo final más ancho, da un paso de embestida y dispara fragmentos de mármol
+		'''
+}
+
+MarbleDisc: {
+	DisplayName: Disco de mármol
+	Tooltip:
+		'''
+		Lanza un disco giratorio que rebota entre enemigos y muros
+		Cada rebote a un objetivo nuevo dora más el disco y sube un 10% el daño, hasta un 30%
+		Al agotar los rebotes vuelve a la mano; pueden existir dos a la vez
+		'''
+}
+
+MarblePebble: {
+	DisplayName: Guijarro de mármol
+	Tooltip:
+		'''
+		Piedra rápida de uso infinito; al chocar con el suelo rebota una vez
+		Inflige más daño extra cuanto más alta es la vida máxima del enemigo
+		Al golpear a un coloso, estalla en luz dorada y suena a roca partida
+		'''
+}
+
+MarbleShield: {
+	DisplayName: Escudo de mármol
+	Tooltip:
+		'''
+		Aumenta el retroceso cuerpo a cuerpo
+		Tres fragmentos de mármol orbitantes forman un escudo de guardia de piedra; cuando está listo absorbe un golpe y se rompe
+		Pulsa [KEY] para alzar el escudo y bloquear: un bloqueo perfecto anula el daño, rompe los proyectiles cercanos y lanza de vuelta hojas de piedra
+		Tras un bloqueo perfecto, el daño cuerpo a cuerpo sube un 10% durante 5 segundos
+		'''
+}
+
+MarbleBalloon: {
+	DisplayName: Globo de mármol
+	Tooltip:
+		'''
+		En el aire, pulsa ↓ para estrellarte contra el suelo; cuanto más tiempo acumules en la caída, más fuerte y más ancha es la onda al aterrizar
+		Inmunidad al daño por caída
+		'''
+}
+
+MarbleinaBottle: {
+	DisplayName: Mármol en una botella
+	Tooltip: Otorga un segundo salto extra, pesado y potente; mantén pulsado el salto para subir más
+}
+
+MarbleCloudBalloon: {
+	DisplayName: Globo de nube de mármol
+	Tooltip:
+		'''
+		Otorga un segundo salto extra, pesado y potente; mantén pulsado el salto para subir más
+		En el aire, pulsa ↓ para estrellarte contra el suelo; cuanto más tiempo acumules en la caída, más fuerte y más ancha es la onda al aterrizar
+		Inmunidad al daño por caída
+		'''
+}

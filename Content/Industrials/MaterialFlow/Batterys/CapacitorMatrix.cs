@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
     /// </summary>
     internal class CapacitorMatrix : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Flow";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/CapacitorMatrix";
 
         /// <summary>系列色调:荧翠绿,取自罐窗熔核配色</summary>

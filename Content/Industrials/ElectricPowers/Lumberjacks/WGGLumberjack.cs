@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 {
     internal class WGGLumberjack : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/WGGLumberjack";
         public override void SetDefaults() {
             Item.width = 32;

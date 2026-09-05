@@ -1,0 +1,838 @@
+SHPCModTooltipDraw: {
+	InstalledHeader: Módulos instalados
+	NoModules: Ninguno
+	BonusHeader: Bonificación total actual de módulos
+}
+
+MoldProcessingTable: {
+	DisplayName: Banco de moldes
+	Tooltip:
+		'''
+		Clic derecho para abrir el banco de moldes
+		Descomponer: funde piezas de modificación sobrantes del mismo tipo en fragmentos
+		Reforjar: consume fragmentos para producir moldes nuevos; puedes fijar un objetivo del códice
+		'''
+}
+
+RapidBarrelModule: {
+	DisplayName: Cañón de disparo rápido
+	Tooltip:
+		'''
+		El fuego continuo acumula calor en el cañón: cuanto más calor, más cadencia; el haz se pone al rojo blanco y suelta escoria ardiente
+		En el instante en que el calor toca la línea roja entra unos segundos en chorro de sobrecalentamiento: cadencia máxima y consumo de maná a cero, vapor a raudales en la boca y alarma continua
+		Tras el chorro, enfriamiento forzado y la cadencia cae mucho; al dejar de disparar el calor se disipa con lentitud; gestiona el calor y pisa la línea roja
+		'''
+}
+
+FocusBarrelModule: {
+	DisplayName: Cañón concentrador
+	Tooltip: Tres haces rastreadores se fuerzan a uno solo y asestan un golpe concentrado catastrófico
+}
+
+PrecisionOpticModule: {
+	DisplayName: Mira de precisión
+	Tooltip:
+		'''
+		Sistema de veredicto calibrado: la dispersión baja a cero; los impactos seguidos sin fallar acumulan calibración
+		Al completar quince capas dispara solo un rayo de veredicto perforante que critica de forma garantizada; fallar borra la calibración
+		'''
+}
+
+OverloadCoreModule: {
+	DisplayName: Núcleo de sobrecarga
+	Tooltip:
+		'''
+		Quita el seguro de la esfera de energía: tras llenar la carga, seguir cargando entra en sobrecarga santa; el daño puede duplicarse y la explosión se ensancha
+		Si cruzas la línea roja y no sueltas, el núcleo estalla en recámara, te empuja y quema la mitad del maná
+		'''
+}
+
+SteadyStockModule: {
+	DisplayName: Culata estabilizadora
+	Tooltip:
+		'''
+		En las pausas de disparo carga un condensador; el anillo sobre tu cabeza muestra la carga en tiempo real; al disparar de nuevo descarga según la carga actual y potencia todos los haces de esa ronda
+		A carga máxima añade penetración y vetas de voltaje, pero hay una ventana de estabilidad; si se pasa, se descarga a cero. El mayor beneficio es el disparo a golpes; el fuego continuo casi no carga
+		En modo láser, al encender vierte la carga de golpe y obtiene un eco de daño breve
+		'''
+}
+
+HarmonyGripModule: {
+	DisplayName: Empuñadura resonante
+	Tooltip:
+		'''
+		La conducción de bioelectricidad reduce el consumo de maná; al impactar, el maná sobrante se condensa en niebla resonante que se esparce por el campo
+		La niebla flota hacia ti; al recogerla devuelve maná y apila capas de armonía que suben la cadencia (hasta cinco)
+		'''
+}
+
+ResonanceFrameModule: {
+	DisplayName: Caja de resonancia
+	Tooltip:
+		'''
+		Metrónomo de onda estacionaria: cuenta los disparos; cada cuarto se eleva a haz de pulso resonante, más grueso, más doloroso y con una capa más de penetración
+		Al impactar, el haz de pulso levanta una onda de choque anular a la frecuencia de la onda, inflige daño de área y empuja un poco a los enemigos
+		Si mantienes el ritmo y das pulsos seguidos, las capas de ritmo potencian el pulso; si dejas de disparar demasiado, el ritmo vuelve a cero
+		En modo láser, la columna se carga de rojo a un ritmo fijo; un impacto en la ventana del pulso levanta la misma onda
+		'''
+}
+
+AdaptiveOpticModule: {
+	DisplayName: Mira adaptativa
+	Tooltip:
+		'''
+		Sistema de control de fuego predictivo: analiza la trayectoria del objetivo y proyecta una retícula holográfica en el punto de intercepción
+		El haz se desvía solo para adelantarse; al golpear a un objetivo en movimiento añade un golpe adaptativo
+		'''
+}
+
+AssaultStockModule: {
+	DisplayName: Culata de asalto
+	Tooltip:
+		'''
+		En la culata van dos módulos de apoyo: al empuñar el arma se despliegan en los hombros un par de brazos cañón flotantes
+		Los brazos disparan a la vez que tú, alternando dardos de apoyo a alta cadencia
+		'''
+}
+
+BalancedGripModule: {
+	DisplayName: Empuñadura equilibrada
+	Tooltip:
+		'''
+		Protocolo de doble balanza: los impactos de clic izquierdo acumulan Yang; las esferas de clic derecho acumulan Yin
+		Cuando ambos se acercan entra en estado de balanza: daño, cadencia y eficiencia de maná suben del todo
+		'''
+}
+
+CapacitorBankModule: {
+	DisplayName: Banco de condensadores
+	Tooltip:
+		'''
+		Al cargar, sobre tu cabeza se encienden una a una seis celdas; cuanto más llena la carga, más se iluminan
+		Tras disparar la esfera, el bastidor se queda y descarga celda a celda, disparando arcos de alimentación a la esfera en vuelo
+		Cada arco que llega añade daño y radio de explosión; cuanto más lejos vuela, más energía se bombea
+		'''
+}
+
+CrystalGripModule: {
+	DisplayName: Empuñadura de cristal
+	Tooltip:
+		'''
+		El medio de cristal sintético estrangula el maná y sube el crítico; la onda de un crítico se refracta en algo sólido
+		Del cuerpo del objetivo brotan esquirlas de prisma que salpican en parábola y las captura la atracción de red de los enemigos cercanos
+		'''
+}
+
+EfficientGripModule: {
+	DisplayName: Empuñadura eficiente
+	Tooltip:
+		'''
+		Protocolo de ciclo sin pérdida: al impactar un haz o un láser, recupera energía según el maná de ese disparo y la condensa en celdas de recuperación que te rodean
+		Al juntar ocho celdas, el siguiente clic izquierdo es un disparo sin pérdida: el maná se devuelve entero y todas las celdas se vierten en la boca para potenciar esa salva
+		En modo láser, el disparo sin pérdida vierte todas las celdas en el cursor y detona un orbe de energía recuperada
+		'''
+}
+
+HeavyBarrelModule: {
+	DisplayName: Cañón pesado
+	Tooltip:
+		'''
+		El rayado más grueso aplasta la dispersión y el ritmo; cada disparo es un cincel pesado
+		Haces y láser que golpean al mismo objetivo dejan una muesca; la cuarta forja un mazo que atraviesa el cuerpo
+		El mazo inflige daño extra de crítico garantizado según el cincel más pesado de la ventana y rompe un instante la armadura del objetivo (la rotura solo cuenta para tus impactos)
+		'''
+}
+
+HighVoltageCoreModule: {
+	DisplayName: Núcleo de alto voltaje
+	Tooltip:
+		'''
+		El arma lleva un condensador de alto voltaje: cada impacto lo carga
+		Al llenarse, el siguiente impacto te usa como electrodo y suelta un arco perforante que golpea a todos los enemigos de la línea
+		'''
+}
+
+HoloOpticModule: {
+	DisplayName: Mira holográfica
+	Tooltip:
+		'''
+		Proyector de rejilla táctica: en combate despliega periódicamente una rejilla holográfica en el cursor
+		Los proyectiles enemigos que la tocan se disuelven; tus haces que la atraviesan se calibran, ganan daño y apuntan al enemigo más cercano
+		'''
+}
+
+HypersonicBarrelModule: {
+	DisplayName: Cañón hipersónico
+	Tooltip:
+		'''
+		El rayado de estampación acelera el haz sin cesar; al romper la barrera del sonido estalla un anillo de onda de choque
+		Tras romperla, el haz entra en estado de blanco: más daño, más penetración y una estela de vapor condensado
+		'''
+}
+
+KineticDamperModule: {
+	DisplayName: Culata de amortiguación cinética
+	Tooltip:
+		'''
+		El amortiguador hidráulico guarda el retroceso como reserva cinética; por encima de la mitad, inmunidad al retroceso
+		En el instante de recibir daño, toda la reserva se convierte en una onda de contraataque que abre el suelo y aparta a los enemigos cercanos
+		'''
+}
+
+LightStockModule: {
+	DisplayName: Culata ligera
+	Tooltip:
+		'''
+		El diseño segmentado y aligerado sube la cadencia y convierte cada haz principal en una cadena de luz reptante
+		Detrás del haz van dos eslabones que recorren su trayectoria y resuelven daño por separado
+		'''
+}
+
+MultiCellFrameModule: {
+	DisplayName: Caja de celdas múltiples
+	Tooltip:
+		'''
+		Protocolo de alimentación matricial: alrededor se despliegan seis celdas; cada ronda de impactos carga una; en modo láser carga más despacio
+		Al llenarse las seis, la matriz carga y dispara a la vez seis haces de localización hacia el objetivo; luego se vacían todas y entra un breve enfriamiento
+		'''
+}
+
+PlasmaInjectorModule: {
+	DisplayName: Inyector de plasma
+	Tooltip:
+		'''
+		Inyecta plasma de alta entalpía en la esfera de energía: al detonar, en el centro se condensa un sol residual de plasma
+		El sol residual quema sin cesar a los enemigos cercanos y, de forma periódica, escupe lenguas de protuberancia que persiguen al objetivo más cercano
+		'''
+}
+
+QuantumFrameModule: {
+	DisplayName: Caja cuántica
+	Tooltip:
+		'''
+		Protocolo de observación entrelazada: golpear a dos objetivos distintos los entrelaza unos segundos
+		Mientras dura, parte del daño que reciba uno se copia al otro; si uno muere, el entrelazamiento colapsa y vierte el daño copiado acumulado en el superviviente
+		'''
+}
+
+ScattershotBarrelModule: {
+	DisplayName: Cañón de perdigones
+	Tooltip:
+		'''
+		La boca rota parte un disparo en varios haces cortos; al primer impacto o al agotarse se rompen en un cono de esquirlas de luz
+		Las esquirlas no persiguen y el daño cae en picado con la distancia: a quemarropa puedes clavar el cono entero en el mismo objetivo; a distancia solo rozan
+		Al detonar una esfera de energía también lanza una gran perdigonada de esquirlas en la dirección del vuelo
+		'''
+}
+
+ThermalOpticModule: {
+	DisplayName: Mira térmica
+	Tooltip: El impacto deja una marca de calor; en la visión térmica la presa pasa del rojo hierro al blanco; al llenarse la marca se activa el bloqueo de blanco: el haz muerde a ese objetivo, con crítico extra y quemadura continua
+}
+
+VolatileFrameModule: {
+	DisplayName: Caja inestable
+	Tooltip:
+		'''
+		El campo de contención de la caja se desestabiliza; cada haz nace con una mutación caótica al azar; la capa de fallo marca la identidad con color:
+		Fisión (cian) se parte a mitad en un haz secundario; Sobrecarga (rojo) duplica el daño pero la trayectoria es salvaje; Inestabilidad (naranja) detona al primer impacto; Distorsión (violeta) se dobla hacia el enemigo más cercano
+		En modo láser el campo pulsa: el pulso de sobrecarga añade daño de eco; el de inestabilidad acumula detonaciones al impactar
+		'''
+}
+
+NovaBarrelModule: {
+	DisplayName: Cañón nova
+	Tooltip:
+		'''
+		La boca de plasma sobrecargada hace que cada haz detone un microestallido de pulso al impactar
+		El precio es menos estabilidad, menos poder por disparo y más consumo de maná
+		'''
+}
+
+PrismOpticModule: {
+	DisplayName: Mira de prisma
+	Tooltip:
+		'''
+		El prisma de fase al final del camino de luz parte dos haces secundarios
+		El haz principal vuela un poco menos, pero captura una ventana de crítico precisa
+		'''
+}
+
+TeslaCoreModule: {
+	DisplayName: Núcleo Tesla
+	Tooltip:
+		'''
+		El arco de alto voltaje hace que, tras impactar, el haz salte al enemigo más cercano
+		Cada nodo de la cadena hereda el comportamiento del impacto, pero el gasto de maná sube a la vez
+		'''
+}
+
+RecoilStockModule: {
+	DisplayName: Culata de retroceso
+	Tooltip:
+		'''
+		El amortiguador sobrecargado convierte el choque de la explosión de la esfera en energía cinética que te dispara
+		El alcance de los haces también se alarga; el precio es un ritmo de gatillo un poco más lento
+		'''
+}
+
+SwarmGripModule: {
+	DisplayName: Empuñadura de enjambre
+	Tooltip:
+		'''
+		La empuñadura de red neural suelta, al explotar la esfera, varias mini esferas de luz de persecución feroz
+		La velocidad inicial de la esfera y el gasto de maná pagan el precio
+		'''
+}
+
+GravityFrameModule: {
+	DisplayName: Caja gravitatoria
+	Tooltip:
+		'''
+		El anillo de micro singularidad convierte la esfera en un atractor
+		Al cargar, tira sin cesar a los enemigos cercanos hacia el centro; el radio de explosión se agranda mucho
+		La cámara precisa hace que el ritmo de carga sea un poco más lento
+		'''
+}
+
+LaserBarrelModule: {
+	DisplayName: Cañón láser de prisma
+	Tooltip: El haz convergente se convierte en una columna láser de prisma continua; el precio es un consumo de maná enorme y una potencia limitada
+}
+
+OscillatorBarrelModule: {
+	DisplayName: Cañón láser oscilante
+	Tooltip:
+		'''
+		La columna de prisma lleva un condensador de pulso: cada 30 fotogramas detona un pulso de energía en el extremo del haz
+		El daño por fotograma baja un poco, pero la explosión de área y el menor consumo de maná cubren la debilidad de la irradiación continua
+		'''
+}
+
+ScorchBarrelModule: {
+	DisplayName: Cañón láser abrasador
+	Tooltip:
+		'''
+		La boca de plasma de alta entalpía hace que el láser prenda al objetivo al impactar
+		El daño del haz baja un poco, pero la quemadura continua y el menor consumo de maná cubren el hueco de daño directo
+		'''
+}
+
+ReflectionBarrelModule: {
+	DisplayName: Cañón láser de refracción
+	Tooltip:
+		'''
+		El prisma romboidal refracta en el punto de impacto una parte de la energía en dos haces secundarios
+		El daño del haz principal sube, pero el consumo de maná es tan alto que irradiar sin parar sale caro
+		'''
+}
+
+EchoOpticModule: {
+	DisplayName: Mira de eco
+	Tooltip:
+		'''
+		El elemento de eco al final del camino captura la onda residual cuando el haz se extingue
+		Al extinguirse cada haz suelta tres haces secundarios rastreadores en abanico, que cubren la pérdida de distancia
+		'''
+}
+
+FrostOpticModule: {
+	DisplayName: Mira de escarcha
+	Tooltip:
+		'''
+		El sistema de enfoque refrigerado congela al objetivo en quemadura de escarcha al impactar
+		La velocidad del haz baja un poco, pero el rastreo es más estable, con penetración extra y crítico
+		'''
+}
+
+SingularityCoreModule: {
+	DisplayName: Núcleo de singularidad
+	Tooltip:
+		'''
+		El generador de microcampo gravitatorio desvía sin cesar la órbita de la esfera hacia el enemigo más cercano
+		El radio de explosión se agranda mucho, pero el campo denso hace que el consumo de maná suba a la vez
+		'''
+}
+
+ScrambleFieldModule: {
+	DisplayName: Núcleo de campo de interferencia
+	Tooltip:
+		'''
+		La bobina de interferencia de alta frecuencia, mientras cargas, dispara cada 40 fotogramas una microonda de choque alrededor de la esfera
+		La explosión se agranda; el precio es un ritmo de carga más lento y más maná
+		'''
+}
+
+BraceStockModule: {
+	DisplayName: Culata de soporte
+	Tooltip:
+		'''
+		Tras quedarte quieto en el suelo unos 1 segundo, el trípode hidráulico se despliega solo y te ancla en forma de cañón
+		Mientras está desplegado, la dispersión de los haces baja a cero, el alcance y la velocidad de proyectil suben mucho, ganas penetración extra y estabilidad, y +8% de crítico
+		Moverte o dejar el suelo recoge el soporte; si lo vuelves a desplegar en 8 segundos, el sistema hidráulico aún está caliente y la preparación se acorta mucho
+		Al llevarlo, dispersión -20% y cadencia -5%
+		'''
+}
+
+LaunchStockModule: {
+	DisplayName: Culata de lanzamiento
+	Tooltip:
+		'''
+		El muelle sobrecargado, en el instante de disparar la esfera, suelta además tres haces rastreadores en abanico
+		La velocidad de la esfera sube y el consumo de maná también
+		'''
+}
+
+SentinelGripModule: {
+	DisplayName: Empuñadura centinela
+	Tooltip:
+		'''
+		La empuñadura con sensores, mientras vuela la esfera, dispara cada 20 fotogramas un haz rastreador al enemigo más cercano
+		La velocidad inicial de la esfera baja y el gasto de maná sube, pero el fuego de acompañamiento continuo cubre la pérdida
+		'''
+}
+
+ConductorGripModule: {
+	DisplayName: Empuñadura conductora
+	Tooltip:
+		'''
+		El material superconductor refuerza el arco en cadena: salta más lejos y más veces
+		Cada impacto estalla en partículas de arco; el daño por disparo y el consumo de maná suben un poco
+		'''
+}
+
+PhantomFrameModule: {
+	DisplayName: Caja de fase
+	Tooltip:
+		'''
+		La cámara de fase cuántica teletransporta cada 30 fotogramas el haz en vuelo a 80 píxeles del enemigo más cercano
+		Elude del todo los obstáculos; el alcance y el daño del haz suben un poco; el precio es más maná
+		'''
+}
+
+RecursiveFrameModule: {
+	DisplayName: Caja recursiva
+	Tooltip:
+		'''
+		La caja de circuito topológico, al extinguirse cada haz, reenvía una copia desde tu posición en la dirección original
+		El daño del haz principal sube pero el alcance se acorta; la copia hace menos daño y ya no se recursa; el consumo de maná sube
+		'''
+}
+
+ForkBarrelModule: {
+	DisplayName: Cañón en horquilla
+	Tooltip:
+		'''
+		El prisma de derivación de la cámara se parte cada 50 fotogramas y lanza un haz hijo a cada lado
+		El daño por disparo baja un poco y el consumo de maná sube un poco
+		'''
+}
+
+NullBarrelModule: {
+	DisplayName: Cañón de anulación
+	Tooltip:
+		'''
+		El borrador de datos aplasta el poder por disparo hasta dejarlo mínimo, pero la penetración es, en teoría, infinita
+		Al impactar inyecta un flujo de datos venenoso que erosiona al objetivo sin cesar
+		'''
+}
+
+HelixBarrelModule: {
+	DisplayName: Cañón helicoidal
+	Tooltip:
+		'''
+		La cámara de doble canal obliga a dos haces a enroscarse en vuelo alrededor de un eje común
+		Precisión a cero de dispersión; el disparo pierde un poco; destaca con penetración múltiple
+		'''
+}
+
+TargetPainterOpticModule: {
+	DisplayName: Mira de bloqueo
+	Tooltip:
+		'''
+		El sistema láser de designación aplica infección corrupta al impactar y recorta mucho la defensa
+		El rastreo y el crítico suben a la vez
+		'''
+}
+
+StrobeOpticModule: {
+	DisplayName: Mira estroboscópica
+	Tooltip:
+		'''
+		El modulador de fase de alta frecuencia hace que el haz alterne sin cesar entre atravesar muros y no atravesarlos
+		Tiene probabilidad de confundir al objetivo; penetración extra y un poco más de cadencia
+		'''
+}
+
+SniperOpticModule: {
+	DisplayName: Mira de francotirador
+	Tooltip:
+		'''
+		Al dejar de disparar y estabilizar el punto de mira se acumula el bloqueo; la línea de guía se extiende desde la boca
+		Tras cargar el bloqueo, el siguiente disparo se eleva a rayo que parte el aire: daño multiplicado, perforación total, impacto instantáneo
+		Tras disparar, el bloqueo se borra; agitar el punto de mira pierde progreso; moverte no afecta a la carga
+		Suben la velocidad de proyectil y el alcance; el precio es menos cadencia y rastreo a cero
+		'''
+}
+
+StormCellModule: {
+	DisplayName: Célula de tormenta
+	Tooltip:
+		'''
+		Mientras cargas, cada 25 fotogramas dispara un haz rastreador al enemigo más cercano
+		El consumo de maná sube, pero cargas más rápido y el radio de explosión se agranda
+		'''
+}
+
+CryoCoreModule: {
+	DisplayName: Núcleo criogénico
+	Tooltip:
+		'''
+		La cámara de ultrafrío, al explotar la esfera, congela a todos los enemigos del área
+		El radio de explosión se agranda; el ritmo de carga es un poco más lento
+		'''
+}
+
+DarkMatterCoreModule: {
+	DisplayName: Núcleo de materia oscura
+	Tooltip:
+		'''
+		El campo de materia oscura, mientras vuela la esfera, tira sin cesar a los enemigos cercanos hacia el centro
+		La esfera persigue a la vez y el radio de explosión se agranda mucho; el consumo de maná sube
+		'''
+}
+
+ErgonomicStockModule: {
+	DisplayName: Culata ergonómica
+	Tooltip:
+		'''
+		La culata recuerda tu mano: al atacar sin cesar al mismo objetivo (o en una dirección parecida) acumulas pericia de «memoria muscular»
+		La pericia desbloquea beneficios por tramos: la dispersión se cierra → sube la cadencia → a pericia máxima entra «hombre y arma, uno»
+		En ese estado, golpear al objetivo recordado devuelve un poco de maná, el haz gana una corrección de precisión y ambos dejan un rastro rítmico
+		Cambiar de objetivo o dejar de disparar mucho tiempo hace que la memoria se disipe enseguida
+		'''
+}
+
+ExtenderStockModule: {
+	DisplayName: Culata extensible
+	Tooltip:
+		'''
+		El raíl alargado extiende el alcance y la velocidad de los haces
+		Corte terminal: cuando el haz vuela una distancia, despliega in situ la energía restante en una hoja de luz perpendicular a la trayectoria que barre en abanico y remata
+		Un haz que se extingue al agotar la penetración deja una hoja reducida según la distancia ya volada; si se extingue a quemarropa, no se activa
+		En modo láser, tras irradiar un momento, suelta el ataque y corta en cruz en el punto de la columna que señala el cursor
+		'''
+}
+
+StormStockModule: {
+	DisplayName: Culata de tormenta
+	Tooltip:
+		'''
+		El fuego continuo acumula a tu alrededor un campo de tormenta anular que se disipa al dejar de disparar
+		Los proyectiles enemigos del campo los desvía el ciclón y te rodean sin darte
+		Cuando el medidor de tormenta se llena, un rayo cae desde lo alto del dominio sobre los enemigos del campo
+		'''
+}
+
+VampireGripModule: {
+	DisplayName: Empuñadura de sangre enroscada
+	Tooltip:
+		'''
+		La empuñadura de bioelectricidad devuelve una parte del daño del haz como vida
+		El láser impacta más a menudo, pero cada recuperación es menor; en combates largos da aguante
+		'''
+}
+
+ChronalGripModule: {
+	DisplayName: Empuñadura de fase temporal
+	Tooltip:
+		'''
+		La bobina de retraso de fase deja al objetivo ralentizado al impactar
+		Con el rastreo extra, un fuego denso forma un control continuo
+		'''
+}
+
+CascadeGripModule: {
+	DisplayName: Empuñadura en cascada
+	Tooltip:
+		'''
+		Tras 5 impactos acumulados, en el punto de impacto nace un nodo de cascada suspendido
+		El nodo dura unos 2 segundos, caza solo a los enemigos cercanos y dispara haces rastreadores
+		El disparo pierde un poco
+		'''
+}
+
+MirrorFrameModule: {
+	DisplayName: Caja espejo
+	Tooltip:
+		'''
+		La cámara de reflexión simétrica, al nacer cada haz, parte un espejo simétrico a 180°
+		El espejo hace menos daño; la cobertura en ambos sentidos densifica mucho el fuego
+		'''
+}
+
+NullspaceFrameModule: {
+	DisplayName: Caja del Vacío
+	Tooltip:
+		'''
+		El generador de fisuras del Vacío deja cada 20 fotogramas un eco explosivo en miniatura en la trayectoria del haz
+		El alcance se alarga un poco; la pérdida por disparo es mínima
+		'''
+}
+
+OverkillFrameModule: {
+	DisplayName: Caja de exceso
+	Tooltip:
+		'''
+		El circuito de exceso hace que cada muerte apile una capa de oleada de matanza (hasta 15); cada capa +2% de daño
+		Las capas se desvanecen con el tiempo; cuanto más rápido el ritmo, más fuerte
+		'''
+}
+
+GraviticBarrelModule: {
+	DisplayName: Cañón gravitatorio
+	Tooltip:
+		'''
+		La recámara con una micro singularidad hace que el haz atraiga sin cesar a los enemigos cercanos al volar
+		La dispersión y el rastreo bajan un poco; el haz vuela más lejos y un poco más despacio
+		'''
+}
+
+PrismaticBarrelModule: {
+	DisplayName: Cañón prismático
+	Tooltip:
+		'''
+		El prisma de dispersión hace que cada haz suelte una estela de color al volar y, al impactar, esquirlas de luz de color
+		Dispara un haz extra y compensa el crítico; el poder por disparo baja un poco y la dispersión sube un poco
+		'''
+}
+
+ConcussionBarrelModule: {
+	DisplayName: Boca de concusión
+	Tooltip:
+		'''
+		La cámara de amortiguación sobrecargada, cada 5 impactos acumulados, detona un anillo de concusión en miniatura en el punto de impacto
+		El poder por disparo sube y la dispersión se cierra, pero el precio de cadencia es alto
+		'''
+}
+
+ObsidianBarrelModule: {
+	DisplayName: Cañón de obsidiana
+	Tooltip:
+		'''
+		El impacto graba grietas de obsidiana en el cuerpo del objetivo; al llenarse se parten en vidrio volcánico que caza
+		La explosión de la esfera de clic derecho detona antes las grietas cercanas; sirve para segar grupos irradiados sin parar
+		'''
+}
+
+LifebloomBarrelModule: {
+	DisplayName: Cañón de hoja vital
+	Tooltip:
+		'''
+		El haz siembra un brote vital parásito que, con retraso, extrae vida del objetivo y devuelve un poco al usuario
+		Al morir el huésped, el brote salta a un enemigo cercano y sigue creciendo
+		'''
+}
+
+MagmaVentBarrelModule: {
+	DisplayName: Cañón de magma
+	Tooltip:
+		'''
+		En el impacto y al extinguirse el haz queda una boca de lava de corta vida que, de forma periódica, escupe una columna de calor vertical
+		En el Inframundo o en líquidos de alto calor el ritmo se acelera; sirve para bloquear zonas
+		'''
+}
+
+CumulusBarrelModule: {
+	DisplayName: Cañón de cúmulo
+	Tooltip:
+		'''
+		En la trayectoria del haz se condensan núcleos de nube recargables; los haces y esferas posteriores del SHPC los cargan al pasar
+		Al llenarse, el núcleo deja caer tres haces de tormenta de corto alcance; sirve para tender fuego de posición
+		'''
+}
+
+MossboundBarrelModule: {
+	DisplayName: Cañón de musgo
+	Tooltip:
+		'''
+		El haz tiende zonas de musgo húmedo; los enemigos que entran se ralentizan y se enredan poco a poco
+		La esfera de clic derecho, al pasar, absorbe las marcas de musgo y agranda el radio de la explosión final
+		'''
+}
+
+FrostfernBarrelModule: {
+	DisplayName: Cañón de helecho de escarcha
+	Tooltip:
+		'''
+		El primer impacto extrae detrás del objetivo una red de cristal de hielo y hace que los enemigos sufran escarcha a la vez
+		Encadena al grupo en una rama de helecho de escarcha que se extiende
+		'''
+}
+
+SandstormBarrelModule: {
+	DisplayName: Cañón de tormenta de arena
+	Tooltip:
+		'''
+		El fuego continuo levanta delante una cortina de arena móvil que erosiona a los enemigos y debilita los proyectiles enemigos que la cruzan
+		El haz gana penetración extra, pero el consumo de maná sube mientras se mantiene la cortina
+		'''
+}
+
+CoralReefBarrelModule: {
+	DisplayName: Cañón de coral
+	Tooltip:
+		'''
+		En el punto de impacto crece un ancla de coral; entre varias anclas se tienden líneas de arrecife que cortan a los enemigos
+		La explosión de la esfera de clic derecho hace que las anclas cercanas suelten a la vez una oleada anular
+		'''
+}
+
+HiveBarrelModule: {
+	DisplayName: Cañón de colmena
+	Tooltip:
+		'''
+		Clic izquierdo marca a los enemigos con feromona; la explosión de clic derecho envía un enjambre cibernético que se lanza en picado contra los marcados
+		Cuanto más repartidas las marcas, más estable la cobertura: ritmo de tender con la izquierda y recoger con la derecha
+		'''
+}
+
+MoondewBarrelModule: {
+	DisplayName: Cañón de rocío lunar
+	Tooltip:
+		'''
+		El haz condensa prismas de rocío en el camino; los haces posteriores que los tocan se refractan en haces derivados de corto alcance
+		De noche y cerca de la luna llena suben el tope de refracción y la duración del rocío
+		'''
+}
+
+CrosslinkOpticModule: {
+	DisplayName: Mira de enlace
+	Tooltip:
+		'''
+		El módulo de enlace neural, al impactar, tiende un arco de datos entre el objetivo y el enemigo más cercano
+		Suben a la vez los saltos de cadena y el radio de salto; el consumo de maná sube un poco
+		'''
+}
+
+ZoomOpticModule: {
+	DisplayName: Mira de distancia focal
+	Tooltip:
+		'''
+		La lente magnética de teleobjetivo hace que el haz vuele más lejos y más rápido, a costa de cadencia y rastreo
+		Si la distancia de impacto es ≥ 600 píxeles, añade un golpe extra de blanco; cuanto más lejos, mayor la bonificación
+		'''
+}
+
+PingOpticModule: {
+	DisplayName: Mira de marcado
+	Tooltip: El sistema de señal, al impactar, aplica marca de muerte al objetivo y otorga cierta probabilidad de crítico
+}
+
+CapacitorPulseModule: {
+	DisplayName: Condensador de pulso
+	Tooltip:
+		'''
+		La pila de condensadores de alta densidad, mientras cargas, suelta en la esfera un microestallido de pulso cada medio segundo aproximadamente
+		El radio de explosión sube con el tiempo de carga; el consumo de maná se agrava
+		'''
+}
+
+EntropyCoreModule: {
+	DisplayName: Núcleo de entropía
+	Tooltip:
+		'''
+		La esfera, al volar, absorbe sin cesar «carga de entropía» de los enemigos cercanos
+		Al detonar, suelta una explosión residual extra según lo acumulado; cuanto más denso el grupo, más fuerte la onda
+		'''
+}
+
+ResonanceReactorModule: {
+	DisplayName: Reactor de resonancia
+	Tooltip:
+		'''
+		Mientras cargas suelta sin cesar anillos de partículas resonantes
+		Al detonar, a tus pies se dispara un impacto de resonancia extra que cubre el cuerpo a cuerpo
+		'''
+}
+
+OverwatchStockModule: {
+	DisplayName: Culata de vigía
+	Tooltip:
+		'''
+		Al quedarte quieto acumulas capas de «vigía» (hasta 5); al moverte se desvanecen enseguida
+		Cada capa +3% de daño y +2% de crítico; la dispersión y la cadencia bajan un poco por la postura firme
+		'''
+}
+
+MomentumStockModule: {
+	DisplayName: Culata de momento
+	Tooltip:
+		'''
+		Al moverte a gran velocidad acumulas capas de «cinética» (hasta 6); al parar se desvanecen enseguida
+		Cada capa +4% de cadencia y +6% de velocidad de proyectil; es el espejo de la culata de vigía
+		'''
+}
+
+BulwarkStockModule: {
+	DisplayName: Culata de baluarte
+	Tooltip:
+		'''
+		Al empuñar el SHPC otorga al jugador un poco de reducción de daño
+		La postura firme ralentiza un poco la carga y reduce el consumo de maná
+		'''
+}
+
+CombatGripModule: {
+	DisplayName: Empuñadura de combate
+	Tooltip:
+		'''
+		Al impactar y matar acumulas «ímpetu de guerra» (hasta 5 capas)
+		Cada capa +4% de cadencia y +2% de daño; las capas se desvanecen con el tiempo si no hay muertes
+		'''
+}
+
+TempestGripModule: {
+	DisplayName: Empuñadura de tempestad
+	Tooltip:
+		'''
+		Cada cierto número de impactos dispara una «ráfaga de tempestad» que lanza varios arcos alrededor del último punto de impacto
+		El poder por disparo baja un poco y el consumo de maná sube, pero limpia el campo con ritmo
+		'''
+}
+
+AbsorberGripModule: {
+	DisplayName: Empuñadura absorbente
+	Tooltip:
+		'''
+		Al impactar un haz o un láser, devuelve un poco de maná según el daño; se abastece en ciclo
+		El poder por disparo baja un poco y el consumo original de maná sube como precio
+		'''
+}
+
+HarmonicFrameModule: {
+	DisplayName: Caja armónica
+	Tooltip:
+		'''
+		Cuando hay varios haces a la vez, tienden arcos de resonancia entre sí e infligen daño extra
+		Dispara un haz extra; el poder por disparo baja un poco y la dispersión sube un poco
+		'''
+}
+
+ReplicatorFrameModule: {
+	DisplayName: Caja de réplica de datos
+	Tooltip:
+		'''
+		Al extinguirse un haz rastreador, en el lugar nace una copia de eco de vida muy corta que sigue en la dirección original
+		El daño del haz principal sube pero su vida se acorta; el consumo de maná se agrava
+		'''
+}
+
+ArchiveFrameModule: {
+	DisplayName: Caja de archivo
+	Tooltip:
+		'''
+		Acumula sin cesar el daño de los impactos del SHPC; cada vez que llega al umbral, en tu posición suelta una explosión de «archivo de datos»
+		El daño por disparo sube; el consumo de maná se eleva un poco
+		'''
+}

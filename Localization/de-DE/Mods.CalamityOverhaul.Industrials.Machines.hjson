@@ -1,0 +1,551 @@
+FluidPump: {
+	DisplayName: Flüssigkeitspumpe
+	Tooltip:
+		'''
+		Zieht unter Strom Weltflüssigkeit unter dem Gehäuse in den internen Puffer
+		Jede geförderte Flüssigkeitszelle kostet 2 UE; die Flüssigkeit wandert durch Rohre zu Tanks oder Maschinen
+		'''
+}
+
+FluidInjector: {
+	DisplayName: Einpresser
+	Tooltip:
+		'''
+		Verbraucht gespeicherte Flüssigkeit und setzt sie unter dem Gehäuse in die Welt
+		Jede gesetzte Zelle kostet 2 UE
+		Bei Lava auf den Boden unter dir achten
+		'''
+}
+
+BottlingMachine: {
+	DisplayName: Abfüllmaschine
+	Tooltip:
+		'''
+		Leere Flaschen oder Eimer werden aus dem Tank gefüllt; volle werden geleert und die Flüssigkeit zurückgeholt
+		Jeder Auftrag kostet 5 UE, das Fertige kommt aus dem Ausgabeschlitz
+		Ein- und Ausgabe können an Gegenstandsrohre, automatischer Zu- und Ablauf
+		'''
+}
+
+ShimmerTransmuter: {
+	DisplayName: Schimmer-Umwandler
+	Tooltip:
+		'''
+		Gegenstand einlegen, Schimmer verbrauchen, Produkt fällt in den Ausgabeschlitz
+		Jede Umwandlung kostet 10 UE und 64 Einheiten Schimmer; Schimmer muss per Pumpe vom Schimmersee durch Rohre kommen
+		Unterstützt Umwandlung und Entschmelzen; Münzen und Gegenstände, die Kreaturen freisetzen, nimmt sie nicht
+		Ein- und Ausgabe können an Gegenstandsrohre, automatischer Zu- und Ablauf
+		'''
+}
+
+TeslaElectromagneticTower: {
+	DisplayName: Tesla-Elektromagnetturm
+	Tooltip:
+		'''
+		Benötigt Strom
+		Nach dem Platzieren Rechtsklick wechselt zwischen Angriffs- und Wachmodus
+		Angriffsmodus schießt Lichtbögen auf nahe Gegner
+		Wachmodus: elektrischer Debuff im Radius; hältst du ein aufladbares Item im Radius, lädt der Turm dich aus der Ferne auf
+		„Ingenieure bitte fernbleiben“
+		'''
+}
+
+FlameTurret: {
+	TurretOnText: Flammenturm an
+	TurretOffText: Flammenturm aus
+	NoEnergyText: Energie reicht nicht!
+	FuelLoadText: Gel eingelegt x{0}
+	FuelTakeText: Gel entnommen x{0}
+	DisplayName: Flammenwerferturm
+	Tooltip:
+		'''
+		Braucht Strom
+		Spuckt dauernd Feuerzungen auf nähere Feinde; die Flammen durchdringen Gruppen und zünden Höllenfeuer
+		Gel in der Hand, Rechtsklick auf den Turm lädt Treibstoff; mit Gel brennt er härter
+		Shift halten und Rechtsklick holt Gel heraus; Gegenstandsrohre können Gel in den Treibstoffschlitz legen
+		Leere Hand, Rechtsklick oder Drahtsignal schaltet den Turm
+		"Riecht nach gebratenem Schleim"
+		'''
+}
+
+CryoTurret: {
+	TurretOnText: Frostturm an
+	TurretOffText: Frostturm aus
+	NoEnergyText: Energie reicht nicht!
+	DisplayName: Frostturm
+	Tooltip:
+		'''
+		Braucht Strom
+		Streut dauernd Kälte auf alle Feinde in Reichweite und verlangsamt sie mit Frost
+		Dieselbe Bedeckung von etwa zwei Sekunden friert kurz ein
+		Verlangsamen und Einfrieren sind der Job; der Schaden ist nur ein wenig Frostbrand
+		Rechtsklick oder Drahtsignal schaltet den Turm
+		"Beruhig dich"
+		'''
+}
+
+LaserTurret: {
+	TurretOnText: Laserturm an
+	TurretOffText: Laserturm aus
+	NoEnergyText: Energie reicht nicht!
+	DisplayName: Laserturm
+	Tooltip:
+		'''
+		Braucht Strom
+		Schießt hochschädigende Strahlen auf Feinde in Sicht; sehr weit, aber langsam
+		Hinter Gelände wird nicht erfasst, Bosse zuerst
+		Rechtsklick oder Drahtsignal schaltet den Turm
+		"Ein Schuss, einer weniger"
+		'''
+}
+
+ShieldGenerator: {
+	FieldOnText: Schildfeld an
+	FieldOffText: Schildfeld aus
+	NoEnergyText: Energie reicht nicht!
+	DisplayName: Schildgenerator
+	Tooltip:
+		'''
+		Braucht Strom
+		Unter Strom erhalten Spieler im Bereich einen Energieschild
+		Der Schild lädt langsam, fängt einen Teil des Schadens und löst sich nach dem Verlassen
+		Je mehr Spieler geschützt sind, desto schneller der Verbrauch
+		Rechtsklick oder Drahtsignal schaltet das Feld
+		'''
+}
+
+HealStation: {
+	FieldOnText: Heilungsaura an
+	FieldOffText: Heilungsaura aus
+	NoEnergyText: Energie reicht nicht!
+	DisplayName: Heilstation
+	Tooltip:
+		'''
+		Braucht Strom
+		Unter Strom stellt sie langsam das Leben aller Spieler im Bereich wieder her
+		Rechtsklick oder Drahtsignal schaltet die Aura
+		"Arbeitsunfall? Gibt's nicht"
+		'''
+}
+
+ElectricMinRocket: {
+	EnergyShortage: Energiemangel
+	DisplayName: Elektrische Minirakete
+	Tooltip:
+		'''
+		Rechtsklick zum Benutzen der Rakete, oder auf den Boden legen und Rechtsklick zum Start des Flugs
+		In der Luft mit Links-/Rechts-Pfeiltasten steuern
+		Gedrückte Abwärtspfeiltaste für langsames Sinken; Flug verbraucht nach und nach Strom
+		Leertaste unterbricht den Flug
+		„Sowjetische Herstellung, robust und zuverlässig – sie hätte fast den Mond erreicht“
+		'''
+}
+
+TeleportStation: {
+	NoEnergyText: Energie reicht nicht!
+	TargetNoEnergyText: Zielstation hat zu wenig Bereitschaftsstrom!
+	UnnamedText: Unbenannte Station ({0}, {1})
+	DisplayName: Teleportstation
+	Tooltip:
+		'''
+		Bildet mit anderen Stationen in der Welt ein Netz
+		Rechtsklick öffnet das Panel, Ziel antippen teleportiert
+		Teleport kostet Strom nach Distanz; die Zielstation braucht etwas Bereitschaftsstrom
+		Stationen können benannt werden, damit du sie in der Liste erkennst
+		'''
+}
+
+ElectricSundial: {
+	NoEnergyText: Energie reicht nicht!
+	BusyText: Die Zeit läuft schon vor!
+	SkipBroadcast: "{0} hat die elektrische Sonnenuhr gestartet, die Zeit eilt bis zum Morgengrauen"
+	DisplayName: Elektrische Sonnenuhr
+	Tooltip:
+		'''
+		Bei vollen 1000 Strom Rechtsklick, die Zeit bis zum Morgengrauen vorspulen
+		Eigene Stromversorgung, keine Sieben-Tage-Sperre der verzauberten Sonnenuhr
+		Benutzung benachrichtigt den ganzen Server
+		'''
+}
+
+WeatherController: {
+	NoEnergyText: Energie reicht nicht!
+	RainBroadcast: "{0} hat die Wettermaschine gestartet, Regenwolken ziehen auf"
+	ClearBroadcast: "{0} hat die Wettermaschine gestartet, der Himmel klarte auf"
+	DisplayName: Wettermaschine
+	Tooltip:
+		'''
+		Rechtsklick verbraucht 500 Strom und ruft Regen; bei Regen vertreibt sie ihn
+		Nur Regen, kein Wind
+		Benutzung benachrichtigt den ganzen Server
+		'''
+}
+
+WireInterface: {
+	ModeBridgeText: Nur Brücke: bei Mechaniksignal Nachbarmaschinen umschalten
+	ModeFullText: Vollmeldung: Signal, wenn Nachbarmaschine voll ist
+	ModeEmptyText: Leermeldung: Signal, wenn Nachbarmaschine leer ist
+	MachineOffText: Bereit
+	MachineOnText: Aktiv
+	DisplayName: Mechanik-Schnittstelle
+	Tooltip:
+		'''
+		Zweiwege-Adapter zwischen Mechanikdraht und Stromnetz
+		Bei Mechaniksignal schaltet sie die fest anliegende Maschine an oder in Bereitschaft
+		Rechtsklick wechselt den Meldemodus: ist die Nachbarmaschine voll oder leer, geht ein Mechaniksignal die eigene Leitung entlang
+		Direkt an die zu steuernde Maschine setzen, dann den Mechanikdraht daran
+		'''
+}
+
+Sensor: {
+	TitleText: Multimodus-Sensor
+	ConditionLabelText: Auslösebedingung
+	ModeOffText: Aus
+	ModeChargeAboveText: Ladung über Schwelle
+	ModeChargeBelowText: Ladung unter Schwelle
+	ModeEnemyText: Feindalarm
+	ModeBloodMoonText: Blutmond
+	ModeEclipseText: Sonnenfinsternis
+	ModeSlimeRainText: Schleimregen
+	ModeInvasionText: Invasion
+	ThresholdLabelText: Auslöseschwelle
+	RangeLabelText: Alarmradius
+	EventHintText: Liest Weltereignisse, keine Parameter nötig
+	OutputLabelText: Ausgabeart
+	OutputLevelText: Pegel folgt
+	OutputPulseText: Einzelimpuls
+	StatusActiveText: Bedingung erfüllt
+	StatusIdleText: Bereit
+	StatusNoPowerText: Kein Strom
+	StatusOffText: Ausgeschaltet
+	EnergyLabelText: Strom
+	DisplayName: Multimodus-Sensor
+	Tooltip:
+		'''
+		Das Auge des Netzes; Rechtsklick öffnet das Einstellpanel
+		Kann Nachbarladung, nahe Feinde oder Blutmond, Sonnenfinsternis, Schleimregen, Invasion überwachen
+		Ist die Bedingung erfüllt, geht ein Mechaniksignal die eigene Leitung entlang; Pegel folgen oder Einzelimpuls
+		In Bereitschaft 0,1 Strom pro Tick, ohne Strom pausiert die Prüfung
+		'''
+}
+
+GridSwitch: {
+	OpenText: Getrennt
+	CloseText: Geschlossen
+	DisplayName: Netzhauptschalter
+	Tooltip:
+		'''
+		Stromschalter, der in die Rohrleitung gesetzt wird
+		Rechtsklick oder Mechaniksignal trennt oder schließt; getrennt fließt kein Strom
+		Zwischen zwei Rohrabschnitte mauern, und du startest und stoppst Netzbereiche
+		'''
+}
+
+MiningMachine: {
+	DisplayName: Bergbaumaschine
+	Tooltip:
+		'''
+		Bohrt Mineralien mit Strom
+		Muss an geeigneter Stelle platziert werden
+		In besonderen Umgebungen spezielle Mineralien
+		'''
+	DontWork: Muss auf festem Untergrund stehen, um zu arbeiten
+}
+
+Collector: {
+	DisplayName: Sammler
+	Tooltip:
+		'''
+		Verbraucht Strom für Sammelarbeit
+		Hebt automatisch Beute in der Umgebung auf und legt sie in die nächste Kiste
+		Funktioniert nicht ohne Kiste in der Nähe
+		Rechtsklick mit einem Gegenstand markiert den Sammler, damit er nur diese Art aufsammelt
+		'''
+	Text1: Zu viele!
+	Text2: Keine Kisten in der Nähe!
+	Text3: Strommangel!
+}
+
+WGGCollector: {
+	DisplayName: Schrotthändler
+	Tooltip:
+		'''
+		Es recycelt leidenschaftlich alles – auch dich
+		Für es gibt es keinen Unterschied zwischen Plastikflasche und Wirbelsäule
+		'''
+}
+
+ItemFilter: {
+	DisplayName: Gegenstandsfilterplatte
+	Tooltip:
+		'''
+		Benutzen öffnet das Filterpanel
+		Rechtsklick auf kompatible Maschinen zum Anwenden
+		Linksklick auf Kiste kopiert deren Inhalt als Filterregeln
+		'''
+	StateFormat: "{0} · {1} Einträge erfasst"
+	CopiedFromChest: Truheninhalt kopiert
+	CopiedFromCollector: Sammlerliste kopiert
+}
+
+Spectrometer: {
+	DisplayName: Spektrometer
+	Tooltip:
+		'''
+		Ermöglicht das Färben von Gegenständen mit Farbstoff
+		Benötigt Strom zum Betrieb
+		'''
+}
+
+MiningMachineMk2: {
+	DontWork: Muss auf fester Oberfläche stehen, um zu graben
+	DisplayName: Bergbaumaschine MK2
+	Tooltip:
+		'''
+		Bohrt Mineralien mit Strom
+		Muss an geeigneter Stelle platziert werden
+		In besonderen Umgebungen spezielle Mineralien
+		'''
+}
+
+Lumberjack: {
+	Text1: Zu viele!
+	Text2: Strommangel!
+	CycleModeText: Zyklusmodus
+	ClearModeText: Räummodus
+	DisplayName: Holzfäller
+	Tooltip:
+		'''
+		Verbraucht Strom zum Fällen
+		Fällt automatisch Bäume in der Umgebung
+		Rechtsklick wechselt zwischen Zyklus- und Räummodus
+		Zyklusmodus fällt fortlaufend und lässt Setzlinge nachwachsen
+		Räummodus fällt nur, ohne Nachwuchs
+		'''
+}
+
+LifeWeaver: {
+	NoValidPositionText: Keine gültigen Pflanzplätze in der Nähe!
+	NoEnergyText: Strommangel!
+	DisplayName: Baumpflanzer
+	Tooltip: Verbraucht Strom, um Bäume in der Umgebung zu pflanzen
+}
+
+WGGLumberjack: {
+	DisplayName: Holzfäller in der Wildnis
+	Tooltip: ""
+}
+
+WGGLifeWeaver: {
+	TurretBatteryDepleted: Batterie leer
+	DisplayName: Baumpflanzer in der Wildnis
+	Tooltip: ""
+}
+
+Incinerator: {
+	DisplayName: Elektrischer Verbrennungsofen
+	Tooltip:
+		'''
+		Verbraucht Strom zum Schmelzen von Gegenständen
+		Rechtsklick öffnet das Bedienfeld
+		Umschalt+Rechtsklick zum schnellen Einlegen von Schmelzgut oder Entnehmen der Produkte
+		Schmelzen liefert doppelte Ausbeute
+		'''
+}
+
+Crusher: {
+	DisplayName: Erzbrecher
+	Tooltip:
+		'''
+		Bricht Erz unter Strom: aus zwei Teilen Erz werden drei Teile derselben Sorte
+		Rechtsklick öffnet das Bedienpanel
+		Shift-Rechtsklick legt Erz schnell ein oder holt Brucherz heraus
+		Brucherz im Verbrennungsofen schmilzt zu anderthalb so vielen Barren
+		'''
+}
+
+CrusherUI: {
+	TitleText: Erzbrecher
+	InputLabel: Erz
+	OutputLabel: Ausstoß
+	ProgressLabel: Brechen
+	PowerLabel: Strom
+	CrushingText: Bricht
+	IdleText: Bereit
+	NoPowerText: Kein Strom
+	InputHint: Erz einlegen, zwei werden drei
+	OutputHint: Klicken, um Brucherz zu holen
+	PowerUnit: UE
+}
+
+Recycler: {
+	DisplayName: Recycler
+	Tooltip:
+		'''
+		Zerlegt unter Strom Waffen, Rüstungen und Zubehör und holt Barren nach Seltenheit zurück
+		Zerlegen stellt kein Rezept wieder her; der Wert liegt weit unter der Ausrüstung
+		Rechtsklick öffnet das Bedienpanel
+		Shift-Rechtsklick legt Ausrüstung schnell ein oder holt Barren heraus
+		'''
+}
+
+RecyclerUI: {
+	TitleText: Recycler
+	InputLabel: Ausrüstung
+	OutputLabel: Barren
+	ProgressLabel: Zerlegen
+	PowerLabel: Strom
+	WorkingText: Zerlegt
+	IdleText: Bereit
+	NoPowerText: Kein Strom
+	InputHint: Waffe, Rüstung oder Zubehör einlegen
+	OutputHint: Klicken, um Barren zu holen
+	EstimateLabel: Geschätzter Ausstoß:
+	PowerUnit: UE
+}
+
+AutoCrafter: {
+	DisplayName: Auto-Werkbank
+	Tooltip:
+		'''
+		Rechtsklick öffnet das Panel; Probe einlegen und ein Rezept festnageln
+		Die Maschine holt Material aus nahen Truhen und Maschinen und fertigt selbst
+		Benötigte Werkstationen müssen in der Nähe stehen
+		Fertiges geht zuerst ins nahe Lager, sonst bleibt es im Fertigschlitz
+		'''
+}
+
+AutoCrafterUI: {
+	TitleText: Auto-Werkbank
+	SampleLabel: Probe
+	OutputLabel: Fertig
+	ListLabel: Rezeptliste
+	PowerLabel: Strom
+	StatusIdle: Bereit
+	StatusNoPin: Kein Rezept festgenagelt
+	StatusPinMissing: Rezept ungültig, bitte neu festnageln
+	StatusNoPower: Kein Strom
+	StatusNoStation: Keine Werkstation in der Nähe
+	StatusNoCondition: Herstellbedingung nicht erfüllt
+	StatusNoMaterial: Material fehlt:
+	StatusOutputFull: Fertigschlitz voll
+	StatusWorking: Montiert
+	SampleHint: Probe einlegen, ihre Rezepte auflisten
+	ListEmptyText: Die Probe hat kein passendes Rezept
+	PinHint: Klicken, um dieses Rezept festzunageln
+	UnpinHint: Erneut klicken, um zu lösen
+	ConditionLockText: Bedingung nicht erfüllt
+	PinnedTag: Festgenagelt
+	PowerUnit: UE
+}
+
+Thrower: {
+	NoEnergyText: Energiemangel!
+	NoItemText: Nichts zum Werfen!
+	WorkingText: Wirft …
+	IdleText: Bereit
+	DisplayName: Werfer
+	Tooltip:
+		'''
+		Verbraucht Strom zum Werfen von Gegenständen
+		Rechtsklick öffnet das Bedienfeld
+		'''
+}
+
+PlayerLauncher: {
+	NoEnergyText: Energie reicht nicht!
+	DisplayName: Schleuderplattform
+	Tooltip:
+		'''
+		Schleudert den darauf stehenden Spieler unter Strom in die eingestellte Richtung
+		Kurz nach dem Abschuss immun gegen Fallschaden
+		Rechtsklick öffnet das Bedienpanel
+		'''
+}
+
+PacifierTower: {
+	FieldOnText: Feld an
+	FieldOffText: Feld aus
+	NoEnergyText: Energie reicht nicht!
+	DisplayName: Ruhefeld-Generator
+	Tooltip:
+		'''
+		Unter Strom unterdrückt natürliches Spawnen im Bereich
+		Rechtsklick oder Drahtsignal schaltet das Feld
+		'''
+}
+
+PotionBeacon: {
+	NoEnergyText: Energie reicht nicht!
+	DisplayName: Trank-Streubake
+	Tooltip:
+		'''
+		Stärkungstränke einlegen, die Wirkung dauernd an Spieler im Bereich streuen
+		Eine Flasche reicht für die doppelte ursprüngliche Wirkdauer
+		Rechtsklick öffnet das Bedienpanel
+		'''
+}
+
+HerbFarmer: {
+	NoEnergyText: Energie reicht nicht!
+	DisplayName: Kräuterfarm
+	Tooltip:
+		'''
+		Sät mit Samen und Strom automatisch auf zulässigem Boden in der Umgebung
+		Erntet blühende Kräuter, bringt Kräuter und Samen
+		Rechtsklick öffnet das Bedienpanel
+		'''
+}
+
+MushroomFarmer: {
+	NoEnergyText: Energie reicht nicht!
+	FullText: Ausstoßlager voll!
+	DisplayName: Pilzfarm
+	Tooltip:
+		'''
+		Zieht unter Strom gewöhnliche Pilze auf Gras, leuchtende Pilze auf Pilzgras
+		Erntet selbst ins Lager, selten auch Pilzgrassamen
+		Rechtsklick öffnet das Bedienpanel
+		'''
+}
+
+Apiary: {
+	NoEnergyText: Energie reicht nicht!
+	NoBottleText: Keine leere Flasche!
+	FullText: Ausstoßlager voll!
+	DisplayName: Bienenstock
+	Tooltip:
+		'''
+		Leere Glasflaschen einlegen; der Schwarm braut unter Strom Honigflaschen
+		Neben Honig oder im Dschungel ist der Schwarm lebhafter, die Rate steigt
+		Rechtsklick öffnet das Bedienpanel
+		'''
+}
+
+SlimeVat: {
+	NoEnergyText: Energie reicht nicht!
+	NoWaterText: Zu wenig Wasser!
+	FullText: Ausstoßlager voll!
+	PourText: +{0} Wasser
+	DisplayName: Schleimzuchtbecken
+	Tooltip:
+		'''
+		Züchtet periodisch Gel aus Wasser und Strom
+		Zieht selbst aus nahem Wasser oder per Rechtsklick mit einem Wassereimer
+		Rechtsklick öffnet das Bedienpanel
+		'''
+}
+
+AutoFisher: {
+	NoEnergyText: Energie reicht nicht!
+	NoBaitText: Kein Köder!
+	NoWaterText: Kein angelbares Wasser in der Nähe!
+	FullText: Fanglager voll!
+	DisplayName: Auto-Angel
+	Tooltip:
+		'''
+		Erntet mit Köder und Strom automatisch aus dem Wasser unter dem Gehäuse
+		Je größer das Gewässer und je besser der Köder, desto reicher der Fang
+		Rechtsklick öffnet das Bedienpanel
+		'''
+}

@@ -1,0 +1,549 @@
+FluidPump: {
+	DisplayName: Fluid Pump
+	Tooltip:
+		'''
+		While powered, draws world liquid below the machine into its internal buffer
+		Costs 2UE per tile of liquid drained; fluid travels through pipelines to tanks and machines
+		'''
+}
+
+FluidInjector: {
+	DisplayName: Fluid Injector
+	Tooltip:
+		'''
+		Consumes stored fluid to place liquid into the world below the machine
+		Costs 2UE per tile of liquid placed
+		Mind your footing when placing lava
+		'''
+}
+
+BottlingMachine: {
+	DisplayName: Bottling Machine
+	Tooltip:
+		'''
+		Fills empty bottles and buckets from stored fluid, or drains full containers back into the buffer
+		Each job costs 5UE; products go to the output slot
+		Both slots connect to item pipelines for automatic transfer
+		'''
+}
+
+ShimmerTransmuter: {
+	DisplayName: Shimmer Transmuter
+	Tooltip:
+		'''
+		Insert an item and spend shimmer to transmute it, results land in the output slots
+		Each conversion costs 10UE and 64 units of shimmer, pumped in from the shimmer pond through pipelines
+		Supports item transforms and decrafting; coins and items that release critters are refused
+		Input and output slots connect to item pipelines for automatic loading
+		'''
+}
+
+TeslaElectromagneticTower: {
+	DisplayName: Tesla Electromagnetic Tower
+	Tooltip:
+		'''
+		Requires electrical energy to operate
+		Right-click after placing on the ground to switch between attack mode and guard mode
+		In attack mode, it emits electric arcs to nearby enemies
+		In guard mode, it inflicts an electrified debuff on all enemies within range; if a player is within range
+		and holding a chargeable item, the electromagnetic tower will emit electric arcs to remotely charge the player
+		"Engineers, stay away"
+		'''
+}
+
+FlameTurret: {
+	TurretOnText: Flame turret on
+	TurretOffText: Flame turret off
+	NoEnergyText: Not enough energy!
+	FuelLoadText: Loaded gel x{0}
+	FuelTakeText: Took gel x{0}
+	DisplayName: Flamethrower Turret
+	Tooltip:
+		'''
+		Requires electrical energy to operate
+		Continuously spews flames at approaching enemies; the fire pierces through crowds and ignites Hellfire
+		Right-click the turret while holding gel to load fuel; burning gel makes the flames hit harder
+		Shift right-click to take the gel back; item pipes can also feed gel into the fuel slot
+		Right-click with an empty hand, or send a wire signal, to toggle the turret
+		"Smells like roasted slime"
+		'''
+}
+
+CryoTurret: {
+	TurretOnText: Cryo turret on
+	TurretOffText: Cryo turret off
+	NoEnergyText: Not enough energy!
+	DisplayName: Cryo Turret
+	Tooltip:
+		'''
+		Requires electrical energy to operate
+		Continuously spreads frost over all enemies in range, chilling and slowing them
+		An enemy soaked in frost for about two seconds gets briefly frozen
+		Slowing and freezing is the job; damage is only a slow frostburn
+		Right-click, or send a wire signal, to toggle the turret
+		"Calm down"
+		'''
+}
+
+LaserTurret: {
+	TurretOnText: Laser turret on
+	TurretOffText: Laser turret off
+	NoEnergyText: Not enough energy!
+	DisplayName: Laser Turret
+	Tooltip:
+		'''
+		Requires electrical energy to operate
+		Fires high-damage beams at enemies in line of sight; very long range, slow rate of fire
+		Targets blocked by terrain will not be locked on; prioritizes bosses
+		Right-click, or send a wire signal, to toggle the turret
+		"One shot, one down"
+		'''
+}
+
+ShieldGenerator: {
+	FieldOnText: Shield field on
+	FieldOffText: Shield field off
+	NoEnergyText: Not enough energy!
+	DisplayName: Shield Generator
+	Tooltip:
+		'''
+		Requires electrical energy to operate
+		While powered, players in range gain an energy shield
+		The shield slowly charges, absorbs part of incoming damage, and fades after leaving the range
+		The more players it guards, the faster it drains power
+		Right-click, or send a wire signal, to toggle the field
+		'''
+}
+
+HealStation: {
+	FieldOnText: Healing aura on
+	FieldOffText: Healing aura off
+	NoEnergyText: Not enough energy!
+	DisplayName: Healing Station
+	Tooltip:
+		'''
+		Requires electrical energy to operate
+		While powered, slowly regenerates the health of all players in range
+		Right-click, or send a wire signal, to toggle the aura
+		"Workplace injuries? Never heard of them"
+		'''
+}
+
+ElectricMinRocket: {
+	EnergyShortage: Energy Shortage
+	DisplayName: Electric Mini Rocket
+	Tooltip:
+		'''
+		Right-click to use the rocket, or place it on the ground and right-click to start flying.
+		Press the left or right arrow keys in the air to adjust direction.
+		Hold the down arrow key to descend slowly; flying will gradually consume power.
+		Press the spacebar to interrupt flight.
+		“Made in the Soviet Union, sturdy and reliable, it almost made it to the moon.”
+		'''
+}
+
+TeleportStation: {
+	NoEnergyText: Not enough energy!
+	TargetNoEnergyText: The destination station lacks standby power!
+	UnnamedText: Unnamed Station ({0}, {1})
+	DisplayName: Teleport Station
+	Tooltip:
+		'''
+		Forms a teleport network with every other station in the world.
+		Right-click to open the panel, then click a destination to travel.
+		Teleporting costs power by distance; the destination also needs a bit of standby power.
+		Stations can be named so they are easy to find in the list.
+		'''
+}
+
+ElectricSundial: {
+	NoEnergyText: Not enough energy!
+	BusyText: Time is already fast-forwarding!
+	SkipBroadcast: "{0} activated the Electric Sundial. Time flies until dawn."
+	DisplayName: Electric Sundial
+	Tooltip:
+		'''
+		Store 1000 power, then right-click to fast-forward time to dawn.
+		Runs on its own power supply, ignoring the Enchanted Sundial's 7-day cooldown.
+		Notifies the whole server on use.
+		'''
+}
+
+WeatherController: {
+	NoEnergyText: Not enough energy!
+	RainBroadcast: "{0} activated the Weather Controller. Rain clouds are gathering."
+	ClearBroadcast: "{0} activated the Weather Controller. The rain has cleared."
+	DisplayName: Weather Controller
+	Tooltip:
+		'''
+		Right-click to spend 500 power to summon rain, or dispel it while raining.
+		Only commands the rain; the wind won't listen.
+		Notifies the whole server on use.
+		'''
+}
+
+WireInterface: {
+	ModeBridgeText: Bridge only: a wire signal toggles adjacent machines
+	ModeFullText: Full report: emits a wire signal when adjacent machines are fully charged
+	ModeEmptyText: Empty report: emits a wire signal when adjacent machines run dry
+	MachineOffText: Standby
+	MachineOnText: Active
+	DisplayName: Wire Interface
+	Tooltip:
+		'''
+		A two-way adapter between mechanical wires and the power grid
+		On a wire signal, toggles the machines placed against it between active and standby
+		Right-click to cycle report mode: emits a wire signal when adjacent machines become full or empty
+		Place it against the machine you want to control, then hook a wire onto it
+		'''
+}
+
+Sensor: {
+	TitleText: Multi-mode Sensor
+	ConditionLabelText: Trigger Condition
+	ModeOffText: Off
+	ModeChargeAboveText: Charge Above Threshold
+	ModeChargeBelowText: Charge Below Threshold
+	ModeEnemyText: Hostile Watch
+	ModeBloodMoonText: Blood Moon
+	ModeEclipseText: Solar Eclipse
+	ModeSlimeRainText: Slime Rain
+	ModeInvasionText: Invasion
+	ThresholdLabelText: Trigger Threshold
+	RangeLabelText: Watch Radius
+	EventHintText: Reads world events, no parameters needed
+	OutputLabelText: Output Mode
+	OutputLevelText: Level Follow
+	OutputPulseText: Single Pulse
+	StatusActiveText: Condition Met
+	StatusIdleText: Standing By
+	StatusNoPowerText: No Power
+	StatusOffText: Off
+	EnergyLabelText: Power
+	DisplayName: Multi-mode Sensor
+	Tooltip:
+		'''
+		The grid's electric eye; right-click to open the settings panel
+		Watches adjacent charge thresholds, nearby hostiles, or Blood Moons, Eclipses, Slime Rain and invasions
+		Emits a wire signal along its wiring when the condition is met, with level-follow or single-pulse output
+		Consumes 0.1 power per tick on standby; judging pauses when out of power
+		'''
+}
+
+GridSwitch: {
+	OpenText: Opened
+	CloseText: Closed
+	DisplayName: Grid Switch
+	Tooltip:
+		'''
+		A current switch built into pipeline runs
+		Toggle by right-click or wire signal; no current passes while open
+		Build it between two pipe segments to start and stop grid sections
+		'''
+}
+
+MiningMachine: {
+	DisplayName: Mining Machine
+	Tooltip:
+		'''
+		Drills for ore with electric power; output depends on the strata and veins beneath it
+		Right-click to open the prospecting terminal, check yield odds and install upgrade modules
+		'''
+	DontWork: It needs to be placed on a hard surface in order to carry out mining operations.
+}
+
+Collector: {
+	DisplayName: Collector
+	Tooltip:
+		'''
+		Consumes power to pick up nearby drops and place them in the nearest box
+		It won't work if there are no boxes around
+		Right-click the Collector while holding an item to mark it so it only collects that item type
+		'''
+	Text1: Excessive Quantity!
+	Text2: There are no boxes around!
+	Text3: Lack of Electricity!
+}
+
+WGGCollector: {
+	DisplayName: Junkman
+	Tooltip:
+		'''
+		It’s passionate about recycling — including you.
+		To it, there’s no real difference between a plastic bottle and your spinal cord.
+		'''
+}
+
+ItemFilter: {
+	DisplayName: Item Filter Board
+	Tooltip:
+		'''
+		Use to open the list editor; click the panel with an item on your cursor to record it
+		Use while aiming at a collector to copy its list, or at a chest to copy its contents
+		Right-click a collector, item pipeline or other machine while holding it to install the list
+		'''
+	StateFormat: "{0} · {1} entries recorded"
+	CopiedFromChest: Copied chest contents
+	CopiedFromCollector: Copied collector list
+}
+
+Spectrometer: {
+	DisplayName: Spectrometer
+	Tooltip:
+		'''
+		Allows dyeing items with color
+		Requires power to operate
+		'''
+}
+
+MiningMachineMk2: {
+	DontWork: It needs to be placed on a hard surface in order to carry out excavation work.
+	DisplayName: Mining Machine Mk2
+	Tooltip:
+		'''
+		Drills for ore with electric power; surveys wider and deeper than the original
+		Right-click to open the prospecting terminal, check yield odds and install upgrade modules
+		'''
+}
+
+Lumberjack: {
+	Text1: Excessive Quantity!
+	Text2: Lack of Electricity!
+	CycleModeText: Cycle Mode
+	ClearModeText: Clear Mode
+	DisplayName: Lumberjack
+	Tooltip:
+		'''
+		Consumes power to harvest timber
+		Automatically chops down surrounding trees
+		Right-click to switch between Cycle Mode and Clear Mode
+		Cycle Mode continuously harvests trees and replants saplings
+		Clear Mode only harvests trees without replanting
+		'''
+}
+
+LifeWeaver: {
+	NoValidPositionText: No valid planting spots nearby!
+	NoEnergyText: Insufficient power!
+	DisplayName: Tree Planter
+	Tooltip: Consumes power to plant trees nearby
+}
+
+WGGLumberjack: {
+	DisplayName: Wilderness Lumberjack
+	Tooltip: ""
+}
+
+WGGLifeWeaver: {
+	TurretBatteryDepleted: Battery Runs Out
+	DisplayName: Wilderness Tree Planter
+	Tooltip: ""
+}
+
+Incinerator: {
+	DisplayName: Electric Incinerator
+	Tooltip:
+		'''
+		Consumes power to smelt items
+		Right-click to open the control panel
+		Shift + Right-click to quickly deposit ingredients or retrieve products
+		Smelting items yields double output
+		'''
+}
+
+Crusher: {
+	DisplayName: Ore Crusher
+	Tooltip:
+		'''
+		Consumes power to crush ore, two ore in, three of the same ore out
+		Right-click to open the control panel
+		Shift + Right-click to quickly deposit ore or retrieve crushed output
+		Feed the output to an Incinerator and the same ore yields half again more bars
+		'''
+}
+
+CrusherUI: {
+	TitleText: Ore Crusher
+	InputLabel: Ore
+	OutputLabel: Output
+	ProgressLabel: Crushing
+	PowerLabel: Power
+	CrushingText: Crushing
+	IdleText: Idle
+	NoPowerText: No Power
+	InputHint: Insert ore, two in gives three out
+	OutputHint: Click to take the crushed ore
+	PowerUnit: UE
+}
+
+Recycler: {
+	DisplayName: Recycler
+	Tooltip:
+		'''
+		Consumes power to break weapons, armor and accessories down into bars by rarity
+		No recipe reversal, and the output value stays well below the item itself
+		Right-click to open the control panel
+		Shift + Right-click to quickly deposit equipment or retrieve bars
+		'''
+}
+
+RecyclerUI: {
+	TitleText: Recycler
+	InputLabel: Gear
+	OutputLabel: Bars
+	ProgressLabel: Salvage
+	PowerLabel: Power
+	WorkingText: Salvaging
+	IdleText: Idle
+	NoPowerText: No Power
+	InputHint: Insert a weapon, armor piece or accessory
+	OutputHint: Click to take the bars
+	EstimateLabel: "Estimated yield: "
+	PowerUnit: UE
+}
+
+AutoCrafter: {
+	DisplayName: Auto Crafter
+	Tooltip:
+		'''
+		Right-click to open the panel, insert a sample and pin one of its recipes
+		Pulls ingredients from nearby chests and machines, then crafts automatically
+		Crafting stations required by the recipe must be placed near the machine
+		Products go to nearby storage first, or stay in the output slot
+		'''
+}
+
+AutoCrafterUI: {
+	TitleText: Auto Crafter
+	SampleLabel: Sample
+	OutputLabel: Output
+	ListLabel: Recipes
+	PowerLabel: Power
+	StatusIdle: Idle
+	StatusNoPin: No recipe pinned
+	StatusPinMissing: Pinned recipe is gone, pin one again
+	StatusNoPower: No Power
+	StatusNoStation: Crafting station missing nearby
+	StatusNoCondition: Crafting condition not met
+	StatusNoMaterial: "Missing material: "
+	StatusOutputFull: Output slot is full
+	StatusWorking: Assembling
+	SampleHint: Insert a sample item to list its recipes
+	ListEmptyText: No recipe makes this sample
+	PinHint: Click a row to pin the recipe
+	UnpinHint: Click the pinned row again to unpin
+	ConditionLockText: Condition not met
+	PinnedTag: Pinned
+	PowerUnit: UE
+}
+
+Thrower: {
+	NoEnergyText: Insufficient energy!
+	NoItemText: No items to throw!
+	WorkingText: Throwing...
+	IdleText: Idle
+	DisplayName: Thrower
+	Tooltip:
+		'''
+		Consumes power to throw items
+		Right-click to open the control panel
+		'''
+}
+
+PlayerLauncher: {
+	NoEnergyText: Insufficient energy!
+	DisplayName: Launch Pad
+	Tooltip:
+		'''
+		Consumes power to launch players standing on it in the configured direction
+		Grants brief fall damage immunity after launch
+		Right-click to open the control panel
+		'''
+}
+
+PacifierTower: {
+	FieldOnText: Field activated
+	FieldOffText: Field deactivated
+	NoEnergyText: Insufficient energy!
+	DisplayName: Pacifier Field Generator
+	Tooltip:
+		'''
+		Suppresses natural enemy spawns nearby while powered
+		Right-click or wire signal to toggle the field
+		'''
+}
+
+PotionBeacon: {
+	NoEnergyText: Insufficient energy!
+	DisplayName: Potion Diffuser Beacon
+	Tooltip:
+		'''
+		Stores buff potions and continuously diffuses their effects to nearby players
+		One potion supplies twice its original buff duration
+		Right-click to open the control panel
+		'''
+}
+
+HerbFarmer: {
+	NoEnergyText: Insufficient energy!
+	DisplayName: Herb Farming Machine
+	Tooltip:
+		'''
+		Consumes seeds and power to automatically plant herbs on valid soil nearby
+		Harvests blooming herbs, yielding herbs and seeds
+		Right-click to open the control panel
+		'''
+}
+
+MushroomFarmer: {
+	NoEnergyText: Insufficient energy!
+	FullText: Produce storage is full!
+	DisplayName: Mushroom Farming Machine
+	Tooltip:
+		'''
+		Consumes power to cultivate mushrooms on nearby grass and glowing mushrooms on mushroom grass
+		Harvests them automatically, occasionally yielding mushroom grass seeds
+		Right-click to open the control panel
+		'''
+}
+
+Apiary: {
+	NoEnergyText: Insufficient energy!
+	NoBottleText: Out of bottles!
+	FullText: Produce storage is full!
+	DisplayName: Apiary
+	Tooltip:
+		'''
+		Load empty bottles and the bees will brew bottled honey using power
+		Bees work faster near honey or in the jungle
+		Right-click to open the control panel
+		'''
+}
+
+SlimeVat: {
+	NoEnergyText: Insufficient energy!
+	NoWaterText: Not enough water!
+	FullText: Produce storage is full!
+	PourText: +{0} water
+	DisplayName: Slime Culture Vat
+	Tooltip:
+		'''
+		Consumes water and power to culture gel periodically
+		Draws from adjacent water bodies, or pour buckets in by hand
+		Right-click to open the control panel
+		'''
+}
+
+AutoFisher: {
+	NoEnergyText: Insufficient energy!
+	NoBaitText: Out of bait!
+	NoWaterText: No fishable water nearby!
+	FullText: Catch storage is full!
+	DisplayName: Auto Fisher
+	Tooltip:
+		'''
+		Consumes bait and power to automatically fish from water below
+		Bigger water bodies and better bait yield richer catches
+		Right-click to open the control panel
+		'''
+}

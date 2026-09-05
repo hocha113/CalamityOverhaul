@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.GridSwitches
     /// <summary>电网总闸,嵌进管道线路的电流开关;贴图暂复用激光输电装置物品,黄铜色调区分</summary>
     internal class GridSwitch : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/LaserEnergyTrans";
 
         /// <summary>系列色调:配电黄铜</summary>

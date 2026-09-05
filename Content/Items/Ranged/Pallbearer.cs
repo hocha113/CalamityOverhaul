@@ -25,6 +25,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class Pallbearer : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;

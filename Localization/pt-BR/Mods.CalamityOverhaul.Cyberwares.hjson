@@ -1,0 +1,129 @@
+SandevistansItem: {
+	DisplayName: Item Sandevistan
+	Tooltip: Militech Sandevistan Mk.5 — Retarda o tempo percebido em 70% por 3,5 segundos. Recarga 15s.
+}
+
+Sandevistan: {
+	SkillName: Sandevistan
+	SkillDesc:
+		'''
+		Retarda drasticamente o tempo percebido, permitindo que voce se mova e aja em aparente camara lenta.
+		A reserva drena durante o uso e desativa automaticamente quando vazia, entao recarrega naturalmente.
+		Selecione novamente no radial para desativa-lo manualmente.
+		'''
+}
+
+MimicPerchedAuxBrain: {
+	DisplayName: Cerebro Auxiliar Empoleirado Mimico
+	Tooltip:
+		'''
+		Divide o hospedeiro em quatro ilusoes que flutuam ao redor do corpo principal.
+		Quando atingido, o verdadeiro eu escondido entre as ilusoes causara caos e ganhara imunidade,
+		nao sofrendo dano do ataque.
+		Enquanto isso, as ilusoes atacarao o agressor e detonarao,
+		causando dano dimensionado pelo poder de ataque bruto do inimigo.
+		'''
+}
+
+CstmVisualEye: {
+	DisplayName: Olho Cibernetico Otico-Visual CSTM
+	Tooltip:
+		'''
+		Um implante otico cibernetico que sincroniza o Tempo de Hackear diretamente em sua rede neural craniana.
+		Aumenta a RAM maxima em 4
+		Exibe uma barra de arco de RAM independente no canto inferior esquerdo da tela
+		'''
+}
+
+PrimePlasama: {
+	DisplayName: Armadura Subdermica de Plasma Prime
+	Tooltip:
+		'''
+		Uma camada de gel eletroativo tecido sob a pele de todo o corpo.
+		Concede permanentemente 25 de defesa e 6% de reducao de dano.
+		Aumenta massivamente a resistencia a repulsao — impactos comuns dificilmente podem desequilibra-lo.
+		'''
+}
+
+OmniElectricFoot: {
+	DisplayName: Pe OmniEletrico
+	Tooltip:
+		'''
+		Um cibernetico locomotor de alta saida combinando recuo eletromagnetico com gel de propulsao denso.
+		Concede um pulo duplo no ar, permitindo que voce se lance novamente apos sair do chao.
+		Passe o mouse sobre a fatia Salto Carregado no radial cibernetico para carregar e solte para lancar.
+		Um salto totalmente carregado pode alcancar mais do que o dobro da altura de um salto normal.
+		'''
+	SkillHint: Passe o mouse sobre Salto Carregado no radial {0} para carregar
+	SkillName: Salto Carregado
+	SkillDesc:
+		'''
+		Salto de propulsao eletromagnetica.
+		Requer estar no chao; o tempo de pairar sobre a fatia E o tempo de carga.
+		Solte a tecla para lancar ate 2,5x a altura normal do salto quando totalmente carregado.
+		'''
+}
+
+PlowSteelClampArm: {
+	DisplayName: Braço de Presilha de Aço Lavrado
+	Tooltip:
+		'''
+		Um cibernetico industrial com captura magnetica e presilhas de alta rigidez.
+		Estende muito o alcance de mineracao e colocacao de blocos.
+		Permite permanentemente a captura magnetica de itens e moedas.
+		Habilidade cibernetica: libera um fio monomolecular de alta calor da sua palma.
+		Toque para um fio curto, segure para um fio longo; inimigos ao longo do caminho sao continuamente chamuscados.
+		'''
+	SkillHint: "[c/8AC4E8:{1}] Abra o radial cibernetico para alternar · [c/F5C56A:{0}] Dispare o fio (toque = curto / segure = longo)"
+	SkillName: Fio Monomolecular
+	SkillDesc:
+		'''
+		Lanca um fio monomolecular de alta calor da sua palma. Inimigos ao longo do caminho sao continuamente chamuscados.
+		[c/8AC4E8:Toque]: Coloca um fio curto de ~12 blocos em direcao ao cursor, dura 2 segundos, sem necessidade de ancora.
+		[c/F5C56A:Segurar]: Quando totalmente carregado, prende-se a um bloco solido perto do cursor por 5 segundos; se nenhuma ancora for encontrada, cai de volta para um fio curto.
+		O dano escala com os multiplicadores de dano genericos do jogador.
+		'''
+}
+
+SelfHealingSkelent: {
+	DisplayName: Endoesqueleto Autocurativo
+	Tooltip:
+		'''
+		Um implante bio-ciber de alto nivel que substitui o esqueleto nativo por uma rede de nanocristais.
+		Concede continuamente +2 HP/s de regeneracao de vida e +40 de vida maxima.
+		Fora de combate por 4 segundos, entra em estado de Nanor reparo com regeneracao muito aumentada.
+		O endoesqueleto metalico nega completamente o dano de queda.
+		'''
+}
+
+SelfHackCrystal: {
+	DisplayName: Cristal de Auto-Hack
+	Tooltip:
+		'''
+		Um cibernetico de rede de alto nivel no slot do sistema operacional.
+		Redireciona a interface de invasao de volta para o hospedeiro.
+		Concede continuamente velocidade de recuperacao de RAM adicional.
+		Habilidade cibernetica: gaste RAM para limpar instantaneamente todas as desvantagens
+		e ganhar breve invencibilidade — uma janela para sair de situacoes letais.
+		'''
+	SkillHint: Acione Auto-Hack do radial {0} para purgar desvantagens com RAM
+	SkillName: Auto-Hack
+	SkillDesc:
+		'''
+		Redireciona a interface de invasao de volta para voce mesmo para uma limpeza de emergencia.
+		Gasta 3 RAM para remover instantaneamente todas as desvantagens e concede ~1,5s de invencibilidade.
+		12s de recarga; fica cinza automaticamente quando a RAM e insuficiente ou ainda em recarga.
+		'''
+}
+
+SCCA32CRP: {
+	DisplayName: SCCA-32 CRP
+	Tooltip:
+		'''
+		Um co-processador neuro-muscular avancado.
+		Roteia a predicao de ameacas e os reflexos de fibra muscular completamente ao redor do cerebro.
+		Concede continuamente +8% de chance de acerto critico e +8% de velocidade de movimento.
+		18% de chance de desencadear uma Esquiva Reflexiva ao ser atingido, negando completamente aquele golpe.
+		Em uma esquiva bem-sucedida, entra em um Surto Reflexivo de 3 segundos com bonus de crit e velocidade de movimento.
+		'''
+}

@@ -1,0 +1,99 @@
+ThermalGenerator: {
+	DisplayName: Thermal Generator
+	Tooltip:
+		'''
+		Put fuel in for power generation.
+		Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
+		'''
+}
+
+MagmaThermalGenerator: {
+	DisplayName: Magma Thermal Generator
+	Tooltip:
+		'''
+		Generates a little power while touching lava, and full power while its tank holds magma
+		Feed it through fluid pipelines, or right-click with a lava bucket to pour directly
+		The first workhorse power source for a hell factory
+		'''
+}
+
+WindGrivenGenerator: {
+	DisplayName: Wind Griven Generator
+	Tooltip: Move with the wind and generate electricity
+	UnderstandWindGriven: An initial understanding of how wind power works is required
+	UnderstandWindGriven2: Need to dig up old wind machines on asteroids to understand how they're made
+}
+
+WindGrivenGeneratorMK2: {
+	DisplayName: Wind Griven Generator MK2
+	Tooltip: Move with the wind and generate electricity
+	UnderstandWindGrivenMK2: A deep understanding of wind power is required
+	UnderstandWindGrivenMK2Remind: Need to mine the giant wind turbines on asteroids to understand their crafting principles
+}
+
+ThermalGeneratorMK2: {
+	DisplayName: Thermal Generator MK2
+	Tooltip:
+		'''
+		Put fuel in for power generation.
+		Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
+		'''
+}
+
+WGGMK2Wilderness: {
+	DisplayName: Giant Wind Turbines In The Wilderness
+	Tooltip: ""
+}
+
+WGGWilderness: {
+	DisplayName: Wind Turbines In The Wilderness
+	Tooltip: ""
+}
+
+SolarPanel: {
+	DisplayName: Solar Panel
+	Tooltip:
+		'''
+		Generates power during the day, peaking at noon.
+		Heavily reduced in rain, completely offline during eclipses.
+		Stops working when solid blocks cover it overhead.
+		'''
+}
+
+SolarPanelMK2: {
+	DisplayName: Solar Panel MK2
+	Tooltip:
+		'''
+		Generates power during the day, peaking at noon, three times as efficient as the original.
+		Heavily reduced in rain, completely offline during eclipses.
+		Stops working when solid blocks cover it overhead.
+		'''
+}
+
+Hydroelectric: {
+	DisplayName: Hydroelectric
+	Tooltip:
+		'''
+		Generating electricity by placing in water
+		"One application of fluid mechanics"
+		'''
+}
+
+HydroelectricMK2: {
+	DisplayName: Hydroelectric MK2
+	Tooltip:
+		'''
+		Generating electricity by placing in water
+		"One application of fluid mechanics"
+		'''
+}
+
+BiomassGenerator: {
+	DisplayName: Biomass Generator
+	Tooltip:
+		'''
+		Burns seeds, herbs, mushrooms, fish and other farm surplus for steady power
+		Output sits between wind and thermal, pairing with farming machines for a closed loop
+		Right-click with biomass in hand to load fuel, or right-click to open the panel
+		'''
+}

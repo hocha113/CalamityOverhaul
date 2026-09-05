@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 {
     internal class WGGCollector : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/WGGCollector";
         public override void SetDefaults() {
             Item.width = 32;

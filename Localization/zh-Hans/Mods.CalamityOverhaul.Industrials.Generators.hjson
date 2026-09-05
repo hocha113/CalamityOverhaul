@@ -1,0 +1,99 @@
+ThermalGenerator: {
+	DisplayName: 火力发电机
+	Tooltip:
+		'''
+		放入燃料进行发电
+		右键物块可以快速放入燃料，Shft右键取出
+		'''
+}
+
+MagmaThermalGenerator: {
+	DisplayName: 岩浆热能发电机
+	Tooltip:
+		'''
+		机身贴着岩浆时缓慢发电，罐内有岩浆储备时全力发电
+		岩浆可经液体管道供给，也能右键用岩浆桶直接倒入
+		地狱建厂的第一台主力电源
+		'''
+}
+
+WindGrivenGenerator: {
+	DisplayName: 风力发电机
+	Tooltip: 随风而动，生产电能
+	UnderstandWindGriven: 需要对风力发电的工作原理有初步的了解
+	UnderstandWindGriven2: 需要在小行星上采掘破旧的风力机来了解它们的制作原理
+}
+
+WindGrivenGeneratorMK2: {
+	DisplayName: 风力发电机MK2
+	Tooltip: 随风而动，生产电能
+	UnderstandWindGrivenMK2: 需要对风力发电的工作原理有深入的了解
+	UnderstandWindGrivenMK2Remind: 需要挖掘小行星上的巨型风力涡轮机来了解它们的制作原理
+}
+
+ThermalGeneratorMK2: {
+	DisplayName: 火力发电机MK2
+	Tooltip:
+		'''
+		放入燃料进行发电
+		右键物块可以快速放入燃料，Shft右键取出
+		'''
+}
+
+WGGMK2Wilderness: {
+	DisplayName: 荒野中的巨型风力发电机
+	Tooltip: ""
+}
+
+WGGWilderness: {
+	DisplayName: 荒野中的风力发电机
+	Tooltip: ""
+}
+
+SolarPanel: {
+	DisplayName: 太阳能板
+	Tooltip:
+		'''
+		白天发电，正午输出到达顶峰
+		雨天效率大减，日食期间完全停摆
+		头顶被实体方块遮挡时无法工作
+		'''
+}
+
+SolarPanelMK2: {
+	DisplayName: 太阳能板MK2
+	Tooltip:
+		'''
+		白天发电，正午输出到达顶峰，效率是初代的三倍
+		雨天效率大减，日食期间完全停摆
+		头顶被实体方块遮挡时无法工作
+		'''
+}
+
+Hydroelectric: {
+	DisplayName: 水力发电机
+	Tooltip:
+		'''
+		放置在水中进行发电
+		"流体力学的一种应用"
+		'''
+}
+
+HydroelectricMK2: {
+	DisplayName: 水力发电机MK2
+	Tooltip:
+		'''
+		放置在水中进行发电
+		"流体力学的一种应用"
+		'''
+}
+
+BiomassGenerator: {
+	DisplayName: 生物质发电机
+	Tooltip:
+		'''
+		焚烧种子、草药、蘑菇、鱼获等农业废料持续发电
+		功率稳定，介于风力与火力之间，与农业机器构成产烧闭环
+		手持生物质燃料右键直接投料，右键打开面板
+		'''
+}

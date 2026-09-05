@@ -1,0 +1,777 @@
+SHPCModTooltipDraw: {
+	InstalledHeader: MODULES INSTALLÉS
+	NoModules: AUCUN
+	BonusHeader: BONUS TOTAUX DES MODULES
+}
+
+MoldProcessingTable: {
+	DisplayName: Table de traitement des moules
+	Tooltip:
+		'''
+		Clic droit pour ouvrir la table de traitement des moules
+		Décomposer : fond les modules de modification excédentaires en fragments
+		Refondre : consomme des fragments pour produire de nouveaux moules ; peut verrouiller une cible dans le codex
+		'''
+}
+
+RapidBarrelModule: {
+	DisplayName: Canon rapide
+	Tooltip: Ressort de recul surdimensionné pour des impulsions brûlantes, au détriment de la stabilité et de la puissance par tir
+}
+
+FocusBarrelModule: {
+	DisplayName: Canon focalisateur
+	Tooltip: Force les trois faisceaux traqueurs à converger en une frappe concentrée catastrophique
+}
+
+PrecisionOpticModule: {
+	DisplayName: Optique de précision
+	Tooltip:
+		'''
+		Jugement calibré : supprime toute dispersion ; les coups consécutifs sans raté accumulent la calibration
+		À quinze charges, tire un rayon du jugement perforant à critique garanti — un raté remet la calibration à zéro
+		'''
+}
+
+OverloadCoreModule: {
+	DisplayName: Noyau de surcharge
+	Tooltip:
+		'''
+		Retire la sécurité de l'orbe : continuez de charger au-delà du maximum — jusqu'à dégâts doublés et explosion élargie
+		Au-delà de la ligne rouge, le cœur éclate : vous êtes projeté et la moitié de votre mana brûle
+		'''
+}
+
+SteadyStockModule: {
+	DisplayName: Crosse stabilisatrice
+	Tooltip: Crosse lourde composite absorbant le recul, échangeant un peu de cadence de tir contre des dégâts supplémentaires par tir
+}
+
+HarmonyGripModule: {
+	DisplayName: Poignée harmonique
+	Tooltip:
+		'''
+		La bio-conduction réduit le coût en mana ; le mana libéré à l'impact se condense en brumes résonantes
+		Les brumes dérivent vers vous — les ramasser rend du mana et cumule Harmonie, accélérant la cadence (max. 5)
+		'''
+}
+
+ResonanceFrameModule: {
+	DisplayName: Châssis résonant
+	Tooltip: Châssis à harmoniques superposées libérant un faisceau supplémentaire pour une salve plus dense
+}
+
+AdaptiveOpticModule: {
+	DisplayName: Optique adaptative
+	Tooltip:
+		'''
+		Conduite de tir prédictive : analyse le mouvement des cibles et projette un marqueur holographique d'interception
+		Les rayons dévient pour anticiper ; toucher une cible en mouvement déclenche des frappes adaptatives bonus
+		'''
+}
+
+AssaultStockModule: {
+	DisplayName: Crosse d'assaut
+	Tooltip:
+		'''
+		La crosse intègre deux modules de combat : en maniant l'arme, deux bras-canons flottants se déploient à vos épaules
+		Les bras se synchronisent avec votre détente et tirent en alternance des fléchettes de soutien
+		'''
+}
+
+BalancedGripModule: {
+	DisplayName: Poignée équilibrée
+	Tooltip:
+		'''
+		Protocole d'équilibre jumeau : les rayons accumulent le Yang, les orbes accumulent le Yin
+		Tant que les deux charges restent équilibrées, dégâts, cadence et efficacité de mana augmentent
+		'''
+}
+
+CapacitorBankModule: {
+	DisplayName: Banque de condensateurs
+	Tooltip: Pile de condensateurs denses remplissant l'orbe en cycle plus court, mais amortissant son énergie de lancement
+}
+
+CrystalGripModule: {
+	DisplayName: Poignée cristalline
+	Tooltip:
+		'''
+		Le cristal synthétique économise le mana et améliore les critiques ; les impacts critiques se réfractent en matière :
+		des éclats jaillissent de la cible en arcs balistiques puis s'incurvent vers les ennemis proches
+		'''
+}
+
+EfficientGripModule: {
+	DisplayName: Poignée efficace
+	Tooltip: Poignée ergonomique de qualité industrielle optimisant à la fois la consommation d'énergie et le rythme de tir
+}
+
+HeavyBarrelModule: {
+	DisplayName: Canon lourd
+	Tooltip: Rayures renforcées écrasant dispersion et cadence ; chaque tir devient un coup massif
+}
+
+HighVoltageCoreModule: {
+	DisplayName: Noyau haute tension
+	Tooltip:
+		'''
+		Un condensateur haute tension se charge à chaque coup
+		À pleine charge, votre prochain coup décharge un arc perforant qui traverse tout sur sa trajectoire
+		'''
+}
+
+HoloOpticModule: {
+	DisplayName: Optique holographique
+	Tooltip:
+		'''
+		Projecteur de treillis tactique : déploie périodiquement une grille holographique au curseur pendant le combat
+		Les projectiles ennemis s'y dissolvent ; vos rayons qui la traversent sont recalibrés — renforcés et réalignés
+		'''
+}
+
+HypersonicBarrelModule: {
+	DisplayName: Canon hypersonique
+	Tooltip:
+		'''
+		Les rayures statoréacteur font accélérer les rayons en vol ; franchir le mur du son détone un anneau de Mach
+		Au-delà du mur, les rayons chauffent à blanc : dégâts accrus, perforation bonus et traînée de condensation
+		'''
+}
+
+KineticDamperModule: {
+	DisplayName: Crosse amortisseuse cinétique
+	Tooltip:
+		'''
+		Les amortisseurs hydrauliques stockent le recul de vos coups en réserve cinétique ; au-delà de la moitié, vous êtes insensible au recul
+		Quand vous subissez des dégâts, toute la réserve éclate en onde sismique de riposte qui repousse les ennemis
+		'''
+}
+
+LightStockModule: {
+	DisplayName: Crosse légère
+	Tooltip:
+		'''
+		Le châssis léger segmenté augmente la cadence et change chaque rayon principal en chaîne de lumière rampante :
+		deux maillons suivent la trajectoire du rayon, chacun infligeant ses propres dégâts
+		'''
+}
+
+MultiCellFrameModule: {
+	DisplayName: Châssis multi-cellules
+	Tooltip: Cellules de refroidissement parallèles libérant deux faisceaux à la fois ; couverture élargie, dégâts par faisceau réduits
+}
+
+PlasmaInjectorModule: {
+	DisplayName: Injecteur de plasma
+	Tooltip:
+		'''
+		Injecte du plasma à haute enthalpie dans l'orbe : sa détonation laisse un soleil de plasma miniature
+		Le soleil calcine les environs et fouette périodiquement l'ennemi le plus proche d'éruptions solaires
+		'''
+}
+
+QuantumFrameModule: {
+	DisplayName: Châssis quantique
+	Tooltip:
+		'''
+		Protocole d'intrication : toucher deux cibles différentes d'affilée les intrique quantiquement quelques secondes
+		Les dégâts subis par l'une sont en partie copiés sur l'autre ; à la mort de l'une, le lien s'effondre et projette l'écho accumulé dans la survivante
+		'''
+}
+
+ScattershotBarrelModule: {
+	DisplayName: Canon à dispersion
+	Tooltip: Bouche fendue divisant chaque tir en gerbe de faisceaux ; couverture massive mais dégâts par faisceau en chute
+}
+
+ThermalOpticModule: {
+	DisplayName: Optique thermique
+	Tooltip: Verrouillage infrarouge faisant coller les faisceaux à la cible, avec gains de précision et de critique
+}
+
+VolatileFrameModule: {
+	DisplayName: Châssis instable
+	Tooltip: Réseau de refroidissement surcadencé extrayant un faisceau et du critique supplémentaires, mais mana et dispersion en hausse
+}
+
+NovaBarrelModule: {
+	DisplayName: Canon nova
+	Tooltip:
+		'''
+		Bouche à plasma surchargée déclenchant une micro-pulsion à chaque impact de faisceau
+		Prix à payer : dispersion accrue, impact par tir affaibli et consommation de mana plus lourde
+		'''
+}
+
+PrismOpticModule: {
+	DisplayName: Optique prismatique
+	Tooltip:
+		'''
+		Prisme de phase en bout de trajectoire scindant chaque faisceau en deux éclats à l'expiration
+		Les faisceaux principaux volent un peu moins loin, mais offrent une fenêtre de critique plus nette
+		'''
+}
+
+TeslaCoreModule: {
+	DisplayName: Noyau Tesla
+	Tooltip:
+		'''
+		Arcs haute tension faisant sauter les faisceaux touchés vers l'ennemi le plus proche
+		Chaque maillon de chaîne hérite des effets à l'impact, au prix d'un mana accru
+		'''
+}
+
+RecoilStockModule: {
+	DisplayName: Crosse à contre-recul
+	Tooltip:
+		'''
+		Tampon de surcharge convertissant les détonations d'orbe en propulsion cinétique pour le porteur
+		La portée des faisceaux est prolongée ; le rythme de tir devient un peu plus lent
+		'''
+}
+
+SwarmGripModule: {
+	DisplayName: Poignée essaim
+	Tooltip:
+		'''
+		Poignée à réseau neuronal libérant un essaim de micro-orbes à forte traque au moment de l'explosion de l'orbe
+		La vitesse de l'orbe baisse et la consommation de mana augmente en compensation
+		'''
+}
+
+GravityFrameModule: {
+	DisplayName: Châssis gravitationnel
+	Tooltip:
+		'''
+		Anneau de singularité miniature transformant l'orbe en puits gravitationnel
+		Attire les ennemis proches vers le noyau pendant la charge et élargit fortement le rayon d'explosion
+		La chambre de précision rend la charge un peu plus lourde
+		'''
+}
+
+LaserBarrelModule: {
+	DisplayName: Canon laser prismatique
+	Tooltip: Transforme les faisceaux convergés en colonne laser prismatique continue, au prix d'une énorme consommation de mana et d'une puissance limitée
+}
+
+OscillatorBarrelModule: {
+	DisplayName: Canon laser oscillant
+	Tooltip:
+		'''
+		Condensateur à impulsion intégré détonant toutes les 30 images à l'extrémité du faisceau
+		Dégâts par image légèrement réduits, mais explosions de zone et mana moindre compensent le tir continu
+		'''
+}
+
+ScorchBarrelModule: {
+	DisplayName: Canon laser incendiaire
+	Tooltip:
+		'''
+		Buse plasma à haute enthalpie enflamme les cibles au contact du laser
+		Dégâts directs légèrement inférieurs, mais brûlure soutenue et mana réduit compensent
+		'''
+}
+
+ReflectionBarrelModule: {
+	DisplayName: Canon laser réfléchissant
+	Tooltip:
+		'''
+		Prisme en diamant au point d'impact dévie une partie de l'énergie en deux faisceaux latéraux
+		Dégâts du faisceau principal accrus, mais mana extrême rend le tir continu coûteux
+		'''
+}
+
+EchoOpticModule: {
+	DisplayName: Optique d'écho
+	Tooltip:
+		'''
+		Élément de résonance en fin de trajectoire capture l'écho énergétique à la disparition du faisceau
+		Chaque faisceau expiré libère trois sous-faisceaux traqueurs en éventail, compensant la portée réduite
+		'''
+}
+
+FrostOpticModule: {
+	DisplayName: Optique de givre
+	Tooltip:
+		'''
+		Lentille cryogénique inflige Brûlure de givre aux cibles touchées
+		Vitesse du faisceau réduite mais traque plus stable, avec bonus de perforation et de critique
+		'''
+}
+
+SingularityCoreModule: {
+	DisplayName: Noyau de singularité
+	Tooltip:
+		'''
+		Micro-générateur gravitationnel oriente l'orbe vers l'ennemi le plus proche en vol
+		Rayon d'explosion fortement élargi, mais le champ dense augmente la consommation de mana
+		'''
+}
+
+ScrambleFieldModule: {
+	DisplayName: Module de champ brouilleur
+	Tooltip:
+		'''
+		Bobine haute fréquence déclenche une micro-onde de choc autour de l'orbe toutes les 40 images pendant la charge
+		Échelle de l'explosion amplifiée au prix d'une charge plus lente et d'un mana accru
+		'''
+}
+
+BraceStockModule: {
+	DisplayName: Crosse à étrier
+	Tooltip: Un étrier stabilisateur lourd élimine toute dispersion et prolonge la portée, échangeant un peu de cadence pour une précision maximale
+}
+
+LaunchStockModule: {
+	DisplayName: Crosse de lancement
+	Tooltip:
+		'''
+		Mécanisme à ressort surchargé libère trois faisceaux traqueurs en éventail au lancement de l'orbe
+		Vitesse de l'orbe accrue, consommation de mana en hausse
+		'''
+}
+
+SentinelGripModule: {
+	DisplayName: Poignée sentinelle
+	Tooltip:
+		'''
+		Poignée à capteurs intelligents tire automatiquement un faisceau traqueur sur l'ennemi le plus proche toutes les 20 images en vol
+		Vitesse de l'orbe légèrement réduite et mana accru, mais le tir d'accompagnement compense
+		'''
+}
+
+ConductorGripModule: {
+	DisplayName: Poignée conductrice
+	Tooltip:
+		'''
+		Matériau supraconducteur renforce les arcs en chaîne pour plus de portée et de sauts
+		Chaque impact accompagné d'une gerbe de particules d'arc ; léger surplus de dégâts et de mana
+		'''
+}
+
+PhantomFrameModule: {
+	DisplayName: Châssis fantôme
+	Tooltip:
+		'''
+		Cavité à phase quantique téléporte le faisceau à 80 px de l'ennemi le plus proche toutes les 30 images
+		Contourne entièrement les obstacles ; légère hausse de portée et de dégâts, mana accru
+		'''
+}
+
+RecursiveFrameModule: {
+	DisplayName: Châssis récursif
+	Tooltip:
+		'''
+		Châssis à boucle topologique relance chaque faisceau depuis le joueur dans sa direction d'origine à sa mort
+		Dégâts principaux accrus mais portée réduite ; l'écho est affaibli et ne se répète pas, mana accru
+		'''
+}
+
+ForkBarrelModule: {
+	DisplayName: Canon à fourche
+	Tooltip:
+		'''
+		Prisme diviseur interne bifurque chaque faisceau en deux sous-faisceaux inclinés toutes les 50 images
+		Léger malus de dégâts et de mana
+		'''
+}
+
+NullBarrelModule: {
+	DisplayName: Canon nul
+	Tooltip:
+		'''
+		Chambre d'effacement de données réduit les dégâts à quasi zéro mais accorde une perforation quasi illimitée
+		Les impacts injectent un flux de données toxique qui corrode la cible dans le temps
+		'''
+}
+
+HelixBarrelModule: {
+	DisplayName: Canon hélicoïdal
+	Tooltip:
+		'''
+		Optique double canal force deux faisceaux à spiraler autour d'un axe commun
+		Dispersion annulée ; léger malus de dégâts et de vitesse ; excellent avec forte perforation
+		'''
+}
+
+TargetPainterOpticModule: {
+	DisplayName: Optique de marquage
+	Tooltip:
+		'''
+		Système de désignation laser infecte les cibles touchées d'un ichor corrosif, réduisant fortement leur défense
+		Renforce aussi la traque et les chances de coup critique
+		'''
+}
+
+StrobeOpticModule: {
+	DisplayName: Optique stroboscopique
+	Tooltip:
+		'''
+		Modulateur de phase fait alterner rapidement le faisceau entre états traversants et solides
+		Chance de confondre les ennemis touchés ; léger bonus de perforation et de vitesse
+		'''
+}
+
+SniperOpticModule: {
+	DisplayName: Optique de sniper
+	Tooltip:
+		'''
+		Collimateurs magnétiques augmentent fortement vitesse, portée et dégâts par tir
+		Au prix d'une cadence fortement réduite et d'une traque quasi nulle
+		À combiner avec le canon hypersonique pour des frappes extrêmes à distance
+		'''
+}
+
+StormCellModule: {
+	DisplayName: Cellule de tempête
+	Tooltip:
+		'''
+		Pendant la charge, libère un éclair traqueur vers l'ennemi le plus proche toutes les 25 images
+		Charge plus rapide et rayon d'explosion élargi, mais mana accru
+		'''
+}
+
+CryoCoreModule: {
+	DisplayName: Noyau cryogénique
+	Tooltip:
+		'''
+		Cellule d'énergie hyperfroide gèle tous les ennemis dans le rayon d'explosion de l'orbe
+		Explosion légèrement plus large, charge un peu plus lente
+		'''
+}
+
+DarkMatterCoreModule: {
+	DisplayName: Noyau de matière noire
+	Tooltip:
+		'''
+		Champ de matière noire attire les ennemis proches vers l'orbe pendant son vol
+		L'orbe traque simultanément les cibles ; rayon d'explosion nettement accru, mana élevé
+		'''
+}
+
+ErgonomicStockModule: {
+	DisplayName: Crosse ergonomique
+	Tooltip: Conception ergonomique de précision réduit fortement la consommation de mana avec de légers gains de cadence et de précision
+}
+
+ExtenderStockModule: {
+	DisplayName: Crosse rallongée
+	Tooltip:
+		'''
+		Rail prolongé accorde plus de portée et de vitesse aux faisceaux avec un malus de dégâts minimal
+		À empiler avec l'optique de sniper pour une couverture extrême à distance
+		'''
+}
+
+StormStockModule: {
+	DisplayName: Crosse de tempête
+	Tooltip:
+		'''
+		Ressorts de recul haute densité poussent cadence et nombre de faisceaux à la limite, au détriment des dégâts par tir
+		À combiner avec le canon à dispersion pour un tapis de saturation
+		'''
+}
+
+VampireGripModule: {
+	DisplayName: Poignée vampirique
+	Tooltip:
+		'''
+		Poignée bioélectrique convertit une part des dégâts de faisceau en régénération de vie
+		Impacts laser plus fréquents mais soins par tick moindres ; efficace en combat prolongé
+		'''
+}
+
+ChronalGripModule: {
+	DisplayName: Poignée chronale
+	Tooltip:
+		'''
+		Bobine à retard de phase ralentit les ennemis à chaque impact
+		Combinée à une meilleure traque, le tir dense maintient un contrôle de foule persistant
+		'''
+}
+
+CascadeGripModule: {
+	DisplayName: Poignée en cascade
+	Tooltip:
+		'''
+		Tous les 5 impacts, génère un nœud de cascade flottant au point d'impact
+		Le nœud dure ~2 secondes et tire 5 faisceaux traqueurs sur les ennemis proches
+		Réduit légèrement les dégâts de base
+		'''
+}
+
+MirrorFrameModule: {
+	DisplayName: Châssis miroir
+	Tooltip:
+		'''
+		Cavité de réflexion symétrique génère un faisceau miroir à 180° pour chaque tir
+		Faisceaux miroirs affaiblis ; couverture bidirectionnelle densifie fortement les impacts
+		'''
+}
+
+NullspaceFrameModule: {
+	DisplayName: Châssis du vide
+	Tooltip:
+		'''
+		Générateur de faille du vide laisse un écho de micro-explosion sur la trajectoire toutes les 20 images
+		Portée légèrement prolongée ; malus de dégâts minimal
+		'''
+}
+
+OverkillFrameModule: {
+	DisplayName: Châssis surpuissance
+	Tooltip:
+		'''
+		Circuit de détection empile une charge de surpuissance par élimination, jusqu'à 15 ; chaque cumul +2 % de dégâts
+		Les cumuls décroissent avec le temps — plus vous tuez vite, plus vous devenez fort
+		'''
+}
+
+GraviticBarrelModule: {
+	DisplayName: Canon gravitationnel
+	Tooltip:
+		'''
+		Micro-singularité intégrée attire les ennemis proches vers chaque faisceau en vol
+		Dispersion et traque resserrées, portée étendue ; vélocité initiale légèrement réduite
+		'''
+}
+
+PrismaticBarrelModule: {
+	DisplayName: Canon prismatique
+	Tooltip:
+		'''
+		Prismes de dispersion projettent des traînées RGB, éclats colorés à l'impact
+		Ajoute un faisceau et un bonus de critique, au prix d'un peu de dégâts et de dispersion
+		'''
+}
+
+ConcussionBarrelModule: {
+	DisplayName: Canon à concussion
+	Tooltip:
+		'''
+		Tampon de surcharge détonne un anneau de concussion au point d'impact tous les 5 impacts cumulés
+		Dégâts et dispersion par tir resserrés, mais cadence de tir en baisse
+		'''
+}
+
+ObsidianBarrelModule: {
+	DisplayName: Canon d'obsidienne
+	Tooltip:
+		'''
+		Les impacts gravent des fissures d'obsidienne ; à plein cumul, elles éclatent en verre volcanique traqueur
+		Les explosions d'orbe déclenchent tôt les fissures proches, récompensant la pression sur les groupes
+		'''
+}
+
+LifebloomBarrelModule: {
+	DisplayName: Canon floraison vitale
+	Tooltip:
+		'''
+		Les faisceaux sèment des bourgeons parasites qui drainent des dégâts différés et rendent un peu de vie au porteur
+		À la mort de l'hôte, le bourgeon migre vers un ennemi proche et continue de croître
+		'''
+}
+
+MagmaVentBarrelModule: {
+	DisplayName: Canon à évents magmatiques
+	Tooltip:
+		'''
+		Impacts et faisceaux expirés laissent de courts évents de magma éruptant en colonnes de chaleur verticales
+		En Enfers ou liquides très chauds, les évents cycle plus vite pour le déni de zone
+		'''
+}
+
+CumulusBarrelModule: {
+	DisplayName: Canon cumulus
+	Tooltip:
+		'''
+		Les trajectoires condensent des nœuds nuageux chargeables nourris par les faisceaux SHPC et orbes proches
+		Une fois pleins, chaque nuage déverse trois courts éclairs pluvieux pour une puissance de feu positionnelle
+		'''
+}
+
+MossboundBarrelModule: {
+	DisplayName: Canon moussu
+	Tooltip:
+		'''
+		Les faisceaux étendent des plaques de mousse humide ralentissant les ennemis vers un bref enracinement
+		Les orbes en vol absorbent la mousse proche pour agrandir l'explosion finale
+		'''
+}
+
+FrostfernBarrelModule: {
+	DisplayName: Canon fougère de givre
+	Tooltip:
+		'''
+		Le premier coup trace une veine de glace derrière la cible, partageant le givre aux ennemis sur la ligne
+		Relie les foules en fougère ramifiée plutôt que de geler une seule victime
+		'''
+}
+
+SandstormBarrelModule: {
+	DisplayName: Canon de tempête de sable
+	Tooltip:
+		'''
+		Le tir soutenu roule un rideau de sable mobile, abrasant les ennemis et affaiblissant les projectiles hostiles
+		Les faisceaux gagnent de la perforation, le mana monte pour maintenir la tempête
+		'''
+}
+
+CoralReefBarrelModule: {
+	DisplayName: Canon récif corallien
+	Tooltip:
+		'''
+		Les points d'impact font pousser des ancres coralliennes reliées en lignes de récif blessantes
+		Les explosions d'orbe font libérer aux ancres proches des vagues circulaires synchronisées
+		'''
+}
+
+HiveBarrelModule: {
+	DisplayName: Canon ruche
+	Tooltip:
+		'''
+		Les impacts marquent les ennemis de phéromones ; les explosions d'orbe lancent des cyber-abeilles sur les cibles marquées
+		Disperser les marques fait éclater l'essaim et couvrir le champ de bataille
+		'''
+}
+
+MoondewBarrelModule: {
+	DisplayName: Canon rosée lunaire
+	Tooltip:
+		'''
+		Les traînées condensent des prismes de rosée refractant les faisceaux suivants en tirs dérivés courts
+		La nuit et les pleines lunes augmentent le plafond de réfraction et la durée
+		'''
+}
+
+CrosslinkOpticModule: {
+	DisplayName: Optique d'entrelacs
+	Tooltip:
+		'''
+		À l'impact, une unité de liaison neurale arc une connexion de données vers l'autre ennemi le plus proche
+		Nombre de sauts et portée de chaîne accrus, avec une légère hausse du mana
+		'''
+}
+
+ZoomOpticModule: {
+	DisplayName: Optique à zoom
+	Tooltip:
+		'''
+		Lentille magnétique longue focale propulse les faisceaux plus loin et plus vite, au détriment de la traque et de la cadence
+		Les impacts au-delà de 600 px déclenchent une frappe blanche supplémentaire proportionnelle à la distance
+		'''
+}
+
+PingOpticModule: {
+	DisplayName: Optique de balise
+	Tooltip: Le système de marquage signale les cibles touchées pour la mort, avec un bonus de chances de critique
+}
+
+CapacitorPulseModule: {
+	DisplayName: Impulsion condensateur
+	Tooltip:
+		'''
+		Piles de condensateurs denses libèrent une micro-détonation à impulsion environ deux fois par seconde pendant la charge
+		Rayon d'explosion et temps de charge augmentent, consommation de mana en hausse
+		'''
+}
+
+EntropyCoreModule: {
+	DisplayName: Noyau d'entropie
+	Tooltip:
+		'''
+		L'orbe aspire l'« entropie » des ennemis proches en vol
+		À la détonation, libère une secousse secondaire proportionnelle à l'entropie accumulée — plus la foule est dense, plus forte la vague
+		'''
+}
+
+ResonanceReactorModule: {
+	DisplayName: Réacteur de résonance
+	Tooltip:
+		'''
+		Émet un anneau de résonance environ toutes les 0,75 s pendant la charge
+		La détonation déclenche un choc de résonance supplémentaire aux pieds du joueur, comblant les lacunes de mêlée
+		'''
+}
+
+OverwatchStockModule: {
+	DisplayName: Crosse de surveillance
+	Tooltip:
+		'''
+		Immobilité accumule des cumuls « Sentinelle » (max 5) qui décroissent vite dès que vous bougez
+		Chaque cumul +3 % de dégâts et +2 % de critique ; posture stable réduit cadence et dispersion
+		'''
+}
+
+MomentumStockModule: {
+	DisplayName: Crosse d'élan
+	Tooltip:
+		'''
+		Grande vitesse accumule des cumuls « Élan » (max 6) qui décroissent vite à l'arrêt
+		Chaque cumul +4 % de cadence et +6 % de vitesse des faisceaux — miroir de la crosse de surveillance
+		'''
+}
+
+BulwarkStockModule: {
+	DisplayName: Crosse bastion
+	Tooltip:
+		'''
+		Tenir le SHPC accorde une modeste réduction des dégâts
+		Posture renforcée ralentit légèrement la charge et réduit la consommation de mana
+		'''
+}
+
+CombatGripModule: {
+	DisplayName: Poignée de combat
+	Tooltip:
+		'''
+		Les éliminations par faisceau ou laser empilent des charges « Combat » (max 5)
+		Chaque charge +4 % de cadence et +2 % de dégâts ; les charges décroissent sans élimination
+		'''
+}
+
+TempestGripModule: {
+	DisplayName: Poignée de tempête
+	Tooltip:
+		'''
+		Après plusieurs impacts cumulés, déclenche une Rafale de tempête — multiples arcs de données autour du dernier impact
+		Dégâts par tir légèrement réduits et mana accru, en échange d'un nettoyage rythmé
+		'''
+}
+
+AbsorberGripModule: {
+	DisplayName: Poignée absorbante
+	Tooltip:
+		'''
+		Les impacts de faisceau et laser restituent une part des dégâts infligés en mana
+		Dégâts par tir légèrement réduits et coût de mana de base accru en contrepartie
+		'''
+}
+
+HarmonicFrameModule: {
+	DisplayName: Châssis harmonique
+	Tooltip:
+		'''
+		Plusieurs faisceaux coexistent et s'entrelacent d'arcs de résonance pour des dégâts bonus
+		Ajoute un faisceau, au prix d'un peu de dégâts par tir et de dispersion
+		'''
+}
+
+ReplicatorFrameModule: {
+	DisplayName: Châssis réplicateur
+	Tooltip:
+		'''
+		À l'expiration, un faisceau génère un bref écho sur place poursuivant sa direction d'origine
+		Dégâts principaux accrus mais durée de vie réduite ; consommation de mana en hausse
+		'''
+}
+
+ArchiveFrameModule: {
+	DisplayName: Châssis d'archives
+	Tooltip:
+		'''
+		Accumule les dégâts SHPC ; chaque seuil franchi déclenche une explosion d'archivage aux pieds du joueur
+		Dégâts par tir légèrement accrus avec un léger surcoût de mana
+		'''
+}

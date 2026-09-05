@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class Flawless : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "Flawless";
 
         /// <summary>细矛尖形态的物品图，下一段是突刺时顶掉快捷栏图标</summary>

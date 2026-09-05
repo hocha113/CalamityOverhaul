@@ -15,10 +15,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         public static readonly PlowSteelClampArmSkill Instance = new();
 
         public override string DisplayName => Language.GetTextValue(
-            "Mods.CalamityOverhaul.Items.PlowSteelClampArm.SkillName");
+            "Mods.CalamityOverhaul.Cyberwares.PlowSteelClampArm.SkillName");
 
         public override string Description => Language.GetTextValue(
-            "Mods.CalamityOverhaul.Items.PlowSteelClampArm.SkillDesc");
+            "Mods.CalamityOverhaul.Cyberwares.PlowSteelClampArm.SkillDesc");
 
         public override int IconItemType => ModContent.ItemType<PlowSteelClampArm>();
 

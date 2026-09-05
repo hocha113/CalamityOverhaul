@@ -1,0 +1,431 @@
+DivineSourceBlade: {
+	DisplayName: Cuchilla aniquiladora de la Fuente Áurea
+	Tooltip:
+		'''
+		Combo de cuatro tiempos: primero dos tajos rápidos en sentido antihorario y luego en sentido horario
+		Después traza un anillo elíptico en el espacio y, al rematar, corta de vuelta por el mismo camino
+		Cada tajo dispara más saetas de luz rastreadores; el corte de retorno lanza una gigantesca media luna azul
+		Herir enemigos acumula carga con lentitud; clic derecho gasta toda la carga para potenciar el arma 7 segundos
+		Durante la potenciación el daño se dispara, las saetas son más numerosas y feroces, y los efectos se tiñen de Fuente Áurea
+		"La vida no cesa"
+		'''
+}
+
+CursedflameBloodfist: {
+	DisplayName: Puño de sangre de llama maldita
+	Tooltip:
+		'''
+		Cuenta como cuerpo a cuerpo y magia, y recibe al completo las bonificaciones de ambos
+		Mantén clic izquierdo para soltar una ráfaga de puñetazos a ambos lados; puedes correr con normalidad mientras golpeas
+		Cada puñetazo resuelve un golpe de área a tu alrededor: el retroceso es mínimo, pero la cadencia es densísima
+		A la vez esparce puños de fuego voladores hacia el cursor; quien reciba el impacto arde con Llama maldita
+		La ráfaga drena maná sin parar y se detiene sola cuando te quedas seco
+		"A quién le pertenecía este brazo ya no se distingue: el fuego lo ha borrado"
+		'''
+}
+
+Arbiter: {
+	DisplayName: Sentenciador
+	ManifestInteractHint: "[Clic derecho] Extrae este hacha"
+	ManifestInventoryFullHint: La mochila está llena; deja un hueco antes de extraer el hacha
+	Tooltip:
+		'''
+		Mantén clic izquierdo para cargar y alzar el hacha de la sentencia
+		Al soltar, taja hacia abajo y libera una onda de fuego que se extiende por el suelo hacia ambos lados
+		Cuanto más cargues, más lejos se extienden las llamas y mayor es su poder
+		"El juicio se alza entre las llamas"
+		'''
+}
+
+Cloudwalking: {
+	DisplayName: Paseo entre nubes
+	Tooltip:
+		'''
+		Mantén clic izquierdo para cargar y alzar el gran hacha
+		Al soltar, el hacha vuela hacia adelante y va dejando nubes a su paso
+		Vuelve sola a tu mano
+		'''
+}
+
+DawnshatterAzure: {
+	DisplayName: Alba del firmamento
+	Tooltip:
+		'''
+		Mantén clic izquierdo para encadenar un combo de cinco tiempos; el último gira y enciende una corona solar
+		Clic derecho alza el arma y carga, luego embiste hacia el cursor
+		"El fuego purifica el alma y despoja a tus enemigos hasta no dejar nada"
+		'''
+}
+
+Flawless: {
+	DisplayName: Trascendencia
+	Tooltip:
+		'''
+		Combo de cuatro tiempos: barrido, estocada, contrabarrido y estocada final; cada uno más pesado que el anterior
+		Las estocadas cambian a una punta fina, llegan más lejos y salpican cristales de escarcha al impactar
+		"Cambió la punta siete veces. En el blanco solo hay un agujero"
+		'''
+}
+
+StormGoddessSpear: {
+	DisplayName: Lanza de la diosa de la tormenta
+	Tooltip:
+		'''
+		Dispara un beso de tormenta cargado de arcos eléctricos destructivos
+		Al empuñarla, invoca el alma remanente de la diosa de la tormenta para que luche a tu lado
+		[legend]
+		'''
+	Legend:
+		'''
+		Alina, el filo más agudo que Terra haya conocido.
+		Su fe era inquebrantable, su combate implacable. Polvo de hierro en la lanza de plata, el cabello al viento. La hoja de la tormenta aullaba al pasar.
+		Aun así, hasta el filo más agudo se quiebra y se desmorona; la fe solo halló la indiferencia de los dioses.
+		Cuando el Supremo dictó sentencia, sus compañeros, su linaje, sus juramentos y su gloria se convirtieron en cenizas.
+		Con sus propios ojos vio cómo la llamada justicia pisoteaba todo… sangre y lágrimas… polvo…… cómo en nombre del orden se ejecutaba la destrucción más vil.
+		Dioses…… Alina ya no mira a los dioses.
+		Retrocedió al abismo, se destruyó a sí misma y dejó que un poder antiguo y prohibido devorara su alma a su antojo
+		La armadura de Alina se fundió en un cuerpo de hierro abisal. Las nubes de antaño, el sol ensangrentado y el pasado se entrelazaron; la mirada de sus compañeros… y de su linaje al morir…… Alina… todo había terminado.
+		Ya no era la Alina de antaño, la diosa de la guerra que protegía Terra
+		Su furia regresó como un vendaval, arrastrando a los insectos del campo de batalla; su trueno partió cielo y nubes, hendió tronos y tierra.
+		La diosa de la tormenta, Alina, trajo sin piedad destrucción y venganza.
+		'''
+}
+
+DragonsScaleGreatsword: {
+	DisplayName: Gran hoja de alga dracónica
+	Tooltip:
+		'''
+		Los tajos siguen un combo de tres tiempos; el tercero suelta un remate de mayor poder dracónico
+		Cada tajo libera una onda espiral de alga verde que, al golpear, estalla en varias nubes de alga tóxica
+		Los ataques cuerpo a cuerpo verdaderos generan gran cantidad de nubes de alga tóxica
+		Clic derecho invoca el alma del dragón esmeralda para que muerda a los enemigos hacia el cursor, esparciendo nubes tóxicas a su paso
+		'''
+}
+
+CosmicCalamity: {
+	DisplayName: Calamidad galáctica
+	Tooltip: Los ataques generan ondas de choque en forma de media luna
+}
+
+SpearOfLonginus: {
+	DisplayName: Lanza de Longinos
+	Tooltip:
+		'''
+		Al empuñarla, una cruz sagrada emerge bajo tus pies y absorbe energía divina por sí sola
+		Cada vez que la barra se llena se completa una carga, hasta un máximo de seis campos de fuerza
+		Mientras la sostienes, marca con el destino al enemigo más cercano
+		Si el campo golpea a un enemigo marcado, se desata la Ira del Peregrino
+		[legend]
+		'''
+	Legend:
+		'''
+
+		“Dios quebrantado, permíteme redimir mis pecados.”
+		La guerra se ha extendido por siglos. Yo, el derrotado que huyó de una gran civilización, sobrevivo solo en este planeta desolado al borde del universo.
+		A decenas de miles de años luz, las máquinas de guerra aplastan estrellas; un ataque brutal y aterrador puede borrar en un instante años luz de cielo y convertirlo en un dominio de silencio.
+		Y esa guerra ha durado cientos de años. Hoy, la gran civilización a la que pertenezco está al borde del colapso; me convertiré en un pecador del universo, el más irreverente de los blasfemos.
+		Mi carne ya se ha podrido, mis huesos son arrugas de la vejez; estoy a punto de convertirme en una de las débiles máquinas que yo mismo creé.
+		Antes de eso, que Dios me otorgue perdón y absuelva mi falta de respeto hacia esa existencia suprema, para que al caer mi alma descienda al abismo del infierno y sufra un dolor sin fin.
+		Aun así, por la civilización a la que pertenezco, por la victoria en esta guerra que abarca siglos, debo absorber el poder fragmentado de esa existencia suprema.
+		Para guiar su poder misterioso, no tengo otra opción que inyectar metal frío en su cuerpo divino quebrantado.
+		Es una blasfemia inevitable. Por la continuidad de la civilización, por la victoria en la guerra, debo convertirme en el creyente más devoto de esa existencia suprema, y en el blasfemo más irreverente de la historia.
+		'''
+}
+
+NeutronGlaive: {
+	DisplayName: Tajo del dominio negro
+	Tooltip:
+		'''
+		Al blandirla dispara una poderosa onda de espada gravitatoria que, al golpear, provoca una explosión de estrella de neutrones
+		Clic derecho carga con la espada alzada; al soltar con la carga completa desatas una gran explosión de estrella de neutrones en el cursor
+		Si sueltas antes de terminar, la energía se vierte de golpe
+		'''
+}
+
+NeutronScythe: {
+	DisplayName: Emisario del agujero negro
+	Tooltip:
+		'''
+		Hoces de neutrones que giran a gran velocidad; en vuelo disparan rayos gamma al enemigo más cercano y dejan varios puntos de distorsión explosiva a lo largo de la trayectoria
+		Clic derecho libera una explosión de agujero negro y lanza a la vez trece hoces en todas direcciones
+		'''
+}
+
+RebelBlade: {
+	DisplayName: Hoja rebelde
+	Tooltip:
+		'''
+		El cuerpo a cuerpo verdadero genera gran cantidad de orbes demoníacos alrededor del objetivo
+		Clic derecho dirige el vuelo de la hoja y taja hacia el cursor
+		'''
+}
+
+WeaverGrievances: {
+	DisplayName: Rencor entrelazado
+	RitualInteractHint: "[Clic derecho] Extrae este cuchillo"
+	RitualInventoryFullHint: La mochila está llena; deja un hueco antes de extraer el cuchillo
+	Tooltip:
+		'''
+		Libera gran cantidad de garras de alma rencorosa; tiene efectos especiales en el Inframundo y la mazmorra
+		Los tajos siguen un combo de tres tiempos; el tercero se convierte en un remate circular de gran alcance
+		Clic derecho rueda hacia el cursor y te vuelves un molino de almas rencorosas; chocar con un enemigo durante la rodada te otorga fotogramas de invencibilidad
+		Una rodada a corta distancia cuenta como una esquiva perfecta
+		[legend]
+		'''
+	Legend:
+		'''
+		La mazmorra, inmutable desde tiempos inmemoriales, se extiende por la tierra; sus muros están grabados con inscripciones y alaridos de guerreros antiguos. Cada ladrillo rezuma rencor estancado, como cadenas de almas que los atan a una noche sin fin al cabo del tiempo.
+		Aquellos guerreros fueron el filo del rey y combatieron por él en todos los confines. El brillo de sus espadas iluminó incontables campos; su sangre alzó la grandeza de Terra. Su lealtad era tan eterna como las estrellas, su fe tan firme como el hierro.
+		Sin embargo, cuando la guerra terminó y el estandarte del Señor de los Demonios se rasgó a los pies del rey, en el instante mismo en que llegó la paz, el rey ordenó arrojarlos al abismo oscuro.
+		«¡Nosotros no traicionamos; el rey nos traicionó a nosotros!» El lamento de las almas rasgó el Vacío y atravesó el silencio de los eones. Sus espíritus no volvieron al polvo: quedaron presos en el abismo de la nada, testigos de la noche eterna.
+		Aquellos llantos que no cesaban se volvieron una acusación muda, clavada hasta el confín del éter.
+		Dicen que el rey, temeroso de su lealtad y de su ira, escuchó el susurro de los hechiceros del Señor de los Demonios y eligió convertir a aquellos guerreros en sombra de la historia.
+		Pero el rencor, como una marea, torció la realidad de la mazmorra. Su dolor sacudió la barrera del tiempo y tejió una profecía de venganza:
+		«¡El Señor de los Demonios volverá, el Vacío se rasgará y nuestra llama de ira lo quemará todo!»
+		Cuando Terra vuelva a enfrentarse a la aniquilación, estos muertos se alzarán de la oscuridad. Sus espadas ya no lucharán por la gloria de Terra, sino para juzgar a los traidores.
+		Gloria y lealtad hace tiempo que se extinguieron; la llama de la venganza lo devorará todo.
+		'''
+}
+
+SandDagger: {
+	DisplayName: Daga de arena oculta
+	Tooltip:
+		'''
+		Se lanza en línea recta y, en vuelo, la gravedad la hace caer un poco
+		Al chocar con el suelo se clava; si entra en arena, carga hacia arriba, detona una onda de choque de las venas de la tierra y dispara púas de arena
+		'''
+}
+
+WastelandFang: {
+	DisplayName: Colmillo del yermo
+	Tooltip:
+		'''
+		Rebota al chocar con bloques y se recoge acelerando
+		Abre la boca y escupe varios orbes de arena
+		'''
+}
+
+SeasonalKunai: {
+	DisplayName: Kunai de las estaciones
+	Tooltip:
+		'''
+		Lanza de una vez cuatro kunai principales en abanico, de alta penetración, que se abren al volar
+		Al impactar o al agotarse se parten en tres hojas menores que barren en abanico
+		De día aplica quemadura del alba; de noche, decadencia nocturna
+		"Reflejo de las cuatro estaciones"
+		'''
+}
+
+WraithKunai: {
+	DisplayName: Kunai espectral
+	Tooltip:
+		'''
+		Lanza de una vez tres cuchillos escarlata en abanico: vuelan rápido, se detienen un instante y luego se lanzan desde lejos contra el enemigo más cercano
+		Al impactar en la carga provocan un choque escarlata y sacuden la pantalla; al agotarse estallan en una ola de fuego de almas
+		De día aplica quemadura; de noche, combustión del alma
+		'''
+}
+
+CommandersChainsaw: {
+	DisplayName: Motosierra del comandante
+	Tooltip:
+		'''
+		Al golpear al objetivo genera chispas
+		"Échale más diésel"
+		'''
+}
+
+GeminisTribute: {
+	DisplayName: Ofrenda de los Gemelos
+	Tooltip:
+		'''
+		Lanza por turnos hoces del Ojo láser y del Ojo de llama demoníaca que cortan de ida y vuelta en una onda senoidal
+		Clic derecho suelta ambas hoces a la vez en cruce; en el impacto se condensa un ojo fusionado que dispara pulsos bicolores a su alrededor
+		"Solo puede haber una personalidad principal, y está claro que ganó el Ojo de llama"
+		'''
+}
+
+DestroyersBlade: {
+	DisplayName: Hoja del Destructor
+	Tooltip:
+		'''
+		Dispara proyectiles térmicos
+		"Encierra el poderoso núcleo energético del Destructor"
+		'''
+}
+
+Observer: {
+	DisplayName: Observador
+	Tooltip: '''"Sigue mirándote"'''
+}
+
+Shatterfang: {
+	DisplayName: Hoja de colmillo roto
+	Tooltip:
+		'''
+		Tres tajos normales y un tajo de choque que desgasta mucho la hoja
+		El tajo que agota la hoja la rompe en el acto y lanza un gran fragmento de diente
+		Entre tajos normales suelta de vez en cuando dientes menores afectados por la gravedad
+		Con la media hoja los tajos son más ligeros, pero el daño baja y ya no dispara fragmentos
+		El ataque continuo también desestabiliza la hoja hasta que se rompe en silencio
+		Clic derecho dedica un momento a repararla; en reposo también sana con lentitud y, al llenarse, suena un tintineo
+		"Un colmillo caído de la boca del demonio ocular, que aún guarda la obsesión de morder"
+		'''
+}
+
+CommandersClaw: {
+	DisplayName: Pinza del comandante
+	Tooltip:
+		'''
+		Lanza una lanza ornamental del comandante cuya punta siempre mira en la dirección del vuelo
+		Al impactar estalla en chispas metálicas y una onda de choque, y sacude un poco la pantalla
+		Pueden existir varias lanzas a la vez; al chocar con un muro se clavan en el terreno y, al atravesar a un enemigo, se quedan un instante adheridas
+		'''
+}
+
+CommandersChainsawEX: {
+	DisplayName: Motosierra del comandante EX
+	Tooltip: '''"Tritura todo lo que se interponga"'''
+}
+
+DestroyersBladeEX: {
+	DisplayName: Hoja del Destructor EX
+	Tooltip:
+		'''
+		Un tajo pesado que abre un corte negro y rojo envuelto en haces rojos y blancos y proyectiles sombra
+		Tras envainar un instante entra en el Protocolo de acecho: sube la velocidad de movimiento y te acercas a la presa
+		Durante el acecho, clic derecho te conviertes en la cabeza del Destructor y muerdes a la presa; sin objetivo, embistes hacia el cursor
+		Una mordida exitosa inflige daño enorme y entra en el Protocolo de aniquilación:
+		Los proyectiles se potencian del todo y persiguen; el tajo final escupe además una cabeza del Destructor
+		"Destruir siempre es más fácil que construir"
+		'''
+}
+
+EnergySword: {
+	DisplayName: Espada de energía
+	Tooltip:
+		'''
+		Consume energía para disparar un láser que atraviesa a varios enemigos
+		"El rendimiento no es alto"
+		'''
+}
+
+SporeboundRoller: {
+	DisplayName: Hongo de arrastre
+	Tooltip:
+		'''
+		Al golpear a un enemigo genera un pequeño champiñón que flota
+		"Les gusta ir de un lado a otro"
+		'''
+}
+
+SporeburstPouch: {
+	DisplayName: Bolsa de esporas
+	Tooltip:
+		'''
+		Lanza una granada de esporas que gira y cae; detona al impactar o al agotarse
+		Estalla en una onda de niebla tóxica y dispara a su alrededor fragmentos de espora rastreadores; quien los reciba queda envenenado
+		'''
+}
+
+Heartcarver: {
+	DisplayName: Tallacorazones
+	Tooltip:
+		'''
+		Al clavar, lanza una daga de sangre giratoria que caza siguiendo el olor de la herida
+		Clic derecho realiza una estocada corta en arco
+		Absorber el corazón arrancado otorga un breve aumento de velocidad de ataque y condensa hojas de sangre orbitantes
+		Las hojas se lanzan hacia la herida al oír tu siguiente tajo de arrancar el corazón
+		'''
+	CarveTip:
+		'''
+		Al empuñarla, el cuchillo late con tu corazón
+		Un ataque que cae en el hueco entre dos latidos es un tajo de arrancar el corazón
+		Rematar con un tajo de arrancar el corazón extrae el corazón entero
+		'''
+}
+
+OniMachete: {
+	DisplayName: Machete de rostro oni
+	Tooltip:
+		'''
+		Clic izquierdo encadena un combo de tres tiempos; el tercero es un tajo dorado de ruptura, con una pausa de carga
+		Al empuñarlo, evoca seis manos oni que te ayudan en combate
+		'''
+	SuppressTip:
+		'''
+		Tajar e impactar acumulan Supresión de azufre; cada golpe de las seis manos oni la consume
+		Cuando la supresión se apaga, las manos se agitan: golpean con más saña y en cualquier momento pueden volverse y aferrarte el cuello
+		'''
+}
+
+AncientStormGoddessSpear: {
+	DisplayName: Lanza ancestral de la diosa de la tormenta
+	Tooltip:
+		'''
+		Dispara un beso de tormenta cargado de arcos eléctricos destructivos
+		"Ya pertenece al pasado de una época, pero sigue sirviendo"
+		[legend]
+		'''
+	Legend:
+		'''
+		Alina, el filo más agudo que Terra haya conocido.
+		Su fe era inquebrantable, su combate implacable. Polvo de hierro en la lanza de plata, el cabello al viento. La hoja de la tormenta aullaba al pasar.
+		Aun así, hasta el filo más agudo se quiebra y se desmorona; la fe solo halló la indiferencia de los dioses.
+		Cuando el Supremo dictó sentencia, sus compañeros, su linaje, sus juramentos y su gloria se convirtieron en cenizas.
+		Con sus propios ojos vio cómo la llamada justicia pisoteaba todo… sangre y lágrimas… polvo…… cómo en nombre del orden se ejecutaba la destrucción más vil.
+		Dioses…… Alina ya no mira a los dioses.
+		Retrocedió al abismo, se destruyó a sí misma y dejó que un poder antiguo y prohibido devorara su alma a su antojo
+		La armadura de Alina se fundió en un cuerpo de hierro abisal.
+		Las nubes de antaño, el sol ensangrentado y el pasado se entrelazaron; la mirada de sus compañeros… y de su linaje al morir…… Alina… todo había terminado.
+		Ya no era la Alina de antaño, la diosa de la guerra que protegía Terra
+		Su furia regresó como un vendaval, arrastrando a los insectos del campo de batalla; su trueno partió cielo y nubes, hendió tronos y tierra.
+		La diosa de la tormenta, Alina, trajo sin piedad destrucción y venganza.
+		'''
+}
+
+Abyssrend: {
+	DisplayName: Grieta del abismo
+	Tooltip:
+		'''
+		Clic izquierdo alterna una estocada de punta y un tajo de canto; cada golpe rasga una corriente oscura del océano que persigue a la presa
+		Clic derecho levanta una succión abisal, arrastra a los enemigos de delante hasta las pinzas, las alza y las estrella contra el suelo cercano, detonando cavitación de alta presión
+		Los enemigos golpeados y los alcanzados por la onda de cavitación caen en presión abisal y se entorpecen mucho
+		"Recuerda el sonido de cuando el mar profundo lo aplasta todo"
+		'''
+}
+
+TideReaper: {
+	DisplayName: Guadaña del abismo
+	Tooltip:
+		'''
+		Lanza una hoz abisal que gira sola y vuelve a la mano
+		En vuelo suelta sin cesar medias lunas de la guadaña abisal que cazan a los enemigos cercanos
+		Clic derecho lanza un ancla-vórtice: la hoz se clava delante y gira en un remolino
+		El remolino arrastra a los enemigos al centro, acelera las medias lunas y luego vuelve
+		"Tras la bajamar, en la playa solo quedan huesos blancos"
+		'''
+}
+
+BudPiercer: {
+	DisplayName: Filo de capullo
+	Tooltip:
+		'''
+		Tras lanzarlo vuela un instante en recto y luego cae
+		Al golpear a un enemigo siembra un capullo que, al poco, abre un anillo de pétalos
+		Varias dagas pueden apilar capullos en el mismo objetivo
+		Si se clava en el suelo, florece in situ y dispara hacia arriba tres agujas del yermo
+		"Bajo las escamas de la pitón, cada una quiere florecer"
+		'''
+}
+
+Budcrown: {
+	DisplayName: Corona de capullos
+	Tooltip:
+		'''
+		Mantén pulsado el ataque para que la cabeza del martillo gire suspendida a tu alrededor; al soltar, la lanzas hacia el punto de mira
+		Al golpear a un enemigo, la cabeza sacude agujas del yermo
+		Cada tres impactos, la cabeza se abre en furia, estalla un anillo de pétalos y empuja con fuerza
+		"El capullo más pesado es el que se abre más alto"
+		'''
+}

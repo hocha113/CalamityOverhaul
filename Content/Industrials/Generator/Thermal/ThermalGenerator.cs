@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     internal class ThermalGenerator : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Generators";
+
         public override string Texture => CWRConstant.Asset + "Generator/ThermalGenerator";
         public override void SetDefaults() {
             Item.width = 32;

@@ -1,0 +1,200 @@
+ElementMuzzleBrake: {
+	DisplayName: Estabilizador Elemental
+	Tooltip:
+		'''
+		Aumenta o dano de longo alcance em 12%
+		Aumenta a chance de acerto critico de longo alcance em 15%
+		Aumenta a velocidade de ataque de longo alcance em 12%
+		Os inimigos terao mais dificuldade em detectar voce
+		'''
+}
+
+EyeOfSingularity: {
+	DisplayName: Horizonte da Singularidade
+	Tooltip:
+		'''
+		Aumenta o dano de longo alcance em 100%
+		Aumenta a chance de acerto critico de longo alcance em 100%
+		Aumenta a velocidade de tiro de longo alcance em 100% e evita o consumo de municao
+		Define o multiplicador de dano critico para todas as armas de longo alcance para 500%
+		Seus projeteis de longo alcance rasgam o espaco, criando buracos negros em miniatura no impacto que arrastam e esmagam os inimigos
+		Enquanto parado, voce entra no estado de Horizonte de Eventos:
+		  - Concede invisibilidade e imunidade a todo dano de contato
+		  - Ataques liberam Rajadas adicionais de Raio Gama que rastreiam inimigos
+		Concede a habilidade de Salto Quantico; pressione [KEY] para teleportar para o cursor, apagando projeteis inimigos ao longo do caminho
+		Clique direito para ativar o 'Protocolo de Colapso':
+		  - Consome todo o mana para fazer todos os ataques de longo alcance ignorarem quadros de invencibilidade e forcarem acertos criticos por 10 segundos
+		  - 60 segundos de recarga
+		Se voce receber dano fatal, voce se torna uma Supernova, causando dano extremo em area, e se reforma em um local seguro apos 3 segundos
+		Este efeito tem 60 segundos de recarga
+		[c/33ff33:"O Dragao Deus adormecido se conecta aos seus nervos, desconstruindo a logica basal do Espirito da Maquina"]
+		[c/ffaa00:"Uma constelacao voraz devora seu clarão do cano, drenando o calor final de estrelas moribundas"]
+		[c/00ffff:"O Ceifador sem forma se torna sua sombra, colhendo o destino igual e inevitavel de toda a vida senciente"]
+		'''
+}
+
+ArcaneThroneOfEternity: {
+	DisplayName: Trono Arcano da Eternidade
+	Tooltip:
+		'''
+		Aumenta o dano magico em 100%
+		Aumenta a chance de acerto critico magico em 100%
+		Aumenta a velocidade de ataque magico em 100%
+		Aumenta a mana maxima em 1000; a regeneracao de mana e muito alta e nunca e interrompida
+		Todos os projeteis magicos ganham penetracao infinita
+		Seus ataques magicos rasgam o veu da realidade, abrindo Fendas Arcanas em erupcao continua ao acertar
+		Todos os ataques magicos aplicam uma maldicao proibida aleatoria:
+		  Erosao do Vazio, Estase Temporal, Alma Ardente, Colapso Gravitacional ou Hiper Desintegracao
+		Com mais de 90% de mana, voce entra no estado «Onisciencia»:
+		  Todos os projeteis magicos rastreiam inimigos automaticamente e o multiplicador de dano critico sobe para 1000%
+		Concede Salto da Verdade; pressione [KEY] para rasgar o espaco e entrar em uma dimensao superior:
+		  Imunidade total a dano e movimento livre por um curto periodo; ao sair, libera um devastador Tremor da Realidade
+		  Tempo de recarga: 30 segundos
+		Clique direito para ativar «Calculo da Raiz»:
+		  Nos proximos 10 segundos, cada ataque magico libera simultaneamente 5 feiticos espelhados
+		  Tempo de recarga: 60 segundos
+		Se receber dano fatal, o tempo retrocede ao seu estado de 5 segundos atras, restaurando vida, mana e posicao
+		Este efeito tem 60 segundos de recarga
+		Inimigos tem mais chance de mirar em voce
+		[c/b84dff:"Um sabio sem nome abre seu cranio e inscreve verdades esquecidas alem das estrelas"]
+		[c/ffdd66:"O Senhor da Mutacao puxa a urdidura e a trama do destino, tratando a realidade como um rascunho inacabado"]
+		[c/66ffff:"O cadaver no trono dourado olha para voce — ha muito esqueceu o que e a morte"]
+		'''
+}
+
+PrecisionMuzzleBrake: {
+	DisplayName: Estabilizador de Alta Precisao
+	Tooltip:
+		'''
+		Aumenta o dano de longo alcance em 8%
+		Aumenta a chance de acerto critico de longo alcance em 10%
+		Aumenta a velocidade de ataque de longo alcance em 8%
+		Os inimigos terao mais dificuldade em detectar voce
+		'''
+}
+
+SimpleMuzzleBrake: {
+	DisplayName: Estabilizador Simples
+	Tooltip:
+		'''
+		Aumenta o dano de longo alcance em 5%
+		Aumenta a chance de acerto critico de longo alcance em 5%
+		Aumenta a velocidade de ataque de longo alcance em 5%
+		Os inimigos terao mais dificuldade em detectar voce
+		'''
+}
+
+JusticeUnveiled: {
+	DisplayName: Manifestacao da Justica
+	Tooltip:
+		'''
+		Ataques de longo alcance acumulam cargas de Golpe da Justica, ate um maximo de 5
+		Pressione [UP] para gastar 1 carga e invocar um impacto sagrado devastador
+		"Se a justica for necessaria, irei aonde quer que ela me leve"
+		'''
+}
+
+EmblemOfDread: {
+	DisplayName: Emblema do Terror
+	Tooltip:
+		'''
+		Aumenta o dano corpo a corpo em 100%
+		Aumenta a chance de acerto critico corpo a corpo em 100%
+		Aumenta a velocidade corpo a corpo em 100%
+		Aumenta a defesa em 100, ignorando todo dano e reducao de defesa
+		Reduz o dano recebido em 75% e reflete 100x o dano de volta ao atacante
+		Todos os ataques corpo a corpo infligem a desvantagem 'Erosao do Vazio'
+		Ataques corpo a corpo verdadeiros tem uma chance de apagar instantaneamente inimigos com menos de 250.000 HP
+		Mover-se em altas velocidades deixa pontos de dobra em seu caminho, causando dano extremo aos inimigos
+		Concede a habilidade de usar Investida Gravitacional; pressione [KEY] para investir uma longa distancia e liberar raios gravitacionais massivos
+		Se voce receber dano fatal, voce imediatamente recupera toda a vida e ganha um Escudo Gravitacional (60 segundos de recarga)
+		Inimigos tem mais probabilidade de alvejar voce
+		[c/d94fff:"Um anjo santificado velha seu olhar, sussurrando mentiras eternas e sacarinas"]
+		[c/ff4d4d:"Um açougueiro ensanguentado levanta suas laminas gemeas, declarando que so a matanca traz gloria"]
+		[c/4da6ff:"Uma pomba azul bicando sua testa, zombando de sua luta insignificante"]
+		'''
+}
+
+Proverbs: {
+	DisplayName: Proverbio
+	Tooltip:
+		'''
+		Gera uma pequena runa de enxofre atras de voce
+		Concede imunidade a maioria das desvantagens baseadas em fogo
+		A maioria de seus ataques infligem a desvantagem do Curse do Definhamento
+		[Conteudo]
+		'''
+	L1:
+		'''
+		Inflige dano duplicado a Bruxa de Enxofre;
+		seus ataques tem chance de acertar voce criticamente
+		'''
+	L2:
+		'''
+		Se voce esta lendo isto, entao eu provavelmente ja me fui.
+		Ao longo dos meus longos anos, este anel foi a unica coisa que realmente sentia frio.
+		Mas em algum lugar ao longo do caminho, absorveu o calor de um mortal... e se tornou... quente demais para largar.
+		Retornei ao Enxofre, reduzido as cinzas de uma era.
+		Deveria ter partido sem nada,
+		ainda assim me vi ganancioso por este calor singular, desejando preserva-lo.
+		Use-o.
+		E quando voce finalmente levantar sua lamina contra os deuses...
+		Saiba que mesmo se o mundo congelar, eu ainda estarei queimando em suas pontas dos dedos.
+		'''
+}
+
+Unsunghero: {
+	DisplayName: Heroi Nao Cantado
+	Tooltip:
+		'''
+		Deixa um rastro de casas de xadrez em preto e branco ao caminhar
+		"E se voce nunca voltar?"
+		"Entao eu nunca voltarei."
+		'''
+}
+
+GodslayerScabbard: {
+	DisplayName: Bainha do Matador de Deuses
+	Tooltip:
+		'''
+		Acumula carga enquanto segura uma arma corpo a corpo sem atacar
+		Atacar com carga total concede 2 segundos de invencibilidade
+		"Embora a lamina permaneca na bainha, sua intencao de matar e palpavel.
+		Quando o momento for certo, matar um deus leva apenas um instante."
+		'''
+}
+
+FrogsparkBoots: {
+	// DisplayName: Frogspark Boots
+	/* Tooltip:
+		'''
+		Allows flight, super fast running, and steady ice skating that won't break thin ice
+		Walk on water, honey and lava, and gain immunity to the Burning debuff
+		Grants 7 seconds of lava immunity, greatly reducing lava damage afterwards
+		Increases jump speed by 48%, enables auto-jump, and greatly increases fall resistance
+		"One frog kick, and flames clear the way"
+		''' */
+}
+
+CthulsparkBoots: {
+	// DisplayName: Cthulspark Boots
+	/* Tooltip:
+		'''
+		Grants all the powers of the Frogspark Boots
+		Gain cloud, blizzard and sandstorm extra jumps, increased jump height, and immunity to fall damage
+		Double tap a direction to charge alongside the great eye, ramming foes out of the way
+		"It floats overhead, watching every step for you"
+		''' */
+}
+
+NinjaCthulsparkBoots: {
+	// DisplayName: Ninja Cthulspark Boots
+	/* Tooltip:
+		'''
+		Grants all the powers of the Cthulspark Boots
+		Grants a 10% chance to dodge attacks, and the ability to climb and slide down walls
+		Double tap a direction to perform a crimson shadow dash, faster and farther, trailing scarlet afterimages
+		The charge bashes enemies aside like the Shield of Cthulhu, granting a moment of immunity on impact
+		"The eye tied on its headband and swore never to blink again"
+		''' */
+}

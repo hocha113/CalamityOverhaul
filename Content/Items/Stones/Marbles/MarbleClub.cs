@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// <summary>大理石巨棍，蓄-砸-震，棍头探地冲击波，命中短石化</summary>
     internal class MarbleClub : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarbleClub";
 
         public override void SetDefaults() {

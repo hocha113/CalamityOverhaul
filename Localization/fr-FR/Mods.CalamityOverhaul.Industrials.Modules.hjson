@@ -1,0 +1,392 @@
+ExcavationBoosterModule: {
+	DisplayName: Module d'excavation
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, raccourcit le cycle de 30%
+		Les engrenages ont reçu une denture plus dure
+		'''
+}
+
+PickPowerBoosterModule: {
+	DisplayName: Module de puissance de pioche
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, augmente la puissance de pioche de 60%
+		Laisse une machine en tôle mordre le mythril
+		'''
+}
+
+ChlorophyteDrillModule: {
+	DisplayName: Module de forage en chlorophyte
+	Tooltip: Le trépan lui-même est coulé en lingots de chlorophyte, le minerai pour miner le minerai
+}
+
+EfficiencyModule: {
+	DisplayName: Module d'efficacité
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, réduit le coût énergétique du cycle à 60%
+		Les bobines de cuivre ne brûlent plus les doigts
+		'''
+}
+
+YieldBoosterModule: {
+	DisplayName: Module de rendement
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, augmente de 35% la chance de rendement
+		Le tamis a gagné un cran de densité
+		'''
+}
+
+ProspectorModule: {
+	DisplayName: Module de prospection
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, triple le poids des sous-produits rares : gemmes, fossiles, météorite et ferraille
+		Sous la lentille, même le gravier a ses rangs
+		'''
+}
+
+SurveyArrayModule: {
+	DisplayName: Module de réseau de prospection
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, élargit la zone de prospection de 50%
+		L'écho arrive avant le trépan
+		'''
+}
+
+VeinFocusModule: {
+	DisplayName: Module de focalisation de filon
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, augmente de 60% le bonus des vrais filons
+		Suivez le filon, ne discutez pas avec la pierre
+		'''
+}
+
+DoubleLoadModule: {
+	DisplayName: Module de double chargement
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, chaque rendement a 25% de chances de doubler
+		La benne a été élargie d'un tour de soudure
+		'''
+}
+
+OverdriveCoreModule: {
+	DisplayName: Module de noyau de surrégime
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, raccourcit le cycle de 45%, consommation +60%
+		Il n'a pas l'intention de s'arrêter avant que les paliers rougissent
+		'''
+}
+
+ThrottleValveModule: {
+	DisplayName: Module de vanne d'étranglement
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, allonge le cycle de 50%, consommation réduite à 45%
+		Lent, mais toute la nuit lui appartient
+		'''
+}
+
+ChestLinkModule: {
+	DisplayName: Module de liaison de coffre
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, le rendement va droit dans les coffres proches, et ne tombe au sol que s'ils sont pleins
+		Évite de se baisser
+		'''
+}
+
+SmelterModule: {
+	DisplayName: Module de fusion sur place
+	Tooltip:
+		'''
+		Installé sur une machine d'extraction, les minerais fondent en lingots aux ratios du fourneau avant la sortie, consommation +40%
+		Des lingots dès la sortie de puits
+		'''
+}
+
+MachineModuleText: {
+	TagText: Module d'amélioration de machine
+	TargetsLine: Compatible : {0}
+	HowToText: Clic droit sur la machine pour ouvrir le panneau, placez le module dans un emplacement
+	SocketOnly: Cette machine ne peut pas recevoir ce module!
+	SocketDuplicate: Un module de ce type est déjà installé!
+	SocketEmptyHint: Insérer un module d'amélioration
+	SlotLabel: Modules
+	NameMining: Machine d'extraction
+	NameThermal: Générateur thermique
+	NameWind: Générateur éolien
+	NameHydro: Générateur hydraulique
+	NameIncinerator: Incinérateur
+	NameCrusher: Concasseur
+	NameRecycler: Recycleur
+	NameMagma: Générateur thermique à magma
+	NameBiomass: Générateur à biomasse
+	NameTurret: Tourelle de défense
+	NameSolar: Panneau solaire
+}
+
+InsulationLiningModule: {
+	DisplayName: Module de calorifuge
+	Tooltip:
+		'''
+		Installé sur un générateur thermique, réduit la dissipation à 55%
+		Trois couches d'amiante, la chaleur ne trouve plus la porte
+		'''
+}
+
+ForcedDraftModule: {
+	DisplayName: Module de tirage forcé
+	Tooltip:
+		'''
+		Installé sur un générateur thermique, combustion +45%, le feu est plus vif et brûle plus vite
+		Un coup de soufflet, et les braises se tiennent droites
+		'''
+}
+
+SlowBurnValveModule: {
+	DisplayName: Module de vanne à combustion lente
+	Tooltip:
+		'''
+		Installé sur un générateur thermique, combustion réduite à 60%, chaque combustible dure plus longtemps
+		Pincez la flamme, un charbon tient une demi-nuit
+		'''
+}
+
+HeatRecoveryModule: {
+	DisplayName: Module de récupération de chaleur
+	Tooltip:
+		'''
+		Installé sur un générateur thermique, chaleur par combustible +25%
+		Deux coudes de plus dans le conduit, la chaleur qui fuyait revient
+		'''
+}
+
+AutoFeedHopperModule: {
+	DisplayName: Trémie d'alimentation automatique
+	Tooltip:
+		'''
+		Installé sur un générateur thermique, un incinérateur ou un générateur à biomasse, puise le combustible dans le stockage proche
+		La trémie ne répond qu'à un slot vide
+		'''
+}
+
+ExtendedBladesModule: {
+	DisplayName: Module de pales allongées
+	Tooltip:
+		'''
+		Installé sur un générateur éolien, production +30%
+		Chaque pouce au-delà de l'ancienne pointe, c'est du vent gratuit
+		'''
+}
+
+LowWindGearboxModule: {
+	DisplayName: Module de boîte à vent faible
+	Tooltip:
+		'''
+		Installé sur un générateur éolien, le plancher du facteur vent passe de 0,8 à 1,3
+		Denture plus fine, même une brise fait tourner
+		'''
+}
+
+TallTowerModule: {
+	DisplayName: Module de tour haute
+	Tooltip:
+		'''
+		Installé sur un générateur éolien, production +15%, se cumule avec les pales allongées
+		Dix mètres plus haut, un cran de vent en plus
+		'''
+}
+
+FlowShroudModule: {
+	DisplayName: Module de carénage de flux
+	Tooltip:
+		'''
+		Installé sur un générateur hydraulique, production +30%
+		L'embouchure rassemble l'eau éparse en une seule poussée
+		'''
+}
+
+QuickSpinModule: {
+	DisplayName: Module de mise en régime rapide
+	Tooltip:
+		'''
+		Installé sur un générateur hydraulique, la montée en régime est triplée
+		Ressort bandé, le régime de travail dès que l'eau touche
+		'''
+}
+
+DeepBearingModule: {
+	DisplayName: Module de palier d'eau profonde
+	Tooltip:
+		'''
+		Installé sur un générateur hydraulique, production +15%, se cumule avec le carénage
+		L'axe ne boit pas l'eau, toute la force va à la roue
+		'''
+}
+
+HighTempElectrodeModule: {
+	DisplayName: Module d'électrodes haute température
+	Tooltip:
+		'''
+		Installé sur un incinérateur, fusion +45%
+		Deux pointes face à face, l'arc arrive avant le feu
+		'''
+}
+
+EconomizerCoilModule: {
+	DisplayName: Module de bobine économe
+	Tooltip:
+		'''
+		Installé sur un incinérateur, coût de fusion réduit à 60%
+		Fil émaillé plus fin, le compteur tourne poliment
+		'''
+}
+
+TwinCrucibleModule: {
+	DisplayName: Module de creuset jumelé
+	Tooltip:
+		'''
+		Installé sur un incinérateur, 25% de chances de double rendement par fournée
+		Un feu, deux coupes
+		'''
+}
+
+AutoEjectChuteModule: {
+	DisplayName: Goulotte d'évacuation automatique
+	Tooltip:
+		'''
+		Installé sur un incinérateur, les produits partent droit dans le stockage proche
+		Branchez la goulotte, le fourneau range tout seul
+		'''
+}
+
+CapacityCellModule: {
+	DisplayName: Module de cellule de capacité
+	Tooltip:
+		'''
+		Installé sur n'importe quelle machine, capacité énergétique +50%
+		Toutes les prises de l'atelier acceptent ces plaques
+		'''
+}
+
+TurretRangefinderModule: {
+	DisplayName: Module de télémètre de tourelle
+	Tooltip:
+		'''
+		Installé sur une tourelle de défense, rayon de ciblage +25%
+		Les tours de bouclier et de soin élargissent leur aura à la place
+		La lentille voit l'ennemi avant le canon
+		'''
+}
+
+TurretAutoloaderModule: {
+	DisplayName: Module de chargement rapide
+	Tooltip:
+		'''
+		Installé sur une tourelle de défense, cadence de tir +30%
+		Les tours à aura n'ont pas de rythme de tir, ça ne sert à rien là
+		La suivante est chambrée avant que la précédente n'atterrisse
+		'''
+}
+
+TurretPowerSaverModule: {
+	DisplayName: Module d'économie de conduite de tir
+	Tooltip:
+		'''
+		Installé sur une tourelle de défense, consommation réduite à 75%
+		Couvre la consommation par tir et la consommation continue
+		Pendant un siège, le compteur ralentit enfin
+		'''
+}
+
+CopperTinDrill: {
+	DisplayName: Trépan cuivre-étain
+	Tooltip: Le premier que vous avez poli jusqu'à briller
+}
+
+IronLeadDrill: {
+	DisplayName: Trépan fer-plomb
+	Tooltip: Le trépan survit au minerai, ça suffit
+}
+
+SilverTungstenDrill: {
+	DisplayName: Trépan argent-tungstène
+	Tooltip: Le tranchant est plaqué d'une dignité qui refuse de rouiller
+}
+
+GoldPlatinumDrill: {
+	DisplayName: Trépan or-platine
+	Tooltip: A pris goût à ronger le métal tendre
+}
+
+EvilOreDrill: {
+	DisplayName: Trépan de minerai maléfique
+	Tooltip: Trempé dans les deux sangs impies, les deux camps le reconnaissent
+}
+
+MeteoriteDrill: {
+	DisplayName: Trépan de météorite
+	Tooltip: Ce qui tombe du ciel, on le reçoit avec de l'acier du ciel
+}
+
+ObsidianDrill: {
+	DisplayName: Trépan d'obsidienne
+	Tooltip: Un tranchant aiguisé là où l'eau rencontre le feu
+}
+
+HellstoneDrill: {
+	DisplayName: Trépan de pierre infernale
+	Tooltip: La poignée est encore tiède
+}
+
+FossilDrill: {
+	DisplayName: Trépan de fossile
+	Tooltip: Les pinceaux étaient trop lents
+}
+
+CoalDrill: {
+	DisplayName: Trépan de veine de charbon
+	Tooltip: La chaufferie le demande par son nom
+}
+
+GemClusterDrill: {
+	DisplayName: Trépan de géode
+	Tooltip: Une mâchoire de diamant qui ne mord que ce qui brille
+}
+
+CobaltPalladiumDrill: {
+	DisplayName: Trépan cobalt-palladium
+	Tooltip: Des éclats d'autel encore coincés entre les dents
+}
+
+MythrilOrichalcumDrill: {
+	DisplayName: Trépan mythril-orichalque
+	Tooltip: Tourne avec un léger bourdonnement de relique
+}
+
+AdamantiteTitaniumDrill: {
+	DisplayName: Trépan adamantite-titane
+	Tooltip: Les os durs des profondeurs, c'est son affaire
+}
+
+LuminiteDrillModule: {
+	DisplayName: Module de forage en luminite
+	Tooltip: Les débris de la lune se forent comme le reste
+}
+
+ProcessingFeedHopper: {
+	DisplayName: Trémie d'alimentation de traitement
+	Tooltip: Installée sur un concasseur ou un recycleur, la machine puise d'elle-même dans le stockage proche
+}
+
+ProcessingEjectChute: {
+	DisplayName: Goulotte de sortie de traitement
+	Tooltip: Installée sur un concasseur ou un recycleur, les produits partent droit dans le stockage proche
+}

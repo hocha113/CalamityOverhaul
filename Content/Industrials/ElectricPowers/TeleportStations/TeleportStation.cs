@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
     /// <summary>传送站,与世界上的同类站点组成传送网络;贴图复用热能电池,靠传送青色调区分</summary>
     internal class TeleportStation : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeleportStation";
 
         /// <summary>系列色调:传送青,用于门户环与提示文本</summary>

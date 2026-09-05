@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 龙藻巨刃，三段+绿藻剑气，右键翠龙之魂
     internal class DragonsScaleGreatsword : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "DragonsScaleGreatsword";
 
         /// 三段连击计数

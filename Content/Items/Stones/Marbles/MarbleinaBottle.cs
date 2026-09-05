@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// <summary>瓶中大理石，沉重二段跳，按住跳可借升力</summary>
     internal class MarbleinaBottle : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 28;
             Item.accessory = true;

@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Everdeeps
     /// </summary>
     internal class Everdeep : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "Everdeep";
 
         public override void SetDefaults() {

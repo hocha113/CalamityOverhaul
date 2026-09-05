@@ -1,0 +1,295 @@
+AnnihilatingUniverse: {
+	DisplayName: Univers Anéantissant
+	Tooltip:
+		'''
+		Les flèches laissent derrière elles une étoile brillante après avoir touché un ennemi
+		Utiliser le clic droit pour détruire les ennemis avec la force dévoreuse de dieux
+		'''
+}
+
+BarrenBow: {
+	DisplayName: Arc Aride
+	Tooltip: Les flèches tirées explosent en courants arides au contact des ennemis
+}
+
+AvalancheM60: {
+	DisplayName: Avalanche M60
+	Tooltip:
+		'''
+		Utilise des boules de neige comme munitions
+		Tire une grande quantité de boules de neige, la puissance de feu augmente avec la diminution des munitions
+		Tous les 20 tirs, entre en état de surchauffe pour créer une petite avalanche
+		"Denji, faisons une bataille de boules de neige !"
+		'''
+}
+
+CrystalDimming: {
+	DisplayName: Ère Glaciaire
+	Tooltip:
+		'''
+		Utilise des boules de neige comme munitions
+		Tire des obus de cristal qui font jaillir des pics glaciaires du sol au point d'impact
+		Les pics poussent plus haut près de grappes de cristaux déjà existantes
+		Clic droit libère une vague glaciaire qui soulève une crête de glace de plus en plus haute le long du terrain
+		"La terre se souvient de chaque gel"
+		'''
+}
+
+DarkFrostSolstice: {
+	DisplayName: Solstice de Gel Sombre
+	Tooltip:
+		'''
+		Utilise des boules de neige comme munitions
+		Tire de la grêle et des feux spectraux polaires ; les attaques ont une chance de geler les ennemis
+		Tous les 20 tirs, entre en état de surchauffe pour générer une immense colonne de glace à la position du curseur
+		'''
+}
+
+SnowQuay: {
+	DisplayName: M16 Neigeux
+	Tooltip:
+		'''
+		Utilise des boules de neige comme munitions
+		Maintenir clic gauche pour souffler un flux dense de neige sur les ennemis
+		Le soufflage accumule la pression dans la chambre de compactage
+		Relâcher clic gauche avec assez de pression pour lancer une boule de neige compactée
+		"La joie de l'hiver commence avec une souffleuse à neige"
+		'''
+}
+
+NeutronBow: {
+	DisplayName: Arc de Neutrons
+	Tooltip:
+		'''
+		Tire des flèches de gravité qui génèrent des rayons gamma après avoir touché une cible
+		Clic droit pour charger à trois niveaux, une fois chargé, tire trois puissantes flèches de gravité
+		'''
+	Lang1: Capture de la gravité
+	Lang2: Soumission de la gravité
+	Lang3: Prêt !!
+}
+
+NeutronGun: {
+	DisplayName: Chasseur de Nébuleuses
+	Tooltip:
+		'''
+		Tire des projectiles de gravité qui génèrent un point de distorsion après avoir touché une cible
+		Clic droit pour basculer en mode sniper et tirer des balles de gravité plus puissantes qui génèrent des rayons gamma après avoir touché une cible
+		Chaque tir recharge l'arme, un tir à pleine charge après une recharge complète déclenche une explosion massive d'étoile à neutrons à l'emplacement du curseur
+		"Faites tomber le soleil!"
+		'''
+}
+
+MG42: {
+	DisplayName: MG42
+	Tooltip:
+		'''
+		Le tir continu provoque la surchauffe du canon
+		Convertit les balles de fusil en balles perforantes
+		'''
+}
+
+SnowQuayMK2: {
+	DisplayName: Vipère des neiges MK2
+	Tooltip:
+		'''
+		Utilise des boules de neige comme munitions
+		Refonte militaire avec compresseur cryogénique qui moule les boules de neige en carabes à haute vélocité
+		Clic gauche tire des rafales de trois coups ; le dernier est un carabe lourd qui éclate en cristaux à l'impact
+		Clic droit libère une dispersion de carabes à courte portée par surpression
+		"La seconde génération de M16 Neigeux n'a plus besoin de préchauffage"
+		'''
+}
+
+Starship: {
+	DisplayName: Géant stellaire
+	Tooltip:
+		'''
+		Le tir continu accumule de la chaleur et augmente la cadence de tir
+		Clic droit charge un obus comète ; le prochain tir inflige des dégâts massifs et Hyper-Désintégration
+		À chaleur maximale, deux escortes tirent des éclairs stellaires à tête chercheuse ; des planètes sont périodiquement lancées depuis l'arrière
+		Relâcher la gâchette déclenche le final : 14 météores à tête chercheuse ignorant la défense et une mini-galaxie sur le curseur
+		'''
+}
+
+DuneStalker: {
+	DisplayName: Traqueur des dunes
+	Tooltip:
+		'''
+		Tire un crochet à chaîne au lieu de consommer directement les munitions
+		Le crochet déchire les ennemis sur sa trajectoire, puis revient automatiquement à l'impact ou à portée maximale
+		'''
+}
+
+Snowblindness: {
+	DisplayName: Aveuglement des Neiges
+	Tooltip:
+		'''
+		Tire fréquemment des boules de neige et des rayons de gel intense
+		Lorsqu'elles touchent des ennemis, elles génèrent des rayons de gel EX dans les environs
+		"Perdu dans la tempête de neige, en attente éternelle, une carte douloureuse, un dépassement de virage,
+		verres craqués, traces de sang desséchées, glace rouge, larmes de castor, silhouette dans la glace"
+		'''
+}
+
+RaiderGun: {
+	DisplayName: Raideur
+	Tooltip:
+		'''
+		Convertit les balles de mousquet en projectiles à grande vitesse
+		Clic droit pour rouler en sprint et recharger le chargeur
+		La première balle tirée après la roulade devient une grenade du Destructeur
+		"Parfait pour les libérations d'otages en intérieur"
+		'''
+}
+
+HyperionBarrage: {
+	DisplayName: Tourelle automatique Hyperion
+	Tooltip:
+		'''
+		Tire des missiles de croisière thermiques
+		"Exploiter chaque chose à fond"
+		'''
+}
+
+RaiderGunEX: {
+	DisplayName: Raideur EX
+	Tooltip:
+		'''
+		Convertit les balles de mousquet en projectiles à grande vitesse
+		Tire en plus une salve de missiles à tête chercheuse du Destructeur
+		Clic droit pour rouler en sprint et recharger le chargeur
+		La première balle tirée après la roulade devient une grenade du Destructeur
+		"Bombardement en tapis"
+		'''
+}
+
+Dicoria: {
+	DisplayName: Double pupille
+	Tooltip:
+		'''
+		Tire deux balles, les tirs peuvent être chargés
+		Un tir pleinement chargé libère un rayon thermique
+		"Au fait, on ne va pas devenir borgnes comme ça ?"
+		'''
+}
+
+BloodshotBomb: {
+	DisplayName: Grenade pupille sanglante
+	Tooltip:
+		'''
+		La mèche s'allume dès que vous la tenez ; trois paliers, environ deux secondes chacun
+		Plus la mèche est courte, plus l'œil s'injecte, plus l'explosion est violente, plus la chair vole
+		Clic gauche pour la jeter à tout moment, elle explose au contact, et seuls les coups dans la chair projettent des morceaux
+		Si la mèche s'éteint alors que vous la tenez encore, elle explose dans votre main
+		"Elle ne veut pas vous quitter"
+		'''
+	SelfBoom: "{0} a trop regardé"
+}
+
+LaserPistol: {
+	DisplayName: Pistolet laser
+	Tooltip:
+		'''
+		Consomme de l'énergie pour tirer des lasers traversant plusieurs ennemis
+		"Le taux d'utilisation n'est pas très élevé."
+		'''
+}
+
+HyperionBarrageEX: {
+	DisplayName: Tourelle Hyperion EX
+	Tooltip:
+		'''
+		Tire des missiles de croisière thermiques ; à l'impact, le missile se divise en six sous-projectiles infligeant des dégâts secondaires
+		"Au-delà de l'usage prévu"
+		'''
+}
+
+SporeBubbleBlaster: {
+	DisplayName: Canon à bulles de spores
+	Tooltip: Projette un flux de spores
+}
+
+FungalRevolver: {
+	DisplayName: Revolver fongique
+	Tooltip:
+		'''
+		Convertit les balles de mousquet en projectiles fongiques
+		"Une fois nettoyé, il ne fonctionne plus"
+		'''
+}
+
+Pallbearer: {
+	DisplayName: Porteur de cercueil
+	Tooltip:
+		'''
+		Maintenez le clic gauche pour charger, relâchez pour tirer une flèche du porteur de cercueil
+		Plus la charge est longue, plus la flèche est puissante
+		Clic droit pour lancer l'arbalète
+		Toucher un ennemi renforce fortement la prochaine flèche et accélère la charge
+		"Aussi appelé le porteur de bière"
+		'''
+}
+
+UniversalFrost: {
+	DisplayName: Givre universel
+	Tooltip:
+		'''
+		Utilise les boules de neige comme munitions
+		Clic gauche tire rapidement des éclats de givre ; chaque tir charge la coupole glaciale
+		À pleine charge, clic droit déploie un voile auroral de givre au-dessus du curseur
+		Le voile fait pleuvoir des lances de givre sur les ennemis en dessous
+		"Quand toute création retombe dans le silence, seule l'aurore continue de couler dans le ciel"
+		'''
+}
+
+SneezingWyrm: {
+	DisplayName: Tromblon du dragon éternuant
+	Tooltip:
+		'''
+		Tire rapidement des balles de frappe-dragon brûlantes
+		Le tir soutenu échauffe le canon, les traceurs passent de l'orangé au blanc-bleu
+		Chaque souffle accumulé, le dragon souffle le long de la trajectoire une balle de souffle serpentine à tête chercheuse
+		La fumée lui chatouille le vieux museau : de temps à autre il éternue et crache un nuage de côté
+		"Ne vous tenez pas du côté où il éternue"
+		'''
+}
+
+TiroFinale: {
+	DisplayName: Rondeau de la fin
+	/* Tooltip:
+		'''
+		Benefits from both ranged and magic damage bonuses
+		Firing consumes ammo and mana, weaving two golden phantom muskets into the formation orbiting you with every shot
+		The formation holds up to eight muskets; until it is full they hold position without firing
+		Once full, every shot makes the two oldest phantom muskets fire at your cursor right after you
+		Each phantom musket rings once and dissolves into light, and a fresh one is woven in its place
+		Right click to condense at least four phantom muskets into a great cannon and play the finale; the more muskets, the harder it hits
+		"Mind your manners, and make the curtain call magnificent"
+		''' */
+}
+
+Undertow: {
+	DisplayName: Reflux abyssal
+	Tooltip:
+		'''
+		Transforme n'importe quelle flèche en flèche d'épine abyssale
+		À l'impact, le sillage s'effondre en une petite bulle de cavitation qui explose une seconde fois
+		Maintenir le clic droit pour charger ; à pleine tension, une flèche lourde à 3 fois les dégâts
+		La flèche lourde traverse tout et tire les ennemis vers sa trajectoire
+		À l'arrêt, elle déclenche une implosion de cavitation
+		"La mer ne vous écarte pas ; elle vous prend"
+		'''
+}
+
+Thornstring: {
+	DisplayName: Corde d'épines
+	Tooltip:
+		'''
+		Transforme n'importe quelle flèche en flèche d'épines
+		À l'impact, la flèche d'épines éclate en aiguilles courtes des deux côtés
+		Maintenir le clic droit pour tendre ; à pleine tension, une flèche lourde perçante à 2,5 fois les dégâts
+		La flèche lourde ouvre un anneau de pétales à chaque impact et à l'atterrissage
+		"La corde est une liane, la flèche une épine, l'arc une fleur qui refuse de se flétrir"
+		'''
+}

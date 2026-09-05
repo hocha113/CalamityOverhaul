@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class SporeBubbleBlaster : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "SporeBubbleBlaster";
         public override void SetDefaults() {
             Item.width = Item.height = 32;

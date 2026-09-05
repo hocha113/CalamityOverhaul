@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// 左键冰晶炮+晶柱，右键推进波
     internal class CrystalDimming : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimming";
 
         public override void SetDefaults() {

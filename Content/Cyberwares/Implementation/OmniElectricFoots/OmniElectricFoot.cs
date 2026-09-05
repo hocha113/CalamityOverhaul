@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 ? $"[{keys[0]}]"
                 : CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.CyberwareSkill_Key?.DisplayName}]";
             tooltips.Add(new TooltipLine(Mod, "CyberwareSkillHint",
-                Language.GetTextValue("Mods.CalamityOverhaul.Items.OmniElectricFoot.SkillHint", keyHint)));
+                this.GetLocalization("SkillHint").Format(keyHint)));
         }
     }
 

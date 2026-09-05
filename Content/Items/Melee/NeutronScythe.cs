@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class NeutronScythe : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item + "Melee/NeutronScythe";
 
         public override void SetStaticDefaults() {

@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>沙之飞匕，直线掷出下坠，插沙地喷沙刺与地脉冲击波</summary>
     internal class SandDagger : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item + "Melee/SandDagger";
 
         public override void SetDefaults() {

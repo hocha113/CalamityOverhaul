@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShieldGenerators
     /// <summary>护盾发生器,为范围内玩家提供吸收护盾;贴图复用特斯拉塔,靠青紫色调区分</summary>
     internal class ShieldGenerator : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTower";
 
         /// <summary>系列色调:青紫,同贴图靠它与特斯拉塔区分</summary>

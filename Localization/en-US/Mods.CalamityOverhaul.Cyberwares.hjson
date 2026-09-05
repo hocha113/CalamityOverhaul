@@ -1,0 +1,130 @@
+SandevistansItem: {
+	DisplayName: Sandevistan Mk5
+	Tooltip: Slows perceived time by 70% for 5 seconds. Cooldown: 15 seconds.
+}
+
+Sandevistan: {
+	SkillName: Sandevistan
+	SkillDesc:
+		'''
+		Drastically slows perceived time, letting you move and act in apparent slow motion.
+		The reserve drains during use and auto-disables when empty, then refills naturally.
+		Select again in the radial to toggle it back off manually.
+		'''
+}
+
+MimicPerchedAuxBrain: {
+	DisplayName: Mimic Perched Auxiliary Brain
+	Tooltip:
+		'''
+		Splits the host into four illusions that drift around the main body.
+		When struck, the real self hidden among the illusions will cause chaos and gain immunity, 
+		taking no damage from the attack.
+		Meanwhile, the illusions will charge at the attacker and detonate, 
+		dealing damage scaled with the enemy's raw attack power.
+		'''
+}
+
+CstmVisualEye: {
+	DisplayName: CSTM Opti-Visual Cybereye
+	Tooltip:
+		'''
+		A cybernetic optical implant that syncs Hack-Time directly into your cranial neural network.
+		Increases max RAM by 4
+		Displays an independent RAM arc bar in the bottom-left corner of the screen
+		'''
+}
+
+PrimePlasama: {
+	DisplayName: Prime Plasma Subdermal Armor
+	Tooltip:
+		'''
+		A layer of electroactive gel woven beneath the entire body's skin.
+		Permanently grants 25 defense and 6% damage reduction.
+		Massively boosts knockback resistance — common impacts can hardly stagger you.
+		'''
+}
+
+OmniElectricFoot: {
+	DisplayName: OmniElectric Foot
+	Tooltip:
+		'''
+		A high-output locomotor cybernetic combining electromagnetic recoil with dense propulsion gel.
+		Grants a mid-air double jump; hold the jump key after kicking off to push further.
+		Hold the skill key to charge at your feet, then release to kick off — a full charge reaches 3x a normal jump.
+		The propulsion gel absorbs its own launches — those descents deal no fall damage.
+		Charging locks your run speed and jump, and leaving the ground cuts the power.
+		'''
+	SkillHint: Hold {0} to charge, release to kick off
+	SkillName: Charge Jump
+	SkillDesc:
+		'''
+		Electromagnetic-propulsion burst leap.
+		Requires standing on the ground; holding the skill key charges it, full in 60 ticks.
+		Release to launch at up to 3x normal jump height, with sharper air control during the propulsion window.
+		'''
+}
+
+PlowSteelClampArm: {
+	DisplayName: PlowSteel Clamp Arm
+	Tooltip:
+		'''
+		An industrial cybernetic featuring magnetic pickup and high-rigidity clamps.
+		Greatly extends mining and block-placement range.
+		Permanently enables magnetic pickup of items and coins.
+		Cyberware skill: release a high-heat monomolecular wire from your palm.
+		Tap for a short wire, hold for a long wire; enemies along the path are continuously scorched.
+		'''
+	SkillHint: "[c/8AC4E8:{1}] Open the cyberware radial to switch · [c/F5C56A:{0}] Fire the wire (tap = short / hold = long)"
+	SkillName: Monomolecular Wire
+	SkillDesc:
+		'''
+		Hurls a high-heat monomolecular wire from your palm. Enemies along the path are continuously scorched.
+		[c/8AC4E8:Tap]: Lays a ~12-tile short wire toward the cursor, lasts 2 seconds, no anchor required.
+		[c/F5C56A:Hold]: Once fully charged, pins to a solid tile near the cursor for 5 seconds; if no anchor is found, falls back to a short wire.
+		Damage scales with the player's generic damage multipliers.
+		'''
+}
+
+SelfHealingSkelent: {
+	DisplayName: Self-Healing Endoskeleton
+	Tooltip:
+		'''
+		A high-tier biocyber implant that replaces the native skeleton with a nanocrystal lattice.
+		Continuously grants +2 HP/s life regeneration and +40 max life.
+		Out of combat for 4 seconds, enters Nanorepair state with greatly boosted regeneration.
+		The metallic endoskeleton fully negates fall damage.
+		'''
+}
+
+SelfHackCrystal: {
+	DisplayName: Self-Hack Crystal
+	Tooltip:
+		'''
+		A high-tier network cybernetic in the operating system slot.
+		Redirects the hacking interface back at the host.
+		Continuously grants additional RAM recovery speed.
+		Cyberware skill: spend RAM to instantly clear all debuffs
+		and gain brief invincibility — a window to break out of lethal situations.
+		'''
+	SkillHint: Trigger Self-Hack from the {0} radial to purge debuffs with RAM
+	SkillName: Self-Hack
+	SkillDesc:
+		'''
+		Redirects the hacking interface back at yourself for an emergency cleanse.
+		Spends 3 RAM to instantly remove all debuffs and grants ~1.5s of invincibility.
+		12s cooldown; auto-greys out when RAM is insufficient or still cooling down.
+		'''
+}
+
+SCCA32CRP: {
+	DisplayName: SCCA-32 CRP
+	Tooltip:
+		'''
+		An advanced neural-muscular co-processor.
+		Routes threat prediction and muscle-fiber reflexes around the brain entirely.
+		Continuously grants +8% critical strike chance and +8% movement speed.
+		18% chance to trigger a Reflex Dodge when struck, fully negating that hit.
+		On a successful dodge, enters a 3-second Reflex Surge with bonus crit and move speed.
+		'''
+}

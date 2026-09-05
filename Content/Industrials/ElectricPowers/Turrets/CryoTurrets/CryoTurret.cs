@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.CryoTurret
     /// <summary>冰冻塔,范围减速与蓄冻控制;贴图复用特斯拉塔,靠冰蓝色调区分</summary>
     internal class CryoTurret : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTower";
 
         /// <summary>系列色调:冰蓝,同贴图靠它与特斯拉塔区分</summary>

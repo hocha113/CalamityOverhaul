@@ -1,0 +1,201 @@
+NeutronWand: {
+	DisplayName: Lumière de l'Étoile
+	Tooltip:
+		'''
+		Tire quatre puissantes étoiles de gravité
+		Clic droit pour lancer un sort de gravité à l'emplacement du curseur
+		"Il est dit qu'un puissant télépathe a compressé une étoile en trou noir dans les temps anciens,
+		mais cela reste une légende chantée parmi les nomades interstellaires"
+		'''
+}
+
+DragonsWord: {
+	DisplayName: Parole de Dragon
+	Tooltip:
+		'''
+		Lancez des Larmes de Dragon, qui suivront les ennemis après un certain temps de rotation.
+		Clic droit pour lancer la magie de Commande du Dragon à l'emplacement du curseur et donner l'ordre de mort aux ennemis dans la zone.
+		"Un dragon ne peut pleurer qu'une seule fois dans sa vie."
+		'''
+}
+
+UnderTheSand: {
+	DisplayName: Sous le sable
+	Tooltip:
+		'''
+		Lance une paire de vagues de sable qui tombent sous la gravité
+		À l'impact, une pointe de sable verticale jaillit du sol et projette les ennemis vers le ciel
+		'''
+}
+
+MelodyTheSand: {
+	DisplayName: Chant du sable
+	Tooltip:
+		'''
+		Tire une petite tornade de sable qui tombe sous la gravité
+		Au sol, elle patrouille en allers-retours et rebondit aux murs et aux précipices
+		Projette à plusieurs reprises les ennemis touchés vers le ciel
+		'''
+}
+
+SandVortexOfTheDecayedSea: {
+	DisplayName: Vortex de sable de la mer déchue
+	Tooltip:
+		'''
+		Invoque un colossal vortex de mer déchue au curseur
+		Le vortex attire et déchire les ennemis proches, et perturbe les projectiles hostiles
+		Lance périodiquement des orbes de mer déchue à tête chercheuse
+		Un nouveau tir rafraîchit le vortex ; à sa disparition, il éclate en anneau d'orbes
+		« Le rugissement des profondeurs pourries, remué en sable »
+		'''
+}
+
+FocusingGrimoire: {
+	DisplayName: Grimoire de focalisation
+	Tooltip:
+		'''
+		Clic gauche pour tirer des anneaux thermiques à tête chercheuse
+		Clic droit pour tirer rapidement des rayons de la mort
+		"Un livre vaut mieux que six"
+		'''
+}
+
+CommandersStaff: {
+	DisplayName: Bâton du commandant
+	Tooltip:
+		'''
+		Tire un rayon de désintégration thermique qui transperce les ennemis
+		"Démonté du bras de cette machine — et si on utilisait de l'énergie psionique à la place du diesel ?"
+		'''
+}
+
+Eyetooth: {
+	DisplayName: Croc pupille sanglant
+	Tooltip:
+		'''
+		Lance vers l'ennemi un croc arraché à l'Œil de Cthulhu
+		Après la morsure, le croc bondit au-dessus de la tête, vise un instant, puis plonge pour une seconde morsure
+		La plongée inflige 150% de dégâts, et la plaie du croc continue de saigner
+		'''
+}
+
+CommandersStaffEX: {
+	DisplayName: Bâton du commandant EX
+	Tooltip:
+		'''
+		Tire plusieurs rayons thermiques en éventail
+		"Adapté à la découpe du métal"
+		'''
+}
+
+TomeofFungalDecay: {
+	DisplayName: Grimoire de décomposition fongique
+	Tooltip: Projette un anneau de spores
+}
+
+Pandemonium: {
+	DisplayName: Pandémonium
+	Tooltip:
+		'''
+		Clic gauche pour charger et libérer une magie transcendante
+		Clic droit pour lancer une rune de soufre au curseur
+		En main, deux boutons de compétence s'allument en bas à gauche de l'écran
+		Cliquez pour déclencher le Jugement de soufre ou la Fin de tous les démons
+		'''
+	SkillLeftName: Jugement de soufre
+	SkillLeftDesc: Fait s'abattre un champ de piliers de feu de soufre autour du curseur
+	SkillRightName: Fin de tous les démons
+	SkillRightDesc: Déploie un cercle magique géant centré sur vous, frappant les ennemis de foudre et de feu
+}
+
+Elysium: {
+	DisplayName: Béatitude céleste
+	Tooltip:
+		'''
+		Maintenir le clic gauche pour charger le rite du serpent
+		Relâcher soulève une vague de lumière sainte, les faibles ennemis touchés deviennent des serpents sacrés qui chassent pour vous
+		Clic droit pour exalter un habitant proche et l'appeler comme disciple
+		Les disciples orbitent, chacun à son office, et accordent la grâce sainte
+		Les dégâts d'un boss brûlent un disciple et laissent un point de force du martyre
+		Onze points de martyre et Jean encore en vie : le bouton de compétence peut ouvrir l'Apocalypse
+		Une fois l'Apocalypse descendue, le clic droit invoque les Quatre Cavaliers
+		Les boutons deviennent alors Météore céleste et Jugement des trois derniers sceaux
+		Les douze sièges remplis portent la grâce à son comble, mais près de la mort Judas vous poignarde
+		Maintenir Maj en tenant l'arme ouvre la rosace ; glisser les sièges pour échanger les offices
+		Deux boutons de compétence s'allument en bas à gauche tant que l'arme est tenue
+		'''
+	SkillLeftName: Tonnerre divin
+	SkillLeftDesc: Fait descendre un éclair saint sur l'ennemi le plus proche du réticule
+	SkillRightName: Jugement des trois derniers sceaux
+	SkillRightDesc: Le cinquième, le sixième et le septième sceau s'ouvrent à la suite ; le jugement final frappe tout autour, l'Apocalypse se clôt
+	SkillRightLockedDesc: Les sceaux ne s'ouvrent qu'après la descente de l'Apocalypse
+	SkillOpenName: Ouvrir l'Apocalypse
+	SkillOpenDesc: Jean montera en martyr, et le domaine du Royaume descendra
+	SkillMeteorName: Météore céleste
+	SkillMeteorDesc: Fait tomber un astre du firmament vers le réticule
+	NoConvertTargetText: Aucun habitant proche à exalter
+	SeatsFullText: Les douze sièges saints sont pleins
+	JudasDeathReasonText: "{0} a été vendu par Judas pour trente pièces d'argent"
+	DiscipleName_0: Pierre
+	DiscipleName_1: André
+	DiscipleName_2: Jacques
+	DiscipleName_3: Jean
+	DiscipleName_4: Philippe
+	DiscipleName_5: Barthélemy
+	DiscipleName_6: Thomas
+	DiscipleName_7: Matthieu
+	DiscipleName_8: Jacques le Mineur
+	DiscipleName_9: Thaddée
+	DiscipleName_10: Simon le Zélote
+	DiscipleName_11: Judas
+}
+
+AriaofTheCosmos: {
+	DisplayName: Aria du cosmos
+	Tooltip:
+		'''
+		Maintenez le clic gauche pour charger un puissant quasar, infligeant des dégâts dévastateurs à la libération
+		Clic droit pour libérer un mini trou noir qui, une fois formé, tire une salve de rayons gamma
+		En main, deux boutons de compétence s'allument en bas à gauche de l'écran
+		Cliquez pour invoquer un gardien de l'anneau stellaire ou générer une éruption de rayons gamma
+		'''
+	SkillLeftName: Gardien de l'anneau stellaire
+	SkillLeftDesc: Invoque un anneau stellaire orbital dont les nœuds mitraillent de poussière d'étoiles les ennemis proches
+	SkillRightName: Éruption de rayons gamma
+	SkillRightDesc: Après une brève charge, libère neuf rayons gamma en éventail vers le curseur
+}
+
+WheezingWyrm: {
+	DisplayName: Bâton du dragon râleux
+	Tooltip:
+		'''
+		Maintenir pour cracher un jet de flamme de dragon
+		La vieille tête a vu des jours meilleurs, et tousse d'abord quelques bouffées de fumée
+		Le souffle soutenu échauffe la gorge, du rouge sombre jusqu'au bleu brûlant
+		Plus la flamme est claire, plus elle brûle ; la flamme bleue inflige le plus de dégâts et allume le Feu infernal
+		"Pas tout à fait mort, juste un vieux fumeur qui s'éclaircit la gorge"
+		'''
+}
+
+Everdeep: {
+	DisplayName: Abîme éternel
+	Tooltip:
+		'''
+		Lance un anneau d'eau abyssale sous haute pression
+		L'anneau traverse les ennemis, continue un peu, puis revient frapper à nouveau
+		Les impacts accumulent une résonance abyssale, comptée par les gouttes autour du grimoire
+		À pleine résonance, une énorme trombe d'eau jaillit du sol sous la victime
+		"L'abîme ne s'ouvre pas pour vous ; il se referme derrière vous"
+		'''
+}
+
+BloomTome: {
+	DisplayName: Grimoire des bourgeons
+	Tooltip:
+		'''
+		Lance un bolt-bourgeon qui fleurit
+		À l'impact sur un ennemi ou au sol, il s'ouvre en anneau de pétales
+		Un sort sur quatre devient un bolt en pleine floraison, plus de pétales, et deux aiguilles vers le haut
+		"Quelle que soit la page, cette page fleurit"
+		'''
+}

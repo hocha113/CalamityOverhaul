@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
     /// </summary>
     internal class ProofingHallKey : OverseerModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         /// <summary>玩家相对房内的落位列（左门内侧，点检台 9..11 之左）</summary>
         private const int PlayerColumn = 6;
         private const int FloorRow = ProofingHallRoom.FloorRel;

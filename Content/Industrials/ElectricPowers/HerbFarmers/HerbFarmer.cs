@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HerbFarmers
     /// <summary>草药农场机,自动播种与收割范围内的草药</summary>
     internal class HerbFarmer : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/HerbFarmer";
 
         /// <summary>系列色调:麦浪暖黄,用于提示文本与 UI 点缀</summary>

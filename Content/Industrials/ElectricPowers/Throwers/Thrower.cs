@@ -11,6 +11,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
     /// <summary>投掷者，自动投出存储物</summary>
     internal class Thrower : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Thrower";
 
         public static LocalizedText NoEnergyText { get; private set; }

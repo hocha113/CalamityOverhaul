@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.SlimeVats
     /// <summary>史莱姆培养槽,耗水耗电周期性培养凝胶;贴图复用生命编织者,靠凝胶绿色调区分</summary>
     internal class SlimeVat : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/LifeWeaver";
 
         /// <summary>系列色调:凝胶绿</summary>

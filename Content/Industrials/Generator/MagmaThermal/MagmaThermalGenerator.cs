@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.MagmaThermal
     /// <summary>岩浆热能发电机:液体网络的首个耗液发电机(占位贴图沿用热能电池,待专属美术)</summary>
     internal class MagmaThermalGenerator : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Generators";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryLegacy";
         public override void SetDefaults() {
             Item.width = 32;

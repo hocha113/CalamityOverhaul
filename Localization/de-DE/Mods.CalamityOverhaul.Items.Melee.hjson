@@ -1,0 +1,423 @@
+DivineSourceBlade: {
+	DisplayName: Göttliche Energie-Klinge
+	Tooltip:
+		'''
+		Verkettet zwei schnelle Hiebe zu einem aufgeladenen schweren Spalt-Hieb
+		Der schwere Hieb entfesselt eine kolossale goldene Sichel aus Schwertenergie
+		"Das Leben endet nie"
+		'''
+}
+
+CursedflameBloodfist: {
+	DisplayName: Fluchflammen-Blutfaust
+	Tooltip:
+		'''
+		Zählt als Nahkampf und Magie und nimmt beide Boni voll mit
+		Halte die linke Taste, um einen rasanten Schlaghagel zu feuern; dabei kannst du weiterlaufen
+		Jeder Schlag rechnet einmal Flächenschaden um dich herum ab; der Rückstoß ist gering, die Treffer aber sehr dicht
+		Zugleich streut er eine Kette fliegender Flammenfäuste entlang deines Fadenkreuzes; Getroffene fangen Fluchflammen
+		Der Hagel verbraucht laufend Mana und hört auf, sobald es leer ist
+		"Wem dieser Arm einst gehörte, hat das Feuer unkenntlich gemacht"
+		'''
+}
+
+Arbiter: {
+	DisplayName: Verdammnisrichter
+	ManifestInteractHint: "[Rechtsklick] Diese Axt herausziehen"
+	ManifestInventoryFullHint: Inventar voll; mach einen Platz frei, bevor du die Axt ziehst
+	Tooltip:
+		'''
+		Linksklick gedrückt halten, um die Axt des Urteils aufzuladen und zu heben
+		Loslassen, um nach unten zu schlagen und eine bodennahe Feuerwelle zu beiden Seiten auszubreiten
+		Längeres Aufladen erhöht Reichweite und Stärke der Flammen
+		"Das Urteil steigt aus dem Feuer empor"
+		'''
+}
+
+Cloudwalking: {
+	DisplayName: Wolkenwanderer
+	Tooltip:
+		'''
+		Linksklick gedrückt halten, um die Axt aufzuladen und zu heben
+		Loslassen, um die Axt nach vorne zu werfen und dabei Wolken zu hinterlassen
+		Die Axt kehrt automatisch zum Spieler zurück
+		'''
+}
+
+DawnshatterAzure: {
+	DisplayName: Morgendämmerungsbrecher
+	Tooltip:
+		'''
+		Feuert eine Schattenkrone ab, die bei einem Treffer explodierende Drachenflammen beschwört
+		Halte die rechte Maustaste gedrückt, um mit erhobener Waffe vorzustoßen
+		Feuer reinigt die Seele und plündert deine Feinde vollständig
+		'''
+}
+
+Flawless: {
+	DisplayName: Vollendung
+	Tooltip:
+		'''
+		Viererschläge: Schwung, Stoß, Gegenschwung, abschließender Langstoß; jeder Schlag schwerer als der letzte
+		Die Stoßschläge setzen die schlanke Spitze auf, reichen weiter und spritzen bei Treffern Frostkristalle
+		"Siebenmal die Spitze gewechselt. Auf der Scheibe sitzt nur ein Loch"
+		'''
+}
+
+StormGoddessSpear: {
+	DisplayName: Sturmgöttinnen-Speer
+	Tooltip:
+		'''
+		Schleudert Sturmküsse mit zerstörerischen Lichtbögen
+		Beim Halten beschwört der Geist der Sturmgöttin und unterstützt dich im Kampf
+		[legend]
+		'''
+	Legend:
+		'''
+		Alina, Terras einst schärfste Klinge.
+		Ihr Glaube war unerschütterlich, ihr Kampf unerschrocken. Eisenstaub am silbernen Speer, Haar im Sturm. Die Klinge des Gewitters heult vorbei.
+		Doch selbst die schärfste Klinge bricht und zerschellt; der Glaube fand nur die Gleichgültigkeit der Götter.
+		Als der Höchste sein Urteil fällte, wurden ihre Kameraden, ihre Sippe, ihre Schwüre und ihr Ruhm zu Asche.
+		Mit eigenen Augen sah sie, wie die sogenannte Gerechtigkeit alles zertrete … Blut und Tränen … Staub … Wie im Namen der Ordnung die niederträchtigste Vernichtung vollzogen wurde.
+		Götter … Alina blickt nicht mehr zu den Göttern auf.
+		Sie wich in die Tiefe zurück, zerstörte sich selbst und ließ verbotene Urkräfte ihre Seele verschlingen.
+		Alinas Rüstung schmolz zu einem aus Tiefeneisen geschmiedeten Wrack.
+		Alte Wolkenfetzen, blutrote Sonne und die Vergangenheit verwebten sich; der Blick ihrer Kameraden … und ihrer Sippe im Tod … Alina … alles war vorbei.
+		Sie war nicht mehr die Alina von einst, Terras Kriegsgöttin.
+		Ihr Zorn kehrte wie ein Sturm zurück, riss die Käfer auf dem Schlachtfeld mit sich, ihr Donner durchschnitt Himmel und Wolken, spaltete Throne und Erde.
+		Die Sturmgöttin Alina brachte unbarmherzig Vernichtung und Rache.
+		'''
+}
+
+DragonsScaleGreatsword: {
+	DisplayName: Drachentang-Großklinge
+	Tooltip:
+		'''
+		Schwünge folgen einer Drei-Hit-Kombo; der dritte Hieb entfesselt einen mächtigeren drakonischen Finisher
+		Schwünge senden spiralförmige Tangklingenwellen aus, die beim Treffer in giftige Algenwolken explodieren
+		Echter Nahkampf erzeugt viele giftige Algenwolken
+		Rechtsklick beschwört eine smaragdgrüne Drachenseele, die zum Cursor jagt und unterwegs giftige Algenwolken streut
+		'''
+}
+
+CosmicCalamity: {
+	DisplayName: Kosmische Katastrophe
+	Tooltip: Angriffe erzeugen sichelförmige Schockwellen
+}
+
+SpearOfLonginus: {
+	DisplayName: Lanze von Longinus
+	Tooltip:
+		'''
+		Solange du die Lanze hältst, erscheint unter dir ein heiliges Kreuz, das sich stetig mit göttlicher Energie füllt
+		Sobald die Leiste voll ist, erhält die Lanze eine Aufladung, bis zu sechs Mal stapelbar
+		Beim Halten markierst du den nächsten Feind mit dem Kreuz des Schicksals
+		Ein geladener Wurf auf einen markierten Feind entfesselt die Wut des Pilgers
+		[legend]
+		'''
+	Legend:
+		'''
+
+		“Gebrochener Gott, bitte erlaube mir, meine Sünden zu büßen.”
+		Der Krieg dauert schon seit Jahrhunderten an, ich, als Überlebender der großen Zivilisation, überlebe einsam auf diesem öden Planeten am Rande des Universums.
+		Tausende von Lichtjahren entfernt zermalmen die Kriegsmaschinen Sterne, ihre brutalen Angriffe können in einem Augenblick mehrere Lichtjahre Sternenhimmel auslöschen und sie zu einem stillen Bereich machen.
+		Und dieser Krieg dauert seit Jahrhunderten an, und jetzt ist meine große Zivilisation in Gefahr, ich werde ein Sünder des Universums, der größte Frevler.
+		Mein Fleisch ist verwest, meine Knochen sind wie alte Falten, ich werde zu einer meiner schwachen Maschinen werden.
+		Vorher möge Gott mir Vergebung schenken, meine Sünden gegen das Höchste vergeben, damit ich in der Stunde meines Seelenverfalls in die Tiefen des Fegefeuers eintreten kann, um endlose Qualen zu erleiden.
+		Aber um der Zivilisation und des Sieges willen muss ich die Macht des Höchsten ausbeuten.
+		Um seine geheimnisvolle Macht zu leiten, bleibt mir keine Wahl, als die kalte Mechanik in den gebrochenen Gott zu injizieren.
+		Das ist unvermeidlicher Frevel, um die Zivilisation zu retten und den Krieg zu gewinnen, ich muss der frommste Anhänger des Höchsten werden, der größte Frevler aller Zeiten.
+		'''
+}
+
+NeutronGlaive: {
+	DisplayName: Neutronengleve
+	Tooltip:
+		'''
+		Schwinge einen starken Gravitationswellenschwertstoß, der bei Treffer eine Neutronensternexplosion erzeugt
+		Halte die rechte Maustaste gedrückt, um das Schwert aufzuladen; bei voller Ladung und Loslassen entsteht am Cursor eine große Neutronensternexplosion, sonst wird die gespeicherte Energie freigesetzt
+		'''
+}
+
+NeutronScythe: {
+	DisplayName: Schwarzloch-Bote
+	Tooltip:
+		'''
+		Eine mit hoher Geschwindigkeit rotierende Neutronensense, die Gammastrahlen auf nahe Feinde abfeuert und entlang ihrer Flugbahn Verzerrungs-Detonationspunkte hinterlässt
+		Rechtsklick: Entfesselt einen Schwarzlochausbruch, der dreizehn Sensen in einem vollen Kreis ausschleudert
+		'''
+}
+
+RebelBlade: {
+	DisplayName: Rebellionsschwert
+	Tooltip:
+		'''
+		Bei echtem Nahkampf erzeugt es eine Vielzahl von Dämonenlichtkugeln um das Ziel
+		Rechtsklick steuert den Schwertflug und führt einen Schnitt zum Cursor hin aus
+		'''
+}
+
+WeaverGrievances: {
+	DisplayName: Gewebe der Groll
+	RitualInteractHint: "[Rechtsklick] Dieses Schwert herausziehen"
+	RitualInventoryFullHint: Inventar voll; mach einen Platz frei, bevor du das Schwert ziehst
+	Tooltip:
+		'''
+		Entfesselt zahlreiche Klauen der Grollgeister mit Spezialeffekten in Unterwelt und Kerker
+		Rechtsklick rollt zum Cursor; Treffer während des Rollens gewähren Unverwundbarkeitsframes
+		Kurzer Rollen als perfektes Ausweichen
+		[legend]
+		'''
+	Legend:
+		'''
+		Seit jeher erstreckt sich der Kerker über das Land, seine Wände bedeckt mit Inschriften und Schreien alter Krieger. Jeder Stein tränkt stillstehenden Groll, wie Ketten der Toten, gefesselt an die endlose Nacht am Ende der Zeit.
+		Diese Krieger waren einst die Klingen ihres Königs und zogen in alle Welt. Ihr Schwertlicht erhellte Schlachtfelder, ihr Blut errichtete Terras Türme. Ihre Treue war sternenhaft, ihr Glaube eisern.
+		Doch als die Kriege endeten und die Banner des Dämonfürsten vor dem König zerrissen wurden, befahl der König in dem Moment des Friedens, sie in die dunkle Tiefe zu werfen.
+		„Wir haben nicht verraten, doch der König hat uns verraten!“ Die Klage der Verdammten riss die Stille der Ewigkeit.
+		Ihre edlen Geister kehrten nicht zur Erde zurück, sondern wurden Zeugen der ewigen Nacht in der Leere.
+		Das unaufhörliche Wehklagen wurde zum stillen Vorwurf bis ans Ende der Sterne.
+		Man sagt, der König fürchtete ihre Treue und ihren Zorn und folgte den Flüstern der Dämonfürsten-Sorcerer, sie zur Schatten der Geschichte zu machen.
+		Doch der Groll wie eine Flut verzerrte die Realität des Kerkers. Ihr Leid erschütterte die Schranken der Zeit und webte eine Racheprophezeiung:
+		„Der Dämonfürst wird zurückkehren, die Leere wird zerreißen, unsere Flammen werden alles verzehren!“
+		Wenn Terra erneut dem Untergang nahe, werden diese Untoten aus der Finsternis erstehen. Ihre Klingen kämpfen nicht mehr für Terras Ruhm, sondern zum Urteil des Verräters.
+		Ruhm und Treue sind längst vernichtet – nur die Flammen der Rache bleiben.
+		'''
+}
+
+SandDagger: {
+	DisplayName: Sandklinge
+	Tooltip:
+		'''
+		Wird in gerader Linie geschleudert und durch Schwerkraft leicht abgelenkt
+		Bohrt sich beim Aufprall ein; trifft sie auf Sand, lädt sie sich auf und schießt dann nach oben, um eine Erdbebenwelle und Sandstacheln freizusetzen
+		'''
+}
+
+WastelandFang: {
+	DisplayName: Ödlandzahn
+	Tooltip:
+		'''
+		Prallt von Blöcken ab und beschleunigt beim Einholen
+		Sperrt den Mund auf und spuckt mehrere Sandkugeln
+		'''
+}
+
+SeasonalKunai: {
+	DisplayName: Jahreszeiten-Kunai
+	Tooltip:
+		'''
+		Wirft vier Hauptkunai in einem Fächer; jede durchbohrt mehrere Gegner und wächst während des Fluges
+		Bei Treffer oder Ablauf der Lebenszeit zerbricht jede Klinge in drei sekundäre Kunai, die auseinanderfegen
+		Tagsüber Tagesanbruch, nachts Nachtwelken
+		"Spiegel der vier Jahreszeiten"
+		'''
+}
+
+WraithKunai: {
+	DisplayName: Geisterkunai
+	Tooltip:
+		'''
+		Schleudert drei karmesinrote Klingen in einem Fächer; jede schwebt kurz, bevor sie mit hoher Geschwindigkeit auf den nächsten Gegner zustürmt
+		Sturmtreffer entfesseln karmesinrote Funken und Bildschirmbeben, am Ende ihres Fluges detonieren die Klingen in seelenbrennenden Schockwellen
+		Tagsüber Brand, nachts Seelenbrand
+		'''
+}
+
+CommandersChainsaw: {
+	DisplayName: Kommandeur-Kettensäge
+	Tooltip:
+		'''
+		Erzeugt Funken beim Treffen eines Ziels
+		„Mehr Diesel dazu“
+		'''
+}
+
+GeminisTribute: {
+	DisplayName: Jenseits der Zwillinge
+	Tooltip:
+		'''
+		Wirft abwechselnd eine Retinazer-Sense und eine Spazmatism-Sense, die auf einer Sinusbahn vor und zurück schneiden
+		Rechtsklick schleudert beide Sensen in einem gekreuzten Bogen; beim Einschlag verdichtet sich ein verschmolzenes Zwillingsauge und lässt zweifarbige Impulse in der Umgebung niedergehen
+		"Es kann nur eine dominante Persönlichkeit geben, und eindeutig hat das Magmaflammenauge gewonnen."
+		'''
+}
+
+DestroyersBlade: {
+	DisplayName: Zerstörer-Klinge
+	Tooltip:
+		'''
+		Feuert thermische Salven
+		„Enthält den gewaltigen Energiekern des Zerstörers“
+		'''
+}
+
+Observer: {
+	DisplayName: Beobachter
+	Tooltip: „Es beobachtet dich noch immer“
+}
+
+Shatterfang: {
+	DisplayName: Bruchzahnklinge
+	Tooltip:
+		'''
+		Drei gewöhnliche Schwünge, dann ein Erschütterungshieb, der die Klinge stark abnutzt
+		Ist die Klinge leer, zerbricht genau dieser Hieb und schleudert große Zahntrümmer
+		Zwischen gewöhnlichen Schwüngen wirft sie kleine, der Schwerkraft folgende Zahnsplitter
+		Im Halbklingen-Zustand schwingt sie leichter, richtet aber weniger Schaden an und wirft keine Splitter mehr
+		Dauerangriffe machen die Klinge instabil, bis sie lautlos zerspringt
+		Rechtsklick flickt die Klinge einen Moment; im Leerlauf heilt sie langsam, bei voller Heilung ein helles Klingeln
+		"Ein Hauer, der aus dem Augenmaul brach und noch immer zubeißen will"
+		'''
+}
+
+CommandersClaw: {
+	DisplayName: Kommandeur-Klaue
+	Tooltip:
+		'''
+		Schleudert einen verzierten Kommandeur-Speer, dessen Spitze stets in Flugrichtung zeigt
+		Jeder Treffer entfesselt metallische Funken, Schockwellen und ein kurzes Bildschirmbeben
+		Mehrere Speere können gleichzeitig fliegen, sich in Gelände bohren oder getroffene Gegner kurzzeitig durchbohrt festhalten
+		'''
+}
+
+CommandersChainsawEX: {
+	DisplayName: Kommandeur-Kettensäge EX
+	Tooltip: „Zerkleinert alles, was dir im Weg steht“
+}
+
+DestroyersBladeEX: {
+	DisplayName: Zerstörer-Klinge EX
+	Tooltip:
+		'''
+		Feuert thermische Salven
+		„Zerstören ist immer leichter als Bauen“
+		'''
+}
+
+EnergySword: {
+	DisplayName: Energieschwert
+	Tooltip:
+		'''
+		Verbraucht Energie, um Laser abzufeuern, die mehrere Gegner durchdringen
+		„Die Auslastung ist nicht besonders hoch“
+		'''
+}
+
+SporeboundRoller: {
+	DisplayName: Sporengebundener Roller
+	Tooltip:
+		'''
+		Erzeugt nach Treffer einen schwebenden kleinen Pilz
+		„Sie rollen am liebsten immer weiter“
+		'''
+}
+
+SporeburstPouch: {
+	DisplayName: Sporenbeutel
+	Tooltip:
+		'''
+		Wirft eine taumelnde Sporengranate, die beim Aufprall oder am Ende ihrer Lebenszeit detoniert
+		Setzt eine giftige Schockwelle und einen Schwarm zielsuchender Sporensplitter frei; getroffene Gegner werden Vergiftet
+		'''
+}
+
+Heartcarver: {
+	DisplayName: Herzschnitzer
+	Tooltip:
+		'''
+		Erzeugt drei zusätzliche Ritualdolche, die um dich kreisen
+		Nach vollständigem Aufladen fliegen sie zum Ziel
+		Rechtsklick für kurzen Stoß
+		'''
+	CarveTip:
+		'''
+		In der Hand schlägt das Messer mit deinem Herzen
+		Landet der Angriff in der Lücke zwischen zwei Schlägen, ist das ein Herzstich
+		Beendest du den Finisher mit einem Herzstich, kannst du das Herz ganz herausschneiden
+		'''
+}
+
+OniMachete: {
+	DisplayName: Oni-Machete
+	Tooltip:
+		'''
+		Beim Halten erscheinen sechs Oni-Hände im Kampf
+		Echte Nahkampftreffer entfesseln Geisterflammen
+		'''
+	SuppressTip:
+		'''
+		Schwünge und Treffer sammeln Schwefelfeuer-Unterdrückung; jeder Schlag der sechs Geisterhände zehrt daran
+		Erlischt die Unterdrückung, werden die Hände unruhig: sie schlagen härter und können jederzeit nach deinem Hals greifen
+		'''
+}
+
+AncientStormGoddessSpear: {
+	DisplayName: Speer der Uralten Sturmgöttin
+	Tooltip:
+		'''
+		Schleudert Sturmküsse mit zerstörerischen Lichtbögen
+		„Es gehört längst der Vergangenheit an, aber es funktioniert noch immer“
+		[legend]
+		'''
+	Legend:
+		'''
+		Alina, Terras einst schärfste Klinge.
+		Ihr Glaube war unerschütterlich, ihr Kampf unerschrocken. Eisenstaub am silbernen Speer, Haar im Sturm. Die Klinge des Gewitters heult vorbei.
+		Doch selbst die schärfste Klinge bricht und zerschellt; der Glaube fand nur die Gleichgültigkeit der Götter.
+		Als der Höchste sein Urteil fällte, wurden ihre Kameraden, ihre Sippe, ihre Schwüre und ihr Ruhm zu Asche.
+		Mit eigenen Augen sah sie, wie die sogenannte Gerechtigkeit alles zertrete … Blut und Tränen … Staub … Wie im Namen der Ordnung die niederträchtigste Vernichtung vollzogen wurde.
+		Götter … Alina blickt nicht mehr zu den Göttern auf.
+		Sie wich in die Tiefe zurück, zerstörte sich selbst und ließ verbotene Urkräfte ihre Seele verschlingen.
+		Alinas Rüstung schmolz zu einem aus Tiefeneisen geschmiedeten Wrack.
+		Alte Wolkenfetzen, blutrote Sonne und die Vergangenheit verwebten sich; der Blick ihrer Kameraden … und ihrer Sippe im Tod … Alina … alles war vorbei.
+		Sie war nicht mehr die Alina von einst, Terras Kriegsgöttin.
+		Ihr Zorn kehrte wie ein Sturm zurück, riss die Käfer auf dem Schlachtfeld mit sich, ihr Donner durchschnitt Himmel und Wolken, spaltete Throne und Erde.
+		Die Sturmgöttin Alina brachte unbarmherzig Vernichtung und Rache.
+		'''
+}
+
+Abyssrend: {
+	DisplayName: Abgrundriss
+	Tooltip:
+		'''
+		Linksklick wechselt Stich mit der Spitze und Seitenschlag; jeder Hieb reißt eine jagende Meeresunterströmung
+		Rechtsklick hebt einen Abgrundsog, zerrt Feinde vor dir in die Zange, hebt hoch und schmettert sie auf den Boden, löst Hochdruck-Kavitation aus
+		Getroffene und von der Welle Erfasste verfallen dem Abgrunddruck und werden stark verlangsamt
+		"Er erinnert sich an das Geräusch, wenn die Tiefsee alles zerdrückt"
+		'''
+}
+
+TideReaper: {
+	DisplayName: Abgrundsense
+	Tooltip:
+		'''
+		Wirft eine wirbelnde Abgrundsichel, die von selbst zurückkehrt
+		Unterwegs schleudert sie Abgrundmonde, die nahe Feinde jagen
+		Rechtsklick wirft den Strudelanker: die Sense nistet vorn und dreht einen Strudel
+		Der Strudel zerrt Feinde zur Mitte, schleudert Monde schneller und kehrt dann zurück
+		"Nach der Ebbe liegen auf der Bank nur noch weiße Knochen"
+		'''
+}
+
+BudPiercer: {
+	DisplayName: Knospenschneide
+	Tooltip:
+		'''
+		Fliegt nach dem Wurf kurz gerade, dann fällt sie
+		Trifft sie, pflanzt sie eine Knospe, die kurz darauf einen Blütenkranz öffnet
+		Mehrere Dolche können Knospen auf demselben Ziel stapeln
+		Im Boden öffnet sie an Ort und Stelle und spritzt drei Wüstennadeln nach oben
+		"Unter jeder Schuppe der Sandschlange will eine Blüte sitzen"
+		'''
+}
+
+Budcrown: {
+	DisplayName: Knospenkrone
+	Tooltip:
+		'''
+		Angriffstaste halten lässt den Hammerkopf um dich kreisen; loslassen wirft zum Fadenkreuz
+		Beim Treffer schüttelt er Wüstennadeln ab
+		Nach drei Treffern blüht er auf, sprengt einen Blütenkranz und stößt hart zurück
+		"Die schwerste Knospe öffnet sich am lautesten"
+		'''
+}

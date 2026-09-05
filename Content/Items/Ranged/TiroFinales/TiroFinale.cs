@@ -9,11 +9,13 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
 {
     /// <summary>
     /// 终焉圆舞曲，世纪之花后远程/魔法双系燧发长枪。实弹与魔力双消耗，
-    /// 每次开火以金丝带在身周织出一支幻影燧发枪，枪阵环绕轮鸣；
+    /// 每次开火以金丝带在身周织出两支幻影燧发枪，阵满后每发带两支枪三拍子齐鸣；
     /// 右键收束全阵奏响终曲。节奏与枪阵逻辑在 <see cref="TiroFinaleHeld"/>
     /// </summary>
     internal class TiroFinale : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "TiroFinale";
 
         public override void SetDefaults() {
@@ -21,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             Item.height = 28;
             Item.damage = 58;
             Item.DamageType = RangedMagicDamageClass.Instance;
-            Item.mana = 6;//每发实弹的魔力，同时是织出一支幻影枪的代价
+            Item.mana = 6;//每发实弹的魔力，同时是织出两支幻影枪的代价
             Item.useTime = Item.useAnimation = 26;//老式燧发枪的沉稳单发节奏
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 5f;

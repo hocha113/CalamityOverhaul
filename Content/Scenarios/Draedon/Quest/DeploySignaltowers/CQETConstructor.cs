@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
     /// <summary>量子塔自我构建器</summary>
     internal class CQETConstructor : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => CWRConstant.Item_Tools + "CQETConstructor";
         public static LocalizedText UseConstructionBlueprint;
         public override void SetStaticDefaults() => UseConstructionBlueprint = this.GetLocalization(nameof(UseConstructionBlueprint), () => "学习构造蓝图(量子塔)");

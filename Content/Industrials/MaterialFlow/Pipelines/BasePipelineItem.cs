@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
     public abstract class BasePipelineItem : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Flow";
+
         public virtual int CreateTileID => -1;
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         public override void SetDefaults() {

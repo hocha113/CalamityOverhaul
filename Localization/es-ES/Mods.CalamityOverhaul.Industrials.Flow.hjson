@@ -1,0 +1,88 @@
+ThermalBattery: {
+	DisplayName: Batería térmica
+	Tooltip: Almacena una cantidad de energía eléctrica
+}
+
+FluidPipeline: {
+	DisplayName: Tubería de líquidos
+	Tooltip:
+		'''
+		Transporta agua, lava, miel o Shimmer
+		Una tubería solo lleva un líquido a la vez; hay que vaciarla antes de cambiar a otro
+		Clic derecho para desmontarla con rapidez
+		'''
+}
+
+FluidTank: {
+	DisplayName: Depósito de líquidos
+	Tooltip:
+		'''
+		Almacena hasta 32 casillas de líquido; la ventanilla del depósito muestra el nivel
+		Se comunica con bombas y máquinas a través de tuberías de líquidos
+		Al desmontarlo, el líquido del interior se pierde
+		'''
+}
+
+LargeFluidTank: {
+	DisplayName: Depósito de líquidos grande
+	Tooltip:
+		'''
+		Almacena hasta 128 casillas de líquido; la ventanilla del depósito muestra el nivel
+		Se comunica con bombas y máquinas a través de tuberías de líquidos
+		Al desmontarlo, el líquido del interior se pierde
+		'''
+}
+
+FluidText: {
+	WaterName: Agua
+	LavaName: Lava
+	HoneyName: Miel
+	ShimmerName: Shimmer
+	EmptyName: Vacío
+	BarFormat: "{0} {1}/{2}"
+}
+
+CapacitorMatrix: {
+	DisplayName: Matriz de condensadores
+	Tooltip:
+		'''
+		Gran armario de almacenamiento de hasta 40 000 de electricidad
+		Su caudal de carga y descarga supera de largo a la batería térmica; es el búfer central de una red grande
+		'''
+}
+
+UEPipeline: {
+	DisplayName: Tubería de energía
+	Tooltip:
+		'''
+		Sirve para transmitir electricidad
+		Clic derecho desmonta con rapidez la tubería del punto indicado y la recupera
+		Conecta generadores y otras fuentes y lleva la electricidad a baterías u otros aparatos
+		'''
+}
+
+LaserEnergyTrans: {
+	DisplayName: Conductor láser
+	Tooltip:
+		'''
+		Transmite electricidad a distancia
+		Tras colocarlo, clic derecho inicia la guía láser; otro clic derecho en un edificio eléctrico lo enlaza
+		Cuanto más lejos, mayor la pérdida; el máximo es un 100% de pérdida
+		'''
+}
+
+CreativeUEPipeline: {
+	DisplayName: Tubería de energía divina
+	Tooltip: ""
+}
+
+ItemPipeline: {
+	DisplayName: Tubería logística
+	Tooltip:
+		'''
+		Sirve para transmitir objetos
+		Clic derecho desmonta con rapidez la tubería del punto indicado y la recupera; esta función solo está disponible al sostener tubería
+		Clic derecho en una tubería de extremo alterna entre modo salida y modo entrada; esta función no está disponible al sostener tubería
+		Las tuberías en modo salida extraen objetos del contenedor conectado y los envían al objeto conectado por una tubería en modo entrada
+		'''
+}

@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Suppressors
     /// <summary>宁静力场发生器,通电时压制范围内的自然刷怪;贴图复用特斯拉塔,靠冷绿色调区分</summary>
     internal class PacifierTower : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTower";
 
         /// <summary>系列色调:冷绿,同贴图靠它与特斯拉塔区分</summary>

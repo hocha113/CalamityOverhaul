@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Items.Magic.NeutronWands
     /// </summary>
     internal class NeutronWand : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
 
         public override void SetStaticDefaults() {

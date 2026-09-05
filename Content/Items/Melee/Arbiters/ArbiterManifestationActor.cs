@@ -781,7 +781,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
             }
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.6f, Volume = 0.5f });
             string text = Language.GetTextValue(
-                "Mods.CalamityOverhaul.Items.Arbiter.ManifestInventoryFullHint");
+                "Mods.CalamityOverhaul.Items.Melee.Arbiter.ManifestInventoryFullHint");
             CombatText.NewText(player.getRect(), new Color(255, 120, 40), text);
         }
 
@@ -829,7 +829,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
             }
 
             string hint = Language.GetTextValue(
-                "Mods.CalamityOverhaul.Items.Arbiter.ManifestInteractHint");
+                "Mods.CalamityOverhaul.Items.Melee.Arbiter.ManifestInteractHint");
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 size = font.MeasureString(hint) * 0.9f;
             Vector2 position = AxeAnchor - Main.screenPosition + new Vector2(0f, -96f);

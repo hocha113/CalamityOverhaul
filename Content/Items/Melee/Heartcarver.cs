@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class Heartcarver : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
 
         /// <summary>剜心机制提示文本</summary>

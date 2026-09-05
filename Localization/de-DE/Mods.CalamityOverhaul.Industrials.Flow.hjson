@@ -1,0 +1,88 @@
+ThermalBattery: {
+	DisplayName: Wärmebatterie
+	Tooltip: Speichert eine bestimmte Menge Strom
+}
+
+FluidPipeline: {
+	DisplayName: Flüssigkeitsrohr
+	Tooltip:
+		'''
+		Fördert Wasser, Lava, Honig oder Schimmer
+		Ein Rohr trägt zur gleichen Zeit nur eine Flüssigkeit; erst nach dem Leeren wechselt es
+		Rechtsklick baut schnell ab
+		'''
+}
+
+FluidTank: {
+	DisplayName: Flüssigkeitstank
+	Tooltip:
+		'''
+		Speichert bis zu 32 Zellen; das Schauglas zeigt den Pegel
+		Über Flüssigkeitsrohre mit Pumpen und Maschinen verbunden
+		Beim Abbau geht der Inhalt verloren
+		'''
+}
+
+LargeFluidTank: {
+	DisplayName: Großer Flüssigkeitstank
+	Tooltip:
+		'''
+		Speichert bis zu 128 Zellen; das Schauglas zeigt den Pegel
+		Über Flüssigkeitsrohre mit Pumpen und Maschinen verbunden
+		Beim Abbau geht der Inhalt verloren
+		'''
+}
+
+FluidText: {
+	WaterName: Wasser
+	LavaName: Lava
+	HoneyName: Honig
+	ShimmerName: Schimmer
+	EmptyName: Leer
+	BarFormat: "{0} {1}/{2}"
+}
+
+CapacitorMatrix: {
+	DisplayName: Kondensator-Matrix
+	Tooltip:
+		'''
+		Großer Speicher für 40000 Strom
+		Lade- und Entladedurchsatz weit über der Wärmebatterie, Pufferkern großer Netze
+		'''
+}
+
+UEPipeline: {
+	DisplayName: Energieleitung
+	Tooltip:
+		'''
+		Zur Stromübertragung
+		Rechtsklick demontiert und recycelt die Zielleitung
+		Verbindet Generatoren mit Batterien oder Verbrauchern
+		'''
+}
+
+LaserEnergyTrans: {
+	DisplayName: Laser-Energieübertrager
+	Tooltip:
+		'''
+		Fernübertragung von Strom
+		Nach dem Platzieren Rechtsklick startet die Lasernavigation, erneuter Rechtsklick auf andere Stromgebäude verknüpft sie
+		Je weiter die Strecke, desto höher der Energieverlust, maximal 100 %
+		'''
+}
+
+CreativeUEPipeline: {
+	DisplayName: Göttliche Energieleitung
+	Tooltip: ""
+}
+
+ItemPipeline: {
+	DisplayName: Logistikleitung
+	Tooltip:
+		'''
+		Zum Transport von Gegenständen
+		Rechtsklick demontiert und recycelt die Zielleitung (nur beim Halten einer Leitung)
+		Rechtsklick auf Endpunkt schaltet zwischen Ausgabe- und Eingangsmodus (nicht beim Halten einer Leitung)
+		Ausgabemodus zieht Gegenstände aus verbundenen Behältern und leitet sie zu Eingangsbehältern
+		'''
+}

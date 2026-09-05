@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// 按住张弓，箭亡连锁沙金电流
     internal class BarrenBow : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "BarrenBow";
         public override void SetDefaults() {
             Item.damage = 28;

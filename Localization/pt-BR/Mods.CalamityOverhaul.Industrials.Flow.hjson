@@ -1,0 +1,90 @@
+ThermalBattery: {
+	DisplayName: Bateria Termica
+	Tooltip: Armazena uma certa quantidade de energia eletrica
+}
+
+FluidPipeline: {
+	// DisplayName: Fluid Pipeline
+	/* Tooltip:
+		'''
+		Transports water, lava, honey or shimmer
+		Each pipe carries only one fluid at a time; it must run empty before switching to another
+		Right-click to quickly remove
+		''' */
+}
+
+FluidTank: {
+	// DisplayName: Fluid Tank
+	/* Tooltip:
+		'''
+		Stores up to 32 tiles of fluid; the window shows the fill level
+		Connects to pumps and machines through fluid pipelines
+		Breaking the tank vents its contents
+		''' */
+}
+
+LargeFluidTank: {
+	// DisplayName: Large Fluid Tank
+	/* Tooltip:
+		'''
+		Stores up to 128 tiles of fluid; the window shows the fill level
+		Connects to pumps and machines through fluid pipelines
+		Breaking the tank vents its contents
+		''' */
+}
+
+FluidText: {
+	// WaterName: Water
+	// LavaName: Lava
+	// HoneyName: Honey
+	// ShimmerName: Shimmer
+	// EmptyName: Empty
+	// BarFormat: "{0} {1}/{2}"
+}
+
+CapacitorMatrix: {
+	// DisplayName: Capacitor Matrix
+	/* Tooltip:
+		'''
+		A large energy bank storing up to 40000 power.
+		Far higher charge and discharge throughput than the Thermal Battery, the flywheel of any large grid.
+		''' */
+}
+
+UEPipeline: {
+	DisplayName: Duto de Energia
+	Tooltip:
+		'''
+		Usado para transmitir energia eletrica
+		Clique direito para desmontar rapidamente e recuperar o duto na posicao do cursor
+		Conecta-se a geradores e outras fontes de energia para transferir energia para baterias ou dispositivos eletricos
+		'''
+}
+
+LaserEnergyTrans: {
+	DisplayName: Transmissor de Energia Laser
+	Tooltip:
+		'''
+		Transmissao remota de energia.
+		Apos a colocacao, clique com o botao direito para ativar a navegacao a laser,
+		e entao clique com o botao direito em outros edificios de energia para conecta-los.
+		Quanto maior a distancia de transmissao, maior a perda de energia.
+		A perda maxima e de 100%.
+		'''
+}
+
+CreativeUEPipeline: {
+	DisplayName: Duto de Energia Criativo
+	Tooltip: ""
+}
+
+ItemPipeline: {
+	DisplayName: Duto de Itens
+	Tooltip:
+		'''
+		Usado para transportar itens
+		Clique direito para desmontar rapidamente e recuperar o duto alvo (apenas quando segurando um duto)
+		Clique direito em um ponto final do duto para alternar entre os modos Saida e Entrada (apenas quando NAO estiver segurando um duto)
+		Dutos no modo Saida extraem itens de containers conectados e os transferem para containers conectados a dutos no modo Entrada
+		'''
+}

@@ -1,0 +1,550 @@
+FluidPump: {
+	DisplayName: 抽液泵
+	Tooltip:
+		'''
+		通电后抽取机身下方的世界液体，存入内部缓冲罐
+		每抽取一格液体消耗2UE，液体经管道送往储罐或机器
+		'''
+}
+
+FluidInjector: {
+	DisplayName: 灌注机
+	Tooltip:
+		'''
+		消耗储存的液体，向机身下方的世界空间放液
+		每放置一格液体消耗2UE
+		放置岩浆时请注意脚下安全
+		'''
+}
+
+BottlingMachine: {
+	DisplayName: 瓶装机
+	Tooltip:
+		'''
+		放入空瓶或空桶时抽取储液装满，放入整瓶整桶时倒空回收液体
+		每次作业消耗5UE，成品从输出槽取出
+		输入输出槽可对接物品管道，自动进出料
+		'''
+}
+
+ShimmerTransmuter: {
+	DisplayName: 微光转化槽
+	Tooltip:
+		'''
+		放入物品，消耗微光将它转化，产物落入输出槽
+		每次转化消耗10UE和64单位微光，微光需用泵从微光湖经管道送入
+		支持物品转化和去合成，硬币或会放出生物的物品不收
+		输入输出槽可对接物品管道，自动进出料
+		'''
+}
+
+TeslaElectromagneticTower: {
+	DisplayName: 特斯拉电磁塔
+	Tooltip:
+		'''
+		需要电能才能工作
+		放置到地面后右键可以在攻击模式和护卫模式之间切换
+		攻击模式会向附近的敌人发射电弧
+		护卫模式会对范围内的所有敌人造成带电减益，如果玩家在范围内，
+		并手持可充能物品，电磁塔将发射电弧为玩家远程充能
+		"工程师请勿靠近"
+		'''
+}
+
+FlameTurret: {
+	TurretOnText: 火焰塔启动
+	TurretOffText: 火焰塔关闭
+	NoEnergyText: 能量不足!
+	FuelLoadText: 装入凝胶 x{0}
+	FuelTakeText: 取出凝胶 x{0}
+	DisplayName: 火焰喷射塔
+	Tooltip:
+		'''
+		需要电能才能工作
+		持续向靠近的敌人喷吐火舌，火焰可以穿透敌群并点燃狱火
+		手持凝胶右键塔身可以装入燃料，燃烧凝胶时火力更猛
+		按住Shift右键取出凝胶；物品管道也可以向燃料槽输送凝胶
+		空手右键或电线信号开关塔
+		"闻起来像烤史莱姆"
+		'''
+}
+
+CryoTurret: {
+	TurretOnText: 冰冻塔启动
+	TurretOffText: 冰冻塔关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 冰冻塔
+	Tooltip:
+		'''
+		需要电能才能工作
+		向范围内的所有敌人持续散布寒气，使其霜冻减速
+		同一敌人被寒气覆盖约两秒后会被短暂冻结
+		减速和冻结才是本职，伤害只有霜火慢烧的一点
+		右键或电线信号开关塔
+		"冷静一下"
+		'''
+}
+
+LaserTurret: {
+	TurretOnText: 激光塔启动
+	TurretOffText: 激光塔关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 激光塔
+	Tooltip:
+		'''
+		需要电能才能工作
+		向视线内的敌人发射高伤害光束，射程极远但射速缓慢
+		被地形挡住的目标不会被锁定，优先攻击Boss
+		右键或电线信号开关塔
+		"一发，一个"
+		'''
+}
+
+ShieldGenerator: {
+	FieldOnText: 护盾力场启动
+	FieldOffText: 护盾力场关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 护盾发生器
+	Tooltip:
+		'''
+		需要电能才能工作
+		通电运转时，范围内的玩家获得能量护盾
+		护盾缓慢蓄能，受击时替你挡下一部分伤害，离开范围后逐渐消散
+		守护的玩家越多，耗电越快
+		右键或电线信号开关力场
+		'''
+}
+
+HealStation: {
+	FieldOnText: 治疗光环启动
+	FieldOffText: 治疗光环关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 治疗站
+	Tooltip:
+		'''
+		需要电能才能工作
+		通电运转时，缓慢回复范围内所有玩家的生命
+		右键或电线信号开关光环
+		"工伤？不存在的"
+		'''
+}
+
+ElectricMinRocket: {
+	EnergyShortage: 电力不足
+	DisplayName: 电动迷你火箭
+	Tooltip:
+		'''
+		右键使用火箭，或者放置在地上右键点击即可启动飞行
+		空中按左右方向键调整方向
+		长按向下方向键缓降，飞行会缓慢消耗电力
+		按下空格键可以中断飞行
+		"苏联制造，坚固耐用，当年差点飞去月球"
+		'''
+}
+
+TeleportStation: {
+	NoEnergyText: 能量不足!
+	TargetNoEnergyText: 目的站点缺乏待机电力!
+	UnnamedText: 未命名站点 ({0}, {1})
+	DisplayName: 传送站
+	Tooltip:
+		'''
+		与世界上的其他传送站组成传送网络
+		右键打开面板，点击目的地即可传送
+		传送按距离耗电，目的站也需保有少量待机电力
+		可以为站点命名，方便在列表里辨认
+		'''
+}
+
+ElectricSundial: {
+	NoEnergyText: 能量不足!
+	BusyText: 时间已在快进中!
+	SkipBroadcast: "{0} 启动了电动日晷，时光飞逝，直至黎明"
+	DisplayName: 电动日晷
+	Tooltip:
+		'''
+		储满 1000 电力后右键使用，把时间快进到黎明
+		自带电源，不受附魔日晷七天冷却的限制
+		使用时会通知全服
+		'''
+}
+
+WeatherController: {
+	NoEnergyText: 能量不足!
+	RainBroadcast: "{0} 启动了天气控制机，雨云正在聚集"
+	ClearBroadcast: "{0} 启动了天气控制机，雨过天晴"
+	DisplayName: 天气控制机
+	Tooltip:
+		'''
+		右键消耗 500 电力呼来降雨，雨天使用则驱散降雨
+		只能操纵雨，管不了风
+		使用时会通知全服
+		'''
+}
+
+WireInterface: {
+	ModeBridgeText: 仅桥接:收到机关信号时切换邻接机器
+	ModeFullText: 满电播报:邻接机器充满时发出机关信号
+	ModeEmptyText: 空电播报:邻接机器耗尽时发出机关信号
+	MachineOffText: 待机
+	MachineOnText: 启用
+	DisplayName: 机关接口器
+	Tooltip:
+		'''
+		机关线与电网之间的双向转接头
+		收到机关信号时，切换紧贴它的机器启用或待机
+		右键切换播报模式：邻接机器充满或耗尽时，沿自身接线发出机关信号
+		贴着要控制的机器安放，再把机关线接到它身上
+		'''
+}
+
+Sensor: {
+	TitleText: 多模式传感器
+	ConditionLabelText: 触发条件
+	ModeOffText: 关闭
+	ModeChargeAboveText: 电量高于阈值
+	ModeChargeBelowText: 电量低于阈值
+	ModeEnemyText: 敌情警戒
+	ModeBloodMoonText: 血月
+	ModeEclipseText: 日食
+	ModeSlimeRainText: 史莱姆雨
+	ModeInvasionText: 入侵
+	ThresholdLabelText: 触发阈值
+	RangeLabelText: 警戒半径
+	EventHintText: 读取世界事件,无需参数
+	OutputLabelText: 输出方式
+	OutputLevelText: 电平跟随
+	OutputPulseText: 单次脉冲
+	StatusActiveText: 条件成立
+	StatusIdleText: 待命
+	StatusNoPowerText: 缺电
+	StatusOffText: 已关闭
+	EnergyLabelText: 电力
+	DisplayName: 多模式传感器
+	Tooltip:
+		'''
+		电网的电子眼，右键打开设置面板
+		可监听邻接电量阈值、附近敌情，或血月、日食、史莱姆雨、入侵
+		条件成立时沿自身接线发出机关信号，支持电平跟随与单次脉冲两种输出
+		待机时每刻消耗 0.1 电力，断电则暂停判定
+		'''
+}
+
+GridSwitch: {
+	OpenText: 已断开
+	CloseText: 已闭合
+	DisplayName: 电网总闸
+	Tooltip:
+		'''
+		嵌进管道线路的电流开关
+		右键或机关信号切换通断，断开时电流无法通过
+		砌进两段管道之间，就能分区启停电网
+		'''
+}
+
+MiningMachine: {
+	DisplayName: 采矿机
+	Tooltip:
+		'''
+		消耗电能钻探矿物，产出取决于脚下的地层与矿脉
+		右键打开勘探终端，查看产出概率并安装升级模块
+		'''
+	DontWork: 需要放置在坚硬的地面上才能进行采矿作业
+}
+
+Collector: {
+	DisplayName: 收集者
+	Tooltip:
+		'''
+		消耗电力进行拾取工作
+		自动拾取周围的掉落物放到在最近的箱子中
+		如果周围没有箱子就不会工作
+		手持物品右键收集者可以进行标记，让其只拾取该类物品
+		'''
+	Text1: 数量过多!
+	Text2: 周围缺少箱子!
+	Text3: 电力不足!
+}
+
+WGGCollector: {
+	DisplayName: 拾荒者
+	Tooltip:
+		'''
+		它热衷于回收一切废品，包括你
+		在它眼中，塑料瓶和脊柱骨没什么本质区别
+		'''
+}
+
+ItemFilter: {
+	DisplayName: 物品过滤板
+	Tooltip:
+		'''
+		使用以打开名单编辑器，光标持物点击面板即可收录
+		对准收集器使用可复制机器名单，对准箱子使用可复制箱内物品
+		手持右键点击收集器、物流管道等机器以安装名单
+		'''
+	StateFormat: "{0} · 已收录 {1} 项"
+	CopiedFromChest: 已复制箱内物品
+	CopiedFromCollector: 已复制收集器名单
+}
+
+Spectrometer: {
+	DisplayName: 光谱机
+	Tooltip:
+		'''
+		允许使用染料给物品上色
+		需要消耗电力才能运行
+		'''
+}
+
+MiningMachineMk2: {
+	DontWork: 需要放置在坚硬的表面上才能进行挖掘作业
+	DisplayName: 采矿机MK2
+	Tooltip:
+		'''
+		消耗电能钻探矿物，勘探范围比初代更宽更深
+		右键打开勘探终端，查看产出概率并安装升级模块
+		'''
+}
+
+Lumberjack: {
+	Text1: 数量过多!
+	Text2: 电力不足!
+	CycleModeText: 循环模式
+	ClearModeText: 清理模式
+	DisplayName: 伐木者
+	Tooltip:
+		'''
+		消耗电力进行伐木工作
+		自动砍伐周围的树木
+		右键在循环模式和清理模式之间切换
+		循环模式会持续砍伐树木，并让树苗重新生长
+		清理模式只会砍伐树木，不会让树苗重新生长
+		'''
+}
+
+LifeWeaver: {
+	NoValidPositionText: 周围没有种植空位!
+	NoEnergyText: 电力不足!
+	DisplayName: 植树者
+	Tooltip: 消耗电力向周围种植树木
+}
+
+WGGLumberjack: {
+	DisplayName: 荒野中的伐木者
+	Tooltip: ""
+}
+
+WGGLifeWeaver: {
+	TurretBatteryDepleted: 电量耗尽
+	DisplayName: 荒野中的植树者
+	Tooltip: ""
+}
+
+Incinerator: {
+	DisplayName: 电动焚化炉
+	Tooltip:
+		'''
+		消耗电力熔炼物品
+		右键打开操控面板
+		Shift右键可以快速放入熔炼物，或者取出熔炼产物
+		熔炼物品可以得到双倍的产出物
+		'''
+}
+
+Crusher: {
+	DisplayName: 矿石粉碎机
+	Tooltip:
+		'''
+		消耗电力粉碎矿石，两份矿石碎出三份同种矿
+		右键打开操控面板
+		Shift右键可以快速放入矿石，或者取出碎矿
+		碎矿再进焚化炉熔炼，同样的矿能多出一半锭
+		'''
+}
+
+CrusherUI: {
+	TitleText: 矿石粉碎机
+	InputLabel: 矿料
+	OutputLabel: 产出
+	ProgressLabel: 破碎
+	PowerLabel: 电力
+	CrushingText: 破碎中
+	IdleText: 待机
+	NoPowerText: 缺电
+	InputHint: 放入矿石，两份碎出三份
+	OutputHint: 点击取出碎矿
+	PowerUnit: UE
+}
+
+Recycler: {
+	DisplayName: 回收机
+	Tooltip:
+		'''
+		消耗电力拆解武器、盔甲和饰品，按稀有度回收出锭
+		拆解不还原配方，产出价值远低于装备本身
+		右键打开操控面板
+		Shift右键可以快速放入装备，或者取出锭料
+		'''
+}
+
+RecyclerUI: {
+	TitleText: 回收机
+	InputLabel: 装备
+	OutputLabel: 锭料
+	ProgressLabel: 拆解
+	PowerLabel: 电力
+	WorkingText: 拆解中
+	IdleText: 待机
+	NoPowerText: 缺电
+	InputHint: 放入武器、盔甲或饰品
+	OutputHint: 点击取出锭料
+	EstimateLabel: 预估产出:
+	PowerUnit: UE
+}
+
+AutoCrafter: {
+	DisplayName: 自动合成台
+	Tooltip:
+		'''
+		右键打开面板，放入样品并钉选一条它的配方
+		机器会从附近的箱子和机器抽取材料，自动合成
+		配方需要的制作站要摆在机器附近
+		成品优先送进附近的存储，送不出去就留在成品槽
+		'''
+}
+
+AutoCrafterUI: {
+	TitleText: 自动合成台
+	SampleLabel: 样品
+	OutputLabel: 成品
+	ListLabel: 配方清单
+	PowerLabel: 电力
+	StatusIdle: 待机
+	StatusNoPin: 未钉选配方
+	StatusPinMissing: 配方已失效，请重新钉选
+	StatusNoPower: 缺电
+	StatusNoStation: 附近缺少制作站
+	StatusNoCondition: 合成条件未满足
+	StatusNoMaterial: 材料不足:
+	StatusOutputFull: 成品槽已满
+	StatusWorking: 装配中
+	SampleHint: 放入样品物品，列出它的配方
+	ListEmptyText: 样品没有对应配方
+	PinHint: 点击钉选这条配方
+	UnpinHint: 再次点击取消钉选
+	ConditionLockText: 条件未满足
+	PinnedTag: 已钉选
+	PowerUnit: UE
+}
+
+Thrower: {
+	NoEnergyText: 能量不足!
+	NoItemText: 没有可投掷的物品!
+	WorkingText: 投掷中...
+	IdleText: 待机
+	DisplayName: 投掷者
+	Tooltip:
+		'''
+		消耗电力投掷物品
+		右键打开操控面板
+		'''
+}
+
+PlayerLauncher: {
+	NoEnergyText: 能量不足!
+	DisplayName: 弹射平台
+	Tooltip:
+		'''
+		消耗电力把站上来的玩家按设定方向弹射出去
+		弹射后短时间内免疫摔落伤害
+		右键打开操控面板
+		'''
+}
+
+PacifierTower: {
+	FieldOnText: 力场启动
+	FieldOffText: 力场关闭
+	NoEnergyText: 能量不足!
+	DisplayName: 宁静力场发生器
+	Tooltip:
+		'''
+		通电运转时压制范围内的自然刷怪
+		右键或电线信号开关力场
+		'''
+}
+
+PotionBeacon: {
+	NoEnergyText: 能量不足!
+	DisplayName: 药剂弥散信标
+	Tooltip:
+		'''
+		存入增益药水，向范围内的玩家持续弥散药效
+		一瓶药水可供给原增益时长两倍的弥散时间
+		右键打开操控面板
+		'''
+}
+
+HerbFarmer: {
+	NoEnergyText: 能量不足!
+	DisplayName: 草药农场机
+	Tooltip:
+		'''
+		消耗种子与电力在周围的合法土壤上自动播种
+		收割开花期的草药，产出草药与种子
+		右键打开操控面板
+		'''
+}
+
+MushroomFarmer: {
+	NoEnergyText: 能量不足!
+	FullText: 产出仓已满!
+	DisplayName: 蘑菇农场机
+	Tooltip:
+		'''
+		消耗电力在周围的草地培育普通蘑菇，蘑菇草上培育发光蘑菇
+		自动采收入仓，偶尔能收获蘑菇草种子
+		右键打开操控面板
+		'''
+}
+
+Apiary: {
+	NoEnergyText: 能量不足!
+	NoBottleText: 没有空瓶!
+	FullText: 产出仓已满!
+	DisplayName: 养蜂箱
+	Tooltip:
+		'''
+		放入空玻璃瓶，蜂群会消耗电力酿造蜂蜜瓶
+		邻近蜂蜜或身处丛林时蜂群更活跃，产率提高
+		右键打开操控面板
+		'''
+}
+
+SlimeVat: {
+	NoEnergyText: 能量不足!
+	NoWaterText: 水量不足!
+	FullText: 产出仓已满!
+	PourText: +{0} 水
+	DisplayName: 史莱姆培养槽
+	Tooltip:
+		'''
+		消耗水与电力周期性培养凝胶
+		自动汲取邻近水体，也可以手持水桶右键倒水
+		右键打开操控面板
+		'''
+}
+
+AutoFisher: {
+	NoEnergyText: 能量不足!
+	NoBaitText: 没有鱼饵!
+	NoWaterText: 附近没有可垂钓的水面!
+	FullText: 渔获仓已满!
+	DisplayName: 自动钓鱼机
+	Tooltip:
+		'''
+		消耗鱼饵与电力，从机身下方的水面自动收获渔获
+		水体越大、鱼饵越好，渔获越丰厚
+		右键打开操控面板
+		'''
+}

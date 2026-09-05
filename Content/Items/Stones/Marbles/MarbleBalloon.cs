@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// <summary>大理石气球，空中↓砸地，蓄势越久冲击越大</summary>
     internal class MarbleBalloon : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 30;
             Item.accessory = true;

@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 {
     internal class DeploySignaltower : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => CWRConstant.Item + "Placeable/DeploySignaltower";
 
         public override void SetDefaults() {

@@ -1,0 +1,294 @@
+MeltdownChip: {
+	DisplayName: 熔毁协议芯片
+	// Tooltip: ""
+}
+
+ProjectileHijackChip: {
+	DisplayName: 弹道接管芯片
+	// Tooltip: ""
+}
+
+ProjectileFreezeChip: {
+	DisplayName: 弹道冻结芯片
+	// Tooltip: ""
+}
+
+DataPurgeChip: {
+	DisplayName: 数据清除芯片
+	// Tooltip: ""
+}
+
+BallisticOverclockChip: {
+	DisplayName: 弹道超频芯片
+	// Tooltip: ""
+}
+
+ElectrolysisChip: {
+	DisplayName: 电解水域芯片
+	// Tooltip: ""
+}
+
+CryostasisChip: {
+	DisplayName: 冷凝固化芯片
+	// Tooltip: ""
+}
+
+LiquidPurgeChip: {
+	DisplayName: 液体抽排芯片
+	// Tooltip: ""
+}
+
+ItemRecallChip: {
+	DisplayName: 远程回收芯片
+	// Tooltip: ""
+}
+
+ReappraiseChip: {
+	DisplayName: 品质重掷芯片
+	// Tooltip: ""
+}
+
+ArmorParseChip: {
+	DisplayName: 装甲解析芯片
+	// Tooltip: ""
+}
+
+ExorciseChip: {
+	DisplayName: 强制注销芯片
+	// Tooltip: ""
+}
+
+DataLeechChip: {
+	DisplayName: 数据榨取芯片
+	// Tooltip: ""
+}
+
+SwarmLinkChip: {
+	DisplayName: 蜂群链接芯片
+	// Tooltip: ""
+}
+
+TurretHijackChip: {
+	DisplayName: 炮塔劫持芯片
+	// Tooltip: ""
+}
+
+MachineOverclockChip: {
+	DisplayName: 机械超频芯片
+	// Tooltip: ""
+}
+
+GridBlackoutChip: {
+	DisplayName: 电网瘫痪芯片
+	// Tooltip: ""
+}
+
+PowerTransmuteChip: {
+	DisplayName: 电能折算芯片
+	// Tooltip: ""
+}
+
+NeuralOverclockChip: {
+	DisplayName: 神经超频芯片
+	// Tooltip: ""
+}
+
+WraithForceDriveChip: {
+	DisplayName: 役鬼强驱芯片
+	// Tooltip: ""
+}
+
+IndexPrereadChip: {
+	DisplayName: 索引预读芯片
+	// Tooltip: ""
+}
+
+LockBurnChip: {
+	DisplayName: 锁芯烧穿芯片
+	// Tooltip: ""
+}
+
+DielSkipChip: {
+	DisplayName: 昼夜跳转芯片
+	// Tooltip: ""
+}
+
+StormInjectChip: {
+	DisplayName: 雷暴注入芯片
+	// Tooltip: ""
+}
+
+GravityInvertChip: {
+	DisplayName: 重力反转芯片
+	// Tooltip: ""
+}
+
+SegmentDelinkChip: {
+	DisplayName: 节段离网芯片
+	// Tooltip: ""
+}
+
+LimbSeizureChip: {
+	DisplayName: 肢体征收芯片
+	// Tooltip: ""
+}
+
+CommandLinkCutChip: {
+	DisplayName: 协同断链芯片
+	// Tooltip: ""
+}
+
+MunitionSwapChip: {
+	DisplayName: 弹药置换芯片
+	// Tooltip: ""
+}
+
+TurretMeshChip: {
+	DisplayName: 炮台联网芯片
+	// Tooltip: ""
+}
+
+BeaconForgeChip: {
+	DisplayName: 信标伪造芯片
+	// Tooltip: ""
+}
+
+PrivilegeEscalateChip: {
+	DisplayName: 提权芯片
+	// Tooltip: ""
+}
+
+ItemSalvageChip: {
+	DisplayName: 拆解芯片
+	// Tooltip: ""
+}
+
+DataBrandChip: {
+	DisplayName: 数据烙印芯片
+	// Tooltip: ""
+}
+
+EntityMasqueradeChip: {
+	DisplayName: 身份伪装芯片
+	// Tooltip: ""
+}
+
+TileConscriptChip: {
+	DisplayName: 物块征用芯片
+	// Tooltip: ""
+}
+
+VeinResonanceChip: {
+	DisplayName: 矿脉共振芯片
+	// Tooltip: ""
+}
+
+StressInvertChip: {
+	DisplayName: 应力反转芯片
+	// Tooltip: ""
+}
+
+PressureSurgeChip: {
+	DisplayName: 增压水域芯片
+	// Tooltip: ""
+}
+
+MirrorSurfaceChip: {
+	DisplayName: 镜像水面芯片
+	// Tooltip: ""
+}
+
+DelayFuseChip: {
+	DisplayName: 延迟引信芯片
+	// Tooltip: ""
+}
+
+ProjectileTitheChip: {
+	DisplayName: 弹幕征收芯片
+	// Tooltip: ""
+}
+
+ProjectileSampleChip: {
+	DisplayName: 弹幕采样芯片
+	// Tooltip: ""
+}
+
+CompensationProtocolChip: {
+	DisplayName: 代偿协议芯片
+	// Tooltip: ""
+}
+
+PayloadRewriteChip: {
+	DisplayName: 载荷改写芯片
+	// Tooltip: ""
+}
+
+PhaseDesyncChip: {
+	DisplayName: 相位偏移芯片
+	// Tooltip: ""
+}
+
+LiveCellTapChip: {
+	DisplayName: 活体电源芯片
+	// Tooltip: ""
+}
+
+FirmwareRollbackChip: {
+	DisplayName: 固件回滚芯片
+	// Tooltip: ""
+}
+
+ShellRequisitionChip: {
+	DisplayName: 躯壳征用芯片
+	// Tooltip: ""
+}
+
+MemoryScorchChip: {
+	DisplayName: 内存烧蚀芯片
+	// Tooltip: ""
+}
+
+BuffSiphonChip: {
+	DisplayName: 增益抽取芯片
+	// Tooltip: ""
+}
+
+CombatSiphonChip: {
+	DisplayName: 战术榨取芯片
+	// Tooltip: ""
+}
+
+BallisticTurncoatChip: {
+	DisplayName: 弹道倒戈芯片
+	// Tooltip: ""
+}
+
+MeltdownBrandChip: {
+	DisplayName: 熔断标记芯片
+	// Tooltip: ""
+}
+
+MapBlackoutChip: {
+	DisplayName: 地图熄灭芯片
+	// Tooltip: ""
+}
+
+ChannelScrambleChip: {
+	DisplayName: 信道乱码芯片
+	// Tooltip: ""
+}
+
+StealthStripChip: {
+	DisplayName: 隐身剥离芯片
+	// Tooltip: ""
+}
+
+CooldownInjectChip: {
+	DisplayName: 冷却注入芯片
+	// Tooltip: ""
+}
+
+CyberwareOfflineChip: {
+	DisplayName: 义体离线芯片
+	// Tooltip: ""
+}

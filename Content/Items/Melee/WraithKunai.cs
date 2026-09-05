@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>鬼魅飞刀，三把猩红飞刀短停后冲撞，末段灼魂火浪</summary>
     internal class WraithKunai : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "WraithKunai";
 
         public override void SetDefaults() {

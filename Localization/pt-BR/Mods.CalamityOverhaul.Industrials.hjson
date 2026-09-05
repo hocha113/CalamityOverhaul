@@ -1,21 +1,2 @@
-ElectricMinRocket: {
-	EnergyShortage: Energia Insuficiente
-	DisplayName: Mini Foguete Eletrico
-	Tooltip:
-		'''
-		Clique direito para usar o foguete, ou coloque-o no chao e clique direito para comecar a voar.
-		Pressione as teclas de seta esquerda ou direita no ar para ajustar a direcao.
-		Segure a tecla de seta para baixo para descer lentamente; voar consumira gradualmente energia.
-		Pressione a barra de espaco para interromper o voo.
-		"Feito na Uniao Sovietica, robusto e confiavel, quase chegou a lua."
-		'''
-}
-
-WGGLifeWeaver: {
-	TurretBatteryDepleted: Bateria Esgotada
-	DisplayName: Plantador de Arvores do Ermo
-	Tooltip: ""
-}
-
 WGGWildernessTP.WindGrivenDiscovery1: Você acha essas máquinas movidas pelo vento fascinantes e começa a pensar em fazer algumas...
 WGGMK2WildernessTP.WindGrivenDiscovery2: Você fica impressionado com essa máquina enorme e sente que deveria tentar construir uma também...

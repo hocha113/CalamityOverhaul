@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
 {
     internal class AnnihilatingUniverse : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "AnnihilatingUniverse";
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         public override bool AltFunctionUse(Player player) => true;

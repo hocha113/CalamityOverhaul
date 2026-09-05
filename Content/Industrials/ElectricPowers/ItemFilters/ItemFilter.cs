@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
     /// </summary>
     internal class ItemFilter : ModItem, IItemFilterHost
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.ElectricPowers + "ItemFilter";
 
         public static LocalizedText StateFormat { get; private set; }

@@ -1,0 +1,392 @@
+ExcavationBoosterModule: {
+	DisplayName: 挖掘强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，作业周期缩短30%
+		齿轮换了副更硬的牙口
+		'''
+}
+
+PickPowerBoosterModule: {
+	DisplayName: 镐力强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，镐力提升60%
+		让一台铁皮机器啃得动秘银
+		'''
+}
+
+ChlorophyteDrillModule: {
+	DisplayName: 叶绿钻探模块
+	Tooltip: 钻头本身就是叶绿锭铸的，以矿制矿
+}
+
+EfficiencyModule: {
+	DisplayName: 效率强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，周期能耗降至60%
+		绕紧的铜线圈不烫手了
+		'''
+}
+
+YieldBoosterModule: {
+	DisplayName: 产出强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，产出判定概率提升35%
+		筛网换密了一号
+		'''
+}
+
+ProspectorModule: {
+	DisplayName: 勘探强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，宝石、化石、陨石等稀有副产物的权重提升至三倍
+		透镜底下，砂砾也分三六九等
+		'''
+}
+
+SurveyArrayModule: {
+	DisplayName: 勘探阵列模块
+	Tooltip:
+		'''
+		安装到采矿机后，勘探范围扩大50%
+		回声比钻头先到
+		'''
+}
+
+VeinFocusModule: {
+	DisplayName: 矿脉聚焦模块
+	Tooltip:
+		'''
+		安装到采矿机后，真实矿脉对产出的加成提升60%
+		顺着脉走，别跟石头较劲
+		'''
+}
+
+DoubleLoadModule: {
+	DisplayName: 双倍装载模块
+	Tooltip:
+		'''
+		安装到采矿机后，每次产出有25%概率翻倍
+		矿斗焊宽了一圈
+		'''
+}
+
+OverdriveCoreModule: {
+	DisplayName: 过载核心模块
+	Tooltip:
+		'''
+		安装到采矿机后，作业周期缩短45%，能耗提升60%
+		轴承烧红之前它不打算停
+		'''
+}
+
+ThrottleValveModule: {
+	DisplayName: 节流阀模块
+	Tooltip:
+		'''
+		安装到采矿机后，作业周期延长50%，能耗降至45%
+		慢，但一整夜都是它的
+		'''
+}
+
+ChestLinkModule: {
+	DisplayName: 集装组件
+	Tooltip:
+		'''
+		安装到采矿机后，产出直接存入近旁的箱子，存不下才落地
+		省得弯腰去捡
+		'''
+}
+
+SmelterModule: {
+	DisplayName: 现场熔炼模块
+	Tooltip:
+		'''
+		安装到采矿机后，矿石按熔炉配比熔成锭再产出，能耗提升40%
+		出井口就是锭
+		'''
+}
+
+MachineModuleText: {
+	TagText: 机器升级模块
+	TargetsLine: 适用：{0}
+	HowToText: 右键对应机器打开面板，放入模块槽后生效
+	SocketOnly: 这台机器装不下这枚模块！
+	SocketDuplicate: 同类模块已经装了一枚！
+	SocketEmptyHint: 放入升级模块
+	SlotLabel: 模块
+	NameMining: 采矿机
+	NameThermal: 热能发电机
+	NameWind: 风力发电机
+	NameHydro: 水力发电机
+	NameIncinerator: 焚化炉
+	NameCrusher: 粉碎机
+	NameRecycler: 回收机
+	NameMagma: 岩浆热能发电机
+	NameBiomass: 生物质发电机
+	NameTurret: 防御塔
+	NameSolar: 太阳能板
+}
+
+InsulationLiningModule: {
+	DisplayName: 保温层模块
+	Tooltip:
+		'''
+		安装到热能发电机后，散热降至55%
+		石棉裹三层，热气出不了门
+		'''
+}
+
+ForcedDraftModule: {
+	DisplayName: 强制鼓风模块
+	Tooltip:
+		'''
+		安装到热能发电机后，燃烧速度提升45%，火更旺也烧得更快
+		风箱一压，炭火直起腰
+		'''
+}
+
+SlowBurnValveModule: {
+	DisplayName: 缓燃阀模块
+	Tooltip:
+		'''
+		安装到热能发电机后，燃烧速度降至60%，单份燃料烧得更久
+		火苗掐细，一块煤顶过半宿
+		'''
+}
+
+HeatRecoveryModule: {
+	DisplayName: 余热回收模块
+	Tooltip:
+		'''
+		安装到热能发电机后，燃料产热提升25%
+		烟道里多拐两个弯，把跑掉的热拽回来
+		'''
+}
+
+AutoFeedHopperModule: {
+	DisplayName: 自动进料斗
+	Tooltip:
+		'''
+		安装到热能发电机、焚化炉或生物质发电机后，自动从近旁的存储补料
+		料斗只认空槽，手不用再伸
+		'''
+}
+
+ExtendedBladesModule: {
+	DisplayName: 加长叶片模块
+	Tooltip:
+		'''
+		安装到风力发电机后，输出提升30%
+		叶尖多出的那截，兜的全是白捡的风
+		'''
+}
+
+LowWindGearboxModule: {
+	DisplayName: 低风齿轮箱模块
+	Tooltip:
+		'''
+		安装到风力发电机后，风速倍率下限从0.8提升至1.3
+		齿比咬得细，微风也盘得动
+		'''
+}
+
+TallTowerModule: {
+	DisplayName: 高空塔架模块
+	Tooltip:
+		'''
+		安装到风力发电机后，输出提升15%，可与加长叶片叠加
+		高出十米，风大一档
+		'''
+}
+
+FlowShroudModule: {
+	DisplayName: 导流罩模块
+	Tooltip:
+		'''
+		安装到水力发电机后，输出提升30%
+		喇叭口把散水拢成一股劲
+		'''
+}
+
+QuickSpinModule: {
+	DisplayName: 快速起转模块
+	Tooltip:
+		'''
+		安装到水力发电机后，转速爬升提升至三倍
+		上好发条，落水即到工作转速
+		'''
+}
+
+DeepBearingModule: {
+	DisplayName: 深水轴承模块
+	Tooltip:
+		'''
+		安装到水力发电机后，输出提升15%，可与导流罩叠加
+		轴不吃水，劲全给轮子
+		'''
+}
+
+HighTempElectrodeModule: {
+	DisplayName: 高温电极模块
+	Tooltip:
+		'''
+		安装到焚化炉后，熔炼速度提升45%
+		双针对上，弧光比炉火先到
+		'''
+}
+
+EconomizerCoilModule: {
+	DisplayName: 节能线圈模块
+	Tooltip:
+		'''
+		安装到焚化炉后，熔炼能耗降至60%
+		换了细漆线，电表转得斯文
+		'''
+}
+
+TwinCrucibleModule: {
+	DisplayName: 双联坩埚模块
+	Tooltip:
+		'''
+		安装到焚化炉后，每炉有25%概率双倍产出
+		一炉火，两只杯
+		'''
+}
+
+AutoEjectChuteModule: {
+	DisplayName: 自动出料口
+	Tooltip:
+		'''
+		安装到焚化炉后，成品自动送进近旁的存储
+		溜槽一搭，出炉即入库
+		'''
+}
+
+CapacityCellModule: {
+	DisplayName: 扩容电池模块
+	Tooltip:
+		'''
+		安装到任意机器后，储能上限提升50%
+		哪家的插座都认这副极板
+		'''
+}
+
+TurretRangefinderModule: {
+	DisplayName: 测距镜组模块
+	Tooltip:
+		'''
+		安装到防御塔后，索敌半径提升25%
+		护盾与治疗塔改为扩大光环范围
+		镜片先于炮口看见敌人
+		'''
+}
+
+TurretAutoloaderModule: {
+	DisplayName: 快速装填模块
+	Tooltip:
+		'''
+		安装到防御塔后，开火速度提升30%
+		光环塔没有开火节奏，装了不起作用
+		上一发未落，下一发已上膛
+		'''
+}
+
+TurretPowerSaverModule: {
+	DisplayName: 火控节能模块
+	Tooltip:
+		'''
+		安装到防御塔后，耗电降至75%
+		单发耗电与持续耗电都认它
+		守城时电表终于转得慢了
+		'''
+}
+
+CopperTinDrill: {
+	DisplayName: 铜锡钻头
+	Tooltip: 最先磨亮的那一支
+}
+
+IronLeadDrill: {
+	DisplayName: 铁铅钻头
+	Tooltip: 钻头比矿还结实，这就够了
+}
+
+SilverTungstenDrill: {
+	DisplayName: 银钨钻头
+	Tooltip: 刃口镀了层不肯生锈的体面
+}
+
+GoldPlatinumDrill: {
+	DisplayName: 金铂钻头
+	Tooltip: 啃软金属啃出了瘾
+}
+
+EvilOreDrill: {
+	DisplayName: 邪金钻头
+	Tooltip: 淬过两种邪血，哪边都认它
+}
+
+MeteoriteDrill: {
+	DisplayName: 陨铁钻头
+	Tooltip: 天上掉下来的，得用天上的料去接
+}
+
+ObsidianDrill: {
+	DisplayName: 黑曜钻头
+	Tooltip: 水火相激处磨出的口
+}
+
+HellstoneDrill: {
+	DisplayName: 狱岩钻头
+	Tooltip: 握把到现在还是温的
+}
+
+FossilDrill: {
+	DisplayName: 化石钻头
+	Tooltip: 刷子太慢了
+}
+
+CoalDrill: {
+	DisplayName: 煤层钻头
+	Tooltip: 锅炉房点名要它
+}
+
+GemClusterDrill: {
+	DisplayName: 晶簇钻头
+	Tooltip: 金刚石的牙口专啃亮东西
+}
+
+CobaltPalladiumDrill: {
+	DisplayName: 钴钯钻头
+	Tooltip: 祭坛碎屑还嵌在齿缝里
+}
+
+MythrilOrichalcumDrill: {
+	DisplayName: 秘银山铜钻头
+	Tooltip: 转起来有点圣器的响动
+}
+
+AdamantiteTitaniumDrill: {
+	DisplayName: 精金钛金钻头
+	Tooltip: 深处的硬骨头，交给它
+}
+
+LuminiteDrillModule: {
+	DisplayName: 夜明钻探模块
+	Tooltip: 月亮的碎屑，也照采不误
+}
+
+ProcessingFeedHopper: {
+	DisplayName: 加工进料斗
+	Tooltip: 安装到粉碎机或回收机后，机器会从近旁存储自动补料
+}
+
+ProcessingEjectChute: {
+	DisplayName: 加工出料槽
+	Tooltip: 安装到粉碎机或回收机后，产物会直接送进近旁存储
+}

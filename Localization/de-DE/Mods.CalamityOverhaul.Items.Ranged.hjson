@@ -1,0 +1,296 @@
+AnnihilatingUniverse: {
+	DisplayName: Universum-Vernichter
+	Tooltip:
+		'''
+		Pfeile hinterlassen bei einem Treffer einen leuchtenden Stern
+		Rechtsklick zerstört Feinde mit der Macht des Götterschlächters
+		'''
+}
+
+BarrenBow: {
+	DisplayName: Brachbogen
+	Tooltip: Die abgefeuerten Pfeile lösen bei Treffern elektrische Entladungen aus
+}
+
+AvalancheM60: {
+	DisplayName: Lawine M60
+	Tooltip:
+		'''
+		Verwendet Schneebälle als Munition
+		Feuert eine große Menge Schneebälle ab; die Feuerkraft steigt mit abnehmender Munition
+		Alle 20 Schüsse löst eine Überlastexplosion aus, die eine kleine Lawine erzeugt
+		"Denji, lass uns eine Schneeballschlacht machen"
+		'''
+}
+
+CrystalDimming: {
+	DisplayName: Eiszeit
+	Tooltip:
+		'''
+		Verwendet Schneebälle als Munition
+		Feuert Kristallgeschosse ab, die am Einschlagpunkt Gletschersäulen aus dem Boden emporsteigen lassen
+		Säulen wachsen höher, wenn sie in der Nähe bestehender Kristallcluster auftauchen
+		Rechtsklick entfesselt eine Gletscherwelle, die entlang des Geländes einen stetig wachsenden Eisgrat auftürmt
+		"Die Erde erinnert sich an jeden Frost"
+		'''
+}
+
+DarkFrostSolstice: {
+	DisplayName: Dunkelfrostflut
+	Tooltip:
+		'''
+		Verwendet Schneebälle als Munition
+		Feuert Hagel und Polarflammen ab
+		Angriffe können Gegner einfrieren
+		Alle 20 Schüsse löst eine Überlastexplosion aus und erzeugt am Cursor eine gewaltige Eissäule
+		'''
+}
+
+SnowQuay: {
+	DisplayName: Schneequay M16
+	Tooltip:
+		'''
+		Verwendet Schneebälle als Munition
+		Linksklick gedrückt halten, um einen dichten Schneestrom auf Feinde zu blasen
+		Beim Blasen sammelt sich Druck in der Verdichtungskammer
+		Linksklick loslassen mit genügend Druck, um eine verdichtete Schneekugel abzufeuern
+		"Der Winterspaß beginnt mit einem Schneepustgerät"
+		'''
+}
+
+NeutronBow: {
+	DisplayName: Neutronenbogen
+	Tooltip:
+		'''
+		Feuere Gravitationspfeile ab, die bei Treffer Gammastrahlen erzeugen
+		Halte die rechte Maustaste für Dreistufenladung gedrückt. Wenn die Energie vollständig aufgeladen ist, werden drei starke Gravitationspfeile abgefeuert
+		'''
+	Lang1: Fängt Schwerkraft ein
+	Lang2: Zwingt Schwerkraft in die Knie
+	Lang3: Bereit!!
+}
+
+NeutronGun: {
+	DisplayName: Sternenjäger
+	Tooltip:
+		'''
+		Feuere Gravitationsgeschosse ab, die bei Treffer einen Verzerrungspunkt erzeugen
+		Drücke die rechte Maustaste, um in den Scharfschützenmodus zu wechseln und stärkere Gravitationsgeschosse abzufeuern. Die Geschosse erzeugen bei Treffer Gammastrahlen, die herabregnen
+		Jeder Schuss lädt die Waffe auf. Wenn die Ladung vollständig ist und erneut geschossen wird, wird an der Mausposition eine Neutronensternexplosion ausgelöst
+		"Schieße die Sonne herunter!"
+		'''
+}
+
+MG42: {
+	DisplayName: MG42
+	Tooltip:
+		'''
+		Dauerfeuer überhitzt das Maschinengewehr
+		Verwandelt Gewehrkugeln in Panzerungsdurchschlagsgeschosse
+		'''
+}
+
+SnowQuayMK2: {
+	DisplayName: Schneequay MK2
+	Tooltip:
+		'''
+		Verwendet Schneebälle als Munition
+		Eine militärische Umrüstung mit Kryo-Kompressor, der Schneebälle in hochgeschwindige Eiszapfen presst
+		Linksklick feuert Drei-Schuss-Bursts; die letzte Kugel ist ein schwerer Zapfen, der beim Treffer in Kristalle zerspringt
+		Rechtsklick entlädt einen Überdruck-Streuschuss kurzreichweitiger Eiszapfen
+		„Die Schneequay der zweiten Generation braucht kein Vorheizen mehr“
+		'''
+}
+
+Starship: {
+	DisplayName: Sternenriese
+	Tooltip:
+		'''
+		Dauerfeuer baut Hitze auf, Feuerrate steigt mit der Hitze
+		Rechtsklick lädt Kometengeschoss, nächster Schuss mit massivem Schaden und Hyper-Zersetzung
+		Bei Spitzenhitze begleiten zwei Flügeljäger mit zielsuchenden Sternbolzen; periodisch Planetensalven von hinten
+		Loslassen des Abzugs: Finale – 14 verteidigungsignorierende Meteore und Miniaturgalaxie am Cursor
+		'''
+}
+
+DuneStalker: {
+	DisplayName: Dünenjäger
+	Tooltip:
+		'''
+		Feuert einen kettengebundenen Haken statt der Munition selbst
+		Der Haken zerreißt Gegner auf seinem Weg und kehrt nach Treffer oder Reichweitenende automatisch zurück
+		'''
+}
+
+Snowblindness: {
+	DisplayName: Schneeblindheit
+	Tooltip:
+		'''
+		Hochfrequentes Abschießen von Schneebällen und eisigen Strahlen
+		Erzeugt nach dem Treffen mit Feinden mehrere EX-eisige Strahlen um sich herum
+		"Verloren im Schneesturm, ewiges Warten, Schmerzen auf der Karte, Überholen in Kurven,
+		Gefrorene Risse, vertrocknete Blutflecken, rotes Eis, weinender Biber, Gestalten im Eis"
+		'''
+}
+
+RaiderGun: {
+	DisplayName: Räuber
+	Tooltip:
+		'''
+		Wandelt Musketenkugeln in Hochgeschwindigkeitsgeschosse
+		Rechtsklick für Rollstoß und volles Magazin
+		Erster Schuss nach dem Rollen wird zur Zerstörer-Granate
+		„Perfekt für Geiselbefreiungen in Innenräumen“
+		'''
+}
+
+HyperionBarrage: {
+	DisplayName: Hyperion-Automatenturm
+	Tooltip:
+		'''
+		Feuert thermische Marschflugkörper
+		„Alles nutzen, was geht“
+		'''
+}
+
+RaiderGunEX: {
+	DisplayName: Räuber EX
+	Tooltip:
+		'''
+		Wandelt Musketenkugeln in Hochgeschwindigkeitsgeschosse
+		Feuert zusätzlich viele Zerstörer-Homing-Raketen
+		Rechtsklick für Rollstoß und volles Magazin
+		Erster Schuss nach dem Rollen wird zur Zerstörer-Granate
+		„Flächenbombardement“
+		'''
+}
+
+Dicoria: {
+	DisplayName: Dicoria
+	Tooltip:
+		'''
+		Feuert zwei Kugeln, Schüsse können aufgeladen werden
+		Voll aufgeladen entsteht ein Wärmestrahl
+		„Sagen wir mal so – bekommen wir davon Schielen?“
+		'''
+}
+
+BloodshotBomb: {
+	DisplayName: Weinende Pupillenbombe
+	Tooltip:
+		'''
+		In der Hand zündet die Lunte; drei Stufen, jede etwa zwei Sekunden
+		Je kürzer die Lunte, desto röter das Auge, desto heftiger die Explosion, desto mehr Fleisch spritzt
+		Linksklick wirft jederzeit; beim Aufschlag explodiert sie, Fleischfetzen nur, wenn sie Fleisch beißt
+		Brennt die Lunte herunter und du lässt nicht los, explodiert sie in deiner Hand
+		"Sie kann dich nicht gehen lassen"
+		'''
+	SelfBoom: "{0} hat noch einmal hingesehen"
+}
+
+LaserPistol: {
+	DisplayName: Laserpistole
+	Tooltip:
+		'''
+		Verbraucht Energie, um Laser abzufeuern, die mehrere Gegner durchdringen
+		„Die Auslastung ist nicht besonders hoch“
+		'''
+}
+
+HyperionBarrageEX: {
+	DisplayName: Hyperion-Automatenturm EX
+	Tooltip:
+		'''
+		Feuert thermische Marschflugkörper; nach Treffer spaltet sich der Geschoss in sechs Submunitionen für Sekundärschaden
+		„Mehr als vorgesehen“
+		'''
+}
+
+SporeBubbleBlaster: {
+	DisplayName: Sporenblasenwerfer
+	Tooltip: Sprüht einen Strom von Sporenpartikeln
+}
+
+FungalRevolver: {
+	DisplayName: Pilzrevolver
+	Tooltip:
+		'''
+		Verwandelt Musketenkugeln in Pilzgeschosse
+		„Nach dem Reinigen ließ es sich nicht mehr benutzen“
+		'''
+}
+
+Pallbearer: {
+	DisplayName: Sargträger
+	Tooltip:
+		'''
+		Linksklick gedrückt halten zum Aufladen, loslassen feuert Sargträger-Pfeil
+		Längeres Aufladen verstärkt den Pfeil
+		Rechtsklick wirft die Armbrust
+		Treffer verstärkt den nächsten Schuss stark und beschleunigt das Aufladen
+		„Auch Sargträger genannt“
+		'''
+}
+
+UniversalFrost: {
+	DisplayName: Allfrost
+	Tooltip:
+		'''
+		Verwendet Schneebälle als Munition
+		Linksklick feuert schnell Frostglanzgeschosse; jeder Treffer lädt die Frostkuppel auf
+		Bei voller Ladung entfaltet Rechtsklick am Cursor eine Aurora-Frostdecke
+		Die Decke regnet Frostlanzen auf Feinde darunter
+		„Wenn alles verstummt, fließt nur noch das Aurora am Himmel“
+		'''
+}
+
+SneezingWyrm: {
+	DisplayName: Niesdrachenbüchse
+	Tooltip:
+		'''
+		Schießt rasch glühende Drachenschläge
+		Dauerfeuer heizt den Lauf, die Geschosse laufen von Rotorange nach Blauweiß
+		Ist ein Atemzug voll, haucht der Drache entlang der Bahn eine schlängelnde, jagende Atemkugel
+		Die Nase juckt vom Rauch; zwischendurch niest er und sprüht seitlich eine Rauchkette
+		"Stell dich nicht auf die Seite, auf der er niest"
+		'''
+}
+
+TiroFinale: {
+	DisplayName: Letzter Walzer
+	/* Tooltip:
+		'''
+		Benefits from both ranged and magic damage bonuses
+		Firing consumes ammo and mana, weaving two golden phantom muskets into the formation orbiting you with every shot
+		The formation holds up to eight muskets; until it is full they hold position without firing
+		Once full, every shot makes the two oldest phantom muskets fire at your cursor right after you
+		Each phantom musket rings once and dissolves into light, and a fresh one is woven in its place
+		Right click to condense at least four phantom muskets into a great cannon and play the finale; the more muskets, the harder it hits
+		"Mind your manners, and make the curtain call magnificent"
+		''' */
+}
+
+Undertow: {
+	DisplayName: Abgrundsog
+	Tooltip:
+		'''
+		Wandelt beliebige Pfeile in Abgrunddornen
+		Trifft ein Dorn, stürzt der Wasserschweif zu einer kleinen Kavitationsblase und explodiert noch einmal
+		Rechtsklick halten lädt; voll und los, ein 3-fach-Schadens-Hochdruckpfeil
+		Der schwere Pfeil durchdringt alles und zerrt Feinde auf die Bahn
+		Bleibt er stehen, löst er eine Kavitationsimplosion aus
+		"Das Meer stößt dich nicht fort. Es holt dich hinein"
+		'''
+}
+
+Thornstring: {
+	DisplayName: Dornensehne
+	Tooltip:
+		'''
+		Wandelt beliebige Pfeile in Dornpfeile
+		Beim Treffer spritzen kurze Nadeln zu beiden Seiten
+		Rechtsklick halten lädt; voll und los, ein 2,5-fach durchdringender Schwerdornpfeil
+		Der schwere Pfeil öffnet bei jedem Treffer und am Aufschlag einen Blütenkranz
+		"Die Sehne ist Ranke, der Pfeil ist Dorn, der Bogen eine Blume, die nicht welken will"
+		'''
+}

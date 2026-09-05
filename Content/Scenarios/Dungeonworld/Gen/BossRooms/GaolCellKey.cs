@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
     /// </summary>
     internal class GaolCellKey : GaolModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => "Terraria/Images/Item_" + ItemID.GoldenKey;
 
         /// <summary>玩家相对房内的落位列（左门内侧；rx6 全高无障，避开 rx8 柱础斜切）</summary>

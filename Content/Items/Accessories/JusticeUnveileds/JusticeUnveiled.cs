@@ -11,6 +11,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
     /// <summary>正义的显现</summary>
     internal class JusticeUnveiled : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "JusticeUnveiled";
         public const int DropProbabilityDenominator = 6000;
         private static bool OnLoaden;

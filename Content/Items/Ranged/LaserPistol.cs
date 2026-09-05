@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class LaserPistol : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "LaserPistol";
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;

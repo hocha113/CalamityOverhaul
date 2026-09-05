@@ -1,0 +1,298 @@
+AnnihilatingUniverse: {
+	DisplayName: Annihilating Universe
+	Tooltip:
+		'''
+		Arrows leave a brilliant star at the impact point after hitting an enemy
+		Right-click to destroy enemies with the Devourer's power
+		'''
+}
+
+BarrenBow: {
+	DisplayName: Barren Bow
+	Tooltip: The arrows fired will burst out a barren current when they hit the enemy
+}
+
+AvalancheM60: {
+	DisplayName: Avalanche M60
+	Tooltip:
+		'''
+		Use snowballs as ammunition.
+		Firing a barrage of snowballs,
+		Firepower increasing as ammunition diminishes.
+		Every 20 shots triggers an overdrive surge,
+		Creating a small avalanche.
+		"Denji, let's have a snowball fight."
+		'''
+}
+
+CrystalDimming: {
+	DisplayName: Crystal Dimming
+	Tooltip:
+		'''
+		Use snowballs as ammunition
+		Fires crystal shells that raise glacier spikes from the ground at the point of impact
+		Spikes grow taller when raised near existing crystal clusters
+		Right-click unleashes a glacial surge, raising an ever-taller ridge of ice along the terrain
+		"The earth remembers every frost"
+		'''
+}
+
+DarkFrostSolstice: {
+	DisplayName: Dark Frost Solstice
+	Tooltip:
+		'''
+		Use snowballs as ammunition.
+		Firing hail and polar flames,
+		Every 20 shots triggers an overdrive surge,
+		Summoning wintry divinity at the mouse cursor.
+		'''
+}
+
+SnowQuay: {
+	DisplayName: Snow Viper M16
+	Tooltip:
+		'''
+		Use snowballs as ammunition
+		Hold left-click to blow a dense stream of snow at your enemies
+		Blowing snow builds up pressure in the packing chamber
+		Release left-click with enough pressure to launch a packed snowball shell
+		"Winter's joy begins with a snowblower"
+		'''
+}
+
+NeutronBow: {
+	DisplayName: Roche's String
+	Tooltip:
+		'''
+		Fires gravity arrows that generate gamma rays upon hitting a target.
+		Right-click to perform a three-level charge, releasing three powerful gravity arrows when fully charged.
+		'''
+	Lang1: Trapping gravity
+	Lang2: Is making gravity yield
+	Lang3: Finished!!
+}
+
+NeutronGun: {
+	DisplayName: Stellar Hunter
+	Tooltip:
+		'''
+		Fires gravity projectiles that create warp points upon hitting a target.
+		Right-click to switch to sniper mode, firing more powerful gravity bullets that summon gamma rays upon impact.
+		Each shot charges the gun, and when fully charged, the next shot triggers a neutron star explosion at the cursor.
+		"Shoot the sun down!"
+		'''
+}
+
+MG42: {
+	DisplayName: MG42
+	Tooltip:
+		'''
+		Continuous firing causes the barrel to overheat
+		Turning musket bullets into armor-piercing bullets
+		'''
+}
+
+SnowQuayMK2: {
+	DisplayName: Snow Quay MK2
+	Tooltip:
+		'''
+		Use snowballs as ammunition
+		A military refit with a cryo-compressor that casts snowballs into high-velocity icicles
+		Left-click fires three-round bursts; the final round is a heavy spike that bursts into crystals
+		Right-click vents an overpressure scatter of short-ranged icicles
+		"The second-generation Snow Viper no longer needs preheating"
+		'''
+}
+
+Starship: {
+	DisplayName: Starship
+	Tooltip:
+		'''
+		Continuously firing builds heat, increasing fire rate over time
+		Right-click to consume ammo and load a comet shell; the next shot fires it for massive damage and inflicts Hyper-Disintegration
+		At peak heat, two escort wingmen fly alongside firing homing star bolts; planets are periodically hurled from behind you
+		Releasing the trigger unleashes the finale: 14 defense-ignoring homing meteors and a micro-galaxy rain down at the cursor
+		'''
+}
+
+DuneStalker: {
+	DisplayName: Dune Stalker
+	Tooltip:
+		'''
+		Fires a chain-bound hookhead instead of consuming the ammunition outright
+		The hook tears through enemies along its path, then automatically reels back on impact or once it reaches its maximum range
+		'''
+}
+
+Snowblindness: {
+	DisplayName: Snow Blindness
+	Tooltip:
+		'''
+		Fires snowballs and frost beams at high frequency
+		On hit, generates multiple EX frost beams around the target
+		"Lost in the blizzard, an eternal wait, a painful map, a sharp turn,
+		cracked lenses, dried bloodstains, red ice, a crying beaver, a shadow in the ice"
+		'''
+}
+
+RaiderGun: {
+	DisplayName: Raider
+	Tooltip:
+		'''
+		Converts musket balls into high-speed bullets
+		Right click to roll dash and reload the magazine
+		The first bullet fired after rolling is converted into a Destroyer Grenade
+		"Perfect for indoor hostage rescues"
+		'''
+}
+
+HyperionBarrage: {
+	DisplayName: Hyperion Auto-Turret
+	Tooltip:
+		'''
+		Fires thermal cruise missiles that detonate on impact and ignite enemies
+		Every fourth trigger pull vertically launches a salvo of three missiles that dive onto your crosshair
+		"Make full use of everything"
+		'''
+}
+
+RaiderGunEX: {
+	DisplayName: Raider EX
+	Tooltip:
+		'''
+		Converts musket balls into high-speed bullets
+		Additionally fires a barrage of Destroyer Homing Missiles
+		Right click to roll dash and reload the magazine
+		The first bullet fired after rolling is converted into a Destroyer Grenade
+		"Carpet bombing"
+		'''
+}
+
+Dicoria: {
+	DisplayName: Dicoria
+	Tooltip:
+		'''
+		Fires dual bullets, can be charged
+		Fully charged shots release a thermal beam
+		"By the way, won't this make us cross-eyed?"
+		'''
+}
+
+BloodshotBomb: {
+	DisplayName: Bloodshot Bomb
+	Tooltip:
+		'''
+		Lights its fuse the moment you hold it; the fuse burns through three stages, roughly two seconds each
+		The shorter the fuse, the redder the eye, the fiercer the blast, and the more flesh it flings
+		Throw anytime with left click; it bursts on contact, and only biting into flesh sends chunks flying
+		If the fuse burns out while you are still holding on, it goes off in your hand
+		"It can't bear to leave you"
+		'''
+	SelfBoom: "{0} took one look too many"
+}
+
+LaserPistol: {
+	DisplayName: Laser Pistol
+	Tooltip:
+		'''
+		Expend energy to shoot lasers and penetrate multiple enemies
+		"Utilization is not high."
+		'''
+}
+
+HyperionBarrageEX: {
+	DisplayName: Hyperion Barrage EX
+	Tooltip:
+		'''
+		Fires heavy cruise missiles that burst into six self-locking cluster missiles on detonation
+		"Beyond its intended use"
+		'''
+}
+
+SporeBubbleBlaster: {
+	DisplayName: Spore Bubble Blaster
+	Tooltip: Sprays a stream of spore airflow
+}
+
+FungalRevolver: {
+	DisplayName: Fungal Revolver
+	Tooltip:
+		'''
+		Converts Musket Balls into fungal rounds
+		"Cleaning it only made it worse"
+		'''
+}
+
+Pallbearer: {
+	DisplayName: Pallbearer
+	Tooltip:
+		'''
+		Hold left-click to load and charge, loosing a near-instant heavy bolt that punches through your quarry and sears a blood brand
+		Right-click to hurl the crossbow, letting the casket's breath cling to your guest
+		Three brands on the same target bring the coffin down
+		"Also known as the Coffin Carrier"
+		'''
+}
+
+UniversalFrost: {
+	DisplayName: Universal Frost
+	Tooltip:
+		'''
+		Use snowballs as ammunition
+		Left-click rapidly fires frost glimmers, each shot charging the frost dome
+		Once fully charged, right-click unfurls an aurora curtain above the cursor
+		The curtain rains frost lances upon enemies beneath it
+		"When all creation falls silent, only the aurora still flows across the sky"
+		'''
+}
+
+SneezingWyrm: {
+	DisplayName: Sneezing Wyrm
+	Tooltip:
+		'''
+		Rapidly fires searing wyrmstrike rounds
+		Sustained fire stokes the barrel hotter, pushing the tracers from orange toward blue-white
+		With every gathered breath, the wyrm huffs a weaving, seeking bolt of dragonbreath down the line of fire
+		Smoke tickles the old snout into intermittent sneezes that vent thick fumes to the side
+		"Don't stand on its sneezing side"
+		'''
+}
+
+TiroFinale: {
+	DisplayName: Tiro Finale
+	Tooltip:
+		'''
+		Benefits from both ranged and magic damage bonuses
+		Firing consumes ammo and mana, weaving two golden phantom muskets into the formation orbiting you with every shot
+		The formation holds up to eight muskets; until it is full they hold position without firing
+		Once full, every shot makes the two oldest phantom muskets fire at your cursor right after you
+		Each phantom musket rings once and dissolves into light, and a fresh one is woven in its place
+		Right click to condense at least four phantom muskets into a great cannon and play the finale; the more muskets, the harder it hits
+		"Mind your manners, and make the curtain call magnificent"
+		'''
+}
+
+Undertow: {
+	DisplayName: Undertow
+	Tooltip:
+		'''
+		Turns any arrow into an abyssal spine
+		When a spine strikes an enemy, its wake collapses into a small cavitation bubble that bursts again
+		Hold right click to charge; release at full draw to loose a depth-pressure spine at 3x damage
+		The heavy spine pierces everything and drags enemies toward its path
+		When it finally stops, it detonates a cavitation implosion
+		"The sea does not push you away; it takes you in"
+		'''
+}
+
+Thornstring: {
+	DisplayName: Thornstring
+	Tooltip:
+		'''
+		Turns any arrow into a thorn arrow
+		Thorn arrows burst into short needles on both sides when they strike
+		Hold right click to draw fully, then release a piercing heavy thorn arrow at 2.5x damage
+		The heavy arrow blooms a ring of petals on every strike and where it lands
+		"The string is a vine, the arrow a thorn, the bow a flower that refuses to wither"
+		'''
+}

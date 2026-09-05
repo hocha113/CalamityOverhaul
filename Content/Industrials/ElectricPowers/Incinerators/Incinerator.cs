@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
     /// <summary>热力焚烧炉</summary>
     internal class Incinerator : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Incinerator";
         public override void SetDefaults() {
             Item.width = 48;

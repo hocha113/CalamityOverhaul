@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.BloodshotBombs
     /// </summary>
     internal class BloodshotBomb : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "BloodshotBomb";
 
         /// <summary>引线总时长(帧)，烧尽即在手中炸开</summary>

@@ -14,10 +14,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         public static readonly SandevistanSkill Instance = new();
 
         public override string DisplayName => Language.GetTextValue(
-            "Mods.CalamityOverhaul.Items.Sandevistan.SkillName");
+            "Mods.CalamityOverhaul.Cyberwares.Sandevistan.SkillName");
 
         public override string Description => Language.GetTextValue(
-            "Mods.CalamityOverhaul.Items.Sandevistan.SkillDesc");
+            "Mods.CalamityOverhaul.Cyberwares.Sandevistan.SkillDesc");
 
         //激活 ON，否则冷却百分比
         public override string StatusText => Sandevistan.IsActive

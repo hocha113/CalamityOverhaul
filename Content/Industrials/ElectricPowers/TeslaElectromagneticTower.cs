@@ -25,6 +25,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 {
     internal class TeslaElectromagneticTower : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTower";
         public override void SetDefaults() {
             Item.width = 38;

@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
                 ? $"[{keys[0]}]"
                 : CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.CyberwareSkill_Key?.DisplayName}]";
             tooltips.Add(new TooltipLine(Mod, "CyberwareSkillHint",
-                Language.GetTextValue("Mods.CalamityOverhaul.Items.SelfHackCrystal.SkillHint", keyHint)));
+                this.GetLocalization("SkillHint").Format(keyHint)));
         }
     }
 }

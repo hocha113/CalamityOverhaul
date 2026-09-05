@@ -1,0 +1,202 @@
+NeutronWand: {
+	DisplayName: 星墓之光
+	Tooltip:
+		'''
+		左键把一颗脉冲星抛向光标，它减速停驻并越转越快
+		磁极的两道光束随自旋扫过战场，同时最多留存三颗
+		右键按住施加磁制动，自旋的动能被压进壳层
+		松手引发星震，壳层崩裂磁层重联，幸存的星随即进入超频
+		"那位灵能者想把恒星压成黑洞，压出来的却都是停在简并态的残骸。
+		他把失败的作品一颗颗留在虚空里，游牧者管那片天区叫星墓"
+		'''
+}
+
+DragonsWord: {
+	DisplayName: 龙言
+	Tooltip:
+		'''
+		发射龙泪，自旋一段时间后追踪敌人
+		右键在光标处施展龙令魔法，对范围内的敌人下达死亡的命令
+		"龙一生只能流一次泪"
+		'''
+}
+
+UnderTheSand: {
+	DisplayName: 沙之下
+	Tooltip:
+		'''
+		抛出一对沙之涌动，飞行段会受重力影响向下坠落
+		触地瞬间从地表轰然耸起一道沙刺，向上掀飞接触的敌人
+		'''
+}
+
+MelodyTheSand: {
+	DisplayName: 沙中曲
+	Tooltip:
+		'''
+		发射一道小型沙龙卷，沙龙卷在重力作用下落到地面
+		落地后沿地面来回巡游，撞墙或脚下断崖时即刻转向
+		持续将命中的敌人卷向高空
+		'''
+}
+
+SandVortexOfTheDecayedSea: {
+	DisplayName: 腐海沙涡
+	Tooltip:
+		'''
+		在光标位置降下一座腐化深海漩涡
+		漩涡持续吸纳并撕咬范围内的敌人，扰动敌方弹幕
+		周期性向外抛出追踪型腐化深海珠
+		再次点击可刷新已有漩涡，自然消散时绽放一圈深海珠
+		"卷入深海腐朽的咆哮"
+		'''
+}
+
+FocusingGrimoire: {
+	DisplayName: 聚能魔典
+	Tooltip:
+		'''
+		左键发射追踪的热能环，命中后标记目标
+		右键快速发射死亡射线，命中被标记的目标会造成加成伤害并必定暴击
+		"一本更比六本强"
+		'''
+}
+
+CommandersStaff: {
+	DisplayName: 统帅之杖
+	Tooltip:
+		'''
+		发射一道热能分解射线穿透敌人
+		"从那台机械的手臂上拆下来的，试试用灵能代替柴油供能?"
+		'''
+}
+
+Eyetooth: {
+	DisplayName: 泣血瞳牙
+	Tooltip:
+		'''
+		将从克苏鲁之眼上拔下的獠牙掷向敌人
+		牙镖咬中敌人后会俯身再撕咬一口，对敌人造成额外伤害，并不断渗血
+		'''
+}
+
+CommandersStaffEX: {
+	DisplayName: 统帅之杖EX
+	Tooltip:
+		'''
+		发射五道环绕汇聚、旋转切割的过载射线
+		"适合切割金属"
+		'''
+}
+
+TomeofFungalDecay: {
+	DisplayName: 腐菌秘典
+	Tooltip: 喷射一圈孢子气流
+}
+
+Pandemonium: {
+	DisplayName: 万魔殿
+	Tooltip:
+		'''
+		左键蓄力释放超位魔法
+		右键在光标处施放硫火符文
+		手持时屏幕左下角亮起两枚技能按钮
+		点击施展硫磺火天罚或万魔终焉
+		'''
+	SkillLeftName: 硫磺火天罚
+	SkillLeftDesc: 在准星周围降下成片硫磺火柱
+	SkillRightName: 万魔终焉
+	SkillRightDesc: 以自身为心展开巨型法阵，雷火交加轰击阵内敌人
+}
+
+Elysium: {
+	DisplayName: 天国极乐
+	Tooltip:
+		'''
+		按住左键蓄力施展化蛇术
+		松开掀起圣光波潮，把波及的弱小敌人就地化为圣蛇，替你猎杀
+		右键升华附近的城镇居民，唤其为门徒随行
+		门徒环绕左右，各司其职，也带来圣恩加持
+		Boss的伤害会烧掉一位门徒，化作一点殉道之力
+		殉道之力集满十一点且约翰在世时，可从技能按钮揭开启示录
+		启示录降临后，右键改为召唤天启四骑士
+		技能按钮随之变为天体陨石与后三印审判
+		十二席齐聚时圣恩最盛，但生命垂危时会遭犹大背刺
+		手持时按住Shift翻开玫瑰窗，拖动席位可行圣职调换
+		手持时屏幕左下角亮起两枚技能按钮
+		'''
+	SkillLeftName: 神圣天雷
+	SkillLeftDesc: 召下一道圣雷，劈向准星旁的敌人
+	SkillRightName: 后三印审判
+	SkillRightDesc: 第五、六、七印相继轰开，终幕审判四野，启示录随之落幕
+	SkillRightLockedDesc: 启示录降临后方可揭印
+	SkillOpenName: 揭开启示录
+	SkillOpenDesc: 约翰将殉道升天，天国领域随之降临
+	SkillMeteorName: 天体陨石
+	SkillMeteorDesc: 自天穹唤落一颗天体，砸向准星所指
+	NoConvertTargetText: 附近没有可升华的居民
+	SeatsFullText: 十二圣位已满
+	JudasDeathReasonText: "{0}被犹大以三十银币出卖了"
+	DiscipleName_0: 彼得
+	DiscipleName_1: 安德鲁
+	DiscipleName_2: 雅各
+	DiscipleName_3: 约翰
+	DiscipleName_4: 腓力
+	DiscipleName_5: 巴多罗买
+	DiscipleName_6: 多马
+	DiscipleName_7: 马太
+	DiscipleName_8: 小雅各
+	DiscipleName_9: 达太
+	DiscipleName_10: 奋锐党西门
+	DiscipleName_11: 犹大
+}
+
+AriaofTheCosmos: {
+	DisplayName: 寰宇咏叹调
+	Tooltip:
+		'''
+		左键长按可以凝聚出强大的类星体，释放后对敌人造成毁灭性的伤害
+		右键可以释放出一个微型黑洞，成型后发射出大量伽马射线
+		手持时屏幕左下角亮起两枚技能按钮
+		点击召唤星环护卫或引发伽马射线爆发
+		'''
+	SkillLeftName: 星环护卫
+	SkillLeftDesc: 召唤绕身星环，节点轮转弹射星屑打击周围敌人
+	SkillRightName: 伽马射线爆发
+	SkillRightDesc: 短暂凝聚后朝准星方向扇形轰出九道伽马射线
+}
+
+WheezingWyrm: {
+	DisplayName: 哮龙杖
+	Tooltip:
+		'''
+		按住持续喷吐龙焰
+		龙首年久失修，点火前总得咳上几声烟
+		持续喷吐会让龙喉越烧越旺，焰色从暗红一路烧到炽蓝
+		火焰越亮越烫，蓝焰造成最高伤害并点燃地狱烈火
+		"它没死透，只是老烟枪清嗓子"
+		'''
+}
+
+Everdeep: {
+	DisplayName: 永渊
+	Tooltip:
+		'''
+		发射一环深渊高压水流
+		水环穿透敌人后飞行一小段，随即折回再度冲击
+		命中攒动深渊共鸣，环绕魔典的水珠即是层数
+		共鸣满溢时，从敌人脚下的大地掀起巨大的水龙卷
+		"深渊不为你分开，它在你身后合拢"
+		'''
+}
+
+BloomTome: {
+	DisplayName: 蕾典
+	Tooltip:
+		'''
+		发射一枚会开花的蕾弹
+		蕾弹命中敌人或落地时，绽放一圈花瓣
+		每第四发化为盛放弹，花瓣更多，并向上崩出两根荒针
+		"翻到哪页，哪页就开花"
+		'''
+}

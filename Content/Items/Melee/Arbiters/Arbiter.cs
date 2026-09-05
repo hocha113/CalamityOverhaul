@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
     /// 断罪师重斧，蓄力高举松手劈下+火冲击波;由击败血肉之墙后的显现仪式取得
     internal class Arbiter : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "Arbiter";
 
         public override void SetDefaults() {

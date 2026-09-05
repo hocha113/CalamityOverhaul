@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// </summary>
     internal abstract class OniMeiRubbingItem : ModItem, ILocalizedModType
     {
-        public override string LocalizationCategory => "Items";
+        public override string LocalizationCategory => "OnikiriMei";
 
         /// <summary>绑定铭 Key，须与 <see cref="OniMeiDefinition.Key"/> 一致</summary>
         public abstract string MeiKey { get; }

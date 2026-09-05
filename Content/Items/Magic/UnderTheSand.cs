@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// <summary>沙之下，抛一对沙涌落地变沙刺</summary>
     internal class UnderTheSand : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "UnderTheSand";
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Magic;

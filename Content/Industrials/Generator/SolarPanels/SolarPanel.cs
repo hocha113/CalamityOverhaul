@@ -153,6 +153,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
 
     internal class SolarPanel : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Generators";
+
         public override string Texture => CWRConstant.Asset + "Generator/SolarPanel";
 
         /// <summary>系列色调:日光蓝,用于 UI 点缀</summary>

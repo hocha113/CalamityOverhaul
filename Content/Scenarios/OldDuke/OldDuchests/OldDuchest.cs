@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
 {
     internal class OldDuchest : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => CWRConstant.Item_Placeable + "OldDuchest";
         [VaultLoaden(CWRConstant.Item_Placeable + "OldDuchestGlow")]
         public static Asset<Texture2D> Glow = null;

@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// <summary>大理石猎刀，交替连斩，每第三击终结斩突进碎石</summary>
     internal class MarbleHuntingKnife : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarbleHuntingKnife";
 
         public override void SetDefaults() {

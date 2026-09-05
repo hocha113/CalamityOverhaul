@@ -1,0 +1,107 @@
+GraniteTome: {
+	DisplayName: Granitfoliant
+	Tooltip:
+		'''
+		Beschwört eine langsame, zielsuchende Kugel aus Granitenergie
+		Zerbricht beim Aufprall in zielsuchende Kristallsplitter
+		'''
+}
+
+GraniteFlower: {
+	DisplayName: Granitblüte
+	Tooltip:
+		'''
+		Verschießt einen Kristallsamen, der zu einer verweilenden Energieblume erblüht
+		Die Blüte pulsiert mehrmals und versprüht ringsum Kristallblütenblätter
+		'''
+}
+
+GraniteThrowingKnife: {
+	DisplayName: Granit-Wurfmesser
+	Tooltip:
+		'''
+		Wirft ein durchdringendes Messer, das kristalline Energie hinter sich herzieht
+		Zerbricht bei seinem letzten Treffer oder an Gelände in Kristallsplitter
+		'''
+}
+
+GraniteWalkingBoots: {
+	DisplayName: Granit-Wanderstiefel
+	Tooltip:
+		'''
+		Erhöht Laufgeschwindigkeit und Beschleunigung erheblich
+		Knistert bei voller Geschwindigkeit mit blauen Funken
+		'''
+}
+
+MarbleClub: {
+	DisplayName: Marmorkeule
+	Tooltip:
+		'''
+		Ein langsamer, schwerer Schwung mit zermalmendem Rückstoß
+		Kann Feinde versteinern und sie kurz verlangsamen
+		Der erste Treffer jedes Schwungs entfesselt eine Marmor-Schockwelle
+		'''
+}
+
+MarbleHuntingKnife: {
+	DisplayName: Marmor-Jagdmesser
+	Tooltip:
+		'''
+		Schnelle, schneidende Hiebe
+		Jeder dritte Schlag ist ein breiterer Abschluss, der Marmorsplitter versprüht
+		'''
+}
+
+MarbleDisc: {
+	DisplayName: Marmordiskus
+	Tooltip:
+		'''
+		Schleudert einen rotierenden Diskus, der zwischen Feinden und Wänden abprallt
+		Kehrt dann in einem Bogen in deine Hand zurück; bis zu zwei können gleichzeitig fliegen
+		'''
+}
+
+MarblePebble: {
+	DisplayName: Marmorkiesel
+	Tooltip:
+		'''
+		Ein endloser Schleuderstein, schnell und anfällig für kritische Treffer
+		Verursacht weitaus mehr Schaden an Feinden mit hoher maximaler Lebenskraft
+		Prallt einmal vom Boden ab
+		'''
+}
+
+MarbleShield: {
+	DisplayName: Marmor-Ägis
+	Tooltip:
+		'''
+		Erhöht Verteidigung und Rückstoßwiderstand
+		Erhält einen sich regenerierenden Steinschild, der einen eingehenden Treffer absorbiert und in Splitter zerbirst
+		Stemme dich für einen perfekten Block, der Projektile reflektiert
+		'''
+}
+
+MarbleBalloon: {
+	DisplayName: Marmorballon
+	Tooltip:
+		'''
+		Drücke in der Luft Abwärts, um herabzustürzen und bei der Landung eine Schockwelle freizusetzen
+		Hebt Fallschaden auf
+		'''
+}
+
+MarbleinaBottle: {
+	DisplayName: Marmor in der Flasche
+	Tooltip: Gewährt einen schweren zweiten Sprung
+}
+
+MarbleCloudBalloon: {
+	DisplayName: Marmor-Wolkenballon
+	Tooltip:
+		'''
+		Gewährt einen schweren zweiten Sprung
+		Drücke in der Luft Abwärts, um herabzustürzen und bei der Landung eine Schockwelle freizusetzen
+		Hebt Fallschaden auf
+		'''
+}

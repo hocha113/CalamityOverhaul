@@ -1,0 +1,778 @@
+SHPCModTooltipDraw: {
+	InstalledHeader: MODULOS INSTALADOS
+	NoModules: NENHUM
+	BonusHeader: BONUS TOTAIS DOS MODULOS
+}
+
+MoldProcessingTable: {
+	DisplayName: Mesa de Processamento de Moldes
+	Tooltip:
+		'''
+		Clique direito para abrir a Mesa de Processamento de Moldes
+		Desconstruir: Derrete partes de modificacao excedentes em fragmentos
+		Reforjar: Consome fragmentos para produzir novos moldes; pode travar alvos especificos no indice
+		'''
+}
+
+RapidBarrelModule: {
+	DisplayName: Cano Rapido
+	Tooltip: A mola de recuo hiper-extendida libera pulsos ardentes ao custo da estabilidade e do poder por tiro
+}
+
+FocusBarrelModule: {
+	DisplayName: Cano de Foco
+	Tooltip: Forca os tres feixes de rastreamento a convergirem em um unico golpe concentrado catastrofico
+}
+
+PrecisionOpticModule: {
+	DisplayName: Otica de Precisao
+	Tooltip:
+		'''
+		Julgamento calibrado: elimina toda a dispersão; acertos consecutivos sem errar acumulam calibração
+		Com quinze cargas, dispara um raio de julgamento perfurante com crítico garantido — errar zera a calibração
+		'''
+}
+
+OverloadCoreModule: {
+	DisplayName: Nucleo de Sobrecarga
+	Tooltip:
+		'''
+		Remove a trava do orbe: continue carregando além do máximo para sobrecarregar — até o dobro de dano e explosão maior
+		Segure além da linha vermelha e o núcleo estoura: você é arremessado e metade da sua mana queima
+		'''
+}
+
+SteadyStockModule: {
+	DisplayName: Coronha Estavel
+	Tooltip: Coronha pesada composta absorve o recuo, trocando alguma cadencia de tiro por dano extra por tiro
+}
+
+HarmonyGripModule: {
+	DisplayName: Empunhadura Harmonia
+	Tooltip:
+		'''
+		A biocondução reduz o custo de mana; a mana derramada nos acertos se condensa em névoas ressonantes
+		As névoas flutuam até você — coletá-las devolve mana e acumula Harmonia, aumentando a cadência (máx. 5)
+		'''
+}
+
+ResonanceFrameModule: {
+	DisplayName: Quadro de Ressonancia
+	Tooltip: Quadro empilhado harmonicamente libera um feixe extra, intensificando a saraivada
+}
+
+AdaptiveOpticModule: {
+	DisplayName: Otica Adaptativa
+	Tooltip:
+		'''
+		Controle de tiro preditivo: analisa o movimento do alvo e projeta um marcador holográfico de interceptação
+		Os feixes desviam para antecipar o tiro; acertar alvos em movimento adiciona golpes adaptativos
+		'''
+}
+
+AssaultStockModule: {
+	DisplayName: Coronha de Assalto
+	Tooltip:
+		'''
+		A coronha integra dois módulos de combate: ao empunhar a arma, dois braços-canhão flutuantes surgem nos seus ombros
+		Os braços sincronizam com seu gatilho e disparam dardos de apoio alternadamente a cada tiro
+		'''
+}
+
+BalancedGripModule: {
+	DisplayName: Empunhadura Balanceada
+	Tooltip:
+		'''
+		Protocolo de equilíbrio duplo: acertos de feixe acumulam Yang, orbes de energia acumulam Yin
+		Enquanto as duas cargas estiverem equilibradas, dano, cadência e eficiência de mana aumentam
+		'''
+}
+
+CapacitorBankModule: {
+	DisplayName: Banco de Capacitores
+	Tooltip: Pilha de capacitores densa completa o orbe em um ciclo muito mais curto, mas amortece sua energia de lancamento
+}
+
+CrystalGripModule: {
+	DisplayName: Empunhadura de Cristal
+	Tooltip:
+		'''
+		O cristal sintético economiza mana e melhora o crítico; impactos críticos se refratam em matéria:
+		estilhaços de cristal explodem do alvo em arcos balísticos e se curvam para inimigos próximos
+		'''
+}
+
+EfficientGripModule: {
+	DisplayName: Empunhadura Eficiente
+	Tooltip: Empunhadura ergonomica de grau de engenharia refina tanto o consumo de energia quanto a cadencia do gatilho
+}
+
+HeavyBarrelModule: {
+	DisplayName: Cano Pesado
+	Tooltip: Rifleira reforcada esmaga a dispersao e a cadencia, transformando cada tiro em um golpe pesado
+}
+
+HighVoltageCoreModule: {
+	DisplayName: Nucleo de Alta Voltagem
+	Tooltip:
+		'''
+		Um capacitor de alta tensão carrega a cada acerto
+		Com carga cheia, seu próximo acerto descarrega um arco perfurante que atravessa tudo no caminho
+		'''
+}
+
+HoloOpticModule: {
+	DisplayName: Otica Holografica
+	Tooltip:
+		'''
+		Projetor de treliça tática: implanta periodicamente uma grade holográfica no cursor durante o combate
+		Projéteis inimigos que a tocam se dissolvem; seus feixes ao atravessá-la são recalibrados — mais fortes e remirados
+		'''
+}
+
+HypersonicBarrelModule: {
+	DisplayName: Cano Hipersonico
+	Tooltip:
+		'''
+		O raiamento ramjet faz os feixes acelerarem em voo; romper a barreira do som detona um anel de choque Mach
+		Além da barreira, os feixes ficam incandescentes: mais dano, mais perfuração e trilha de condensação
+		'''
+}
+
+KineticDamperModule: {
+	DisplayName: Coronha Amortecedora Cinetica
+	Tooltip:
+		'''
+		Amortecedores hidráulicos armazenam o recuo dos seus acertos como reserva cinética; acima da metade você fica imune a empurrões
+		Ao sofrer dano, toda a reserva explode numa onda sísmica de contra-ataque que arremessa os inimigos
+		'''
+}
+
+LightStockModule: {
+	DisplayName: Coronha Leve
+	Tooltip:
+		'''
+		A estrutura leve segmentada aumenta a cadência e transforma cada feixe principal em uma corrente de luz rastejante:
+		dois elos seguem a trajetória do feixe, cada um causando seu próprio dano
+		'''
+}
+
+MultiCellFrameModule: {
+	DisplayName: Quadro Multicelula
+	Tooltip: Celulas de resfriamento paralelas descarregam dois feixes ao mesmo tempo, ampliando a cobertura ao custo do dano por feixe
+}
+
+PlasmaInjectorModule: {
+	DisplayName: Injetor de Plasma
+	Tooltip:
+		'''
+		Injeta plasma de alta entalpia no orbe: sua detonação deixa um sol de plasma em miniatura
+		O sol queima tudo por perto e açoita periodicamente o inimigo mais próximo com erupções solares
+		'''
+}
+
+QuantumFrameModule: {
+	DisplayName: Quadro Quantico
+	Tooltip:
+		'''
+		Protocolo de emaranhamento: acertar dois alvos diferentes em sequência os emaranha quanticamente por alguns segundos
+		O dano em um é parcialmente copiado ao outro; quando um morre, o vínculo colapsa e descarrega o eco acumulado no sobrevivente
+		'''
+}
+
+ScattershotBarrelModule: {
+	DisplayName: Cano Dispersor
+	Tooltip: Boca fraturada divide cada tiro em uma borrifada de feixes, expandindo drasticamente a cobertura, mas prejudicando o dano por feixe
+}
+
+ThermalOpticModule: {
+	DisplayName: Otica Termica
+	Tooltip: Trava infravermelha faz os feixes se agarrarem ao seu alvo, dobrando a aposta com ganhos de precisao e crit
+}
+
+VolatileFrameModule: {
+	DisplayName: Quadro Volatil
+	Tooltip: Rede de resfriamento overclockada espreme um feixe extra e chance de crit, enquanto o consumo de mana e a dispersao aumentam
+}
+
+NovaBarrelModule: {
+	DisplayName: Cano Nova
+	Tooltip:
+		'''
+		Um bocal de plasma sobrecarregado detona um micropulso onde cada feixe atinge
+		O preco e maior dispersao, impacto mais fraco por tiro e maior consumo de mana
+		'''
+}
+
+PrismOpticModule: {
+	DisplayName: Otica Prisma
+	Tooltip:
+		'''
+		Um prisma de fase no final do caminho otico bifurca cada feixe em dois estilhaços na expiracao
+		Feixes primarios viajam um pouco mais curto em troca de uma janela de crit mais acentuada
+		'''
+}
+
+TeslaCoreModule: {
+	DisplayName: Nucleo Tesla
+	Tooltip:
+		'''
+		Arco de alta tensao permite que feixes atingidos saltem para o inimigo mais proximo
+		Cada no encadeado herda os comportamentos de ao atingir, a um custo de mana mais acentuado
+		'''
+}
+
+RecoilStockModule: {
+	DisplayName: Coronha de Recuo
+	Tooltip:
+		'''
+		Um buffer de sobrecarga converte detonacoes de orbe em propulsor cinetico para o portador
+		O alcance do feixe e estendido em conjunto; o gatilho parece um pouco lento
+		'''
+}
+
+SwarmGripModule: {
+	DisplayName: Empunhadura Enxame
+	Tooltip:
+		'''
+		Uma empunhadura de malha neural libera um enxame de micro-orbes fortemente homing no momento em que o orbe detona
+		A velocidade do orbe cai e o consumo de mana aumenta como compensacao
+		'''
+}
+
+GravityFrameModule: {
+	DisplayName: Quadro Gravitacional
+	Tooltip:
+		'''
+		Um anel de singularidade em miniatura transforma o orbe de energia em um poco gravitico
+		Ele puxa os inimigos proximos em direcao ao seu nucleo durante o carregamento e o raio de detonacao e muito ampliado
+		A camara de precisao faz o carregamento parecer um pouco mais pesado
+		'''
+}
+
+LaserBarrelModule: {
+	DisplayName: Cano Laser Prisma
+	Tooltip: Substitui o clique esquerdo por uma coluna de laser prisma continua que rastreia o cursor
+}
+
+OscillatorBarrelModule: {
+	DisplayName: Cano Laser Oscilador
+	Tooltip:
+		'''
+		Um capacitor de pulso embutido detona uma micro-explosao na ponta do feixe a cada 45 quadros
+		O dano direto e ligeiramente reduzido e o custo de mana aumenta, mas as explosões de area cobrem a lacuna de fogo continuo
+		'''
+}
+
+ScorchBarrelModule: {
+	DisplayName: Cano Laser Chama
+	Tooltip:
+		'''
+		Um bocal de plasma de alta entalpia incendeia os inimigos atingidos no contato do laser
+		O dano direto do feixe e ligeiramente menor, mas a queimadura sustentada compensa a perda de saida direta
+		'''
+}
+
+ReflectionBarrelModule: {
+	DisplayName: Cano Laser Reflexao
+	Tooltip:
+		'''
+		Um prisma de diamante no ponto de impacto desvia parte da energia para dois feixes de flanqueamento
+		O dano do feixe principal aumenta, mas o consumo extremo de mana torna o fogo sustentado caro
+		'''
+}
+
+EchoOpticModule: {
+	DisplayName: Otica Eco
+	Tooltip:
+		'''
+		Um elemento de ressonancia no final do caminho captura o eco de energia quando um feixe expira
+		Cada morte de feixe gera tres sub-feixes homing em leque, compensando o alcance encurtado
+		'''
+}
+
+FrostOpticModule: {
+	DisplayName: Otica de Gelo
+	Tooltip:
+		'''
+		Uma lente de foco criogenico inflige Queimadura de Gelo em alvos atingidos
+		A velocidade do feixe e reduzida, mas o homing e mais estavel, com bonus de perfuracao e crit
+		'''
+}
+
+SingularityCoreModule: {
+	DisplayName: Nucleo Singularidade
+	Tooltip:
+		'''
+		Um gerador de micro-gravidade direciona continuamente o orbe em direcao ao inimigo mais proximo em voo
+		O raio de explosao e muito expandido, mas o campo denso aumenta o custo de mana
+		'''
+}
+
+ScrambleFieldModule: {
+	DisplayName: Modulo de Campo Embaralhado
+	Tooltip:
+		'''
+		Uma bobina de alta frequencia dispara uma micro-onda de choque ao redor do orbe a cada 40 quadros durante o carregamento
+		A escala da explosao e amplificada ao custo de tempo de carga mais lento e maior uso de mana
+		'''
+}
+
+BraceStockModule: {
+	DisplayName: Coronha Suporte
+	Tooltip: Um suporte estabilizador pesado elimina toda a dispersao e estende o alcance do feixe, trocando um pouco de cadencia de tiro por precisao cirurgica
+}
+
+LaunchStockModule: {
+	DisplayName: Coronha Lancamento
+	Tooltip:
+		'''
+		Um mecanismo de mola sobrecarregado dispara tres feixes homing em leque no instante em que o orbe e lancado
+		A velocidade do orbe aumenta enquanto o custo de mana aumenta em conjunto
+		'''
+}
+
+SentinelGripModule: {
+	DisplayName: Empunhadura Sentinela
+	Tooltip:
+		'''
+		Uma empunhadura de sensor inteligente dispara automaticamente um feixe homing no inimigo mais proximo a cada 20 quadros enquanto o orbe esta no ar
+		A velocidade do orbe e ligeiramente reduzida e o custo de mana aumenta, mas o fogo lateral continuo compensa
+		'''
+}
+
+ConductorGripModule: {
+	DisplayName: Empunhadura Condutora
+	Tooltip:
+		'''
+		Material supercondutor aumenta os saltos de arco em cadeia para maior alcance e mais saltos
+		Cada acerto e acompanhado por uma explosao de particulas de arco; ligeiro aumento de dano e custo de mana
+		'''
+}
+
+PhantomFrameModule: {
+	DisplayName: Quadro Fantasma
+	Tooltip:
+		'''
+		Uma cavidade de fase quantica teleporta o feixe para 80px do inimigo mais proximo a cada 30 quadros
+		Contorna obstaculos completamente; ligeiro aumento de alcance e dano do feixe a um custo de mana aumentado
+		'''
+}
+
+RecursiveFrameModule: {
+	DisplayName: Quadro Recursivo
+	Tooltip:
+		'''
+		Um chassis de loop topologico recria cada feixe da posicao do jogador em sua direcao original na morte
+		O dano do feixe principal aumenta, mas o alcance e encurtado; o eco tem dano reduzido e nao recursa
+		'''
+}
+
+ForkBarrelModule: {
+	DisplayName: Cano Bifurcado
+	Tooltip:
+		'''
+		Um prisma de divisao interno bifurca cada feixe em dois sub-feixes angulados a cada 50 quadros
+		Leve penalidade de dano e custo de mana
+		'''
+}
+
+NullBarrelModule: {
+	DisplayName: Cano Nulo
+	Tooltip:
+		'''
+		Uma camara de apagamento de dados reduz o dano a quase zero, mas concede perfuracao virtualmente ilimitada
+		Acertos injetam uma toxina virulenta que corroe o alvo ao longo do tempo
+		'''
+}
+
+HelixBarrelModule: {
+	DisplayName: Cano Helice
+	Tooltip:
+		'''
+		Oticas de dois canais forcam dois feixes a espiralar em torno de um eixo compartilhado
+		A dispersao e zerada; leve penalidade de dano e velocidade; grande sinergia com configuracao de alta perfuracao
+		'''
+}
+
+TargetPainterOpticModule: {
+	DisplayName: Pintor de Alvos
+	Tooltip:
+		'''
+		Um sistema de designacao a laser marca os alvos atingidos com icor corrosivo, reduzindo sua defesa
+		Tambem aumenta a forca do homing e a chance de acerto critico
+		'''
+}
+
+StrobeOpticModule: {
+	DisplayName: Otica Estroboscopica
+	Tooltip:
+		'''
+		Um modulador de mudanca de fase cicla rapidamente o feixe entre estados de perfuracao de parede e solido
+		Tem 30% de chance de confundir os inimigos atingidos; bonus menor de perfuracao e velocidade
+		'''
+}
+
+SniperOpticModule: {
+	DisplayName: Otica de Sniper
+	Tooltip:
+		'''
+		Colimadores magneticos aumentam dramaticamente a velocidade do projetil, alcance e dano de acerto unico
+		Ao custo de cadencia de tiro muito reduzida e homing quase nulo
+		Melhor combinado com o Cano de Foco para ataques de alcance extremo
+		'''
+}
+
+StormCellModule: {
+	DisplayName: Celula de Tempestade
+	Tooltip:
+		'''
+		Durante a carga, libera um raio eletrico homing em direcao ao inimigo mais proximo a cada 25 quadros
+		Carga mais rapida e maior raio de explosao, mas maior custo de mana
+		'''
+}
+
+CryoCoreModule: {
+	DisplayName: Nucleo Criogenico
+	Tooltip:
+		'''
+		Uma celula de energia super-resfriada congela todos os inimigos pegos no raio da explosao do orbe
+		Explosao ligeiramente maior, carga ligeiramente mais lenta
+		'''
+}
+
+DarkMatterCoreModule: {
+	DisplayName: Nucleo de Materia Escura
+	Tooltip:
+		'''
+		Um campo de materia escura puxa os inimigos proximos em direcao ao orbe durante sua fase de voo
+		O orbe simultaneamente rastreia alvos; o raio de explosao aumentado significativamente
+		Alto custo de mana
+		'''
+}
+
+ErgonomicStockModule: {
+	DisplayName: Coronha Ergonomica
+	Tooltip: Design ergonomico de precisao reduz substancialmente o custo de mana com ganhos menores em cadencia de tiro e precisao
+}
+
+ExtenderStockModule: {
+	DisplayName: Coronha Extensora
+	Tooltip:
+		'''
+		Um trilho estendido concede aos feixes maior alcance e velocidade de voo com custo minimo de dano
+		Empilhe com a Otica de Sniper para cobertura de alcance extremo
+		'''
+}
+
+StormStockModule: {
+	DisplayName: Coronha Tempestade
+	Tooltip:
+		'''
+		Molas de recuo de alta densidade empurram a cadencia de tiro e a contagem de feixes ao limite ao custo de dano por golpe
+		Combine com o Cano Dispersor para saturacao de cobertura em tapete
+		'''
+}
+
+VampireGripModule: {
+	DisplayName: Empunhadura Vampiro
+	Tooltip:
+		'''
+		Uma empunhadura bioeletrica converte uma porcao do dano do feixe em recuperacao de vida
+		Acertos de laser sao mais frequentes, mas restauram menos por tick; eficaz para lutas sustentadas
+		'''
+}
+
+ChronalGripModule: {
+	DisplayName: Empunhadura Cronal
+	Tooltip:
+		'''
+		Uma bobina de atraso de fase retarda os inimigos a cada acerto
+		Combinado com homing melhorado, fogo denso pode manter controle de multidão persistente
+		'''
+}
+
+CascadeGripModule: {
+	DisplayName: Empunhadura Cascata
+	Tooltip:
+		'''
+		A cada 5 acertos, gera um no de cascata pairando no ponto de impacto
+		O no persiste ~2 segundos e dispara 5 feixes homing que cacam inimigos proximos
+		Reduz ligeiramente o dano base
+		'''
+}
+
+MirrorFrameModule: {
+	DisplayName: Quadro Espelho
+	Tooltip:
+		'''
+		Uma cavidade de reflexao simetrica gera um feixe espelho de 180 graus para cada feixe disparado
+		Feixes espelho causam dano reduzido; cobertura de direcao dupla aumenta dramaticamente a densidade de acertos
+		'''
+}
+
+NullspaceFrameModule: {
+	DisplayName: Quadro Espaco Nulo
+	Tooltip:
+		'''
+		Um gerador de fenda do vazio deixa um eco de micro-explosao ao longo do caminho do feixe a cada 20 quadros
+		Alcance ligeiramente estendido; penalidade de dano minima
+		'''
+}
+
+OverkillFrameModule: {
+	DisplayName: Quadro Overkill
+	Tooltip:
+		'''
+		Um circuito de deteccao de overkill acumula uma carga de Overkill por morte, ate 10; cada pilha adiciona 3% de dano
+		As pilhas decaem ao longo do tempo — quanto mais rapido voce matar, mais forte voce se torna
+		'''
+}
+
+GraviticBarrelModule: {
+	DisplayName: Cano Gravitic
+	Tooltip:
+		'''
+		Uma micro-singularidade embutida puxa os inimigos proximos em direcao a cada feixe em voo
+		A dispersao e o homing se apertam enquanto o alcance se estende; a velocidade do projetil cai ligeiramente
+		'''
+}
+
+PrismaticBarrelModule: {
+	DisplayName: Cano Prismatico
+	Tooltip:
+		'''
+		Prismas de dispersao liberam rastreadores RGB de cada feixe, espalhando estilhaços coloridos ao atingir
+		Adiciona um feixe extra e uma vantagem de crit ao custo de um pouco de dano e dispersao
+		'''
+}
+
+ConcussionBarrelModule: {
+	DisplayName: Bocal de Concussao
+	Tooltip:
+		'''
+		Um buffer de sobrecarga detona um pequeno anel de concussao no ponto de impacto a cada 5 acertos empilhados
+		O dano por tiro e a dispersao se apertam, mas a velocidade de ataque paga o preco
+		'''
+}
+
+ObsidianBarrelModule: {
+	DisplayName: Cano de Obsidiana
+	Tooltip:
+		'''
+		Acertos esculpem rachaduras de obsidiana nos alvos; com pilhas completas, elas se estilhaçam em vidro vulcanico de caca
+		Detonacoes de orbe rompem as rachaduras proximas mais cedo, recompensando a pressao sustentada em inimigos agrupados
+		'''
+}
+
+LifebloomBarrelModule: {
+	DisplayName: Cano Flor da Vida
+	Tooltip:
+		'''
+		Feixes semeiam brotos de vida parasitas que drenam dano atrasado e retornam um pouco de vida ao portador
+		Quando um hospedeiro morre, o broto se transfere para um inimigo proximo e continua crescendo
+		'''
+}
+
+MagmaVentBarrelModule: {
+	DisplayName: Cano de Respiradouro de Magma
+	Tooltip:
+		'''
+		Acertos e feixes expirados deixam respiradouros de magma de curta duracao que periodicamente entram em erupcao em colunas de calor verticais
+		Condicoes de Submundo e liquidos de alta temperatura fazem os respiradouros ciclarem mais rapido para negacao de area
+		'''
+}
+
+CumulusBarrelModule: {
+	DisplayName: Cano Cumulus
+	Tooltip:
+		'''
+		Caminhos de feixe condensam nos de nuvem carregaveis que se alimentam de feixes SHPC proximos e orbes de carga
+		Uma vez cheios, cada nuvem solta tres feixes de chuva-relampago curtos para poder de fogo posicional
+		'''
+}
+
+MossboundBarrelModule: {
+	DisplayName: Cano Musgo
+	Tooltip:
+		'''
+		Feixes semeiam manchas de musgo molhado que retardam os inimigos e acumulam para uma raiz enredadora breve
+		Orbes de carga voadoras absorvem musgo proximo para ampliar sua explosao final
+		'''
+}
+
+FrostfernBarrelModule: {
+	DisplayName: Cano Samambaia de Gelo
+	Tooltip:
+		'''
+		O primeiro golpe desenha uma veia de gelo atras do alvo, compartilhando gelo com inimigos pegos ao longo da linha
+		Ele conecta multidões atraves de geometria de samambaia ramificada em vez de simplesmente congelar uma vitima
+		'''
+}
+
+SandstormBarrelModule: {
+	DisplayName: Cano Tempestade de Areia
+	Tooltip:
+		'''
+		Fogo sustentado rola uma cortina de areia movedica para frente, desgastando os inimigos e amolecendo projeteis hostis
+		Feixes ganham perfuracao extra enquanto o consumo de mana aumenta para manter a tempestade em movimento
+		'''
+}
+
+CoralReefBarrelModule: {
+	DisplayName: Cano Recife de Coral
+	Tooltip:
+		'''
+		Pontos de impacto cultivam ancoras de coral que se conectam em linhas de recife danificantes
+		Detonacoes de orbe fazem ancoras proximas liberarem surtos circulares sincronizados
+		'''
+}
+
+HiveBarrelModule: {
+	DisplayName: Cano Colmeia
+	Tooltip:
+		'''
+		Acertos de clique esquerdo marcam os alvos com feromonios, entao detonacoes de orbe lancam abelhas ciberneticas em alvos marcados
+		Espalhe marcadores pela luta para fazer o enxame se dividir e cobrir o campo
+		'''
+}
+
+MoondewBarrelModule: {
+	DisplayName: Cano Orvalho da Lua
+	Tooltip:
+		'''
+		Rastros de feixe condensam prismas de orvalho que refratam feixes posteriores em tiros derivados curtos
+		Noite e luas cheias proximas aumentam o teto de refracao de cada prisma e a recompensa
+		'''
+}
+
+CrosslinkOpticModule: {
+	DisplayName: Otica Crosslink
+	Tooltip:
+		'''
+		Ao atingir, uma unidade de link neural arca uma amarra de dados do alvo atingido para o outro inimigo mais proximo
+		A contagem de cadeia e o alcance da cadeia se estendem, com um ligeiro aumento no custo de mana
+		'''
+}
+
+ZoomOpticModule: {
+	DisplayName: Otica de Zoom
+	Tooltip:
+		'''
+		Uma lente magnetica de foco longo empurra os feixes mais rapidos e mais longe ao custo de homing e velocidade de ataque
+		Acertos alem de 600 px desencadeiam um golpe incandescente de bonus que escala com a distancia
+		'''
+}
+
+PingOpticModule: {
+	DisplayName: Otica Ping
+	Tooltip: O sistema de sinalizacao aplica Marcado para a Morte ao acertar e concede chance critica adicional
+}
+
+CapacitorPulseModule: {
+	DisplayName: Pulso de Capacitor
+	Tooltip:
+		'''
+		Pilhas de capacitores densos liberam uma micro-explosao de pulso aproximadamente duas vezes por segundo durante o carregamento
+		O raio da explosao e o tempo de carga aumentam, o custo de mana aumenta
+		'''
+}
+
+EntropyCoreModule: {
+	DisplayName: Nucleo de Entropia
+	Tooltip:
+		'''
+		O orbe suga "entropia" dos inimigos proximos durante o voo
+		Na detonacao, libera uma replicacao secundaria dimensionada pela entropia acumulada
+		'''
+}
+
+ResonanceReactorModule: {
+	DisplayName: Reator de Ressonancia
+	Tooltip:
+		'''
+		Emite um anel de ressonancia a cada ~0,75 s durante o carregamento
+		A detonacao desencadeia um choque de ressonancia extra nos pes do jogador, cobrindo lacunas corpo a corpo
+		'''
+}
+
+OverwatchStockModule: {
+	DisplayName: Coronha Vigilancia
+	Tooltip:
+		'''
+		Ficar parado aumenta pilhas de "Vigilancia" (max 5) que decaem rapidamente quando voce se move
+		Cada pilha concede +2,5% de dano e +2% de crit; uma postura estoica corta a velocidade de ataque e a dispersao
+		'''
+}
+
+MomentumStockModule: {
+	DisplayName: Coronha Momentum
+	Tooltip:
+		'''
+		Mover-se rapidamente aumenta pilhas de "Momentum" (max 6) que decaem rapidamente quando voce para
+		Cada pilha concede +5% de velocidade de ataque e +8% de velocidade do feixe — um espelho da Vigilancia
+		'''
+}
+
+BulwarkStockModule: {
+	DisplayName: Coronha Baluarte
+	Tooltip:
+		'''
+		Segurar a SHPC concede modesta reducao de dano
+		A postura reforçada atrasa ligeiramente o tempo de carga e aumenta o custo de mana
+		'''
+}
+
+CombatGripModule: {
+	DisplayName: Empunhadura de Combate
+	Tooltip:
+		'''
+		Golpes de misericordia com feixes ou laser acumulam cargas de "Combate" (max 5)
+		Cada pilha concede +6% de velocidade de ataque e +2% de dano; as cargas decaem entre lutas
+		'''
+}
+
+TempestGripModule: {
+	DisplayName: Empunhadura Tempestade
+	Tooltip:
+		'''
+		Apos cada poucos acertos empilhados, dispara uma Explosao Tempestade — varios arcos de dados ao redor do impacto mais recente
+		O dano por tiro diminui e o custo de mana aumenta em troca de uma limpeza ritmica
+		'''
+}
+
+AbsorberGripModule: {
+	DisplayName: Empunhadura Absorvedora
+	Tooltip:
+		'''
+		Acertos de feixe e laser retornam uma fatia do dano causado como mana
+		O dano por tiro cai ligeiramente e o custo de mana base aumenta em troca
+		'''
+}
+
+HarmonicFrameModule: {
+	DisplayName: Quadro Harmonico
+	Tooltip:
+		'''
+		Multiplos feixes coexistentes arcam amarras de ressonancia entre si para dano bonus
+		Adiciona um feixe extra ao custo de dano por tiro e um toque de dispersao
+		'''
+}
+
+ReplicatorFrameModule: {
+	DisplayName: Quadro Replicador
+	Tooltip:
+		'''
+		Na expiracao, um feixe gera um eco breve em seu lugar que voa ao longo de sua direcao original
+		O dano primario aumenta enquanto o alcance diminui; o custo de mana aumenta
+		'''
+}
+
+ArchiveFrameModule: {
+	DisplayName: Quadro Arquivo
+	Tooltip:
+		'''
+		Acumula dano da SHPC; cada vez que o limiar e ultrapassado, uma explosao de Arquivo detona nos pes do jogador
+		O dano por tiro aumenta ligeiramente com uma pequena sobretaxa de mana
+		'''
+}

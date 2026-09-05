@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// 弑神者剑鞘饰品
     internal class GodslayerScabbard : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "GodslayerScabbard";
         //拔刀值上限(180帧≈3s)
         public const int MaxDrawCharge = 180;

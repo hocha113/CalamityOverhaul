@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Budcrowns
     /// </summary>
     internal class Budcrown : BssModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "Budcrown";
 
         public override void SetDefaults() {

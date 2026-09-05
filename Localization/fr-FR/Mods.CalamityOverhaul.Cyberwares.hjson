@@ -1,0 +1,127 @@
+SandevistansItem: {
+	DisplayName: Sandevistan Mk5
+	Tooltip: Ralentit le temps perçu de 70 %, pendant 5 secondes. Recharge de 15 s.
+}
+
+Sandevistan: {
+	SkillName: Ralentissement temporel · Sandevistan
+	SkillDesc:
+		'''
+		Ralentit fortement le temps perçu, vous laissant bouger et agir en apparent ralenti
+		La réserve se vide en cours d'utilisation et se coupe automatiquement, puis se régénère naturellement
+		Sélectionnez à nouveau dans le radial pour couper manuellement
+		'''
+}
+
+MimicPerchedAuxBrain: {
+	DisplayName: Cerveau auxiliaire mimétique perché
+	Tooltip:
+		'''
+		Divise l'hôte en quatre illusions qui dérivent autour du corps principal
+		Quand vous êtes touché, le vrai moi caché parmi les illusions provoque le chaos et gagne l'immunité, sans subir de dégâts
+		Entre-temps, les illusions foncent sur l'attaquant et explosent, infligeant des dégâts proportionnels à la puissance d'attaque de l'ennemi
+		'''
+}
+
+CstmVisualEye: {
+	DisplayName: Œil cybernétique optique CSTM
+	Tooltip:
+		'''
+		Implant optique cybernétique qui injecte le temps de piratage directement dans le réseau neural crânien
+		Augmente le RAM maximal de 4
+		Affiche une jauge RAM indépendante en bas à gauche de l'écran
+		'''
+}
+
+PrimePlasama: {
+	DisplayName: Armure sous-cutanée plasma prime
+	Tooltip:
+		'''
+		Couche de gel électroactif tissée sous la peau du corps entier
+		Accorde en permanence +25 de défense et 6 % de réduction des dégâts
+		Améliore massivement la résistance au recul — les chocs ordinaires vous ébranlent à peine
+		'''
+}
+
+OmniElectricFoot: {
+	DisplayName: Pied cybernétique omnidirectionnel
+	Tooltip:
+		'''
+		Cyberprothèse locomotrice haute puissance combinant recul électromagnétique et gel de propulsion dense
+		Accorde un double saut en l'air, vous permettant de pousser une seconde fois après le décollage
+		Survolez la section Saut chargé dans le radial cybernétique pour charger, puis relâchez pour bondir
+		Un saut pleinement chargé peut atteindre plus du double de la hauteur d'un saut normal
+		'''
+	SkillHint: Survolez le radial {0} pour charger le saut
+	SkillName: Saut chargé
+	SkillDesc:
+		'''
+		Saut explosif à propulsion électromagnétique
+		Nécessite d'être au sol pour charger ; le temps de survol est le temps de charge
+		Relâchez pour bondir proportionnellement à la charge ; pleine charge = 2,5× la hauteur normale
+		'''
+}
+
+PlowSteelClampArm: {
+	DisplayName: Bras à pinces en acier de charrue
+	Tooltip:
+		'''
+		Cyberprothèse industrielle avec ramassage magnétique et pinces à haute rigidité
+		Étend fortement la portée de minage et de placement de blocs
+		Active en permanence le ramassage magnétique d'objets et de pièces
+		Compétence cybernétique : libère un fil monomoléculaire brûlant depuis la paume
+		Appui court → fil court, maintien → fil long ; les ennemis sur la trajectoire brûlent en continu
+		'''
+	SkillHint: "[c/8AC4E8:{1}] Ouvrir le radial cybernétique pour changer · [c/F5C56A:{0}] Lancer le fil (court = appui / long = maintien)"
+	SkillName: Fil monomoléculaire
+	SkillDesc:
+		'''
+		Projette un fil monomoléculaire brûlant depuis la paume ; les ennemis sur la trajectoire brûlent en continu
+		[c/8AC4E8:Appui court] — ~12 cases de fil court vers le curseur, 2 secondes, sans ancrage
+		[c/F5C56A:Maintien] — Une fois chargé, s'ancre sur un bloc solide près du curseur, 5 secondes ; sans ancrage, retombe en fil court
+		Les dégâts augmentent avec les multiplicateurs de dégâts généraux du joueur
+		'''
+}
+
+SelfHealingSkelent: {
+	DisplayName: Endosquelette auto-réparant
+	Tooltip:
+		'''
+		Implant bio-cybernétique de haut niveau remplaçant le squelette natif par un réseau nanocristallin
+		Accorde en continu +2 PV/s et +40 PV maximum
+		Hors combat pendant 4 secondes : état Nanoréparation avec régénération fortement accrue
+		L'endosquelette métallique annule entièrement les dégâts de chute
+		'''
+}
+
+SelfHackCrystal: {
+	DisplayName: Cristal d'auto-piratage
+	Tooltip:
+		'''
+		Cyberprothèse réseau de haut niveau dans l'emplacement système d'exploitation
+		Redirige l'interface de piratage vers l'hôte lui-même
+		Accorde en continu une vitesse de récupération RAM supplémentaire
+		Compétence cybernétique : dépensez du RAM pour effacer instantanément tous les débuffs
+		et gagner une brève invulnérabilité — une issue des situations mortelles
+		'''
+	SkillHint: Déclenchez l'auto-piratage depuis le radial {0}, dépensez du RAM pour purger les débuffs
+	SkillName: Protocole d'auto-piratage
+	SkillDesc:
+		'''
+		Redirige l'interface de piratage vers vous-même pour un nettoyage d'urgence
+		Dépense 3 RAM, retire instantanément tous les débuffs et accorde ~1,5 s d'invulnérabilité
+		Recharge de 12 s ; grisé si RAM insuffisant ou en recharge
+		'''
+}
+
+SCCA32CRP: {
+	DisplayName: SCCA-32 CRP
+	Tooltip:
+		'''
+		Coprocesseur neuro-musculaire avancé
+		Contourne entièrement le cerveau pour la prédiction des menaces et les réflexes musculaires
+		Accorde en continu +8 % de chances de critique et +8 % de vitesse de déplacement
+		18 % de chances d'esquive réflexe à chaque coup reçu, annulant entièrement les dégâts
+		Après une esquive réussie : 3 s de Surge réflexe avec bonus de critique et de vitesse
+		'''
+}

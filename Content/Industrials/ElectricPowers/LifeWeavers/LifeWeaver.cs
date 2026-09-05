@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
 {
     internal class LifeWeaver : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/LifeWeaver";
         internal static LocalizedText NoValidPositionText;
         internal static LocalizedText NoEnergyText;

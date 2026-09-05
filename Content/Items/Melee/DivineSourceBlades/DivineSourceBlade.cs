@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
     /// </summary>
     internal class DivineSourceBlade : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => DivineSourceBladeFX.BladeTexture;
 
         /// <summary>停手超过该时长后连击重置回第一拍</summary>

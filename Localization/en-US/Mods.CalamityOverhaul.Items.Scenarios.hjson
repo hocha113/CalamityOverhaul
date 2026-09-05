@@ -1,0 +1,181 @@
+ScapegoatDoll: {
+	DisplayName: Scapegoat Doll
+	Tooltip:
+		'''
+		While in your inventory, blocks one death in your place
+		The doll shatters and is lost after taking the blow
+		'''
+	ShatterText: The scapegoat doll shattered
+}
+
+ConstructionBlueprintQET: {
+	DisplayName: Construction Blueprint (Quantum Entanglement Tower)
+	Tooltip:
+		'''
+		Use to learn how to craft the [i:CalamityOverhaul/CQETConstructor] Self-Constructor
+		"Your hands will forge the cornerstone and tower that connect two worlds"
+		'''
+	L1: Learned to craft the Self-Constructor (Quantum Entanglement Tower)!
+	L2: You have already learned this blueprint!
+}
+
+CQETConstructor: {
+	DisplayName: Self-Constructor (Quantum Entanglement Tower)
+	Tooltip:
+		'''
+		Place to construct a Quantum Entanglement Tower
+		Requires a large amount of [i:CalamityOverhaul/StarflowPlatedBlock] Starflow Plated Blocks
+		'''
+	UseConstructionBlueprint: Learn the Construction Blueprint (Quantum Entanglement Tower)
+}
+
+DeploySignaltower: {
+	DisplayName: Quantum Entanglement Tower
+	Tooltip:
+		'''
+		An important communication device that acts as a lighthouse in subspace
+		"A wild child raises a torch in the forest, shouting I am here"
+		'''
+}
+
+PQCD: {
+	DisplayName: Portable Quantum Communicator
+	Tooltip:
+		'''
+		Use to contact Draedon and open the Draedon's Arsenal holographic shopping interface
+		"Theoretically capable of issuing an Extermination Order, but authorization seems insufficient"
+		'''
+	NeedSignalTowersText: Quantum entanglement link incomplete! Requires all {0} Signal Towers to be deployed.
+	SignalTowerProgressText: Signal Tower Deployment Progress: {0}/{1}
+}
+
+Oceanfragments: {
+	DisplayName: Ocean Scraps
+	Tooltip: A mysterious trinket. The Old Duke might be interested in it.
+}
+
+OceanRaiders: {
+	WorkingText: Working...
+	NoWaterText: Must be placed above water to operate!
+	NoEnergyText: Insufficient Power!
+	DisplayName: Ocean Devourer
+	Tooltip:
+		'''
+		Consumes power to extract resources from water bodies
+		Right-click to open internal storage
+		'''
+}
+
+OldDuchest: {
+	StorageText: Large Storage Chest
+	DisplayName: Old Duchest
+	Tooltip:
+		'''
+		A storage chest with immense capacity
+		"The Old Duke's former chest. If he is nearby, he might toss some things inside."
+		'''
+}
+
+MermanRod: {
+	Text1: A Merman's Perch has already been placed in the world!
+	DisplayName: Merman's Perch
+	Tooltip:
+		'''
+		Increases fishing power by 20 when fishing nearby
+		The Old Duke will move his campsite here
+		'''
+}
+
+Mewtwo: {
+	DisplayName: Superdream Chip
+	Tooltip: Use to enter the Superdream
+}
+
+GaolCellKey: {
+	DisplayName: Deep Gaol Cell Key
+	Tooltip:
+		'''
+		Builds the Deep Gaol cell on the spot and seats a dormant skull on the altar (test item)
+		Approach the altar to wake it; during the fight both doorways are sealed by pale-pink energy bars
+		Defeat the Deep Gaol Wraith to snuff the cell for good; a wraith that escapes goes dormant again after a few seconds
+		"One turn of the key, and the walls remember their shape"
+		'''
+	BuiltHint: The cell has been raised. The dormant skull on the altar is waiting for you to come closer.
+}
+
+RustedGaolIrons: {
+	DisplayName: Rusted Gaol Irons
+	Tooltip:
+		'''
+		3 defense and immunity to knockback
+		Briefly boosts movement speed after taking damage
+		"The cell number inside the cuff has been worn smooth"
+		'''
+}
+
+UndrownedShackleCharm: {
+	DisplayName: Sunken Shackle Band
+	Tooltip:
+		'''
+		Water no longer slows you down; grants the ability to swim
+		Greatly extends underwater breathing time
+		"The anchor sank. The man kept breathing"
+		'''
+}
+
+GaolAnchorWeapon: {
+	DisplayName: Gaol Anchor
+	Tooltip:
+		'''
+		Hurls a great anchor; while pinned into a wall, its chain becomes a damaging line
+		"Execution tools do not retire"
+		'''
+}
+
+SumpPearl: {
+	DisplayName: Sump Pearl
+	Tooltip:
+		'''
+		A matte pearl curdled from gaol water in a convict's bones
+		The undead market accepts these
+		'''
+}
+
+FloodGalleryKey: {
+	DisplayName: Flood Gallery Key
+	Tooltip:
+		'''
+		Builds the flood gallery on the spot and seats the anchored convict (test item)
+		"The depth scale on the wall is his heartbeat chart"
+		'''
+	Placed: The Flood Gallery has been raised on the spot. To wake him, stand on the valve dais to the left and hold your ground.
+}
+
+ProofSealCharm: {
+	DisplayName: Proofing Seal
+	Tooltip:
+		'''
+		Trap projectiles deal 25% less damage and have a 15% chance to misfire
+		"Stamped goods pass every mechanism unharassed"
+		'''
+	Misfire: Misfire
+}
+
+OverseerLogger: {
+	DisplayName: Overseer's Logbook
+	Tooltip:
+		'''
+		Grants danger sense; nearby traps and mechanisms are laid bare
+		"It keeps the duty roster of every dart port"
+		'''
+}
+
+ProofingHallKey: {
+	DisplayName: Proofing Hall Key
+	Tooltip:
+		'''
+		Builds the proofing hall on the spot and hangs the dust-caked rig (test item)
+		"The inspection bell still rings"
+		'''
+	Placed: The Proofing Hall has been raised on the spot. To start the inspection, stand on the check-in dais to the left and hold still until the shift bell finishes counting.
+}

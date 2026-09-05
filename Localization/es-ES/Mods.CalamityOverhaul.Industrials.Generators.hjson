@@ -1,0 +1,99 @@
+ThermalGenerator: {
+	DisplayName: Generador térmico
+	Tooltip:
+		'''
+		Introduce combustible para generar electricidad
+		Clic derecho en el bloque inserta combustible con rapidez; Mayús + clic derecho lo extrae
+		'''
+}
+
+MagmaThermalGenerator: {
+	DisplayName: Generador térmico de magma
+	Tooltip:
+		'''
+		Si el cuerpo toca lava, genera con lentitud; si el tanque tiene reserva de magma, genera a pleno rendimiento
+		El magma puede llegar por tuberías de líquidos o verterse con un cubo de lava mediante clic derecho
+		La primera fuente de energía principal de una fábrica en el Inframundo
+		'''
+}
+
+WindGrivenGenerator: {
+	DisplayName: Generador eólico
+	Tooltip: Se mueve con el viento y produce electricidad
+	UnderstandWindGriven: Hace falta una idea inicial de cómo funciona la energía eólica
+	UnderstandWindGriven2: Hay que extraer aerogeneradores viejos en los asteroides para entender cómo se fabrican
+}
+
+WindGrivenGeneratorMK2: {
+	DisplayName: Generador eólico MK2
+	Tooltip: Se mueve con el viento y produce electricidad
+	UnderstandWindGrivenMK2: Hace falta un conocimiento profundo de cómo funciona la energía eólica
+	UnderstandWindGrivenMK2Remind: Hay que extraer las turbinas eólicas gigantes de los asteroides para entender sus principios de fabricación
+}
+
+ThermalGeneratorMK2: {
+	DisplayName: Generador térmico MK2
+	Tooltip:
+		'''
+		Introduce combustible para generar electricidad
+		Clic derecho en el bloque inserta combustible con rapidez; Mayús + clic derecho lo extrae
+		'''
+}
+
+WGGMK2Wilderness: {
+	DisplayName: Generador eólico gigante en la naturaleza
+	Tooltip: ""
+}
+
+WGGWilderness: {
+	DisplayName: Generador eólico en la naturaleza
+	Tooltip: ""
+}
+
+SolarPanel: {
+	DisplayName: Panel solar
+	Tooltip:
+		'''
+		Genera de día; al mediodía alcanza el máximo
+		Con lluvia la eficiencia cae mucho; durante un eclipse solar se detiene del todo
+		Si un bloque sólido le tapa la cabeza, no funciona
+		'''
+}
+
+SolarPanelMK2: {
+	DisplayName: Panel solar MK2
+	Tooltip:
+		'''
+		Genera de día; al mediodía alcanza el máximo, con el triple de eficiencia que el original
+		Con lluvia la eficiencia cae mucho; durante un eclipse solar se detiene del todo
+		Si un bloque sólido le tapa la cabeza, no funciona
+		'''
+}
+
+Hydroelectric: {
+	DisplayName: Generador hidráulico
+	Tooltip:
+		'''
+		Colócalo en el agua para generar electricidad
+		"Una aplicación de la mecánica de fluidos"
+		'''
+}
+
+HydroelectricMK2: {
+	DisplayName: Generador hidráulico MK2
+	Tooltip:
+		'''
+		Colócalo en el agua para generar electricidad
+		"Una aplicación de la mecánica de fluidos"
+		'''
+}
+
+BiomassGenerator: {
+	DisplayName: Generador de biomasa
+	Tooltip:
+		'''
+		Quema semillas, hierbas, champiñones, pescado y otros restos agrícolas para generar sin cesar
+		La potencia es estable, entre la eólica y la térmica, y cierra el ciclo con las máquinas agrícolas
+		Sostén combustible de biomasa y haz clic derecho para echarlo; clic derecho abre el panel
+		'''
+}

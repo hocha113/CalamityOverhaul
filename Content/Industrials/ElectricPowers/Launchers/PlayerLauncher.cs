@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Launchers
     /// <summary>弹射平台,把站上来的玩家按设定方向抛出去;贴图复用投掷者,靠电蓝色调区分</summary>
     internal class PlayerLauncher : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/PlayerLauncher";
 
         /// <summary>系列色调:电蓝,用于提示文本与方向箭头点缀</summary>

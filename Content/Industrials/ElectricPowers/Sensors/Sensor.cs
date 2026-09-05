@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sensors
     /// </summary>
     internal class Sensor : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/PipelineItem";
 
         /// <summary>系列色调:感应绿</summary>

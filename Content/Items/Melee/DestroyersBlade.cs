@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 毁灭者之刃，三段连击，DestroyerSlash.fx
     internal class DestroyersBlade : ModItem, ICWRLoader
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBlade";
         [VaultLoaden(CWRConstant.Item_Melee + "DestroyersBladeGlow")]
         public static Asset<Texture2D> Glow = null;

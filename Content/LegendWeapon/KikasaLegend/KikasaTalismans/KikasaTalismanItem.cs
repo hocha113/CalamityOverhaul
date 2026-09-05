@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
     /// </summary>
     internal abstract class KikasaTalismanItem : ModItem, ILocalizedModType
     {
-        public override string LocalizationCategory => "Items";
+        public override string LocalizationCategory => "KikasaTalismans";
 
         /// <summary>绑定符 Key，须与 <see cref="KikasaTalismanDefinition.Key"/> 一致</summary>
         public abstract string TalismanKey { get; }

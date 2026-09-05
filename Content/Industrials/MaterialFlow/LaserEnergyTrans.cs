@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
 {
     internal class LaserEnergyTrans : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Flow";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/LaserEnergyTrans";
         public override void SetDefaults() {
             Item.width = 32;

@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
     /// <summary>自动钓鱼机,消耗鱼饵与电力从水面自动收获渔获</summary>
     internal class AutoFisher : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/AutoFisher";
 
         /// <summary>系列色调:湖蓝,用于提示文本与 UI 点缀</summary>

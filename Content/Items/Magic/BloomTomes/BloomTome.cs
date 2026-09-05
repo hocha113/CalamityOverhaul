@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Magic.BloomTomes
     /// </summary>
     internal class BloomTome : BssModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "BloomTome";
 
         /// <summary>施法计数，每第四发盛放（物品实例状态，仅主人端 Shoot 里推进）</summary>

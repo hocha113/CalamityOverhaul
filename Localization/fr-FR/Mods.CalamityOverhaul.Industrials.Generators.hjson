@@ -1,0 +1,99 @@
+ThermalGenerator: {
+	DisplayName: Générateur thermique
+	Tooltip:
+		'''
+		Placez du combustible pour produire de l'électricité
+		Clic droit sur le bloc pour insérer rapidement du combustible, Maj + clic droit pour le retirer
+		'''
+}
+
+MagmaThermalGenerator: {
+	DisplayName: Générateur thermique à magma
+	Tooltip:
+		'''
+		Produit un peu d'électricité au contact de la lave, et à pleine puissance quand le réservoir contient du magma
+		L'alimentation passe par les canalisations, ou clic droit avec un seau de lave pour verser directement
+		La première source de courant d'une usine en Enfer
+		'''
+}
+
+WindGrivenGenerator: {
+	DisplayName: Générateur éolien
+	Tooltip: Suit le vent et produit de l'électricité
+	UnderstandWindGriven: Nécessite une compréhension initiale du fonctionnement de l'éolien
+	UnderstandWindGriven2: Il faut extraire de vieilles éoliennes sur les astéroïdes pour en comprendre la fabrication
+}
+
+WindGrivenGeneratorMK2: {
+	DisplayName: Générateur éolien MK2
+	Tooltip: Suit le vent et produit de l'électricité
+	UnderstandWindGrivenMK2: Nécessite une compréhension approfondie de l'éolien
+	UnderstandWindGrivenMK2Remind: Il faut extraire les géantes éoliennes des astéroïdes pour en comprendre les principes de fabrication
+}
+
+ThermalGeneratorMK2: {
+	DisplayName: Générateur thermique MK2
+	Tooltip:
+		'''
+		Placez du combustible pour produire de l'électricité
+		Clic droit sur le bloc pour insérer rapidement du combustible, Maj + clic droit pour le retirer
+		'''
+}
+
+WGGMK2Wilderness: {
+	DisplayName: Géantes éoliennes dans la nature
+	Tooltip: ""
+}
+
+WGGWilderness: {
+	DisplayName: Éoliennes dans la nature
+	Tooltip: ""
+}
+
+SolarPanel: {
+	DisplayName: Panneau solaire
+	Tooltip:
+		'''
+		Produit de l'électricité le jour, le midi marque le pic
+		Fortement réduit sous la pluie, totalement arrêté pendant une éclipse
+		Ne fonctionne plus si des blocs solides le recouvrent
+		'''
+}
+
+SolarPanelMK2: {
+	DisplayName: Panneau solaire MK2
+	Tooltip:
+		'''
+		Produit de l'électricité le jour, le midi marque le pic, trois fois plus efficace que le premier modèle
+		Fortement réduit sous la pluie, totalement arrêté pendant une éclipse
+		Ne fonctionne plus si des blocs solides le recouvrent
+		'''
+}
+
+Hydroelectric: {
+	DisplayName: Centrale hydroélectrique
+	Tooltip:
+		'''
+		Produit de l'électricité lorsqu'elle est placée dans l'eau
+		"Une application de la mécanique des fluides"
+		'''
+}
+
+HydroelectricMK2: {
+	DisplayName: Centrale hydroélectrique MK2
+	Tooltip:
+		'''
+		Produit de l'électricité lorsqu'elle est placée dans l'eau
+		"Une application de la mécanique des fluides"
+		'''
+}
+
+BiomassGenerator: {
+	DisplayName: Générateur à biomasse
+	Tooltip:
+		'''
+		Brûle graines, herbes, champignons, prises et autres surplus agricoles pour un courant stable
+		La puissance se situe entre l'éolien et le thermique, et ferme la boucle avec les machines agricoles
+		Clic droit en tenant de la biomasse pour charger, ou clic droit pour ouvrir le panneau
+		'''
+}

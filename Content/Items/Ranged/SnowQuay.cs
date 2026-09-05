@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class SnowQuay : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "SnowQuay";
 
         public override void SetDefaults() {

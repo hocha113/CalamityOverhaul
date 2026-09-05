@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers
     /// <summary>矿石粉碎机:2 矿粉碎成 3 矿,焚化炉的上游增产机</summary>
     internal class Crusher : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         //占位:复用焚化炉物品贴图,专属贴图见美术清单
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Incinerator";
         public override void SetDefaults() {

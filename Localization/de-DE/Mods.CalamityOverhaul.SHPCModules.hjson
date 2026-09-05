@@ -1,0 +1,777 @@
+SHPCModTooltipDraw: {
+	InstalledHeader: INSTALLIERTE MODULE
+	NoModules: KEINE
+	BonusHeader: GESAMTE MODULBONI
+}
+
+MoldProcessingTable: {
+	DisplayName: Formverarbeitungstisch
+	Tooltip:
+		'''
+		Rechtsklick öffnet den Formverarbeitungstisch
+		Zerlegen: Überzählige gleichartige Modifikationsteile in Fragmente schmelzen
+		Umgießen: Fragmente verbrauchen für neue Formen; Ziel im Index sperrbar
+		'''
+}
+
+RapidBarrelModule: {
+	DisplayName: Schnellfeuer-Lauf
+	Tooltip: Überlange Rückholfeder liefert glühende Impulse auf Kosten von Stabilität und Einzelschuss
+}
+
+FocusBarrelModule: {
+	DisplayName: Fokuslauf
+	Tooltip: Zwingt die drei zielsuchenden Strahlen zu einem einzigen verheerenden Konzentratsschlag zusammen
+}
+
+PrecisionOpticModule: {
+	DisplayName: Präzisionsvisier
+	Tooltip:
+		'''
+		Kalibriertes Urteil: keinerlei Streuung; aufeinanderfolgende Treffer ohne Fehlschuss bauen Kalibrierung auf
+		Bei fünfzehn Stapeln feuert ein durchschlagender Richtstrahl mit garantiertem Kritischen — ein Fehlschuss setzt alles zurück
+		'''
+}
+
+OverloadCoreModule: {
+	DisplayName: Überlastungskern
+	Tooltip:
+		'''
+		Entfernt die Sicherung der Energiekugel: Lade über das Maximum hinaus — bis zu doppelter Schaden und größere Explosion
+		Hältst du über die rote Linie hinaus, birst der Kern: Rückstoß und die Hälfte deines Manas verbrennt
+		'''
+}
+
+SteadyStockModule: {
+	DisplayName: Stabilisierungsschaft
+	Tooltip: Komposit-Schwerschaft absorbiert Rückstoß, etwas Feuerrate für Extra-Schaden pro Schuss
+}
+
+HarmonyGripModule: {
+	DisplayName: Harmoniegriff
+	Tooltip:
+		'''
+		Bioleitung senkt die Manakosten; bei Treffern verströmtes Mana kondensiert zu Resonanznebeln auf dem Schlachtfeld
+		Die Nebel schweben zu dir zurück — beim Aufsammeln erhältst du Mana und Harmonie-Stapel für Angriffstempo (max. 5)
+		'''
+}
+
+ResonanceFrameModule: {
+	DisplayName: Resonanzrahmen
+	Tooltip: Harmonisch gestapelter Rahmen lässt einen zusätzlichen Strahl überlaufen – dichteres Feuer
+}
+
+AdaptiveOpticModule: {
+	DisplayName: Adaptives Visier
+	Tooltip:
+		'''
+		Prädiktive Feuerleitung: analysiert Zielbewegungen und projiziert ein Holo-Vorhaltezeichen am Abfangpunkt
+		Strahlen lenken automatisch vor; Treffer gegen bewegliche Ziele lösen zusätzliche Adaptivschläge aus
+		'''
+}
+
+AssaultStockModule: {
+	DisplayName: Sturmschaft
+	Tooltip:
+		'''
+		Im Schaft stecken zwei Gefechtsmodule: beim Führen der Waffe entfalten sich zwei schwebende Geschützarme an deinen Schultern
+		Die Arme synchronisieren sich mit deinem Abzug und feuern abwechselnd schnelle Stützgeschosse
+		'''
+}
+
+BalancedGripModule: {
+	DisplayName: Ausgewogener Griff
+	Tooltip:
+		'''
+		Zwillingsgleichgewicht: Strahlentreffer laden Yang auf, Energiekugeln laden Yin auf
+		Bleiben beide Ladungen im Gleichgewicht, steigen Schaden, Feuerrate und Mana-Effizienz deutlich
+		'''
+}
+
+CapacitorBankModule: {
+	DisplayName: Kondensatorbank
+	Tooltip: Hochdichte Kondensatorstapel füllen die Energiekugel in kürzeren Zyklen, dämpfen aber ihre Abfertigungsenergie
+}
+
+CrystalGripModule: {
+	DisplayName: Kristallgriff
+	Tooltip:
+		'''
+		Synthetischer Kristall senkt Manakosten und erhöht Kritisches; kritische Treffer brechen sich zu Materie —
+		Kristallsplitter bersten aus dem Ziel, fliegen in Bögen und werden von der Gitterschwerkraft naher Feinde eingefangen
+		'''
+}
+
+EfficientGripModule: {
+	DisplayName: Effizienzgriff
+	Tooltip: Ingenieur-Ergonomiegriff optimiert Energieverbrauch und Abzugsrhythmus gleichzeitig
+}
+
+HeavyBarrelModule: {
+	DisplayName: Schwerer Lauf
+	Tooltip: Verstärkte Züge drücken Streuung und Rhythmus nieder – jeder Schuss wird zum schweren Schlag
+}
+
+HighVoltageCoreModule: {
+	DisplayName: Hochspannungskern
+	Tooltip:
+		'''
+		Ein Hochspannungskondensator lädt sich mit jedem Treffer auf
+		Bei voller Ladung entlädt dein nächster Treffer einen durchschlagenden Lichtbogen durch alles auf seiner Bahn
+		'''
+}
+
+HoloOpticModule: {
+	DisplayName: Hologrammvisier
+	Tooltip:
+		'''
+		Taktischer Gitterprojektor: entfaltet im Kampf regelmäßig ein Hologitter an deinem Cursor
+		Feindliche Geschosse lösen sich daran auf; eigene Strahlen werden beim Durchflug kalibriert — verstärkt und neu ausgerichtet
+		'''
+}
+
+HypersonicBarrelModule: {
+	DisplayName: Hyperschall-Lauf
+	Tooltip:
+		'''
+		Staustrahl-Züge lassen Strahlen im Flug beschleunigen; beim Durchbrechen der Schallmauer detoniert ein Mach-Ring
+		Jenseits der Mauer glühen Strahlen weiß: mehr Schaden, mehr Durchschlag und eine Kondensspur
+		'''
+}
+
+KineticDamperModule: {
+	DisplayName: Kinetische Dämpfungsschaft
+	Tooltip:
+		'''
+		Hydraulikdämpfer speichern den Rückstoß deiner Treffer als kinetische Reserve; über halber Reserve bist du immun gegen Rückstoß
+		Erleidest du Schaden, entlädt sich die gesamte Reserve als seismische Konterwelle, die Feinde fortbläst
+		'''
+}
+
+LightStockModule: {
+	DisplayName: Leichtschaft
+	Tooltip:
+		'''
+		Segmentierter Leichtbaurahmen erhöht die Feuerrate und macht jeden Hauptstrahl zur kriechenden Lichtkette —
+		zwei Kettenglieder folgen der Strahlbahn und verursachen jeweils eigenen Schaden
+		'''
+}
+
+MultiCellFrameModule: {
+	DisplayName: Mehrzellenrahmen
+	Tooltip: Parallele Kühlkammern feuern zwei Strahlen gleichzeitig – mehr Abdeckung, weniger Einzelschaden
+}
+
+PlasmaInjectorModule: {
+	DisplayName: Plasmainjektor
+	Tooltip:
+		'''
+		Injiziert hochenthalpisches Plasma in die Kugel: ihre Detonation hinterlässt eine Miniatur-Plasmasonne
+		Die Sonne versengt alles in ihrer Nähe und peitscht den nächsten Feind regelmäßig mit Sonneneruptionen
+		'''
+}
+
+QuantumFrameModule: {
+	DisplayName: Quantenrahmen
+	Tooltip:
+		'''
+		Verschränkungsprotokoll: triffst du nacheinander zwei verschiedene Ziele, werden sie für einige Sekunden quantenverschränkt
+		Schaden an einem wird teilweise auf das andere kopiert; stirbt eines, kollabiert die Verbindung und schleudert das angesammelte Echo in den Überlebenden
+		'''
+}
+
+ScattershotBarrelModule: {
+	DisplayName: Streuschuss-Lauf
+	Tooltip: Rissmündung spaltet einen Schuss in viele Strahlen – Abdeckung massiv, Einzelschaden stark reduziert
+}
+
+ThermalOpticModule: {
+	DisplayName: Wärmebildvisier
+	Tooltip: Infrarot-Fixierung lässt Strahlen am Ziel festhalten mit Präzisions- und Krit-Boni
+}
+
+VolatileFrameModule: {
+	DisplayName: Instabiler Rahmen
+	Tooltip: Übertaktete Kühlung presst Extra-Strahl und Krit heraus, Mana und Streuung steigen stark
+}
+
+NovaBarrelModule: {
+	DisplayName: Nova-Lauf
+	Tooltip:
+		'''
+		Überladene Plasmamündung detoniert bei jedem Treffer einen Mikroimpuls
+		Preis: mehr Streuung, schwächerer Einzelschuss und höherer Mana-Verbrauch
+		'''
+}
+
+PrismOpticModule: {
+	DisplayName: Prismenvisier
+	Tooltip:
+		'''
+		Phasenprisma am Strahlende spaltet beim Verlöschen zwei Nebenstrahlen ab
+		Hauptstrahl etwas kürzer, dafür schärferes Krit-Fenster
+		'''
+}
+
+TeslaCoreModule: {
+	DisplayName: Tesla-Kern
+	Tooltip:
+		'''
+		Hochspannungslichtbogen springt nach Treffer zum nächsten Gegner
+		Jeder Knoten erbt Trefferverhalten, Mana-Verbrauch steigt
+		'''
+}
+
+RecoilStockModule: {
+	DisplayName: Rückstoßschaft
+	Tooltip:
+		'''
+		Überlastungspuffer wandelt Kugel-Explosionen in Schub für den Nutzer
+		Strahlreichweite verlängert; Abzug fühlt sich etwas träger an
+		'''
+}
+
+SwarmGripModule: {
+	DisplayName: Schwarmgriff
+	Tooltip:
+		'''
+		Neuralnetz-Griff entlässt beim Detonieren stark zielsuchende Mikrokugeln
+		Die Anfangsgeschwindigkeit der Kugel sinkt, der Mana-Verbrauch steigt als Gegenleistung
+		'''
+}
+
+GravityFrameModule: {
+	DisplayName: Gravitationsrahmen
+	Tooltip:
+		'''
+		Miniatur-Singularitätsring verwandelt die Energiekugel in einen Anziehungspunkt
+		Zieht beim Aufladen nahe Gegner zum Kern, Explosionsradius stark vergrößert
+		Präzisionskammer verlangsamt den Laderhythmus leicht
+		'''
+}
+
+LaserBarrelModule: {
+	DisplayName: Prisma-Laserlauf
+	Tooltip: Verwandelt gebündelte Strahlen in eine kontinuierliche Prisma-Lasersäule mit enormem Mana-Verbrauch und begrenzter Leistung
+}
+
+OscillatorBarrelModule: {
+	DisplayName: Oszillator-Laserlauf
+	Tooltip:
+		'''
+		Eingebetteter Impulskondensator detoniert alle 30 Frames am Strahlende einen Energieimpuls
+		Einzelbild-Schaden leicht reduziert, Flächenexplosion und niedrigerer Mana-Verbrauch gleichen Dauerfeuer aus
+		'''
+}
+
+ScorchBarrelModule: {
+	DisplayName: Brand-Laserlauf
+	Tooltip:
+		'''
+		Hochenthalpie-Plasmamündung entzündet Ziele beim Laserkontakt
+		Direktschaden leicht reduziert, anhaltende Verbrennung und niedrigerer Mana-Verbrauch gleichen aus
+		'''
+}
+
+ReflectionBarrelModule: {
+	DisplayName: Reflexions-Laserlauf
+	Tooltip:
+		'''
+		Diamantprisma am Trefferpunkt bricht Teilenergie in zwei Nebenstrahlen
+		Hauptstrahl-Schaden steigt, extremer Mana-Verbrauch macht Dauerfeuer teuer
+		'''
+}
+
+EchoOpticModule: {
+	DisplayName: Echovisier
+	Tooltip:
+		'''
+		Resonanzelement am Strahlende fängt die Energierückwelle beim Verlöschen des Strahls
+		Jeder verlöschende Strahl erzeugt drei fächerförmige zielsuchende Nebenstrahlen und gleicht verkürzte Reichweite aus
+		'''
+}
+
+FrostOpticModule: {
+	DisplayName: Frostvisier
+	Tooltip:
+		'''
+		Kryo-Fokussierungssystem versetzt getroffene Ziele in Frostbrand
+		Strahlgeschwindigkeit etwas reduziert, Zielverfolgung stabiler, zusätzliche Durchdringung und Krit-Bonus
+		'''
+}
+
+SingularityCoreModule: {
+	DisplayName: Singularitätskern
+	Tooltip:
+		'''
+		Mikrogravitationsgenerator lenkt die Kugel im Flug zum nächsten Gegner
+		Explosionsradius stark vergrößert, dichtes Feld treibt Mana-Verbrauch hoch
+		'''
+}
+
+ScrambleFieldModule: {
+	DisplayName: Störfeldmodul
+	Tooltip:
+		'''
+		Hochfrequenzspule löst beim Aufladen alle 40 Frames eine Mikrostosswelle um die Kugel aus
+		Explosionsmaß vergrößert, langsameres Aufladen und höherer Mana-Verbrauch
+		'''
+}
+
+BraceStockModule: {
+	DisplayName: Stützschaft
+	Tooltip: Schwere Stabilisierungsstütze eliminiert Streuung vollständig und verlängert die Strahlreichweite; etwas Feuerrate für höchste Präzision eingetauscht
+}
+
+LaunchStockModule: {
+	DisplayName: Abschussschaft
+	Tooltip:
+		'''
+		Überlastete Feder entlädt beim Abschuss der Energiekugel drei fächerförmige zielsuchende Strahlen
+		Kugelgeschwindigkeit steigt, Mana-Verbrauch steigt mit
+		'''
+}
+
+SentinelGripModule: {
+	DisplayName: Wächtergriff
+	Tooltip:
+		'''
+		Intelligenter Sensorgriff feuert während des Kugelflugs alle 20 Frames einen zielsuchenden Strahl auf den nächsten Gegner
+		Kugelgeschwindigkeit leicht reduziert, Mana steigt, Begleitfeuer gleicht aus
+		'''
+}
+
+ConductorGripModule: {
+	DisplayName: Leitergriff
+	Tooltip:
+		'''
+		Supraleitendes Material verstärkt Kettenlichtbögen zu größerer Reichweite und mehr Sprüngen
+		Jeder Treffer begleitet von einem Lichtbogen-Partikelausbruch; leichter Schaden- und Mana-Anstieg
+		'''
+}
+
+PhantomFrameModule: {
+	DisplayName: Phasenrahmen
+	Tooltip:
+		'''
+		Quantenphasenkammer teleportiert den Strahl alle 30 Frames 80 Pixel zum nächsten Gegner
+		Umgeht Hindernisse vollständig; leichte Reichweiten- und Schadensboni bei höherem Mana-Verbrauch
+		'''
+}
+
+RecursiveFrameModule: {
+	DisplayName: Rekursivrahmen
+	Tooltip:
+		'''
+		Topologieschleifen-Chassis feuert bei Strahlverlöschen eine Kopie vom Spieler in Originalrichtung
+		Hauptstrahl stärker aber kürzer; Echo schwächer und nicht rekursiv, Mana-Verbrauch steigt
+		'''
+}
+
+ForkBarrelModule: {
+	DisplayName: Gabel-Lauf
+	Tooltip:
+		'''
+		Interne Teilerprisma gabelt alle 50 Frames den Strahl in zwei seitliche Nebenstrahlen
+		Leichter Schaden- und Mana-Verlust
+		'''
+}
+
+NullBarrelModule: {
+	DisplayName: Null-Lauf
+	Tooltip:
+		'''
+		Datenlöscher drückt Einzelschaden nahe null, gewährt aber praktisch unbegrenzte Durchdringung
+		Treffer injizieren giftigen Datenstrom zur fortlaufenden Korrosion
+		'''
+}
+
+HelixBarrelModule: {
+	DisplayName: Helix-Lauf
+	Tooltip:
+		'''
+		Zweikanal-Optik zwingt zwei Strahlen spiralförmig um eine gemeinsame Achse
+		Streuung null, leichter Schaden- und Geschwindigkeitsverlust; hervorragend mit hoher Durchdringung
+		'''
+}
+
+TargetPainterOpticModule: {
+	DisplayName: Zielmarkierungsvisier
+	Tooltip:
+		'''
+		Laserzielsystem belegt Ziele mit korrosivem Eiter und senkt Verteidigung stark
+		Zielverfolgung und Krit-Chance steigen mit
+		'''
+}
+
+StrobeOpticModule: {
+	DisplayName: Stroboskopvisier
+	Tooltip:
+		'''
+		Phasenmodulator wechselt den Strahl zwischen Wanddurchdringung und solid
+		Chance auf Verwirrung beim Treffer; leichte Durchdringungs- und Tempoboni
+		'''
+}
+
+SniperOpticModule: {
+	DisplayName: Scharfschützenvisier
+	Tooltip:
+		'''
+		Magnetische Kollimatoren erhöhen Geschwindigkeit, Reichweite und Einzelschaden stark
+		Auf Kosten von Tempo und nahezu null Zielverfolgung
+		Mit Hyperschall-Lauf für extreme Fernschläge
+		'''
+}
+
+StormCellModule: {
+	DisplayName: Sturmzelle
+	Tooltip:
+		'''
+		Beim Aufladen alle 25 Frames ein zielsuchender Blitz zum nächsten Gegner
+		Schnelleres Aufladen und größerer Explosionsradius, höherer Mana-Verbrauch
+		'''
+}
+
+CryoCoreModule: {
+	DisplayName: Kryokern
+	Tooltip:
+		'''
+		Ultratiefkalte Energiezelle friert alle Gegner im Explosionsradius der Energiekugel ein
+		Explosionsradius vergrößert, Laderhythmus etwas langsamer
+		'''
+}
+
+DarkMatterCoreModule: {
+	DisplayName: Dunkelmateriekern
+	Tooltip:
+		'''
+		Dunkelmateriefeld zieht während der Flugphase nahe Gegner zum Kugelzentrum
+		Die Kugel verfolgt gleichzeitig Ziele; Explosionsradius deutlich vergrößert, hoher Mana-Verbrauch
+		'''
+}
+
+ErgonomicStockModule: {
+	DisplayName: Ergonomieschaft
+	Tooltip: Präzises ergonomisches Design senkt Mana-Verbrauch deutlich mit leichten Boni auf Feuerrate und Präzision
+}
+
+ExtenderStockModule: {
+	DisplayName: Verlängerungsschaft
+	Tooltip:
+		'''
+		Verlängerte Schiene gewährt Strahlen mehr Reichweite und Fluggeschwindigkeit bei minimalem Schadensverlust
+		Mit Scharfschützenvisier für extreme Fernabdeckung kombinierbar
+		'''
+}
+
+StormStockModule: {
+	DisplayName: Sturmschaft
+	Tooltip:
+		'''
+		Hochdichte Rückholfeder treibt Feuerrate und Strahlzahl an die Grenze, Einzelschaden leidet
+		Mit Streuschuss-Lauf für Teppichbombardement
+		'''
+}
+
+VampireGripModule: {
+	DisplayName: Vampirblut-Griff
+	Tooltip:
+		'''
+		Bioelektrischer Griff wandelt einen Teil des Strahlschadens in Lebensregeneration
+		Laser-Treffer häufiger, kleinere Heilung pro Tick – gut für lange Kämpfe
+		'''
+}
+
+ChronalGripModule: {
+	DisplayName: Chronaler Griff
+	Tooltip:
+		'''
+		Phasenverzögerungsspule verlangsamt getroffene Ziele
+		Mit verbesserter Zielverfolgung ermöglicht dichtes Feuer anhaltende Kontrolle
+		'''
+}
+
+CascadeGripModule: {
+	DisplayName: Kaskadengriff
+	Tooltip:
+		'''
+		Nach 5 Treffern entsteht am Einschlagpunkt ein schwebender Kaskadenknoten
+		Der Knoten bleibt ~2 Sekunden und feuert 5 zielsuchende Strahlen auf nahe Gegner
+		Einzelschuss-Schaden sinkt leicht
+		'''
+}
+
+MirrorFrameModule: {
+	DisplayName: Spiegelrahmen
+	Tooltip:
+		'''
+		Symmetrische Reflexionskammer erzeugt bei jedem Strahl einen 180°-Spiegelstrahl
+		Spiegelstrahlen schwächer, doppelte Richtungsabdeckung verdichtet das Feuer deutlich
+		'''
+}
+
+NullspaceFrameModule: {
+	DisplayName: Nullraumrahmen
+	Tooltip:
+		'''
+		Leerriss-Generator hinterlässt alle 20 Frames einen Mikroexplosionsnachhall auf der Strahlbahn
+		Reichweite leicht verlängert, minimaler Schadensverlust
+		'''
+}
+
+OverkillFrameModule: {
+	DisplayName: Overkill-Rahmen
+	Tooltip:
+		'''
+		Overkill-Schaltkreis stapelt bei jedem Kill eine „Tötungswelle“ (max. 15), jede +2 % Schaden
+		Stapel schwinden mit der Zeit – je schneller das Tempo, desto stärker
+		'''
+}
+
+GraviticBarrelModule: {
+	DisplayName: Gravitationslauf
+	Tooltip:
+		'''
+		Eingebettete Mikrosingularität zieht nahe Gegner während des Strahlflugs an
+		Streuung und Zielverfolgung verbessern sich, Reichweite verlängert, Mündungsgeschwindigkeit leicht reduziert
+		'''
+}
+
+PrismaticBarrelModule: {
+	DisplayName: Prismatischer Lauf
+	Tooltip:
+		'''
+		Dispersionsprisma wirft farbige Spuren ab und streut Farbsplitter beim Treffer
+		Ein zusätzlicher Strahl und Krit-Kompensation, leichter Schaden- und Streuungsverlust
+		'''
+}
+
+ConcussionBarrelModule: {
+	DisplayName: Erschütterungsmündung
+	Tooltip:
+		'''
+		Überlastungspuffer detoniert alle 5 Treffer am Einschlagpunkt einen Miniatur-Erschütterungsring
+		Einzelschuss-Schaden und Streuung verbessern sich, Angriffstempo leidet deutlich
+		'''
+}
+
+ObsidianBarrelModule: {
+	DisplayName: Obsidian-Lauf
+	Tooltip:
+		'''
+		Treffer ritzen Obsidianrisse ins Ziel; bei voller Stapelung zerspringen sie zu jagenden Vulkanglas-Splittern
+		Rechtsklick-Explosionen sprengen nahe Risse vorzeitig – ideal gegen gedrängte Gruppen
+		'''
+}
+
+LifebloomBarrelModule: {
+	DisplayName: Lebensblüten-Lauf
+	Tooltip:
+		'''
+		Strahlen säen parasitäre Lebenssprossen, die verzögert Leben absaugen und etwas zurück an den Nutzer geben
+		Stirbt der Wirt, wandert die Sprosse zu einem nahen Gegner
+		'''
+}
+
+MagmaVentBarrelModule: {
+	DisplayName: Magmalauf
+	Tooltip:
+		'''
+		Treffer und verlöschende Strahlen hinterlassen kurzlebige Magmaöffnungen mit periodischen vertikalen Hitzeimpulsen
+		In der Unterwelt oder heißen Flüssigkeiten schnellerer Zyklus für Gebietskontrolle
+		'''
+}
+
+CumulusBarrelModule: {
+	DisplayName: Kumulus-Lauf
+	Tooltip:
+		'''
+		Strahlwege kondensieren aufladbare Wolkenkerne; nachfolgende SHPC-Strahlen und Energiekugeln laden sie auf
+		Voll geladen senkt jede Wolke drei kurze Regenblitz-Strahlen – ideal für Stellungsfeuer
+		'''
+}
+
+MossboundBarrelModule: {
+	DisplayName: Moos-Lauf
+	Tooltip:
+		'''
+		Strahlen legen feuchte Moosflächen; Gegner darin werden verlangsamt und schließlich kurz verwurzelt
+		Rechtsklick-Energiekugeln absorbieren Moos und vergrößern die Endexplosion
+		'''
+}
+
+FrostfernBarrelModule: {
+	DisplayName: Frostfarn-Lauf
+	Tooltip:
+		'''
+		Erster Treffer zieht eine Eiskristallader hinter dem Ziel; Gegner entlang der Linie teilen Frost
+		Verkettet Gruppen zu einem sich ausbreitenden Frostfarn-Zweig
+		'''
+}
+
+SandstormBarrelModule: {
+	DisplayName: Sandsturm-Lauf
+	Tooltip:
+		'''
+		Dauerfeuer wälzt eine wandernde Sandwand nach vorn, schleift Gegner und schwächt feindliche Projektile
+		Strahlen erhalten Extra-Durchdringung, Mana steigt mit der Sandwand
+		'''
+}
+
+CoralReefBarrelModule: {
+	DisplayName: Korallenriff-Lauf
+	Tooltip:
+		'''
+		Trefferpunkte wachsen Korallenanker; mehrere Anker verbinden sich zu schneidenden Rifflinien
+		Rechtsklick-Energiekugel-Explosionen lassen nahe Korallenanker synchronisierte Ringwellen freisetzen
+		'''
+}
+
+HiveBarrelModule: {
+	DisplayName: Bienenstock-Lauf
+	Tooltip:
+		'''
+		Linksklick markiert Gegner mit Pheromonen, Rechtsklick-Explosionen entsenden Cyber-Bienen auf markierte Ziele
+		Markierungen verteilen – Schwarm deckt das Feld stabiler ab
+		'''
+}
+
+MoondewBarrelModule: {
+	DisplayName: Mondtau-Lauf
+	Tooltip:
+		'''
+		Strahlwege kondensieren Tautropfen-Prismen; nachfolgende Strahlen brechen zu kurzen Ableitungsstrahlen
+		Nacht und Vollmond erhöhen Refraktionslimit und Dauer
+		'''
+}
+
+CrosslinkOpticModule: {
+	DisplayName: Querverbindungsvisier
+	Tooltip:
+		'''
+		Neuralverknüpfungsmodul spannt beim Treffer einen Datenlichtbogen zwischen dem Ziel und dem nächsten Gegner
+		Kettenanzahl und Sprungradius steigen, Mana-Verbrauch leicht erhöht
+		'''
+}
+
+ZoomOpticModule: {
+	DisplayName: Zoomvisier
+	Tooltip:
+		'''
+		Langfokus-Magnetlinse schiebt Strahlen schneller und weiter, opfert Zielverfolgung und Tempo
+		Treffer ab 600 Pixel lösen zusätzlichen Weißglühschlag aus, skaliert mit Entfernung
+		'''
+}
+
+PingOpticModule: {
+	DisplayName: Markierungsvisier
+	Tooltip: Signalmarkierungssystem verleiht getroffenen Zielen Todesmarkierung und erhöht Krit-Chance
+}
+
+CapacitorPulseModule: {
+	DisplayName: Impulskondensator
+	Tooltip:
+		'''
+		Hochdichte Kondensatorstapel entladen beim Aufladen etwa alle halbe Sekunde eine kleine Impuls-Detonation auf der Kugel
+		Explosionsradius und Ladezeit steigen, Mana-Verbrauch nimmt zu
+		'''
+}
+
+EntropyCoreModule: {
+	DisplayName: Entropiekern
+	Tooltip:
+		'''
+		Die Kugel saugt während des Flugs „Entropie“ von nahen Gegnern ab
+		Bei Detonation folgt eine Nachbeben-Explosion proportional zur gesammelten Entropie – je dichter die Gruppe, desto stärker
+		'''
+}
+
+ResonanceReactorModule: {
+	DisplayName: Resonanzreaktor
+	Tooltip:
+		'''
+		Gibt beim Aufladen etwa alle 0,75 s einen Resonanzring ab
+		Detonation löst zusätzlichen Resonanzstoß unter den Füßen aus für Nahkampfabdeckung
+		'''
+}
+
+OverwatchStockModule: {
+	DisplayName: Wachschaft
+	Tooltip:
+		'''
+		Beim Stillstehen stapeln sich „Wachposten“-Stufen (max. 5), die beim Bewegen schnell schwinden
+		Jede Stufe: +3 % Schaden und +2 % Krit; stabile Haltung reduziert leicht Tempo und Streuung
+		'''
+}
+
+MomentumStockModule: {
+	DisplayName: Impulsschaft
+	Tooltip:
+		'''
+		Bei hoher Bewegung stapeln sich „Impuls“-Stufen (max. 6), die nach dem Stoppen schnell schwinden
+		Jede Stufe: +4 % Angriffstempo und +6 % Projektilgeschwindigkeit – Spiegel zum Wachschaft
+		'''
+}
+
+BulwarkStockModule: {
+	DisplayName: Bollwerkschaft
+	Tooltip:
+		'''
+		Beim Halten des SHPC gewährt dir leichte Schadensreduktion
+		Die stabile Haltung verlangsamt das Aufladen leicht und senkt den Mana-Verbrauch
+		'''
+}
+
+CombatGripModule: {
+	DisplayName: Kampfgriff
+	Tooltip:
+		'''
+		Treffer mit Tötung stapeln „Kampfesmut“ (max. 5)
+		Jede Stufe: +4 % Angriffstempo und +2 % Schaden; Stapel schwinden ohne Tötung mit der Zeit
+		'''
+}
+
+TempestGripModule: {
+	DisplayName: Sturmgriff
+	Tooltip:
+		'''
+		Nach mehreren Treffern „Sturmausbruch“ – mehrere Lichtbögen um den letzten Einschlag
+		Einzelschaden sinkt leicht, der Mana-Verbrauch steigt, dafür entsteht rhythmisches Flächenräumen
+		'''
+}
+
+AbsorberGripModule: {
+	DisplayName: Absorptionsgriff
+	Tooltip:
+		'''
+		Strahl- und Laser-Treffer geben einen Anteil des verursachten Schadens als Mana zurück
+		Eigener Mana-Kreislauf als Nachschub; Einzelschuss-Schaden sinkt leicht, Grund-Mana-Kosten steigen als Gegenleistung
+		'''
+}
+
+HarmonicFrameModule: {
+	DisplayName: Harmonischer Rahmen
+	Tooltip:
+		'''
+		Mehrere gleichzeitige Strahlen spannen Resonanzlichtbögen zueinander für Bonusschaden
+		Ein zusätzlicher Strahl, leichter Einzelschuss-Verlust und etwas mehr Streuung
+		'''
+}
+
+ReplicatorFrameModule: {
+	DisplayName: Replikatorrahmen
+	Tooltip:
+		'''
+		Beim Verlöschen des zielsuchenden Strahls entsteht ein kurzlebiges Echo in Originalrichtung
+		Hauptschaden steigt, Lebensdauer sinkt, Mana-Verbrauch steigt
+		'''
+}
+
+ArchiveFrameModule: {
+	DisplayName: Archivrahmen
+	Tooltip:
+		'''
+		Sammelt fortlaufend den durch SHPC-Treffer verursachten Schaden; bei Erreichen des Schwellenwerts detoniert an deiner Position eine „Datenarchivierung“-Explosion
+		Einzelschuss-Schaden steigt, Mana-Verbrauch steigt leicht
+		'''
+}

@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// <summary>大理石飞盘，链击回旋，弹射尽后归手，可并存两枚</summary>
     internal class MarbleDisc : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 34;
             Item.damage = 16;

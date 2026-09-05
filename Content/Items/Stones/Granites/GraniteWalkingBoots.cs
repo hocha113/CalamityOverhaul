@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     /// <summary>花岗行走靴，全速瞬间通电迸弧，维持期脚下走火+残影</summary>
     internal class GraniteWalkingBoots : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 30;
             Item.accessory = true;

@@ -10,6 +10,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class Snowblindness : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "Snowblindness";
         public override void SetDefaults() {
             Item.damage = 30;

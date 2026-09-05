@@ -1,0 +1,552 @@
+FluidPump: {
+	DisplayName: Pompe à fluide
+	Tooltip:
+		'''
+		Une fois alimentée, puise le liquide du monde sous la machine dans son réservoir tampon
+		Chaque case pompée coûte 2 UE ; le fluide part ensuite par les canalisations vers les réservoirs et les machines
+		'''
+}
+
+FluidInjector: {
+	DisplayName: Injecteur de fluide
+	Tooltip:
+		'''
+		Consomme le liquide stocké pour le verser dans le monde sous la machine
+		Chaque case placée coûte 2 UE
+		Attention où vous mettez les pieds en versant de la lave
+		'''
+}
+
+BottlingMachine: {
+	DisplayName: Embouteilleuse
+	Tooltip:
+		'''
+		Les bouteilles et seaux vides se remplissent au réservoir ; les contenants pleins se vident et rendent le liquide
+		Chaque opération coûte 5 UE, les produits se retirent du slot de sortie
+		Les slots d'entrée et de sortie se branchent aux canalisations d'objets pour l'automatisation
+		'''
+}
+
+ShimmerTransmuter: {
+	DisplayName: Convertisseur chatoyant
+	Tooltip:
+		'''
+		Insérez un objet, consommez du Chatoyant pour le convertir, le produit tombe dans le slot de sortie
+		Chaque conversion coûte 10 UE et 64 unités de Chatoyant, à pomper depuis le lac chatoyant par les canalisations
+		Accepte les conversions d'objets et le dé-craft ; refuse les pièces et les objets qui libèrent des créatures
+		Les slots d'entrée et de sortie se branchent aux canalisations d'objets
+		'''
+}
+
+TeslaElectromagneticTower: {
+	DisplayName: Tour électromagnétique Tesla
+	Tooltip:
+		'''
+		Nécessite de l'électricité pour fonctionner
+		Après placement au sol, clic droit pour basculer entre mode attaque et mode garde
+		En mode attaque, émet des arcs électriques vers les ennemis proches
+		En mode garde, inflige un débuff électrifié à tous les ennemis à portée ; si un joueur est à portée
+		et tient un objet rechargeable, la tour émet des arcs pour le recharger à distance
+		"Ingénieurs, tenez-vous à l'écart"
+		'''
+}
+
+FlameTurret: {
+	TurretOnText: Tourelle de flammes activée
+	TurretOffText: Tourelle de flammes désactivée
+	NoEnergyText: Énergie insuffisante!
+	FuelLoadText: Gel chargé x{0}
+	FuelTakeText: Gel retiré x{0}
+	DisplayName: Tourelle lance-flammes
+	Tooltip:
+		'''
+		Nécessite de l'électricité pour fonctionner
+		Crache sans cesse des langues de feu vers les ennemis proches ; le feu traverse les groupes et allume le Feu infernal
+		Clic droit sur la tourelle en tenant du gel pour charger le carburant ; brûler du gel renforce le feu
+		Maj + clic droit pour retirer le gel ; les canalisations d'objets peuvent aussi alimenter le slot
+		Clic droit à main vide ou un signal de fil pour basculer la tourelle
+		"Ça sent la gelée grillée"
+		'''
+}
+
+CryoTurret: {
+	TurretOnText: Tourelle de gel activée
+	TurretOffText: Tourelle de gel désactivée
+	NoEnergyText: Énergie insuffisante!
+	DisplayName: Tourelle de gel
+	Tooltip:
+		'''
+		Nécessite de l'électricité pour fonctionner
+		Répand sans cesse le froid sur tous les ennemis à portée, les givre et les ralentit
+		Un ennemi baigné de froid pendant environ deux secondes est brièvement gelé
+		Ralentir et geler, c'est le métier ; les dégâts ne sont qu'une lente brûlure de givre
+		Clic droit ou un signal de fil pour basculer la tourelle
+		"Calmez-vous"
+		'''
+}
+
+LaserTurret: {
+	TurretOnText: Tourelle laser activée
+	TurretOffText: Tourelle laser désactivée
+	NoEnergyText: Énergie insuffisante!
+	DisplayName: Tourelle laser
+	Tooltip:
+		'''
+		Nécessite de l'électricité pour fonctionner
+		Tire des faisceaux à hauts dégâts sur les ennemis en ligne de vue ; très longue portée, cadence lente
+		Les cibles masquées par le terrain ne sont pas verrouillées ; priorise les boss
+		Clic droit ou un signal de fil pour basculer la tourelle
+		"Un tir, un à terre"
+		'''
+}
+
+ShieldGenerator: {
+	FieldOnText: Champ de bouclier activé
+	FieldOffText: Champ de bouclier désactivé
+	NoEnergyText: Énergie insuffisante!
+	DisplayName: Générateur de bouclier
+	Tooltip:
+		'''
+		Nécessite de l'électricité pour fonctionner
+		Sous tension, les joueurs à portée reçoivent un bouclier d'énergie
+		Le bouclier se charge lentement, encaisse une part des dégâts, puis s'estompe hors de portée
+		Plus il protège de joueurs, plus il consomme
+		Clic droit ou un signal de fil pour basculer le champ
+		'''
+}
+
+HealStation: {
+	FieldOnText: Aura de soin activée
+	FieldOffText: Aura de soin désactivée
+	NoEnergyText: Énergie insuffisante!
+	DisplayName: Station de soin
+	Tooltip:
+		'''
+		Nécessite de l'électricité pour fonctionner
+		Sous tension, régénère lentement la vie de tous les joueurs à portée
+		Clic droit ou un signal de fil pour basculer l'aura
+		"Accident du travail ? Connais pas"
+		'''
+}
+
+ElectricMinRocket: {
+	EnergyShortage: Énergie insuffisante
+	DisplayName: Mini-fusée électrique
+	Tooltip:
+		'''
+		Clic droit pour utiliser la fusée, ou placez-la au sol et clic droit pour décoller
+		En l'air, flèches gauche/droite pour ajuster la direction
+		Maintenez la flèche bas pour descendre lentement ; le vol consomme progressivement l'énergie
+		Appuyez sur Espace pour interrompre le vol
+		“Fabriquée en Union soviétique, solide et fiable — elle a failli atteindre la Lune”
+		'''
+}
+
+TeleportStation: {
+	NoEnergyText: Énergie insuffisante!
+	TargetNoEnergyText: La station de destination n'a pas assez d'énergie de veille!
+	UnnamedText: Station sans nom ({0}, {1})
+	DisplayName: Station de téléportation
+	Tooltip:
+		'''
+		Forme un réseau avec les autres stations du monde
+		Clic droit pour ouvrir le panneau, cliquez une destination pour voyager
+		La téléportation consomme selon la distance ; la destination doit aussi garder un peu d'énergie de veille
+		Vous pouvez nommer les stations pour les retrouver dans la liste
+		'''
+}
+
+ElectricSundial: {
+	NoEnergyText: Énergie insuffisante!
+	BusyText: Le temps avance déjà!
+	SkipBroadcast: "{0} a activé le cadran solaire électrique, le temps file jusqu'à l'aube"
+	DisplayName: Cadran solaire électrique
+	Tooltip:
+		'''
+		Stockez 1000 d'électricité, puis clic droit pour avancer le temps jusqu'à l'aube
+		A son propre courant, ignore le délai de sept jours du Cadran solaire enchanté
+		Prévient tout le serveur à l'usage
+		'''
+}
+
+WeatherController: {
+	NoEnergyText: Énergie insuffisante!
+	RainBroadcast: "{0} a activé le contrôleur météo, les nuages de pluie se rassemblent"
+	ClearBroadcast: "{0} a activé le contrôleur météo, la pluie s'est dissipée"
+	DisplayName: Contrôleur météo
+	Tooltip:
+		'''
+		Clic droit : dépense 500 d'électricité pour appeler la pluie, ou la chasser s'il pleut déjà
+		Ne commande que la pluie, le vent n'écoute pas
+		Prévient tout le serveur à l'usage
+		'''
+}
+
+WireInterface: {
+	ModeBridgeText: Pont seulement : un signal de fil bascule les machines adjacentes
+	ModeFullText: Rapport plein : émet un signal de fil quand les machines adjacentes sont pleines
+	ModeEmptyText: Rapport vide : émet un signal de fil quand les machines adjacentes sont à sec
+	MachineOffText: En veille
+	MachineOnText: Actif
+	DisplayName: Interface de fil
+	Tooltip:
+		'''
+		Adaptateur bidirectionnel entre les fils et le réseau électrique
+		À la réception d'un signal de fil, bascule les machines collées entre actif et veille
+		Clic droit pour changer le mode de rapport : émet un signal de fil quand les machines adjacentes sont pleines ou vides
+		Placez-le contre la machine à commander, puis branchez-y un fil
+		'''
+}
+
+Sensor: {
+	TitleText: Capteur multimode
+	ConditionLabelText: Condition de déclenchement
+	ModeOffText: Désactivé
+	ModeChargeAboveText: Charge au-dessus du seuil
+	ModeChargeBelowText: Charge sous le seuil
+	ModeEnemyText: Alerte ennemie
+	ModeBloodMoonText: Lune de sang
+	ModeEclipseText: Éclipse solaire
+	ModeSlimeRainText: Pluie de gelées
+	ModeInvasionText: Invasion
+	ThresholdLabelText: Seuil de déclenchement
+	RangeLabelText: Rayon de veille
+	EventHintText: Lit les événements du monde, aucun paramètre requis
+	OutputLabelText: Mode de sortie
+	OutputLevelText: Suivi de niveau
+	OutputPulseText: Impulsion unique
+	StatusActiveText: Condition remplie
+	StatusIdleText: En attente
+	StatusNoPowerText: Sans énergie
+	StatusOffText: Désactivé
+	EnergyLabelText: Électricité
+	DisplayName: Capteur multimode
+	Tooltip:
+		'''
+		L'œil électrique du réseau ; clic droit pour ouvrir le panneau
+		Surveille le seuil de charge adjacent, les ennemis proches, ou Lune de sang, éclipse, pluie de gelées et invasion
+		Émet un signal de fil le long de son câblage quand la condition tient, en suivi de niveau ou en impulsion unique
+		Consomme 0,1 d'électricité par tick en veille ; plus de courant, plus de jugement
+		'''
+}
+
+GridSwitch: {
+	OpenText: Ouvert
+	CloseText: Fermé
+	DisplayName: Interrupteur de réseau
+	Tooltip:
+		'''
+		Interrupteur de courant encastré dans une ligne de canalisations
+		Clic droit ou signal de fil pour basculer ; ouvert, le courant ne passe plus
+		Placez-le entre deux segments pour démarrer et arrêter des zones du réseau
+		'''
+}
+
+MiningMachine: {
+	DisplayName: Machine d'extraction
+	Tooltip:
+		'''
+		Forage de minerais en consommant de l'électricité
+		Doit être placée à un endroit approprié pour fonctionner
+		Des minerais spéciaux peuvent être extraits dans des environnements particuliers
+		'''
+	DontWork: Doit être placée sur une surface dure pour extraire
+}
+
+Collector: {
+	DisplayName: Collecteur
+	Tooltip:
+		'''
+		Consomme de l'électricité pour ramasser
+		Ramasse automatiquement les objets au sol et les place dans le coffre le plus proche
+		Ne fonctionne pas s'il n'y a pas de coffre à proximité
+		Clic droit sur le collecteur en tenant un objet pour le marquer et ne ramasser que ce type
+		'''
+	Text1: Quantité excessive !
+	Text2: Aucun coffre à proximité !
+	Text3: Électricité insuffisante !
+}
+
+WGGCollector: {
+	DisplayName: Ferrailleur
+	Tooltip:
+		'''
+		Il adore recycler — y compris vous
+		Pour lui, une bouteille en plastique et une colonne vertébrale n'ont guère de différence
+		'''
+}
+
+ItemFilter: {
+	DisplayName: Plaque de filtrage d'objets
+	Tooltip:
+		'''
+		Utiliser pour ouvrir le panneau de filtrage
+		Clic droit sur une machine compatible pour appliquer
+		Clic gauche sur un coffre pour copier son contenu comme règles de filtre
+		'''
+	StateFormat: "{0} · {1} entrées enregistrées"
+	CopiedFromChest: Contenu du coffre copié
+	CopiedFromCollector: Liste du collecteur copiée
+}
+
+Spectrometer: {
+	DisplayName: Spectromètre
+	Tooltip:
+		'''
+		Permet de teindre les objets avec des colorants
+		Nécessite de l'électricité pour fonctionner
+		'''
+}
+
+MiningMachineMk2: {
+	DontWork: Doit être placée sur une surface dure pour extraire
+	DisplayName: Machine d'extraction MK2
+	Tooltip:
+		'''
+		Forage de minerais en consommant de l'électricité
+		Doit être placée à un endroit approprié pour fonctionner
+		Des minerais spéciaux peuvent être extraits dans des environnements particuliers
+		'''
+}
+
+Lumberjack: {
+	Text1: Quantité excessive !
+	Text2: Électricité insuffisante !
+	CycleModeText: Mode cycle
+	ClearModeText: Mode nettoyage
+	DisplayName: Bûcheron
+	Tooltip:
+		'''
+		Consomme de l'électricité pour récolter du bois
+		Abat automatiquement les arbres environnants
+		Clic droit pour basculer entre mode cycle et mode nettoyage
+		Le mode cycle récolte en continu et replante les jeunes pousses
+		Le mode nettoyage n'abat que les arbres sans replanter
+		'''
+}
+
+LifeWeaver: {
+	NoValidPositionText: Aucun emplacement de plantation valide à proximité !
+	NoEnergyText: Électricité insuffisante !
+	DisplayName: Planteur d'arbres
+	Tooltip: Consomme de l'électricité pour planter des arbres à proximité
+}
+
+WGGLumberjack: {
+	DisplayName: Bûcheron des terres sauvages
+	Tooltip: ""
+}
+
+WGGLifeWeaver: {
+	TurretBatteryDepleted: Batterie épuisée
+	DisplayName: Planteur d'arbres des terres sauvages
+	Tooltip: ""
+}
+
+Incinerator: {
+	DisplayName: Incinérateur électrique
+	Tooltip:
+		'''
+		Consomme de l'électricité pour fondre des objets
+		Clic droit pour ouvrir le panneau de contrôle
+		Maj + clic droit pour déposer rapidement les ingrédients ou récupérer les produits
+		La fonte produit le double de la quantité
+		'''
+}
+
+Crusher: {
+	DisplayName: Concasseur de minerai
+	Tooltip:
+		'''
+		Consomme de l'électricité pour concasser le minerai : deux parts en entrée, trois de la même sorte en sortie
+		Clic droit pour ouvrir le panneau
+		Maj + clic droit pour déposer rapidement le minerai ou retirer le concassé
+		Passez le concassé à l'incinérateur : le même minerai donne la moitié de lingots en plus
+		'''
+}
+
+CrusherUI: {
+	TitleText: Concasseur de minerai
+	InputLabel: Minerai
+	OutputLabel: Production
+	ProgressLabel: Concassage
+	PowerLabel: Électricité
+	CrushingText: Concassage
+	IdleText: En veille
+	NoPowerText: Sans énergie
+	InputHint: Insérez du minerai, deux parts en donnent trois
+	OutputHint: Cliquez pour retirer le concassé
+	PowerUnit: UE
+}
+
+Recycler: {
+	DisplayName: Recycleur
+	Tooltip:
+		'''
+		Consomme de l'électricité pour démonter armes, armures et accessoires en lingots selon la rareté
+		Pas de recette inversée, la valeur de sortie reste bien inférieure à l'objet
+		Clic droit pour ouvrir le panneau
+		Maj + clic droit pour déposer rapidement l'équipement ou retirer les lingots
+		'''
+}
+
+RecyclerUI: {
+	TitleText: Recycleur
+	InputLabel: Équipement
+	OutputLabel: Lingots
+	ProgressLabel: Démontage
+	PowerLabel: Électricité
+	WorkingText: Démontage
+	IdleText: En veille
+	NoPowerText: Sans énergie
+	InputHint: Insérez une arme, une armure ou un accessoire
+	OutputHint: Cliquez pour retirer les lingots
+	EstimateLabel: Rendement estimé :
+	PowerUnit: UE
+}
+
+AutoCrafter: {
+	DisplayName: Établi automatique
+	Tooltip:
+		'''
+		Clic droit pour ouvrir le panneau, insérez un échantillon et épinglez une de ses recettes
+		La machine puise les matériaux dans les coffres et machines proches, puis assemble
+		Les stations requises par la recette doivent être placées à proximité
+		Les produits partent d'abord vers le stockage proche, sinon restent dans le slot de sortie
+		'''
+}
+
+AutoCrafterUI: {
+	TitleText: Établi automatique
+	SampleLabel: Échantillon
+	OutputLabel: Produit
+	ListLabel: Liste des recettes
+	PowerLabel: Électricité
+	StatusIdle: En veille
+	StatusNoPin: Aucune recette épinglée
+	StatusPinMissing: Recette invalide, épinglez-en une autre
+	StatusNoPower: Sans énergie
+	StatusNoStation: Station de fabrication manquante à proximité
+	StatusNoCondition: Condition de fabrication non remplie
+	StatusNoMaterial: Matériau manquant :
+	StatusOutputFull: Slot de sortie plein
+	StatusWorking: Assemblage
+	SampleHint: Insérez un échantillon pour lister ses recettes
+	ListEmptyText: Cet échantillon n'a pas de recette
+	PinHint: Cliquez pour épingler cette recette
+	UnpinHint: Cliquez à nouveau pour retirer l'épingle
+	ConditionLockText: Condition non remplie
+	PinnedTag: Épinglé
+	PowerUnit: UE
+}
+
+Thrower: {
+	NoEnergyText: Énergie insuffisante !
+	NoItemText: Aucun objet à lancer !
+	WorkingText: Lancement en cours...
+	IdleText: En attente
+	DisplayName: Lanceur
+	Tooltip:
+		'''
+		Consomme de l'électricité pour lancer des objets
+		Clic droit pour ouvrir le panneau de contrôle
+		'''
+}
+
+PlayerLauncher: {
+	NoEnergyText: Énergie insuffisante!
+	DisplayName: Plateforme d'éjection
+	Tooltip:
+		'''
+		Consomme de l'électricité pour éjecter le joueur qui s'y tient dans la direction réglée
+		Après l'éjection, immunité brève aux dégâts de chute
+		Clic droit pour ouvrir le panneau
+		'''
+}
+
+PacifierTower: {
+	FieldOnText: Champ activé
+	FieldOffText: Champ désactivé
+	NoEnergyText: Énergie insuffisante!
+	DisplayName: Générateur de champ de quiétude
+	Tooltip:
+		'''
+		Sous tension, réprime les apparitions naturelles à portée
+		Clic droit ou signal de fil pour basculer le champ
+		'''
+}
+
+PotionBeacon: {
+	NoEnergyText: Énergie insuffisante!
+	DisplayName: Balise de diffusion de potions
+	Tooltip:
+		'''
+		Stocke des potions de gain et diffuse leur effet aux joueurs à portée
+		Une fiole fournit deux fois la durée d'origine
+		Clic droit pour ouvrir le panneau
+		'''
+}
+
+HerbFarmer: {
+	NoEnergyText: Énergie insuffisante!
+	DisplayName: Machine de culture d'herbes
+	Tooltip:
+		'''
+		Consomme graines et électricité pour semer automatiquement sur le sol valide autour
+		Récolte les herbes en fleur, produit herbes et graines
+		Clic droit pour ouvrir le panneau
+		'''
+}
+
+MushroomFarmer: {
+	NoEnergyText: Énergie insuffisante!
+	FullText: Entrepôt de production plein!
+	DisplayName: Machine de culture de champignons
+	Tooltip:
+		'''
+		Consomme de l'électricité pour cultiver des champignons ordinaires sur l'herbe proche, et des champignons lumineux sur l'herbe à champignons
+		Récolte automatiquement, parfois une graine d'herbe à champignons
+		Clic droit pour ouvrir le panneau
+		'''
+}
+
+Apiary: {
+	NoEnergyText: Énergie insuffisante!
+	NoBottleText: Plus de bouteilles vides!
+	FullText: Entrepôt de production plein!
+	DisplayName: Ruche
+	Tooltip:
+		'''
+		Insérez des bouteilles vides, l'essaim consomme de l'électricité pour brasser du miel en bouteille
+		Près du miel ou dans la jungle, l'essaim est plus actif et le rendement monte
+		Clic droit pour ouvrir le panneau
+		'''
+}
+
+SlimeVat: {
+	NoEnergyText: Énergie insuffisante!
+	NoWaterText: Pas assez d'eau!
+	FullText: Entrepôt de production plein!
+	PourText: +{0} eau
+	DisplayName: Cuve de culture de gelées
+	Tooltip:
+		'''
+		Consomme eau et électricité pour cultiver du gel par cycles
+		Puise dans les plans d'eau adjacents, ou versez à la main avec un seau
+		Clic droit pour ouvrir le panneau
+		'''
+}
+
+AutoFisher: {
+	NoEnergyText: Énergie insuffisante!
+	NoBaitText: Plus d'appât!
+	NoWaterText: Pas d'eau pêchable à proximité!
+	FullText: Cale de prises pleine!
+	DisplayName: Pêcheur automatique
+	Tooltip:
+		'''
+		Consomme appât et électricité pour pêcher automatiquement dans l'eau sous la machine
+		Plus le plan d'eau est grand et l'appât bon, plus les prises sont riches
+		Clic droit pour ouvrir le panneau
+		'''
+}

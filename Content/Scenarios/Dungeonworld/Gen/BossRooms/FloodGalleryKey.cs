@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms
     /// </summary>
     internal class FloodGalleryKey : UndrownedModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         /// <summary>玩家相对房内的落位列（左门内侧，阀台 11..13 之左）</summary>
         private const int PlayerColumn = 7;
         /// <summary>室内地板顶行</summary>

@@ -6,6 +6,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
 {
     internal class Oceanfragments : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => CWRConstant.Item_Other + "Oceanfragments";
 
         public override void SetDefaults() {

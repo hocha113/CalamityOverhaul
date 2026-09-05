@@ -1,0 +1,444 @@
+DivineSourceBlade: {
+	DisplayName: Divine Source Blade
+	Tooltip:
+		'''
+		Four-beat combo: a counterclockwise cut, a clockwise cut,
+		then a sweeping elliptical slash and a reverse cut along the same orbit
+		Every swing flings homing tech bolts along the path of the blade, the reverse cut hurls a colossal azure crescent
+		Damaging enemies slowly builds charge; right click to spend a full bar and empower the blade for 7 seconds
+		While empowered its damage soars and the bolts give way to massive auric lances that pierce up to 3 enemies
+		"Life never ceases"
+		'''
+}
+
+CursedflameBloodfist: {
+	DisplayName: Cursedflame Bloodfist
+	Tooltip:
+		'''
+		Counts as both melee and magic, and takes the full bonus from each
+		Hold left click to pour out a rapid flurry of punches, and keep running while you do
+		Every punch lands one hit of area damage around you with very low knockback
+		Each punch also scatters a stream of flying flame fists along your cursor
+		Targets are set ablaze with Cursed Inferno
+		The flurry drains mana as it runs and stops once you run dry
+		"Whoever this arm belonged to, the fire has burned that away"
+		'''
+}
+
+Arbiter: {
+	DisplayName: Arbiter
+	ManifestInteractHint: "[Right Click] Wrench the axe free"
+	ManifestInventoryFullHint: Inventory full - free up a slot before pulling the axe
+	Tooltip:
+		'''
+		Hold left click to charge and raise the axe of judgment
+		Release to cleave downward, sending a ground-hugging flame shockwave bursting out to both sides
+		Longer charges increase the flames' reach and power
+		"Judgment descends through fire"
+		'''
+}
+
+Cloudwalking: {
+	DisplayName: Cloudwalking
+	Tooltip:
+		'''
+		Hold left click to charge and raise the great axe
+		Release to send the axe flying forward, trailing clouds in its wake
+		The axe automatically returns to you
+		'''
+}
+
+DawnshatterAzure: {
+	DisplayName: Dawnshatter Azure
+	Tooltip:
+		'''
+		Hold the left button to chain a five-beat combo, the final spin igniting a corona
+		Right-click to charge, then lunge toward the cursor
+		"Let the flames purify your soul and utterly plunder your enemies."
+		'''
+}
+
+Flawless: {
+	DisplayName: Flawless
+	Tooltip:
+		'''
+		A four-beat combo: sweep, thrust, back-sweep, finishing lunge, each landing heavier than the last
+		The thrust beats swap in the slender head for extra reach, scattering frost crystal on impact
+		"He changed the head seven times. The target has one hole."
+		'''
+}
+
+StormGoddessSpear: {
+	DisplayName: Storm Goddess Spear
+	Tooltip:
+		'''
+		A Spear capable of sending out Fierce Lightning Kisses that bounces off enemies.
+		When held, summons the lingering spirit of the Storm Goddess to assist in combat.
+		[legend]
+		'''
+	Legend:
+		'''
+		Alina was once Terra’s sharpest warrior, wielding a blade of thunder to cleave through darkness, 
+		her faith unwavering and absolute. But faith could not shield her from the indifference of the gods.  
+		When the Supreme Deity passed judgment, her comrades, kin, oaths, and glory were reduced to ashes. 
+		She witnessed firsthand how so-called justice trampled everything into dust, how order was merely a veil for the cruelest of destructions.  
+		She no longer sought the light but reforged herself in the abyss. An ancient, 
+		forbidden power consumed her soul, granting her strength beyond mortal comprehension.  
+		Her armor became wreckage forged in the depths, her eyes burned with the remnants of thunder and darkness entwined. 
+		She was no longer Terra’s guardian, but the storm itself—a vengeance that could not be stopped.  
+		Her fury swept the battlefield like a howling tempest, her thunder tore through thrones and temples. 
+		She fought not for justice, not for Terra, not for the gods.  
+		She fought for vengeance, for annihilation—to make those who deemed themselves righteous understand the true meaning of fear.
+		'''
+}
+
+DragonsScaleGreatsword: {
+	DisplayName: Dragon Kelp Greatblade
+	Tooltip:
+		'''
+		Swings follow a three-hit combo, the third unleashing a mightier draconic finisher
+		Swings release spiraling kelp blade beams that burst into toxic algae clouds on hit
+		True melee strikes create many toxic algae clouds
+		Right-click to summon a verdant dragon soul that hunts toward the cursor, scattering toxic algae clouds along its path
+		'''
+}
+
+CosmicCalamity: {
+	DisplayName: Galactic Disaster
+	Tooltip: Attack generates crescent-shaped shock waves.
+}
+
+SpearOfLonginus: {
+	DisplayName: Spear of Longinus
+	Tooltip:
+		'''
+		While held, a holy cross forms beneath you and steadily fills with divine energy.
+		Each time the bar is filled, the Spear gains one charge, up to a maximum of six fields of holy power.
+		Marks the nearest enemy with the cross of fate while held.
+		Striking a marked enemy with a charged throw unleashes the Pilgrim's Fury.
+		[legend]
+		'''
+	Legend:
+		'''
+
+		O shattered god, permit me to atone for my sins. 
+		The war has sprawled across centuries, and I, a fugitive fleeing the grand civilization,
+		eke out a meager existence on this desolate planet at the edge of the universe.
+		Thousands of light-years away, the colossal war machines of conflict grind stars to dust.
+		Savage and dreadful assaults erase light-years of stellar expanse in the blink of an eye, transforming it into a domain of silence.
+		For countless centuries, this war has raged on. Now, the mighty civilization to which I belong teeters on the brink,
+		and I shall become a cosmic sinner, the most disrespectful blasphemer.
+		My flesh has decayed, my bones mirroring the wrinkles of passing ages. 
+		I am on the verge of becoming one of the feeble machines I created. 
+		Before that fate befalls me, may the gods grant me forgiveness and pardon my disrespect towards this supreme being. 
+		Let me descend into the abyss of purgatory, enduring endless torment as my soul falls.
+		Yet, for the sake of my civilization, for victory in this war spanning centuries, I must harness the fragmented power of this godly entity.
+		To guide its mysterious force, I have no choice but to infuse its shattered divine form with the cold embrace of machinery.
+		This is an inevitable sacrilege. For the continuity of civilization, for the triumph of war, 
+		I must become the most devout follower of this supreme entity, the most disrespectful blasphemer in history.
+		'''
+}
+
+NeutronGlaive: {
+	DisplayName: Black Zone Cleaver
+	Tooltip:
+		'''
+		Swinging releases powerful gravitational sword waves, causing a neutron star explosion upon hitting a target.
+		Right-click to charge the blade; releasing it when fully charged triggers a large neutron star explosion at the cursor.
+		Releasing before fully charged will cause the energy to spill out.
+		'''
+}
+
+NeutronScythe: {
+	DisplayName: Blackhole Messenger
+	Tooltip:
+		'''
+		A high-speed spinning neutron scythe that fires gamma rays at nearby enemies and leaves warp detonation points along its path.
+		Right click to unleash a Blackhole Burst, hurling thirteen scythes outward in a full circle.
+		'''
+}
+
+RebelBlade: {
+	DisplayName: Rebel Blade
+	Tooltip:
+		'''
+		True melee generates a large number of demon light balls around the target
+		Right click to control blade flight and cut towards the cursor
+		'''
+}
+
+WeaverGrievances: {
+	DisplayName: Weaver Grievances
+	RitualInteractHint: "[Right-click] Pull the blade free"
+	RitualInventoryFullHint: Your inventory is full. Make room before pulling the blade.
+	Tooltip:
+		'''
+		Unleash a large number of claws of Evil spirits and have special effects in hell and dungeon environments
+		Swings follow a three-hit combo, the third unleashing a sweeping whirlwind finisher
+		Right-click and roll in the direction of the cursor as a wheel of vengeful souls. Hitting an enemy during the roll will give the player an invincible frame
+		A close roll would be considered a perfect dodge
+		[legend]
+		'''
+	Legend:
+		'''
+		The eternal dungeon stretches across the land, its walls etched with the inscriptions and screams of ancient warriors. 
+		Each stone is saturated with lingering malice, like chains of the damned, binding it to the endless darkness at time’s end.  
+		These warriors were once the blades of their king, waging war across the realms. 
+		Their swords had illuminated countless battlefields, their blood forged the towering empire. 
+		Their loyalty was as enduring as the stars, their conviction as unyielding as iron.  
+		Yet, when the wars ceased, and the Demonlord’s banners were torn asunder at the king’s feet, 
+		the moment peace descended, the king decreed their consignment to the abyss.  
+		“We betrayed not, yet the king has betrayed us!” The anguished wails of the damned tore through the void, piercing the silence of eternity. 
+		Their noble spirits did not return to the dust but were imprisoned in the void’s chasm, condemned as witnesses to eternal night.  
+		The ceaseless lamentations transformed into a silent accusation, one that reached the furthest ends of the stars.  
+		It is said the king, in fear of their unyielding loyalty and the inferno of their wrath, 
+		heeded the whispers of the Demonlord’s sorcerers, choosing to consign these warriors to the shadows of history.  
+		But malice, like a tide, has twisted the dungeon’s reality. Their suffering has shaken the barriers of time and space, weaving a prophecy of vengeance:  
+		“The Demonlord shall return; the void shall be torn asunder, and our wrath shall consume all!”  
+		When Terra once more faces the brink of annihilation, these restless dead will rise from the darkness. 
+		Their blades will no longer fight for the glory of an empire but for the judgment of the betrayer.  
+		Glory and loyalty are long since obliterated—only the flames of vengeance remain, destined to engulf all.
+		'''
+}
+
+SandDagger: {
+	DisplayName: Sand Dagger
+	Tooltip:
+		'''
+		Hurled in a straight line and lightly pulled down by gravity
+		Embeds on impact; if struck into sand, it builds up before bursting upward to unleash a ground shockwave and a volley of sand spikes
+		'''
+}
+
+WastelandFang: {
+	DisplayName: Wasteland Fang
+	Tooltip:
+		'''
+		Bounces off blocks and accelerates when retracting
+		Opens its mouth and spits out several sand orbs
+		'''
+}
+
+SeasonalKunai: {
+	DisplayName: Seasonal Kunai
+	Tooltip:
+		'''
+		Throws four primary kunai in a fan; each pierces deeply and grows larger as it flies
+		On hit or expiration, every blade splits into three secondary kunai sweeping outward
+		Daybreak by day, Nightwither by night
+		"Reflecting the Four Seasons"
+		'''
+}
+
+WraithKunai: {
+	DisplayName: Wraith Kunai
+	Tooltip:
+		'''
+		Hurls three crimson blades in a fan; each hovers briefly before charging the nearest foe at high speed
+		Charging strikes erupt with crimson sparks and screen shake, and the blades detonate into soulburning shockwaves at the end of their flight
+		Sets enemies On Fire by day, Soul-burns them by night
+		'''
+}
+
+CommandersChainsaw: {
+	DisplayName: Commander's Chainsaw
+	Tooltip:
+		'''
+		Generates sparks upon hitting a target
+		"Add more diesel"
+		'''
+}
+
+GeminisTribute: {
+	DisplayName: Twins' Yonder
+	Tooltip:
+		'''
+		Alternately hurls a Retinazer scythe and a Spazmatism scythe, slashing back and forth along a sine-wave path
+		Right-click launches both scythes in a crossing arc; on impact a fused Twins eye condenses and rains dual-colored pulses across the area
+		"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
+		'''
+}
+
+DestroyersBlade: {
+	DisplayName: Destroyer's Blade
+	Tooltip:
+		'''
+		Fires thermal barrages
+		"Contains the immense energy core of the Destroyer."
+		'''
+}
+
+Observer: {
+	DisplayName: Observer
+	Tooltip: '''"It's still watching you"'''
+}
+
+Shatterfang: {
+	DisplayName: Shatterfang
+	Tooltip:
+		'''
+		Chain three swings into a staggering cleave that heavily grinds down the blade
+		The cleave that drains the blade shatters it outright, hurling a huge broken-off tooth fragment
+		Regular swings intermittently fling small gravity-bound tooth shards
+		The half-bladed sword swings faster, but hits weaker and no longer fires shards
+		Sustained attacks also destabilize the blade until it quietly crumbles
+		Right-click to spend a moment mending the blade; it also knits back slowly while resting, chiming once whole
+		"A fang broken from the gnashing maw, still aching to bite"
+		'''
+}
+
+CommandersClaw: {
+	DisplayName: Commander's Claw
+	Tooltip:
+		'''
+		Hurl an ornate commander's spear that always keeps its tip pointing forward.
+		Each impact erupts with metallic sparks, shockwaves, and a sharp screen shake.
+		Multiple spears can fly at once, embedding into terrain on a wall hit and pinning to enemies on a strike.
+		'''
+}
+
+CommandersChainsawEX: {
+	DisplayName: Commander's Chainsaw EX
+	Tooltip: '''"Shreds everything in your path"'''
+}
+
+DestroyersBladeEX: {
+	DisplayName: Destroyers Blade EX
+	Tooltip:
+		'''
+		Heavy swings unleash black-crimson slashes, energy beams and shadow bolts
+		Sheathing the blade briefly engages the Stalk Protocol: increased movement speed
+		While stalking, right click to become the Destroyer's maw and bite prey; with no target it lunges toward the cursor
+		A successful bite deals massive damage and engages the Annihilation Protocol:
+		all projectiles are empowered with homing, and finishers launch Destroyer heads
+		"It's always easier to destroy than to build"
+		'''
+}
+
+EnergySword: {
+	DisplayName: Energy Sword
+	Tooltip:
+		'''
+		Expend energy to shoot lasers and penetrate multiple enemies
+		"Utilization is not high."
+		'''
+}
+
+SporeboundRoller: {
+	DisplayName: Sporebound Roller
+	Tooltip:
+		'''
+		Generates a floating little mushroom after hitting an enemy
+		"They love to keep rolling around"
+		'''
+}
+
+SporeburstPouch: {
+	DisplayName: Sporeburst Pouch
+	Tooltip:
+		'''
+		Lobs a tumbling spore grenade that detonates on impact or when its lifetime ends
+		Releases a toxic shockwave and a swarm of homing spore shrapnel; struck enemies are Poisoned
+		'''
+}
+
+Heartcarver: {
+	DisplayName: Heartcarver
+	Tooltip:
+		'''
+		Each stab hurls a spinning blood dagger that hunts by the scent of wounds
+		Right click to perform a short arcing lunge
+		Absorbed hearts grant brief attack speed and condense into orbiting blood blades
+		Blood blades lunge at the wound of your next Carving Strike
+		'''
+	CarveTip:
+		'''
+		While held, the blade beats in time with your heart
+		Strikes landing in the gap between two heartbeats become Carving Strikes
+		Finish the combo with a Carving Strike to carve the heart out whole
+		'''
+}
+
+OniMachete: {
+	DisplayName: Oni Machete
+	Tooltip:
+		'''
+		Swings in a three-strike combo, ending in a gold-rending cleave that hangs a beat before it falls
+		While held, six oni hands are summoned to fight alongside you
+		'''
+	SuppressTip:
+		'''
+		Swings and hits stoke the brimstone suppression; every strike the six oni hands make burns it away
+		When the flame gutters out the hands grow restless: they fight harder, and may turn back to squeeze your throat
+		'''
+}
+
+AncientStormGoddessSpear: {
+	DisplayName: Ancient Storm Goddess Spear
+	Tooltip:
+		'''
+		A Spear capable of sending out Fierce Lightning Kisses that bounces off enemies.
+		"It is already a thing of the past, but it still works."
+		[legend]
+		'''
+	Legend:
+		'''
+		Alina was once Terra’s sharpest warrior, wielding a blade of thunder to cleave through darkness, 
+		her faith unwavering and absolute. But faith could not shield her from the indifference of the gods.  
+		When the Supreme Deity passed judgment, her comrades, kin, oaths, and glory were reduced to ashes. 
+		She witnessed firsthand how so-called justice trampled everything into dust, how order was merely a veil for the cruelest of destructions.  
+		She no longer sought the light but reforged herself in the abyss. An ancient, 
+		forbidden power consumed her soul, granting her strength beyond mortal comprehension.  
+		Her armor became wreckage forged in the depths, her eyes burned with the remnants of thunder and darkness entwined. 
+		She was no longer Terra’s guardian, but the storm itself—a vengeance that could not be stopped.  
+		Her fury swept the battlefield like a howling tempest, her thunder tore through thrones and temples. 
+		She fought not for justice, not for Terra, not for the gods.  
+		She fought for vengeance, for annihilation—to make those who deemed themselves righteous understand the true meaning of fear.
+		'''
+}
+
+Abyssrend: {
+	DisplayName: Abyssrend
+	Tooltip:
+		'''
+		Left-click alternates tip thrusts and side cuts; each strike tears off a homing ocean undercurrent
+		Right-click stirs an abyssal undertow that drags foes ahead of you onto the pincer, then slams them into the nearby ground, detonating a cavitation burst
+		Foes caught by the slam or the burst sink into abyssal pressure, severely slowing them
+		"It remembers the sound the deep makes when it breaks things"
+		'''
+}
+
+TideReaper: {
+	DisplayName: Tide Reaper
+	Tooltip:
+		'''
+		Hurls a spinning abyssal scythe that boomerangs back to you
+		In flight it flings tide crescents that hunt nearby enemies
+		Right click to throw a vortex anchor: the scythe pins ahead and spins into a maelstrom
+		The maelstrom drags enemies inward and flings crescents faster before returning
+		"When the tide goes out, only bones are left on the shore"
+		'''
+}
+
+BudPiercer: {
+	DisplayName: Budpiercer
+	Tooltip:
+		'''
+		Flies straight for a moment, then dips
+		Striking an enemy plants a bud that soon blooms into a ring of petals
+		Multiple daggers can stack buds on the same target
+		Sticking into the ground blooms on the spot, spraying three needles upward
+		"Under the serpent's scales, every one of them wants to bloom"
+		'''
+}
+
+Budcrown: {
+	DisplayName: Budcrown
+	Tooltip:
+		'''
+		Hold the attack key to whirl the head around you, release to hurl it at your cursor
+		The head sheds needles when it strikes enemies
+		Every third strike bursts into full bloom, blasting a ring of petals with heavy knockback
+		"The heaviest bud blooms the loudest"
+		'''
+}

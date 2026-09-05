@@ -1,0 +1,392 @@
+ExcavationBoosterModule: {
+	DisplayName: Aushub-Verstärker
+	Tooltip:
+		'''
+		An der Fördermaschine: Arbeitszyklus -30 %
+		Die Zahnräder haben härtere Zähne bekommen
+		'''
+}
+
+PickPowerBoosterModule: {
+	DisplayName: Hackkraft-Verstärker
+	Tooltip:
+		'''
+		An der Fördermaschine: Hackkraft +60 %
+		Damit knabbert eine Blechmaschine selbst Mithril
+		'''
+}
+
+ChlorophyteDrillModule: {
+	DisplayName: Chlorophyt-Bohr-Modul
+	Tooltip: Der Bohrer selbst ist aus Chlorophytbarren gegossen: Erz fördert Erz
+}
+
+EfficiencyModule: {
+	DisplayName: Effizienz-Modul
+	Tooltip:
+		'''
+		An der Fördermaschine: Energie pro Zyklus auf 60 %
+		Die fest gewickelte Kupferspule wird nicht mehr heiß
+		'''
+}
+
+YieldBoosterModule: {
+	DisplayName: Ertrags-Verstärker
+	Tooltip:
+		'''
+		An der Fördermaschine: Chance auf Förderertrag +35 %
+		Das Sieb ist eine Nummer dichter
+		'''
+}
+
+ProspectorModule: {
+	DisplayName: Prospektor-Modul
+	Tooltip:
+		'''
+		An der Fördermaschine: Gewicht seltener Nebenprodukte wie Edelsteine, Fossilien und Meteoriten verdreifacht
+		Unter der Linse hat selbst Kies Rang und Namen
+		'''
+}
+
+SurveyArrayModule: {
+	DisplayName: Erkundungsarray-Modul
+	Tooltip:
+		'''
+		An der Fördermaschine: Erkundungsreichweite +50 %
+		Das Echo kommt vor dem Bohrer
+		'''
+}
+
+VeinFocusModule: {
+	DisplayName: Aderfokus-Modul
+	Tooltip:
+		'''
+		An der Fördermaschine: Bonus echter Adern auf den Ertrag +60 %
+		Der Ader folgen, nicht mit dem Stein streiten
+		'''
+}
+
+DoubleLoadModule: {
+	DisplayName: Doppelladungs-Modul
+	Tooltip:
+		'''
+		An der Fördermaschine: 25 % Chance, dass jede Förderung verdoppelt
+		Die Förderwanne ist eine Runde breiter geschweißt
+		'''
+}
+
+OverdriveCoreModule: {
+	DisplayName: Overdrive-Kern
+	Tooltip:
+		'''
+		An der Fördermaschine: Arbeitszyklus -45 %, Verbrauch +60 %
+		Bevor das Lager glüht, denkt sie nicht ans Anhalten
+		'''
+}
+
+ThrottleValveModule: {
+	DisplayName: Drosselventil-Modul
+	Tooltip:
+		'''
+		An der Fördermaschine: Arbeitszyklus +50 %, Verbrauch auf 45 %
+		Langsam, aber die ganze Nacht gehört ihr
+		'''
+}
+
+ChestLinkModule: {
+	DisplayName: Truhenanbindung
+	Tooltip:
+		'''
+		An der Fördermaschine: Ertrag wandert direkt in die nächste Truhe, fällt nur zu Boden, wenn nichts mehr reinpasst
+		Spart das Bücken
+		'''
+}
+
+SmelterModule: {
+	DisplayName: Vor-Ort-Schmelz-Modul
+	Tooltip:
+		'''
+		An der Fördermaschine: Erz wird nach Schmelzofenrezept zu Barren, Verbrauch +40 %
+		Am Schachtmund kommen schon Barren raus
+		'''
+}
+
+MachineModuleText: {
+	TagText: Maschinen-Aufrüstmodul
+	TargetsLine: Passt zu: {0}
+	HowToText: Rechtsklick auf die passende Maschine öffnet das Panel; in den Modulschlitz, dann wirkt es
+	SocketOnly: Diese Maschine nimmt dieses Modul nicht!
+	SocketDuplicate: Ein Modul dieser Art steckt schon!
+	SocketEmptyHint: Aufrüstmodul einlegen
+	SlotLabel: Modul
+	NameMining: Fördermaschine
+	NameThermal: Wärmekraftwerk
+	NameWind: Windgenerator
+	NameHydro: Wassergenerator
+	NameIncinerator: Verbrennungsofen
+	NameCrusher: Brecher
+	NameRecycler: Recycler
+	NameMagma: Magma-Wärmekraftwerk
+	NameBiomass: Biomassegenerator
+	NameTurret: Wehrturm
+	NameSolar: Solarplatte
+}
+
+InsulationLiningModule: {
+	DisplayName: Isolierfutter-Modul
+	Tooltip:
+		'''
+		Am Wärmekraftwerk: Wärmeabgabe auf 55 %
+		Drei Lagen Asbest, die Hitze kommt nicht raus
+		'''
+}
+
+ForcedDraftModule: {
+	DisplayName: Zwangszug-Modul
+	Tooltip:
+		'''
+		Am Wärmekraftwerk: Brennrate +45 %, Feuer heißer und schneller
+		Ein Druck am Blasebalg, und die Glut richtet sich auf
+		'''
+}
+
+SlowBurnValveModule: {
+	DisplayName: Langsambrand-Ventil
+	Tooltip:
+		'''
+		Am Wärmekraftwerk: Brennrate auf 60 %, jede Ladung hält länger
+		Die Flamme klein halten, ein Stück Kohle reicht über eine halbe Nacht
+		'''
+}
+
+HeatRecoveryModule: {
+	DisplayName: Abwärmerückgewinnung
+	Tooltip:
+		'''
+		Am Wärmekraftwerk: Wärmeertrag des Brennstoffs +25 %
+		Zwei Extra-Biegungen im Rauchzug holen die entlaufene Hitze zurück
+		'''
+}
+
+AutoFeedHopperModule: {
+	DisplayName: Auto-Einfülltrichter
+	Tooltip:
+		'''
+		An Wärmekraftwerk, Verbrennungsofen oder Biomassegenerator: holt Nachschub selbst aus nahem Lager
+		Der Trichter kennt nur leere Schlitze, die Hand bleibt draußen
+		'''
+}
+
+ExtendedBladesModule: {
+	DisplayName: Langblatt-Modul
+	Tooltip:
+		'''
+		Am Windgenerator: Ausgang +30 %
+		Das Extra-Stück an der Blattspitze fängt Wind, den man sonst verschenkt
+		'''
+}
+
+LowWindGearboxModule: {
+	DisplayName: Schwachwind-Getriebe
+	Tooltip:
+		'''
+		Am Windgenerator: untere Windfaktorgrenze von 0,8 auf 1,3
+		Feinere Übersetzung, selbst eine Brise dreht
+		'''
+}
+
+TallTowerModule: {
+	DisplayName: Hochturm-Modul
+	Tooltip:
+		'''
+		Am Windgenerator: Ausgang +15 %, stapelbar mit Langblatt
+		Zehn Meter höher, eine Windstufe mehr
+		'''
+}
+
+FlowShroudModule: {
+	DisplayName: Leitkranz-Modul
+	Tooltip:
+		'''
+		Am Wassergenerator: Ausgang +30 %
+		Der Trichter bündelt das Wasser zu einem Strahl
+		'''
+}
+
+QuickSpinModule: {
+	DisplayName: Schnellhochlauf-Modul
+	Tooltip:
+		'''
+		Am Wassergenerator: Drehzahlanstieg verdreifacht
+		Feder aufgezogen, mit dem ersten Wasser auf Arbeitsdrehzahl
+		'''
+}
+
+DeepBearingModule: {
+	DisplayName: Tiefenlager-Modul
+	Tooltip:
+		'''
+		Am Wassergenerator: Ausgang +15 %, stapelbar mit Leitkranz
+		Die Welle säuft nicht, die Kraft gehört dem Rad
+		'''
+}
+
+HighTempElectrodeModule: {
+	DisplayName: Hochtemperatur-Elektroden
+	Tooltip:
+		'''
+		Am Verbrennungsofen: Schmelztempo +45 %
+		Zwei Nadeln aufeinander, der Lichtbogen kommt vor dem Herdfeuer
+		'''
+}
+
+EconomizerCoilModule: {
+	DisplayName: Sparspulen-Modul
+	Tooltip:
+		'''
+		Am Verbrennungsofen: Schmelzverbrauch auf 60 %
+		Feinlackdraht, der Zähler dreht sich gesittet
+		'''
+}
+
+TwinCrucibleModule: {
+	DisplayName: Doppel-Tiegel-Modul
+	Tooltip:
+		'''
+		Am Verbrennungsofen: 25 % Chance auf doppelten Ausstoß pro Charge
+		Ein Feuer, zwei Becher
+		'''
+}
+
+AutoEjectChuteModule: {
+	DisplayName: Auto-Auswurfschacht
+	Tooltip:
+		'''
+		Am Verbrennungsofen: Fertiges wandert von selbst ins nahe Lager
+		Rutsche angelegt, aus dem Ofen ins Lager
+		'''
+}
+
+CapacityCellModule: {
+	DisplayName: Kapazitätszellen-Modul
+	Tooltip:
+		'''
+		An jeder Maschine: Speicherobergrenze +50 %
+		Jede Steckdose erkennt diese Platten
+		'''
+}
+
+TurretRangefinderModule: {
+	DisplayName: Entfernungsmesser-Modul
+	Tooltip:
+		'''
+		Am Wehrturm: Suchradius +25 %
+		Schild- und Heilungstürme erweitern stattdessen den Aura-Radius
+		Die Linse sieht den Feind vor der Mündung
+		'''
+}
+
+TurretAutoloaderModule: {
+	DisplayName: Schnelllade-Modul
+	Tooltip:
+		'''
+		Am Wehrturm: Feuerrate +30 %
+		Auratürme haben keinen Feuertakt, dann wirkt es nicht
+		Der nächste Schuss sitzt, bevor der letzte landet
+		'''
+}
+
+TurretPowerSaverModule: {
+	DisplayName: Feuerleit-Sparmodul
+	Tooltip:
+		'''
+		Am Wehrturm: Verbrauch auf 75 %
+		Einzelschuss und Dauerverbrauch zählen beide
+		Beim Wachehalten dreht der Zähler endlich langsamer
+		'''
+}
+
+CopperTinDrill: {
+	DisplayName: Kupfer-Zinn-Bohrer
+	Tooltip: Der zuerst blank geschliffene
+}
+
+IronLeadDrill: {
+	DisplayName: Eisen-Blei-Bohrer
+	Tooltip: Der Bohrer ist fester als das Erz. Das reicht
+}
+
+SilverTungstenDrill: {
+	DisplayName: Silber-Wolfram-Bohrer
+	Tooltip: Die Schneide trägt eine Schicht Anstand, die nicht rostet
+}
+
+GoldPlatinumDrill: {
+	DisplayName: Gold-Platin-Bohrer
+	Tooltip: Weiche Metalle zu knabbern ist zur Sucht geworden
+}
+
+EvilOreDrill: {
+	DisplayName: Unheilserz-Bohrer
+	Tooltip: In zweierlei Unheilsblut gehärtet; beide Seiten erkennen ihn
+}
+
+MeteoriteDrill: {
+	DisplayName: Meteorit-Bohrer
+	Tooltip: Was vom Himmel fällt, fängt man mit Himmelstoff
+}
+
+ObsidianDrill: {
+	DisplayName: Obsidian-Bohrer
+	Tooltip: Die Schneide, geschliffen wo Wasser und Feuer aufeinanderschlagen
+}
+
+HellstoneDrill: {
+	DisplayName: Höllenstein-Bohrer
+	Tooltip: Der Griff ist bis jetzt noch warm
+}
+
+FossilDrill: {
+	DisplayName: Fossil-Bohrer
+	Tooltip: Der Pinsel ist zu langsam
+}
+
+CoalDrill: {
+	DisplayName: Kohleflöz-Bohrer
+	Tooltip: Der Kesselraum verlangt namentlich nach ihm
+}
+
+GemClusterDrill: {
+	DisplayName: Kristalldrusen-Bohrer
+	Tooltip: Diamantzähne, nur für Glänzendes
+}
+
+CobaltPalladiumDrill: {
+	DisplayName: Kobalt-Palladium-Bohrer
+	Tooltip: Altartrümmer sitzen noch zwischen den Zähnen
+}
+
+MythrilOrichalcumDrill: {
+	DisplayName: Mithril-Oreichalkos-Bohrer
+	Tooltip: Im Lauf klingt er ein wenig nach Reliquie
+}
+
+AdamantiteTitaniumDrill: {
+	DisplayName: Adamantit-Titan-Bohrer
+	Tooltip: Die harten Knochen in der Tiefe: überlass sie ihm
+}
+
+LuminiteDrillModule: {
+	DisplayName: Luminite-Bohr-Modul
+	Tooltip: Selbst Mondschutt wird ohne Zögern gefördert
+}
+
+ProcessingFeedHopper: {
+	DisplayName: Verarbeitungs-Einfülltrichter
+	Tooltip: An Brecher oder Recycler: die Maschine holt Nachschub selbst aus nahem Lager
+}
+
+ProcessingEjectChute: {
+	DisplayName: Verarbeitungs-Auswurfschacht
+	Tooltip: An Brecher oder Recycler: Produkte gehen direkt ins nahe Lager
+}

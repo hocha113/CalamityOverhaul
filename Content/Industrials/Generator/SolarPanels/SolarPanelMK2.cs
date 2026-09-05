@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.SolarPanels
 {
     internal class SolarPanelMK2 : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Generators";
+
         public override string Texture => CWRConstant.Asset + "Generator/SolarPanelMK2";
 
         /// <summary>系列色调:圣辉紫金,用于 UI 点缀</summary>

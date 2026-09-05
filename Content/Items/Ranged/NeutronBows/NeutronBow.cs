@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
 {
     internal class NeutronBow : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
         public static LocalizedText Lang1;
         public static LocalizedText Lang2;

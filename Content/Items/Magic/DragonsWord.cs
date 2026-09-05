@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Items.Magic
 {
     internal class DragonsWord : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "DragonsWord";
         [VaultLoaden(CWRConstant.Item_Magic + "DragonsWordGlow")]
         public static Asset<Texture2D> Glow = null;

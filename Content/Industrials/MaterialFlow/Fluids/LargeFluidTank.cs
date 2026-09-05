@@ -11,6 +11,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
     /// <summary>大型液体储罐:储罐的上位大容量件,行为全部继承小罐</summary>
     internal class LargeFluidTank : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Flow";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/LargeFluidTank";
         public override void SetDefaults() {
             Item.width = 32;

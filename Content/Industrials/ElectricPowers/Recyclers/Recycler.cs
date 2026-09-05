@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
     /// <summary>回收机:武器/盔甲/饰品按稀有度拆解成锭</summary>
     internal class Recycler : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Recycler";
         public override void SetDefaults() {
             Item.width = 32;

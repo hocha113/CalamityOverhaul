@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
     internal class AncientStormGoddessSpear : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "AncientStormGoddessSpear";
         public override void SetStaticDefaults() {
             //this.GetLocalization("Legend");
@@ -51,7 +53,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<AncientStormGoddessSpearHeld>()] <= 0;
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
+        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, this);
 
         public override void AddRecipes() {
             if (CWRID.Item_StormRuler > 0 && CWRID.Item_StormlionMandible > 0) {

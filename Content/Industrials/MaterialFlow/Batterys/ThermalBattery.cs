@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
 {
     internal class ThermalBattery : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Flow";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBattery";
         public override void SetDefaults() {
             Item.width = 32;

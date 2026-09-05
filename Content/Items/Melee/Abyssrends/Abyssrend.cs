@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Abyssrends
     /// </summary>
     internal class Abyssrend : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => AbyssrendFX.ItemTexture;
 
         private const int ComboResetTicks = 90;

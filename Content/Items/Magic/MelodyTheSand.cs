@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// <summary>沙中曲，小沙龙卷落地巡游</summary>
     internal class MelodyTheSand : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "MelodyTheSand";
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Magic;

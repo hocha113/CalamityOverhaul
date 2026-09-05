@@ -1,0 +1,127 @@
+SandevistansItem: {
+	DisplayName: Sandevistan Mk5
+	Tooltip: Verlangsamt wahrgenommene Zeit um 70 %, 5 Sekunden Dauer. 15 Sekunden Abklingzeit.
+}
+
+Sandevistan: {
+	SkillName: Zeitverzögerung · Sandevistan
+	SkillDesc:
+		'''
+		Verlangsamt die wahrgenommene Zeit stark – du bewegst dich und greifst mit vervielfachter Geschwindigkeit an
+		Die Reserve leert sich im Betrieb und schaltet automatisch ab; danach natürliche Regeneration
+		Im Radial erneut wählen zum manuellen Ausschalten
+		'''
+}
+
+MimicPerchedAuxBrain: {
+	DisplayName: Mimisches Sitz-Hilfsgehirn
+	Tooltip:
+		'''
+		Teilt den Träger in vier Illusionen, die um den Körper schweben
+		Bei Treffer löst das verborgene wahre Ich Chaos aus und gewährt Immunität ohne Schaden
+		Die Illusionen stürmen auf den Angreifer und detonieren mit schadensskalierendem Ausbruch
+		'''
+}
+
+CstmVisualEye: {
+	DisplayName: CSTM-Optik-Cyberauge
+	Tooltip:
+		'''
+		Netzwerkoptisches Kyberimplantat, das Hack-Zeit direkt ins kraniale Neuralnetz einspeist
+		Erhöht maximales RAM um 4
+		Zeigt einen eigenständigen RAM-Bogen unten links auf dem Bildschirm
+		'''
+}
+
+PrimePlasama: {
+	DisplayName: Prime-Plasma-Unterhautpanzer
+	Tooltip:
+		'''
+		Elektroaktive Gelschicht unter der gesamten Haut
+		Dauerhaft +25 Verteidigung und 6 % Schadensreduktion
+		Massiv erhöhte Rückstoßresistenz – gewöhnliche Stöße bewegen dich kaum
+		'''
+}
+
+OmniElectricFoot: {
+	DisplayName: Omni-elektrischer Kyberfuß
+	Tooltip:
+		'''
+		Hochleistungs-Bewegungskyberware aus elektromagnetischem Rückstoß und dichter Antriebsgel-Schicht
+		Gewährt Luft-Doppelsprung beim erneuten Abstoßen in der Luft
+		Im Kyberware-Radial „Aufladesprung“ schweben zum Aufladen, loslassen zum Start
+		Voll geladen mehr als doppelte normale Sprunghöhe
+		'''
+	SkillHint: Im {0}-Radial schweben zum Aufladesprung
+	SkillName: Aufladesprung
+	SkillDesc:
+		'''
+		Hochspannungs-elektromagnetischer Sprung
+		Muss auf dem Boden stehen zum Aufladen; Schweben im Radial ist Ladezeit
+		Loslassen startet proportional zur Ladung; voll geladen 2,5-fache Sprunghöhe
+		'''
+}
+
+PlowSteelClampArm: {
+	DisplayName: Pflugstahl-Zangarm
+	Tooltip:
+		'''
+		Industriekyberware mit Magnetsammeln und hochstarren Zangen
+		Erweitert Bergbau- und Platzierungsreichweite stark
+		Permanentes magnetisches Aufsammeln von Gegenständen und Münzen
+		Kyberware-Fähigkeit: hochheiße Monomolekularfaden aus der Handfläche
+		Kurzdruck → kurze Leine, Halten → lange Leine; Gegner auf dem Pfad verbrennen fortlaufend
+		'''
+	SkillHint: "[c/8AC4E8:{1}] Kyberware-Radial zum Wechseln · [c/F5C56A:{0}] Monomolekularfaden (Kurzdruck = kurz / Halten = lang)"
+	SkillName: Monomolekularfaden
+	SkillDesc:
+		'''
+		Schleudert eine hochheiße Monomolekularfaden aus der Handfläche; Gegner auf dem Pfad verbrennen fortlaufend
+		[c/8AC4E8:Kurzdruck] — ~12 Felder kurze Leine in Cursorrichtung, 2 Sekunden, ohne Anker
+		[c/F5C56A:Gedrückt halten] — Voll aufgeladen am festen Block nahe dem Cursor, 5 Sekunden; ohne Anker Fallback zur kurzen Leine
+		Schaden skaliert mit allgemeinen Schadensmultiplikatoren
+		'''
+}
+
+SelfHealingSkelent: {
+	DisplayName: Selbstheilendes Endoskelett
+	Tooltip:
+		'''
+		Hochstufiges Bioimplantat ersetzt das native Skelett durch Nanokristallgitter
+		Dauerhaft +2 LP/s und +40 maximale LP
+		4 Sekunden außerhalb des Kampfs: Nanoreparatur mit stark erhöhter Regeneration
+		Metallisches Endoskelett negiert Fallschaden vollständig
+		'''
+}
+
+SelfHackCrystal: {
+	DisplayName: Selbst-Hack-Kristall
+	Tooltip:
+		'''
+		Hochstufige Netzwerk-Kyberware im Betriebssystem-Slot
+		Leitet die Hack-Schnittstelle auf den Träger zurück
+		Dauerhaft zusätzliche RAM-Regeneration
+		Kyberware-Fähigkeit: RAM verbrauchen, alle Debuffs sofort löschen
+		und kurze Unverwundbarkeit – Ausweg aus tödlichen Situationen
+		'''
+	SkillHint: Im {0}-Radial Selbst-Hack auslösen, RAM verbrauchen um Debuffs zu löschen
+	SkillName: Selbst-Hack-Protokoll
+	SkillDesc:
+		'''
+		Leitet die Hack-Schnittstelle auf dich selbst um für Notfallreinigung
+		Verbraucht 3 RAM, entfernt sofort alle Debuffs und gewährt ~1,5 s Unverwundbarkeit
+		12 s Abklingzeit; ausgegraut bei zu wenig RAM oder Abklingzeit
+		'''
+}
+
+SCCA32CRP: {
+	DisplayName: SCCA-32 CRP
+	Tooltip:
+		'''
+		Muskel-Koprozessor
+		Leitet Angriffsprognose und Muskelreflexe am Gehirn vorbei
+		Dauerhaft +8 % Krit-Chance und +8 % Bewegungsgeschwindigkeit
+		18 % Chance auf Reflexausweichen bei Treffer, vollständige Schadensimmunität
+		Nach Ausweichen 3 s Reflexrausch mit Bonus auf Krit und Tempo
+		'''
+}

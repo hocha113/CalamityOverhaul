@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
 {
     internal class ArcaneThroneOfEternity : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "ArcaneThroneOfEternity";
 
         public override void SetDefaults() {

@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class DarkFrostSolstice : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "DarkFrostSolstice";
         public static int ID { get; private set; }
 

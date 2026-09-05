@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.Items.Melee.BudPiercers
     /// </summary>
     internal class BudPiercer : BssModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "BudPiercer";
 
         public override void SetDefaults() {

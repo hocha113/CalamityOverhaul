@@ -1,0 +1,107 @@
+GraniteTome: {
+	DisplayName: Tomo de granito
+	Tooltip:
+		'''
+		Conjura um orbe lento e teleguiado de energia de granito
+		Estilhaça-se em fragmentos de cristal buscadores ao impactar
+		'''
+}
+
+GraniteFlower: {
+	DisplayName: Flor de granito
+	Tooltip:
+		'''
+		Dispara uma semente de cristal que floresce em uma flor de energia persistente
+		A flor pulsa várias vezes, espalhando pétalas de cristal ao redor
+		'''
+}
+
+GraniteThrowingKnife: {
+	DisplayName: Faca de arremesso de granito
+	Tooltip:
+		'''
+		Arremessa uma faca perfurante que deixa um rastro de energia cristalina
+		Estilhaça-se em fragmentos de cristal em seu último acerto ou contra o terreno
+		'''
+}
+
+GraniteWalkingBoots: {
+	DisplayName: Botas de caminhada de granito
+	Tooltip:
+		'''
+		Aumenta muito a velocidade de corrida e a aceleração
+		Crepita com faíscas azuis em velocidade máxima
+		'''
+}
+
+MarbleClub: {
+	DisplayName: Clava de mármore
+	Tooltip:
+		'''
+		Um golpe lento e pesado com recuo esmagador
+		Pode petrificar inimigos, retardando-os brevemente
+		O primeiro acerto de cada golpe libera uma onda de choque de mármore
+		'''
+}
+
+MarbleHuntingKnife: {
+	DisplayName: Faca de caça de mármore
+	Tooltip:
+		'''
+		Golpes cortantes velozes
+		Cada terceiro golpe é um finalizador mais amplo que espalha fragmentos de mármore
+		'''
+}
+
+MarbleDisc: {
+	DisplayName: Disco de mármore
+	Tooltip:
+		'''
+		Arremessa um disco giratório que ricocheteia entre inimigos e paredes
+		Depois retorna curvando-se à sua mão; até dois podem voar de uma vez
+		'''
+}
+
+MarblePebble: {
+	DisplayName: Seixo de mármore
+	Tooltip:
+		'''
+		Uma pedra de funda inesgotável, veloz e propensa a acertos críticos
+		Causa muito mais dano a inimigos com vida máxima alta
+		Quica uma vez no chão
+		'''
+}
+
+MarbleShield: {
+	DisplayName: Égide de mármore
+	Tooltip:
+		'''
+		Aumenta a defesa e a resistência a recuo
+		Mantém uma guarda de pedra regenerativa que absorve um golpe recebido, explodindo em fragmentos
+		Prepare-se para um bloqueio perfeito que reflete projéteis
+		'''
+}
+
+MarbleBalloon: {
+	DisplayName: Balão de mármore
+	Tooltip:
+		'''
+		Pressione Baixo no ar para mergulhar, liberando uma onda de choque ao aterrissar
+		Anula o dano de queda
+		'''
+}
+
+MarbleinaBottle: {
+	DisplayName: Mármore na garrafa
+	Tooltip: Concede um pesado segundo salto
+}
+
+MarbleCloudBalloon: {
+	DisplayName: Balão de nuvem de mármore
+	Tooltip:
+		'''
+		Concede um pesado segundo salto
+		Pressione Baixo no ar para mergulhar, liberando uma onda de choque ao aterrissar
+		Anula o dano de queda
+		'''
+}

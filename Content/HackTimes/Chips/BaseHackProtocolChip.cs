@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
     /// </summary>
     internal abstract class BaseHackProtocolChip : ModItem, ILocalizedModType
     {
-        public override string LocalizationCategory => "Items";
+        public override string LocalizationCategory => "HackChips";
 
         public override string Texture => CWRConstant.VaultPlaceholder2;
 

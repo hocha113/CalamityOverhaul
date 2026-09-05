@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
     /// </summary>
     internal class DawnshatterAzure : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
 
         /// 下砸窗口:脚下首个立足面落在 [14,120) 格,太近地不值得砸,深渊上砸不到底

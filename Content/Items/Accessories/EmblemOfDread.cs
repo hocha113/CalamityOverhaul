@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// <summary>惧亡者之证</summary>
     internal class EmblemOfDread : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "EmblemOfDread";
 
         public override void SetStaticDefaults() {

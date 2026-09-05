@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers
     /// </summary>
     internal class CrusherUI : UIHandle, ILocalizedModType
     {
-        public string LocalizationCategory => "Items";
+        public string LocalizationCategory => "Industrials.Machines";
 
         #region 布局与状态
         private const float PanelWidth = 420f;

@@ -348,12 +348,13 @@ namespace CalamityOverhaul
         /// <summary>持有比目鱼</summary>
         internal static bool HasHalibut(this Player player) => player.TryGetHalibutPlayer(out var halibutPlayer) && halibutPlayer.HasHalubut;
 
-        public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {
+        /// <summary>传奇文本取自物品自己的类目，别再拼死 Items 前缀</summary>
+        public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, ModItem modItem) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[legend]") && x.Mod == "Terraria");
             if (legendtops != null) {
                 KeyboardState state = Keyboard.GetState();
                 if ((state.IsKeyDown(Keys.LeftShift) || state.IsKeyDown(Keys.RightShift))) {
-                    legendtops.Text = Language.GetTextValue($"Mods.CalamityOverhaul.Items.{itemKey}.Legend");
+                    legendtops.Text = modItem.GetLocalization("Legend").Value;
                     legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
                 }
                 else {

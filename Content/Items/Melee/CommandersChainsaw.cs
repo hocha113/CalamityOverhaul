@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 {
     internal class CommandersChainsaw : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "CommandersChainsaw";
         public override void SetStaticDefaults() => ItemID.Sets.IsDrill[Type] = true;
         public override void SetDefaults() {
@@ -39,6 +41,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 
     internal class CommandersChainsawEX : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "CommandersChainsawEX";
         public override void SetStaticDefaults() => ItemID.Sets.IsDrill[Type] = true;
         public override void SetDefaults() {

@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoCrafters
     /// </summary>
     internal class AutoCrafterUI : UIHandle, ILocalizedModType
     {
-        public string LocalizationCategory => "Items";
+        public string LocalizationCategory => "Industrials.Machines";
 
         #region 布局与状态
         private const float PanelWidth = 540f;

@@ -43,6 +43,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     [VaultLoaden(CWRConstant.Item_Melee)]
     internal class OniMachete : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "OniMachete";
         public static Texture2D OniArm = null;
         public static Texture2D OniHand = null;

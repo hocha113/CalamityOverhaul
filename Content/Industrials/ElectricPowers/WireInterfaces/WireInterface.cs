@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.WireInterfaces
     /// <summary>机关接口器,原版机关线与电网机器的双向转接头;贴图暂复用能量管道物品,机关红色调区分</summary>
     internal class WireInterface : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/PipelineItem";
 
         /// <summary>系列色调:机关红</summary>

@@ -288,7 +288,7 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
     /// <summary>模块物品的共用文案(tooltip 标签行/适用行/安装提示/插座交互反馈)</summary>
     internal class MachineModuleText : ModSystem, ILocalizedModType
     {
-        public string LocalizationCategory => "Items";
+        public string LocalizationCategory => "Industrials.Modules";
 
         internal static LocalizedText TagText;
         internal static LocalizedText TargetsLine;

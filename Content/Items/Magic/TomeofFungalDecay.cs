@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// <summary>腐菌秘典</summary>
     internal class TomeofFungalDecay : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "TomeofFungalDecay";
         public override void SetDefaults() {
             Item.width = Item.height = 32;

@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
 {
     internal class Spectrometer : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Spectrometer";
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;

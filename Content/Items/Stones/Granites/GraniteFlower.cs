@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     /// <summary>花岗之花，种子落点驻场，定向脉冲花瓣，凋谢碎晶</summary>
     internal class GraniteFlower : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 38;
             Item.damage = 16;

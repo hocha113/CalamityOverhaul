@@ -1,0 +1,291 @@
+FallenKingsCrown: {
+	DisplayName: Couronne du roi déchu
+	Tooltip:
+		'''
+		Immunité aux dégâts de chute
+		En l'air, maintenir Bas vous transforme en couronne plongeante et accélère la chute
+		Sans maintenir Bas, une chute naturelle de plus de 25 cases déclenche aussi le plongeon
+		Les ennemis heurtés en route sont écrasés par la couronne
+		À l'atterrissage, une onde de gelée ; plus la chute est profonde, plus elle frappe, plafond à 40 cases
+		L'onde se déclenche au plus une fois toutes les 1,5 s ; la couronne s'éteint pendant la recharge
+		Le point d'impact laisse un champ de gelée qui ralentit et fait perdre de la vie
+		Grappin, monture ou liquide annulent le plongeon
+		"Le jour où le trône tomba, le poids lui-même fut le verdict"
+		'''
+}
+
+BloodfogIris: {
+	DisplayName: Iris de brume de sang
+	Tooltip:
+		'''
+		Chances de critique +8%
+		Double-appui Gauche, Droite ou Haut : foncez en brume de sang dans cette direction, brève invulnérabilité au départ
+		Recharge de 1,25 s ; la lueur de la pupille s'éteint pendant ce temps
+		Après la ruée, 1,5 s d'embuscade : vous entrez dans la brume, l'aggro baisse
+		La prochaine attaque pendant l'embuscade est un critique garanti
+		Un coup fatal vous dissout en brume de sang ; vous vous reformez vers le réticule, brièvement invulnérable et déjà en embuscade
+		Cette renaissance ne peut avoir lieu qu'une fois toutes les 60 s ; pendant 3 s après la reformation, dégâts subis +15%
+		"La brume n'est pas retombée, la pupille n'est pas close"
+		'''
+}
+
+WorldEatersMaw: {
+	DisplayName: Mâchoire du dévoreur de mondes
+	Tooltip:
+		'''
+		Toutes vos attaques empilent une couche d'acidose, jusqu'à 10, 6 s, renouvelée à chaque coup
+		À piles pleines, défense -15, 20 points de vie rongés par seconde
+		Un ennemi sous acidose qui meurt laisse éclore une larve dévoreuse à votre service, une toutes les 2 s au plus
+		Les larves s'enfouissent, tendent une embuscade, mordent pour 2 couches et éclaboussent de l'acide à l'émergence
+		3 larves au plus à la fois, chacune vit 7 s
+		"Chaque bord du monde est une marque de dent qu'il a laissée"
+		'''
+}
+
+MirrorheartParadox: {
+	DisplayName: Paradoxe du cœur-miroir
+	Tooltip:
+		'''
+		Un cœur miroir erre à vos côtés
+		Tant qu'il est solide, le moment où vous encaissez vous échangez de place avec lui, vous esquivez le coup et devenez brièvement invulnérable
+		Les deux positions explosent d'une pulsation cardiaque, 90 dégâts de base et Confusion 2,5 s
+		Pendant 5 s après l'échange, vos projectiles sont recopiés par le cœur-miroir à 50% de dégâts
+		Serviteurs, armes tenues et explosifs ne sont pas recopiés
+		Contrecoup du paradoxe : le prochain coup reçu dans les 3 s après l'échange inflige 25% de dégâts en plus
+		Un échange toutes les 25 s au plus ; pendant la recharge le cœur est translucide, un son annonce le retour au solide
+		"Dans le miroir, il se brise un battement avant vous"
+		'''
+}
+
+SwarmVortexBeacon: {
+	DisplayName: Balise du vortex d'essaim
+	Tooltip:
+		'''
+		Frapper un ennemi empile des marques d'essaim ; à 8 couches il est pris dans un vortex d'abeilles
+		Le vortex étrangle sa proie 5 s, 4 piqûres par seconde, 18 dégâts de base chacune
+		La cible est fortement ralentie ; un boss ne l'est que légèrement
+		Continuer à frapper la cible du vortex prolonge l'étreinte jusqu'à 8 s
+		Un seul vortex à la fois ; une nouvelle proie à piles pleines, l'essaim bascule
+		Si la cible meurt, le vortex passe aussi à un ennemi proche
+		Porter un Sac de ruche augmente les dégâts des piqûres de 25%
+		Immobile, l'essaim rentre et forme une cire sur votre peau
+		La cire absorbe jusqu'à 30 dégâts et reste 5 s une fois que vous bougez
+		Une cire brisée met 3 s à recristalliser
+		"La balise de la reine n'appelle pas l'essaim, elle désigne la prochaine proie"
+		'''
+}
+
+SoulbindingArm: {
+	DisplayName: Poignet lieur d'âmes
+	Tooltip:
+		'''
+		Un domaine maudit s'ouvre autour de vous ; les ennemis dedans subissent 8% de dégâts en plus de votre part
+		Tuer un ennemi dans le domaine récolte une âme, jusqu'à 8
+		Les âmes orbitent ; chacune encaisse à votre place un projectile ennemi, puis s'éteint
+		Le projectile bloqué devient une orbe de flamme maudite renvoyée, 60 dégâts de base
+		Après chaque parade, l'anneau d'âmes met 1 s à se recharger
+		Anneau plein, il se condense un instant, puis une main spectrale se jette sur l'ennemi le plus fort à proximité
+		La main inflige 300 dégâts de base ignorant la défense, qui croissent avec vos bonus
+		L'ennemi saisi subit 20% de dégâts en plus de toutes sources pendant 5 s ; un ennemi ordinaire est aussi cloué 1 s
+		"Le poignet coupé récolte encore, les cinq doigts n'ont jamais lâché"
+		'''
+}
+
+WhiteoutStormCore: {
+	DisplayName: Noyau de tempête blanche
+	Tooltip:
+		'''
+		Réduction des dégâts +5%, immunité au froid, au gel, au Feu de givre et aux engelures
+		Recevoir des dégâts déclenche une tempête blanche de 6 s, recharge 20 s
+		La tempête inflige 120 dégâts de base aux ennemis proches, Confusion 3 s et Cécité blanche 6 s
+		Les ennemis sous Cécité blanche sont fortement ralentis et subissent 10 dégâts de gelure par seconde
+		Pendant la tempête, réduction des dégâts supplémentaire de 30% et immunité au recul ; le voile de neige ne vous aveugle pas
+		Les boss ne sont pas confus et subissent un ralentissement très réduit
+		En courant au sol, une rangée de piques de glace se lève chaque seconde devant vous
+		Chaque pique inflige 45 dégâts de base et givre brièvement
+		"Dans le blanc, le blizzard ne s'écarte que pour vous"
+		'''
+}
+
+GluttonousThroat: {
+	DisplayName: Gorge gloutonne
+	Tooltip:
+		'''
+		8% de tous les dégâts que vous infligez refluent vers vous en perles de sang
+		Les perles ignorent le mal de potion, mais soignent au plus 2% de la vie maximale par seconde
+		Le sang en trop se répand au sol ; la Morsure lunaire scelle cette gorge, et toutes les perles tombent à vide
+		Toutes les 9 s, une langue de chair saisit l'ennemi le plus loin dans un rayon de 68 cases et le tire devant vous
+		L'ennemi mordu subit Scie pourrie 5 s : 40 points de vie arrachés par seconde
+		Pendant 2,5 s après qu'il a été tiré devant vous, votre prochain coup contre lui double les dégâts
+		Ce coup d'exécution fait aussi exploser le reste de la Scie pourrie en dégâts supplémentaires
+		Un boss n'est pas traîné, mais il est mordu, scié et marqué pour l'exécution
+		"L'autre bout de la gorge n'a pas de fond"
+		'''
+}
+
+RefractionWaltz: {
+	DisplayName: Valse de réfraction
+	Tooltip:
+		'''
+		Accélération et virage aériens fortement accrus
+		Au sommet d'un saut, à un double saut, à un revirement ou à une ruée en l'air, un cristal de réfraction se condense derrière vous
+		6 cristaux au plus ; le plus ancien se brise pour faire de la place
+		Les cristaux se relient par des faisceaux prismatiques dans l'ordre de la danse, et ferment la boucle à six
+		Faisceaux, cristaux et éclats croissent avec vos bonus de dégâts
+		Chaque faisceau tranche le même ennemi jusqu'à 4 fois par seconde, 35 dégâts de base
+		Briser un cristal : 70 dégâts de base, plus les éclats à 40 chacun
+		Les impacts appliquent Réfraction : la cible ralentit, vos chances de critique contre elle +8%
+		"Quand le filet de lumière se forme, celui qui danse en est le maître"
+		'''
+}
+
+TwinPupilTether: {
+	DisplayName: Lien des deux pupilles
+	Tooltip:
+		'''
+		Invoque Regard et Pupille ardente, deux mini-yeux mécaniques en orbite ; leurs dégâts croissent avec vos bonus
+		Regard tire des lasers à moyenne portée : 140 dégâts de base, environ une salve toutes les 0,7 s
+		Pupille ardente crache de la flamme maudite de près : 40 dégâts de base par giclée, 5 par seconde
+		Un lien tranchant est toujours tendu entre les deux, jusqu'à 4 coupes par seconde sur le même ennemi, 80 dégâts de base
+		Un ennemi coupé s'ouvre 3 s et subit 25% de dégâts en plus de cette paire
+		Plus vous allez vite, plus les yeux s'écartent et plus le lien s'allonge
+		Double-appui Bas : charge croisée, les yeux prennent le réticule de flanc, se croisent et explosent au point de rencontre
+		L'impact de charge inflige 380, l'explosion du croisement 1100 dégâts de base, recharge 9 s
+		"Un regard cousu, et le fil qui coupe tout"
+		'''
+}
+
+ProbeMatrixCore: {
+	DisplayName: Noyau de matrice de sondes
+	Tooltip:
+		'''
+		Déploie 5 sondes du Destructeur en escorte, qui cherchent les ennemis et tirent des lasers à tête chercheuse
+		Les lasers infligent 55 dégâts de base ; frapper la même cible accumule un marquage, 8 couches appellent une frappe orbitale
+		La frappe fait descendre un rayon de la mort perçant depuis le zénith, 900 dégâts de base par tic
+		Une cible prise dans la colonne encaisse au plus deux tics par frappe, 1800 au total
+		Après chaque frappe le marquage se vide, recharge 3 s, le point d'impact reste brûlant
+		Une sonde abattue se reconstruit en environ 2,5 s ; la formation n'occupe aucun emplacement de serviteur
+		"Le serpent d'acier est tombé, ses yeux patrouillent encore le ciel pour vous"
+		'''
+}
+
+OverloadCommandCore: {
+	DisplayName: Noyau de commande en surrégime
+	Tooltip:
+		'''
+		Frapper un ennemi accumule une charge ionique : +4 par coup, 100 points déclenchent le Surrégime ionique
+		Plus d'une seconde sans frapper, la charge commence à s'écouler
+		Le surrégime dure 5 s, vitesse d'attaque +30%
+		Pendant le surrégime, vos coups enchaînent des arcs jusqu'à 3 sauts
+		Chaque arc inflige 40% des dégâts réels du coup déclencheur, en diminuant à chaque saut
+		Quatre bras mécaniques fantômes se déploient dans votre dos et frappent en même temps que vous
+		Arme de mêlée : les quatre bras taillent, chacun à 24% des dégâts de l'arme
+		Toute autre arme : les quatre bras tirent des bolts ioniques, chacun à 20% des dégâts de l'arme
+		Après le surrégime, surchauffe 3 s : vitesse d'attaque -8%, plus de charge
+		"Commandement transféré. Quatre bras à vos ordres, jusqu'à la fusion"
+		'''
+}
+
+BloomNovaBulb: {
+	DisplayName: Bulbe de nova en fleur
+	Tooltip:
+		'''
+		Vie maximale +30, régénération +4
+		Être frappé lance un filet de ronces vers l'assaillant ou la menace, une vague toutes les 1,5 s au plus
+		Les ronces infligent 220 à 330 dégâts de base selon la Croissance, et croissent avec vos bonus
+		Les ennemis liés sont ralentis et déchirés, 80 par seconde ; un boss n'est que légèrement ralenti
+		Un ennemi lié qui vous frappe encaisse un retour d'épines : 100% des dégâts qu'il vient d'infliger, plus 120 de base
+		Le retour d'épines ne se règle qu'une fois par demi-seconde sur un même ennemi
+		Le combat accumule de la Croissance : plus de ronces, plus longtemps liées
+		Sous 35% de vie, une Nova en fleur éclate : onde de pétales 1200 dégâts de base, lie les ennemis
+		La floraison soigne 25% de la vie, renforce fortement la régénération 6 s, et consomme toute la Croissance
+		Un brouillard de spores vous suit 6 s ; les attaques des ennemis dedans ont 25% de chances de rater
+		La Nova en fleur au plus une fois toutes les 60 s
+		"Chaque plaie arrose la prochaine floraison"
+		'''
+}
+
+SolarCoreFist: {
+	DisplayName: Poing du noyau solaire
+	Tooltip:
+		'''
+		Restez immobile une demi-seconde pour entrer en posture de garde de pierre
+		En posture, dégâts subis -50%, immunité au recul
+		Chaque coup reçu en posture : +1 couche de charge solaire, plus 1 couche par 100 dégâts bruts du coup
+		Jusqu'à 24 couches ; les veines de la carapace s'allument d'un cran toutes les 8 couches
+		5 s de posture forcent 2 s de surchauffe : plus de réduction, plus de charge, plus de posture
+		En posture, maintenir Bas une demi-seconde : un poing plein vers le réticule et une plus grande nova solaire
+		Bouger casse aussi la posture et lance le poing, mais à -25% de dégâts
+		Lancer le poing termine la posture sans surchauffe
+		Le poing : 500 dégâts de base, +12,5% par couche, 2000 à piles pleines, croissant avec vos bonus
+		Le premier ennemi touché explose en nova solaire, et six chaînes de lave partent des deux côtés
+		À 8 couches ou plus, la posture irradie une aura brûlante qui croît avec vos bonus
+		"La gemme solaire du temple bat encore ; la coquille de pierre n'est que son gantelet"
+		'''
+}
+
+TidalFin: {
+	DisplayName: Nageoire de marée
+	Tooltip:
+		'''
+		Appuyez sur [KEY] pour foncer vers le réticule ; rappuyez peu après pour enchaîner, deux segments au plus
+		Chaque segment se réoriente, vous êtes totalement invulnérable pendant la ruée
+		Chaque trajectoire dresse un mur de tsunami qui reste quelques secondes, 140 dégâts de base par coup
+		Plusieurs murs ne cumulent pas leurs coups sur la même cible
+		Le mur pousse et ralentit les petits projectiles ennemis
+		Le dernier segment dresse une trombe de marée à l'arrivée, 200 dégâts de base par coup
+		Murs et trombe croissent avec vos bonus de dégâts
+		Sous la pluie ou dans l'eau : un troisième segment, tous les dégâts +50%
+		Après la chaîne complète, recharge 12 s
+		[c/2696A0:"La marée n'a pas oublié son duc"]
+		'''
+}
+
+RiteRing: {
+	DisplayName: Anneau de rite
+	Tooltip:
+		'''
+		Dégâts +8%, mana maximal +40, chaque rune allumée +1% de dégâts
+		Attaquer ou lancer un sort allume les runes une à une ; à 8 le rite actuel se déclenche
+		Les rites tournent : Rite du miroir, Laser de flamme lunaire, Rite des étoiles
+		Rite du miroir : 3 corps pâles, chacun tire 3 salves de votre arme tenue à 40% de dégâts
+		Invocation, armes tenues et explosifs ne se mirent pas ; les miroirs tirent alors des bolts runiques
+		Laser de flamme lunaire : un œil lunaire s'ouvre au-dessus de vous et balaie le champ d'un rayon de la mort
+		Rite des étoiles : un mini-anneau planétaire s'effondre et fait tomber 16 étoiles
+		Double-appui Gauche ou Droite : dépensez 3 runes, déchirez le voile et clignez dans cette direction
+		"Le rite a commencé depuis longtemps, et vous êtes au centre de l'anneau"
+		'''
+}
+
+WingsOfInterference: {
+	DisplayName: Ailes d'interférence jour et nuit
+	Tooltip:
+		'''
+		Devenez les ailes de l'Impératrice de Lumière : 3,5 s de vol le jour, 4,5 s la nuit, maintenir Bas en vol pour rester en place
+		Forme diurne : vos projectiles d'attaque tirent des sillons d'interférence
+		Deux sillons qui se croisent explosent en éclat prismatique, 200 dégâts de base
+		Forme nocturne : vitesse de déplacement nettement accrue, vol plus long
+		La nuit, esquivez automatiquement un coup, une fois toutes les 48 s
+		La nuit, les projectiles ennemis qui s'approchent laissent une traînée d'aurore, leur trajectoire se lit plus tôt
+		À l'instant de l'aube ou du crépuscule, une explosion d'interférence plein écran : 1100 dégâts de base et purge des projectiles ennemis
+		"Jour et nuit interfèrent à la pointe de l'aile ; la lumière s'effondre au croisement"
+		'''
+	FormDay: C'est le jour : le tissage d'interférence est déployé
+	FormNight: C'est la nuit : le vol d'aurore est engagé
+}
+
+BlackFlashSigil: {
+	DisplayName: Sceau de l'éclair noir
+	Tooltip:
+		'''
+		Attaquer réveille le sceau ; un anneau de tempo d'éclair noir s'allume sur votre poitrine
+		À l'instant où l'anneau se resserre au minimum, la fenêtre de jugement s'ouvre avec un claquement
+		Un coup dans la fenêtre déclenche l'Éclair noir : ce coup passe à 3 fois les dégâts et critique forcément
+		Chaque Éclair noir empile 1 couche de chaîne ; chaque couche +0,25 fois, 6 couches au plus pour 4,5 fois
+		Plus la chaîne est haute, plus le tempo est vif, plus la fenêtre suivante arrive tôt
+		Laisser passer une fenêtre vide, ou frapper hors fenêtre, vide toute la chaîne
+		À 4 couches vous entrez en Sens du domaine ; les projectiles autour semblent ralentir
+		Les serviteurs agissent seuls ; ils ne suivent pas le tempo et ne cassent pas la chaîne
+		"Quand l'éclair vire au noir, l'instant règne sur l'éternité"
+		'''
+}

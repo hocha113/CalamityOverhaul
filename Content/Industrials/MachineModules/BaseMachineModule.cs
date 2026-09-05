@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
     /// </summary>
     internal abstract class BaseMachineModule : ModItem, IMachineModule
     {
+        public override string LocalizationCategory => "Industrials.Modules";
+
         public override string Texture => CWRConstant.VaultPlaceholder2;
 
         /// <summary>本模块能装进哪些机器</summary>

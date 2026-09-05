@@ -13,9 +13,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
 {
     /// <summary>
-    /// 终焉圆舞曲持握。左键实弹+魔力双消耗开火，每发以金丝带在身周织出一支幻影燧发枪，
-    /// 至多八支组成 3D 环绕枪阵；按住左键时枪阵轮转瞄准光标齐射
-    /// (<see cref="FinaleMagicBolt"/>)，每支只鸣一发即散解。右键收束全阵奏响终曲：
+    /// 终焉圆舞曲持握。左键实弹+魔力双消耗开火，每发以金丝带在身周织出两支幻影燧发枪，
+    /// 至多八支组成 3D 环绕枪阵，阵未满时只列阵不开火；阵满后每发主枪让最老的两支枪
+    /// 接连鸣响(<see cref="FinaleMagicBolt"/>，主枪、第 9 帧、第 17 帧凑成三拍子)，
+    /// 响过散作残影，新枪原位补进。右键收束全阵奏响终曲：
     /// 幻影枪螺旋汇聚成巨炮，蓄势后轰出 <see cref="TiroFinaleBlast"/>。<br/>
     /// 3D 姿态数学在 <see cref="TiroFinaleRig"/>，绘制装配在 <see cref="TiroFinaleRenderer"/>
     /// </summary>
@@ -34,17 +35,21 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
         /// <summary>枪管中线相对贴图中心的法向偏移(px，负=偏上)</summary>
         internal const float BarrelFromCenter = -10f;
 
-        //——枪阵槽位相位——
+        //——枪阵槽位相位(活层)，鸣响后的散解走 ghostFade 幽灵层——
         internal const byte PhaseEmpty = 0;
         internal const byte PhaseForming = 1;
         internal const byte PhaseReady = 2;
         internal const byte PhaseAiming = 3;
-        internal const byte PhaseFading = 4;
         internal const float FormTime = 16f;
         internal const float AimTime = 7f;
+        /// <summary>鸣响后残影散解帧数</summary>
         internal const float FadeTime = 18f;
-        /// <summary>齐射轮转间隔(帧)</summary>
-        private const float VolleyGap = 8f;
+        /// <summary>每发主枪织出的幻影枪数</summary>
+        private const int WeavePerShot = 2;
+        /// <summary>阵满时首支枪出列倒计时(帧)，鸣响落在主枪后第 9 帧</summary>
+        private const float BeatDelay = 3f;
+        /// <summary>两支出列间隔(帧)，第二发落在第 17 帧，与 26 帧主枪凑成三拍子</summary>
+        private const float BeatGap = 8f;
         /// <summary>幻影枪基准缩放</summary>
         internal const float MusketScale = 0.38f;
         /// <summary>枪口魔法阵余辉帧数</summary>
@@ -66,21 +71,33 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
         private const int FinaleMinCount = 4;
         /// <summary>终曲额外魔力</summary>
         private const int FinaleMana = 20;
+        /// <summary>巨弹伤害 = 单发伤害 × 此值 × 收束枪数</summary>
+        private const float FinaleDamagePerMusket = 2.2f;
+        /// <summary>右键被拒后的防抖(帧)</summary>
+        private const float RightDebounceTime = 12f;
         /// <summary>终曲巨炮缩放</summary>
         internal const float GiantScale = 1.6f;
 
         internal readonly byte[] slotPhase = new byte[TiroFinaleRig.SlotCount];
         internal readonly float[] slotTimer = new float[TiroFinaleRig.SlotCount];
+        /// <summary>逐槽鸣响残影计时，0=无，1 起为开火后帧数+1(纯视觉，与活层同槽共存)</summary>
+        internal readonly float[] ghostFade = new float[TiroFinaleRig.SlotCount];
         /// <summary>逐槽枪口阵余辉(纯视觉，不入网络包)</summary>
         internal readonly float[] slotCircle = new float[TiroFinaleRig.SlotCount];
+        /// <summary>阵满后待出列鸣响的枪数</summary>
+        private int volleyQueue;
+        /// <summary>下一支出列倒计时</summary>
         private float volleyTimer;
         private int volleyCursor;
+        private float rightDebounce;
         /// <summary>手中枪的枪口阵余辉(纯视觉)</summary>
         internal float handCircle;
         internal byte finalePhase;
         internal float finaleTimer;
         /// <summary>终曲收束时吃掉的枪数，决定巨弹伤害</summary>
         internal int finaleCount;
+
+        private static readonly SoundStyle WeaveSound = SoundID.Item9 with { Volume = 0.28f, Pitch = 0.5f, MaxInstances = 4 };
 
         /// <summary>环心:玩家胸口略上，枪阵绕此点进动</summary>
         internal Vector2 RingCenter => Owner.GetPlayerStabilityCenter() + new Vector2(0f, -8f);
@@ -97,15 +114,18 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
         }
 
         private bool AnySlotAlive() {
+            if (volleyQueue > 0) {
+                return true;
+            }
             for (int i = 0; i < TiroFinaleRig.SlotCount; i++) {
-                if (slotPhase[i] != PhaseEmpty) {
+                if (slotPhase[i] != PhaseEmpty || ghostFade[i] > 0f) {
                     return true;
                 }
             }
             return false;
         }
 
-        /// <summary>枪阵未散、终曲未毕就别收枪</summary>
+        /// <summary>枪阵未散、残影未消、终曲未毕就别收枪</summary>
         public override bool StayAlive() => finalePhase != FinaleNone || AnySlotAlive() || handCircle > 0f;
 
         public override SoundStyle? ShootSound => SoundID.Item36 with {
@@ -134,6 +154,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
                 writer.Write((byte)MathHelper.Clamp(slotTimer[i], 0f, 250f));
             }
             writer.Write((byte)volleyCursor);
+            writer.Write((byte)MathHelper.Clamp(volleyQueue, 0, 250));
+            writer.Write((byte)MathHelper.Clamp(volleyTimer, 0f, 250f));
             writer.Write(finalePhase);
             writer.Write((byte)MathHelper.Clamp(finaleTimer, 0f, 250f));
             writer.Write((byte)finaleCount);
@@ -145,6 +167,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
                 slotTimer[i] = reader.ReadByte();
             }
             volleyCursor = reader.ReadByte();
+            volleyQueue = reader.ReadByte();
+            volleyTimer = reader.ReadByte();
             finalePhase = reader.ReadByte();
             finaleTimer = reader.ReadByte();
             finaleCount = reader.ReadByte();
@@ -222,27 +246,46 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
                 NetUpdate();
             }
             ConsumeAmmo();
-            SummonMusket();
+            WeaveMuskets();
             SetFireCooldown();
         }
 
-        /// <summary>从巡位下一格开始找空槽织枪，入环位置更分散</summary>
-        private void SummonMusket() {
-            for (int i = 0; i < TiroFinaleRig.SlotCount; i++) {
+        /// <summary>从巡位下一格起填空槽织枪；空槽不够(阵满)则让最老的枪出列鸣响，响过原位补新</summary>
+        private void WeaveMuskets() {
+            int toWeave = WeavePerShot;
+            for (int i = 0; i < TiroFinaleRig.SlotCount && toWeave > 0; i++) {
                 int slot = (volleyCursor + 1 + i) % TiroFinaleRig.SlotCount;
                 if (slotPhase[slot] == PhaseEmpty) {
-                    slotPhase[slot] = PhaseForming;
-                    slotTimer[slot] = 0f;
-                    SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.28f, Pitch = 0.5f, MaxInstances = 4 }, RingCenter);
-                    return;
+                    Weave(slot);
+                    toWeave--;
                 }
             }
+            if (toWeave < WeavePerShot) {
+                SoundEngine.PlaySound(WeaveSound, RingCenter);
+            }
+            if (toWeave > 0) {
+                if (volleyQueue == 0) {
+                    volleyTimer = BeatDelay;
+                }
+                volleyQueue += toWeave;
+            }
+        }
+
+        private void Weave(int slot) {
+            slotPhase[slot] = PhaseForming;
+            slotTimer[slot] = 0f;
         }
         #endregion
 
-        #region 枪阵:相位推进与轮转齐射
+        #region 枪阵:相位推进与出列鸣响
         private void UpdateSlots() {
             for (int i = 0; i < TiroFinaleRig.SlotCount; i++) {
+                if (ghostFade[i] > 0f && ++ghostFade[i] > FadeTime + 1f) {
+                    ghostFade[i] = 0f;
+                }
+                if (slotCircle[i] > 0f) {
+                    slotCircle[i]--;
+                }
                 switch (slotPhase[i]) {
                     case PhaseForming:
                         if ((slotTimer[i] += 1f) >= FormTime) {
@@ -255,24 +298,16 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
                             FireSlot(i);
                         }
                         break;
-                    case PhaseFading:
-                        if ((slotTimer[i] += 1f) >= FadeTime) {
-                            slotPhase[i] = PhaseEmpty;
-                            slotTimer[i] = 0f;
-                        }
-                        break;
-                }
-                if (slotCircle[i] > 0f) {
-                    slotCircle[i]--;
                 }
             }
         }
 
+        /// <summary>按拍点把最老的就绪枪推入瞄准；没有就绪枪(都在成形)就等下一帧</summary>
         private void UpdateVolley() {
             if (volleyTimer > 0f) {
                 volleyTimer--;
             }
-            if (!WantsFireLeft || volleyTimer > 0f || finalePhase != FinaleNone) {
+            if (volleyQueue <= 0 || volleyTimer > 0f) {
                 return;
             }
             for (int i = 0; i < TiroFinaleRig.SlotCount; i++) {
@@ -281,19 +316,22 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
                     slotPhase[slot] = PhaseAiming;
                     slotTimer[slot] = 0f;
                     volleyCursor = slot;
-                    volleyTimer = VolleyGap;
+                    volleyQueue--;
+                    volleyTimer = BeatGap;
                     return;
                 }
             }
         }
 
-        /// <summary>幻影枪鸣响:出弹、口花、散解</summary>
+        /// <summary>幻影枪鸣响:出弹、口花，残影转入幽灵层，活层原位织新枪</summary>
         private void FireSlot(int slot) {
-            slotPhase[slot] = PhaseFading;
-            slotTimer[slot] = 0f;
+            bool posed = ComputeMusketPose(slot, false, out MusketPose pose);
+            ghostFade[slot] = 1f;
             slotCircle[slot] = CircleLife;
+            Weave(slot);
+            SoundEngine.PlaySound(WeaveSound, RingCenter);
 
-            if (!ComputeMusketPose(slot, out MusketPose pose)) {
+            if (!posed) {
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item36 with {
@@ -313,26 +351,38 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
         #endregion
 
         #region 终曲
-        /// <summary>右键奏终曲:主人端裁定，远端靠快照跟进</summary>
+        /// <summary>右键奏终曲:主人端裁定，远端靠快照跟进。不受主枪冷却限制，拒绝只走自己的防抖</summary>
         private void TryStartFinale() {
+            if (rightDebounce > 0f) {
+                rightDebounce--;
+            }
             if (!Projectile.IsOwnedByLocalPlayer() || finalePhase != FinaleNone) {
                 return;
             }
-            if (!WantsFireRight || FireCooldown > 0f) {
+            if (!WantsFireRight || rightDebounce > 0f) {
                 return;
             }
             int live = LiveMusketCount();
             if (live < FinaleMinCount) {
                 SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.35f, Pitch = -0.2f }, Projectile.Center);
-                FireCooldown = 16f;
+                rightDebounce = RightDebounceTime;
                 return;
             }
             if (!TryConsumeMana(FinaleMana)) {
                 SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.35f, Pitch = 0.3f }, Projectile.Center);
-                FireCooldown = 16f;
+                rightDebounce = RightDebounceTime;
                 return;
             }
 
+            //收束全阵:出列中的枪一并收回，待鸣响队列作废
+            volleyQueue = 0;
+            volleyTimer = 0f;
+            for (int i = 0; i < TiroFinaleRig.SlotCount; i++) {
+                if (slotPhase[i] == PhaseAiming) {
+                    slotPhase[i] = PhaseReady;
+                    slotTimer[i] = 0f;
+                }
+            }
             finalePhase = FinaleGather;
             finaleTimer = 0f;
             finaleCount = live;
@@ -441,7 +491,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             if (Projectile.IsOwnedByLocalPlayer()) {
                 //巨炮把射手推退一截
                 Owner.velocity -= dir * 6.5f;
-                int dmg = (int)(WeaponDamage * 2.8f * finaleCount);
+                int dmg = (int)(WeaponDamage * FinaleDamagePerMusket * finaleCount);
                 Projectile.NewProjectile(Source, muzzle, dir * 24f, ModContent.ProjectileType<TiroFinaleBlast>()
                     , dmg, WeaponKnockback * 3f, Owner.whoAmI, scale);
                 NetUpdate();
@@ -455,7 +505,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             }
             Vector2 gatherPos = Owner.GetPlayerStabilityCenter() + new Vector2(0f, -46f);
             for (int i = 0; i < TiroFinaleRig.SlotCount; i++) {
-                if (slotPhase[i] == PhaseEmpty || !ComputeMusketPose(i, out MusketPose pose)) {
+                if (!ComputeMusketPose(i, false, out MusketPose pose)) {
                     continue;
                 }
                 Vector2 toGather = (gatherPos - pose.World).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(3f, 7f);
@@ -508,11 +558,14 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             public float Scale;
         }
 
-        /// <summary>计算某槽幻影枪的完整屏幕姿态；空槽返回 false</summary>
-        internal bool ComputeMusketPose(int slot, out MusketPose pose) {
+        /// <summary>
+        /// 计算某槽幻影枪的完整屏幕姿态；ghost=true 取该槽鸣响后的散解残影(与活层同槽共存)。
+        /// 对应层为空返回 false
+        /// </summary>
+        internal bool ComputeMusketPose(int slot, bool ghost, out MusketPose pose) {
             pose = default;
             byte phase = slotPhase[slot];
-            if (phase == PhaseEmpty) {
+            if (ghost ? ghostFade[slot] <= 0f : phase == PhaseEmpty) {
                 return false;
             }
 
@@ -522,7 +575,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             //显现期从环外飘入
             float radiusMul = 1f;
             float formT = 1f;
-            if (phase == PhaseForming) {
+            if (!ghost && phase == PhaseForming) {
                 formT = MathHelper.Clamp(slotTimer[slot] / FormTime, 0f, 1f);
                 radiusMul = MathHelper.Lerp(1.22f, 1f, EaseOutCubic(formT));
             }
@@ -530,8 +583,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
 
             Vector2 ringCenter = RingCenter;
 
-            //终曲收束:螺旋收拢并压向汇聚点
-            if (finalePhase == FinaleGather) {
+            //终曲收束:螺旋收拢并压向汇聚点，只收活层，残影照常散去
+            if (!ghost && finalePhase == FinaleGather) {
                 float g = MathHelper.Clamp(finaleTimer / GatherTime, 0f, 1f);
                 float swirl = g * g * 2.6f;
                 float shrink = 1f - 0.92f * (g * g);
@@ -550,7 +603,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
 
             float sway = MathF.Sin(time * 0.07f + slot * 2.1f) * 0.055f;
             float thrust = 0f;
-            if (phase == PhaseAiming) {
+            if (!ghost && phase == PhaseAiming) {
                 float t = slotTimer[slot] / AimTime;
                 sway *= 1f - t;
                 //先后拉再前送，开火帧顶到最前
@@ -567,26 +620,24 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             Vector2 drift = Vector2.Zero;
             float tumble = 0f;
 
-            switch (phase) {
-                case PhaseForming:
-                    alpha = formT;
-                    form = formT;
-                    //成形中枪身从上扬姿态落回瞄准线
-                    tumble = (1f - EaseOutCubic(formT)) * 0.7f * flip;
-                    break;
-                case PhaseFading: {
-                    float t = MathHelper.Clamp(slotTimer[slot] / FadeTime, 0f, 1f);
-                    alpha = 1f - t * t;
-                    form = 1f - t * 0.9f;
-                    fire = MathHelper.Clamp(1f - slotTimer[slot] / 3f, 0f, 1f);
-                    //后坐:沿枪轴向后漂退+枪口上跳
-                    drift = -rot.ToRotationVector2() * (EaseOutCubic(t) * 30f);
-                    tumble = -0.24f * t * flip;
-                    break;
-                }
+            if (ghost) {
+                float since = ghostFade[slot] - 1f;
+                float t = MathHelper.Clamp(since / FadeTime, 0f, 1f);
+                alpha = 1f - t * t;
+                form = 1f - t * 0.9f;
+                fire = MathHelper.Clamp(1f - since / 3f, 0f, 1f);
+                //后坐:沿枪轴向后漂退+枪口上跳
+                drift = -rot.ToRotationVector2() * (EaseOutCubic(t) * 30f);
+                tumble = -0.24f * t * flip;
+            }
+            else if (phase == PhaseForming) {
+                alpha = formT;
+                form = formT;
+                //成形中枪身从上扬姿态落回瞄准线
+                tumble = (1f - EaseOutCubic(formT)) * 0.7f * flip;
             }
             //终曲收束期通体渐亮
-            if (finalePhase == FinaleGather) {
+            if (!ghost && finalePhase == FinaleGather) {
                 float g = MathHelper.Clamp(finaleTimer / GatherTime, 0f, 1f);
                 fire = MathF.Max(fire, MathHelper.Clamp((g - 0.66f) / 0.34f, 0f, 1f) * 0.75f);
             }
@@ -632,7 +683,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.TiroFinales
             }
             //收枪:阵中残余的幻影枪散成金屑
             for (int i = 0; i < TiroFinaleRig.SlotCount; i++) {
-                if (slotPhase[i] == PhaseEmpty || !ComputeMusketPose(i, out MusketPose pose)) {
+                if (!ComputeMusketPose(i, false, out MusketPose pose)) {
                     continue;
                 }
                 for (int k = 0; k < 5; k++) {

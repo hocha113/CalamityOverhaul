@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
     /// <summary>模具加工台放置物，右键开 <see cref="UI.MoldProcessingUI"/></summary>
     internal class MoldProcessingTable : ModItem
     {
+        public override string LocalizationCategory => "SHPCModules";
+
         public override string Texture => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/MoldProcessingTables/MoldProcessingTable";
 
         public override void SetDefaults() {

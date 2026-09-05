@@ -11,6 +11,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// <summary>英雄无冕：时装饰品，行走时身后铺开一路黑白棋格</summary>
     internal class Unsunghero : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "Unsunghero";
         public override void SetDefaults() {
             Item.width = 32;

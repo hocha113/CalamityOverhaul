@@ -1,0 +1,200 @@
+NeutronWand: {
+	DisplayName: Sternengraberlicht
+	Tooltip:
+		'''
+		Feuere vier starke Gravitationssterne ab
+		Halte die rechte Maustaste gedrückt, um an der Mausposition Gravitationsmagie auszuführen
+		"Es wird erzählt, dass ein mächtiger psychischer Begabter in der Antike diesen Stab benutzte, um Sterne zu einem Schwarzen Loch zu komprimieren, aber es gibt keine Bestätigung, nur ein Fragment von einem alten Gedicht, das von den interstellaren Nomaden gesungen wird"
+		'''
+}
+
+DragonsWord: {
+	DisplayName: Drachensprache
+	Tooltip:
+		'''
+		Schieße Drachen Tränen ab, die nach einer Weile der Drehung den Feind verfolgen.
+		Rechtsklick, um Drachenbefehl Magie am Cursor auszuführen und den Feinden im Bereich den Todesbefehl zu erteilen.
+		"Ein Drache kann nur einmal im Leben weinen."
+		'''
+}
+
+UnderTheSand: {
+	DisplayName: Unter dem Sand
+	Tooltip:
+		'''
+		Schleudert ein Paar Sandwogen, die unter Schwerkraft fallen
+		Beim Aufprall schießt ein vertikaler Sandspeer aus dem Boden und schleudert Gegner empor
+		'''
+}
+
+MelodyTheSand: {
+	DisplayName: Lied des Sandes
+	Tooltip:
+		'''
+		Feuert einen kleinen Sandwirbel, der unter Schwerkraft zur Erde fällt
+		Am Boden patrouilliert er hin und her, wendet an Wänden und Abstürzen um
+		Schleudert getroffene Gegner wiederholt in die Höhe
+		'''
+}
+
+SandVortexOfTheDecayedSea: {
+	DisplayName: Sandwirbel des Verfallenen Meeres
+	Tooltip:
+		'''
+		Beschwört am Cursor einen gewaltigen verfallenen Meereswirbel
+		Der Wirbel saugt Gegner an und zerreißt sie, stört feindliche Projektile
+		Wirft periodisch zielsuchende verfallene Meereskugeln aus
+		Erneuter Klick erneuert den Wirbel; beim Verblassen ein Ring aus Meereskugeln
+		„Das Brüllen der faulenden Tiefe, in Sand gewälzt“
+		'''
+}
+
+FocusingGrimoire: {
+	DisplayName: Fokussierendes Zauberbuch
+	Tooltip:
+		'''
+		Linksklick feuert zielsuchende Wärmeringe
+		Rechtsklick feuert schnell Todesstrahlen
+		„Ein Buch schlägt sechs Bücher“
+		'''
+}
+
+CommandersStaff: {
+	DisplayName: Kommandeur-Stab
+	Tooltip:
+		'''
+		Feuert einen thermischen Zersetzungsstrahl, der Gegner durchdringt
+		„Vom Arm jener Maschine abmontiert – wie wäre es mit Psi-Energie statt Diesel?“
+		'''
+}
+
+Eyetooth: {
+	DisplayName: Weinender Pupillenzahn
+	Tooltip:
+		'''
+		Wirft den vom Auge von Cthulhu gerissenen Hauer auf Feinde
+		Nach dem Biss springt der Zahn auf den Scheitel, fokussiert kurz und reißt dann von oben zu
+		Der Sturzbiss richtet 150 % Schaden an; die aufgerissene Wunde blutet weiter
+		'''
+}
+
+CommandersStaffEX: {
+	DisplayName: Kommandeur-Stab EX
+	Tooltip:
+		'''
+		Feuert mehrere sich ausbreitende Wärmestrahlen
+		„Geeignet zum Schneiden von Metall“
+		'''
+}
+
+TomeofFungalDecay: {
+	DisplayName: Foliant des Pilzverfalls
+	Tooltip: Sprüht einen Ring aus Sporenstößen
+}
+
+Pandemonium: {
+	DisplayName: Pandämonium
+	Tooltip:
+		'''
+		Linksklick aufladen und Transzendente Magie freisetzen
+		Rechtsklick wirkt Schwefelbrand-Rune am Cursor
+		In der Hand leuchten unten links am Bildschirm zwei Fertigkeitsknöpfe auf
+		Anklicken für Schwefelbrand-Himmelsstrafe oder Ende aller Dämonen
+		'''
+	SkillLeftName: Schwefelbrand-Himmelsstrafe
+	SkillLeftDesc: Lässt um den Cursor ein Feld aus Schwefelfeuersäulen niedergehen
+	SkillRightName: Ende aller Dämonen
+	SkillRightDesc: Entfaltet einen riesigen Magiekreis um dich, der Gegner darin mit Blitz und Feuer bombardiert
+}
+
+Elysium: {
+	DisplayName: Himmlische Wonne
+	Tooltip:
+		'''
+		Linksklick halten, um die Schlangenwandlung aufzuladen
+		Loslassen hebt eine Heilige-Licht-Welle; schwache Feinde darin werden an Ort und Stelle zu heiligen Schlangen und jagen für dich
+		Rechtsklick erhebt nahe Stadtbewohner und ruft sie als Jünger
+		Die Jünger kreisen, jeder mit eigenem Amt, und bringen heiligen Segen
+		Boss-Schaden verbrennt einen Jünger zu einem Punkt Märtyrerkraft
+		Bei elf Punkten und lebendigem Johannes kannst du über die Fertigkeitstaste die Offenbarung aufschlagen
+		Nach der Offenbarung beschwört Rechtsklick die vier Reiter
+		Die Fertigkeitstasten werden zu Himmelskörper-Meteorit und Gericht der letzten drei Siegel
+		Sind alle zwölf Sitze besetzt, ist der Segen am stärksten, doch bei tödlicher Schwäche sticht Judas dich in den Rücken
+		Shift halten öffnet das Rosenfenster; Sitze ziehen tauscht die Ämter
+		Unten links leuchten zwei Fertigkeitstasten, solange du die Waffe hältst
+		'''
+	SkillLeftName: Heiliger Himmelsdonner
+	SkillLeftDesc: Ruft einen heiligen Blitz auf Feinde neben dem Fadenkreuz
+	SkillRightName: Gericht der letzten drei Siegel
+	SkillRightDesc: Das fünfte, sechste und siebte Siegel reißen nacheinander auf; das Finale richtet über das Feld, die Offenbarung endet
+	SkillRightLockedDesc: Siegel erst nach der Offenbarung
+	SkillOpenName: Offenbarung aufschlagen
+	SkillOpenDesc: Johannes steigt als Märtyrer auf, die Himmeldomäne senkt sich
+	SkillMeteorName: Himmelskörper-Meteorit
+	SkillMeteorDesc: Ruft einen Himmelskörper vom Firmament auf das Fadenkreuz
+	NoConvertTargetText: Keine Bewohner in der Nähe, die erhoben werden können
+	SeatsFullText: Die zwölf heiligen Sitze sind voll
+	JudasDeathReasonText: "{0} wurde von Judas um dreißig Silberlinge verraten"
+	DiscipleName_0: Petrus
+	DiscipleName_1: Andreas
+	DiscipleName_2: Jakobus
+	DiscipleName_3: Johannes
+	DiscipleName_4: Philippus
+	DiscipleName_5: Bartholomäus
+	DiscipleName_6: Thomas
+	DiscipleName_7: Matthäus
+	DiscipleName_8: Jakobus der Jüngere
+	DiscipleName_9: Thaddäus
+	DiscipleName_10: Simon Zelotes
+	DiscipleName_11: Judas
+}
+
+AriaofTheCosmos: {
+	DisplayName: Aria des Kosmos
+	Tooltip:
+		'''
+		Linksklick gedrückt halten, um einen mächtigen Quasar zu formen; bei Loslassen verheerender Schaden an Gegnern
+		Rechtsklick setzt ein Miniatur-Schwarzes Loch frei, das nach der Formung eine Salve Gammastrahlen abfeuert
+		In der Hand leuchten unten links am Bildschirm zwei Fertigkeitsknöpfe auf
+		Anklicken, um einen Sternenring-Wächter zu beschwören oder einen Gammastrahlen-Ausbruch auszulösen
+		'''
+	SkillLeftName: Sternenring-Wächter
+	SkillLeftDesc: Beschwört einen kreisenden Sternenring, dessen Knoten Sternenstaub auf nahe Gegner schleudern
+	SkillRightName: Gammastrahlen-Ausbruch
+	SkillRightDesc: Feuert nach kurzem Aufladen neun Gammastrahlen fächerförmig Richtung Cursor
+}
+
+WheezingWyrm: {
+	DisplayName: Keuchdrachenstab
+	Tooltip:
+		'''
+		Halten speit dauernd Drachenflamme
+		Der Kopf ist alt und hustet vor dem Zünden immer etwas Rauch
+		Dauerndes Speien heizt den Rachen, die Flamme läuft von Dunkelrot bis Glutblau
+		Je heller, desto heißer; Blaue Flamme richtet den höchsten Schaden an und zündet Höllenfeuer
+		"Er ist nicht tot, nur ein alter Raucher, der sich räuspert"
+		'''
+}
+
+Everdeep: {
+	DisplayName: Ewigabgrund
+	Tooltip:
+		'''
+		Feuert einen Ring abgründigen Hochdruckwassers
+		Der Ring durchdringt Feinde, fliegt ein Stück und kehrt um für den zweiten Stoß
+		Treffer sammeln Abgrundresonanz; die Perlen um den Folianten sind die Stapel
+		Läuft die Resonanz über, steigt unter den Feinden ein riesiger Wasserhose
+		"Der Abgrund teilt sich nicht für dich. Er schließt sich hinter dir"
+		'''
+}
+
+BloomTome: {
+	DisplayName: Knospenfoliant
+	Tooltip:
+		'''
+		Feuert eine Knospenkugel, die aufblüht
+		Trifft sie oder landet sie, öffnet sie einen Blütenkranz
+		Jede vierte wird zur Vollblüte: mehr Blätter und zwei Wüstennadeln nach oben
+		"Welche Seite du aufschlägst, die blüht"
+		'''
+}

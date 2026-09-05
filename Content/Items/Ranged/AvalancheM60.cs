@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class AvalancheM60 : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "AvalancheM60";
         public override void SetDefaults() {
             if (CWRID.Item_Onyxia > 0) {

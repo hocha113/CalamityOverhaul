@@ -1,0 +1,200 @@
+ElementMuzzleBrake: {
+	DisplayName: Stabilisateur élémentaire
+	Tooltip:
+		'''
+		Augmente les dégâts à distance de 12%
+		Augmente les chances de coup critique à distance de 15%
+		Augmente la vitesse d'attaque à distance de 12%
+		Les ennemis ont plus de mal à vous détecter
+		'''
+}
+
+EyeOfSingularity: {
+	DisplayName: Horizon de singularité
+	Tooltip:
+		'''
+		Augmente les dégâts à distance de 100%
+		Augmente le taux de critique à distance de 100%
+		Augmente la vitesse de tir à distance de 100% et ne consomme plus de munitions
+		Porte le multiplicateur de dégâts critiques de toutes les armes à distance à 500%
+		Vos projectiles à distance déchirent l'espace et créent à l'impact des micro-trous noirs qui attirent et broient les ennemis proches
+		En restant immobile, vous entrez dans l'état d'horizon des événements :
+		  Vous devenez invisible et immunisé contre tous les dégâts de contact
+		  En tirant, vous libérez des sursauts gamma supplémentaires qui traquent les ennemis
+		Vous obtenez le Saut quantique : appuyez sur [KEY] pour vous téléporter au curseur et supprimer les projectiles ennemis sur le trajet
+		Clic droit pour activer le Protocole d'effondrement :
+		  Consomme tout votre mana ; pendant les 10 prochaines secondes, toutes vos attaques à distance ignorent les frames d'invulnérabilité et infligent toujours des coups critiques
+		  Temps de recharge : 60 secondes
+		Si vous subissez un coup mortel, vous devenez une supernova, infligez d'énormes dégâts de zone, puis vous vous reconstituez en lieu sûr après 3 secondes
+		Cet effet a 60 secondes de recharge
+		[c/33ff33:"Le dieu-dragon endormi se connecte à vos nerfs et déconstruit la logique profonde de l'âme des machines"]
+		[c/ffaa00:"La constellation avide dévore les flammes de vos armes et absorbe la dernière chaleur des étoiles mourantes"]
+		[c/00ffff:"Le dieu invisible de la mort devient votre ombre et moissonne le destin fatal qui égalise tous les êtres"]
+		'''
+}
+
+ArcaneThroneOfEternity: {
+	DisplayName: Trône arcanique de l'éternité
+	Tooltip:
+		'''
+		Augmente les dégâts magiques de 100 %
+		Augmente les chances de coup critique magique de 100 %
+		Augmente la vitesse d'attaque magique de 100 %
+		Augmente le mana maximum de 1000 ; la régénération de mana est fortement accélérée et ne s'interrompt jamais
+		Tous les projectiles magiques obtiennent une pénétration infinie
+		Vos attaques magiques déchirent le voile de la réalité et ouvrent des Failles arcaniques en éruption continue à l'impact
+		Toutes les attaques magiques infligent une malédiction interdite aléatoire :
+		  Érosion du Vide, Stase temporelle, Feu de l'âme, Effondrement gravitationnel ou Hyper-désintégration
+		Au-dessus de 90 % de mana, vous entrez dans l'état « Omniscience » :
+		  Tous les projectiles magiques verrouillent automatiquement les ennemis et le multiplicateur de dégâts critiques monte à 1000 %
+		Accorde le Saut de Vérité ; appuyez sur [KEY] pour déchirer l'espace et entrer dans une dimension supérieure :
+		  Immunité totale aux dégâts et déplacement libre pendant un court instant ; en sortant, vous déclenchez un Tremblement de Réalité dévastateur
+		  Temps de recharge : 30 secondes
+		Clic droit pour activer « Calcul des Racines » :
+		  Pendant les 10 prochaines secondes, chaque attaque magique libère simultanément 5 sorts miroirs
+		  Temps de recharge : 60 secondes
+		Si vous subissez des dégâts mortels, le temps revient à votre état d'il y a 5 secondes, restaurant vie, mana et position
+		Cet effet a un temps de recharge de 60 secondes
+		Les ennemis vous ciblent plus facilement
+		[c/b84dff:"Un sage sans nom ouvre votre crâne et inscrit des vérités oubliées au-delà des étoiles"]
+		[c/ffdd66:"Le Seigneur du Changement tire la chaîne et la trame du destin, traitant la réalité comme un brouillon inachevé"]
+		[c/66ffff:"Le cadavre sur le trône doré vous observe — il a depuis longtemps oublié ce qu'est la mort"]
+		'''
+}
+
+PrecisionMuzzleBrake: {
+	DisplayName: Stabilisateur haute précision
+	Tooltip:
+		'''
+		Augmente les dégâts à distance de 8%
+		Augmente les chances de coup critique à distance de 10%
+		Augmente la vitesse d'attaque à distance de 8%
+		Les ennemis ont plus de mal à vous détecter
+		'''
+}
+
+SimpleMuzzleBrake: {
+	DisplayName: Stabilisateur simple
+	Tooltip:
+		'''
+		Augmente les dégâts à distance de 5%
+		Augmente les chances de coup critique à distance de 5%
+		Augmente la vitesse d'attaque à distance de 5%
+		Les ennemis ont plus de mal à vous détecter
+		'''
+}
+
+JusticeUnveiled: {
+	DisplayName: Manifestation de la justice
+	Tooltip:
+		'''
+		Les attaques à distance accumulent des charges de « Frappe du jugement », jusqu'à 5 maximum
+		Appuyez sur [UP] pour dépenser 1 charge et invoquer un impact sacré dévastateur
+		« Si la justice est appelée, j'obéirai — où qu'elle me mène. »
+		'''
+}
+
+EmblemOfDread: {
+	DisplayName: Emblème d'effroi
+	Tooltip:
+		'''
+		Augmente les dégâts de mêlée de 100 %
+		Augmente les chances de coup critique de mêlée de 100 %
+		Augmente la vitesse de mêlée de 100 %
+		Augmente la défense de 100, en ignorant toute réduction de défense
+		Réduit les dégâts subis de 75 % et renvoie 100 fois les dégâts à l'attaquant
+		Toutes les attaques de mêlée infligent le débuff Érosion du vide
+		Les attaques de mêlée réelles ont une chance d'effacer instantanément les ennemis ayant moins de 250 000 PV
+		En vous déplaçant à grande vitesse, vous laissez des points de distorsion sur votre trajectoire, infligeant des dégâts extrêmes
+		Accorde la capacité de Ruée gravitationnelle ; appuyez sur [KEY] pour foncer sur une longue distance et libérer d'immenses rayons gravitationnels
+		En cas de dégâts mortels, vous regagnez immédiatement tous vos PV et obtenez un Bouclier gravitationnel (60 s de recharge)
+		Les ennemis vous ciblent plus facilement
+		[c/d94fff:"Un ange sanctifié voile votre regard et murmure d'éternelles douceurs mensongères"]
+		[c/ff4d4d:"Un boucher ensanglanté brandit vos deux lames et proclame que seul le massacre apporte la gloire"]
+		[c/4da6ff:"Une colombe azurée picore votre front et se moque de votre lutte insignifiante"]
+		'''
+}
+
+Proverbs: {
+	DisplayName: Proverbe
+	Tooltip:
+		'''
+		Génère une petite rune de soufre derrière vous
+		Immunité à la plupart des débuffs liés au feu
+		La plupart de vos attaques infligent le débuff Malédiction flétrie
+		[Content]
+		'''
+	L1:
+		'''
+		Inflige le double des dégâts à la Sorcière du Soufre ;
+		ses attaques peuvent vous infliger des coups critiques
+		'''
+	L2:
+		'''
+		Si vous lisez ceci, je suis probablement déjà parti.
+		Cette bague fut, durant mes longues années, la seule chose qui me semblait vraiment froide.
+		Mais à un moment, elle absorba la chaleur d'un mortel… et devint… trop brûlante pour être lâchée.
+		Je suis retourné au soufre, réduit aux cendres d'une ère.
+		J'aurais dû partir les mains vides,
+		mais cette unique chaleur m'inspira l'avidité de la conserver.
+		Portez-la.
+		Et quand vous lèverez enfin votre lame contre les dieux…
+		Sachez que même si le monde gèle, je brûlerai encore à vos doigts.
+		'''
+}
+
+Unsunghero: {
+	DisplayName: Héros sans couronne
+	Tooltip:
+		'''
+		Laisse une traînée de cases d'échiquier noires et blanches derrière vous en marchant
+		"Et si tu ne revenais pas ?"
+		"Alors je ne reviendrai pas."
+		'''
+}
+
+GodslayerScabbard: {
+	DisplayName: Fourreau du tueur de dieux
+	Tooltip:
+		'''
+		Accumule de la charge en tenant une arme de mêlée sans attaquer
+		Attaquer à charge pleine accorde 2 secondes d'invulnérabilité
+		"La lame reste au fourreau, mais l'intention mortelle est palpable.
+		Quand le moment est venu, abattre un dieu ne prend qu'un instant."
+		'''
+}
+
+FrogsparkBoots: {
+	DisplayName: Bottes étincelantes de grenouille
+	Tooltip:
+		'''
+		Permet de voler, de courir très vite, de patiner plus stablement sur la glace sans casser la glace mince
+		Marchez sur l'eau, le miel et la lave, immunité à Brûlure
+		7 s d'immunité à la lave au contact, puis dégâts de lave fortement réduits
+		Vitesse de saut +48%, saut automatique, résistance à la chute fortement accrue
+		"Un coup de patte de grenouille, et le feu ouvre la voie"
+		'''
+}
+
+CthulsparkBoots: {
+	DisplayName: Bottes étincelantes de Cthulhu
+	Tooltip:
+		'''
+		Possède toutes les capacités des Bottes étincelantes de grenouille
+		Sauts supplémentaires nuage, blizzard et tempête de sable, hauteur de saut accrue, immunité aux dégâts de chute
+		Double-appui directionnel : foncez avec le grand œil et écartez les ennemis sur le chemin
+		"Il flotte au-dessus de vous et surveille chaque pas"
+		'''
+}
+
+NinjaCthulsparkBoots: {
+	DisplayName: Bottes étincelantes de Cthulhu ninjas
+	Tooltip:
+		'''
+		Possède toutes les capacités des Bottes étincelantes de Cthulhu
+		10% de chances d'esquiver, grimpez aux murs et glissez-en doucement
+		Double-appui directionnel : ruée ninja à ombre écarlate, plus vite et plus loin, traînée pourpre
+		Le choc écarte les ennemis comme le Bouclier de Cthulhu, et accorde une brève invulnérabilité à l'impact
+		"Le grand œil a noué un bandeau et juré de ne plus cligner"
+		'''
+}

@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// <summary>大理石卵石，快投石，高血上限加伤，撞地弹一次</summary>
     internal class MarblePebble : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 22;
             Item.damage = 11;

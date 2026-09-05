@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
     /// <summary>液体储罐:液体网络的储能件</summary>
     internal class FluidTank : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Flow";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/FluidTank";
         public override void SetDefaults() {
             Item.width = 32;

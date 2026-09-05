@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class Dicoria : ModItem, ICWRLoader
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "Dicoria";
         [VaultLoaden(CWRConstant.Item_Ranged + "DicoriaGlow")]
         public static Asset<Texture2D> Glow = null;

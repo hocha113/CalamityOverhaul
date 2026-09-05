@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DestroyersBladeEXs
     /// </summary>
     internal class DestroyersBladeEX : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBladeEX";
         [VaultLoaden(CWRConstant.Item_Melee + "DestroyersBladeEXGlow")]
         public static Asset<Texture2D> Glow = null;

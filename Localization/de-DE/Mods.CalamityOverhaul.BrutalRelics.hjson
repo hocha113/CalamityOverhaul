@@ -1,0 +1,291 @@
+FallenKingsCrown: {
+	DisplayName: Krone des gestürzten Königs
+	Tooltip:
+		'''
+		Immun gegen Fallschaden
+		In der Luft die Runtertaste halten: Kronensturz, beschleunigter Fall
+		Ohne Runtertaste löst ein natürlicher Fall über 25 Felder den Sturz selbst aus
+		Feinde auf dem Weg werden von der Krone zermalmt
+		Beim Aufschlag eine Gel-Schockwelle; je tiefer der Fall, desto höher der Schaden, bei 40 Feldern voll
+		Die Welle höchstens alle 1,5 s; vorher ist der Kronenglanz dunkel
+		Am Aufschlag bleibt ein Gel-Feld, Feinde darin werden verlangsamt und verlieren dauernd Leben
+		Enterhaken, Reittier oder Flüssigkeit beenden den Sturz
+		"Am Tag, an dem der Thron fällt, ist Gewicht das Urteil"
+		'''
+}
+
+BloodfogIris: {
+	DisplayName: Blutfog-Pupille
+	Tooltip:
+		'''
+		Kritische Treffer +8 %
+		Doppeltipp links, rechts oder hoch: stoße als Blutnebel in diese Richtung, kurz unverwundbar
+		Stoß-Abklingzeit 1,25 s; in der Abklingzeit ist das Pupillenlicht im Nebel dunkel
+		Nach dem Stoß 1,5 s Hinterhalt: im Blutnebel, weniger Aggro
+		Der nächste Angriff im Hinterhalt ist ein garantierter kritischer Treffer
+		Bei tödlichem Schaden wirst du zu Blutnebel, verdichtest dich zum Cursor, kurz unverwundbar und sofort im Hinterhalt
+		Nebelrettung höchstens alle 60 s; 3 s nach dem Verdichten nimmst du 15 % mehr Schaden
+		"Der Nebel ist nicht weg, die Pupille nicht zu"
+		'''
+}
+
+WorldEatersMaw: {
+	DisplayName: Weltenfresser-Kiefer
+	Tooltip:
+		'''
+		Jeder Angriff legt eine Schicht Säurefraß an, höchstens 10, 6 s, Treffer erneuern
+		Bei voller Schicht Verteidigung -15, 20 Leben pro Sekunde
+		Stirbt ein Säureziel, bricht eine Weltenfresser-Larve aus der Leiche und kämpft für dich, höchstens eine alle 2 s
+		Larven lauern unter der Erde, Bisse legen 2 Schichten, beim Durchbrechen spritzt Säure
+		Höchstens 3 Larven zugleich, jede 7 s
+		"Am Rand der Welt sitzen ihre Zahnspuren"
+		'''
+}
+
+MirrorheartParadox: {
+	DisplayName: Spiegelherz-Paradoxon
+	Tooltip:
+		'''
+		Ein Spiegelherz treibt an deiner Seite
+		Ist es fest, tauschst du im Trefferaugenblick mit ihm den Platz, weichst dem Schaden und bist kurz unverwundbar
+		An beiden Orten explodiert ein Herzschlagpuls, 90 Grundschaden, Feinde 2,5 s verwirrt
+		5 s nach dem Tausch werden deine Geschosse vom Spiegelherz mit 50 % Schaden wiederholt
+		Diener, Handwaffen und Sprengstoffe werden nicht wiederholt
+		Paradox-Rückschlag: der nächste Treffer in 3 s nach dem Tausch +25 % Schaden
+		Tausch höchstens alle 25 s; in der Abklingzeit ist das Herz durchscheinend und lädt, beim Verdichten ein Ton
+		"Das im Spiegel zerbricht das Herz einen Schritt vor dir"
+		'''
+}
+
+SwarmVortexBeacon: {
+	DisplayName: Schwarmstrudel-Bake
+	Tooltip:
+		'''
+		Treffer legen Bienenmarken; bei 8 Schichten reißt der Strudel das Ziel hinein
+		Der Strudel würgt 5 s, 4 Bienenbisse pro Sekunde, je 18 Grundschaden
+		Hineingezogene werden stark verlangsamt, Bosse nur wenig
+		Weitere Treffer auf das Strudelziel verlängern auf bis zu 8 s
+		Nur ein Strudel zugleich; ein neues voll markiertes Ziel holt den Schwarm
+		Stirbt das Ziel, wechselt der Strudel auf einen nahen Feind
+		Mit Bienenstock-Rucksack Bissschaden +25 %
+		Stehst du still, kehrt der Schwarm heim und bildet Wachsrüstung auf dir
+		Die Wachsrüstung fängt bis zu 30 Schaden, nach dem Losgehen noch 5 s
+		Nach dem Bruch 3 s, bis sie neu kristallisiert
+		"Die Bake der Königin ruft den Schwarm nicht. Sie zeigt die nächste Beute"
+		'''
+}
+
+SoulbindingArm: {
+	DisplayName: Seelenbinde-Handgelenk
+	Tooltip:
+		'''
+		Um dich ein Fluchfeld; Feinde darin nehmen 8 % mehr Schaden von dir
+		Tötungen im Feld holen eine Seele, höchstens 8
+		Seelen kreisen; jede fängt ein feindliches Geschoss und erlischt
+		Das gefangene Geschoss wird zur Fluchflammenkugel und fliegt auf nahe Feinde, 60 Grundschaden
+		Nach jedem Block braucht der Ring 1 s zum Nachladen
+		Ist der Ring voll, verdichtet er sich kurz, und eine Geisterriesenhand stürzt auf den stärksten nahen Feind
+		Die Hand richtet 300 Grundschaden an, der Rüstung ignoriert und mit deinen Boni wächst
+		Der Gegriffene nimmt 5 s lang 20 % mehr Schaden; gewöhnliche Feinde werden 1 s festgehalten
+		"Das abgetrennte Handgelenk holt noch Seelen, die fünf Finger haben nie losgelassen"
+		'''
+}
+
+WhiteoutStormCore: {
+	DisplayName: Weißsicht-Sturmkern
+	Tooltip:
+		'''
+		+5 % Schadensminderung, immun gegen Kälte, Einfrieren, Frostbrand und Erfrierung
+		Bei Schaden explodiert automatisch ein Weißsturm, 6 s, Abklingzeit 20 s
+		Der Sturm richtet 120 Grundschaden an nahen Feinden an, 3 s Verwirrung und 6 s Weißblindheit
+		Weißblinde sind stark verlangsamt und nehmen 10 Erfrierungsschaden pro Sekunde
+		Im Sturm +30 % Schadensminderung und Rückstoßimmunität; der Vorhang verdeckt deine Sicht nicht
+		Bosse werden nicht verwirrt und deutlich weniger verlangsamt
+		Dauerende Bodenläufe heben jede Sekunde eine Reihe Eisdornen in Laufrichtung
+		Jeder Dorn 45 Grundschaden und kurzes Frostverlangsamen
+		"In der Weißsicht macht der Schneesturm nur für dich Platz"
+		'''
+}
+
+GluttonousThroat: {
+	DisplayName: Schlemmerrachen
+	Tooltip:
+		'''
+		8 % allen von dir verursachten Schadens fließen als Blutperlen zu dir zurück
+		Die Perlen belegen nicht die Trankabklingzeit, heilen aber höchstens 2 % der Lebensobergrenze pro Sekunde
+		Was der Rachen nicht schluckt, fällt zu Boden; Mondbiss versiegelt den Rachen, dann gehen alle Perlen ins Leere
+		Alle 9 s streckt sich eine Fleischzunge, packt den weitesten Feind in 68 Feldern und zerrt ihn vor dich
+		Der Gebissene erleidet 5 s Faulsäge: 40 Leben pro Sekunde
+		2,5 s nach dem Heranziehen richtet dein nächster Schlag auf ihn doppelten Schaden an
+		Der Hinrichtungsschlag zündet die restliche Faulsäge als Extra-Schaden
+		Bosse werden nicht gezogen, aber gebissen, gesägt und für die Hinrichtung markiert
+		"Am anderen Ende des Rachens ist kein Ende"
+		'''
+}
+
+RefractionWaltz: {
+	DisplayName: Brechungswalzer
+	Tooltip:
+		'''
+		Luftbeschleunigung und Wendekraft stark erhöht
+		Am höchsten Punkt, beim Doppelsprung, beim Wenden oder Sprinten verdichtet sich hinter dir ein Brechungskristall
+		Höchstens 6 zugleich; die älteste zerspringt von selbst
+		Kristalle verbinden sich in Tanzreihenfolge zu Prisma-Strahlen; bei sechs schließt sich der Ring
+		Strahlen, Kristalle und Splitter wachsen mit deinen Schadensboni
+		Jeder Strahl schneidet denselben Feind höchstens 4-mal pro Sekunde, je 35 Grundschaden
+		Wer einen Kristall zerbricht, nimmt 70 Grundschaden plus Splitter zu je 40
+		Treffer färben Brechung: das Ziel wird langsamer, deine kritische Chance gegen es +8 %
+		"Ist das Lichtnetz fertig, ist, wer zur Musik tanzt, Herr des Balls"
+		'''
+}
+
+TwinPupilTether: {
+	DisplayName: Doppelpupillen-Leine
+	Tooltip:
+		'''
+		Beschwört Blick und Brandpupille als Mini-Dämonenaugen; Schaden wächst mit deinen Boni
+		Blick schießt Laser auf mittlere Distanz, 140 Grundschaden, etwa alle 0,7 s
+		Brandpupille speit Fluchflammen auf Nahe, 40 Grundschaden, 5 Stöße pro Sekunde
+		Zwischen beiden Augen eine Schneideline, höchstens 4 Schnitte pro Sekunde am selben Feind, je 80 Grundschaden
+		Getroffene tragen 3 s eine Wunde und nehmen 25 % mehr Schaden von diesem Paar
+		Je schneller du dich bewegst, desto weiter die Augen, desto länger die Leine
+		Doppeltipp runter: Kreuzsturm, die Augen umfassen das Fadenkreuz und kreuzen sich, am Schnitt explodiert es
+		Sturmstoß 380, Schnittexplosion 1100 Grundschaden, Abklingzeit 9 s
+		"Der zusammengenähte Blick ist die Schnur, die alles zerschneidet"
+		'''
+}
+
+ProbeMatrixCore: {
+	DisplayName: Sondenmatrix-Kern
+	Tooltip:
+		'''
+		Setzt 5 Zerstörer-Sonden als Eskorte aus, die selbst suchen und verfolgende Laser schießen
+		Laser 55 Grundschaden; Treffer auf dasselbe Ziel sammeln Markierung, bei 8 Schichten ein Orbitalstoß
+		Der Orbitalstoß lässt vom Zenit einen durchdringenden Todesstrahl fallen, 900 Grundschaden pro Tick
+		Ziele in der Säule rechnen höchstens zwei Ticks, zusammen höchstens 1800
+		Nach jedem Stoß Markierung weg, 3 s Abklingzeit, am Aufschlag bleibt Hitze
+		Abgeschossene Sonden sind nach etwa 2,5 s wieder da; die Formation belegt keinen Dienerplatz
+		"Die stählerne Schlange ist gefallen, ihre Augen mustern den Himmel noch für dich"
+		'''
+}
+
+OverloadCommandCore: {
+	DisplayName: Overload-Befehlskern
+	Tooltip:
+		'''
+		Treffer sammeln Ionenladung, +4 pro Treffer; bei 100 Ionen-Overload
+		Lässt du länger als 1 s ab, sickert die Ladung langsam weg
+		Ionen-Overload 5 s, Angriffstempo +30 %
+		Treffer im Overload ketten Lichtbögen an nahe Feinde, höchstens 3 Sprünge
+		Bogen-Schaden 40 % des tatsächlichen Treffers, je Sprung weniger
+		Im Overload entfalten sich hinter dir vier Mechanikarm-Schatten und schlagen mit
+		Nahkampfwaffe: die vier Arme schwingen, je 24 % Waffenschaden
+		Sonstige Waffen: die vier Arme schießen Ionen, je 20 % Waffenschaden
+		Nach dem Overload 3 s Überhitzung: Tempo -8 %, keine neue Ladung
+		"Befehl übergeben. Vier Arme gehorchen, bis zur Schmelzsicherung"
+		'''
+}
+
+BloomNovaBulb: {
+	DisplayName: Blütennova-Knolle
+	Tooltip:
+		'''
+		Lebensobergrenze +30, Regeneration +4
+		Bei Angriff schleudert sie ein Dornennetz auf den Angreifer oder die Herkunftsrichtung, höchstens eine Welle alle 1,5 s
+		Netz-Grundschaden 220 bis 330 nach Wachstum, wächst mit deinen Boni
+		Umschlungene werden verlangsamt und dauernd zerrissen, 80 pro Sekunde; Bosse nur wenig verlangsamt
+		Greifen Umschlungene dich an, trifft Dornrückschlag: voller zurückgeworfener Schaden plus 120 Grundschaden
+		Rückschlag auf denselben Feind höchstens einmal alle halbe Sekunde
+		Dauernder Kampf sammelt Wachstum: mehr Ranken, längeres Umschlingen
+		Unter 35 % Leben blüht automatisch die Nova: Blütenblattwelle fegt um dich und umschlingt, 1200 Grundschaden
+		Im Aufblühen 25 % Leben zurück, 6 s stark erhöhte Regeneration, Wachstum vollständig verbraucht
+		Danach folgt 6 s Sporennebel; Angriffe von Feinden darin verfehlen zu 25 %
+		Nova höchstens alle 60 s
+		"Jede Wunde gießt die nächste Blüte"
+		'''
+}
+
+SolarCoreFist: {
+	DisplayName: Sonnenkern-Faustknochen
+	Tooltip:
+		'''
+		Eine halbe Sekunde still: Steingardisten-Haltung
+		In der Haltung erlittener Schaden -50 %, immun gegen Rückstoß
+		Jeder erlittene Treffer +1 Sonnenkern-Ladung; je 100 Rohschaden eines Angriffs +1 extra
+		Höchstens 24 Schichten; alle 8 Schichten leuchtet eine Schalenader auf
+		5 s Haltung erzwingen 2 s Überhitzung: keine Minderung, keine Ladung, kein erneutes Stillstehen
+		In der Haltung Runter eine halbe Sekunde halten: volle Faust zum Cursor und eine größere Sonnen-Nova
+		Losgehen bricht die Haltung ebenfalls mit einem Schlag, aber -25 % Faustschaden
+		Die Faust beendet die Haltung ohne Überhitzung
+		Faust-Grundschaden 500, +12,5 % je Schicht, voll 2000, wächst mit deinen Boni
+		Am ersten getroffenen Feind explodiert die Sonnen-Nova, zu beiden Seiten sechs Lava-Kettensprengungen
+		Ab 8 Schichten trägt die Haltung einen Glutring, Schaden wächst mit deinen Boni
+		"Der Sonnengemme des Tempels schlägt noch; die Steinschale ist nur ihr Fausthandschuh"
+		'''
+}
+
+TidalFin: {
+	DisplayName: Gezeitenflosse
+	Tooltip:
+		'''
+		Drücke [KEY] zum Cursor; kurz danach erneut für die nächste Etappe, höchstens zwei
+		Jede Etappe kann neu zielen; während des Sturms völlig unverwundbar
+		Auf der Bahn bleibt Sekunden lang eine Tsunami-Mauer, jeder Treffer 140 Grundschaden
+		Mehrere Mauern stapeln den Tickschaden am selben Ziel nicht
+		Mauern stoßen kleine feindliche Geschosse weg und verlangsamen sie
+		Am Ende der letzten Etappe steigt ein Gezeitenwirbel und würgt am Ort, jeder Treffer 200 Grundschaden
+		Mauer- und Wirbelschaden wachsen mit deinen Boni
+		Bei Regen oder im Wasser drei Etappen, aller Schaden +50 %
+		Nach allen Stürmen 12 s Abklingzeit
+		[c/2696A0:"Die Tide hat ihren König nicht vergessen"]
+		'''
+}
+
+RiteRing: {
+	DisplayName: Ritualsammelring
+	Tooltip:
+		'''
+		Schaden +8 %, maximales Mana +40, jede leuchtende Rune noch +1 % Schaden
+		Angriffe oder Zauber zünden Runen um dich; bei 8 startet das aktuelle Ritual von selbst
+		Rituale der Reihe nach: Spiegelritual, Mondflammenlaser, Sternenritual
+		Spiegelritual: 3 bleiche Spiegelbilder, jedes 3 Salven deiner Handwaffe, jede Kugel 40 % Schaden
+		Beschwörung, Handwaffen und Sprengstoff können nicht gespiegelt werden; die Bilder schießen dann Runenkugeln
+		Mondflammenlaser: über dir öffnet sich ein Mond-Auge und fegt das Feld mit Todeslicht
+		Sternenritual: ein Mini-Sternenring stürzt ein und ruft 16 Fallsterne auf Feinde
+		Doppeltipp links oder rechts verbraucht 3 Runen, reißt den Schleier und teleportiert kurz in diese Richtung
+		"Das Ritual hat längst begonnen, und du stehst im Ringmittelpunkt"
+		'''
+}
+
+WingsOfInterference: {
+	DisplayName: Tag-Nacht-Interferenzschwingen
+	Tooltip:
+		'''
+		Werde zu den Schwingen der Lichtkaiserin: Flugzeit Tag 3,5 s, Nacht 4,5 s; im Flug Runter halten zum Schweben
+		Tagform: deine Geschosse ziehen Interferenzlichtspuren
+		Kreuzen sich zwei Spuren, explodiert der Schnitt von selbst als Prisma-Burst, 200 Grundschaden
+		Nachtform: deutlich schneller, längere Flugzeit
+		Nachts weichst du einem Treffer automatisch aus, alle 48 s
+		Nachts ziehen feindliche Geschosse in deiner Nähe Polarlicht-Spuren und verraten die Bahn früh
+		Im Augenblick von Morgengrauen und Dämmerung eine bildschirmweite Interferenzexplosion, 1100 Grundschaden, löscht feindliche Geschosse
+		"Tag und Nacht interferieren an den Spitzen, Licht stürzt am Schnitt ein"
+		'''
+	FormDay: Jetzt ist Tag: das Interferenznetz ist gespannt
+	FormNight: Jetzt ist Nacht: Polarlichtflug ist entfaltet
+}
+
+BlackFlashSigil: {
+	DisplayName: Schwarzblitz-Siegel
+	Tooltip:
+		'''
+		Mit dem Angriff erwacht das Siegel, vor der Brust ein Schwarzblitz-Taktring
+		Schrumpft der Ring aufs Kleinste, öffnet sich das Fenster mit einem knackenden Ton
+		Triffst du im Fenster, löst du Schwarzblitz aus: dieser Schlag x3 und garantiert kritisch
+		Jeder Schwarzblitz +1 Kettenblitz, jede Schicht +0,25, bei 6 Schichten insgesamt x4,5
+		Je höher die Kette, desto schneller der Takt, desto früher das nächste Fenster
+		Lässt du das Fenster leer oder triffst außerhalb, fällt die Kette auf null
+		Ab 4 Schichten tritt Domänengefühl ein: Geschosse vor deinen Augen scheinen langsamer
+		Diener schlagen selbst, zählen nicht zum Takt und unterbrechen die Kette nicht
+		"Wird der Blitz schwarz, steht der Augenblick über der Ewigkeit"
+		'''
+}

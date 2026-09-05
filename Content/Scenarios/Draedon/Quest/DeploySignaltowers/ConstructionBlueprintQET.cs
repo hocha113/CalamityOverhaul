@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 {
     internal class ConstructionBlueprintQET : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => CWRConstant.Item_Tools + "ConstructionBlueprintQET";
         public static LocalizedText L1;
         public static LocalizedText L2;

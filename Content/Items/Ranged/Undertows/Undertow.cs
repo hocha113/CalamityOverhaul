@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.Undertows
     /// </summary>
     internal class Undertow : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "Undertow";
 
         public override void SetDefaults() {

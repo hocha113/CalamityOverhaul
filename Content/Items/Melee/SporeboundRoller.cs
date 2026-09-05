@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class SporeboundRoller : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "SporeboundRoller";
         [VaultLoaden(CWRConstant.Item_Melee + "SporeboundRollerGlow")]
         public static Asset<Texture2D> Glow = null;

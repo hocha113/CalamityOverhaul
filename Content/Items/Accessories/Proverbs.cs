@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
 {
     internal class Proverbs : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "Proverbs";
         public static LocalizedText L1;
         public static LocalizedText L2;

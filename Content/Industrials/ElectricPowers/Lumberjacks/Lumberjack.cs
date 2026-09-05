@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 {
     internal class Lumberjack : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Lumberjack";
         internal static LocalizedText Text1;
         internal static LocalizedText Text2;

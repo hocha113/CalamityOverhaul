@@ -15,10 +15,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
         public static readonly SelfHackCrystalSkill Instance = new();
 
         public override string DisplayName => Language.GetTextValue(
-            "Mods.CalamityOverhaul.Items.SelfHackCrystal.SkillName");
+            "Mods.CalamityOverhaul.Cyberwares.SelfHackCrystal.SkillName");
 
         public override string Description => Language.GetTextValue(
-            "Mods.CalamityOverhaul.Items.SelfHackCrystal.SkillDesc");
+            "Mods.CalamityOverhaul.Cyberwares.SelfHackCrystal.SkillDesc");
 
         public override int IconItemType => ModContent.ItemType<SelfHackCrystal>();
 

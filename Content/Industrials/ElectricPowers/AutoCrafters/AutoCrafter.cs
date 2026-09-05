@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoCrafters
     /// <summary>自动合成台:钉选配方,从近旁存储进料,自动合成</summary>
     internal class AutoCrafter : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         //占位:复用分光染色机物品贴图,专属贴图见美术清单
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Spectrometer";
         public override void SetDefaults() {

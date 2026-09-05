@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class RaiderGun : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "RaiderGun";
         public const int DashCooling = 120;
         public override void SetDefaults() {
@@ -78,6 +80,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
     internal class RaiderGunEX : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "RaiderGunEX";
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;

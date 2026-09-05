@@ -1,0 +1,195 @@
+ElementMuzzleBrake: {
+	DisplayName: Elementarer Mündungsstabilisator
+	Tooltip:
+		'''
+		Erhöht Fernschaden um 12%
+		Erhöht kritische Trefferchance auf Distanz um 15%
+		Erhöht Fernkampf-Feuerrate um 12%
+		Gegner entdecken dich schwerer
+		'''
+}
+
+EyeOfSingularity: {
+	DisplayName: Singularitätshorizont
+	Tooltip:
+		'''
+		Erhöht Fernschaden um 100%
+		Erhöht kritische Trefferchance auf Distanz um 100%
+		Erhöht Fernkampf-Feuerrate um 100% und verbraucht keine Munition mehr
+		Erhöht den kritischen Schadensmultiplikator aller Fernkampfwaffen auf 500%
+		Deine Fernkampfprojektile zerreißen den Raum und erzeugen bei Treffern Miniatur-Schwarze-Löcher, die nahe Gegner anziehen und zermahlen
+		Im Stillstand trittst du in den Ereignishorizont-Zustand ein:
+		  Unsichtbar und immun gegen jeden Kontaktschaden
+		  Beim Schießen werden zusätzlich zielsuchende Gammastrahlen-Ausbrüche freigesetzt
+		Erhält Quantenversatz: Drücke [KEY], um zur Cursorposition zu teleportieren und feindliche Projektile auf dem Weg zu löschen
+		Rechtsklick aktiviert das Kollapsprotokoll:
+		  Verbraucht sämtliches Mana; für die nächsten 10 Sekunden ignorieren alle Fernkampfangriffe Immunitätsframes und erzwingen kritische Treffer
+		  Abklingzeit: 60 Sekunden
+		Bei einem tödlichen Treffer wirst du zu einer Supernova, verursachst extremen Flächenschaden und setzt dich nach 3 Sekunden an sicherer Position wieder zusammen
+		Dieser Effekt hat 60 Sekunden Abklingzeit
+		[c/33ff33:"Der schlafende Drachengott koppelt sich an deine Nerven und dekonstruiert die Grundlogik der Maschinenseelen"]
+		[c/ffaa00:"Das gierige Sternbild verschlingt dein Mündungsfeuer und saugt die letzte Restwärme erlöschender Sterne auf"]
+		[c/00ffff:"Der unsichtbare Todesgott wird zu deinem Schatten und erntet das unausweichliche Schicksal, das alle Wesen gleichmacht"]
+		'''
+}
+
+ArcaneThroneOfEternity: {
+	DisplayName: Thron der arkanen Ewigkeit
+	Tooltip:
+		'''
+		Erhöht Magieschaden um 100%
+		Erhöht kritische Magietrefferchance um 100%
+		Erhöht Magieangriffsgeschwindigkeit um 100%
+		Erhöht das maximale Mana um 1000; Manaregeneration ist stark erhöht und wird nie unterbrochen
+		Alle Magieprojektile erhalten unendliche Durchdringung
+		Deine Magieangriffe zerreißen den Schleier der Realität und reißen bei Treffern kontinuierlich ausbrechende Arkane Risse auf
+		Alle Magieangriffe fügen einen zufälligen verbotenen Fluch zu:
+		  Leererosion, Zeitstillstand, Seelenbrennen, Gravitationskollaps oder Hyper-Disintegration
+		Bei über 90 % Mana trittst du in den Zustand „Allwissenheit“ ein:
+		  Alle Magieprojektile verfolgen automatisch Gegner, und der kritische Schadensmultiplikator steigt auf 1000 %
+		Erhält Wahrheitssprung: Drücke [KEY], um den Raum zu zerreißen und eine höhere Dimension zu betreten
+		  Kurzzeitig immun gegen allen Schaden und frei beweglich; beim Verlassen entfesselst du ein verheerendes Realitätsbeben
+		  Abklingzeit: 30 Sekunden
+		Rechtsklick aktiviert Wurzelberechnung:
+		  Für die nächsten 10 Sekunden setzt jeder Magieangriff gleichzeitig 5 gespiegelte Zauber frei
+		  Abklingzeit: 60 Sekunden
+		Bei tödlichem Schaden spulst du die Zeit auf deinen Zustand vor 5 Sekunden zurück und stellst Leben, Mana und Position wieder her
+		Dieser Effekt hat 60 Sekunden Abklingzeit
+		Gegner nehmen eher Ziel auf dich
+		[c/b84dff:"Ein namenloser Weiser spaltet deinen Schädel und schreibt vergessene Wahrheiten jenseits der Sterne"]
+		[c/ffdd66:"Der Herr des Wandels zupft am Kettfaden des Schicksals und betrachtet die Realität als unvollendeten Entwurf"]
+		[c/66ffff:"Die Leiche auf dem goldenen Thron blickt dich an — sie hat längst vergessen, was Tod ist"]
+		'''
+}
+
+PrecisionMuzzleBrake: {
+	DisplayName: Hochpräziser Mündungsstabilisator
+	Tooltip:
+		'''
+		Erhöht Fernschaden um 8%
+		Erhöht kritische Trefferchance auf Distanz um 10%
+		Erhöht Fernkampf-Feuerrate um 8%
+		Gegner entdecken dich schwerer
+		'''
+}
+
+SimpleMuzzleBrake: {
+	DisplayName: Einfacher Mündungsstabilisator
+	Tooltip:
+		'''
+		Erhöht Fernschaden um 5%
+		Erhöht kritische Trefferchance auf Distanz um 5%
+		Erhöht Fernkampf-Feuerrate um 5%
+		Gegner entdecken dich schwerer
+		'''
+}
+
+JusticeUnveiled: {
+	DisplayName: Offenbarung der Gerechtigkeit
+	Tooltip:
+		'''
+		Fernkampftreffer sammeln „Gerechtigkeitsschlag“-Ladungen, maximal fünf
+		[UP] drücken verbraucht eine Ladung und ruft einen gewaltigen heiligen Einschlag herab
+		„Wenn Gerechtigkeit gerufen wird, folge ich – wohin auch immer sie führt“
+		'''
+}
+
+EmblemOfDread: {
+	DisplayName: Abzeichen des Todesfürchtenden
+	Tooltip:
+		'''
+		Erhöht Nahkampfschaden um 100 %
+		Erhöht Nahkampf-Krit-Chance um 100 %
+		Erhöht Nahkampftempo um 100 %
+		Erhöht Verteidigung um 100, ignoriert alle Verteidigungsabzüge
+		Reduziert erlittenen Schaden um 75 % und reflektiert 100-fachen Schaden auf den Angreifer
+		Alle Nahkampfangriffe belegen Gegner mit dem Debuff „Leererosion“
+		Bei Gegnern unter 250.000 LP können echte Nahkampftreffer sie direkt auslöschen
+		Bei hoher Bewegungsgeschwindigkeit hinterlässt du Verzerrungspunkte auf dem Weg mit extremem Schaden
+		Gewährt Gravitationsstoß; [KEY] drücken für extremen Stoß und massive Gravitationsstrahlen
+		Bei tödlichem Treffer sofort volle LP und Gravitationsschild (60 s Abklingzeit)
+		Gegner zielen leichter auf dich
+		[c/d94fff:„Ein geheiligter Engel hüllt deine Augen und flüstert ewige, süße Lügen“]
+		[c/ff4d4d:„Ein blutgetränkter Metzger hebt deine Zwillingsklingen und verkündet: Nur Schlachten bringt Ruhm“]
+		[c/4da6ff:„Eine azurblaue Taube pickt deine Stirn auf und verspottet deinen kleinen Kampf“]
+		'''
+}
+
+Proverbs: {
+	DisplayName: Spruch
+	Tooltip:
+		'''
+		Erzeugt hinter dir eine kleine Schwefelbrand-Rune
+		Immunität gegen die meisten Feuer-Debuffs
+		Die meisten Angriffe belegen Gegner mit dem Verwelkungsfluch
+		[Content]
+		'''
+	L1: Doppelter Schaden an der Schwefelbrand-Hexe; ihre Angriffe können dich kritisch treffen
+	L2:
+		'''
+		Wenn du das liest, bin ich wohl schon nicht mehr da.
+		Dieser Ring war in meinen langen Jahren das Einzige, das sich wirklich kalt anfühlte.
+		Doch irgendwann nahm er sterbliche Wärme auf und wurde … zu heiß zum Loslassen.
+		Ich bin zum Schwefelbrand zurückgekehrt, zur Asche einer Ära.
+		Ich hätte mit leeren Händen gehen sollen, doch diese eine Wärme ließ mich gierig werden, sie zu bewahren.
+		Trage ihn.
+		Wenn du dein Schwert gegen die Götter erhebst …
+		Selbst wenn die Welt erfriert, brenne ich noch an deinen Fingerspitzen.
+		'''
+}
+
+Unsunghero: {
+	DisplayName: Unbesungener Held
+	Tooltip:
+		'''
+		Hinterlässt beim Gehen eine Spur aus schwarz-weißen Schachbrettfeldern
+		„Was, wenn du nicht zurückkommst?“
+		„Dann komme ich nicht zurück.“
+		'''
+}
+
+GodslayerScabbard: {
+	DisplayName: Götterschlächter-Scheide
+	Tooltip:
+		'''
+		Beim Halten einer Nahkampfwaffe ohne Angriff sammelt sich Zieh-Ladung
+		Bei voller Ladung gewährt der nächste Angriff 2 Sekunden Unverwundbarkeit
+		„Die Klinge ruht in der Scheide, doch die Tötungsabsicht ist spürbar
+		Wenn die Zeit reif ist, genügt ein Augenblick, einen Gott zu fällen“
+		'''
+}
+
+FrogsparkBoots: {
+	DisplayName: Froschsprung-Glanzstiefel
+	Tooltip:
+		'''
+		Flug, Übersprint, auf Eis sicherer und zerbricht dünnes Eis nicht mehr
+		Laufen auf Wasser, Honig und Lava, immun gegen Verbrennung
+		Bei Lavakontakt 7 s Immunität, danach stark verminderter Lavaschaden
+		Sprungtempo +48 %, Autosprung, stark erhöhte Fallresistenz
+		"Ein Froschbeinschlag, und die Flamme bahnt den Weg"
+		'''
+}
+
+CthulsparkBoots: {
+	DisplayName: Cthulhu-Glanzstiefel
+	Tooltip:
+		'''
+		Alle Fähigkeiten der Froschsprung-Glanzstiefel
+		Drei Extra-Sprünge: Wolke, Schneesturm, Sandsturm; höhere Sprünge, immun gegen Fallschaden
+		Doppeltipp in eine Richtung: stoße mit dem Großen Auge und räume Feinde auf der Bahn
+		"Es schwebt über dir und wacht über jeden Schritt"
+		'''
+}
+
+NinjaCthulsparkBoots: {
+	DisplayName: Ninja-Cthulhu-Glanzstiefel
+	Tooltip:
+		'''
+		Alle Fähigkeiten der Cthulhu-Glanzstiefel
+		10 % Chance, Angriffe zu weichen; an Wänden klettern und langsam gleiten
+		Doppeltipp: Ninja-Scharlachsturm, schneller und weiter, mit scharlachrotem Nachbild
+		Der Stoß räumt wie der Cthulhu-Schild und gibt im Trefferaugenblick kurze Unverwundbarkeit
+		"Das Große Auge hat sich ein Stirnband gebunden und geschworen, nie wieder zu blinzeln"
+		'''
+}

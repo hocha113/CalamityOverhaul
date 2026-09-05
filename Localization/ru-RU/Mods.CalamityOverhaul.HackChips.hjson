@@ -1,0 +1,294 @@
+MeltdownChip: {
+	DisplayName: Чип протокола расплавления
+	// Tooltip: ""
+}
+
+ProjectileHijackChip: {
+	DisplayName: Чип перехвата снарядов
+	// Tooltip: ""
+}
+
+ProjectileFreezeChip: {
+	DisplayName: Чип заморозки снарядов
+	// Tooltip: ""
+}
+
+DataPurgeChip: {
+	DisplayName: Чип очистки данных
+	// Tooltip: ""
+}
+
+BallisticOverclockChip: {
+	DisplayName: Чип баллистического разгона
+	// Tooltip: ""
+}
+
+ElectrolysisChip: {
+	DisplayName: Чип электролиза воды
+	// Tooltip: ""
+}
+
+CryostasisChip: {
+	DisplayName: Чип криогенного затвердевания
+	// Tooltip: ""
+}
+
+LiquidPurgeChip: {
+	DisplayName: Чип откачки жидкости
+	// Tooltip: ""
+}
+
+ItemRecallChip: {
+	DisplayName: Чип дистанционного возврата
+	// Tooltip: ""
+}
+
+ReappraiseChip: {
+	DisplayName: Чип переброса качества
+	// Tooltip: ""
+}
+
+ArmorParseChip: {
+	DisplayName: Чип разбора брони
+	// Tooltip: ""
+}
+
+ExorciseChip: {
+	DisplayName: Чип принудительного выхода
+	// Tooltip: ""
+}
+
+DataLeechChip: {
+	DisplayName: Чип извлечения данных
+	// Tooltip: ""
+}
+
+SwarmLinkChip: {
+	DisplayName: Чип роевой связи
+	// Tooltip: ""
+}
+
+TurretHijackChip: {
+	DisplayName: Чип захвата турелей
+	// Tooltip: ""
+}
+
+MachineOverclockChip: {
+	DisplayName: Чип разгона механизмов
+	// Tooltip: ""
+}
+
+GridBlackoutChip: {
+	DisplayName: Чип отключения сети
+	// Tooltip: ""
+}
+
+PowerTransmuteChip: {
+	DisplayName: Чип конвертации энергии
+	// Tooltip: ""
+}
+
+NeuralOverclockChip: {
+	DisplayName: Чип нейронного разгона
+	// Tooltip: ""
+}
+
+WraithForceDriveChip: {
+	DisplayName: Чип принудительного привода ведомых
+	// Tooltip: ""
+}
+
+IndexPrereadChip: {
+	DisplayName: Чип упреждающего чтения индекса
+	// Tooltip: ""
+}
+
+LockBurnChip: {
+	DisplayName: Чип прожигания замка
+	// Tooltip: ""
+}
+
+DielSkipChip: {
+	DisplayName: Чип скачка дня и ночи
+	// Tooltip: ""
+}
+
+StormInjectChip: {
+	DisplayName: Чип впрыска грозы
+	// Tooltip: ""
+}
+
+GravityInvertChip: {
+	DisplayName: Чип инверсии гравитации
+	// Tooltip: ""
+}
+
+SegmentDelinkChip: {
+	DisplayName: Чип разрыва сегментов
+	// Tooltip: ""
+}
+
+LimbSeizureChip: {
+	DisplayName: Чип изъятия конечностей
+	// Tooltip: ""
+}
+
+CommandLinkCutChip: {
+	DisplayName: Чип разрыва командной связи
+	// Tooltip: ""
+}
+
+MunitionSwapChip: {
+	DisplayName: Чип подмены боеприпасов
+	// Tooltip: ""
+}
+
+TurretMeshChip: {
+	DisplayName: Чип сети турелей
+	// Tooltip: ""
+}
+
+BeaconForgeChip: {
+	DisplayName: Чип подделки маяка
+	// Tooltip: ""
+}
+
+PrivilegeEscalateChip: {
+	DisplayName: Чип повышения привилегий
+	// Tooltip: ""
+}
+
+ItemSalvageChip: {
+	DisplayName: Чип разбора
+	// Tooltip: ""
+}
+
+DataBrandChip: {
+	DisplayName: Чип клейма данных
+	// Tooltip: ""
+}
+
+EntityMasqueradeChip: {
+	DisplayName: Чип маскировки сущности
+	// Tooltip: ""
+}
+
+TileConscriptChip: {
+	DisplayName: Чип реквизиции блоков
+	// Tooltip: ""
+}
+
+VeinResonanceChip: {
+	DisplayName: Чип резонанса жилы
+	// Tooltip: ""
+}
+
+StressInvertChip: {
+	DisplayName: Чип инверсии напряжения
+	// Tooltip: ""
+}
+
+PressureSurgeChip: {
+	DisplayName: Чип нагнетания воды
+	// Tooltip: ""
+}
+
+MirrorSurfaceChip: {
+	DisplayName: Чип зеркальной поверхности
+	// Tooltip: ""
+}
+
+DelayFuseChip: {
+	DisplayName: Чип замедленного взрывателя
+	// Tooltip: ""
+}
+
+ProjectileTitheChip: {
+	DisplayName: Чип изъятия снарядов
+	// Tooltip: ""
+}
+
+ProjectileSampleChip: {
+	DisplayName: Чип выборки снарядов
+	// Tooltip: ""
+}
+
+CompensationProtocolChip: {
+	DisplayName: Чип протокола компенсации
+	// Tooltip: ""
+}
+
+PayloadRewriteChip: {
+	DisplayName: Чип перезаписи нагрузки
+	// Tooltip: ""
+}
+
+PhaseDesyncChip: {
+	DisplayName: Чип фазового сдвига
+	// Tooltip: ""
+}
+
+LiveCellTapChip: {
+	DisplayName: Чип живого источника
+	// Tooltip: ""
+}
+
+FirmwareRollbackChip: {
+	DisplayName: Чип отката прошивки
+	// Tooltip: ""
+}
+
+ShellRequisitionChip: {
+	DisplayName: Чип реквизиции оболочки
+	// Tooltip: ""
+}
+
+MemoryScorchChip: {
+	DisplayName: Чип выжигания памяти
+	// Tooltip: ""
+}
+
+BuffSiphonChip: {
+	DisplayName: Чип похищения усилений
+	// Tooltip: ""
+}
+
+CombatSiphonChip: {
+	DisplayName: Чип боевого извлечения
+	// Tooltip: ""
+}
+
+BallisticTurncoatChip: {
+	DisplayName: Чип баллистического переворота
+	// Tooltip: ""
+}
+
+MeltdownBrandChip: {
+	DisplayName: Чип метки расплавления
+	// Tooltip: ""
+}
+
+MapBlackoutChip: {
+	DisplayName: Чип гашения карты
+	// Tooltip: ""
+}
+
+ChannelScrambleChip: {
+	DisplayName: Чип скремблирования канала
+	// Tooltip: ""
+}
+
+StealthStripChip: {
+	DisplayName: Чип снятия скрытности
+	// Tooltip: ""
+}
+
+CooldownInjectChip: {
+	DisplayName: Чип впрыска перезарядки
+	// Tooltip: ""
+}
+
+CyberwareOfflineChip: {
+	DisplayName: Чип отключения имплантов
+	// Tooltip: ""
+}

@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 {
     internal class ElectricMinRocket : ModItem, ILocalizedModType
     {
-        public override string LocalizationCategory => "Industrials";
+        public override string LocalizationCategory => "Industrials.Machines";
 
         public static LocalizedText EnergyShortage { get; private set; }
 

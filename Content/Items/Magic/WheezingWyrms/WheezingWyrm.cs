@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Magic.WheezingWyrms
     /// </summary>
     internal class WheezingWyrm : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "WheezingWyrm";
 
         public override void SetDefaults() {

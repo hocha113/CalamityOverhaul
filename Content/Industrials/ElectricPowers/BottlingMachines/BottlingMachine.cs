@@ -8,6 +8,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
     /// <summary>瓶装机:液体与容器物品的双向桥</summary>
     internal class BottlingMachine : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/BottlingMachine";
         public override void SetDefaults() {
             Item.width = 32;

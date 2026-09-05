@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// </summary>
     internal class ProofSealCharm : OverseerModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => "Terraria/Images/Item_" + ItemID.Cog;
 
         private static readonly Color SealTint = new(226, 168, 96);
@@ -92,7 +94,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
                 //哑火提示（本机演出）
                 if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
                     CombatText.NewText(Player.Hitbox, FoundryOverseer.LampGreen,
-                        Terraria.Localization.Language.GetTextValue("Mods.CalamityOverhaul.Items.ProofSealCharm.Misfire"));
+                        Terraria.Localization.Language.GetTextValue("Mods.CalamityOverhaul.Items.Scenarios.ProofSealCharm.Misfire"));
                 }
                 return true;
             }

@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Apiaries
     /// <summary>电动养蜂箱,消耗空玻璃瓶周期性灌装蜂蜜瓶</summary>
     internal class Apiary : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Apiary";
 
         /// <summary>系列色调:蜂蜜金,用于提示文本与产出辉光</summary>

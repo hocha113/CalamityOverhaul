@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class MG42 : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "MG42";
         public override void SetDefaults() {
             Item.width = Item.height = 34;

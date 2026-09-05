@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Shatterfangs
     /// </summary>
     internal class Shatterfang : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "Shatterfang";
 
         public override void SetDefaults() {

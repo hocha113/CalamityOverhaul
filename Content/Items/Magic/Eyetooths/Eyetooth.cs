@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Eyetooths
     /// </summary>
     internal class Eyetooth : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "Eyetooth";
 
         /// <summary>放镖帧，甩臂鞭出的中段</summary>

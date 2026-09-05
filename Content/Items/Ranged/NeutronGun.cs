@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class NeutronGun : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "NeutronGun";
         /// <summary>右键充能，存物品实例跨弹幕保留</summary>
         public float Charge;

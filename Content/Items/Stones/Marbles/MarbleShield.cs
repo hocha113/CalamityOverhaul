@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// <summary>大理石战盾，石卫护盾+举盾完美格挡反制</summary>
     internal class MarbleShield : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 34;
             Item.accessory = true;

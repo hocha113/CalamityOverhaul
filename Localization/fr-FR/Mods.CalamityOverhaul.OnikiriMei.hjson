@@ -1,0 +1,348 @@
+OniMeiRubbingHigekiri: {
+	DisplayName: Higekiri
+	Tooltip: Les coups directs de lame se renforcent contre les cibles blessées et les éliminations rendent de la posture ; dégâts de lame -2%
+	Origin: La nuit de l'épreuve du clan Minamoto, cette lame prit la tête et la barbe sous le menton d'un seul coup ; les poils restaient collés au tranchant. Le vieux nom Higekiri, Coupe-barbe, fut gagné cette nuit-là
+	Power: Coupe-Barbe : Les coups directs de lame gagnent linéairement en puissance contre les cibles sous 35 % de vie (jusqu'à +60 %, ou +45 % contre les boss) ; une élimination directe rend 8 de posture une fois par action
+	Burden: Dégâts de lame -2 % — contre une cible en bonne santé, ce fil est légèrement plus émoussé que l'inscription d'origine
+}
+
+OniMeiRubbingOnikiri: {
+	DisplayName: Onikiri
+	Tooltip: Inscription d'origine : conserve la lame telle quelle, sans faveur ni prix
+	Origin: Watanabe no Tsuna le porta au pont d'Ichijo-Modoribashi et trancha net le bras d'un oni ; le démon s'enfuit et n'osa jamais revenir le chercher. Une lame qui avait coupé un oni s'appela Onikiri, et le nom est resté cloué à la soie depuis
+	Power: L'inscription d'origine. La lame reste exactement telle qu'elle est — rien d'accordé, rien de pris
+	Burden: Aucun
+}
+
+OniMeiRubbingShishinoko: {
+	DisplayName: Shishi-no-ko
+	Tooltip: Deux vagues de mâchoires couronnent un combo complet de cinq coups ; intervalle du combo +2%
+	Origin: Une nuit, posée près de l'oreiller du maître, la lame rugit toute seule, un cri de lion que toute la demeure entendit. Le maître la renomma Shishi-no-ko, Fils du lion, et incrusta le nom en or dans la soie pour honorer ce seul cri
+	Power: Rugissement du Lion : Terminez cinq coups de combo sans interruption par une ruée ou un art ; le cinquième libère deux vagues de mâchoires convergentes infligeant chacune 22 % des dégâts de lame de base
+	Burden: Intervalle du combo +2 % — il faut inspirer avant de rugir
+}
+
+OniMeiRubbingTomokiri: {
+	DisplayName: Tomokiri
+	Tooltip: Les annulations par ruée laissent des entailles de Culpabilité retardées ; dégâts subis +6%
+	Origin: Deux lames précieuses du clan furent éprouvées tranchant contre tranchant, et celle-ci coupa son amie en deux. La faute fut gravée en nom : Tomokiri, Coupe-ami, et son tempérament n'a plus cessé d'être violent
+	Power: Coupe-Ami : Annuler un combo avec Kamui laisse une entaille fantôme qui mord après 6 ticks et inflige 35 % des dégâts de lame de base
+	Burden: Dégâts subis +6 % ; chaque fantôme ajoute une Culpabilité (max. 3), augmentant de 4 la vigueur requise pour la prochaine ruée — un coup de Zanshin acquitte toute la dette
+}
+
+OniMeiRubbingKazehi: {
+	DisplayName: Kaze-hi
+	Tooltip: Coût des ruées -15 %, consommation de Sakura -20 % ; dégâts des marques d'encre -20%
+	Origin: Le dresseur de tranchant ouvrit cette rainure longue et droite, disant que c'était une voie laissée au vent. La lame part, le vent arrive d'abord : quand on l'entend, la lame est déjà rentrée
+	Power: Chevauche-Vent : Coût en vigueur du Pas Éclair -15 %, consommation du Vol Sakura -20 %
+	Burden: Dégâts des marques éclair -20 % — la gorge fut creusée pour la légèreté, non pour le massacre
+}
+
+OniMeiRubbingChihi: {
+	DisplayName: Chi-hi
+	Tooltip: Les impacts actifs rendent plus de vigueur ; régénération naturelle -35%
+	Origin: Les autres rainures s'ouvrent pour alléger la lame ; pas celle-ci. En remettant l'épée, le dresseur fut net : cette gouttière est pour le sang. Plus il s'écoule vite, plus votre souffle revient
+	Power: Saignée : Le premier impact de chaque coup du combo rend +1 de vigueur ; le premier impact de Zanshin d'une action en rend +4
+	Burden: Régénération naturelle de vigueur -35 %, délai après dépense +0,3 s — sans sang sur le fil, peu de souffle revient
+}
+
+OniMeiRubbingFudo: {
+	DisplayName: Fudō
+	Tooltip: Dépensez de la posture pour amortir les coups pendant une action engagée ; gain de posture -15%
+	Origin: Le graveur suivit le trait du syllabe-semence Kan et fit monter Fudō Myō-ō, le feu dans le dos, sur le flanc de la lame. Cette figure n'a qu'un office : la stabilité. Quoi qu'on lui jette, elle reste assise
+	Power: Immuable : Pendant une action engagée, dépensez 20 de posture pour réduire les dégâts de contact ou de projectile hostile à 65 % et le recul à 25 % (recharge de 2,5 s) ; le contrecoup du démembrement n'est jamais bloqué
+	Burden: Gain de posture -15 % — la force défensive est prélevée sur votre accumulation
+}
+
+OniMeiRubbingKurikara: {
+	DisplayName: Kurikara
+	Tooltip: Les exécutions accordent trois boucles de feu draconique ; limite de vigueur -10%
+	Origin: Sur la lame est sculpté Kurikara, le roi-dragon : un dragon noir enroulé autour d'un glaive, gueule ouverte pour avaler la pointe. Un vieux sujet de gravure, avec de l'or encore serti dans les écailles
+	Power: Spirale du Dragon : Une exécution accorde trois charges de feu draconique pendant 10 secondes ; chaque cinquième coup d'un combo complet en consomme une et libère une boucle infligeant 50 % des dégâts de lame de base
+	Burden: Limite de vigueur -10 % — là où s'enroule le dragon, le souffle se resserre
+}
+
+OniMeiRubbingTessetsu: {
+	DisplayName: Tessetsu
+	Tooltip: Le premier impact de chaque coup tranche l'acier ; dégâts de lame -10%
+	Origin: Quelqu'un inspecta la lame et ricana : grand nom, tranchant comme un bout de fer brut. Le forgeron n'en prit pas ombrage et grava la moquerie telle quelle dans la soie : fer brut soit, c'est fer contre fer qui montre le vrai travail
+	Power: Coupe-Fer : Le premier impact de chaque coup du combo inflige ×1,25 dégâts aux ennemis d'acier ou cuirassés
+	Burden: Dégâts de lame -10 % — sur la chair, elle semble faite de fer émoussé
+}
+
+OniMeiRubbingKyushu: {
+	DisplayName: Kyushu
+	Tooltip: Puissants coups de grâce sur les vraies têtes blessées ; dégâts de lame -3%
+	Origin: Certaines lames prennent un nouveau nom pour chaque belle tête, et savent en faire parade. Le porteur de cette inscription n'en voulait pas : les têtes tombent comme avant, le nom reste comme avant. Une lame qui coupe net n'a pas besoin d'un nom neuf pour faire peur
+	Power: Chasse-Tête : Les coups directs de lame n'affectent que les corps indépendants ou les vraies têtes sous 35 % de vie, avec un bonus allant jusqu'à +85 % (+60 % contre les boss)
+	Burden: Dégâts de lame -3 % ; les segments de corps, de queue et de corps alternatif ne déclenchent jamais Chasse-Tête
+}
+
+OniMeiRubbingIkiai: {
+	DisplayName: Ikiai
+	Tooltip: Le cinquième coup libère un arc d'épée à 55 % ; intervalle du combo +4%
+	Origin: Les vieux escrimeurs disent qu'en un long face-à-face les souffles des deux camps s'emboîtent, et que celui qui referme ce souffle le premier frappe le premier. Cette inscription note le métier : retenir, cadrer, laisser tomber la lame
+	Power: Onde de Souffle : Le cinquième coup d'un combo complet lance un arc d'épée infligeant 55 % des dégâts de lame de base ; il vole 16 ticks et traverse au plus trois corps distincts
+	Burden: Intervalle du combo +4%
+}
+
+OniMeiRubbingKyoko: {
+	DisplayName: Kyoko
+	Tooltip: Le vide arme une coupe rapprochée et une onde de pression ; les actions rapprochées rapides troublent la concentration
+	Origin: Un essayeur de lame hurla dans une vallée vide, et aucun écho ne revint : sans personne autour, tout le souffle se refoula dans la lame. Cette gravure note ce cri retenu
+	Power: Rugissement Creux : 90 ticks sans ennemi arment le prochain coup direct de lame à moins de 260 px pour ×1,25 dégâts ; au repos, une onde de pression de 24 ticks retentit tous les 90 ticks
+	Burden: Quatre actions rapprochées en 36 ticks causent 24 ticks de déconcentration à ×0,95 dégâts rapprochés ; les impacts lointains ne consomment pas la coupe armée
+}
+
+OniMeiRubbingKarikiri: {
+	DisplayName: Karikiri
+	Tooltip: Le faux corps esquive entièrement un coup ; il se réarme en 4 secondes
+	Origin: L'élève copia la posture du maître à dix dixièmes, et le maître ne dit qu'une chose : trop ressemblant, assez pour se lire faux au premier coup d'œil. Cette inscription note ce faux corps : si bien planté soit-il, ce n'est qu'une ombre qui prend la lame à votre place
+	Power: Faux Corps : Le début d'un Pas Éclair laisse pendant 90 ticks un leurre à la pose figée qui esquive entièrement un coup de PNJ ou projectile hostile ; il se réarme après 240 ticks
+	Burden: Tant que le leurre vit, les dégâts subis et le coût des ruées sont ×1,12 ; après sa rupture, les dégâts subis sont ×1,18 pendant 60 ticks. Une expiration naturelle ne crée aucun vide
+}
+
+OniMeiRubbingMokukiri: {
+	DisplayName: Mokukiri
+	Tooltip: La fin naturelle d'une ruée payée arme Mise à Mort Silencieuse ; une ruée ou un échec la consomme
+	Origin: À l'instant où un pas éclair s'achève, tout autour se tait. Les vieux escrimeurs savent que le coup suivant, sorti de ce silence, est le plus lourd. Le nom le dit : couper en silence
+	Power: Mise à Mort Silencieuse : Pendant 45 ticks après la fin naturelle d'un Pas Éclair normal payé, la prochaine action de combo ou Zanshin inflige ×1,35 dégâts
+	Burden: Une autre ruée ou une attaque manquée consomme Mise à Mort Silencieuse ; les ruées d'exécution gratuites ne l'arment jamais
+}
+
+OniMeiRubbingKumokiri: {
+	DisplayName: Kumo-kiri
+	Tooltip: Trois coupes plantent une toile ; la refermer tranche tout ce qu'elle contient ; régénération -25% tant que les ancres tiennent
+	Origin: Minamoto no Yorimitsu gisant malade, un tsuchigumo déguisé en prêtre vint le lier de soie. Il saisit la lame, trancha les fils et blessa la bête ; le lendemain il suivit le sang et rasa le nid. La lame s'appelle Kumo-kiri, Coupe-araignée, depuis
+	Power:
+		'''
+		「Soie d'encre」un coup porté par la lame elle-même plante une ancre de soie au point d'impact, pendant 4 s
+		Il faut les écarter : le même ennemi ne donne pas une seconde ancre en 0,4 s, et deux ancres doivent rester à environ six cases
+		La troisième relie un triangle de soie d'encre qui s'affaisse puis se resserre vers le centre : chaque ennemi balayé prend 90% d'un coup de lame et reste lié 1 s
+		Après la fermeture, 1,5 s avant de tisser à nouveau
+		'''
+	Burden: Tant qu'une ancre tient encore, régénération naturelle -25%. Une ancre laissée expirer, ce coup-là est perdu
+	DeedHint: Tuez trente êtres arachnides : araignées, rampants de sang, scorpions des sables, tout ce qui a huit pattes et grimpe aux murs. Assez de sang, et la lame reconnaît cette odeur d'elle-même
+}
+
+OniMeiRubbingOnimaru: {
+	DisplayName: Oni-maru
+	Tooltip: Restez immobile, la lame part couper toute seule ; tant qu'elle est dehors, vous n'avez plus de lame en main
+	Origin: Oni-maru Kunitsuna, l'une des Cinq Grandes Épées. Son maître était hanté chaque nuit par un petit oni dans ses rêves, jusqu'à ce qu'une nuit la lame tombe d'elle-même de son râtelier et tranche la tête d'oni sculptée au pied du brasero : les cauchemars cessèrent net. L'homme ne bouge pas ; c'est elle qui bouge
+	Power:
+		'''
+		「Auto-coupe」restez immobile 1 s, la lame passe en veille
+		Ensuite, toutes les 1,5 s elle dépense 10 de votre vigueur, vole vers un ennemi dans un rayon de 40 cases, frappe à 140% d'un coup de lame, puis rentre au fourreau
+		'''
+	Burden: Pendant tout le vol, la lame n'est plus en main : combo, pas éclair et vol des cerisiers sont inutilisables. Sans cible proche, elle ne part pas
+	DeedHint: Tenez la lame et restez immobile dix secondes, sans reculer même sous les coups : si vous tenez, la lame bouge une fois pour vous
+}
+
+OniMeiRubbingRaikiri: {
+	DisplayName: Rai-kiri
+	Tooltip: Le cinquième temps et les grands arts appellent la foudre à ciel ouvert ; intervalle des coups +6%, rien sous terre
+	Origin: Tachibana Dōsetsu s'abritait sous un arbre quand un éclair lui tomba sur la tête ; il tira et coupa en retour, et vécut. La lame s'appelle Rai-kiri, Coupe-foudre, depuis
+	Power:
+		'''
+		「Frappe-foudre」quand le cinquième temps, une frappe Zanshin, l'Éclair annihilateur ou la Danse finale touchent un ennemi et que le ciel est visible au-dessus, une colonne de foudre tombe du zénith
+		La colonne inflige 70% d'un coup de lame ; sous l'orage, un même coup peut en appeler jusqu'à trois
+		'''
+	Burden: Intervalle des temps de combo +6%, même par beau temps : le prix de l'accumulation se paie toujours. Ciel masqué par des blocs ou sous terre, pas de foudre
+	DeedHint: Par temps d'orage, tuez un boss à ciel ouvert, et le tranchant apprend cette foudre
+}
+
+OniMeiRubbingNuekiri: {
+	DisplayName: Nue-kiri
+	Tooltip: Achevez un combo en l'air, le cinquième temps devient un piqué au sol ; environ 0,7 s sans pas éclair après l'atterrissage
+	Origin: La nuit, un nue errait au-dessus du palais ; la flèche de Minamoto no Yorimasa le tira des nuages. Le coup de lame, donné à l'instant de l'impact, suivit la chute. Cette inscription se souvient de cette descente
+	Power:
+		'''
+		「Plongeon du nue」achevez un combo complet à au moins trois cases du sol, le cinquième temps cesse de balayer et plonge vers le sol
+		L'impact ouvre un anneau d'environ 12 cases à 120% d'un coup de lame, et tire les ennemis vers le point d'impact
+		'''
+	Burden: Environ 0,7 s sans pas éclair après l'atterrissage. Collé au sol, le cinquième temps reste un cinquième temps ordinaire
+	DeedHint: La nuit, montez à plus de trente cases du sol et tuez un ennemi volant, la lame apprend ce piqué
+}
+
+OniMeiRubbingKamihi: {
+	DisplayName: Kami-hi
+	Tooltip: Traverser un ennemi en pas éclair laisse une silhouette de papier ; couper le papier, c'est couper le corps ; le pas éclair coûte plus tant que le papier tient
+	Origin: Chez un maître encadreur, un coup sépare le papier de l'ombre. Cette rainure a appris ce geste : en traversant, elle découpe la silhouette et la laisse sur place. Tant que le papier tient, le compte se règle sur le papier
+	Power:
+		'''
+		「Effigie」traverser un ennemi en pas éclair Kamui laisse une silhouette de papier à l'arrivée, pendant 7 s, deux au plus sur le terrain
+		Couper ce papier inflige 80% d'un coup de lame, comptés directement sur le corps
+		Ouvre aussi une brèche de 1,5 s sur le corps : pendant ce temps, vos coups de lame lui font +12%
+		'''
+	Burden: Tant qu'il y a du papier, le coût en vigueur du pas éclair +12%
+	DeedHint: Dans le monde Ura, tranchez vingt silhouettes Omokage, la main apprend comment se coupe le papier
+}
+
+OniMeiRubbingSorahi: {
+	DisplayName: Sora-hi
+	Tooltip: Un pas éclair de plus hors sol, régénération doublée ; les 0,75 s après l'atterrissage ne rendent rien
+	Origin: Le maître qui ouvrit cette rainure avait une théorie : le souffle, comme les gens, se paresse dès que les pieds touchent terre. Alors il tailla la lame très légère, pour vous garder un peu plus en l'air : tant que vous flottez, le souffle vient vous chercher
+	Power:
+		'''
+		「Corps flottant」hors sol, la régénération naturelle de vigueur double, et vous gagnez un pas éclair de plus
+		Un pas éclair aérien achevé vous laisse en lévitation une demi-seconde à l'arrivée
+		'''
+	Burden: Pendant 0,75 s après l'atterrissage, la régénération naturelle tombe à zéro. Un pas éclair au sol coûte 10% de vigueur en plus
+	DeedHint: Restez quinze secondes d'affilée hors sol et portez au moins cinq coups de lame entre-temps, la rainure apprend à flotter
+}
+
+OniMeiRubbingKagamihi: {
+	DisplayName: Kagami-hi
+	Tooltip: L'arrivée d'un pas éclair dresse un miroir de papier qui recopie le coup suivant ; dégâts d'arme -5%
+	Origin: Les polisseurs de miroirs le savent : la figure dans le verre a l'air synchrone, mais elle arrive toujours une demi-mesure trop tard. Celui qui ouvrit cette rainure voulait exactement cette demi-mesure : que celui du miroir porte le coup d'après. En retard, mais il arrive
+	Power:
+		'''
+		「Écho-miroir」l'arrivée d'un pas éclair Kamui dresse un miroir de papier pendant 2 s
+		Votre premier coup ensuite, la figure du miroir le recopie à 45% d'un coup de lame, puis se brise
+		'''
+	Burden: Dégâts d'arme -5%. La copie part d'où le miroir se dresse ; si elle touche, c'est selon où vous l'avez planté
+	DeedHint: Achevez un imitateur par une frappe Zanshin : les contrefaçons de Calamity comptent aussi parmi ceux qui imitent
+}
+
+OniMeiRubbingAmahi: {
+	DisplayName: Ama-hi
+	Tooltip: Le vol des cerisiers laisse tomber de l'encre qui s'étale en flaques lianantes ; coût du vol +15%
+	Origin: La gouttière sous l'avant-toit s'appelle aussi amahi. Le dresseur ouvrit cette rainure sur le modèle de l'avant-toit : la pluie qu'on attrape ne doit pas se perdre. Volez, et laissez goutter sur ceux qui attendent sous la lame
+	Power:
+		'''
+		「Pluie d'encre」en vol des cerisiers, une goutte d'encre tombe toutes les 0,1 s, 12% d'un coup de lame
+		Les gouttes s'étalent en flaques, et les ennemis qui y marchent sont liés une demi-seconde
+		'''
+	Burden: Coût du vol des cerisiers +15%. Porter la pluie tout le long, ça coûte
+	DeedHint: Par temps de pluie, tenez le vol des cerisiers dix secondes d'affilée ; les pétales doivent être trempés pour retenir l'eau
+}
+
+OniMeiRubbingTsuzurihi: {
+	DisplayName: Tsuzuri-hi
+	Tooltip: Les marques d'encre d'un même pas éclair se relient et coupent ; une marque seule : dégâts -30%
+	Origin: Tsuzuri, c'est le point du relieur : un trou par aiguille, le fil se tend, les feuilles deviennent un livre. Celui qui ouvrit cette rainure traite les marques d'encre comme des trous de couture : enfilez-les, et elles ferment une ligne
+	Power: 「Points de couture」les marques d'encre d'un même pas éclair explosent ensemble et tirent des lignes de coupe entre elles, chaque segment à 35% d'un coup de lame
+	Burden: Dégâts d'une marque seule -30%. Un seul ennemi par pas éclair, et cette rainure est une perte nette
+	DeedHint: Traversez six ennemis différents en un seul pas éclair, les marques se relient
+}
+
+OniMeiRubbingBonsho: {
+	DisplayName: Bonshō
+	Tooltip: Posture pleine, retenez la Danse finale, la lame frappe la cloche d'elle-même ; la moitié de la posture achète un anneau de contrôle
+	Origin: La cloche d'un temple attend qu'on la frappe ; celle sculptée sur cette lame n'attend pas. Le graveur fut clair : posture pleine et vous ne lâchez rien, la cloche lâche pour vous
+	Power:
+		'''
+		「Coup de cloche」si la posture reste pleine 3 s sans Danse finale, la lame frappe la cloche d'elle-même
+		Les ennemis dans un rayon de 30 cases prennent chacun 60% d'un coup de lame et restent liés 1,5 s, votre posture tombe à 50
+		'''
+	Burden: La cloche a sonné, cette Danse finale est perdue. Posture pleine, il faut choisir
+	DeedHint: Abattez un boss sans jamais user de l'Éclair annihilateur ni de la Danse finale
+}
+
+OniMeiRubbingHannya: {
+	DisplayName: Hannya
+	Tooltip: À bas de vie, le masque bascule : coups plus lourds et vol de vie ; plus fragile sous le masque, un peu plus terne avant
+	Origin: Le masque hannya du nô joue l'instant où la rancune d'une femme lui retourne le visage en démon. Le graveur l'a fait monter sur la lame : poussez quelqu'un au bord, le visage se retourne tout seul
+	Power:
+		'''
+		「Métamorphose」sous 35% de votre vie, le masque bascule : dégâts de lame +20%, chaque coup soigne 0,5% de la vie maximale
+		Sous le masque, tous les trois coups une gueule de masque se lève et mord à 50% d'un coup de lame
+		'''
+	Burden: Dégâts subis +15% sous le masque. Envisage encore de femme, dégâts d'arme -4%
+	DeedHint: Tuez un boss alors que votre vie est sous un dixième, le masque peut basculer
+}
+
+OniMeiRubbingKaresansui: {
+	DisplayName: Karesansui
+	Tooltip: Restez planté pour râteler un jardin de sable qui reste sur place, coupe et nourrit la posture
+	Origin: Un maître jardinier dresse montagnes et mers sans une goutte d'eau, rien que sable et pierre. Le graveur a coupé ce motif dans la lame : un escrimeur assez ferme râtelle un jardin sous ses pieds
+	Power:
+		'''
+		「Jardin de sable」restez immobile 1,5 s, un champ de sable d'environ 20 cases se râtelle à vos pieds, pendant 5 s
+		Le champ coupe toutes les demi-secondes à 18% d'un coup de lame
+		Debout dans votre propre champ, gain de posture +30%
+		'''
+	Burden: Il faut d'abord s'immobiliser ; bouger efface l'accumulation
+	DeedHint: Tenez un point trente secondes de combat sans encaisse, le sable se râtelle
+}
+
+OniMeiRubbingSenju: {
+	DisplayName: Senju
+	Tooltip: Pendant le gel de la Danse finale, six mains de spectre tranchent avec vous ; ensuite la vigueur tombe à zéro, 3 s sans pas éclair
+	Origin: Kannon aux mille bras tend une main à chaque âme qu'elle passe. Le graveur a coupé les mille mains dans la lame et posé la règle : chacun que la Danse finale envoie doit avoir une main pour le recevoir
+	Power: 「Mille bras」pendant le gel de la Danse finale, six mains de spectre armées se lèvent derrière vous et coupent avec elle, chacune à 30% d'un coup de lame
+	Burden: Après la Danse finale, la vigueur tombe à zéro et vous ne pouvez plus faire de pas éclair pendant 3 s
+	DeedHint: Envoyez huit boss différents par la Danse finale, une main pour chaque nom
+}
+
+OniMeiRubbingKogehi: {
+	DisplayName: Koge-hi
+	Tooltip: Les Pas Éclair brûlent tout leur trajet ; dégâts de lame -4%
+	Origin: Le maître qui ouvrit cette rainure vivait au bord des bas-fonds de lave et en avait trop vu, de ceux qui ne regardent pas leurs pieds. Cette rainure, disait-il, est taillée pour vous écarter de la chaleur : vous passez, la brûlure reste au sol, pour celui qui vous poursuit
+	Power: Piste Brûlante : Une ruée laisse jusqu'à cinq brûlures réparties régulièrement pendant 90 ticks, chaque impact infligeant 14 % des dégâts de lame de base ; les brûlures à moins de 32 px sont renouvelées
+	Burden: Dégâts de lame -4 % ; compensez la perte avec le sol brûlant laissé par vos déplacements
+}
+
+OniMeiRubbingKanhi: {
+	DisplayName: Kan-hi
+	Tooltip: Régénération naturelle au calme ×2,25 ; coût des ruées et de Sakura +8%
+	Origin: Un long banc devant la boutique d'épées, le maître s'y assied après le travail et écoute la rue. Il faut savoir se reposer, dit-il : l'oreille se tait, le souffle revient plus vite. Cette rainure, c'est ce banc
+	Power: Souffle Paisible : Après 120 ticks sans coup direct de lame, la régénération naturelle de vigueur est ×2,25
+	Burden: Coût en vigueur des ruées et du vol Sakura +8 % — la récupération au calme se rembourse en mouvement
+}
+
+OniMeiRubbingTodohi: {
+	DisplayName: Todo-hi
+	Tooltip: Les coups entravent pendant 36 ticks ; réarmement des ruées +6 ticks
+	Origin: Cette rainure est née d'une trempe étrange : le tranchant colle à la chair, et ce qui prend le coup s'arrête un pas. Le dresseur n'y a jamais vu un défaut : c'est l'autre qui colle, pas vous
+	Power: Entrave Collante : Les coups directs de lame entravent la cible pendant 36 ticks et fixent la mobilité des ennemis normaux/boss à 0,88/0,96
+	Burden: Réarmement des ruées +6 ticks ; Entrave et Engourdissement n'appliquent que le ratio de mouvement le plus fort
+}
+
+OniMeiRubbingShiorihi: {
+	DisplayName: Shiori-hi
+	Tooltip: Les éliminations élaguent une cible blessée ; régénération naturelle -10 %, Zanshin vide coûte de la vigueur
+	Origin: Le jardinier taille selon une règle : une fois le sécateur sorti, prenez aussi les tiges flétries du même passage, et épargnez-vous un second tour. Celui qui ouvrit cette rainure était jardinier
+	Power: Taille-Pétale : Une élimination directe cible un autre corps à 50 % de vie ou moins dans un rayon de 240 px, le suit brièvement puis le tranche pour 25 % des dégâts de lame de base ; sans cible, aucun délai de 45 ticks ne commence
+	Burden: Régénération naturelle de vigueur -10 % ; un Zanshin vide coûte 2 de vigueur. Les lames d'élagage ne peuvent pas s'enchaîner
+}
+
+OniMeiRubbingShiohi: {
+	DisplayName: Shio-hi
+	Tooltip: À marée haute, gagnez de la vigueur ou des dégâts de Zanshin ; les combos à contretemps sont légèrement émoussés
+	Origin: Le dresseur a grandi au bord de mer et aiguise au rythme de la marée. La marée monte et descend, dit-il, et le souffle aussi : un coup porté sur la marée montante, la mer vous le rend
+	Power: Temps de Marée : Sur un cycle de 48 ticks avec une demi-fenêtre de 6 ticks, un combo en phase rend +3 de vigueur une fois par action et un Zanshin en phase inflige ×1,08 dégâts
+	Burden: Dégâts de combo hors phase ×0,97 ; la phase de marée est saisie au début de l'action
+}
+
+OniMeiRubbingShibori: {
+	DisplayName: Shibori
+	Tooltip: Une parade traversante ou un contact engagé engourdit ; gain de posture -15%
+	Origin: Une main engourdie ne doit pas lâcher la garde : c'est la première année d'école. Le maître qui grava cette inscription a retourné la leçon : engourdissez-moi d'une mesure, et ce qui m'a touché s'engourdit de dix
+	Power: Contre Engourdissant : Une parade traversante engourdit directement ; un contact pendant une action engagée peut dépenser 15 de posture pour réduire le coup à 85 % et engourdir (recharge de 90 ticks). L'effet dure 45 ticks, fixe la mobilité normale/boss à 0,90/0,98 et les dégâts de contact à ×0,90
+	Burden: Gain de posture -15%
+}
+
+OniMeiRubbingChinmei: {
+	DisplayName: Chinmei
+	Tooltip: Dégâts de projectile -12 %, recul -65 % ; gain de posture -15%
+	Origin: Flèches et pierres remplissent un champ de bataille, et un seul tintement d'oreilles suffit à paniquer un homme. Le vieux soldat qui grava cette inscription n'a laissé qu'une phrase : d'abord vous tenir, puis bouger, ce qui vole vers vous fait moins mal
+	Power: Apaisement : Dégâts des projectiles hostiles ×0,88 et recul ×0,35
+	Burden: Inactif en combat purement rapproché ; gain de posture -15%
+}
+
+OniMeiRubbingAshidome: {
+	DisplayName: Ashidome
+	Tooltip: Restez immobile 45 ticks, puis infligez ×1,25 dégâts avec la prochaine action engagée
+	Origin: Tout maître d'armes ouvre la première leçon de la même façon : arrêtez de balancer sur vos pieds. Des pieds plantés tiennent la force, et la force tenue donne du poids au coup. Cette inscription garde pour vous cette première leçon
+	Power: Pas Enraciné : Maintenez une vitesse au carré de 2,25 ou moins pendant 45 ticks ; le prochain cinquième coup, Zanshin, Éclair Ravage-Monde ou action Finale inflige ×1,25 dégâts
+	Burden: La charge est consommée au début de l'action, même en cas d'échec ; tout mouvement efface la progression
+}
+
+OniMeiRubbingYoen: {
+	DisplayName: Yoen
+	Tooltip: Les exécutions déplacent un unique champ de braises ; limite de vigueur -5%
+	Origin: Quand on étouffe le fourneau pour la nuit, la chaleur de la chambre tient jusqu'au matin. Le dresseur a emprunté cette règle à la lame : le feu est éteint, la brûlure ne l'est pas
+	Power: Champ de Braises : Une exécution crée ou déplace votre unique champ de braises ; il dure 180 ticks et peut infliger au même corps 16 % des dégâts de lame de base toutes les 45 ticks
+	Burden: Limite de vigueur -5 % ; coût des ruées ×1,10 tant que le champ existe
+}

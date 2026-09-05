@@ -1,0 +1,203 @@
+NeutronWand: {
+	DisplayName: Luz de la tumba estelar
+	Tooltip:
+		'''
+		Clic izquierdo lanza un púlsar hacia el cursor; se frena, se detiene y gira cada vez más rápido
+		Los dos haces de sus polos barren el campo al girar; como máximo pueden quedar tres a la vez
+		Mantén clic derecho para aplicar freno magnético: la energía cinética del giro se comprime en la corteza
+		Al soltar se produce un seísmo estelar: la corteza se rompe, la magnetosfera se reconecta y las estrellas que sobreviven entran en sobreclock
+		"Aquel psíquico quiso comprimir estrellas en agujeros negros, pero lo que obtuvo fueron restos detenidos en degeneración.
+		Dejó una a una sus obras fallidas en el Vacío; los nómadas llaman a esa región la tumba estelar"
+		'''
+}
+
+DragonsWord: {
+	DisplayName: Palabra del dragón
+	Tooltip:
+		'''
+		Dispara lágrimas de dragón que, tras girar un rato, persiguen a los enemigos
+		Clic derecho lanza en el cursor el hechizo de la orden del dragón y dicta la muerte a los enemigos del área
+		"Un dragón solo puede llorar una vez en la vida"
+		'''
+}
+
+UnderTheSand: {
+	DisplayName: Bajo la arena
+	Tooltip:
+		'''
+		Lanza un par de oleadas de arena que, en vuelo, caen por la gravedad
+		Al tocar el suelo se alza de golpe una púa de arena que lanza al aire a los enemigos que toca
+		'''
+}
+
+MelodyTheSand: {
+	DisplayName: Melodía en la arena
+	Tooltip:
+		'''
+		Dispara un pequeño tornado de arena que cae al suelo por la gravedad
+		Al aterrizar recorre el suelo de un lado a otro y, al chocar con un muro o al acabarse el suelo, gira al instante
+		Enrolla sin cesar a los enemigos que golpea y los eleva
+		'''
+}
+
+SandVortexOfTheDecayedSea: {
+	DisplayName: Vórtice de arena del mar podrido
+	Tooltip:
+		'''
+		Hace caer en el cursor un vórtice de mar profundo corrompido
+		El vórtice absorbe y desgarra sin cesar a los enemigos del área y perturba los proyectiles enemigos
+		Periódicamente lanza perlas de mar profundo corrompidas que persiguen
+		Haz clic de nuevo para refrescar el vórtice existente; al disiparse de forma natural estalla un anillo de perlas
+		"Arrastrado por el rugido podrido del mar profundo"
+		'''
+}
+
+FocusingGrimoire: {
+	DisplayName: Grimorio de concentración
+	Tooltip:
+		'''
+		Clic izquierdo dispara anillos térmicos rastreadores que marcan al objetivo al impactar
+		Clic derecho dispara con rapidez un rayo de la muerte; si golpea a un objetivo marcado, inflige daño extra y critica de forma garantizada
+		"Uno vale por seis"
+		'''
+}
+
+CommandersStaff: {
+	DisplayName: Bastón del comandante
+	Tooltip:
+		'''
+		Dispara un rayo de descomposición térmica que atraviesa enemigos
+		"Arrancado del brazo de aquella máquina. ¿Y si en vez de diésel usamos psíquica?"
+		'''
+}
+
+Eyetooth: {
+	DisplayName: Colmillo del ojo lloroso
+	Tooltip:
+		'''
+		Lanza hacia los enemigos un colmillo arrancado del Ojo de Cthulhu
+		Tras morder a un enemigo, el dardo se planta sobre su cabeza, enfoca un instante y se lanza a un segundo mordisco
+		El mordisco en picado inflige 150% de daño y la herida del colmillo sigue sangrando
+		'''
+}
+
+CommandersStaffEX: {
+	DisplayName: Bastón del comandante EX
+	Tooltip:
+		'''
+		Dispara cinco rayos sobrecargados que convergen en anillo y cortan al girar
+		"Sirve para cortar metal"
+		'''
+}
+
+TomeofFungalDecay: {
+	DisplayName: Tomo de la podredumbre fúngica
+	Tooltip: Dispara un anillo de corriente de esporas
+}
+
+Pandemonium: {
+	DisplayName: Pandemónium
+	Tooltip:
+		'''
+		Clic izquierdo carga y libera magia hiperespacial
+		Clic derecho coloca en el cursor una runa de fuego de azufre
+		Al empuñarlo, en la esquina inferior izquierda se encienden dos botones de habilidad
+		Púlsalos para lanzar Castigo de fuego de azufre o Fin del Pandemónium
+		'''
+	SkillLeftName: Castigo de fuego de azufre
+	SkillLeftDesc: Hace caer columnas de fuego de azufre alrededor del punto de mira
+	SkillRightName: Fin del Pandemónium
+	SkillRightDesc: Despliega un círculo mágico gigante con tu cuerpo como centro; rayo y fuego golpean a los enemigos dentro
+}
+
+Elysium: {
+	DisplayName: Elíseo
+	Tooltip:
+		'''
+		Mantén clic izquierdo para cargar el arte de convertir en serpiente
+		Al soltar, levantas una marea de luz santa que convierte in situ a los enemigos débiles en serpientes sagradas que cazan por ti
+		Clic derecho sublima a los habitantes de pueblo cercanos y los llama como discípulos
+		Los discípulos te rodean, cada uno con su oficio, y traen la gracia santa
+		El daño de un jefe quema a un discípulo y lo convierte en un punto de martirio
+		Con once puntos de martirio y Juan aún con vida, el botón de habilidad puede abrir el Apocalipsis
+		Tras el Apocalipsis, clic derecho pasa a invocar a los Cuatro Jinetes
+		Los botones se convierten entonces en Meteoro celestial y Juicio de los tres últimos sellos
+		Con las doce sillas reunidas la gracia es máxima, pero al borde de la muerte Judas te apuñala por la espalda
+		Al empuñarlo, mantén Mayús para abrir el rosetón y arrastra los asientos para cambiar oficios
+		Al empuñarlo, en la esquina inferior izquierda se encienden dos botones de habilidad
+		'''
+	SkillLeftName: Trueno sagrado
+	SkillLeftDesc: Hace caer un rayo santo sobre el enemigo junto al punto de mira
+	SkillRightName: Juicio de los tres últimos sellos
+	SkillRightDesc: El quinto, el sexto y el séptimo sello se abren uno tras otro; el juicio final barre los cuatro puntos y el Apocalipsis se cierra
+	SkillRightLockedDesc: Solo puedes romper los sellos tras el Apocalipsis
+	SkillOpenName: Abrir el Apocalipsis
+	SkillOpenDesc: Juan se eleva en martirio y el dominio del cielo desciende
+	SkillMeteorName: Meteoro celestial
+	SkillMeteorDesc: Hace caer un cuerpo celeste desde la bóveda hacia donde apunta el cursor
+	NoConvertTargetText: No hay habitantes cerca que se puedan sublimar
+	SeatsFullText: Las doce sillas santas están ocupadas
+	JudasDeathReasonText: "{0} fue vendido por Judas por treinta monedas de plata"
+	DiscipleName_0: Pedro
+	DiscipleName_1: Andrés
+	DiscipleName_2: Santiago
+	DiscipleName_3: Juan
+	DiscipleName_4: Felipe
+	DiscipleName_5: Bartolomé
+	DiscipleName_6: Tomás
+	DiscipleName_7: Mateo
+	DiscipleName_8: Santiago el Menor
+	DiscipleName_9: Tadeo
+	DiscipleName_10: Simón el Zelote
+	DiscipleName_11: Judas
+}
+
+AriaofTheCosmos: {
+	DisplayName: Aria del cosmos
+	Tooltip:
+		'''
+		Mantén clic izquierdo para condensar un cuásar poderoso; al soltarlo inflige daño devastador a los enemigos
+		Clic derecho libera un microagujero negro que, al formarse, dispara gran cantidad de rayos gamma
+		Al empuñarlo, en la esquina inferior izquierda se encienden dos botones de habilidad
+		Púlsalos para invocar la escolta del anillo estelar o desencadenar una ráfaga de rayos gamma
+		'''
+	SkillLeftName: Escolta del anillo estelar
+	SkillLeftDesc: Invoca un anillo que te rodea; los nodos rotan y disparan esquirlas estelares a los enemigos cercanos
+	SkillRightName: Ráfaga de rayos gamma
+	SkillRightDesc: Tras condensarse un instante, dispara en abanico nueve rayos gamma hacia el punto de mira
+}
+
+WheezingWyrm: {
+	DisplayName: Bastón del dragón que tose
+	Tooltip:
+		'''
+		Mantén pulsado para escupir llama de dragón sin parar
+		La cabeza del dragón está vieja; antes de encenderse siempre tose humo
+		El soplo continuo enciende cada vez más la garganta; el color pasa del rojo oscuro al azul candente
+		Cuanto más brillante la llama, más quema; la llama azul inflige el máximo daño y aplica Fuego infernal
+		"No está del todo muerto; solo es un fumador empedernido aclarándose la garganta"
+		'''
+}
+
+Everdeep: {
+	DisplayName: Abismo eterno
+	Tooltip:
+		'''
+		Dispara un anillo de corriente de alta presión abisal
+		Tras atravesar a los enemigos, el anillo vuela un tramo, se pliega y vuelve a golpear
+		Los impactos acumulan resonancia abisal; las perlas que rodean el tomo son las capas
+		Cuando la resonancia se desborda, desde la tierra bajo los pies del enemigo se alza un enorme tornado de agua
+		"El abismo no se abre para ti; se cierra a tu espalda"
+		'''
+}
+
+BloomTome: {
+	DisplayName: Tomo de capullos
+	Tooltip:
+		'''
+		Dispara un proyectil-capullo que florece
+		Al golpear a un enemigo o al caer al suelo, abre un anillo de pétalos
+		Cada cuarto disparo se convierte en un proyectil en plenitud: más pétalos y, hacia arriba, dos agujas del yermo
+		"La página que abras, esa florece"
+		'''
+}

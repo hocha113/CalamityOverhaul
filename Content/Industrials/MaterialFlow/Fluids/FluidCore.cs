@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
     /// <summary>液体系统共用文案(液体名/液量条格式)</summary>
     internal class FluidText : ModSystem, ILocalizedModType
     {
-        public string LocalizationCategory => "Items";
+        public string LocalizationCategory => "Industrials.Flow";
 
         internal static LocalizedText WaterName;
         internal static LocalizedText LavaName;

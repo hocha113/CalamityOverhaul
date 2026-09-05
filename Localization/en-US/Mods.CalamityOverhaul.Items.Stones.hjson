@@ -1,0 +1,113 @@
+GraniteTome: {
+	DisplayName: Granite Tome
+	Tooltip:
+		'''
+		Chants to gather three charging motes, then looses a fan of three gently homing granite energy orbs
+		Orbs shatter into seeking crystal shards on impact
+		'''
+}
+
+GraniteFlower: {
+	DisplayName: Granite Bloom
+	Tooltip:
+		'''
+		Lobs a crystal seed that blooms into a lingering energy flower where it lands
+		The bloom pulses three times, spraying crystal petals at the nearest enemy
+		Withers by shattering all its petals, spraying crystal shards in every direction
+		'''
+}
+
+GraniteThrowingKnife: {
+	DisplayName: Granite Throwing Knife
+	Tooltip:
+		'''
+		Throws a piercing knife trailing a razor-sharp azure arc
+		Striking an enemy leaps a miniature chain of lightning to another nearby foe
+		Shatters into crystal shards on its last hit or against terrain
+		'''
+}
+
+GraniteWalkingBoots: {
+	DisplayName: Granite Walking Boots
+	Tooltip:
+		'''
+		Greatly increases running speed and acceleration
+		The soles surge with electricity the instant you reach full speed
+		At full speed, sparks crackle underfoot and azure afterimages trail behind you
+		'''
+}
+
+MarbleClub: {
+	DisplayName: Marble Club
+	Tooltip:
+		'''
+		A slow, crushing overhead slam with immense knockback
+		Hits always briefly petrify foes, leaving them stone-bound and sluggish
+		Striking the ground unleashes a full-power marble shockwave and a surging dust wave
+		Midair slams only release a weakened shock
+		'''
+}
+
+MarbleHuntingKnife: {
+	DisplayName: Marble Hunting Knife
+	Tooltip:
+		'''
+		Swift alternating slashes
+		Every third strike becomes a wider finisher, lunging forward and spraying marble shards
+		'''
+}
+
+MarbleDisc: {
+	DisplayName: Marble Discus
+	Tooltip:
+		'''
+		Hurls a spinning discus that ricochets between foes and walls
+		Each ricochet into a new target gilds the discus, raising its damage by 10%, up to 30%
+		Once its bounces are spent it curves back to your hand; up to two may fly at once
+		'''
+}
+
+MarblePebble: {
+	DisplayName: Marble Pebble
+	Tooltip:
+		'''
+		An endless swift sling stone that bounces once off the ground
+		Deals far greater damage to foes with high maximum life
+		Striking a colossal foe bursts into golden light and a rock-shattering crack
+		'''
+}
+
+MarbleShield: {
+	DisplayName: Marble Aegis
+	Tooltip:
+		'''
+		Slightly increases melee knockback
+		Three orbiting marble shards form a stone guard, absorbing one incoming hit and shattering when ready
+		Press [KEY] to raise your guard: a perfect block negates the hit, crushing nearby projectiles and hurling stone blades back
+		A perfect block grants 10% increased melee damage for 5 seconds
+		'''
+}
+
+MarbleBalloon: {
+	DisplayName: Marble Balloon
+	Tooltip:
+		'''
+		Press Down while airborne to slam down; the longer the fall, the stronger and wider the landing shockwave
+		Negates fall damage
+		'''
+}
+
+MarbleinaBottle: {
+	DisplayName: Marble in a Bottle
+	Tooltip: Grants a heavy, forceful second jump; hold Jump to rise higher
+}
+
+MarbleCloudBalloon: {
+	DisplayName: Marble Cloud Balloon
+	Tooltip:
+		'''
+		Grants a heavy, forceful second jump; hold Jump to rise higher
+		Press Down while airborne to slam down; the longer the fall, the stronger and wider the landing shockwave
+		Negates fall damage
+		'''
+}

@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
 {
     internal class MermanRod : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => CWRConstant.Asset + "ADV/Abysse/MermanRod";
         public static LocalizedText Text1;
         public override void SetStaticDefaults() {

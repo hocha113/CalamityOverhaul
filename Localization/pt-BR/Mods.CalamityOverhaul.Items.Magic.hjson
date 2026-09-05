@@ -1,0 +1,201 @@
+NeutronWand: {
+	DisplayName: Luz da Tumba Estelar
+	Tooltip:
+		'''
+		Dispara quatro estrelas gravitacionais poderosas
+		Clique direito lanca magia gravitacional no cursor
+		"Diz a lenda que, na antiguidade, um poderoso psiquico usou este cajado para comprimir estrelas em buracos negros,
+		mas isso ja nao pode ser comprovado — resta apenas um fragmento de canto dos nomades interestelares"
+		'''
+}
+
+DragonsWord: {
+	DisplayName: Palavra do Dragao
+	Tooltip:
+		'''
+		Dispara lagrimas de dragao que giram por um tempo antes de rastrear inimigos
+		Clique direito lanca Magia de Comando do Dragao no cursor, emitindo ordem de morte aos inimigos na area
+		"Um dragao so pode derramar lagrimas uma vez na vida"
+		'''
+}
+
+UnderTheSand: {
+	DisplayName: Sob a Areia
+	Tooltip:
+		'''
+		Lanca um par de ondas de areia que caem sob a gravidade
+		Ao tocar o chao, um espinho de areia irrompe de baixo, arremessando inimigos para cima
+		'''
+}
+
+MelodyTheSand: {
+	DisplayName: Melodia da Areia
+	Tooltip:
+		'''
+		Dispara um pequeno tornado de areia que cai ao chao pela gravidade
+		Ao pousar, patrulha a superficie de um lado para o outro, invertendo ao bater em paredes ou bordas
+		Arremessa repetidamente os inimigos atingidos para o ceu
+		'''
+}
+
+SandVortexOfTheDecayedSea: {
+	DisplayName: Vortice de Areia do Mar Decaido
+	Tooltip:
+		'''
+		Invoca um vórtice colossal do mar decaído na posição do cursor
+		O vórtice puxa e dilacera inimigos próximos, até desfazendo projéteis hostis
+		Periodicamente arremessa orbes rastreadoras do mar decaído
+		Disparar novamente renova o vórtice existente; ao se dissipar, libera um anel de orbes
+		"O rugido das profundezas podres, agitado em areia"
+		'''
+}
+
+FocusingGrimoire: {
+	DisplayName: Grimorio de Foco
+	Tooltip:
+		'''
+		Clique esquerdo para disparar aneis termicos homing
+		Clique direito para disparar raios da morte rapidamente
+		"Melhor do que seis livros combinados"
+		'''
+}
+
+CommandersStaff: {
+	DisplayName: Cajado do Comandante
+	Tooltip:
+		'''
+		Dispara um raio de desintegracao termica que perfura inimigos
+		"Peguei daquele braço da maquina, que tal usar energia psiquica em vez de diesel?"
+		'''
+}
+
+Eyetooth: {
+	// DisplayName: Eyetooth
+	/* Tooltip:
+		'''
+		Hurls a fang torn from the Eye of Cthulhu at your foes
+		On biting an enemy, the fang springs above its head, takes aim, then dives in for a second bite
+		The dive deals 150% damage, and fang wounds keep weeping blood
+		''' */
+}
+
+CommandersStaffEX: {
+	DisplayName: Cajado do Comandante EX
+	Tooltip:
+		'''
+		Dispara multiplos raios termicos de dispersao
+		"Adequado para cortar metal"
+		'''
+}
+
+TomeofFungalDecay: {
+	DisplayName: Tomo da Decomposicao Fungica
+	Tooltip: Pulveriza um anel de rajadas de esporos
+}
+
+Pandemonium: {
+	DisplayName: Pandemonio
+	Tooltip:
+		'''
+		Clique esquerdo para carregar e liberar Magia Transcendente
+		Clique direito para lancar uma Runa de Enxofre no cursor
+		Ao empunhar, dois botoes de habilidade acendem no canto inferior esquerdo da tela
+		Clique para desencadear Julgamento de Enxofre ou O Fim de Todos os Demonios
+		'''
+	SkillLeftName: Julgamento de Enxofre
+	SkillLeftDesc: Faz cair um campo de pilares de fogo de enxofre ao redor do cursor
+	SkillRightName: O Fim de Todos os Demonios
+	SkillRightDesc: Abre um circulo magico gigante centrado em voce, castigando os inimigos com raios e fogo
+}
+
+Elysium: {
+	// DisplayName: Elysium
+	/* Tooltip:
+		'''
+		Hold left-click to channel the Serpent Rite
+		Release to send out a wave of holy light, turning lesser foes it touches into sacred serpents that hunt for you
+		Right-click to exalt a nearby town resident, calling them to your side as a disciple
+		Disciples orbit you, each serving in their own office, and grant holy blessings
+		Damage from bosses burns away one disciple, leaving one point of Martyrdom Power
+		With eleven Martyrdom Power and John still in office, a skill button can unveil Revelation
+		Once Revelation descends, right-click instead summons the Four Horsemen
+		The skill buttons then become Celestial Meteor and the Judgement of the Last Seals
+		With all twelve seats filled the blessing peaks, but near death you will meet Judas's blade
+		Hold Shift while held to open the Rose Window; drag seats to reassign holy offices
+		While held, two skill buttons light up at the bottom left of the screen
+		''' */
+	// SkillLeftName: Divine Thunder
+	// SkillLeftDesc: Calls down a holy bolt upon the foe nearest the cursor
+	// SkillRightName: Judgement of the Last Seals
+	// SkillRightDesc: Breaks the fifth, sixth and seventh seals in turn; the finale judges all foes and Revelation ends
+	// SkillRightLockedDesc: Only after Revelation descends may the seals be broken
+	// SkillOpenName: Unveil Revelation
+	// SkillOpenDesc: John shall ascend in martyrdom, and the Kingdom's domain shall descend
+	// SkillMeteorName: Celestial Meteor
+	// SkillMeteorDesc: Calls a celestial body down from the heavens upon the cursor
+	// NoConvertTargetText: No resident nearby can be exalted
+	// SeatsFullText: All twelve holy seats are filled
+	// JudasDeathReasonText: "{0} was sold out by Judas for thirty pieces of silver"
+	// DiscipleName_0: Peter
+	// DiscipleName_1: Andrew
+	// DiscipleName_2: James
+	// DiscipleName_3: John
+	// DiscipleName_4: Philip
+	// DiscipleName_5: Bartholomew
+	// DiscipleName_6: Thomas
+	// DiscipleName_7: Matthew
+	// DiscipleName_8: James the Less
+	// DiscipleName_9: Thaddaeus
+	// DiscipleName_10: Simon the Zealot
+	// DiscipleName_11: Judas
+}
+
+AriaofTheCosmos: {
+	DisplayName: Aria do Cosmos
+	Tooltip:
+		'''
+		Segure o botao esquerdo para carregar um poderoso quasar, causando dano devastador ao soltar
+		Clique direito para liberar um buraco negro em miniatura que dispara uma saraivada de raios gama uma vez formado
+		Ao empunhar, dois botoes de habilidade acendem no canto inferior esquerdo da tela
+		Clique para invocar um Guardiao do Anel Estelar ou gerar uma Explosao de Raio Gama
+		'''
+	SkillLeftName: Guardiao do Anel Estelar
+	SkillLeftDesc: Invoca um anel estelar orbital cujos nos disparam poeira estelar nos inimigos proximos
+	SkillRightName: Explosao de Raio Gama
+	SkillRightDesc: Apos uma breve carga, dispara nove raios gama em leque na direcao do cursor
+}
+
+WheezingWyrm: {
+	// DisplayName: Wheezing Wyrm
+	/* Tooltip:
+		'''
+		Hold to breathe a stream of dragonfire
+		The old head has seen better days, and needs a few smoky coughs before it catches
+		Sustained breathing stokes the throat ever hotter, from dull red all the way to searing blue
+		Brighter flame burns hotter; blue flame deals the highest damage and ignites hellfire
+		"Not quite dead, just an old smoker clearing its throat"
+		''' */
+}
+
+Everdeep: {
+	// DisplayName: Everdeep
+	/* Tooltip:
+		'''
+		Fires a ring of pressurized abyssal water
+		The ring pierces through foes, coasts a short way, then curls back to strike again
+		Hits build abyssal resonance, counted by the droplets orbiting the tome
+		At full resonance, a giant maelstrom erupts from the ground beneath the victim
+		"The deep does not part for you; it closes behind you"
+		''' */
+}
+
+BloomTome: {
+	// DisplayName: Bloomtome
+	/* Tooltip:
+		'''
+		Fires a budding bolt
+		The bolt blooms into a ring of petals when it strikes an enemy or the ground
+		Every fourth cast becomes a full bloom with more petals, bursting two needles upward
+		"Whichever page you open, that page blooms"
+		''' */
+}

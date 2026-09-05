@@ -1,0 +1,200 @@
+ElementMuzzleBrake: {
+	DisplayName: Element Muzzle Brake
+	Tooltip:
+		'''
+		Increases ranged damage by 12%
+		Increases ranged critical strike chance by 15%
+		Increases ranged firing speed by 12%
+		Enemies have a harder time detecting you
+		'''
+}
+
+EyeOfSingularity: {
+	DisplayName: Eye of Singularity
+	Tooltip:
+		'''
+		Increases ranged damage by 100%
+		Increases ranged critical strike chance by 100%
+		Increases ranged firing speed by 100% and prevents ammo consumption
+		Sets the critical damage multiplier for all ranged weapons to 500%
+		Your ranged projectiles tear through space, creating miniature black holes on impact that drag in and crush enemies
+		While standing still, you enter the 'Event Horizon' state:
+		  - Grants invisibility and immunity to all contact damage
+		  - Attacks release additional Gamma Ray Bursts that track enemies
+		Grants the ability to Quantum Leap; press [KEY] to teleport to the cursor, erasing enemy projectiles along the path
+		Right-click to activate 'Collapse Protocol':
+		  - Consumes all mana to make all ranged attacks ignore immunity frames and force critical hits for 10 seconds
+		  - 60 second cooldown
+		If you receive fatal damage, you become a Supernova, dealing extreme area damage, and reform at a safe location after 3 seconds
+		This effect has a 60 second cooldown
+		[c/33ff33:"The slumbering Dragon God jacks into your nerves, deconstructing the Machine Spirit's basal logic"]
+		[c/ffaa00:"A ravenous constellation devours your muzzle flash, draining the final warmth of dying stars"]
+		[c/00ffff:"The formless Reaper becomes your shadow, harvesting the equal, inevitable doom of all sentient life"]
+		'''
+}
+
+ArcaneThroneOfEternity: {
+	DisplayName: Arcane Throne of Eternity
+	Tooltip:
+		'''
+		Increases magic damage by 100%
+		Increases magic critical strike chance by 100%
+		Increases magic attack speed by 100%
+		Increases maximum mana by 1000; mana regeneration is greatly boosted and never interrupted
+		All magic projectiles gain infinite piercing
+		Your magic attacks tear through the veil of reality, opening continuously erupting Arcane Rifts on impact
+		All magic attacks inflict a random forbidden curse:
+		  Void Erosion, Temporal Stasis, Soul Burning, Gravitational Collapse, or Hyper Disintegration
+		While above 90% mana, you enter the 'Omniscience' state:
+		  All magic projectiles automatically home in on enemies, and critical damage multiplier rises to 1000%
+		Grants the ability of Truth Leap; press [KEY] to tear open space and enter a higher dimension:
+		  Become immune to all damage and move freely for a short time, unleashing a devastating Reality Tremor upon leaving
+		  30 second cooldown
+		Right-click to activate 'Root Calculation':
+		  For the next 10 seconds, every magic attack simultaneously releases 5 mirrored spells
+		  60 second cooldown
+		If you receive fatal damage, time rewinds to your state from 5 seconds ago, restoring your life, mana and position
+		This effect has a 60 second cooldown
+		Enemies are more likely to target you
+		[c/b84dff:"A nameless sage peels open your skull, inscribing forgotten truths beyond the stars"]
+		[c/ffdd66:"The Lord of Flux plucks the warp and weft of fate, treating reality as an unfinished draft"]
+		[c/66ffff:"The corpse upon the golden throne gazes at you, having long forgotten what death is"]
+		'''
+}
+
+PrecisionMuzzleBrake: {
+	DisplayName: Precision Muzzle Brake
+	Tooltip:
+		'''
+		Increases ranged damage by 8%
+		Increases ranged critical strike chance by 10%
+		Increases ranged firing speed by 8%
+		Enemies have a harder time detecting you
+		'''
+}
+
+SimpleMuzzleBrake: {
+	DisplayName: Simple Muzzle Brake
+	Tooltip:
+		'''
+		Increases ranged damage by 5%
+		Increases ranged critical strike chance by 5%
+		Increases ranged firing speed by 5%
+		Enemies have a harder time detecting you
+		'''
+}
+
+JusticeUnveiled: {
+	DisplayName: Justice Unveiled
+	Tooltip:
+		'''
+		Ranged attacks build charges of "Judgment Strike", up to a maximum of 5
+		Press [UP] to expend 1 charge and call down a devastating holy impact
+		"Should justice be summoned, I shall heed the call—wherever it leads."
+		'''
+}
+
+EmblemOfDread: {
+	DisplayName: Emblem of Dread
+	Tooltip:
+		'''
+		Increases melee damage by 100%
+		Increases melee critical strike chance by 100%
+		Increases melee speed by 100%
+		Increases defense by 100, ignoring all defense damage and reduction
+		Reduces incoming damage by 75% and reflects 100x damage back to the attacker
+		All melee attacks inflict the 'Void Erosion' debuff
+		True melee attacks have a chance to instantly erase enemies with less than 250,000 HP
+		Moving at high speeds leaves warp points in your path, dealing extreme damage to enemies
+		Grants the ability to use Gravity Dash; press [KEY] to dash a long distance and release massive gravitational rays
+		If you receive fatal damage, you immediately regain full HP and gain a Gravity Shield (60 second cooldown)
+		Enemies are more likely to target you
+		[c/d94fff:"A sanctified angel veils your gaze, whispering eternal, saccharine lies"]
+		[c/ff4d4d:"A blood-soaked butcher raises your twin blades, declaring that only slaughter brings glory"]
+		[c/4da6ff:"An azure dove pecks through your brow, mocking your insignificant struggle"]
+		'''
+}
+
+Proverbs: {
+	DisplayName: Proverb
+	Tooltip:
+		'''
+		Generates a small brimstone rune behind you
+		Grants immunity to most fire-based debuffs
+		Most of your attacks inflict the Withered Curse debuff
+		[Content]
+		'''
+	L1:
+		'''
+		Deals double damage to the Brimstone Witch; 
+		her attacks have a chance to critically strike you
+		'''
+	L2:
+		'''
+		If you are reading this, then I am likely already gone.
+		Throughout my long years, this ring was the only thing that felt truly cold.
+		But somewhere along the way, it absorbed a mortal's warmth... and became... too hot to let go.
+		I have returned to the Brimstone, reduced to the ashes of an era.
+		I should have departed with nothing, 
+		yet I found myself greedy for this singular warmth, wishing to preserve it.
+		Wear it.
+		And when you finally raise your blade against the gods...
+		Know that even if the world freezes over, I will still be burning at your fingertips.
+		'''
+}
+
+Unsunghero: {
+	DisplayName: Unsung Hero
+	Tooltip:
+		'''
+		Leaves a trail of black and white checkered squares behind you as you walk
+		"What if you never return?"
+		"Then I shall never return."
+		'''
+}
+
+GodslayerScabbard: {
+	DisplayName: Godslayer Scabbard
+	Tooltip:
+		'''
+		Accumulates charge while holding a melee weapon without attacking
+		Attacking with full charge grants 2 second of invulnerability
+		"Though the blade remains sheathed, its killing intent is palpable.
+		When the time is right, slaying a god takes but an instant."
+		'''
+}
+
+FrogsparkBoots: {
+	DisplayName: Frogspark Boots
+	Tooltip:
+		'''
+		Allows flight, super fast running, and steady ice skating that won't break thin ice
+		Walk on water, honey and lava, and gain immunity to the Burning debuff
+		Grants 7 seconds of lava immunity, greatly reducing lava damage afterwards
+		Increases jump speed by 48%, enables auto-jump, and greatly increases fall resistance
+		"One frog kick, and flames clear the way"
+		'''
+}
+
+CthulsparkBoots: {
+	DisplayName: Cthulspark Boots
+	Tooltip:
+		'''
+		Grants all the powers of the Frogspark Boots
+		Gain cloud, blizzard and sandstorm extra jumps, increased jump height, and immunity to fall damage
+		Double tap a direction to charge alongside the great eye, ramming foes out of the way
+		"It floats overhead, watching every step for you"
+		'''
+}
+
+NinjaCthulsparkBoots: {
+	DisplayName: Ninja Cthulspark Boots
+	Tooltip:
+		'''
+		Grants all the powers of the Cthulspark Boots
+		Grants a 10% chance to dodge attacks, and the ability to climb and slide down walls
+		Double tap a direction to perform a crimson shadow dash, faster and farther, trailing scarlet afterimages
+		The charge bashes enemies aside like the Shield of Cthulhu, granting a moment of immunity on impact
+		"The eye tied on its headband and swore never to blink again"
+		'''
+}

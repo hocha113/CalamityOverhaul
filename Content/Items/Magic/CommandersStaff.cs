@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.Items.Magic
 {
     internal class CommandersStaff : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "CommandersStaff";
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Magic;
@@ -47,6 +49,8 @@ namespace CalamityOverhaul.Content.Items.Magic
 
     internal class CommandersStaffEX : ModItem
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "CommandersStaffEX";
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Magic;

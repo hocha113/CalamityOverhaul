@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>菌泡囊，砸敌引爆毒孢冲击波+追踪小破片</summary>
     internal class SporeburstPouch : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "SporeburstPouch";
 
         public override void SetDefaults() {

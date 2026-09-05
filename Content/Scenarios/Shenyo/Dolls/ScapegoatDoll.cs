@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shenyo.Dolls
     /// </summary>
     internal class ScapegoatDoll : ModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         /// <summary>挡死结算时的漂浮字</summary>
         public static LocalizedText ShatterText { get; private set; }
 

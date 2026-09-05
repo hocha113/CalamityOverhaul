@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// <summary>万魔殿</summary>
     internal class Pandemonium : ModItem, IWeaponSkillProvider
     {
+        public override string LocalizationCategory => "Items.Magic";
+
         public override string Texture => CWRConstant.Item_Magic + "Pandemonium";
 
         //技能按钮身份色:天罚硫火橙,终焉绯红

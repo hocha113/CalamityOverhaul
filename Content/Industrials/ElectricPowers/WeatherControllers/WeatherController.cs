@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.WeatherControllers
     /// <summary>天气控制机,大额耗电求雨或止雨;贴图复用热能电池,靠雨云蓝色调区分</summary>
     internal class WeatherController : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryLegacy";
 
         /// <summary>系列色调:雨云蓝</summary>

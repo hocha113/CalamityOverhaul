@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs
     /// </summary>
     internal class GaolAnchorWeapon : UndrownedModItem
     {
+        public override string LocalizationCategory => "Items.Scenarios";
+
         public override string Texture => "Terraria/Images/Item_" + ItemID.Anchor;
 
         public override void SetDefaults() {

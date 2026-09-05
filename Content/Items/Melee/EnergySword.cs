@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 {
     internal class EnergySword : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "EnergySword";
 
         /// <summary>三段连击计数，决定下一次挥砍的招式</summary>

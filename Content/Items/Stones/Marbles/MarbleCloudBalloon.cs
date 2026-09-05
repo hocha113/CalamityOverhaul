@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// <summary>瓶中大理石二段跳 + 大理石气球砸地</summary>
     internal class MarbleCloudBalloon : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 30;
             Item.accessory = true;

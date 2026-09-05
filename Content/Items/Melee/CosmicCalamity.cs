@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 寰宇灾厄长矛
     internal class CosmicCalamity : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "CosmicCalamity";
 
         /// 连击索引(后段更强)

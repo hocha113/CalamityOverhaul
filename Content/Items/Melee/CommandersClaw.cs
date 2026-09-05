@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 统帅之钳 重型投掷长矛 命中火星冲击波 撞墙插入
     internal class CommandersClaw : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "CommandersClaw";
 
         public override void SetDefaults() {

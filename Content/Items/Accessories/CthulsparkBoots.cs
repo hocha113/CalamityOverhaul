@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// <summary>克苏鲁闪耀靴:蛙跃闪耀靴加上马蹄气球束与克苏鲁之盾,巨眼气球随行</summary>
     internal class CthulsparkBoots : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "CthulsparkBoots";
 
         //盾放最后,保证冲刺由克苏鲁之盾定型

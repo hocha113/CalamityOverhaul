@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
 {
     internal class WindGrivenGeneratorMK2 : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Generators";
+
         public override string Texture => CWRConstant.Asset + "Generator/WindGrivenGeneratorMK2Item";
         public static LocalizedText UnderstandWindGrivenMK2 { get; private set; }
         public static LocalizedText UnderstandWindGrivenMK2Remind { get; private set; }

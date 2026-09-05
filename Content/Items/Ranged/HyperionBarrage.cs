@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class HyperionBarrage : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "HyperionBarrage";
         [VaultLoaden(CWRConstant.Item_Ranged + "HyperionBarrageGlow")]
         public static Asset<Texture2D> Glow = null;
@@ -61,6 +63,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
     internal class HyperionBarrageEX : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "HyperionBarrageEX";
         [VaultLoaden(CWRConstant.Item_Ranged + "HyperionBarrageEXGlow")]
         public static Asset<Texture2D> Glow = null;

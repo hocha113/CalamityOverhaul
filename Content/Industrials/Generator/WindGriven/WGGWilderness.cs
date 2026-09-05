@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
 {
     internal class WGGWilderness : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Generators";
+
         public override string Texture => CWRConstant.Asset + "Generator/WGGWilderness";
         public override void SetDefaults() {
             Item.width = 32;

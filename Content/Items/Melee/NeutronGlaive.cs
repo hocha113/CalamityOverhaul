@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 {
     internal class NeutronGlaive : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
 
         /// <summary>连段计数，取模三拍</summary>

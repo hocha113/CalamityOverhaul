@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
 {
     internal class EyeOfSingularity : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "EyeOfSingularity";
         public override void SetStaticDefaults() {
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 6));

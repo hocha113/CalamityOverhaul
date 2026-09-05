@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.SneezingWyrms
     /// </summary>
     internal class SneezingWyrm : ModItem
     {
+        public override string LocalizationCategory => "Items.Ranged";
+
         public override string Texture => CWRConstant.Item_Ranged + "SneezingWyrm";
 
         public override void SetDefaults() {

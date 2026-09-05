@@ -391,7 +391,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                     int betrayDamage = Player.statLife + 200;
                     Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(
                         Terraria.Localization.NetworkText.FromKey(
-                            "Mods.CalamityOverhaul.Items.Elysium.JudasDeathReasonText", Player.name)),
+                            "Mods.CalamityOverhaul.Items.Magic.Elysium.JudasDeathReasonText", Player.name)),
                         betrayDamage, 0);
                 }
                 return;

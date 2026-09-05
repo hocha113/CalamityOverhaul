@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     /// <summary>花岗飞刀，电弧拖尾，命中链电跳邻近，末段/撞地碎晶</summary>
     internal class GraniteThrowingKnife : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 30;
             Item.damage = 15;

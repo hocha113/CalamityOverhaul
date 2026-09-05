@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
     /// <summary>SHPC 改件基类：槽位、Apply 改 ShootContext、生命周期钩子</summary>
     internal abstract class SHPCModuleItem : ModItem
     {
+        public override string LocalizationCategory => "SHPCModules";
+
         public override string Texture => SlotCategory switch {
             SHPCSlotCategory.Barrel => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Barrel",
             SHPCSlotCategory.Optic => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/Modules/Optic",

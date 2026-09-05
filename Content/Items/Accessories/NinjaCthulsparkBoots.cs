@@ -14,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// <summary>忍法克苏鲁闪耀靴:克苏鲁闪耀靴加上忍者大师装备,巨眼系上了头巾</summary>
     internal class NinjaCthulsparkBoots : ModItem
     {
+        public override string LocalizationCategory => "Items.Accessories";
+
         public override string Texture => CWRConstant.Item_Accessorie + "NinjaCthulsparkBoots";
 
         //忍者装备放在靴与盾之前:闪避与爬墙照常生效,冲刺归属在下方统一定型

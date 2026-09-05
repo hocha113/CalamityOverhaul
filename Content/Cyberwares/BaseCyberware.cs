@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.Cyberwares
     /// <summary>义体物品基类</summary>
     internal abstract class BaseCyberware : ModItem
     {
+        public override string LocalizationCategory => "Cyberwares";
+
         /// <summary>可装入槽位类别</summary>
         public virtual CyberwareSlotCategory SlotCategory => CyberwareSlotCategory.OperatingSystem;
 

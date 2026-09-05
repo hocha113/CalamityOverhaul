@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
     /// </summary>
     internal class StormGoddessSpear : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "StormGoddessSpear";
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
+            CWRUtils.SetItemLegendContentTops(ref tooltips, this);
         }
 
         public override void AddRecipes() {

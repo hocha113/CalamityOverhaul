@@ -1,0 +1,294 @@
+MeltdownChip: {
+	DisplayName: Puce de protocole de fusion
+	// Tooltip: ""
+}
+
+ProjectileHijackChip: {
+	DisplayName: Puce de prise de contrôle balistique
+	// Tooltip: ""
+}
+
+ProjectileFreezeChip: {
+	DisplayName: Puce de gel balistique
+	// Tooltip: ""
+}
+
+DataPurgeChip: {
+	DisplayName: Puce de purge de données
+	// Tooltip: ""
+}
+
+BallisticOverclockChip: {
+	DisplayName: Puce de surrégime balistique
+	// Tooltip: ""
+}
+
+ElectrolysisChip: {
+	DisplayName: Puce d'électrolyse des eaux
+	// Tooltip: ""
+}
+
+CryostasisChip: {
+	DisplayName: Puce de cryostase
+	// Tooltip: ""
+}
+
+LiquidPurgeChip: {
+	DisplayName: Puce d'évacuation de liquides
+	// Tooltip: ""
+}
+
+ItemRecallChip: {
+	DisplayName: Puce de rappel à distance
+	// Tooltip: ""
+}
+
+ReappraiseChip: {
+	DisplayName: Puce de relance de qualité
+	// Tooltip: ""
+}
+
+ArmorParseChip: {
+	DisplayName: Puce d'analyse d'armure
+	// Tooltip: ""
+}
+
+ExorciseChip: {
+	DisplayName: Puce de radiation forcée
+	// Tooltip: ""
+}
+
+DataLeechChip: {
+	DisplayName: Puce d'extraction de données
+	// Tooltip: ""
+}
+
+SwarmLinkChip: {
+	DisplayName: Puce de lien d'essaim
+	// Tooltip: ""
+}
+
+TurretHijackChip: {
+	DisplayName: Puce de détournement de tourelle
+	// Tooltip: ""
+}
+
+MachineOverclockChip: {
+	DisplayName: Puce de surrégime mécanique
+	// Tooltip: ""
+}
+
+GridBlackoutChip: {
+	DisplayName: Puce de black-out du réseau
+	// Tooltip: ""
+}
+
+PowerTransmuteChip: {
+	DisplayName: Puce de conversion d'énergie
+	// Tooltip: ""
+}
+
+NeuralOverclockChip: {
+	DisplayName: Puce de surrégime neural
+	// Tooltip: ""
+}
+
+WraithForceDriveChip: {
+	DisplayName: Puce d'entraînement forcé des spectres
+	// Tooltip: ""
+}
+
+IndexPrereadChip: {
+	DisplayName: Puce de prélecture d'index
+	// Tooltip: ""
+}
+
+LockBurnChip: {
+	DisplayName: Puce de percée de serrure
+	// Tooltip: ""
+}
+
+DielSkipChip: {
+	DisplayName: Puce de saut jour-nuit
+	// Tooltip: ""
+}
+
+StormInjectChip: {
+	DisplayName: Puce d'injection d'orage
+	// Tooltip: ""
+}
+
+GravityInvertChip: {
+	DisplayName: Puce d'inversion de gravité
+	// Tooltip: ""
+}
+
+SegmentDelinkChip: {
+	DisplayName: Puce de déconnexion de segments
+	// Tooltip: ""
+}
+
+LimbSeizureChip: {
+	DisplayName: Puce de saisie de membres
+	// Tooltip: ""
+}
+
+CommandLinkCutChip: {
+	DisplayName: Puce de rupture de lien de commandement
+	// Tooltip: ""
+}
+
+MunitionSwapChip: {
+	DisplayName: Puce de permutation de munitions
+	// Tooltip: ""
+}
+
+TurretMeshChip: {
+	DisplayName: Puce de maillage de tourelles
+	// Tooltip: ""
+}
+
+BeaconForgeChip: {
+	DisplayName: Puce de falsification de balise
+	// Tooltip: ""
+}
+
+PrivilegeEscalateChip: {
+	DisplayName: Puce d'élévation de privilèges
+	// Tooltip: ""
+}
+
+ItemSalvageChip: {
+	DisplayName: Puce de démontage
+	// Tooltip: ""
+}
+
+DataBrandChip: {
+	DisplayName: Puce de marque de données
+	// Tooltip: ""
+}
+
+EntityMasqueradeChip: {
+	DisplayName: Puce de mascarade d'identité
+	// Tooltip: ""
+}
+
+TileConscriptChip: {
+	DisplayName: Puce de réquisition de blocs
+	// Tooltip: ""
+}
+
+VeinResonanceChip: {
+	DisplayName: Puce de résonance de filon
+	// Tooltip: ""
+}
+
+StressInvertChip: {
+	DisplayName: Puce d'inversion de contrainte
+	// Tooltip: ""
+}
+
+PressureSurgeChip: {
+	DisplayName: Puce de surpression des eaux
+	// Tooltip: ""
+}
+
+MirrorSurfaceChip: {
+	DisplayName: Puce de surface miroir
+	// Tooltip: ""
+}
+
+DelayFuseChip: {
+	DisplayName: Puce de fusée à retardement
+	// Tooltip: ""
+}
+
+ProjectileTitheChip: {
+	DisplayName: Puce de dîme de projectiles
+	// Tooltip: ""
+}
+
+ProjectileSampleChip: {
+	DisplayName: Puce d'échantillonnage de projectiles
+	// Tooltip: ""
+}
+
+CompensationProtocolChip: {
+	DisplayName: Puce de protocole de compensation
+	// Tooltip: ""
+}
+
+PayloadRewriteChip: {
+	DisplayName: Puce de réécriture de charge
+	// Tooltip: ""
+}
+
+PhaseDesyncChip: {
+	DisplayName: Puce de décalage de phase
+	// Tooltip: ""
+}
+
+LiveCellTapChip: {
+	DisplayName: Puce de prise sur cellule vivante
+	// Tooltip: ""
+}
+
+FirmwareRollbackChip: {
+	DisplayName: Puce de retour de micrologiciel
+	// Tooltip: ""
+}
+
+ShellRequisitionChip: {
+	DisplayName: Puce de réquisition de carcasse
+	// Tooltip: ""
+}
+
+MemoryScorchChip: {
+	DisplayName: Puce de brûlage mémoire
+	// Tooltip: ""
+}
+
+BuffSiphonChip: {
+	DisplayName: Puce d'aspiration de gains
+	// Tooltip: ""
+}
+
+CombatSiphonChip: {
+	DisplayName: Puce d'extraction tactique
+	// Tooltip: ""
+}
+
+BallisticTurncoatChip: {
+	DisplayName: Puce de retournement balistique
+	// Tooltip: ""
+}
+
+MeltdownBrandChip: {
+	DisplayName: Puce de marque de fusion
+	// Tooltip: ""
+}
+
+MapBlackoutChip: {
+	DisplayName: Puce d'extinction de carte
+	// Tooltip: ""
+}
+
+ChannelScrambleChip: {
+	DisplayName: Puce de brouillage de canal
+	// Tooltip: ""
+}
+
+StealthStripChip: {
+	DisplayName: Puce de dépouillement d'invisibilité
+	// Tooltip: ""
+}
+
+CooldownInjectChip: {
+	DisplayName: Puce d'injection de recharge
+	// Tooltip: ""
+}
+
+CyberwareOfflineChip: {
+	DisplayName: Puce de mise hors ligne du Cyberware
+	// Tooltip: ""
+}

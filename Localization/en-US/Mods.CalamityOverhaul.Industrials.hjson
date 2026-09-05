@@ -1,14 +1,2 @@
-ElectricMinRocket: {
-	EnergyShortage: Energy Shortage
-	DisplayName: Electric Mini Rocket
-	Tooltip: ""
-}
-
-WGGLifeWeaver: {
-	TurretBatteryDepleted: Battery Runs Out
-	DisplayName: Wilderness Tree Planter
-	Tooltip: ""
-}
-
 WGGWildernessTP.WindGrivenDiscovery1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
 WGGMK2WildernessTP.WindGrivenDiscovery2: You are awed by this massive machine and feel you should try building one yourself...

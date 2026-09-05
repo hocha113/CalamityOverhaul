@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.LaserTurre
     /// <summary>激光塔,远距单体狙击;贴图复用特斯拉塔,靠猩红色调区分</summary>
     internal class LaserTurret : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTower";
 
         /// <summary>系列色调:猩红,同贴图靠它与特斯拉塔区分</summary>

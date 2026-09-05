@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
     /// 怨念编织者，三段+右键冲刺
     internal class WeaverGrievances : ModItem
     {
+        public override string LocalizationCategory => "Items.Melee";
+
         public override string Texture => CWRConstant.Item_Melee + "WeaverGrievances";
 
         /// 三段连击计数
@@ -87,7 +89,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 6;
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
+        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, this);
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

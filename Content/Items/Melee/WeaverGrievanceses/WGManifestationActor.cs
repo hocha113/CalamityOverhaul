@@ -673,7 +673,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             }
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.6f, Volume = 0.5f });
             string text = Language.GetTextValue(
-                "Mods.CalamityOverhaul.Items.WeaverGrievances.RitualInventoryFullHint");
+                "Mods.CalamityOverhaul.Items.Melee.WeaverGrievances.RitualInventoryFullHint");
             CombatText.NewText(player.getRect(), new Color(204, 82, 112), text);
         }
 
@@ -721,7 +721,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             }
 
             string hint = Language.GetTextValue(
-                "Mods.CalamityOverhaul.Items.WeaverGrievances.RitualInteractHint");
+                "Mods.CalamityOverhaul.Items.Melee.WeaverGrievances.RitualInteractHint");
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 size = font.MeasureString(hint) * 0.9f;
             Vector2 position = SwordAnchor - Main.screenPosition + new Vector2(0f, -104f);

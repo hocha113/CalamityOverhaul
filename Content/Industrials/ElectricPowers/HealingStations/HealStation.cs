@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HealingStations
     /// <summary>治疗站,为范围内玩家提供再生光环;贴图复用特斯拉塔,靠暖粉色调区分</summary>
     internal class HealStation : ModItem
     {
+        public override string LocalizationCategory => "Industrials.Machines";
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTower";
 
         /// <summary>系列色调:暖粉,同贴图靠它与特斯拉塔区分</summary>

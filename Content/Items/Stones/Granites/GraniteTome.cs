@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     /// <summary>花岗魔典，充能三点齐射三发轻追踪球，命中碎晶</summary>
     internal class GraniteTome : ModItem
     {
+        public override string LocalizationCategory => "Items.Stones";
+
         public override void SetDefaults() {
             Item.width = Item.height = 34;
             Item.damage = 20;
