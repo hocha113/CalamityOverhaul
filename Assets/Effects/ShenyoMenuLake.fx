@@ -1,10 +1,12 @@
 // ============================================================================
-//ShenyoMenuLake.fx 鬼湖夜雨主菜单全景
-//TechLake：倒置明度压顶天穹（头顶近黑沉云、地平尸青雾光）+ 溺月（画云前被云吞）
-//         + 双层流动沉云 + 倾斜雨幡 + 低平远岸一线 + 镜面鬼湖
-//         （月光路铺向观者、碎波挂亮、三档深度带雨砸溅环+雨点碎闪、
+//ShenyoMenuLake.fx 鬼湖夜雨主菜单全景（分镜「溺月军阵」2026-09：仰视低地平线、巨月半沉逆光）
+//TechLake：倒置明度压顶天穹（头顶近黑沉云、地平尸青雾光）+ 巨大溺月（uMoonRadius 软边月盘+宽晕，
+//         贴地平线半沉入湖，斑驳盘面；军阵从月前切过成剪影）+ 双层流动沉云（月周云隙、云底吃月光）
+//         + 倾斜雨幡 + 低平远岸一线 + 地平线雾海（月光照亮，剪影从雾里切出）+ 镜面鬼湖
+//         （水中镜月被碎波切断、月光路铺向观者、碎波挂亮、三档深度带雨砸溅环+雨点碎闪、
 //          立影足下涟漪高度场：波包扩张+毛细颤纹，解析梯度定坡向——朝月坡亮/背月坡暗、
-//          月光路与碎波被坡度折弯、接触处压暗）+ 水线溅雾/潮雾带 + 雷闪惨白，Opaque 整幅铺底
+//          月光路与碎波被坡度折弯、接触处压暗）+ 水线溅雾/潮雾带
+//         + 雷闪全幅过曝（低空与雾海齐亮，军阵整体切成纯黑剪影），Opaque 整幅铺底
 //TechRain：视差雨幕层（溺月逆光挂亮）；uRainCfg/uRainBottom 参数化后
 //         由C#按远/中/近三次插层绘制——远雨止于水线、近雨盖顶，纵深由遮挡读出
 //uGust=风暴脉动：雨幕密度斜度、湖面溅环、雨幡同源呼吸
@@ -25,12 +27,13 @@ float uFlash;       //0-1 雷闪包络
 float uGust;        //0-1 风暴脉动
 float uHorizon;     //水线 y（uv）
 float2 uMoonUv;     //溺月圆心（uv）
+float uMoonRadius;  //溺月盘半径（uv 纵向尺度，软边）；晕圈按倍数外扩
 float4 uFeet[8];    //立影水线接触点：xy=uv z=在场（可>1，入水/沉湖时激波增幅） w=涟漪半径（透视空间尺度）
 float4 uRainCfg;    //雨幕层配置 x=频率倍率 y=速度倍率 z=透明度倍率 w=附加斜度
 float uRainBottom;  //雨幕下缘软截止（uv y）：远雨止于水线读出纵深
 
 //====== 湿墨调色板 ======
-static const float3 SKY_TOP = float3(0.020, 0.026, 0.034);     //头顶近黑沉云顶
+static const float3 SKY_TOP = float3(0.011, 0.015, 0.021);     //头顶近黑沉云顶
 static const float3 SKY_HOR = float3(0.185, 0.222, 0.232);     //地平尸青雾光
 static const float3 CLOUD_DARK = float3(0.043, 0.053, 0.064);  //沉云
 static const float3 CLOUD_UNDER = float3(0.165, 0.196, 0.204); //云底衬光
@@ -157,31 +160,33 @@ float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
     float2 uv = coords;
     float aspect = uScreenSize.x / uScreenSize.y;
 
-    //====== 天穹：倒置明度，头顶最黑、水线雾光反亮 ======
+    //====== 天穹：倒置明度，头顶最黑、水线雾光反亮；仰视机位下天占四分之三，压得更黑更久 ======
     float yn = saturate(uv.y / uHorizon);
     float2 skyPar = uParallax * 0.18;
-    float grad = pow(smoothstep(0.0, 0.95, yn), 1.30);
+    float grad = pow(smoothstep(0.0, 0.95, yn), 1.65);
     float wash = fbm2(float2((uv.x + skyPar.x) * 1.5 * aspect, yn * 1.5) + float2(uTime * 0.004, 0.0));
     float3 skyCol = lerp(SKY_TOP, SKY_HOR, grad) * (0.90 + wash * 0.20);
 
-    //====== 溺月：惨白晕斑慢呼吸，画在云前被云吞没 ======
+    //====== 溺月：巨大软边月盘半沉在地平线上，斑驳盘面慢呼吸，宽晕把低空整片托亮——军阵的逆光源 ======
     float2 moonP = uMoonUv + skyPar;
     float2 dm = (uv - moonP) * float2(aspect, 1.0);
     float mr = length(dm);
-    float breathe = 0.75 + 0.25 * sin(uTime * 0.07);
-    float halo = exp(-pow(mr / 0.235, 1.55));
-    float core = exp(-pow(mr / 0.058, 2.0));
-    skyCol += MOON_PALE * (halo * 0.30 + core * 0.62) * breathe;
+    float R = max(uMoonRadius, 0.01);
+    float breathe = 0.82 + 0.18 * sin(uTime * 0.07);
+    float halo = exp(-pow(mr / (R * 2.9), 1.5));
+    float disc = exp(-pow(mr / R, 3.2));
+    float mottle = 0.84 + 0.16 * fbm2(dm * 2.2 + 3.7);
+    skyCol += MOON_PALE * (halo * 0.40 + disc * 0.95 * mottle) * breathe;
 
-    //====== 沉云两层：大团慢漂压顶 + 低掠碎云；月周留一圈云隙 ======
-    float moonClear = saturate(1.0 - core * 0.62 - halo * 0.32);
+    //====== 沉云两层：大团慢漂压顶（压到更低）+ 低掠碎云；月周留云隙，云底吃月光 ======
+    float moonClear = saturate(1.0 - disc * 0.78 - halo * 0.30);
     float2 cloudPar = uParallax * 0.24;
     float2 cuv1 = float2(uv.x * 1.4 + cloudPar.x + uTime * 0.0021, yn * 2.2);
-    float cloud1 = smoothstep(0.38, 0.72, fbm2(cuv1)) * (1.0 - smoothstep(0.30, 0.70, yn));
+    float cloud1 = smoothstep(0.34, 0.70, fbm2(cuv1)) * (1.0 - smoothstep(0.40, 0.85, yn));
     cloud1 *= moonClear;
     float cloudEdge = cloud1 * (1.0 - cloud1) * 4.0;
-    skyCol = lerp(skyCol, CLOUD_DARK, cloud1 * 0.85);
-    skyCol += CLOUD_UNDER * cloudEdge * 0.20 * smoothstep(0.15, 0.50, yn);
+    skyCol = lerp(skyCol, CLOUD_DARK, cloud1 * 0.90);
+    skyCol += CLOUD_UNDER * cloudEdge * (0.20 + halo * 0.80) * smoothstep(0.15, 0.50, yn);
 
     float2 cuv2 = float2(uv.x * 2.6 + cloudPar.x * 1.4 + uTime * 0.015, yn * 3.4 + 7.7);
     float cloud2 = smoothstep(0.52, 0.78, fbm2(cuv2))
@@ -207,10 +212,11 @@ float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
     float ridgeM = smoothstep(ridgeY - 0.004, ridgeY + 0.004, uv.y);
     skyCol = lerp(skyCol, RIDGE_FAR, ridgeM * 0.90);
 
-    //====== 雷闪（天侧）：云底先亮的惨白 ======
+    //====== 雷闪（天侧）：全幅过曝——云底先亮，低空跟着整片泛白，军阵在这几帧切成纯黑剪影 ======
     float flashQ = uFlash * uFlash;
     float flashGrad = 1.0 - smoothstep(0.08, 0.62, yn);
-    skyCol += FLASH_PALE * flashQ * (0.22 + cloud1 * 0.50) * flashGrad;
+    //上半天留一点余地：左列标题按钮是惨白字，天顶不能白到把字吞掉
+    skyCol += FLASH_PALE * flashQ * (0.22 + cloud1 * 0.42 + 0.22 * flashGrad + 0.48 * smoothstep(0.50, 1.0, yn));
 
     //====== 鬼湖：镜面死水，月光路铺向观者 ======
     float d = saturate((uv.y - uHorizon) / max(1.0 - uHorizon, 0.001));
@@ -222,9 +228,9 @@ float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
     float4 rip = feetRipple(uv, aspect);
     float2 ruv = uv + rip.yz * 0.0009;
 
-    //月光路：随透视向观者展宽，横向微摆
+    //月光路：自镜月起随透视向观者展宽，横向微摆
     float pathX = uMoonUv.x + uParallax.x * lerp(0.18, 0.85, d);
-    float pw = lerp(0.014, 0.170, pow(d, 1.35));
+    float pw = lerp(R * 0.40, 0.22, pow(d, 1.35));
     float pWob = (noiseTex(float2(uv.y * 3.0 - uTime * 0.05, 0.77)) - 0.5) * 0.030 * d;
     float lp = exp(-pow(abs(ruv.x - pathX + pWob) / max(pw, 0.001), 1.7));
 
@@ -234,6 +240,17 @@ float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
     float glint = smoothstep(0.55, 0.95, shim);
     lakeCol += MOON_PALE * lp * (0.10 + glint * 0.55) * breathe;
     lakeCol += WATER_SHINE * glint * 0.07 * (0.30 + d * 0.70);
+
+    //水中镜月：溺月沉下去的那半截——软盘倒映在水线下，被碎波横切成断续亮条，涟漪坡度再折弯
+    float2 dmm = (ruv - float2(moonP.x, 2.0 * uHorizon - moonP.y)) * float2(aspect, 1.0);
+    float mrr = length(dmm);
+    float mdisc = exp(-pow(mrr / R, 3.2));
+    float mhalo = exp(-pow(mrr / (R * 2.2), 1.6));
+    //远水平静映得整、近岸才被碎波切断
+    float cutN = 0.40 + 0.60 * smoothstep(0.30, 0.75, nrm(noiseTex(
+        float2(ruv.x * 2.0 + uTime * 0.03, ruv.y * 60.0 - uTime * 0.50))));
+    float cut = lerp(1.0, cutN, smoothstep(0.0, 0.45, d));
+    lakeCol += MOON_PALE * (mhalo * 0.20 + mdisc * 0.62 * cut) * breathe;
 
     //====== 雨砸湖面：三档深度带溅环——近大远小、逐格哈希相位、月光路上更亮 ======
     float2 sp = float2(uv.x * aspect, uv.y);
@@ -275,19 +292,26 @@ float4 PSLake(float2 coords : TEXCOORD0) : COLOR0 {
     float waterSide = smoothstep(wl - 0.0012, wl + 0.0012, uv.y);
     float3 col = lerp(skyCol, lakeCol, waterSide);
 
+    //====== 地平线雾海：贴着水线向上漫起、被溺月从背后照亮的一层湿雾，军阵剪影从这里切出来；
+    //雷闪时整片齐亮 ======
+    float fogSea = exp(-max(uHorizon - uv.y, 0.0) * 13.0) * (1.0 - waterSide);
+    float fogN = fbm2(float2(uv.x * 2.6 * aspect + uTime * 0.012, uv.y * 7.0 - uTime * 0.02));
+    float fogLit = 0.30 + 0.70 * halo + flashQ * 1.20;
+    col += MIST_PALE * fogSea * (0.40 + 0.60 * fogN) * fogLit * 1.10;
+
     //====== 水线溅雾：雨砸水面弹起的薄雾，只挂水线上方一窄条、随阵风起伏 ======
     float sprayBand = exp(-max(uHorizon - uv.y, 0.0) * 60.0) * (1.0 - waterSide);
     float sprayN = nrm(noiseTex(float2(uv.x * 9.0 * aspect - uTime * 0.06, uv.y * 40.0 + uTime * 0.30)));
     col += MIST_PALE * sprayBand * (0.30 + 0.50 * sprayN) * (0.20 + uGust * 0.40);
 
-    //====== 水线潮雾带：两侧洇开的惨白湿气 ======
+    //====== 水线潮雾带：两侧洇开的惨白湿气（水下一侧也洇一点，让镜月与雾海接得上）======
     float mistBand = exp(-abs(uv.y - uHorizon) * 24.0);
     float mistN = fbm2(float2(uv.x * 2.2 * aspect + uTime * 0.010, 0.61));
     col += MIST_PALE * mistBand * (0.30 + 0.45 * mistN) * 0.40;
 
-    //轻渐晕聚焦画面中心
+    //渐晕聚焦画面中心；仰视分镜下压得稍重，四角沉下去衬托月前军阵
     float2 vd = (uv - 0.5) * float2(aspect, 1.0);
-    float vig = 1.0 - 0.20 * saturate(pow(length(vd) / 0.95, 2.2));
+    float vig = 1.0 - 0.27 * saturate(pow(length(vd) / 0.95, 2.2));
     col *= vig;
 
     return float4(col * uIntensity, 1.0);
@@ -300,9 +324,9 @@ float4 PSRain(float2 coords : TEXCOORD0) : COLOR0 {
     float2 uv = coords;
     float aspect = uScreenSize.x / uScreenSize.y;
 
-    //溺月逆光：雨丝行经月晕与月光路时被点亮
+    //溺月逆光：雨丝行经月晕与月光路时被点亮（晕圈尺度随 uMoonRadius）
     float2 dm = (uv - uMoonUv) * float2(aspect, 1.0);
-    float backlit = exp2(-dot(dm, dm) * 7.5);
+    float backlit = exp(-pow(length(dm) / (max(uMoonRadius, 0.01) * 2.6), 1.6));
 
     //层配置：远雨细慢暗少视差、近雨粗快亮满视差；阵风加斜加密
     float freq = uRainCfg.x;

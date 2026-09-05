@@ -15,19 +15,33 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 {
-    /// <summary>世纪之花主控：藤蔓悬吊运动+状态机，钩爪/触手/孢子为部件</summary>
+    /// <summary>
+    /// 世纪之花主控：藤蔓悬吊运动+状态机，钩爪/触手/孢子为部件。
+    /// 联机模型与原版/灾厄 Boss 一致：运动数学在所有端逐帧确定性积分，服务端只在决策点
+    /// (换状态、扑出、锚定、换目标)与低频心跳发快照；状态计时器与一次性决策经 <see cref="NPCOverride.ai"/>
+    /// 热槽随快照同包到达，客户端收养后从同一起点推进，快照只需纠正几像素、由原版 netOffset 平滑吸收。
+    /// 曾试过让客户端只按同步速度定速积分(0.9203 #77 / 0.9205 #51)，服务端速度每帧在变，
+    /// 每 10 帧一次硬拉齐正是「联机抽搐」本身，已回退
+    /// </summary>
     internal class PlanteraAI : BrutalNPCOverride, ICWRLoader
     {
         #region Data
         public override int TargetID => NPCID.Plantera;
 
+        /// <summary>兜底心跳间隔：确定性积分后两端只差几像素，交给原版 netOffset 无感吸收</summary>
+        private const int HeartbeatFrames = 45;
+
         private VaultStateMachine<PlanteraStateContext> stateMachine;
         private PlanteraStateContext stateContext;
         private Player targetPlayer;
-        /// <summary>激怒持续帧计数：滞回消抖，防丛林边界横跳时数值抖动</summary>
+        /// <summary>激怒持续帧计数：滞回消抖，防丛林边界横跳时数值抖动(权威端)</summary>
         private int enrageArmTimer;
         /// <summary>激怒宣告冷却，防边界反复横跳时吼声刷屏</summary>
         private int enrageRoarCooldown;
+        /// <summary>客户端：本帧收到过快照，热槽待收养</summary>
+        private bool hotDirty;
+        /// <summary>权威端：上次同步出去的目标，换目标即发包</summary>
+        private int lastSyncedTarget = -1;
 
         /// <summary>供部件/弹幕读主控状态索引</summary>
         internal static PlanteraStateIndex GetStateIndex(NPC plantera) => (PlanteraStateIndex)(int)plantera.ai[2];
@@ -66,6 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                 IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<PlanteraStateContext>(stateContext, aiSlot: 2);
+            stateMachine.OnStateChanged += OnStateChanged;
 
             //客户端从ai[2]恢复状态
             if (VaultUtils.isClient) {
@@ -76,6 +91,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             else {
                 stateMachine.SetInitialState(new PlanteraIntroState());
             }
+        }
+
+        /// <summary>
+        /// 客户端换状态(初始/NetSync)后立刻收养热槽：新状态实例的 Timer 等已被 OnEnter 清零，
+        /// 而带来这次切换的快照里同包装着服务端此刻的计时器
+        /// </summary>
+        private void OnStateChanged(IVaultState<PlanteraStateContext> oldState,
+            IVaultState<PlanteraStateContext> newState, StateChangeReason reason) {
+            if (VaultUtils.isClient && newState is PlanteraStateBase state) {
+                state.ReadHot(ai, stateContext);
+            }
+        }
+
+        /// <summary>快照到达(随原版 SyncNPC 的 ExtraAI)：标脏，下一帧 AI 开头收养</summary>
+        public override void NetReceive(System.IO.BinaryReader reader) {
+            base.NetReceive(reader);
+            hotDirty = true;
         }
         #endregion
 
@@ -96,6 +128,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             stateContext.GlowPulse = stateContext.IsPhase2 ? 0.32f : 0.22f;
             stateContext.BodyScalePulse = 0.012f * (float)Math.Sin(stateContext.SwayPhase * 1.7f);
             stateContext.RotationMode = 0;
+            stateContext.ShakeOffset = Vector2.Zero;
 
             //激怒红辉平滑趋近，回丛林缓缓熄灭
             stateContext.RageGlow = MathHelper.Lerp(stateContext.RageGlow, stateContext.IsEnraged ? 1f : 0f, 0.06f);
@@ -106,14 +139,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             //每帧基线，状态在Update里覆盖
             ApplyBaselineStats();
 
-            //客户端上状态 OnUpdate 只做表现（状态机已忽略客户端的切换返回值），但各状态内的
-            //本地速度写入仍会与每 10 帧的服务器快照互相拉扯，即 UpdateSuspension 收权后残余的
-            //联机抽搐（反馈五 #51）；速度全权用同步值，状态里的位置抖动等纯表现写入照旧
-            Vector2 syncedVelocity = npc.velocity;
-            stateMachine?.Update();
+            //客户端：快照到了先把服务端的计时器/一次性决策收养进当前状态，再和服务端跑同一套数学
             if (VaultUtils.isClient) {
-                npc.velocity = syncedVelocity;
+                AdoptHotIfDirty();
             }
+
+            //状态在各端都真实推进(速度也写)；切换裁决仍只在权威端，客户端由 ai[2] 跟随
+            stateMachine?.Update();
 
             if (!stateContext.SkipDefaultMovement) {
                 UpdateSuspension();
@@ -122,8 +154,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             UpdateRotation();
             UpdateAmbientDressing();
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
+            if (!VaultUtils.isClient) {
+                WriteHot();
+                if (Main.GameUpdateCount % HeartbeatFrames == 0) {
+                    npc.netUpdate = true;
+                }
             }
 
             return false;
@@ -134,6 +169,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                 npc.TargetClosest();
             }
             targetPlayer = Main.player[npc.target];
+
+            //换目标是决策点：客户端在收到之前会用自己的最近玩家算悬吊目标，越早对账越少漂
+            if (!VaultUtils.isClient && npc.target != lastSyncedTarget) {
+                lastSyncedTarget = npc.target;
+                npc.netUpdate = true;
+            }
 
             if (!targetPlayer.Alives()) {
                 if (!VaultUtils.isClient && stateMachine?.CurrentState is not PlanteraDespawnState and not PlanteraDeathState) {
@@ -148,16 +189,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             stateContext.IsAsuraMode = CWRWorld.Asura;
             stateContext.IsLowLife = npc.life < npc.lifeMax * PlanteraDirector.NovaLifeRatio;
 
-            //激怒：目标出丛林或上地表(原版规则)；滞回消抖：连续30帧在外才落怒，一回丛林立即解除
-            bool surface = targetPlayer.position.Y < Main.worldSurface * 16.0;
-            bool underworld = targetPlayer.position.Y > Main.UnderworldLayer * 16;
-            bool enrageRaw = !CWRRef.GetBossRushActive() && (!targetPlayer.ZoneJungle || surface || underworld);
-            enrageArmTimer = enrageRaw ? enrageArmTimer + 1 : 0;
-            bool enragedNow = enrageArmTimer >= 30;
-            if (enragedNow && !stateContext.IsEnraged) {
-                AnnounceEnrage();
+            //激怒：目标出丛林或上地表(原版规则)；滞回消抖：连续30帧在外才落怒，一回丛林立即解除。
+            //只在权威端裁决并经热槽位标志下发：激怒改移速倍率与招式时长，两端若错帧会分叉
+            if (!VaultUtils.isClient) {
+                bool surface = targetPlayer.position.Y < Main.worldSurface * 16.0;
+                bool underworld = targetPlayer.position.Y > Main.UnderworldLayer * 16;
+                bool enrageRaw = !CWRRef.GetBossRushActive() && (!targetPlayer.ZoneJungle || surface || underworld);
+                enrageArmTimer = enrageRaw ? enrageArmTimer + 1 : 0;
+                ApplyEnrage(enrageArmTimer >= 30);
             }
-            stateContext.IsEnraged = enragedNow;
             if (enrageRoarCooldown > 0) {
                 enrageRoarCooldown--;
             }
@@ -172,15 +212,57 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                 npc.ai[3] = stateContext.IsPhase2 ? 1f : 0f;
             }
 
-            if (Main.GameUpdateCount % 10 == 0) {
-                stateContext.RefreshParts();
-            }
+            //部件表每帧刷：两端的 GameUpdateCount 不同步，按它分频会让钩爪质心在两端错开几帧
+            stateContext.RefreshParts();
 
             //投技冷却权威端递减
             if (!VaultUtils.isClient && stateContext.VineFeastCooldown > 0) {
                 stateContext.VineFeastCooldown--;
             }
         }
+
+        /// <summary>落怒/解怒统一入口：上升沿宣告；权威端翻转即发包</summary>
+        private void ApplyEnrage(bool enragedNow) {
+            if (enragedNow == stateContext.IsEnraged) {
+                return;
+            }
+            if (enragedNow) {
+                AnnounceEnrage();
+            }
+            stateContext.IsEnraged = enragedNow;
+            if (!VaultUtils.isClient) {
+                npc.netUpdate = true;
+            }
+        }
+
+        #region 热槽收养/写出
+        /// <summary>权威端每帧末：把摆动相位、位标志与当前状态的计时器写进同步槽，随下一次快照出门</summary>
+        private void WriteHot() {
+            ai[PlanteraHotSlot.Sway] = stateContext.SwayPhase;
+            ai[PlanteraHotSlot.Flags] = stateContext.IsEnraged ? PlanteraHotSlot.FlagEnraged : 0f;
+            if (stateMachine.CurrentState is PlanteraStateBase state) {
+                state.WriteHot(ai, stateContext);
+            }
+        }
+
+        /// <summary>
+        /// 客户端收包后收养热槽。状态若在这包里换了，Update() 内的 NetSync 切换会经
+        /// <see cref="OnStateChanged"/> 收养新状态，这里只管同态时的计时器对账
+        /// </summary>
+        private void AdoptHotIfDirty() {
+            if (!hotDirty) {
+                return;
+            }
+            hotDirty = false;
+
+            stateContext.SwayPhase = ai[PlanteraHotSlot.Sway];
+            ApplyEnrage(((int)ai[PlanteraHotSlot.Flags] & PlanteraHotSlot.FlagEnraged) != 0);
+
+            if (stateMachine.CurrentState is PlanteraStateBase state && state.StateId == (int)npc.ai[2]) {
+                state.ReadHot(ai, stateContext);
+            }
+        }
+        #endregion
 
         /// <summary>激怒落怒瞬间的宣告：怒吼+震屏+血红花瓣爆，演出态不抢戏</summary>
         private void AnnounceEnrage() {
@@ -251,15 +333,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 
         #region 悬吊运动
         /// <summary>藤蔓悬吊：身体被拉向钩爪质心+目标偏移，弹簧+摆动。
-        /// 速度只在权威端写：客户端本地积分会与每10帧的服务器快照互相拉扯，
-        /// 即联机抽搐的根源(反馈四 #77，netcode"两端都写位置"病族)；
-        /// 客户端速度全权用同步值，本地只推进摆动相位等纯表现</summary>
+        /// 各端逐帧确定性积分(镜像原版/灾厄 Boss 运动模型)：输入只有钩爪坐标(部件自身确定性飞行)、
+        /// 目标玩家坐标(原版同步)、状态声明的悬吊参数(计时器经热槽对齐)与摆动相位(热槽)，
+        /// 无随机数；两端轨迹一致，快照只修几像素</summary>
         private void UpdateSuspension() {
-            if (VaultUtils.isClient) {
-                stateContext.SwayPhase += 0.033f + npc.velocity.Length() * 0.0012f;
-                return;
-            }
-
             Vector2 centroid = stateContext.HookCentroid();
             Vector2 toPlayer = targetPlayer.Center - centroid;
             float leash = stateContext.IsPhase2 ? PlanteraDirector.LeashP2 : PlanteraDirector.LeashP1;
@@ -389,7 +466,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             int frameHeight = texture.Height / Main.npcFrameCount[npc.type];
             Rectangle frameRec = new(0, npc.frame.Y, texture.Width, frameHeight);
             Vector2 origin = frameRec.Size() / 2f;
-            Vector2 mainPos = npc.Center - screenPos;
+            //痉挛抖动只加在绘制位，物理位置各端保持一致
+            Vector2 mainPos = npc.Center - screenPos + stateContext.ShakeOffset;
             float scale = npc.scale * (1f + stateContext.BodyScalePulse);
 
             //蓄力特效画在本体后

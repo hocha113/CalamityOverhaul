@@ -36,6 +36,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public PlanteraSeedGatlingState() {
         }
 
+        /// <summary>热槽：A/B 锁体点 C 瞄准角 D/E 后坐偏移</summary>
+        public override void WriteHot(float[] hot, PlanteraStateContext context) {
+            base.WriteHot(hot, context);
+            hot[PlanteraHotSlot.A] = lockPoint.X;
+            hot[PlanteraHotSlot.B] = lockPoint.Y;
+            hot[PlanteraHotSlot.C] = aimAngle;
+            hot[PlanteraHotSlot.D] = recoilOffset.X;
+            hot[PlanteraHotSlot.E] = recoilOffset.Y;
+        }
+
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            base.ReadHot(hot, context);
+            lockPoint = new Vector2(hot[PlanteraHotSlot.A], hot[PlanteraHotSlot.B]);
+            aimAngle = hot[PlanteraHotSlot.C];
+            recoilOffset = new Vector2(hot[PlanteraHotSlot.D], hot[PlanteraHotSlot.E]);
+        }
+
         public override void OnEnter(PlanteraStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;

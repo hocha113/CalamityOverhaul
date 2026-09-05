@@ -166,8 +166,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
             bool latched = PlanteraAI.GetStateIndex(boss) == PlanteraStateIndex.VineFeast
                 && sub >= PlanteraVineFeastState.SubDrag && sub <= PlanteraVineFeastState.SubSpit;
 
-            //本体→梢头的活藤；飞行/拖拽绷直，消散回软
-            float dist = Vector2.Distance(boss.Center, Projectile.Center);
+            //本体→梢头的活藤；飞行/拖拽绷直，消散回软。藤根跟本体的联机平滑绘制位(position+netOffset)
+            Vector2 root = boss.Center + boss.netOffset;
+            float dist = Vector2.Distance(root, Projectile.Center);
             VineParams vine = VineParams.Default;
             vine.RestLength = dist + (latched ? 4f : 18f);
             vine.HalfWidth = 8f;
@@ -180,7 +181,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
             vine.Phase2 = true;
             vine.Seed = spawnSeed;
 
-            PlanteraVineRenderer.DrawVine(Main.spriteBatch, boss.Center, Projectile.Center, vine);
+            PlanteraVineRenderer.DrawVine(Main.spriteBatch, root, Projectile.Center, vine);
 
             //梢头爪叶：三片瓣叶扇形张开，缠中后收拢扣紧
             Texture2D petal = CWRAsset.Extra_98.Value;

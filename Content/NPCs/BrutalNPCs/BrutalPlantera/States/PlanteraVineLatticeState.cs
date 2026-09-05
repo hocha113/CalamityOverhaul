@@ -34,6 +34,39 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public PlanteraVineLatticeState() {
         }
 
+        /// <summary>热槽：A 滑轨参数 B 滑轨方向(只翻一次，反转标志由它派生)</summary>
+        public override void WriteHot(float[] hot, PlanteraStateContext context) {
+            base.WriteHot(hot, context);
+            hot[PlanteraHotSlot.A] = railPos;
+            hot[PlanteraHotSlot.B] = railDir;
+        }
+
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            base.ReadHot(hot, context);
+            railPos = hot[PlanteraHotSlot.A];
+            railDir = hot[PlanteraHotSlot.B] < 0f ? -1 : 1;
+            //服务端已变轨而本地还没：记下防二次翻向；只慢半拍就把预告补上，中途加入则静默
+            if (railDir < 0 && !reversed) {
+                reversed = true;
+                if (Timer <= ReverseTick + CueCatchUpGrace) {
+                    PlayReverseCue(context);
+                }
+            }
+        }
+
+        /// <summary>中段变轨时刻</summary>
+        private const int ReverseTick = (WeaveEnd + PressureEnd) / 2;
+
+        /// <summary>变轨预告：闪光+咔声(本机演出)</summary>
+        private static void PlayReverseCue(PlanteraStateContext context) {
+            NPC npc = context.Npc;
+            context.GlowPulse = 1f;
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = 0.1f, Volume = 0.9f }, npc.Center);
+                PlanteraRenderHelper.SpawnPetalBurst(npc.Center, 8, 5f, false);
+            }
+        }
+
         public override void OnEnter(PlanteraStateContext context) {
             base.OnEnter(context);
             railPos = 0f;
@@ -149,14 +182,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             }
 
             //中段变轨(预告：闪光+咔声)
-            if (!reversed && Timer > (WeaveEnd + PressureEnd) / 2) {
+            if (!reversed && Timer > ReverseTick) {
                 reversed = true;
                 railDir = -railDir;
-                context.GlowPulse = 1f;
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = 0.1f, Volume = 0.9f }, npc.Center);
-                    PlanteraRenderHelper.SpawnPetalBurst(npc.Center, 8, 5f, false);
-                }
+                PlayReverseCue(context);
             }
 
             //滑轨推进：靠近玩家所在边时加速(压迫)

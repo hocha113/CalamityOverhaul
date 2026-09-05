@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
     /// （着色器侧折射压扁+随深衰减），倒影只映水面以上的身体；接触点喂给两只着色器共享的
     /// 涟漪高度场（uFeet），湖面坡向明暗、倒影与水下段的扭动同源同拍。<br/>
     /// 立影循环走「汇聚成形→驻立→坠散入湖→缺席」的黑雨拍子（承 <see cref="Scenarios.Shenyo.ShenyoPortraitRainRenderer"/> 的入场语言），
-    /// 右侧大近影为常驻锚。着色器或噪声缺席时退化为 CPU 渐变+压色立影，绝不黑屏。<br/>
+    /// 常驻锚影中心在画外右侧、只有伞沿压进右上角（分镜「溺月军阵」二稿：镜头推近，两位大副影夹月成门）。
+    /// 着色器或噪声缺席时退化为 CPU 渐变+压色立影，绝不黑屏。<br/>
     /// 调用契约：进入 <see cref="Draw"/> 时批次已结束，返回时不留任何已开启批次。
     /// </summary>
     internal static class ShenyoGhostLakeScene
@@ -63,29 +64,52 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             public readonly float Seed = seed;
         }
 
+        //湖面只剩四分之一屏，两行雾带贴着水线往下排；镜头推近后雾片也随之放大
         private static readonly MistRow[] MistRows = [
-            new(y: 0.648f, count: 4, widthFrac: 0.42f, heightFrac: 0.085f,
+            new(y: ShenyoMenuTheme.HorizonY + 0.063f, count: 4, widthFrac: 0.42f, heightFrac: 0.135f,
                 alpha: 0.085f, parallax: 0.30f, driftSpeed: 0.0045f, seed: 0.37f),
-            new(y: 0.740f, count: 3, widthFrac: 0.58f, heightFrac: 0.125f,
-                alpha: 0.065f, parallax: 0.55f, driftSpeed: 0.0080f, seed: 0.71f),
+            new(y: ShenyoMenuTheme.HorizonY + 0.190f, count: 3, widthFrac: 0.58f, heightFrac: 0.190f,
+                alpha: 0.060f, parallax: 0.55f, driftSpeed: 0.0080f, seed: 0.71f),
         ];
 
         private static readonly FigureState[] states = BuildStates();
         private static readonly Vector4[] feetBuffer = new Vector4[8];
 
-        //叠影群：常驻不散，只记汇聚进度与入场延迟；绘制按深度升序（远者先画才叠得对）
+        //叠影群：常驻不散，只记汇聚进度与入场延迟
         private static readonly float[] crowdForm = new float[ShenyoMenuTheme.Crowd.Length];
         private static readonly int[] crowdDelay = new int[ShenyoMenuTheme.Crowd.Length];
-        private static readonly int[] crowdOrder = BuildCrowdOrder();
         private const int CrowdReformDuration = 150;
 
-        private static int[] BuildCrowdOrder() {
-            var order = new int[ShenyoMenuTheme.Crowd.Length];
+        /// <summary>远景层深度上界：此深度以下的生灭立影与军阵混排在同一批里</summary>
+        private const float FarDepthMax = 0.30f;
+
+        //绘制顺序只认深度：军阵与远排生灭立影混成一个按深度升序的远景序列，
+        //中近景组内同样按深度序——否则小影（更远）会压在大影前面（2026-09 实机报错）
+        private readonly record struct FarEntry(bool IsCrowd, int Index, float Depth);
+        private static readonly FarEntry[] farOrder = BuildFarOrder();
+        private static readonly int[] figureOrder = BuildFigureOrder();
+
+        private static FarEntry[] BuildFarOrder() {
+            var list = new System.Collections.Generic.List<FarEntry>();
+            for (int i = 0; i < ShenyoMenuTheme.Crowd.Length; i++) {
+                list.Add(new FarEntry(true, i, ShenyoMenuTheme.Crowd[i].Depth));
+            }
+            for (int i = 0; i < ShenyoMenuTheme.Figures.Length; i++) {
+                if (ShenyoMenuTheme.Figures[i].Depth < FarDepthMax) {
+                    list.Add(new FarEntry(false, i, ShenyoMenuTheme.Figures[i].Depth));
+                }
+            }
+            list.Sort((a, b) => a.Depth.CompareTo(b.Depth));
+            return list.ToArray();
+        }
+
+        private static int[] BuildFigureOrder() {
+            var order = new int[ShenyoMenuTheme.Figures.Length];
             for (int i = 0; i < order.Length; i++) {
                 order[i] = i;
             }
             Array.Sort(order, (a, b) =>
-                ShenyoMenuTheme.Crowd[a].Depth.CompareTo(ShenyoMenuTheme.Crowd[b].Depth));
+                ShenyoMenuTheme.Figures[a].Depth.CompareTo(ShenyoMenuTheme.Figures[b].Depth));
             return order;
         }
 
@@ -172,9 +196,9 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                 }
             }
 
-            //远雷：光起→数拍后二击回响→再数拍后闷雷落地
+            //远雷：光起→数拍后二击回响→再数拍后闷雷落地；军阵分镜下雷闪是"全幅剪影揭示"，来得更勤
             if (--thunderTimer <= 0) {
-                thunderTimer = 1080 + Main.rand.Next(1320);
+                thunderTimer = 780 + Main.rand.Next(960);
                 flash = 1f;
                 flashEcho = Main.rand.Next(9, 16);
                 thunderSoundDelay = Main.rand.Next(15, 40);
@@ -304,13 +328,13 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
 
             float time = (float)Main.timeForVisualEffects * 0.016f;
             DrawLakePass(spriteBatch, graphicsDevice, lake, noise, white, vpW, vpH, time, fade);
-            DrawCrowd(spriteBatch, graphicsDevice, ghost, noise, portrait, vpW, vpH, time, fade);
-            //远雨幕：细/慢/暗，止于水线——立影身后也在下雨，纵深由遮挡读出
+            //远景层：军阵与远排生灭立影按深度混排
+            DrawFarLayer(spriteBatch, graphicsDevice, ghost, noise, portrait, vpW, vpH, time, fade);
+            //远雨幕：细/慢/暗，止于水线——远景身后也在下雨，纵深由遮挡读出
             DrawRainPass(spriteBatch, graphicsDevice, lake, noise, white, vpW, vpH, time, fade,
                 new Vector4(1.65f, 0.70f, 0.45f, 0.00f), ShenyoMenuTheme.HorizonY + 0.02f);
-            DrawFigureGroup(spriteBatch, graphicsDevice, ghost, noise, portrait, vpW, vpH, time, fade, 0f, 0.30f);
             DrawMistRow(spriteBatch, MistRows[0], vpW, vpH, time, fade);
-            DrawFigureGroup(spriteBatch, graphicsDevice, ghost, noise, portrait, vpW, vpH, time, fade, 0.30f, 0.55f);
+            DrawFigureGroup(spriteBatch, graphicsDevice, ghost, noise, portrait, vpW, vpH, time, fade, FarDepthMax, 0.55f);
             //中雨幕：插在中影与近影之间
             DrawRainPass(spriteBatch, graphicsDevice, lake, noise, white, vpW, vpH, time, fade,
                 new Vector4(1.25f, 0.85f, 0.65f, 0.02f), ShenyoMenuTheme.HorizonY + 0.20f);
@@ -398,6 +422,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             lake.Parameters["uGust"]?.SetValue(gust);
             lake.Parameters["uHorizon"]?.SetValue(ShenyoMenuTheme.HorizonY);
             lake.Parameters["uMoonUv"]?.SetValue(ShenyoMenuTheme.MoonUv);
+            lake.Parameters["uMoonRadius"]?.SetValue(ShenyoMenuTheme.MoonRadius);
             FillFeetBuffer(fade);
             lake.Parameters["uFeet"]?.SetValue(feetBuffer);
         }
@@ -419,16 +444,21 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             }
         }
 
-        //两只着色器共用同一份接触点数据；ghost 侧还要屏幕尺寸与水线换算透视
+        //两只着色器共用同一份接触点数据与雷闪包络；ghost 侧还要屏幕尺寸与水线换算透视
         private static void SetGhostSceneParams(Effect ghost, int vpW, int vpH, float fade) {
             ghost.Parameters["uScreenSize"]?.SetValue(new Vector2(vpW, vpH));
             ghost.Parameters["uHorizon"]?.SetValue(ShenyoMenuTheme.HorizonY);
+            ghost.Parameters["uFlash"]?.SetValue(flash);
             FillFeetBuffer(fade);
             ghost.Parameters["uFeet"]?.SetValue(feetBuffer);
         }
 
-        //====== 叠影群：水线处一排交叠微影，重模糊高潮雾、常驻不散、零星淡眼 ======
-        private static void DrawCrowd(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,
+        //逆光度：胸口（本体顶+0.38 身高）落在溺月晕圈内的程度
+        private static float Backlit(float xPx, float chestPx, int vpW, int vpH)
+            => ShenyoMenuTheme.FigureBacklit(xPx / vpW, chestPx / vpH, vpW / (float)vpH);
+
+        //====== 远景层：军阵微影与远排生灭立影按深度混排在同一批 ======
+        private static void DrawFarLayer(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,
             Effect ghost, Texture2D noise, Texture2D portrait, int vpW, int vpH, float time, float fade) {
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
@@ -439,41 +469,55 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                 ghost.CurrentTechnique = ghost.Techniques["TechGhost"];
                 SetGhostSceneParams(ghost, vpW, vpH, fade);
 
-                foreach (int i in crowdOrder) {
-                    float form = crowdForm[i];
-                    if (form <= 0.003f) {
-                        continue;
+                foreach (FarEntry entry in farOrder) {
+                    if (entry.IsCrowd) {
+                        DrawCrowdFigure(spriteBatch, ghost, portrait, vpW, vpH, time, fade, entry.Index);
                     }
-                    ShenyoMenuTheme.CrowdDef def = ShenyoMenuTheme.Crowd[i];
-                    float heightPx = ShenyoMenuTheme.FigureHeight(def.Depth) * vpH;
-                    float scale = heightPx / portrait.Height;
-                    float widthPx = portrait.Width * scale;
-                    float xUv = def.X + parallax.X * ShenyoMenuTheme.ParallaxMax.X
-                        * ShenyoMenuTheme.FigureParallax(def.Depth);
-                    float xPx = xUv * vpW;
-                    float waterPx = ShenyoMenuTheme.FigureWaterlineY(def.Depth) * vpH;
-                    Vector2 bodyPos = new(xPx - widthPx * 0.5f, waterPx - heightPx * ShenyoMenuTheme.WaterlineV);
-                    SpriteEffects flip = def.Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-                    //淡眼慢呼吸；大多数为无目的纯剪影
-                    float eyeGlow = def.EyeMul <= 0f ? 0f
-                        : def.EyeMul * 0.42f * (0.80f + 0.20f * MathF.Sin(tickCount * 0.011f + i * 1.7f));
-                    float blur = ShenyoMenuTheme.BlurTexels(2.2f, scale);
-                    //雾化封顶：群影必须比地平雾暗一档，否则融底隐形
-                    float haze = MathHelper.Clamp(ShenyoMenuTheme.FigureHaze(def.Depth) + 0.06f, 0f, 0.62f);
-                    Vector2 moonDir = MoonDirTex(xPx, bodyPos.Y + heightPx * 0.38f, vpW, vpH, def.Flip);
-
-                    SetGhostParams(ghost, time, form, 0f, haze, reflect: 0f,
-                        alpha: def.Alpha * fade, wobble: 1.2f, seed: 20f + i * 1.91f,
-                        eyeGlow, moonDir, blur,
-                        ScreenRect(bodyPos, widthPx, heightPx, vpW, vpH), BodyVMap, def.Flip);
-                    ghost.CurrentTechnique.Passes[0].Apply();
-                    spriteBatch.Draw(portrait, bodyPos, null,
-                        Color.White, 0f, Vector2.Zero, scale, flip, 0f);
+                    else {
+                        DrawFigure(spriteBatch, ghost, portrait, vpW, vpH, time, fade, entry.Index);
+                    }
                 }
             } finally {
                 spriteBatch.End();
             }
+        }
+
+        //军阵单影：重模糊高潮雾、常驻不散、淡眼；批次与技法由调用方备好
+        private static void DrawCrowdFigure(SpriteBatch spriteBatch, Effect ghost, Texture2D portrait,
+            int vpW, int vpH, float time, float fade, int i) {
+
+            float form = crowdForm[i];
+            if (form <= 0.003f) {
+                return;
+            }
+            ShenyoMenuTheme.CrowdDef def = ShenyoMenuTheme.Crowd[i];
+            float heightPx = ShenyoMenuTheme.FigureHeight(def.Depth) * vpH;
+            float scale = heightPx / portrait.Height;
+            float widthPx = portrait.Width * scale;
+            float xUv = def.X + parallax.X * ShenyoMenuTheme.ParallaxMax.X
+                * ShenyoMenuTheme.FigureParallax(def.Depth);
+            float xPx = xUv * vpW;
+            float waterPx = ShenyoMenuTheme.FigureWaterlineY(def.Depth) * vpH;
+            Vector2 bodyPos = new(xPx - widthPx * 0.5f, waterPx - heightPx * ShenyoMenuTheme.WaterlineV);
+            SpriteEffects flip = def.Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            //淡眼慢呼吸；无目者为纯剪影
+            float eyeGlow = def.EyeMul <= 0f ? 0f
+                : def.EyeMul * 0.42f * (0.80f + 0.20f * MathF.Sin(tickCount * 0.011f + i * 1.7f));
+            float blur = ShenyoMenuTheme.BlurTexels(2.2f, scale);
+            //雾化封顶：群影必须比地平雾暗一档，否则融底隐形（月前的一段由 uBacklit 在着色器里再压黑）
+            float haze = MathHelper.Clamp(ShenyoMenuTheme.FigureHaze(def.Depth) + 0.06f, 0f, 0.62f);
+            float chestPx = bodyPos.Y + heightPx * 0.38f;
+            Vector2 moonDir = MoonDirTex(xPx, chestPx, vpW, vpH, def.Flip);
+
+            SetGhostParams(ghost, time, form, 0f, haze, reflect: 0f,
+                alpha: def.Alpha * fade, wobble: 1.2f, seed: 20f + i * 1.91f,
+                eyeGlow, moonDir, blur,
+                ScreenRect(bodyPos, widthPx, heightPx, vpW, vpH), BodyVMap, def.Flip,
+                Backlit(xPx, chestPx, vpW, vpH));
+            ghost.CurrentTechnique.Passes[0].Apply();
+            spriteBatch.Draw(portrait, bodyPos, null,
+                Color.White, 0f, Vector2.Zero, scale, flip, 0f);
         }
 
         //精灵目标矩形换成屏幕 uv（着色器按屏幕位置取涟漪坡度）
@@ -493,82 +537,95 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                 ghost.CurrentTechnique = ghost.Techniques["TechGhost"];
                 SetGhostSceneParams(ghost, vpW, vpH, fade);
 
-                for (int i = 0; i < ShenyoMenuTheme.Figures.Length; i++) {
-                    ShenyoMenuTheme.FigureDef def = ShenyoMenuTheme.Figures[i];
-                    if (def.Depth < depthMin || def.Depth >= depthMax) {
+                //组内按深度升序：远者先画
+                foreach (int i in figureOrder) {
+                    float depth = ShenyoMenuTheme.Figures[i].Depth;
+                    if (depth < depthMin || depth >= depthMax) {
                         continue;
                     }
-                    FigureState st = states[i];
-                    if (st.Form <= 0.003f) {
-                        continue;
-                    }
-
-                    float heightPx = ShenyoMenuTheme.FigureHeight(def.Depth) * vpH;
-                    float scale = heightPx / portrait.Height;
-                    float widthPx = portrait.Width * scale;
-                    float xUv = def.X + parallax.X * ShenyoMenuTheme.ParallaxMax.X
-                        * ShenyoMenuTheme.FigureParallax(def.Depth);
-                    float xPx = xUv * vpW;
-                    //水线接触点：立绘 WaterlineRow 行落在这里，以下没入湖中
-                    float waterPx = ShenyoMenuTheme.FigureWaterlineY(def.Depth) * vpH;
-                    Vector2 bodyPos = new(xPx - widthPx * 0.5f, waterPx - heightPx * ShenyoMenuTheme.WaterlineV);
-                    Vector4 bodyRect = ScreenRect(bodyPos, widthPx, heightPx, vpW, vpH);
-
-                    SpriteEffects flip = def.Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                    //缘光光向：逐影指向溺月（翻面镜像u轴，倒影再翻v轴）；胸口高度取样
-                    Vector2 moonDir = MoonDirTex(xPx, bodyPos.Y + heightPx * 0.38f, vpW, vpH, def.Flip);
-                    Vector2 moonDirRefl = new(moonDir.X, -moonDir.Y);
-                    float wobble = ShenyoMenuTheme.FigureWobble(def.Depth);
-                    float haze = ShenyoMenuTheme.FigureHaze(def.Depth);
-                    float seed = i * 1.37f + 0.7f;
-                    float blur = ShenyoMenuTheme.BlurTexels(ShenyoMenuTheme.FigureBlurPx(def.Depth), scale);
-
-                    //倒影：只映水面以上的身体（源矩形截到水线），自接触点向下翻面压扁；接触点在屏内才有得画
-                    if (waterPx < vpH - 2f) {
-                        float reflHeightPx = ShenyoMenuTheme.WaterlineRow * scale * 0.82f;
-                        Vector2 reflPos = new(bodyPos.X, waterPx);
-                        SetGhostParams(ghost, time, st.Form, 0f, haze + 0.10f, reflect: 1f,
-                            alpha: 0.85f * fade, wobble, seed, st.EyeGlow * 0.35f, moonDirRefl, blur,
-                            ScreenRect(reflPos, widthPx, reflHeightPx, vpW, vpH), ReflectVMap, def.Flip);
-                        ghost.CurrentTechnique.Passes[0].Apply();
-                        spriteBatch.Draw(portrait, reflPos, ReflectSource,
-                            Color.White, 0f, Vector2.Zero, new Vector2(scale, scale * 0.82f),
-                            flip | SpriteEffects.FlipVertically, 0f);
-                    }
-
-                    //重影错版：远/中影的第二重曝光缓慢漂移，锚影保持清晰不叠
-                    if (!def.Anchor && def.Depth < 0.55f) {
-                        bool far = def.Depth < 0.30f;
-                        float echoAmp = far ? 2.2f : 1.4f;
-                        Vector2 echoOff = new(
-                            MathF.Sin(time * 0.9f + i * 2.3f) * echoAmp,
-                            MathF.Cos(time * 0.7f + i * 1.9f) * echoAmp * 0.6f - echoAmp * 0.4f);
-                        SetGhostParams(ghost, time, st.Form, 0f,
-                            MathHelper.Clamp(haze + 0.15f, 0f, 0.85f), reflect: 0f,
-                            alpha: (far ? 0.34f : 0.20f) * st.Form * fade, wobble, seed + 7.7f,
-                            eyeGlow: 0f, moonDir, blur * 1.5f,
-                            ScreenRect(bodyPos + echoOff, widthPx, heightPx, vpW, vpH), BodyVMap, def.Flip);
-                        ghost.CurrentTechnique.Passes[0].Apply();
-                        spriteBatch.Draw(portrait, bodyPos + echoOff, null,
-                            Color.White, 0f, Vector2.Zero, scale, flip, 0f);
-                    }
-
-                    //本体
-                    SetGhostParams(ghost, time, st.Form, def.Clarity, haze, reflect: 0f,
-                        alpha: fade, wobble, seed, st.EyeGlow, moonDir, blur,
-                        bodyRect, BodyVMap, def.Flip);
-                    ghost.CurrentTechnique.Passes[0].Apply();
-                    spriteBatch.Draw(portrait, bodyPos, null,
-                        Color.White, 0f, Vector2.Zero, scale, flip, 0f);
+                    DrawFigure(spriteBatch, ghost, portrait, vpW, vpH, time, fade, i);
                 }
             } finally {
                 spriteBatch.End();
             }
         }
 
+        //单个生灭立影：倒影→重影错版→本体；批次与技法由调用方备好
+        private static void DrawFigure(SpriteBatch spriteBatch, Effect ghost, Texture2D portrait,
+            int vpW, int vpH, float time, float fade, int i) {
+
+            ShenyoMenuTheme.FigureDef def = ShenyoMenuTheme.Figures[i];
+            FigureState st = states[i];
+            if (st.Form <= 0.003f) {
+                return;
+            }
+
+            float heightPx = ShenyoMenuTheme.FigureHeight(def.Depth) * vpH;
+            float scale = heightPx / portrait.Height;
+            float widthPx = portrait.Width * scale;
+            float xUv = def.X + parallax.X * ShenyoMenuTheme.ParallaxMax.X
+                * ShenyoMenuTheme.FigureParallax(def.Depth);
+            float xPx = xUv * vpW;
+            //水线接触点：立绘 WaterlineRow 行落在这里，以下没入湖中
+            float waterPx = ShenyoMenuTheme.FigureWaterlineY(def.Depth) * vpH;
+            Vector2 bodyPos = new(xPx - widthPx * 0.5f, waterPx - heightPx * ShenyoMenuTheme.WaterlineV);
+            Vector4 bodyRect = ScreenRect(bodyPos, widthPx, heightPx, vpW, vpH);
+
+            SpriteEffects flip = def.Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            //缘光光向：逐影指向溺月（翻面镜像u轴，倒影再翻v轴）；胸口高度取样；同点求逆光度
+            float chestPx = bodyPos.Y + heightPx * 0.38f;
+            Vector2 moonDir = MoonDirTex(xPx, chestPx, vpW, vpH, def.Flip);
+            Vector2 moonDirRefl = new(moonDir.X, -moonDir.Y);
+            float backlit = Backlit(xPx, chestPx, vpW, vpH);
+            float wobble = ShenyoMenuTheme.FigureWobble(def.Depth);
+            float haze = ShenyoMenuTheme.FigureHaze(def.Depth);
+            float seed = i * 1.37f + 0.7f;
+            float blur = ShenyoMenuTheme.BlurTexels(ShenyoMenuTheme.FigureBlurPx(def.Depth), scale);
+
+            //倒影：只映水面以上的身体（源矩形截到水线），自接触点向下翻面压扁；接触点在屏内才有得画
+            if (waterPx < vpH - 2f) {
+                float reflHeightPx = ShenyoMenuTheme.WaterlineRow * scale * 0.82f;
+                Vector2 reflPos = new(bodyPos.X, waterPx);
+                SetGhostParams(ghost, time, st.Form, 0f, haze + 0.10f, reflect: 1f,
+                    alpha: 0.85f * fade, wobble, seed, st.EyeGlow * 0.35f, moonDirRefl, blur,
+                    ScreenRect(reflPos, widthPx, reflHeightPx, vpW, vpH), ReflectVMap, def.Flip,
+                    backlit * 0.5f);
+                ghost.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(portrait, reflPos, ReflectSource,
+                    Color.White, 0f, Vector2.Zero, new Vector2(scale, scale * 0.82f),
+                    flip | SpriteEffects.FlipVertically, 0f);
+            }
+
+            //重影错版：远/中影的第二重曝光缓慢漂移，锚影保持清晰不叠
+            if (!def.Anchor && def.Depth < 0.55f) {
+                bool far = def.Depth < FarDepthMax;
+                float echoAmp = far ? 2.2f : 1.4f;
+                Vector2 echoOff = new(
+                    MathF.Sin(time * 0.9f + i * 2.3f) * echoAmp,
+                    MathF.Cos(time * 0.7f + i * 1.9f) * echoAmp * 0.6f - echoAmp * 0.4f);
+                SetGhostParams(ghost, time, st.Form, 0f,
+                    MathHelper.Clamp(haze + 0.15f, 0f, 0.85f), reflect: 0f,
+                    alpha: (far ? 0.34f : 0.20f) * st.Form * fade, wobble, seed + 7.7f,
+                    eyeGlow: 0f, moonDir, blur * 1.5f,
+                    ScreenRect(bodyPos + echoOff, widthPx, heightPx, vpW, vpH), BodyVMap, def.Flip,
+                    backlit);
+                ghost.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(portrait, bodyPos + echoOff, null,
+                    Color.White, 0f, Vector2.Zero, scale, flip, 0f);
+            }
+
+            //本体
+            SetGhostParams(ghost, time, st.Form, def.Clarity, haze, reflect: 0f,
+                alpha: fade, wobble, seed, st.EyeGlow, moonDir, blur,
+                bodyRect, BodyVMap, def.Flip, backlit);
+            ghost.CurrentTechnique.Passes[0].Apply();
+            spriteBatch.Draw(portrait, bodyPos, null,
+                Color.White, 0f, Vector2.Zero, scale, flip, 0f);
+        }
+
         private static void SetGhostParams(Effect ghost, float time, float form, float clarity,
             float haze, float reflect, float alpha, float wobble, float seed, float eyeGlow,
-            Vector2 moonDir, float blur, Vector4 spriteRect, Vector2 vMap, bool flipH) {
+            Vector2 moonDir, float blur, Vector4 spriteRect, Vector2 vMap, bool flipH, float backlit) {
             ghost.Parameters["uTime"]?.SetValue(time);
             ghost.Parameters["uForm"]?.SetValue(form);
             ghost.Parameters["uClarity"]?.SetValue(clarity);
@@ -587,6 +644,7 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             ghost.Parameters["uSpriteRect"]?.SetValue(spriteRect);
             ghost.Parameters["uVMap"]?.SetValue(vMap);
             ghost.Parameters["uFlipH"]?.SetValue(flipH ? 1f : 0f);
+            ghost.Parameters["uBacklit"]?.SetValue(backlit);
         }
 
         //指向溺月的纹理空间光向：翻面镜像u轴；倒影另由调用侧翻v
@@ -686,21 +744,23 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
                     spriteBatch.Draw(white, new Rectangle(0, y0, vpW, height), color * fade);
                 }
 
-                //溺月：黑底辉光图走 A=0 加色语义
+                //溺月：黑底辉光图走 A=0 加色语义；直径按 MoonRadius 折算（辉光图有效半径约占贴图三成）
                 Texture2D glow = CWRAsset.SoftGlow?.Value;
                 if (glow != null) {
                     Vector2 moonPos = new(ShenyoMenuTheme.MoonUv.X * vpW, ShenyoMenuTheme.MoonUv.Y * vpH);
                     Color moonCol = new(150, 165, 170, 0);
+                    float moonScale = ShenyoMenuTheme.MoonRadius * vpH / (glow.Width * 0.30f);
                     spriteBatch.Draw(glow, moonPos, null, moonCol * fade, 0f,
-                        glow.Size() * 0.5f, vpH * 0.0055f, SpriteEffects.None, 0f);
+                        glow.Size() * 0.5f, moonScale, SpriteEffects.None, 0f);
                 }
 
                 if (!portraitReady) {
                     return;
                 }
 
-                //立影：压色本体（水线以下硬截，没入湖中）+翻面淡倒影+目点
-                foreach (ShenyoMenuTheme.FigureDef def in ShenyoMenuTheme.Figures) {
+                //立影：压色本体（水线以下硬截，没入湖中）+翻面淡倒影+目点；按深度升序
+                foreach (int fi in figureOrder) {
+                    ShenyoMenuTheme.FigureDef def = ShenyoMenuTheme.Figures[fi];
                     float heightPx = ShenyoMenuTheme.FigureHeight(def.Depth) * vpH;
                     float scale = heightPx / portrait.Height;
                     float widthPx = portrait.Width * scale;

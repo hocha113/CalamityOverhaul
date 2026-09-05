@@ -32,6 +32,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public PlanteraBloomNovaState() {
         }
 
+        /// <summary>热槽：A/B 钉死点(螺旋基角已走 npc.ai[0])</summary>
+        public override void WriteHot(float[] hot, PlanteraStateContext context) {
+            base.WriteHot(hot, context);
+            hot[PlanteraHotSlot.A] = lockPoint.X;
+            hot[PlanteraHotSlot.B] = lockPoint.Y;
+        }
+
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            base.ReadHot(hot, context);
+            lockPoint = new Vector2(hot[PlanteraHotSlot.A], hot[PlanteraHotSlot.B]);
+            //中途加入且早过了绽放帧：静默跳过冲击；只慢半拍则让本地冲击照常触发
+            if (Timer > SilenceEnd + CueCatchUpGrace) {
+                bloomFired = true;
+            }
+        }
+
         public override void OnEnter(PlanteraStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;

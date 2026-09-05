@@ -83,6 +83,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public PlanteraDeathState() {
         }
 
+        /// <summary>热槽：A 终幕帧(未触地为 -1)</summary>
+        public override void WriteHot(float[] hot, PlanteraStateContext context) {
+            base.WriteHot(hot, context);
+            hot[PlanteraHotSlot.A] = finaleFrame;
+        }
+
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            base.ReadHot(hot, context);
+            int serverFinale = (int)hot[PlanteraHotSlot.A];
+            //服务端已触地而本地还没播终幕(晚一两帧或中途加入)：就地补播一次，别永远错过
+            if (serverFinale > 0 && finaleFrame < 0) {
+                finaleFrame = serverFinale;
+                landed = true;
+                context.Npc.velocity = Vector2.Zero;
+                DoFinale(context);
+            }
+        }
+
         public override void OnEnter(PlanteraStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
@@ -168,7 +186,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             context.GlowPulse = Math.Max(0f, (0.7f - t * 0.4f) * (0.4f + 0.6f * Math.Abs(strobe)));
 
             if (!VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(1.8f, 1.8f);
+                //痉挛抖动只进绘制位，物理位置各端一致
+                context.ShakeOffset = Main.rand.NextVector2Circular(1.8f, 1.8f);
                 if (Timer % 9 == 0) {
                     PlanteraRenderHelper.SpawnPetalBurst(
                         npc.Center + Main.rand.NextVector2Circular(30f, 30f), 2, 3f, context.IsPhase2);
@@ -188,12 +207,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             //按拍崩断
             if (Timer == Snap1 || Timer == Snap2 || Timer == Snap3) {
                 int snapIndex = Timer == Snap1 ? 0 : Timer == Snap2 ? 1 : 2;
-                if (!VaultUtils.isClient && snapIndex < context.Hooks.Count) {
-                    PlanteraHookAI.GoLimp(context.Hooks[snapIndex]);
+                if (!VaultUtils.isClient) {
+                    if (snapIndex < context.Hooks.Count) {
+                        PlanteraHookAI.GoLimp(context.Hooks[snapIndex]);
+                    }
+                    //崩断冲量是速度拐点，同帧对账
+                    npc.netUpdate = true;
                 }
-                //坠荡冲量
+                //坠荡冲量；横向扰动用确定性伪随机，各端算得一样
                 npc.velocity.Y += 3.5f + snapIndex * 1.5f;
-                npc.velocity.X += Main.rand.NextFloat(-2f, 2f);
+                npc.velocity.X += (float)Math.Sin(npc.whoAmI * 1.7f + snapIndex * 2.3f) * 2f;
 
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.NPCHit1 with { Volume = 1f, Pitch = 0.3f }, npc.Center);
@@ -249,6 +272,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 landed = true;
                 finaleFrame = Timer;
                 npc.velocity = Vector2.Zero;
+                //触地是决策点：把终幕帧与归零的速度立刻发给客户端
+                if (!VaultUtils.isClient) {
+                    npc.netUpdate = true;
+                }
                 DoFinale(context);
             }
         }

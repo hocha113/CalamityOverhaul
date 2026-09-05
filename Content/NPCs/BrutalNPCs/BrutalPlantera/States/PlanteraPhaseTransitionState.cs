@@ -29,6 +29,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public PlanteraPhaseTransitionState() {
         }
 
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            base.ReadHot(hot, context);
+            //中途加入且早过了壳爆帧：静默跳过；只慢半拍则让本地壳爆照常触发
+            if (Timer > BurstFrame + CueCatchUpGrace) {
+                burstFired = true;
+                context.IsPhase2 = true;
+            }
+        }
+
         public override void OnEnter(PlanteraStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
@@ -112,9 +121,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             context.GlowPulse = 0.3f + t * 0.6f;
             context.BodyScalePulse = (float)Math.Sin(Timer * 0.55f) * 0.04f * t;
 
-            //痉挛位移抖动
+            //痉挛抖动只进绘制位，不碰物理位置(各端各抖会让确定性积分分叉)
             if (!VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(t * 2.6f, t * 2.6f);
+                context.ShakeOffset = Main.rand.NextVector2Circular(t * 2.6f, t * 2.6f);
 
                 //孢子尘从四面八方汇入
                 if (Main.rand.NextBool(2)) {
@@ -145,7 +154,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             context.BodyScalePulse = (float)Math.Sin(Timer * 0.8f) * 0.06f * t;
 
             if (!VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(2f + t * 2f, 2f + t * 2f);
+                context.ShakeOffset = Main.rand.NextVector2Circular(2f + t * 2f, 2f + t * 2f);
                 PlanteraScreenFX.PushDusk(0.4f + t * 0.25f);
 
                 //逐瓣剥落，越来越密

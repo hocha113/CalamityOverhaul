@@ -273,9 +273,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             NPC boss = PlanteraAI.FindBoss();
 
-            //藤蔓连体(鞭刑时绷成直线)
+            //藤蔓连体(鞭刑时绷成直线)；藤根跟本体的平滑绘制位，见 PlanteraHookAI.Draw
             if (boss != null && (int)npc.ai[2] != ModeLimp) {
-                float dist = npc.Distance(boss.Center);
+                Vector2 root = boss.Center + boss.netOffset;
+                float dist = npc.Distance(root);
                 bool whipping = (int)npc.ai[2] == ModeWhipAim && lashing;
 
                 VineParams vine = VineParams.Default;
@@ -287,7 +288,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                 vine.Phase2 = true;
                 vine.Seed = 0.41f + npc.ai[0] * 0.07f % 0.9f;
 
-                PlanteraVineRenderer.DrawVine(spriteBatch, boss.Center, npc.Center, vine);
+                PlanteraVineRenderer.DrawVine(spriteBatch, root, npc.Center, vine);
             }
 
             Main.instance.LoadNPC(npc.type);

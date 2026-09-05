@@ -25,6 +25,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public PlanteraTentacleRingState() {
         }
 
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            base.ReadHot(hot, context);
+            //中途加入且早过了反转拍：静默跳过预告；只慢半拍则让本地反转预告照常播
+            if (Timer >= ReverseAt + CueCatchUpGrace) {
+                reversed = true;
+            }
+        }
+
         public override void OnEnter(PlanteraStateContext context) {
             base.OnEnter(context);
             reversed = false;

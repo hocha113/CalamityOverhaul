@@ -82,6 +82,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public PlanteraVineFeastState() {
         }
 
+        /// <summary>
+        /// 热槽：A 子相位内计时 B 藤索方向角。
+        /// Advance 写 ai[0] 的那一帧本地还没检测到换相(下一帧 OnUpdate 才归零 subTimer)，
+        /// 该帧出门的快照若带旧计时会让客户端把新相位从 40 多帧起算，故未检测到时写 0
+        /// </summary>
+        public override void WriteHot(float[] hot, PlanteraStateContext context) {
+            base.WriteHot(hot, context);
+            hot[PlanteraHotSlot.A] = lastSubPhase == (int)context.Npc.ai[0] ? subTimer : 0f;
+            hot[PlanteraHotSlot.B] = aimDir.ToRotation();
+        }
+
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            base.ReadHot(hot, context);
+            int sub = (int)context.Npc.ai[0];
+            //同相位只修真漂移；服务端已在新相位而本地还没检测到时，保持本地 0 起算，交给 OnUpdate 的入相检测
+            if (lastSubPhase == sub) {
+                subTimer = AdoptTimer(subTimer, hot[PlanteraHotSlot.A]);
+            }
+            else if ((int)hot[PlanteraHotSlot.A] > CueCatchUpGrace) {
+                //中途加入：这一相的进入拍在服务端早就过了，直接接管计时、不再当作新入相
+                subTimer = (int)hot[PlanteraHotSlot.A];
+                lastSubPhase = sub;
+            }
+            aimDir = hot[PlanteraHotSlot.B].ToRotationVector2();
+            aimLocked = aimLocked || subTimer >= AimLockTick;
+        }
+
         #region 共享静态助手(玩家侧/藤索/运镜复用)
         /// <summary>正在演投技且接管在场的世纪之花，无则null</summary>
         internal static NPC FindFeastBoss() {

@@ -36,6 +36,35 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public PlanteraGrapplePounceState() {
         }
 
+        /// <summary>热槽：A 子阶段 B 子阶段计时 C 扑向角 D 已飞距离</summary>
+        public override void WriteHot(float[] hot, PlanteraStateContext context) {
+            base.WriteHot(hot, context);
+            hot[PlanteraHotSlot.A] = phase;
+            hot[PlanteraHotSlot.B] = phaseTimer;
+            hot[PlanteraHotSlot.C] = pounceDir.ToRotation();
+            hot[PlanteraHotSlot.D] = traveled;
+        }
+
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            int prevPhase = phase;
+            int prevCounter = Counter;
+            base.ReadHot(hot, context);
+            int serverPhase = (int)hot[PlanteraHotSlot.A];
+            //换了子阶段就照单全收计时，同阶段只修真漂移
+            phaseTimer = serverPhase != phase ? (int)hot[PlanteraHotSlot.B] : AdoptTimer(phaseTimer, hot[PlanteraHotSlot.B]);
+            phase = serverPhase;
+            pounceDir = hot[PlanteraHotSlot.C].ToRotationVector2();
+            traveled = hot[PlanteraHotSlot.D];
+
+            //服务端抢先一步换了子阶段(本机慢半拍)：那一拍的本机演出在此补上，不然扑出就没声没瓣
+            if (phase == PhaseTravel && prevPhase != PhaseTravel) {
+                PlayLaunchCues(context);
+            }
+            else if (phase == PhaseAim && (prevPhase != PhaseAim || prevCounter != Counter)) {
+                PlayAimCues(context);
+            }
+        }
+
         public override void OnEnter(PlanteraStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
@@ -44,7 +73,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             BeginAim(context);
         }
 
-        /// <summary>起手：锁线+派钩+预警线，权威端裁决方向</summary>
+        /// <summary>
+        /// 起手：锁线+派钩+预警线。扑向各端先按本地目标预估，权威端的角度随同帧快照经热槽下发覆盖，
+        /// 预警线与真正的扑线由此保持一致(预告即承诺)
+        /// </summary>
         private void BeginAim(PlanteraStateContext context) {
             NPC npc = context.Npc;
             Player player = context.Target;
@@ -64,8 +96,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 npc.netUpdate = true;
             }
 
+            PlayAimCues(context);
+        }
+
+        /// <summary>起手拍的本机演出</summary>
+        private static void PlayAimCues(PlanteraStateContext context) {
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.9f, Pitch = -0.55f }, npc.Center);
+                SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.9f, Pitch = -0.55f }, context.Npc.Center);
+            }
+        }
+
+        /// <summary>扑出拍的本机演出：吼声+花瓣爆+震屏</summary>
+        private void PlayLaunchCues(PlanteraStateContext context) {
+            if (!VaultUtils.isServer) {
+                NPC npc = context.Npc;
+                SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.25f, Volume = 1f }, npc.Center);
+                PlanteraRenderHelper.SpawnPetalBurst(npc.Center, 12, 7f, context.IsPhase2);
+                PlanteraScreenFX.CameraPunch(npc.Center, 6f, 14, "PlanteraPounce", pounceDir);
             }
         }
 
@@ -140,11 +187,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 npc.netUpdate = true;
             }
 
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.25f, Volume = 1f }, npc.Center);
-                PlanteraRenderHelper.SpawnPetalBurst(npc.Center, 12, 7f, context.IsPhase2);
-                PlanteraScreenFX.CameraPunch(npc.Center, 6f, 14, "PlanteraPounce", pounceDir);
-            }
+            PlayLaunchCues(context);
         }
 
         private void UpdateTravel(PlanteraStateContext context) {
@@ -167,6 +210,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             if (traveled > 880f || phaseTimer > 26) {
                 phase = PhaseBrake;
                 phaseTimer = 0;
+                //刹车是速度模型的拐点，立刻对账
+                if (!VaultUtils.isClient) {
+                    npc.netUpdate = true;
+                }
             }
         }
 
@@ -176,8 +223,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             npc.damage = 0;
             context.RotationMode = 0;
 
-            if (phaseTimer < 2 && !VaultUtils.isServer) {
-                //急停摆荡：残余动能甩进悬吊摆
+            if (phaseTimer < 2) {
+                //急停摆荡：残余动能甩进悬吊摆(摆动相位参与运动积分，各端同算)
                 context.SwayPhase += 0.8f;
             }
 

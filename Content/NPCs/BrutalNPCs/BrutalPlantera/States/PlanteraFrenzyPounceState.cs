@@ -30,9 +30,39 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         private int phaseTimer;
         private Vector2 pounceDir;
         private float traveled;
+        /// <summary>撒雷累积(仅权威端出雷，不入热槽)</summary>
         private float sporeDropAccum;
 
         public PlanteraFrenzyPounceState() {
+        }
+
+        /// <summary>热槽：A 子阶段 B 子阶段计时 C 扑向角 D 已飞距离</summary>
+        public override void WriteHot(float[] hot, PlanteraStateContext context) {
+            base.WriteHot(hot, context);
+            hot[PlanteraHotSlot.A] = phase;
+            hot[PlanteraHotSlot.B] = phaseTimer;
+            hot[PlanteraHotSlot.C] = pounceDir.ToRotation();
+            hot[PlanteraHotSlot.D] = traveled;
+        }
+
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            int prevPhase = phase;
+            int prevCounter = Counter;
+            base.ReadHot(hot, context);
+            int serverPhase = (int)hot[PlanteraHotSlot.A];
+            //换了子阶段就照单全收计时，同阶段只修真漂移
+            phaseTimer = serverPhase != phase ? (int)hot[PlanteraHotSlot.B] : AdoptTimer(phaseTimer, hot[PlanteraHotSlot.B]);
+            phase = serverPhase;
+            pounceDir = hot[PlanteraHotSlot.C].ToRotationVector2();
+            traveled = hot[PlanteraHotSlot.D];
+
+            //服务端抢先一步换了子阶段(本机慢半拍)：那一拍的本机演出在此补上
+            if (phase == PhaseTravel && prevPhase != PhaseTravel) {
+                PlayLaunchCues(context);
+            }
+            else if (phase == PhaseAim && (prevPhase != PhaseAim || prevCounter != Counter)) {
+                PlayAimCues(context);
+            }
         }
 
         public override void OnEnter(PlanteraStateContext context) {
@@ -43,6 +73,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             BeginAim(context);
         }
 
+        /// <summary>起手：各端先按本地目标预估扑向，权威端角度随同帧快照经热槽覆盖</summary>
         private void BeginAim(PlanteraStateContext context) {
             NPC npc = context.Npc;
             Player player = context.Target;
@@ -60,8 +91,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 npc.netUpdate = true;
             }
 
+            PlayAimCues(context);
+        }
+
+        /// <summary>起手拍的本机演出</summary>
+        private static void PlayAimCues(PlanteraStateContext context) {
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.85f, Pitch = -0.3f }, npc.Center);
+                SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.85f, Pitch = -0.3f }, context.Npc.Center);
+            }
+        }
+
+        /// <summary>扑出拍的本机演出：吼声+花瓣爆+震屏</summary>
+        private void PlayLaunchCues(PlanteraStateContext context) {
+            if (!VaultUtils.isServer) {
+                NPC npc = context.Npc;
+                SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.45f, Volume = 1f }, npc.Center);
+                PlanteraRenderHelper.SpawnPetalBurst(npc.Center, 14, 8f, true);
+                PlanteraScreenFX.CameraPunch(npc.Center, 7f, 14, "PlanteraFrenzy", pounceDir);
             }
         }
 
@@ -119,11 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 if (!VaultUtils.isClient) {
                     npc.netUpdate = true;
                 }
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.45f, Volume = 1f }, npc.Center);
-                    PlanteraRenderHelper.SpawnPetalBurst(npc.Center, 14, 8f, true);
-                    PlanteraScreenFX.CameraPunch(npc.Center, 7f, 14, "PlanteraFrenzy", pounceDir);
-                }
+                PlayLaunchCues(context);
             }
         }
 
@@ -153,8 +195,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 phase = PhaseBrake;
                 phaseTimer = 0;
 
-                //刹车点回喷交叉种子
+                //刹车点回喷交叉种子；刹车也是速度模型拐点，同帧对账
                 if (!VaultUtils.isClient) {
+                    npc.netUpdate = true;
                     for (int i = -1; i <= 1; i += 2) {
                         Vector2 vel = (-pounceDir).RotatedBy(i * 0.42f) * 19f;
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, vel,

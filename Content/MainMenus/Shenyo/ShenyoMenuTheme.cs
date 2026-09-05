@@ -32,10 +32,16 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
         public const float TitleY = 84f;
 
         //====== 场景几何（uv 空间，与 ShenyoMenuLake.fx 共享）======
-        /// <summary>水线高度</summary>
-        public const float HorizonY = 0.62f;
-        /// <summary>溺月圆心</summary>
-        public static readonly Vector2 MoonUv = new(0.66f, 0.24f);
+        //分镜「溺月军阵」（2026-09 重做，同日按用户挑中的沙盒裁剪图整幅套用）：镜头推近约 2.2 倍，
+        //仰视低地平线；巨大溺月坐在地平线上，两位大副影（约 0.8 与 1.0 屏高）夹在月盘两侧把月夹成一道门，
+        //身后三排叠影铺满整条水线，全部是看不清面容的逆光剪影；原锚影退到画外，只剩伞沿压在右上角。
+        //不给左列标题按钮留空白（用户裁定：文字压在剪影上不影响）
+        /// <summary>水线高度（仰视机位：压到画面下四分之一）</summary>
+        public const float HorizonY = 0.752f;
+        /// <summary>溺月圆心：坐在地平线上、下沿沉入湖中，军阵立在它面前；两位副影夹在盘左右两缘</summary>
+        public static readonly Vector2 MoonUv = new(0.56f, 0.53f);
+        /// <summary>溺月盘半径（uv 纵向尺度，软边）；晕圈由着色器按倍数外扩</summary>
+        public const float MoonRadius = 0.33f;
         /// <summary>近层满额视差（uv），远近元素按系数折减</summary>
         public static readonly Vector2 ParallaxMax = new(0.016f, 0.007f);
 
@@ -66,18 +72,20 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             public readonly bool Anchor = anchor;
         }
 
-        //分镜：远排四影散在水线月光路两侧，中排两影拉开纵深，
-        //近中一影压在光路旁，右侧大近影为常驻锚——左列留给标题与按钮
+        //分镜：远排四影混进军阵里生灭（其中一影正压在溺月盘心）；
+        //左缘一影半身入画，两位大副影各压月盘一缘、把月夹成一道门（左 0.37 约 0.8 屏高，右 0.77 约满屏高）；
+        //锚影中心在画外 x 1.10、水线在画外，只有伞沿压进右上角——"镜头边有个更大的人"的压迫读法。
+        //澄色全部压到近零：面容藏在阴影里只剩瞳光（用户裁定 2026-09）
         //顺序即 uFeet 槽位：前四槽须是远影（着色器对这四槽只算涟漪波包、不算颤纹）
         public static readonly FigureDef[] Figures = [
-            new(0.545f, 0.05f, false, 0.00f),
-            new(0.615f, 0.09f, true, 0.00f),
-            new(0.700f, 0.13f, false, 0.02f),
-            new(0.455f, 0.08f, true, 0.00f),
-            new(0.385f, 0.36f, true, 0.06f),
-            new(0.795f, 0.42f, false, 0.08f),
-            new(0.575f, 0.62f, false, 0.12f),
-            new(0.875f, 0.93f, false, 0.25f, anchor: true),
+            new(0.047f, 0.06f, true, 0.00f),
+            new(0.297f, 0.10f, false, 0.00f),
+            new(0.569f, 0.08f, true, 0.00f),
+            new(0.930f, 0.12f, false, 0.00f),
+            new(0.099f, 0.34f, true, 0.03f),
+            new(0.370f, 0.48f, false, 0.04f),
+            new(0.767f, 0.58f, true, 0.06f),
+            new(1.100f, 0.93f, false, 0.08f, anchor: true),
         ];
 
         /// <summary>水线叠影群：X=uv横位 Depth=0远1近 Flip=翻面 Alpha=体透明度 EyeMul=目芒倍率（0=无目）</summary>
@@ -90,36 +98,69 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
             public readonly float EyeMul = eyeMul;
         }
 
-        //「无数叠加的身影」：贴着水线的一排微缩剪影，彼此交叠沉在雾里，
-        //只有零星几双淡眼——常驻不散，柔糊但要比地平雾更暗一档才读得出（雾色身贴雾色底=隐形）
+        //「无数叠加的身影」军阵：三排剪影铺满整条水线（远排 12 / 中排 10 / 近排 7，两端出画），
+        //远排约 0.15 屏高、近排约 0.30——伞与瞳光都读得出，彼此交叠、大半亮着暗淡瞳光，常驻不散；
+        //月盘前的一段全部切成逆光剪影，月外的仍要比地平雾暗一档才读得出（雾色身贴雾色底=隐形）。
+        //数据按深度升序绘制
         public static readonly CrowdDef[] Crowd = [
-            new(0.365f, 0.020f, false, 0.78f, 0.00f),
-            new(0.412f, 0.055f, true, 0.87f, 0.60f),
-            new(0.438f, 0.028f, false, 0.80f, 0.00f),
-            new(0.492f, 0.070f, true, 0.90f, 0.00f),
-            new(0.522f, 0.018f, false, 0.74f, 0.50f),
-            new(0.578f, 0.040f, true, 0.84f, 0.00f),
-            new(0.596f, 0.075f, false, 0.92f, 0.65f),
-            new(0.648f, 0.024f, true, 0.76f, 0.00f),
-            new(0.672f, 0.060f, false, 0.87f, 0.00f),
-            new(0.735f, 0.034f, true, 0.80f, 0.55f),
-            new(0.762f, 0.080f, false, 0.92f, 0.00f),
-            new(0.828f, 0.046f, true, 0.84f, 0.00f),
-            new(0.858f, 0.022f, false, 0.74f, 0.45f),
-            new(0.910f, 0.058f, true, 0.85f, 0.00f),
+            //远排
+            new(-0.006f, 0.024f, false, 0.80f, 0.45f),
+            new(0.057f, 0.038f, true, 0.84f, 0.00f),
+            new(0.183f, 0.024f, false, 0.74f, 0.36f),
+            new(0.277f, 0.020f, true, 0.84f, 0.36f),
+            new(0.366f, 0.017f, false, 0.78f, 0.51f),
+            new(0.460f, 0.044f, true, 0.73f, 0.00f),
+            new(0.549f, 0.044f, true, 0.83f, 0.43f),
+            new(0.625f, 0.027f, true, 0.76f, 0.47f),
+            new(0.749f, 0.041f, false, 0.80f, 0.45f),
+            new(0.845f, 0.037f, true, 0.81f, 0.46f),
+            new(0.933f, 0.030f, false, 0.73f, 0.32f),
+            new(1.019f, 0.026f, true, 0.83f, 0.00f),
+            //中排
+            new(-0.011f, 0.077f, false, 0.89f, 0.44f),
+            new(0.094f, 0.098f, true, 0.82f, 0.48f),
+            new(0.210f, 0.085f, true, 0.86f, 0.52f),
+            new(0.319f, 0.097f, true, 0.83f, 0.61f),
+            new(0.459f, 0.062f, true, 0.91f, 0.50f),
+            new(0.555f, 0.060f, false, 0.91f, 0.42f),
+            new(0.668f, 0.093f, false, 0.89f, 0.41f),
+            new(0.767f, 0.093f, true, 0.84f, 0.43f),
+            new(0.885f, 0.092f, false, 0.88f, 0.36f),
+            new(1.002f, 0.091f, false, 0.85f, 0.58f),
+            //近排
+            new(0.050f, 0.195f, false, 0.92f, 0.00f),
+            new(0.197f, 0.154f, true, 0.93f, 0.00f),
+            new(0.353f, 0.140f, false, 0.91f, 0.45f),
+            new(0.528f, 0.184f, true, 0.95f, 0.00f),
+            new(0.655f, 0.134f, false, 0.93f, 0.00f),
+            new(0.826f, 0.148f, true, 0.96f, 0.48f),
+            new(0.984f, 0.184f, false, 0.96f, 0.41f),
         ];
 
-        /// <summary>立影身高（屏高占比）</summary>
-        public static float FigureHeight(float depth) => 0.055f + 0.545f * MathF.Pow(depth, 1.32f);
+        /// <summary>
+        /// 立影身高（屏高占比）：镜头推近 2.25 倍后的标尺——副影 depth 0.48 约 0.81、depth 0.58 约 1.04（顶到画外），
+        /// 军阵远排约 0.15，锚影（0.93）约 1.8 只剩伞沿入画
+        /// </summary>
+        public static float FigureHeight(float depth) => 0.135f + 1.834f * MathF.Pow(depth, 1.32f);
 
         /// <summary>
         /// 立影水线接触点 y（uv）：身体在此没入湖面（立绘 <see cref="WaterlineV"/> 行对齐此处）。
-        /// 系数 0.36 让锚影（depth 0.93）落在 0.953，屏底留出约 5% 高的水面画涟漪
+        /// 副影 0.48/0.58 落在 0.924/0.977，两人脚下都留得住水面涟漪；锚影落在画外 1.2
         /// </summary>
-        public static float FigureWaterlineY(float depth) => HorizonY + 0.012f + 0.36f * MathF.Pow(depth, 1.6f);
+        public static float FigureWaterlineY(float depth) => HorizonY + 0.0225f + 0.484f * MathF.Pow(depth, 1.6f);
 
         /// <summary>足下接触涟漪半径（透视空间尺度：横向半径≈此值×屏高像素，与湖面着色器约定一致）</summary>
-        public static float FigureRingRadius(float depth) => 0.02f + FigureHeight(depth) * 0.20f;
+        public static float FigureRingRadius(float depth) => 0.045f + FigureHeight(depth) * 0.16f;
+
+        /// <summary>
+        /// 逆光度：立影胸口落在溺月晕圈内的程度（0 月外 → 1 正压月盘）。
+        /// 驱动着色器包圈缘光与剪影压黑，并折减大气透视——月前的身影是剪影不是雾影
+        /// </summary>
+        public static float FigureBacklit(float chestUvX, float chestUvY, float aspect) {
+            Vector2 d = new((chestUvX - MoonUv.X) * aspect, chestUvY - MoonUv.Y);
+            float r = d.Length() / (MoonRadius * 2.2f);
+            return MathF.Exp(-r * r * 1.6f);
+        }
 
         /// <summary>大气透视：越远越向潮雾靠拢</summary>
         public static float FigureHaze(float depth) => 0.55f * (1f - MathF.Pow(depth, 0.6f));
@@ -127,8 +168,8 @@ namespace CalamityOverhaul.Content.MainMenus.Shenyo
         /// <summary>蠕动幅度：远影更不安分</summary>
         public static float FigureWobble(float depth) => 1.15f - 0.30f * depth;
 
-        /// <summary>距离模糊目标（屏幕像素）：远影糊成雾形，锚影几乎为零</summary>
-        public static float FigureBlurPx(float depth) => 2.8f * MathF.Pow(1f - depth, 2.6f);
+        /// <summary>距离模糊目标（屏幕像素）：远影糊成雾形，近影几乎为零；随镜头推近同步放大，军阵才保持雾影读法</summary>
+        public static float FigureBlurPx(float depth) => 5.6f * MathF.Pow(1f - depth, 2.6f);
 
         /// <summary>屏幕像素模糊折算成立绘texel数（供 uBlur）</summary>
         public static float BlurTexels(float blurPx, float spriteScale)

@@ -51,16 +51,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
             SetSuspension(context, offset,
                 context.IsPhase2 ? PlanteraDirector.DriftSpeedP2 : PlanteraDirector.DriftSpeedP1, 0.055f);
 
-            //轻压制：稀疏单发种子(开场留静默窗)
+            //轻压制：稀疏单发种子(开场留静默窗)；出弹权威端，后坐各端同算(它是运动的一部分)
             int fireGap = context.IsPhase2 ? 26 : 34;
-            if (Timer > 24 && Timer % fireGap == 0 && !VaultUtils.isClient
-                && Collision.CanHitLine(npc.Center, 1, 1, player.Center, 1, 1)) {
+            bool fireBeat = Timer > 24 && Timer % fireGap == 0;
+            if (fireBeat && Collision.CanHitLine(npc.Center, 1, 1, player.Center, 1, 1)) {
                 Vector2 aim = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
-                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + aim * 46f, aim * 17f,
-                    ModContent.ProjectileType<PlanteraSeed>(), PlanteraSeed.GetDamage(npc), 0f, Main.myPlayer);
+                if (!VaultUtils.isClient) {
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + aim * 46f, aim * 17f,
+                        ModContent.ProjectileType<PlanteraSeed>(), PlanteraSeed.GetDamage(npc), 0f, Main.myPlayer);
+                }
                 npc.velocity -= aim * 1.4f;
             }
-            if (Timer > 24 && Timer % fireGap == 0 && !VaultUtils.isServer) {
+            if (fireBeat && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.6f, Pitch = 0.1f, MaxInstances = 5 }, npc.Center);
             }
 

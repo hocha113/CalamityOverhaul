@@ -64,6 +64,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
         public float BodyScalePulse { get; set; }
         /// <summary>枯萎进度 0~1，死亡演出抽干颜色</summary>
         public float DeathWilt { get; set; }
+        /// <summary>
+        /// 痉挛/枯萎的随机抖动，只加在绘制位上，每帧由状态重声明。
+        /// 以前直接加在 npc.position 上，各端各抖会让确定性积分分叉
+        /// </summary>
+        public Vector2 ShakeOffset { get; set; }
         #endregion
 
         public void ResetChargeState() {

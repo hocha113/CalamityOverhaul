@@ -32,6 +32,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
         public PlanteraIntroState() {
         }
 
+        /// <summary>热槽：A/B 埋点(拽出段的插值起点)</summary>
+        public override void WriteHot(float[] hot, PlanteraStateContext context) {
+            base.WriteHot(hot, context);
+            hot[PlanteraHotSlot.A] = burialPoint.X;
+            hot[PlanteraHotSlot.B] = burialPoint.Y;
+        }
+
+        public override void ReadHot(float[] hot, PlanteraStateContext context) {
+            base.ReadHot(hot, context);
+            burialPoint = new Vector2(hot[PlanteraHotSlot.A], hot[PlanteraHotSlot.B]);
+            //中途加入且早过了绽放拍：静默跳过；只慢半拍则让本地绽放照常触发
+            if (Timer > StillEnd + CueCatchUpGrace) {
+                bloomFired = true;
+            }
+        }
+
         public override void OnEnter(PlanteraStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;

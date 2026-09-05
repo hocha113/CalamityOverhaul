@@ -286,7 +286,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             //藤蔓画在爪下(本体whoAmI更小画得更晚，覆盖藤根)
             if (boss != null && (int)npc.ai[2] != ModeLimp) {
                 bool phase2 = boss.ai[3] > 0.5f;
-                float dist = npc.Distance(boss.Center);
+                //本体贴图画在 position+netOffset(原版联机平滑)，藤根要跟同一坐标，否则每次快照藤根相对花体跳一下
+                Vector2 root = boss.Center + boss.netOffset;
+                float dist = npc.Distance(root);
                 float pulse = PlanteraVineRenderer.ReadAndDecayPulse(npc.whoAmI);
 
                 VineParams vine = VineParams.Default;
@@ -300,7 +302,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                 vine.Phase2 = phase2;
                 vine.Seed = 0.13f + (int)npc.ai[3] * 0.29f;
 
-                PlanteraVineRenderer.DrawVine(spriteBatch, boss.Center, npc.Center, vine);
+                PlanteraVineRenderer.DrawVine(spriteBatch, root, npc.Center, vine);
             }
 
             //爪体
