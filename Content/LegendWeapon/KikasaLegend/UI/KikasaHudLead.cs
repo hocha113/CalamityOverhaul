@@ -14,6 +14,7 @@ using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Narrative.Guides;
 using CalamityOverhaul.Content.QuestLogs;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
@@ -28,26 +29,32 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 {
     /// <summary>
-    /// 鬼伞七步引导：首次持伞后串起 开域 → 沉溺 → 湖心景 → 转盘号令 → 鬼雨异化 → 雨中重启 → 鬼梦。
+    /// 鬼伞八步引导：首次持伞后串起 开域 → 沉溺 → 湖心景 → 转盘号令 → 鬼雨异化 → 雨中重启 → 鬼梦 → 收域。
     /// 卡片底板走 KikasaScene.fx 的 TechCard 湿纸技法（入口已迁 KikasaPanoramaRenderer）。
-    /// 防呆四件：检查点续讲（存 <see cref="KikasaGuideData.StepCheckpoint"/>，中断不从头来）、
+    /// 防呆五件：检查点续讲（存 <see cref="KikasaGuideData.StepCheckpoint"/>，中断不从头来）、
     /// 场面失守退步（依湖的步湖收了退回开域；重启随时可按不退步）、死路与条件读数（键未绑定/册空/水未满/重启回卷）、
-    /// 帮做分流（世界步卡住出「替我演示」，湖心景常驻「帮我打开」，沉溺动玩家物品不代做）。
+    /// 帮做分流（世界步卡住出「替我演示」，湖心景常驻「帮我打开」，沉溺动玩家物品不代做）、
+    /// 临时键（键未绑定时用默认位顶上，见 KikasaHudLeadInput）。
+    /// 首次自动教程全程挂剧情执行保护（<see cref="ShieldEligible"/> 喂给 <see cref="StoryShield"/>），
+    /// 走完/收起/重开任一件事落 <see cref="KikasaGuideData.ShieldSpent"/>，之后重看不再受保护。
     /// 收起写 <see cref="KikasaGuideData.Declined"/>，湖心景页脚「?」经 <see cref="RestartFromHelp"/> 重开。
-    /// 经 <see cref="GuideLeadQueue"/> 排队，晚于比目鱼(10)、早于义体(15)
+    /// 经 <see cref="GuideLeadQueue"/> 排队，晚于比目鱼(10)、早于义体(15)。字号走 <see cref="GuideCardTypography"/>
     /// </summary>
-    internal class KikasaHudLead : ModSystem, ILocalizedModType, IGuideLead
+    internal partial class KikasaHudLead : ModSystem, ILocalizedModType, IGuideLead
     {
         public string LocalizationCategory => "Legend.KikasaText";
 
-        /// <summary>教程版本。步骤改版时 +1，走完过旧版的老玩家会从检查点补讲</summary>
-        private const int TutorialVersion = 1;
+        /// <summary>
+        /// 教程版本。步骤改版时 +1：走完过旧版（带版本号）的玩家只补讲新增的步，
+        /// 检查点停在旧版末尾，正好落在新步上；无版本号的五步旧档维持不重讲
+        /// </summary>
+        private const int TutorialVersion = 2;
 
-        private enum Phase { Inactive, Domain, Sink, Panorama, Wheel, Rain, Restart, Dream, Complete }
+        private enum Phase { Inactive, Domain, Sink, Panorama, Wheel, Rain, Restart, Dream, Close, Complete }
 
-        //七个教学步的相位序，计数、检查点与跳过推进共用
+        //八个教学步的相位序，计数、检查点与跳过推进共用
         private static readonly Phase[] StepOrder =
-            [Phase.Domain, Phase.Sink, Phase.Panorama, Phase.Wheel, Phase.Rain, Phase.Restart, Phase.Dream];
+            [Phase.Domain, Phase.Sink, Phase.Panorama, Phase.Wheel, Phase.Rain, Phase.Restart, Phase.Dream, Phase.Close];
 
         #region 本地化
         public static LocalizedText DomainTitle { get; private set; }
@@ -72,6 +79,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText DreamTitle { get; private set; }
         public static LocalizedText DreamBody { get; private set; }
         public static LocalizedText DreamPrompt { get; private set; }
+        public static LocalizedText CloseTitle { get; private set; }
+        public static LocalizedText CloseBody { get; private set; }
+        public static LocalizedText ClosePrompt { get; private set; }
+        public static LocalizedText CloseInDreamNote { get; private set; }
+        public static LocalizedText CloseSettlingNote { get; private set; }
+        public static LocalizedText KeyUnboundFallback { get; private set; }
+        public static LocalizedText ShieldNote { get; private set; }
         public static LocalizedText SkipBtn { get; private set; }
         public static LocalizedText ConfirmBtn { get; private set; }
         public static LocalizedText AssistBtn { get; private set; }
@@ -131,6 +145,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             DreamPrompt = this.GetLocalization(nameof(DreamPrompt),
                 () => "At full water, hold {0}");
 
+            CloseTitle = this.GetLocalization(nameof(CloseTitle), () => "Draw the Lake Back");
+            CloseBody = this.GetLocalization(nameof(CloseBody),
+                () => "The Blood Lake never recedes on its own: switch weapons or walk a mile and the lake and its sky follow you. Hold Kikasa and press the Domain Expansion key once more, and the water drains and the world comes back. Your hoard, shades and drowning records all stay in the umbrella, ready for the next time you raise it.");
+            ClosePrompt = this.GetLocalization(nameof(ClosePrompt),
+                () => "Hold Kikasa and press {0} to draw the lake back");
+            CloseInDreamNote = this.GetLocalization(nameof(CloseInDreamNote),
+                () => "You're still inside the Ghost Dream. Press {0} to wake first, then close the lake.");
+            CloseSettlingNote = this.GetLocalization(nameof(CloseSettlingNote),
+                () => "The lake is still changing form. Wait for it to settle.");
+            KeyUnboundFallback = this.GetLocalization(nameof(KeyUnboundFallback),
+                () => "The key \"{0}\" isn't bound. For this step you can press {1} instead; bind it in Settings > Controls to keep using it.");
+            ShieldNote = this.GetLocalization(nameof(ShieldNote),
+                () => "While the tutorial runs, foes can't hurt you and none spawn nearby.");
+
             SkipBtn = this.GetLocalization(nameof(SkipBtn), () => "Skip");
             ConfirmBtn = this.GetLocalization(nameof(ConfirmBtn), () => "Got it");
             AssistBtn = this.GetLocalization(nameof(AssistBtn), () => "Show me");
@@ -151,7 +179,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         }
         #endregion
 
-        private const int CardW = 340;
+        //卡宽随统一字号表；高 UI 缩放下再按屏宽收窄，按钮不被挤出屏外
+        private static int CardW => Math.Min(GuideCardTypography.CardWidth,
+            Math.Max(240, (int)KikasaHudTheme.UIScreenW - 32));
         //约9秒卡住才出低调跳过；键未绑定或死路时立即放出
         private const int StuckFramesBeforeSkip = 60 * 9;
         //世界操作步约30秒还没做成，放出「替我演示」；键未绑定时立即放出
@@ -191,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             => Array.IndexOf(StepOrder, currentPhase) >= 0
             && GuideLeadQueue.IsHolder(ModContent.GetInstance<KikasaHudLead>());
 
-        /// <summary>占位：存活 + 未走完 + 未婉拒 + 背包里有鬼伞</summary>
+        /// <summary>占位：存活 + 未走完本版 + 未婉拒 + 背包里有鬼伞</summary>
         private static bool Reserving {
             get {
                 Player p = Main.LocalPlayer;
@@ -202,10 +232,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     return false;
                 }
                 KikasaGuideData guide = Guide;
-                if (guide.GuideSeen || guide.CompletedVersion >= TutorialVersion || guide.Declined) {
+                if (guide.Declined || guide.CompletedVersion >= TutorialVersion) {
+                    return false;
+                }
+                //无版本号的五步旧档完成标记维持不重讲；带版本号的旧完成档放行，只补讲新增步
+                if (guide.GuideSeen && guide.CompletedVersion == 0) {
                     return false;
                 }
                 return p.HasItem(ModContent.ItemType<KikasaItem>());
+            }
+        }
+
+        /// <summary>
+        /// 剧情执行保护的教程来源：教学卡在讲，且这份存档的首次保护还没用掉。
+        /// 只看首次自动教程（走完过任何版本、收起过、经「?」重开过都不算）；
+        /// 时长预算由 <see cref="StoryShield"/> 记账，这里只给资格
+        /// </summary>
+        internal static bool ShieldEligible {
+            get {
+                if (!CardVisible) {
+                    return false;
+                }
+                KikasaGuideData guide = Guide;
+                return !guide.ShieldSpent && !guide.GuideSeen && guide.CompletedVersion == 0;
             }
         }
 
@@ -247,11 +296,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             guide.GuideSeen = true;
             guide.CompletedVersion = TutorialVersion;
             guide.StepCheckpoint = StepOrder.Length;
+            guide.ShieldSpent = true;
             currentPhase = Phase.Complete;
             animProgress = 0f;
         }
 
         private static void ResetRuntime() {
+            ReleaseFallbackHold();
             currentPhase = Phase.Inactive;
             animProgress = 0f;
             phaseTimer = 0;
@@ -259,6 +310,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         }
 
         private static void SetPhase(Phase phase) {
+            ReleaseFallbackHold();
             currentPhase = phase;
             animProgress = 0f;
             phaseTimer = 0;
@@ -283,6 +335,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 Phase.Rain => domain.IsRainForm,
                 Phase.Restart => KikasaReset.IsPlayerAffected(Main.myPlayer),
                 Phase.Dream => domain.InDreamPhase,
+                //收域步是唯一要湖收起来的步：从鬼梦醒来再按开域键，域回到 Closed 即成
+                Phase.Close => !domain.AnyActive,
                 _ => false,
             };
         }
@@ -319,16 +373,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             SetPhase(StepOrder[start]);
         }
 
-        /// <summary>卡角「收起」：记婉拒但检查点留着，湖心景「?」随时重开续讲</summary>
+        /// <summary>卡角「收起」：记婉拒但检查点留着，湖心景「?」随时重开续讲；首次保护到此为止</summary>
         private static void Dismiss() {
-            Guide.Declined = true;
+            KikasaGuideData guide = Guide;
+            guide.Declined = true;
+            guide.ShieldSpent = true;
             SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
             ResetRuntime();
         }
 
         /// <summary>
         /// 湖心景页脚「?」：清进度当场从头重讲。ForceHold 抢展示权（任务书先例，
-        /// 不算把别人挤成放弃）；合屏让位，前几步都在世界里操作
+        /// 不算把别人挤成放弃）；合屏让位，前几步都在世界里操作。
+        /// 主动重开的教程不再受执行保护，否则无限重开就是无限保护
         /// </summary>
         internal static void RestartFromHelp() {
             KikasaGuideData guide = Guide;
@@ -336,6 +393,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             guide.CompletedVersion = 0;
             guide.StepCheckpoint = 0;
             guide.Declined = false;
+            guide.ShieldSpent = true;
             reserveDeferTicks = 0;
             GuideLeadQueue.ForceHold(ModContent.GetInstance<KikasaHudLead>());
             KikasaPanoramaUI.Instance?.Close();
@@ -382,8 +440,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             if (currentPhase == Phase.Inactive) {
                 StartFromCheckpoint();
             }
-            //前提暂时不满足（骇客/全屏 UI/死亡）：暂停推进与绘制，不回退
+            //前提暂时不满足（骇客/全屏 UI/死亡）：暂停推进与绘制，不回退；按住中的临时键视作松开
             if (!SessionUsable()) {
+                ReleaseFallbackHold();
                 return;
             }
 
@@ -395,6 +454,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 return;
             }
 
+            //键未绑定的步先给临时键，操作得出来才谈演示
+            PollFallbackKey();
+
             //进步时就满足的等确认按钮，别让卡片一闪而过
             if (!enterSatisfied && StepConditionMet(currentPhase)) {
                 AdvanceStep();
@@ -405,7 +467,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         /// <summary>世界操作步：卡住够久（或键未绑定）时放出「替我演示」</summary>
         private static bool IsWorldAssistStep(Phase phase)
-            => phase is Phase.Domain or Phase.Rain or Phase.Restart or Phase.Dream;
+            => phase is Phase.Domain or Phase.Rain or Phase.Restart or Phase.Dream or Phase.Close;
 
         /// <summary>
         /// 「替我演示」此刻点得动吗。不满足时按钮暗显——可用性在点击前可见，
@@ -423,6 +485,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     && KikasaReset.CanStartLocal(Main.LocalPlayer)
                     && KikasaReset.LocalCooldown01 <= 0f,
                 Phase.Dream => domain.DreamPullReady,
+                //收域分两拍：梦里先归返，湖上（含开到一半）才收；翻转/拉入/归返演出中收不了
+                Phase.Close => domain.Phase is KikasaDomainPhase.Dreaming
+                    or KikasaDomainPhase.Open or KikasaDomainPhase.Opening,
                 _ => false,
             };
         }
@@ -434,6 +499,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             switch (currentPhase) {
                 case Phase.Domain:
                     ok = KikasaDomain.TryToggle(p, out _);
+                    break;
+                case Phase.Close:
+                    //梦里那一下是归返，醒着那一下才是收域；两拍都从同一个按钮进
+                    ok = Domain.Phase == KikasaDomainPhase.Dreaming
+                        ? KikasaDomain.TryDreamPull(p, out _)
+                        : KikasaDomain.TryToggle(p, out _);
                     break;
                 case Phase.Rain:
                     ok = KikasaDomain.TryMutate(p, out _);
@@ -493,25 +564,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
             //====== 键位与文案 ======
             //异化键（雨/梦两步共用）有原生中键兜底，不算未绑定
-            ModKeybind actionKey = currentPhase switch {
-                Phase.Domain => CWRKeySystem.Legend_Domain,
-                Phase.Sink => CWRKeySystem.Kikasa_Sink,
-                Phase.Panorama => CWRKeySystem.Legend_UIControl,
-                Phase.Wheel => CWRKeySystem.RadialWheel_Key,
-                Phase.Restart => CWRKeySystem.Legend_Restart,
-                _ => CWRKeySystem.Kikasa_DomainMutate,
-            };
+            ModKeybind actionKey = ActionKeyFor(currentPhase);
             bool keyBound = actionKey == null
                 || currentPhase is Phase.Rain or Phase.Dream
                 || !CWRKeySystem.IsKeybindUnbound(actionKey);
             //雨/梦步的异化键被清空绑定时游戏逻辑回退原生中键，提示跟着显示中键而不是「未绑定」
             bool mutateFallback = currentPhase is Phase.Rain or Phase.Dream
                 && CWRKeySystem.IsKeybindUnbound(actionKey);
+            //其余步键未绑定时提示行直接写临时键，玩家照着按就能做出来
+            Keys fallbackKey = Keys.None;
+            bool tempKey = !keyBound && FallbackActive(currentPhase, out fallbackKey);
             string keyText = actionKey == null
                 ? string.Empty
                 : mutateFallback
                     ? MutateFallbackKey.Value
-                    : actionKey.ToTooltipString(CWRKeySystem.Notbound.Value);
+                    : tempKey
+                        ? fallbackKey.ToString()
+                        : actionKey.ToTooltipString(CWRKeySystem.Notbound.Value);
 
             (string title, string body, string promptFmt) = currentPhase switch {
                 Phase.Domain => (DomainTitle.Value, DomainBody.Value, DomainPrompt.Value),
@@ -520,6 +589,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 Phase.Wheel => (WheelTitle.Value, WheelBody.Value, WheelPrompt.Value),
                 Phase.Rain => (RainTitle.Value, RainBody.Value, RainPrompt.Value),
                 Phase.Restart => (RestartTitle.Value, RestartBody.Value, RestartPrompt.Value),
+                Phase.Close => (CloseTitle.Value, CloseBody.Value, ClosePrompt.Value),
                 _ => (DreamTitle.Value, DreamBody.Value, DreamPrompt.Value),
             };
             string promptText = string.IsNullOrEmpty(keyText)
@@ -529,46 +599,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             //转盘步死路：册里还没有沉影，开盘也只有空席可看
             bool wheelDeadEnd = currentPhase == Phase.Wheel
                 && Main.LocalPlayer.GetModPlayer<KikasaServantPlayer>().BuildCodexKeys().Count == 0;
-            string subText = ResolveSubText(domain, actionKey, keyBound, wheelDeadEnd);
+            string subText = ResolveSubText(domain, actionKey, keyBound, tempKey, wheelDeadEnd);
+            //首次教程受剧情执行保护时说一声，玩家知道可以放心读卡
+            string shieldText = ShieldEligible && StoryShield.LocalActive ? ShieldNote.Value : null;
 
-            //====== 量高排版（字号跟全域字体规范：正文 ≥0.8） ======
+            //====== 量高排版（字号走三家共用的 GuideCardTypography，任何文字不低于 0.85） ======
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            const float titleSc = 0.95f;
-            const float bodySc = 0.8f;
-            const float subSc = 0.75f;
-            float lineT = font.MeasureString("A").Y * titleSc + 2f;
-            float lineB = font.MeasureString("A").Y * bodySc + 1f;
+            const float titleSc = GuideCardTypography.Title;
+            const float bodySc = GuideCardTypography.Body;
+            const float promptSc = GuideCardTypography.Prompt;
+            const float subSc = GuideCardTypography.Hint;
+            float glyphH = font.MeasureString("A").Y;
+            float lineT = glyphH * titleSc + 2f;
+            float lineB = glyphH * bodySc + GuideCardTypography.LineGap;
+            float lineP = glyphH * promptSc + GuideCardTypography.LineGap;
+            float lineS = glyphH * subSc + GuideCardTypography.LineGap - 1f;
 
-            int bodyWrapW = (int)((CardW - 28) / bodySc);
-            List<string> bodyLines = WrapLines(font, body, bodyWrapW);
-            List<string> promptLines = WrapLines(font, promptText, bodyWrapW);
+            int cardW = CardW;
+            List<string> bodyLines = WrapLines(font, body, (int)((cardW - 28) / bodySc));
+            List<string> promptLines = WrapLines(font, promptText, (int)((cardW - 28) / promptSc));
             List<string> subLines = subText != null
-                ? WrapLines(font, subText, (int)((CardW - 28) / subSc))
+                ? WrapLines(font, subText, (int)((cardW - 28) / subSc))
+                : null;
+            List<string> shieldLines = shieldText != null
+                ? WrapLines(font, shieldText, (int)((cardW - 28) / subSc))
                 : null;
             float cardH = 12f + lineT + 2f + 7f
                 + bodyLines.Count * lineB + 4f
-                + promptLines.Count * lineB
-                + (subLines?.Count ?? 0) * (lineB - 1f)
-                + 38f;
+                + promptLines.Count * lineP
+                + (subLines?.Count ?? 0) * lineS
+                + (shieldLines != null ? shieldLines.Count * lineS + 4f : 0f)
+                + 44f;
 
             //====== 卡位：默认悬在风铃上方；湖心景开着时让位到右上 ======
             float cardX, cardY;
             bool panoOpen = KikasaPanoramaUI.Instance?.IsOpen == true;
             if (panoOpen) {
-                cardX = MathHelper.Clamp(KikasaHudTheme.UIScreenW - CardW - 20f,
-                    16f, Math.Max(16f, KikasaHudTheme.UIScreenW - CardW - 16f));
+                cardX = MathHelper.Clamp(KikasaHudTheme.UIScreenW - cardW - 20f,
+                    16f, Math.Max(16f, KikasaHudTheme.UIScreenW - cardW - 16f));
                 cardY = 78f;
             }
             else {
                 Vector2 chime = KikasaHud.Anchor;
                 cardX = MathHelper.Clamp(chime.X - 30f,
-                    16f, Math.Max(16f, KikasaHudTheme.UIScreenW - CardW - 16f));
+                    16f, Math.Max(16f, KikasaHudTheme.UIScreenW - cardW - 16f));
                 cardY = MathHelper.Clamp(
                     chime.Y - (KikasaHudTheme.ChimeH * 0.5f + 10f) - cardH - 8f,
                     16f, Math.Max(16f, KikasaHudTheme.UIScreenH - cardH - 16f));
             }
             float slideY = (1f - alpha) * 16f;
-            Rectangle card = new((int)cardX, (int)(cardY + slideY), CardW, (int)cardH);
+            Rectangle card = new((int)cardX, (int)(cardY + slideY), cardW, (int)cardH);
 
             KikasaPanoramaRenderer.DrawCardBg(sb, card, alpha, rain);
             //连线：卡底垂到风铃檐钩顶；湖心景让位时不画，风铃不在场也不画
@@ -596,7 +676,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             py += lineT + 2f;
 
             KikasaVaultRenderer.DrawLine(sb, new Vector2(px, py),
-                new Vector2(px + CardW - 28f, py), 1f, accent * (0.4f * alpha));
+                new Vector2(px + cardW - 28f, py), 1f, accent * (0.4f * alpha));
             py += 7f;
 
             foreach (string wl in bodyLines) {
@@ -608,8 +688,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             float promptPulse = 0.8f + 0.2f * MathF.Sin(time * 4.2f);
             foreach (string wl in promptLines) {
                 Utils.DrawBorderString(sb, wl, new Vector2(px, py),
-                    promptCol * (alpha * promptPulse), bodySc);
-                py += lineB;
+                    promptCol * (alpha * promptPulse), promptSc);
+                py += lineP;
             }
 
             if (subLines != null) {
@@ -617,7 +697,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 foreach (string wl in subLines) {
                     Utils.DrawBorderString(sb, wl, new Vector2(px, py),
                         KikasaHudTheme.Glow(rain) * (0.85f * alpha * pulseKey), subSc);
-                    py += lineB - 1f;
+                    py += lineS;
+                }
+            }
+
+            //保护说明压在最底、不闪不脉，是背景信息不是待办
+            if (shieldLines != null) {
+                py += 4f;
+                foreach (string wl in shieldLines) {
+                    Utils.DrawBorderString(sb, wl, new Vector2(px, py),
+                        bodyCol * (0.75f * alpha), subSc);
+                    py += lineS;
                 }
             }
 
@@ -628,10 +718,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         /// 防呆读数：紧急的先说。键未绑定 > 转盘死路 > 已完成提示 > 步内条件差什么
         /// </summary>
         private static string ResolveSubText(KikasaDomainPlayer domain,
-            ModKeybind actionKey, bool keyBound, bool wheelDeadEnd) {
+            ModKeybind actionKey, bool keyBound, bool tempKey, bool wheelDeadEnd) {
             if (!keyBound) {
-                //报键位表真名，玩家去设置里才找得到要绑哪一把
-                return string.Format(KeyUnbound.Value, actionKey.DisplayName.Value);
+                //报键位表真名，玩家去设置里才找得到要绑哪一把；有临时键就把临时键一并说清
+                return tempKey
+                    ? string.Format(KeyUnboundFallback.Value, actionKey.DisplayName.Value,
+                        FallbackKeyFor(currentPhase).ToString())
+                    : string.Format(KeyUnbound.Value, actionKey.DisplayName.Value);
             }
             if (wheelDeadEnd) {
                 return WheelNoMemory.Value;
@@ -640,6 +733,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 return AlreadyDoneNote.Value;
             }
             switch (currentPhase) {
+                //收域分两拍：还在梦里先说醒来的键；翻转/拉入/归返演出中让人等落定
+                case Phase.Close:
+                    if (domain.Phase == KikasaDomainPhase.Dreaming) {
+                        string wakeKey = CWRKeySystem.IsKeybindUnbound(CWRKeySystem.Kikasa_DomainMutate)
+                            ? MutateFallbackKey.Value
+                            : CWRKeySystem.Kikasa_DomainMutate.ToTooltipString(CWRKeySystem.Notbound.Value);
+                        return string.Format(CloseInDreamNote.Value, wakeKey);
+                    }
+                    if (domain.Phase is KikasaDomainPhase.Flipping
+                        or KikasaDomainPhase.DreamPull or KikasaDomainPhase.DreamReturn) {
+                        return CloseSettlingNote.Value;
+                    }
+                    break;
                 //沉与翻与梦都吃满水：域开着水没到脚，给出水位读数让人知道在等什么
                 case Phase.Sink:
                     if (domain.AnyActive && domain.RiseT < 0.999f) {
@@ -678,7 +784,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         /// </summary>
         private static void DrawButtonRow(SpriteBatch sb, Rectangle card, float alpha,
             float rain, KikasaDomainPlayer domain, bool keyBound, bool wheelDeadEnd) {
-            const int btnH = 22, margin = 10, gap = 8;
+            const int btnH = 26, margin = 10, gap = 8;
             int rowY = card.Bottom - btnH - margin;
 
             //收起：常驻，婉拒后由湖心景「?」重开
@@ -738,13 +844,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         private static Rectangle ButtonRect(string label, int x, int y, int h) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            int w = (int)(font.MeasureString(label).X * 0.75f) + 22;
+            int w = (int)(font.MeasureString(label).X * GuideCardTypography.Button) + 22;
             return new Rectangle(x, y, w, h);
         }
 
         private static Rectangle ButtonRectRight(string label, int rightX, int y, int h) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            int w = (int)(font.MeasureString(label).X * 0.75f) + 22;
+            int w = (int)(font.MeasureString(label).X * GuideCardTypography.Button) + 22;
             return new Rectangle(rightX - w, y, w, h);
         }
 
@@ -784,7 +890,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         private static bool DrawCardButton(SpriteBatch sb, Rectangle btn, string label,
             float alpha, float rain, bool emphasized, bool enabled) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            const float sc = 0.75f;
+            const float sc = GuideCardTypography.Button;
             Vector2 size = font.MeasureString(label) * sc;
 
             Vector2 uiMouse = KikasaHudTheme.UIMouse;

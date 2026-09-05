@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -21,8 +22,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         //面板尺寸
         private const float PanelWidth = 440f;
         private const float PanelHeight = 428f;
-        //面板与收集器的最大交互距离(像素)
-        private const float PanelKeepDistance = 300f;
+        //面板保持打开的触及余量(格):在原版物块交互范围外再宽这么多,免得站在触及边缘时刚开就关
+        private const int ReachMarginTiles = 2;
+
+        private static float UIScreenW => PlayerInput.RealScreenWidth / Main.UIScale;
+        private static float UIScreenH => PlayerInput.RealScreenHeight / Main.UIScale;
+
+        //开面板的那一下右键,按下沿会在同一帧的 Update 里被读到;面板又正好生成在鼠标底下,
+        //不吞掉这一沿就会被当成"右键空白处关闭",表现为刚开就关
+        private bool swallowOpeningRightClick;
 
         //动画变量
         private float scanLineTimer;
@@ -146,7 +154,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         public void Initialize(CollectorTP collectorTP) {
             if (Station != collectorTP) {
                 Station = collectorTP;
-                DrawPosition = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
+                //面板在 UI 缩放坐标系里布局与命中,居中也得按同一口径算
+                DrawPosition = new Vector2(UIScreenW * 0.5f, UIScreenH * 0.5f);
                 PickingStorage = false;
                 Open();
             }
@@ -154,6 +163,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 PickingStorage = false;
                 Toggle();
             }
+            swallowOpeningRightClick = IsOpen;
+        }
+
+        /// <summary>
+        /// 面板是否还该开着:选取模式按绑定半径放宽;平时沿用原版物块交互触及范围,
+        /// 能右键到就能开着,再留 <see cref="ReachMarginTiles"/> 格余量
+        /// </summary>
+        private bool StationInReach() {
+            if (PickingStorage) {
+                return Station.PosInWorld.To(player.Center).Length() <= CollectorTP.MaxBindDistance + 400f;
+            }
+            TileReachCheckSettings reach = TileReachCheckSettings.Simple;
+            reach.GetRanges(player, out int rangeX, out int rangeY);
+            reach.OverrideXReach = rangeX + ReachMarginTiles;
+            reach.OverrideYReach = rangeY + ReachMarginTiles;
+            int centerX = Station.Position.X + Station.Width / 32;
+            int centerY = Station.Position.Y + Station.Height / 32;
+            return player.IsInTileInteractionRange(centerX, centerY, reach);
         }
 
         #region 更新
@@ -163,10 +190,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return;
             }
 
-            //选取时放宽距离
-            float keepDistance = PickingStorage ? CollectorTP.MaxBindDistance + 400f : PanelKeepDistance;
-            if (IsOpen && (Station == null || !Station.Active
-                || Station.PosInWorld.To(player.Center).Length() > keepDistance)) {
+            bool rightClickEdge = keyRightPressState == KeyPressState.Pressed && !swallowOpeningRightClick;
+            swallowOpeningRightClick = false;
+
+            if (IsOpen && (Station == null || !Station.Active || !StationInReach())) {
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.3f, Volume = 0.5f });
                 PickingStorage = false;
                 Close();
@@ -263,7 +290,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             //右键空白处或ESC关闭
             bool anyButtonHover = hoveringMode || hoveringAdd || hoveringClearFilter
                 || hoveringEditFilter || hoveringUp >= 0 || hoveringRemove >= 0;
-            if (hoveringPanel && keyRightPressState == KeyPressState.Pressed && !anyButtonHover) {
+            if (hoveringPanel && rightClickEdge && !anyButtonHover) {
                 Close();
                 SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.7f });
                 return;

@@ -211,6 +211,7 @@ TeleportStation: {
 		TitleText: Teleportnetz
 		LocalLabel: Diese Station
 		RenameText: Umbenennen
+		// ConfirmText: Confirm
 		RenameHint: Enter bestätigt, Esc bricht ab
 		EmptyListText: Keine anderen Teleportstationen in der Welt
 		RowInfoLine: "{0} Felder · {1} UE"

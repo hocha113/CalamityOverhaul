@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private static readonly HashSet<string> ClientConfigProperties = [
             nameof(CWRClientConfig.ScreenVibration),
             nameof(CWRClientConfig.DomainConciseDisplay),
+            nameof(CWRClientConfig.HideOtherDomains),
             nameof(CWRClientConfig.LensEasing),
             nameof(CWRClientConfig.RarityTextEffects),
         ];
@@ -43,6 +44,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 //CWRWeapon(纯本地偏好)
                 AddToggle(nameof(clientConfig.ScreenVibration), () => clientConfig.ScreenVibration, v => clientConfig.ScreenVibration = v, false);
                 AddToggle(nameof(clientConfig.DomainConciseDisplay), () => clientConfig.DomainConciseDisplay, v => clientConfig.DomainConciseDisplay = v, false);
+                AddToggle(nameof(clientConfig.HideOtherDomains), () => clientConfig.HideOtherDomains, v => clientConfig.HideOtherDomains = v, false);
                 AddToggle(nameof(clientConfig.LensEasing), () => clientConfig.LensEasing, v => clientConfig.LensEasing = v, false);
                 AddToggle(nameof(clientConfig.RarityTextEffects), () => clientConfig.RarityTextEffects, v => clientConfig.RarityTextEffects = v, false);
             }
@@ -59,6 +61,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 //CWRWeapon
                 clientConfig.ScreenVibration = true;
                 clientConfig.DomainConciseDisplay = false;
+                clientConfig.HideOtherDomains = true;
                 clientConfig.LensEasing = true;
                 clientConfig.RarityTextEffects = true;
             }

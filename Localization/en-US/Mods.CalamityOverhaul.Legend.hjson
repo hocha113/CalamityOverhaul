@@ -1293,6 +1293,13 @@ KikasaText: {
 		DreamTitle: Enter the Ghost Dream
 		DreamBody: At full water, hold the Flip the Lake key and the reflection in the lake pulls you into the dream. Foes there are helpless and no ranged projectile can exist; your items are sealed too, so hold left click to loose the hounds instead. Their bite ignores armor. Press the same key again to wake.
 		DreamPrompt: At full water, hold {0}
+		CloseTitle: Draw the Lake Back
+		CloseBody: The Blood Lake never recedes on its own: switch weapons or walk a mile and the lake and its sky follow you. Hold Kikasa and press the Domain Expansion key once more, and the water drains and the world comes back. Your hoard, shades and drowning records all stay in the umbrella, ready for the next time you raise it.
+		ClosePrompt: Hold Kikasa and press {0} to draw the lake back
+		CloseInDreamNote: You're still inside the Ghost Dream. Press {0} to wake first, then close the lake.
+		CloseSettlingNote: The lake is still changing form. Wait for it to settle.
+		KeyUnboundFallback: The key "{0}" isn't bound. For this step you can press {1} instead; bind it in Settings > Controls to keep using it.
+		ShieldNote: While the tutorial runs, foes can't hurt you and none spawn nearby.
 		SkipBtn: Skip
 		ConfirmBtn: Got it
 		AssistBtn: Show me

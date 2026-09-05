@@ -42,34 +42,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
                 return;
             }
             if (CWRKeySystem.Kikasa_Sink.JustPressed) {
-                //同一个"沉入"手势的分流：精确指着敌对玩家先沉玩家（联机 PvP），
-                //其次光标指着生物沉生物，玩家吸附命中垫后，都没有才沉手中物
-                if (!KikasaPlayerDrown.TryDrownAtCursor(Player, precise: true)
-                    && !KikasaDrown.TryDrownAtCursor(Player)
-                    && !KikasaPlayerDrown.TryDrownAtCursor(Player, precise: false)) {
-                    TrySink();
-                }
+                HandleSinkPress();
             }
-            //湖心景开阖：持鬼伞任意湖态直开（编成/两鬼/湖藏一屏看全）；
-            //已开着则任意持物都能按键合上（键的单一受理点，避免双触发）
             if (CWRKeySystem.Legend_UIControl.JustPressed) {
-                UI.Panorama.KikasaPanoramaUI pano = UI.Panorama.KikasaPanoramaUI.Instance;
-                if (pano == null) {
-                    return;
-                }
-                if (pano.IsOpen) {
-                    pano.Close();
-                }
-                else if (Main.mapFullscreen) {
-                    //全屏地图下不开新屏：默认键 M 与地图同键，别把"看地图"变成误开湖心景（反馈十一·#38）
-                    return;
-                }
-                else if (HoldingUmbrella()) {
-                    pano.Open();
-                }
-                else {
-                    Refuse();
-                }
+                HandlePanoramaPress();
+            }
+        }
+
+        /// <summary>
+        /// 沉入键按下沿的单一受理点（键位与教程临时键共用）。
+        /// 同一个"沉入"手势的分流：精确指着敌对玩家先沉玩家（联机 PvP），
+        /// 其次光标指着生物沉生物，玩家吸附命中垫后，都没有才沉手中物
+        /// </summary>
+        internal void HandleSinkPress() {
+            if (!KikasaPlayerDrown.TryDrownAtCursor(Player, precise: true)
+                && !KikasaDrown.TryDrownAtCursor(Player)
+                && !KikasaPlayerDrown.TryDrownAtCursor(Player, precise: false)) {
+                TrySink();
+            }
+        }
+
+        /// <summary>
+        /// 湖心景键按下沿的单一受理点（键位与教程临时键共用）：持鬼伞任意湖态直开
+        /// （编成/两鬼/湖藏一屏看全）；已开着则任意持物都能合上，避免双触发
+        /// </summary>
+        internal void HandlePanoramaPress() {
+            UI.Panorama.KikasaPanoramaUI pano = UI.Panorama.KikasaPanoramaUI.Instance;
+            if (pano == null) {
+                return;
+            }
+            if (pano.IsOpen) {
+                pano.Close();
+            }
+            else if (Main.mapFullscreen) {
+                //全屏地图下不开新屏：默认键 M 与地图同键，别把"看地图"变成误开湖心景（反馈十一·#38）
+                return;
+            }
+            else if (HoldingUmbrella()) {
+                pano.Open();
+            }
+            else {
+                Refuse();
             }
         }
 

@@ -23,6 +23,16 @@ namespace CalamityOverhaul.Common
         [DefaultValue(false)]
         public bool DomainConciseDisplay { get; set; }//领域简约显示（赛博空间/海域；不含鬼域）
 
+        /// <summary>
+        /// 屏蔽其他玩家的领域演出（鬼切鬼域、鬼伞血湖/鬼雨/鬼梦、大范围重启的旁观演出）。
+        /// 只动观看选择：他人域不再入选 <c>Viewed</c>，状态机、网络、功能判定一律照旧；
+        /// 他人域在功能上触达本机（站上其湖面、身处其鬼梦圆、被其沉人）时仍强制显示，
+        /// 契约见 <c>Content/LegendWeapon/LegendDomainView.cs</c>
+        /// </summary>
+        [BackgroundColor(192, 54, 94, 255)]
+        [DefaultValue(true)]
+        public bool HideOtherDomains { get; set; }
+
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool LensEasing { get; set; }//镜头缓动

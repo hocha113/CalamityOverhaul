@@ -86,8 +86,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public const int OvGrabTarget = 7;
         /// <summary>Override ai[8] 投技抓握之手 whoAmI+1，0=无</summary>
         public const int OvGrabHand = 8;
-        /// <summary>Override ai[9] 黑闪已放标记位掩码 <see cref="MLordBlackFlashFlags"/>
-        /// （开幕/残血两拍分位记账；残血拍失手不消耗：失手退场时清回对应位允许重试）</summary>
+        /// <summary>Override ai[9] 黑闪底牌记账位掩码 <see cref="MLordBlackFlashFlags"/>
+        /// （常规出场走出招表压轴席，不记账；只记门线下那一发，失手退场时清回允许重试）</summary>
         public const int OvBlackFlashUsed = 9;
         /// <summary>Override ai[10] 黑闪节拍：0正常 / 1蓄力被打断（服务端写，各端演出分支）</summary>
         public const int OvBlackFlashBeat = 10;
@@ -112,14 +112,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
     }
 
     /// <summary>
-    /// 黑闪已放标记位，同存 <see cref="MLordAiSlots.OvBlackFlashUsed"/> 一槽。
-    /// 一场两拍：全眼破碎进二阶段的开幕宣言拍 + 残血底牌拍
+    /// 黑闪底牌记账位，同存 <see cref="MLordAiSlots.OvBlackFlashUsed"/> 一槽。
+    /// 黑闪的常规频率由出招表压轴席保证（开幕拍 + 每轮一发），这里只记"门线下那一发欠不欠"
     /// </summary>
     internal static class MLordBlackFlashFlags
     {
-        /// <summary>开幕拍已放（核心裸露后的第一个常规拍强制释放，失手即算放过不重试）</summary>
-        public const int Opener = 1;
-        /// <summary>残血底牌拍已放（失手清位重试，门线走 OvBlackFlashRearm）</summary>
+        /// <summary>残血底牌已放：任何一发在解锁线下出手即记（压轴席撞上也算），
+        /// 失手清位重试，门线走 OvBlackFlashRearm</summary>
         public const int Desperate = 2;
 
         public static bool Has(float slotValue, int flag) => ((int)slotValue & flag) != 0;

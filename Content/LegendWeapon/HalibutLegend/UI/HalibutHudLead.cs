@@ -463,14 +463,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private static void DrawAsk(SpriteBatch sb, float time) {
             float a = animProgress;
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            const int cardW = 434;
+            const int cardW = 460;
             //右侧让出纹章位
             float contentW = cardW - 32f - (AskSigilRadius * 2f + 24f);
             GLine[] body = {
-                new(AskBody.Value, 0.74f, HalibutTheme.TextDim),
-                new(AskPrompt.Value, 0.78f, HalibutTheme.GlowHi),
+                new(AskBody.Value, GuideCardTypography.Body, HalibutTheme.TextDim),
+                new(AskPrompt.Value, GuideCardTypography.Prompt, HalibutTheme.GlowHi),
             };
-            int cardH = Math.Max(MeasureCardH(font, 0.94f, body, contentW),
+            int cardH = Math.Max(MeasureCardH(font, GuideCardTypography.Title, body, contentW),
                 (int)(AskSigilRadius * 2f) + 76);
 
             float slide = (1f - VaultUtils.EaseOutCubic(a)) * 28f;
@@ -481,7 +481,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             var card = new Rectangle((int)x, (int)y, cardW, cardH);
 
             DrawCard(sb, card, HalibutTheme.Accent, 0.62f);
-            DrawCardContent(sb, font, card, AskTitle.Value, 0.94f,
+            DrawCardContent(sb, font, card, AskTitle.Value, GuideCardTypography.Title,
                 HalibutTheme.Accent, HalibutTheme.Accent, body, a, contentW);
             HalibutPilotChartSigil.Draw(sb,
                 new Vector2(card.Right - 16f - AskSigilRadius, card.Y + (cardH - 44f) * 0.5f),
@@ -510,14 +510,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawTargetHighlight(sb, eye, 30f, time, a);
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            const int cardW = 336;
+            const int cardW = GuideCardTypography.CardWidth;
             float contentW = cardW - 32f;
             string openKey = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
             GLine[] body = {
-                new(HudBody.Value, 0.74f, HalibutTheme.TextDim),
-                new(string.Format(HudPrompt.Value, openKey), 0.78f, HalibutTheme.GlowHi),
+                new(HudBody.Value, GuideCardTypography.Body, HalibutTheme.TextDim),
+                new(string.Format(HudPrompt.Value, openKey), GuideCardTypography.Prompt, HalibutTheme.GlowHi),
             };
-            int cardH = MeasureCardH(font, 0.9f, body, contentW);
+            int cardH = MeasureCardH(font, GuideCardTypography.Title, body, contentW);
 
             float slide = (1f - ease) * 34f;
             float x = MathHelper.Clamp(eye.X + 62f - slide, 16f, HalibutTheme.UIScreenW - cardW - 16f);
@@ -526,7 +526,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             DrawCard(sb, card, HalibutTheme.Glow, 0.4f);
             DrawConnector(sb, new Vector2(card.X + 26f, card.Bottom), eye, a, time);
-            DrawCardContent(sb, font, card, HudTitle.Value, 0.9f, HalibutTheme.GlowHi, HalibutTheme.Glow, body, a);
+            DrawCardContent(sb, font, card, HudTitle.Value, GuideCardTypography.Title, HalibutTheme.GlowHi, HalibutTheme.Glow, body, a);
 
             //打开图鉴助手钮、等价按键/点眼
             if (DrawActionButton(sb, card, HudOpenBtn.Value, HalibutTheme.Glow, time)) {
@@ -553,13 +553,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            const int cardW = 330;
+            const int cardW = GuideCardTypography.CardWidth;
             float contentW = cardW - 32f;
             GLine[] body = {
-                new(ResearchBody.Value, 0.74f, HalibutTheme.TextDim),
-                new(ResearchPrompt.Value, 0.78f, HalibutTheme.GlowHi),
+                new(ResearchBody.Value, GuideCardTypography.Body, HalibutTheme.TextDim),
+                new(ResearchPrompt.Value, GuideCardTypography.Prompt, HalibutTheme.GlowHi),
             };
-            int cardH = MeasureCardH(font, 0.9f, body, contentW);
+            int cardH = MeasureCardH(font, GuideCardTypography.Title, body, contentW);
 
             float x, y;
             if (panelOpen) {
@@ -577,7 +577,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (altarVisible && card.Y > altar.Y) {
                 DrawConnector(sb, new Vector2(card.Center.X, card.Y), altar, a, time);
             }
-            DrawCardContent(sb, font, card, ResearchTitle.Value, 0.9f, HalibutTheme.Accent, HalibutTheme.Accent, body, a);
+            DrawCardContent(sb, font, card, ResearchTitle.Value, GuideCardTypography.Title, HalibutTheme.Accent, HalibutTheme.Accent, body, a);
 
             if (phaseTimer > StuckFramesBeforeSkip && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
                 SetPhase(Phase.Equip);
@@ -602,18 +602,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            const int cardW = 330;
+            const int cardW = GuideCardTypography.CardWidth;
             float contentW = cardW - 32f;
             bool waiting = save.IsStudying && save.loadout.Count == 0;
             GLine[] body = waiting
                 ? new GLine[] {
-                    new(EquipBody.Value, 0.74f, HalibutTheme.TextDim),
-                    new(EquipWaiting.Value, 0.76f, Color.Lerp(HalibutTheme.GlowHi, HalibutTheme.Accent, HalibutTheme.Breath(time, 1f, 3f))),
+                    new(EquipBody.Value, GuideCardTypography.Body, HalibutTheme.TextDim),
+                    new(EquipWaiting.Value, GuideCardTypography.Hint, Color.Lerp(HalibutTheme.GlowHi, HalibutTheme.Accent, HalibutTheme.Breath(time, 1f, 3f))),
                 }
                 : new GLine[] {
-                    new(EquipBody.Value, 0.74f, HalibutTheme.TextDim),
+                    new(EquipBody.Value, GuideCardTypography.Body, HalibutTheme.TextDim),
                 };
-            int cardH = MeasureCardH(font, 0.9f, body, contentW);
+            int cardH = MeasureCardH(font, GuideCardTypography.Title, body, contentW);
 
             float x = MathHelper.Clamp(HalibutTheme.UIScreenW - cardW - 24f, 16f, HalibutTheme.UIScreenW - cardW - 16f);
             float y = MathHelper.Clamp((HalibutTheme.UIScreenH - cardH) * 0.5f, 72f, HalibutTheme.UIScreenH - cardH - 16f);
@@ -623,7 +623,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (dockVisible) {
                 DrawConnector(sb, new Vector2(card.X + 24f, card.Bottom), new Vector2(dock.Center.X, dock.Top), a, time);
             }
-            DrawCardContent(sb, font, card, EquipTitle.Value, 0.9f, HalibutTheme.Accent, HalibutTheme.Accent, body, a);
+            DrawCardContent(sb, font, card, EquipTitle.Value, GuideCardTypography.Title, HalibutTheme.Accent, HalibutTheme.Accent, body, a);
 
             //无研究/无入栏且卡住时才给跳过（入栏会自动下一步）
             //空装载栏没法进转盘阶段（转盘呼不出），直接收尾
@@ -647,14 +647,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawWheelHint(sb, center, time, a);
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            const int cardW = 348;
+            const int cardW = GuideCardTypography.CardWidth;
             float contentW = cardW - 32f;
             string wheelKey = CWRKeySystem.RadialWheel_Key.ToTooltipString(CWRKeySystem.Notbound.Value);
             GLine[] body = {
-                new(WheelBody.Value, 0.74f, HalibutTheme.TextDim),
-                new(string.Format(WheelPrompt.Value, wheelKey), 0.8f, HalibutTheme.GlowHi),
+                new(WheelBody.Value, GuideCardTypography.Body, HalibutTheme.TextDim),
+                new(string.Format(WheelPrompt.Value, wheelKey), GuideCardTypography.Prompt, HalibutTheme.GlowHi),
             };
-            int cardH = MeasureCardH(font, 0.92f, body, contentW);
+            int cardH = MeasureCardH(font, GuideCardTypography.Title, body, contentW);
             //卡片让开盘身：锚在示意环上方，避免真盘展开时被卡片压住
             float hintTop = center.Y - (HalibutTheme.WheelOuterR + 26f);
             float cardX = MathHelper.Clamp(center.X - cardW * 0.5f, 16f, HalibutTheme.UIScreenW - cardW - 16f);
@@ -662,7 +662,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             var card = new Rectangle((int)cardX, (int)cardY, cardW, cardH);
 
             DrawCard(sb, card, HalibutTheme.GlowHi, 0.7f);
-            DrawCardContent(sb, font, card, WheelTitle.Value, 0.92f, HalibutTheme.GlowHi, HalibutTheme.GlowHi, body, a);
+            DrawCardContent(sb, font, card, WheelTitle.Value, GuideCardTypography.Title, HalibutTheme.GlowHi, HalibutTheme.GlowHi, body, a);
 
             //转盘键未绑定时本阶段无法靠操作完成，跳过立即放出，不再干等
             bool wheelKeyUnbound = CWRKeySystem.IsKeybindUnbound(CWRKeySystem.RadialWheel_Key);
@@ -768,11 +768,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //卡片底缘小按钮（助手/跳过/抉择），返回是否被点击
         private static bool DrawActionButton(SpriteBatch sb, Rectangle card, string text, Color accent, float time,
-            bool rightAligned = true, int btnW = 98, int btnH = 24) {
+            bool rightAligned = true, int btnW = 98, int btnH = 26) {
+            //按钮宽度跟字量走，长译名不被胶囊截断
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            btnW = Math.Max(btnW, (int)(font.MeasureString(text).X * GuideCardTypography.Button) + 26);
             var rect = new Rectangle(rightAligned ? card.Right - btnW - 12 : card.X + 12,
                 card.Bottom - btnH - 11, btnW, btnH);
             bool hovered = rect.Contains(HalibutTheme.UIMouse.ToPoint());
-            HalibutRenderer.DrawCapsuleButton(sb, rect, text, accent, hovered, false, animProgress, time);
+            HalibutRenderer.DrawCapsuleButton(sb, rect, text, accent, hovered, false, animProgress, time,
+                GuideCardTypography.Button);
             if (hovered) {
                 Main.LocalPlayer.mouseInterface = true;
                 if (Main.mouseLeft && Main.mouseLeftRelease) {

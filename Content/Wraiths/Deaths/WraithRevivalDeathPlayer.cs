@@ -31,7 +31,12 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
         private bool executed;
         private Vector2 deathAnchor;
         private WraithDeathPerformance performance;
+        private SeizureBeatTable beats;
         private bool presentationStarted;
+        private bool executeCuePlayed;
+        //处决顿挫：逻辑帧停在原地，两端各算各的，结果一致
+        private int holdRemaining;
+        private SeizureGround ground;
 
         internal bool Active => timer > 0 && !string.IsNullOrEmpty(activeKey);
         internal string ActiveKey => activeKey;
@@ -40,6 +45,7 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
         internal byte SeizeSeed => seed;
         internal bool Executed => executed;
         internal Vector2 DeathAnchor => deathAnchor;
+        internal SeizureGround Ground => ground;
 
         private int OmenEndFrame => performance?.OmenEndFrame ?? 42;
         private int ExecuteFrame => performance?.ExecuteFrame ?? 126;
@@ -85,12 +91,12 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
             executed = false;
             seed = (byte)Main.rand.Next(256);
             deathAnchor = Player.Center;
+            ground = SeizureGround.Sample(Player.Center);
             revision++;
             if (revision == 0) {
                 revision = 1;
             }
-            performance = null;
-            presentationStarted = false;
+            ResetPresentation();
             EnsurePerformance();
             if (Main.netMode == NetmodeID.Server) {
                 WraithNet.SendRevivalDeathState(Player.whoAmI);
@@ -118,12 +124,22 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
             }
             if (fresh || activeKey != key) {
                 activeKey = key;
-                performance = null;
-                presentationStarted = false;
+                ResetPresentation();
                 deathAnchor = Player.Center;
+                ground = SeizureGround.Sample(Player.Center);
             }
             EnsurePerformance();
+            //快照直接落 timer，本地顿挫计数随之作废，否则会在修正点后多卡几帧
+            holdRemaining = 0;
             timer = Math.Clamp(stateTimer, 1, TotalFrames);
+        }
+
+        private void ResetPresentation() {
+            performance = null;
+            beats = null;
+            presentationStarted = false;
+            executeCuePlayed = false;
+            holdRemaining = 0;
         }
 
         /// <summary>按 Key 建演出实例；帧表在服务器端也需要，故各端都实例化，表现钩子只在客户端调。</summary>
@@ -134,6 +150,8 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
             WraithRegistry.TryGet(activeKey, out WraithDefinition definition);
             performance = definition?.CreateDeathPerformance() ?? new GenericSeizurePerformance();
             performance.Host = this;
+            beats = new SeizureBeatTable();
+            performance.BuildBeats(beats);
         }
 
         private void StartPresentation() {
@@ -171,16 +189,9 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
             }
             deathAnchor = Player.Center;
 
-            if (!Main.dedServ) {
-                performance?.Update();
-            }
+            TickPresentation();
 
-            //处决帧：本地表现 + 权威击杀
-            if (timer == ExecuteFrame - 1) {
-                if (!Main.dedServ) {
-                    performance?.OnExecute();
-                }
-            }
+            //权威击杀
             if (timer >= ExecuteFrame && !executed
                 && Main.netMode != NetmodeID.MultiplayerClient) {
                 executed = true;
@@ -212,16 +223,51 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
                     timer = ExecuteFrame;
                 }
             }
+            TickPresentation();
             if (!Main.dedServ) {
-                performance?.Update();
+                performance?.UpdateDeathBody();
             }
             AdvanceTimer();
         }
 
+        /// <summary>
+        /// 表现推进：补齐拍表、跑演出 Update、边沿触发处决拍。<br/>
+        /// 处决拍用「越过即触发一次」而不是等值判定，联机快照把 timer 从处决帧之前
+        /// 直接修正到之后时才不会整帧丢掉处决表现。
+        /// </summary>
+        private void TickPresentation() {
+            if (Main.dedServ) {
+                return;
+            }
+            beats?.Advance(timer);
+            performance?.Update();
+            if (!executeCuePlayed && timer >= ExecuteFrame - 1) {
+                executeCuePlayed = true;
+                performance?.OnExecute();
+            }
+        }
+
         private void AdvanceTimer() {
+            //顿挫期间逻辑帧原地不动，演出与权威计时一起停
+            if (holdRemaining > 0) {
+                holdRemaining--;
+                return;
+            }
             timer++;
             if (timer > TotalFrames) {
                 EndSeizure(broadcast: true);
+                return;
+            }
+            holdRemaining = Math.Max(performance?.HoldFramesAt(timer) ?? 0, 0);
+        }
+
+        /// <summary>
+        /// 受害者体态只能在这里应用：原版 <c>PlayerFrame</c> 在 <c>Update</c> 中段重算
+        /// <c>bodyFrame</c>，比它早写会被覆盖，而本钩子是 <c>Player.Update</c> 的最后一环。
+        /// </summary>
+        public override void PostUpdate() {
+            if (Active && presentationStarted && !Player.dead) {
+                performance?.ApplyPose();
             }
         }
 
@@ -243,11 +289,12 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
             activeKey = string.Empty;
             timer = 0;
             executed = false;
-            performance = null;
-            presentationStarted = false;
+            ResetPresentation();
             if (!wasActive) {
                 return;
             }
+            //体态必须交还，否则玩家会歪着身子复活
+            SeizurePuppet.ReleasePose(Player);
             if (broadcast && Main.netMode == NetmodeID.Server) {
                 WraithNet.SendRevivalDeathState(Player.whoAmI);
             }

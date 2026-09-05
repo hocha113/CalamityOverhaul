@@ -128,8 +128,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills.Resta
             => Active != null && Active.Players.Contains(who);
 
         /// <summary>
-        /// 本机是否看这场演出：被波及玩家必看，旁观按与施术者的距离；
-        /// 全屏潮汐/水下调色只给看得见的端
+        /// 本机是否看这场演出：被波及玩家必看，旁观按与施术者的距离且受客户端屏蔽他人领域的开关
+        /// （与血湖重启同法，屏蔽只是视觉上的）；全屏潮汐/水下调色只给看得见的端
         /// </summary>
         internal static bool LocallyViewed {
             get {
@@ -141,8 +141,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills.Resta
                 if (local?.active != true) {
                     return false;
                 }
-                if (show.Players.Contains(local.whoAmI)) {
+                //施术者与被波及者必看：自己的演出不受旁观屏蔽影响，不依赖名单是否圈进了施术者
+                if (show.OwnerWho == local.whoAmI || show.Players.Contains(local.whoAmI)) {
                     return true;
+                }
+                if (!LegendDomainView.SpectateOthers) {
+                    return false;
                 }
                 Player owner = Main.player[show.OwnerWho];
                 return owner?.active == true

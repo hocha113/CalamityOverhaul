@@ -72,7 +72,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
         }
 
-        /// <summary>本机屏幕上正在生效的那个域：自己的优先，否则取范围内最近的他人领域</summary>
+        /// <summary>
+        /// 本机屏幕上正在生效的那个域：自己的优先，否则取范围内最近的他人领域。
+        /// 客户端设置屏蔽他人领域时（<see cref="LegendDomainView.SpectateOthers"/> 为假），他人域只在
+        /// 功能上触达本机（<see cref="KikasaDomainPlayer.TouchesLocalPlayer"/>）时才入选：屏蔽只是视觉上的，
+        /// 湖面平台、鬼梦封物、沉人这些照旧作用，作用到人身上就让人看见
+        /// </summary>
         public static KikasaDomainPlayer Viewed { get; private set; }
 
         /// <summary>观看半径。域是屏幕级效果，施术者进了视野一圈才把人卷进去</summary>
@@ -82,7 +87,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>已在观看的那份放宽半径，人在边界来回走不会闪断</summary>
         private const float ViewRangeHysteresis = 1.35f;
 
+        /// <summary>屏蔽旁观时触达断开后继续观看的宽限帧数：站湖面起跳的一秒不让整屏天空闪断，
+        /// 也让收域/归返/松手的收尾演出放完</summary>
+        private const int TouchGraceFrames = 120;
+
         private static int viewedIndex = -1;
+
+        private static int touchGrace;
 
         /// <summary>观看域在场平滑系数 0~1，驱动光照/滤镜/天空</summary>
         public static float ViewedPresence => Viewed?.PresenceSmooth ?? 0f;
@@ -103,6 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             Player local = Main.dedServ || Main.gameMenu ? null : Main.LocalPlayer;
             if (local?.active != true) {
                 viewedIndex = -1;
+                touchGrace = 0;
                 return;
             }
 
@@ -110,8 +122,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (own.AnyActive) {
                 Viewed = own;
                 viewedIndex = local.whoAmI;
+                touchGrace = 0;
                 return;
             }
+
+            if (!LegendDomainView.SpectateOthers) {
+                RefreshTouched(local);
+                return;
+            }
+            touchGrace = 0;
 
             float range = ViewRange;
             float nearest = float.MaxValue;
@@ -133,6 +152,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 Viewed = domain;
             }
             viewedIndex = nearestIndex;
+        }
+
+        /// <summary>
+        /// 屏蔽旁观分支：只有在功能上触达本机的他人域入选（多域同时触达取最近，不看 ViewRange，
+        /// 触达本身已隐含湖带/梦圆之内）；触达刚断时，上一帧看的那个域还开着就续看到宽限用尽，
+        /// 之后走 Viewed==null 的既有收场
+        /// </summary>
+        private static void RefreshTouched(Player local) {
+            float nearest = float.MaxValue;
+            int nearestIndex = -1;
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player other = Main.player[i];
+                if (i == local.whoAmI || other?.active != true
+                    || !other.TryGetModPlayer(out KikasaDomainPlayer domain)
+                    || !domain.TouchesLocalPlayer(local)) {
+                    continue;
+                }
+                float distance = Vector2.Distance(other.Center, local.Center);
+                if (distance >= nearest) {
+                    continue;
+                }
+                nearest = distance;
+                nearestIndex = i;
+                Viewed = domain;
+            }
+            if (nearestIndex >= 0) {
+                viewedIndex = nearestIndex;
+                touchGrace = TouchGraceFrames;
+                return;
+            }
+
+            if (touchGrace > 0 && viewedIndex >= 0 && viewedIndex < Main.maxPlayers
+                && viewedIndex != local.whoAmI) {
+                Player previous = Main.player[viewedIndex];
+                if (previous?.active == true
+                    && previous.TryGetModPlayer(out KikasaDomainPlayer previousDomain)
+                    && previousDomain.AnyActive) {
+                    touchGrace--;
+                    Viewed = previousDomain;
+                    return;
+                }
+            }
+            touchGrace = 0;
+            viewedIndex = -1;
         }
 
         /// <summary>各端逐帧推进全体活跃玩家的域，远端形态由施术者的转播兜住。

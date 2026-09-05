@@ -144,14 +144,22 @@ namespace CalamityOverhaul.Content.UIs.RadialWheels
             if (key == null) {
                 return;
             }
-            if (key.JustPressed) {
+            HandleKeyEdge(key.JustPressed, key.JustReleased);
+        }
+
+        /// <summary>
+        /// 开关键边沿的统一受理：按下开齐够格的盘，松开提交焦点盘并收起。
+        /// 键位路径与教程临时键（转盘键未绑定时按住默认键）都从这里进
+        /// </summary>
+        public static void HandleKeyEdge(bool pressed, bool released) {
+            if (pressed) {
                 //全屏界面（任务书/湖心景等）摊开时不开盘，与 B 键无够格盘时的静默同口径
                 if (!FullScreenUIHub.AnyOpen) {
                     OpenEligible();
                 }
                 return;
             }
-            if (!key.JustReleased) {
+            if (!released) {
                 return;
             }
             IRadialWheel commitTarget;

@@ -255,7 +255,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// 胶囊按钮、双端弧+描边+扫光+激活端点
         /// </summary>
         public static void DrawCapsuleButton(SpriteBatch sb, Rectangle rect, string text,
-            Color accent, bool hovered, bool active, float alpha, float time) {
+            Color accent, bool hovered, bool active, float alpha, float time, float textScale = 0.76f) {
             Vector2 lCap = new(rect.X + rect.Height * 0.5f, rect.Center.Y);
             Vector2 rCap = new(rect.Right - rect.Height * 0.5f, rect.Center.Y);
             float radius = rect.Height * 0.5f;
@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //文字
             DrawGlowTextCentered(sb, text, rect.Center.ToVector2() + new Vector2(0f, -1f),
                 Color.Lerp(HalibutTheme.Text, accent, 0.4f + hi * 0.6f) * alpha,
-                accent * ((0.2f + hi * 0.25f) * alpha), 0.76f);
+                accent * ((0.2f + hi * 0.25f) * alpha), textScale);
         }
 
         /// <summary>

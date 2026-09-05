@@ -4,6 +4,14 @@ root = true
 [*]
 charset = utf-8-bom
 
+# HLSL 着色器：fxc.exe 不接受 BOM（error X3000: Illegal character in shader file），必须存为无 BOM 的 UTF-8
+[*.{fx,fxh,hlsl}]
+charset = utf-8
+
+# JSON / glTF：严格的 JSON 解析器（Node JSON.parse、glTF 加载器等）不接受 BOM
+[*.{json,gltf}]
+charset = utf-8
+
 # c# 文件
 [*.cs]
 

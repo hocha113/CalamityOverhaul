@@ -48,7 +48,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             MLordArmIK.Reset();
             MLordUltArms.Reset();
             MLordBlackFlashFX.Clear();
-            MLordSilence.Clear();
             MLordLocomotion.Reset();
         }
 
@@ -212,17 +211,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             bool ultBusy = current is MLordBlackFlashState or MLordVoidRuptureState
                 or MLordLunarAnnihilationState;
 
-            //开幕黑闪：全眼破碎进二阶段后的第一个常规拍即刻释放（开场宣言，不看血线）。
-            //失手即算放过不重试——开幕拍重试会循环成打断刷子，残血底牌拍照旧会来
-            if (stateContext.CoreExposed && !ultBusy
-                && !MLordBlackFlashFlags.Has(ai[MLordAiSlots.OvBlackFlashUsed], MLordBlackFlashFlags.Opener)) {
-                stateMachine.ChangeState(new MLordBlackFlashState());
-                return;
-            }
-
-            //残血底牌黑闪（比虚空撕裂更迟解锁；不打断进行中的另一大招）。
+            //黑闪常规出场走两条路：开幕拍由 CoreExposure 直接接棒，之后每轮裸露循环压轴席必出。
+            //这里只管残血底牌保底：跌破门线仍没在门线下放过一次就强制补上（不打断进行中的另一大招）。
             //失手不消耗底牌：重试门线=失手时血线再降一档（OvBlackFlashRearm），
-            //每次失手门线更低，被死亡阈值自然封顶——底牌被打断后更低血量孤注一掷
+            //每次失手门线更低，被死亡阈值自然封顶，底牌被打断后更低血量孤注一掷
             float blackFlashGate = npc.lifeMax * MLordDirector.BlackFlashLifeRatio;
             float rearmRatio = ai[MLordAiSlots.OvBlackFlashRearm];
             if (rearmRatio > 0f) {
