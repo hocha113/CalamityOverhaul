@@ -1293,6 +1293,13 @@ KikasaText: {
 		DreamTitle: Entrar en el Sueño espectral
 		DreamBody: Con el lago lleno, mantén pulsada la tecla «Anverso y reverso del lago de sangre» y el reflejo del lago te arrastra al Sueño espectral. En el sueño los enemigos quedan incapaces y no puede existir ningún proyectil a distancia; tus objetos también quedan sellados, y en su lugar mantienes pulsado el clic izquierdo para soltar sabuesos que muerdan. Pulsa la misma tecla otra vez para despertar.
 		DreamPrompt: Con el lago lleno, mantén pulsado {0}
+		// CloseTitle: Draw the Lake Back
+		// CloseBody: The Blood Lake never recedes on its own: switch weapons or walk a mile and the lake and its sky follow you. Hold Kikasa and press the Domain Expansion key once more, and the water drains and the world comes back. Your hoard, shades and drowning records all stay in the umbrella, ready for the next time you raise it.
+		// ClosePrompt: Hold Kikasa and press {0} to draw the lake back
+		// CloseInDreamNote: You're still inside the Ghost Dream. Press {0} to wake first, then close the lake.
+		// CloseSettlingNote: The lake is still changing form. Wait for it to settle.
+		// KeyUnboundFallback: The key "{0}" isn't bound. For this step you can press {1} instead; bind it in Settings > Controls to keep using it.
+		// ShieldNote: While the tutorial runs, foes can't hurt you and none spawn nearby.
 		SkipBtn: Saltar
 		ConfirmBtn: Entendido
 		AssistBtn: Demuéstramelo

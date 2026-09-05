@@ -213,6 +213,7 @@ TeleportStation: {
 		TitleText: Teleport Network
 		LocalLabel: This Station
 		RenameText: Rename
+		ConfirmText: Confirm
 		RenameHint: Enter to confirm, Esc to cancel
 		EmptyListText: No other teleport stations in the world
 		RowInfoLine: "{0} tiles · {1} UE"

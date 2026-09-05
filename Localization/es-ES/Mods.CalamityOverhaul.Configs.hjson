@@ -54,6 +54,11 @@ CWRClientConfig: {
 		Tooltip: Desactivado por defecto. Al activarlo, solo simplifica las puestas en escena de dominios como el Ciberespacio o el mar; no afecta al Reino espectral de Onikiri ni a efectos de armas e implantes como Desmembrar, efigie o Tiempo de hackeo
 	}
 
+	HideOtherDomains: {
+		// Label: Hide Other Players' Domains
+		// Tooltip: On by default. When enabled, full-screen domain visuals opened by other players (Onikiri's Oni Domain, Kikasa's Blood Lake, Ghost Rain and Ghost Dream) are no longer drawn on your screen. They still appear when you stand on their lake, get dragged underwater, or are inside their dream. Visual only, no effect is changed; your own domains are unaffected.
+	}
+
 	LensEasing: {
 		Label: Suavizado de la cámara
 		Tooltip: Al habilitarlo, los desplazamientos rápidos a larga distancia suavizan la cámara y evitan la sensación extraña de moverse demasiado rápido

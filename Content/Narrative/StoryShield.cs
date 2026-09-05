@@ -71,15 +71,26 @@ namespace CalamityOverhaul.Content.Narrative
         internal static bool TutorialDemand() => KikasaHudLead.ShieldEligible;
 
         /// <summary>
-        /// 受保护时要免掉的伤害来源：敌怪本体与敌对弹幕。
-        /// PvP（来源带玩家槽位）与自定义来源（伞鬼抓人、环境）都放行
+        /// 受保护时要免掉的伤害来源：敌怪本体与敌怪打出的敌对弹幕。
+        /// PvP（来源带玩家槽位）、陷阱弹幕（机关不是生物）与自定义来源（伞鬼抓人、环境）都放行
         /// </summary>
         internal static bool IsCreatureSource(PlayerDeathReason source) {
             if (source == null || source.SourcePlayerIndex >= 0) {
                 return false;
             }
-            return source.SourceNPCIndex >= 0 || source.SourceProjectileLocalIndex >= 0;
+            if (source.SourceNPCIndex >= 0) {
+                return true;
+            }
+            int projIndex = source.SourceProjectileLocalIndex;
+            if (projIndex < 0) {
+                return false;
+            }
+            return projIndex >= Main.maxProjectiles || !Main.projectile[projIndex].trap;
         }
+
+        /// <summary>敌对弹幕里只拦生物打出的那种，陷阱机关照常</summary>
+        internal static bool IsCreatureProjectile(Projectile proj)
+            => proj != null && proj.hostile && !proj.trap;
     }
 
     /// <summary>
@@ -200,7 +211,8 @@ namespace CalamityOverhaul.Content.Narrative
 
         public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot) => !Active;
 
-        public override bool CanBeHitByProjectile(Projectile proj) => !(Active && proj.hostile);
+        public override bool CanBeHitByProjectile(Projectile proj)
+            => !(Active && StoryShield.IsCreatureProjectile(proj));
 
         /// <summary>免伤语义覆盖减益 DoT：immune 类判定只挡碰撞与弹幕，中毒/灼烧走 lifeRegen</summary>
         public override void UpdateBadLifeRegen() {

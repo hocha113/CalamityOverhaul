@@ -58,6 +58,11 @@ CWRClientConfig: {
 		Tooltip: По умолчанию выключено. При включении упрощает только постановку доменов вроде киберпространства и морской зоны; не затрагивает Призрачное царство Оникири, а также эффекты оружия и имплантов вроде расчленения, лика и времени взлома
 	}
 
+	HideOtherDomains: {
+		// Label: Hide Other Players' Domains
+		// Tooltip: On by default. When enabled, full-screen domain visuals opened by other players (Onikiri's Oni Domain, Kikasa's Blood Lake, Ghost Rain and Ghost Dream) are no longer drawn on your screen. They still appear when you stand on their lake, get dragged underwater, or are inside their dream. Visual only, no effect is changed; your own domains are unaffected.
+	}
+
 	LensEasing: {
 		Label: Сглаживание камеры
 		Tooltip:

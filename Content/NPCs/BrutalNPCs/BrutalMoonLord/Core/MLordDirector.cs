@@ -40,9 +40,10 @@
         //投技连段（被抓者无法闪避：预算刻意压低，另有被抓端 1 血兜底）
         public static int GrabLashDamage => 16;      //处刑触须抽打
         public static int GrabRayDamage => 34;       //处刑贴脸死光
-        //黑闪大招（长预告演出级：接触伤害与爆点窗口都对齐可见形体）
-        public static int BlackHoleContactDamage => 90;  //黑洞本体接触
+        //黑闪大招（长预告演出级：接触伤害、爆点窗口、创口都对齐可见形体）
+        public static int BlackHoleContactDamage => 90;  //黑洞本体接触（飞行/坍缩暗核）
         public static int BlackFlashBurstDamage => 132;  //黑闪爆点
+        public static int BlackFlashScarDamage => 48;    //虚空创口触伤（留场惩罚，星火同档）
 
         //―――― 部件血量比例（SetProperty 各端确定性执行）――――
         public static float CoreLifeFactor => 0.9f;
@@ -94,7 +95,8 @@
         public static int DeathTriggerLife => 10;
         /// <summary>大招解锁的核心生命比例</summary>
         public static float UltLifeRatio => 0.4f;
-        /// <summary>黑闪解锁的核心生命比例（比虚空撕裂更迟，终局底牌）</summary>
+        /// <summary>黑闪底牌保底线：常规频率由裸露出招表压轴席保证（开幕拍 + 每轮一发），
+        /// 跌破此线仍没在线下放过一次就强制补上（比虚空撕裂更迟，终局底牌）</summary>
         public static float BlackFlashLifeRatio => 0.22f;
         /// <summary>月明湮灭解锁的核心生命比例：低于此后裸露出招表的死光扫描席升级为巨幅横扫</summary>
         public static float AnnihilationLifeRatio => 0.33f;

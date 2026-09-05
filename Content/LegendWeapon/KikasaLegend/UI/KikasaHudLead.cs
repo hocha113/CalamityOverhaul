@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
             CloseTitle = this.GetLocalization(nameof(CloseTitle), () => "Draw the Lake Back");
             CloseBody = this.GetLocalization(nameof(CloseBody),
-                () => "The Blood Lake never recedes on its own: switch weapons or walk a mile and the lake and its blood-dusk sky follow you. Hold Kikasa and press the domain key once more, and the water drains and the world comes back. Your hoard, shades and drowning records all stay in the umbrella, ready for the next time you raise it.");
+                () => "The Blood Lake never recedes on its own: switch weapons or walk a mile and the lake and its sky follow you. Hold Kikasa and press the Domain Expansion key once more, and the water drains and the world comes back. Your hoard, shades and drowning records all stay in the umbrella, ready for the next time you raise it.");
             ClosePrompt = this.GetLocalization(nameof(ClosePrompt),
                 () => "Hold Kikasa and press {0} to draw the lake back");
             CloseInDreamNote = this.GetLocalization(nameof(CloseInDreamNote),

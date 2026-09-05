@@ -11,11 +11,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
-    /// 黑闪（终局大招，一场两拍：全眼破碎进二阶段的开幕宣言拍 + 残血底牌拍）：
+    /// 黑闪（终局大招）：出场三路，开幕拍（核心裸露仪式直接接棒）+ 裸露出招表每轮压轴席 + 残血底牌保底。
     /// 四条幻影臂物化→合拢环抱→揉搓压缩黑球（打断窗：集火核心可令其失手）→
-    /// 一拍寂静锁定掷向→掷出黑洞→长硬直余波。
-    /// 全程清场先行、预告超长、掷向锁定即承诺。
-    /// 残血底牌拍附加重震屏：蓄力全程中幅持续撼动，黑洞爆点大幅震撼；开幕拍保持正常演出。
+    /// 一拍寂静锁定掷向→撕空掷出→黑洞钉在锚点坍缩（预告环即爆点判定）→黑闪爆点→虚空创口余波，
+    /// 本体全程长硬直。全程清场先行、预告超长、掷向锁定即承诺。
+    /// 半血以下为残血变体：重震屏 + 失控膨胀巨球 + 更快掷速 + 更大爆点。
     /// Timer 各端本地推进；打断分支经 OvBlackFlashBeat 槽广播，各端跳至失手段
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.BlackFlash, typeof(MLordContext))]
@@ -28,10 +28,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         internal const int ManifestEnd = 66;
         internal const int EmbraceEnd = ManifestEnd + 40;
         internal const int KneadEnd = EmbraceEnd + 150;
+        /// <summary>掷向预读线提前量：揉搓末段起亮出追踪细线（读向），寂静拍锁定后转为承诺线</summary>
+        internal const int AimLeadFrames = 44;
         /// <summary>寂静一拍：粒子/运动/声全部收干，掷向已锁</summary>
         internal const int SilenceEnd = KneadEnd + 18;
         internal const int ThrowEnd = SilenceEnd + 12;
-        internal const int AftermathEnd = ThrowEnd + 96;
+        /// <summary>余波硬直：覆盖弹体撕空飞行+坍缩+爆点（约 100 帧）之后再留 ~50 帧惩罚窗</summary>
+        internal const int AftermathEnd = ThrowEnd + 150;
         //―――― 失手段（打断分支）：远离主时间轴的独立区段，各端经 beat 槽跳入 ――――
         internal const int FumbleStart = 10000;
         internal const int FumbleEnd = FumbleStart + 128;
@@ -39,12 +42,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         /// <summary>揉搓打断窗起点的核心生命（服务端失血审计基线）</summary>
         private int kneadStartLife;
 
-        /// <summary>本拍是否残血底牌版：开幕拍在满血裸露帧触发、底牌拍在残血门线下触发，
-        /// 半血分界各端可确定性复判（状态槽与生命值同包同步）。
-        /// 底牌版附加重震屏 + 失控膨胀巨球（2.5 倍体量）+ 更快掷速</summary>
+        /// <summary>残血变体（半血分界，各端可确定性复判：状态槽与生命值同包同步）。
+        /// 重震屏 + 失控膨胀巨球（2 倍体量）+ 更快掷速 + 更大爆点</summary>
         private bool desperate;
 
-        /// <summary>本拍出手初速（残血底牌拍更快，预告即承诺的锁定语法不变）</summary>
+        /// <summary>本拍是否底牌发（解锁线下出手）：只有它记账/失手重试，压轴席常规发不记</summary>
+        private bool trumpCard;
+
+        /// <summary>本拍出手初速（残血变体更快，预告即承诺的锁定语法不变）</summary>
         private float LaunchSpeedNow => desperate
             ? MLordBlackHoleProj.DesperateLaunchSpeed : MLordBlackHoleProj.LaunchSpeed;
 
@@ -52,10 +57,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             base.OnEnter(context);
             kneadStartLife = 0;
             desperate = context.Npc.life < context.Npc.lifeMax * 0.5f;
+            trumpCard = context.Npc.life < context.Npc.lifeMax * MLordDirector.BlackFlashLifeRatio;
             if (!VaultUtils.isClient) {
-                context.Owner.ai[MLordAiSlots.OvBlackFlashUsed] = MLordBlackFlashFlags.With(
-                    context.Owner.ai[MLordAiSlots.OvBlackFlashUsed],
-                    desperate ? MLordBlackFlashFlags.Desperate : MLordBlackFlashFlags.Opener);
+                if (trumpCard) {
+                    context.Owner.ai[MLordAiSlots.OvBlackFlashUsed] = MLordBlackFlashFlags.With(
+                        context.Owner.ai[MLordAiSlots.OvBlackFlashUsed], MLordBlackFlashFlags.Desperate);
+                }
                 context.Owner.ai[MLordAiSlots.OvBlackFlashBeat] = 0f;
                 context.Owner.ai[MLordAiSlots.OvEyeCommand] = MLordEyeCommand.Retreat;
                 context.Owner.ai[MLordAiSlots.OvAttackSeed] = Main.rand.Next(1, 100000);
@@ -92,9 +99,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         public override void OnExit(MLordContext context) {
             base.OnExit(context);
             if (!VaultUtils.isClient) {
-                //残血拍失手不消耗底牌：清回未用位，重试门线（OvBlackFlashRearm）已在打断帧写入；
-                //开幕拍失手即算放过——重试会循环成打断刷子，残血底牌拍照旧会来
-                if (Timer >= FumbleStart && desperate) {
+                //底牌发失手不消耗：清回未用位，重试门线（OvBlackFlashRearm）已在打断帧写入。
+                //常规压轴席失手不做任何补偿，下一轮循环照旧会来，不会滚成即时重试的打断刷子
+                if (Timer >= FumbleStart && trumpCard) {
                     context.Owner.ai[MLordAiSlots.OvBlackFlashUsed] = MLordBlackFlashFlags.Without(
                         context.Owner.ai[MLordAiSlots.OvBlackFlashUsed], MLordBlackFlashFlags.Desperate);
                 }
@@ -165,11 +172,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 kneadStartLife = npc.life;
             }
             //揉搓打断窗（服务端裁定）：窗内核心失血超阈值→失手；
-            //残血拍同时写重试门线=当前血线再降一档（底牌被打断→更低血量孤注一掷）
+            //底牌发同时写重试门线=当前血线再降一档（底牌被打断→更低血量孤注一掷）
             if (!VaultUtils.isClient && Timer > EmbraceEnd && kneadStartLife > 0
                 && kneadStartLife - npc.life >= npc.lifeMax * MLordDirector.BlackFlashBreakRatio) {
                 context.Owner.ai[MLordAiSlots.OvBlackFlashBeat] = 1f;
-                if (desperate) {
+                if (trumpCard) {
                     context.Owner.ai[MLordAiSlots.OvBlackFlashRearm] = MathHelper.Clamp(
                         npc.life / (float)npc.lifeMax - MLordDirector.BlackFlashRearmStep, 0.02f, 1f);
                 }
@@ -227,7 +234,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             //寂静期不推 GravityDim：上一帧的余晖自然衰减，画面亮度回抬一拍再暗
         }
 
-        /// <summary>掷出：服务端生成黑洞弹体，客户端冲击帧+反冲</summary>
+        /// <summary>掷出：服务端生成黑洞弹体，客户端冲击帧+反冲。
+        /// 弹体自此撕空直奔锚点钉住坍缩，后续演出全在弹体侧（<see cref="MLordBlackHoleProj"/>）</summary>
         private void UpdateThrow(MLordContext context) {
             NPC npc = context.Npc;
             npc.velocity *= 0.86f;
@@ -241,7 +249,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.BlackHole with { Volume = 1.1f, Pitch = 0.25f }, ballPos);
                     SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.3f }, ballPos);
-                    //残血底牌拍掷出更重：方向冲击加深并叠一记余震
+                    //撕空的鞭响：出手瞬间的高频刮擦，和后面爆点的低频轰鸣拉开频段
+                    SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.9f, Pitch = -0.4f }, ballPos);
+                    //残血变体掷出更重：方向冲击加深并叠一记余震
                     MLordScreenFX.Punch(ballPos, desperate ? 14f : 11f, 16, dir);
                     if (desperate) {
                         Main.LocalPlayer.CWR()?.GetScreenShake(8f);
@@ -305,6 +315,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 Seed = (int)context.Owner.ai[MLordAiSlots.OvAttackSeed],
                 BallCenter = BallCenter(npc),
                 ThrowDir = ThrowDirNow(context),
+                Anchor = AnchorNow(context),
+                AimLine = AimLineNow(),
+                AimLocked = Timer >= KneadEnd,
+                RingRadius = desperate
+                    ? MLordBlackHoleProj.DesperateDetonationRadius : MLordBlackHoleProj.DetonationRadius,
             };
 
             if (Timer >= FumbleStart) {
@@ -381,13 +396,35 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
         /// <summary>当前掷向：锁定前指向玩家（预备读向），锁定后指向锚点（承诺）</summary>
         private Vector2 ThrowDirNow(MLordContext context) {
-            NPC npc = context.Npc;
+            return (AnchorNow(context) - BallCenter(context.Npc)).SafeNormalize(Vector2.UnitY);
+        }
+
+        /// <summary>当前锚点：锁定前跟玩家（预读），锁定后读同步槽（承诺，弹体钉住坍缩的爆心）</summary>
+        private Vector2 AnchorNow(MLordContext context) {
             if (Timer >= KneadEnd) {
-                Vector2 anchor = new(context.Owner.ai[MLordAiSlots.OvAnchorX],
+                return new Vector2(context.Owner.ai[MLordAiSlots.OvAnchorX],
                     context.Owner.ai[MLordAiSlots.OvAnchorY]);
-                return (anchor - BallCenter(npc)).SafeNormalize(Vector2.UnitY);
             }
-            return DirectionToTarget(context);
+            return context.Target.Center;
+        }
+
+        /// <summary>掷向线强度：揉搓末段 <see cref="AimLeadFrames"/> 帧内渐亮到 0.5（追踪预读），
+        /// 寂静拍满亮（锁定承诺），掷出拍随球出手迅速收线</summary>
+        private float AimLineNow() {
+            if (Timer >= FumbleStart) {
+                return 0f;
+            }
+            if (Timer < KneadEnd) {
+                int lead = Timer - (KneadEnd - AimLeadFrames);
+                return lead <= 0 ? 0f : 0.5f * MathHelper.Clamp(lead / (float)AimLeadFrames, 0f, 1f);
+            }
+            if (Timer < SilenceEnd) {
+                return 1f;
+            }
+            if (Timer < ThrowEnd) {
+                return 1f - (Timer - SilenceEnd) / (float)(ThrowEnd - SilenceEnd);
+            }
+            return 0f;
         }
 
         #endregion

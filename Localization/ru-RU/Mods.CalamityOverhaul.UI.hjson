@@ -211,6 +211,7 @@ TeleportStation: {
 		TitleText: Сеть телепортов
 		LocalLabel: Эта станция
 		RenameText: Переименовать
+		// ConfirmText: Confirm
 		RenameHint: Enter — подтвердить, Esc — отмена
 		EmptyListText: В мире нет других телепортов
 		RowInfoLine: "{0} кл. · {1} UE"

@@ -211,6 +211,7 @@ TeleportStation: {
 		TitleText: Réseau de téléporteurs
 		LocalLabel: Cette station
 		RenameText: Renommer
+		// ConfirmText: Confirm
 		RenameHint: Entrée pour confirmer, Échap pour annuler
 		EmptyListText: Aucune autre station de téléportation dans le monde
 		RowInfoLine: "{0} blocs · {1} UE"

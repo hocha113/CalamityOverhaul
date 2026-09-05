@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -44,6 +45,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
         public float BallRadius;
         /// <summary>掷出方向（Silence 拍锁定）</summary>
         public Vector2 ThrowDir;
+        /// <summary>掷向终点（锁定前=玩家当前位，锁定后=同步锚点，弹体钉住坍缩的爆心）</summary>
+        public Vector2 Anchor;
+        /// <summary>掷向线强度 0~1（揉搓末段预读渐亮，寂静拍满亮，掷出收线）</summary>
+        public float AimLine;
+        /// <summary>掷向已锁定（承诺）：线转红、锚点亮出爆点预告环</summary>
+        public bool AimLocked;
+        /// <summary>爆点预告环半径 px（随变体走，与弹体爆闪判定半径同值）</summary>
+        public float RingRadius;
         /// <summary>黑球可见度 0~1（掷出交棒给弹体后渐隐）</summary>
         public float BallVisible;
         /// <summary>黑球压缩度 0~1（喂给 shader：越压越暗、电弧越躁）</summary>
@@ -303,8 +312,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             if (drive.BallVisible > 0.02f) {
                 DrawHeldBall(screenPos);
             }
-            //寂静拍：掷向已锁，亮出瞄准线（预告即承诺）
-            if (drive.Phase == MLordUltArmPhase.Silence) {
+            //掷向线：揉搓末段预读（淡蓝紫追踪），寂静拍锁定转红并在锚点亮出爆点预告环（预告即承诺）
+            if (drive.AimLine > 0.01f) {
                 DrawAimLine(screenPos);
             }
 
@@ -508,19 +517,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 new Vector2(texScale * 1.7f, texScale * 0.4f), SpriteEffects.None, 0);
         }
 
-        /// <summary>寂静拍瞄准线：黑球沿锁定掷向的细红线，脉动提示但不遮场</summary>
+        /// <summary>
+        /// 掷向线：黑球到锚点的细线，长度就是弹体要飞的距离（球在哪停就画到哪）。
+        /// 未锁定=淡紫追踪线（读向）；锁定=红线满亮 + 锚点亮出爆点预告环（弹体飞行/坍缩期接着画同一只环）
+        /// </summary>
         private static void DrawAimLine(Vector2 screenPos) {
             Texture2D streak = CWRAsset.LightShot?.Value;
             if (streak == null) {
                 return;
             }
+            float strength = drive.AimLine * visibility;
             float pulse = 0.7f + 0.3f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 18f);
+            Vector2 start = drive.BallCenter + drive.ThrowDir * drive.BallRadius;
+            float length = Math.Max(Vector2.Distance(start, drive.Anchor), 40f);
             float rot = drive.ThrowDir.ToRotation();
-            Vector2 anchor = new(0f, streak.Height * 0.5f);
-            Vector2 start = drive.BallCenter + drive.ThrowDir * drive.BallRadius - screenPos;
-            Main.EntitySpriteDraw(streak, start, null,
-                MLordDirector.BlackFlashRed with { A = 0 } * (0.3f * pulse * visibility), rot, anchor,
-                new Vector2(1400f / streak.Width, 10f / streak.Height), SpriteEffects.None, 0);
+            Vector2 origin = new(0f, streak.Height * 0.5f);
+            Color lineColor = drive.AimLocked ? MLordDirector.BlackFlashRed : MLordDirector.DeepViolet;
+            float thickness = drive.AimLocked ? 12f : 7f;
+            Main.EntitySpriteDraw(streak, start - screenPos, null,
+                lineColor with { A = 0 } * (0.34f * pulse * strength), rot, origin,
+                new Vector2(length / streak.Width, thickness / streak.Height), SpriteEffects.None, 0);
+            if (drive.AimLocked) {
+                //承诺点：预告环在寂静拍就立起来，弹体接棒后继续画到爆点（同一只环，同一半径）
+                MLordBlackHoleProj.DrawTelegraphRing(drive.Anchor, drive.RingRadius,
+                    0.38f * strength, locked: false);
+            }
         }
 
         #endregion

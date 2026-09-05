@@ -99,7 +99,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             if (Timer >= CeremonyEnd) {
                 npc.ai[MLordAiSlots.CorePhase] = MLordPhase.CoreExposed;
                 if (!VaultUtils.isClient) {
-                    return NextAttack(context);
+                    //开幕黑闪直接接棒：二阶段的第一拍就是宣言。
+                    //此处上下文的 CoreExposed 仍是本帧帧首的旧值，走 NextAttack 会从三相表里
+                    //抽一拍只活一帧的幽灵态（OnEnter 骰种子/下眼令后立刻被全局转移撕掉）
+                    return new MLordBlackFlashState();
                 }
             }
             return null;

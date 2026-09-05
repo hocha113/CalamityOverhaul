@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.UIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -16,6 +17,26 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
 {
     /// <summary>
+    /// 改名期间的文本焦点接管。原版每个逻辑帧开头清空 <see cref="Main.CurrentInputTextTakerOverride"/>,
+    /// 又在同一帧的输入处理之后拿它判定"回车是否开聊天";UIHandle 的 Update 跑在绘制线程,写进去赶不上这一读,
+    /// 只能挂在夹在两者之间的 PostUpdateInput。不接管的话回车会打开聊天并顺手清空输入缓冲,改名永远提交不了
+    /// </summary>
+    internal class TeleportStationRenameFocus : ModSystem
+    {
+        public override void PostUpdateInput() {
+            if (Main.dedServ || Main.gameMenu) {
+                return;
+            }
+            TeleportStationUI ui = TeleportStationUI.Instance;
+            if (ui == null || !ui.Renaming) {
+                return;
+            }
+            Main.CurrentInputTextTakerOverride = ui;
+            PlayerInput.WritingText = true;
+        }
+    }
+
+    /// <summary>
     /// 传送站面板:列出世界上全部站点(按距离排序),点击即传送;
     /// 本站可改名,名字编辑走客户端权威推送。
     /// 笔刷与材质在 <see cref="IndustrialTerminalRenderer"/>
@@ -23,6 +44,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
     internal class TeleportStationUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI.TeleportStation";
+
+        public static TeleportStationUI Instance => UIHandleLoader.GetUIHandleOfType<TeleportStationUI>();
 
         #region 布局与状态
         private const float PanelWidth = 396f;
@@ -57,6 +80,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
         private bool renaming;
         private string nameBuffer = "";
         private int textBlinker;
+        /// <summary>正在编辑站名,逻辑帧据此接管文本焦点</summary>
+        internal bool Renaming => renaming && IsActive;
 
         //列表
         private readonly List<TeleportStationTP> stations = [];
@@ -78,6 +103,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
         protected static LocalizedText TitleText;
         protected static LocalizedText LocalLabel;
         protected static LocalizedText RenameText;
+        protected static LocalizedText ConfirmText;
         protected static LocalizedText RenameHint;
         protected static LocalizedText EmptyListText;
         protected static LocalizedText RowInfoLine;
@@ -93,6 +119,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             TitleText = this.GetLocalization(nameof(TitleText), () => "传送站网络");
             LocalLabel = this.GetLocalization(nameof(LocalLabel), () => "本站");
             RenameText = this.GetLocalization(nameof(RenameText), () => "改名");
+            ConfirmText = this.GetLocalization(nameof(ConfirmText), () => "确认");
             RenameHint = this.GetLocalization(nameof(RenameHint), () => "回车确认,Esc 取消");
             EmptyListText = this.GetLocalization(nameof(EmptyListText), () => "世界上没有其他传送站");
             RowInfoLine = this.GetLocalization(nameof(RowInfoLine), () => "{0} 格 · {1} UE");
@@ -126,6 +153,35 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             renaming = false;
             nameBuffer = "";
         }
+
+        private void BeginRename() {
+            renaming = true;
+            nameBuffer = Station.StationName ?? "";
+            //聊天框若正开着,焦点让给编辑框,免得两边抢同一份按键缓冲
+            if (Main.drawingPlayerChat) {
+                Main.ClosePlayerChat();
+            }
+            Main.clrInput();
+            PlayerInput.WritingText = true;
+            SoundEngine.PlaySound(SoundID.MenuTick);
+        }
+
+        private void CommitRename() {
+            Station.StationName = nameBuffer.Trim();
+            Station.SendData();//客户端权威编辑推送
+            CancelRename();
+            SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f });
+        }
+
+        private void AbortRename() {
+            CancelRename();
+            //Esc 还按着时原版会把它当"打开物品栏",按原版取消编辑时的做法把这次按键封掉
+            Main.blockKey = Keys.Escape.ToString();
+            SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.4f });
+        }
+
+        private static bool EscapeJustPressed()
+            => Main.keyState.IsKeyDown(Keys.Escape) && !Main.oldKeyState.IsKeyDown(Keys.Escape);
 
         public override void Update() {
             if (!positionInitialized && Main.screenWidth > 0) {
@@ -239,7 +295,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             }
         }
 
-        /// <summary>站名编辑:原版 IME 文本通道,回车提交推送,Esc 取消</summary>
+        /// <summary>
+        /// 站名编辑:原版 IME 文本通道,回车提交推送,Esc 取消。
+        /// 焦点接管在 <see cref="TeleportStationRenameFocus"/> 的逻辑帧里完成,这里只消费缓冲。
+        /// FNA 下 Esc 不一定走文本通道送 27,补一道按键沿判定
+        /// </summary>
         private void HandleRenameInput() {
             if (!renaming) {
                 return;
@@ -254,14 +314,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             nameBuffer = input;
 
             if (Main.inputTextEnter) {
-                Station.StationName = nameBuffer.Trim();
-                Station.SendData();//客户端权威编辑推送
-                CancelRename();
-                SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f });
+                CommitRename();
             }
-            else if (Main.inputTextEscape) {
-                CancelRename();
-                SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.4f });
+            else if (Main.inputTextEscape || EscapeJustPressed()) {
+                AbortRename();
             }
         }
 
@@ -270,11 +326,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
                 return;
             }
 
-            if (hoveringRename && !renaming) {
-                renaming = true;
-                nameBuffer = Station.StationName ?? "";
-                Main.clrInput();
-                SoundEngine.PlaySound(SoundID.MenuTick);
+            //同一颗按钮:未编辑时进入编辑,编辑中点它等于回车提交
+            if (hoveringRename) {
+                if (renaming) {
+                    CommitRename();
+                }
+                else {
+                    BeginRename();
+                }
                 return;
             }
 
@@ -350,8 +409,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
                     shown += "|";
                 }
                 Utils.DrawBorderString(sb, shown, namePos, Color.Lerp(TextMain, Accent, 0.5f) * alpha, 0.72f);
-                Utils.DrawBorderString(sb, RenameHint.Value,
-                    new Vector2(nameRowRect.X, nameRowRect.Y + 28), TextDim * (alpha * 0.9f), 0.55f);
+                //原版输入法候选条挂点(同 UISearchBar),仅在平台给出候选时才画,落在编辑框上方
+                Main.instance.DrawWindowsIMEPanel(new Vector2(nameRowRect.X + 40, nameRowRect.Y - 6));
             }
             else {
                 Utils.DrawBorderString(sb, Station.ShowName, namePos,
@@ -359,11 +418,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
             }
 
             IndustrialTerminalRenderer.DrawButton(sb, renameBtn, alpha, hoveringRename ? 1f : 0f,
-                hoveringRename && keyLeftPressState == KeyPressState.Held, RenameText.Value);
+                hoveringRename && keyLeftPressState == KeyPressState.Held,
+                renaming ? ConfirmText.Value : RenameText.Value);
 
-            //电量行
+            //电量行;编辑期间这一行让给操作提示,免得两行字叠在一起
             float ratio = MathHelper.Clamp(Station.MachineData.UEvalue / Station.MaxUEValue, 0f, 1f);
-            Utils.DrawBorderString(sb, $"{EnergyLabel.Value} {(int)Station.MachineData.UEvalue}/{(int)Station.MaxUEValue} {PowerUnit.Value}",
+            string energyLine = renaming
+                ? RenameHint.Value
+                : $"{EnergyLabel.Value} {(int)Station.MachineData.UEvalue}/{(int)Station.MaxUEValue} {PowerUnit.Value}";
+            Utils.DrawBorderString(sb, energyLine,
                 new Vector2(energyBarRect.X, energyBarRect.Y - 16), TextDim * alpha, 0.58f);
             IndustrialTerminalRenderer.DrawTickBar(sb, energyBarRect, ratio, Accent, alpha);
         }

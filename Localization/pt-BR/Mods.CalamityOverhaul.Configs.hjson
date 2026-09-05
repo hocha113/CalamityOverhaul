@@ -54,6 +54,11 @@ CWRClientConfig: {
 		Tooltip: Desativado por padrao. Quando ativado, a maioria dos efeitos visuais dentro do dominio serao ocultados.
 	}
 
+	HideOtherDomains: {
+		// Label: Hide Other Players' Domains
+		// Tooltip: On by default. When enabled, full-screen domain visuals opened by other players (Onikiri's Oni Domain, Kikasa's Blood Lake, Ghost Rain and Ghost Dream) are no longer drawn on your screen. They still appear when you stand on their lake, get dragged underwater, or are inside their dream. Visual only, no effect is changed; your own domains are unaffected.
+	}
+
 	LensEasing: {
 		Label: Suavizacao da Camera
 		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido

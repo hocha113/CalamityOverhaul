@@ -84,7 +84,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             MLordStateIndex.GravityCollapse,
         ];
 
-        /// <summary>核心裸露强化出招表（同状态吃 CoreExposed 旗标）：噬咬前移进终局前半</summary>
+        /// <summary>核心裸露强化出招表（同状态吃 CoreExposed 旗标）：噬咬前移进终局前半，
+        /// 黑闪固定压轴席（每轮循环必出一次，后半段掌击→死光→坍缩→黑闪逐级加压，回到首位协奏喘息）</summary>
         internal static readonly MLordStateIndex[] ExposedCycle = [
             MLordStateIndex.Concerto,
             MLordStateIndex.MoonBite,
@@ -94,6 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
             MLordStateIndex.TidalPalms,
             MLordStateIndex.DeathrayScan,
             MLordStateIndex.GravityCollapse,
+            MLordStateIndex.BlackFlash,
         ];
 
         public void ResetChargeState() {

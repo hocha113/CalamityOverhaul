@@ -211,6 +211,7 @@ TeleportStation: {
 		TitleText: 传送站网络
 		LocalLabel: 本站
 		RenameText: 改名
+		ConfirmText: 确认
 		RenameHint: 回车确认,Esc 取消
 		EmptyListText: 世界上没有其他传送站
 		RowInfoLine: "{0} 格 · {1} UE"

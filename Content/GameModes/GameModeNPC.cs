@@ -3,7 +3,6 @@ using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes
@@ -110,14 +109,6 @@ namespace CalamityOverhaul.Content.GameModes
             if (!Main.dedServ && !npc.noGravity && npc.velocity.Y == 0f && MathF.Abs(npc.velocity.X) > 0.05f) {
                 npc.frameCounter += GameModeTuning.SpeedBonus(boundTier);
             }
-
-            //狂暴余烬：低频血色怒火，纯客户端表现
-            if (!Main.dedServ && Main.rand.NextBool(28)) {
-                Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height,
-                    DustID.RedTorch, 0f, -0.8f, 120, default, 0.9f + 0.15f * boundTier);
-                dust.noGravity = true;
-                dust.velocity *= 0.6f;
-            }
         }
 
         public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers) {
@@ -126,16 +117,6 @@ namespace CalamityOverhaul.Content.GameModes
             }
             //常态狂暴的接触伤害追加（在全局属性增幅之上）
             modifiers.FinalDamage *= GameModeTuning.ContactMult(boundTier);
-        }
-
-        public override Color? GetAlpha(NPC npc, Color drawColor) {
-            if (boundTier <= 0 || !RageEligible(npc)) {
-                return null;
-            }
-            //红光脉动：个体错拍，保留原光照与透明度
-            float pulse = 0.5f + 0.5f * MathF.Sin(Main.GlobalTimeWrappedHourly * 4.2f + npc.whoAmI * 0.7f);
-            float amount = (0.08f + 0.05f * boundTier) * (0.6f + 0.4f * pulse);
-            return Color.Lerp(drawColor, new Color(255, 58, 48, drawColor.A), amount);
         }
     }
 

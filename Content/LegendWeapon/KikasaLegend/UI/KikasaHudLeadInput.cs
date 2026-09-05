@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.UIs.RadialWheels;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -52,12 +53,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             return bind != null && CWRKeySystem.IsKeybindUnbound(bind);
         }
 
-        /// <summary>临时键此刻能不能吃：打字、改键、暂停、时停、全屏地图、演出锁输入期间一律不吃</summary>
+        /// <summary>临时键此刻能不能吃：打字（聊天/牌子/箱名/任何文本框）、改键、暂停、时停、全屏地图、演出锁输入期间一律不吃</summary>
         private static bool FallbackInputAllowed() {
             Player player = Main.LocalPlayer;
             return !Main.gamePaused && !Main.drawingPlayerChat && !Main.editSign && !Main.editChest
-                && !Main.inFancyUI && !Main.ingameOptionsWindow && !Main.mapFullscreen
-                && !Main.blockInput && !HackTime.Active && player?.active == true && !player.dead;
+                && !PlayerInput.WritingText && !Main.inFancyUI && !Main.ingameOptionsWindow
+                && !Main.mapFullscreen && !Main.blockInput && !HackTime.Active
+                && player?.active == true && !player.dead;
         }
 
         /// <summary>
@@ -90,13 +92,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             switch (currentPhase) {
                 case Phase.Domain:
                 case Phase.Close:
-                    if (pressed) {
-                        if (HoldingUmbrella(player)) {
-                            KikasaDomain.TryToggle(player, out _);
-                        }
-                        else {
-                            RefuseTick();
-                        }
+                    //不持伞、或域正翻转/在梦里收不了，都回一声拒绝，临时键绝不无声
+                    if (pressed && (!HoldingUmbrella(player)
+                        || !KikasaDomain.TryToggle(player, out _))) {
+                        RefuseTick();
                     }
                     break;
                 case Phase.Sink:
