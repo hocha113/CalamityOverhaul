@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.March;
             float dir = Math.Sign(dx);
             ctx.CrawlDirX = dir != 0f ? dir : ctx.CrawlDirX;
-            float ease = MathHelper.Clamp(Math.Abs(dx) / BssDirector.PatrolSlowBand, 0f, 1f);
+            float ease = MathHelper.Clamp(Math.Abs(dx) / BssDirector.ApproachSlowBand, 0f, 1f);
             ctx.CrawlSpeed = MathHelper.Lerp(BssDirector.CrawlTurnSpeed, BssDirector.CrawlChaseSpeed, ease);
 
             Timer++;
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 desired = desired.SafeNormalize(Vector2.Zero) * 8f;
             }
             npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.25f);
-            npc.rotation = npc.rotation.AngleLerp(new Vector2(ctx.WindSign * 0.75f, -1f).ToRotation() + BssHead.FacingRot, 0.14f);
+            ctx.AimAngle = new Vector2(ctx.WindSign * 0.75f, -1f).ToRotation();
         }
 
         /// <summary>

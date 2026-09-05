@@ -7,9 +7,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 {
     /// <summary>
-    /// 破土突袭：潜沙 → 沙丘隆起预告 + 出土黄色预警线（实体，生成即锁点锁向 = 预告即承诺）→
+    /// 破土突袭：潜沙 → 沙丘隆起预告（实体隆包，生成即锁点 = 预告即承诺）→
     /// 直线爆冲跃出 → 回潜循环。追击连接件与对空替补，不进主轮换。
     /// 公平阀：出土直线不再改向；伤害窗 = 速度门槛（可见冲势才咬人）；每循环重新预告。
+    /// 出土方向不画预判线：隆包位置 + 三式破土的固定几何（直上/侧翼斜刺/过顶）就是可读的全部。
+    /// 地下航段用 <see cref="BssDirector.BuriedTurnRadius"/>：链在沙里，折角无人看见。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)BssStateIndex.BurrowLunge, typeof(BssStateContext))]
     internal class BssBurrowLungeState : BssStateBase
@@ -89,7 +91,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 ctx.Mode = BssMoveMode.Steer;
                 ctx.MoveTarget = ctx.Target.Center + new Vector2(0f, 320f);
                 ctx.MoveSpeed = BssDirector.LungeDigSpeed;
-                ctx.TurnSpeed = 2.6f;
+                ctx.TurnRadius = BssDirector.BuriedTurnRadius;
                 ctx.AccelRate = 0.12f;
             }
             else if (t == OmenFrame) {
@@ -116,10 +118,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     Projectile.NewProjectile(npc.GetSource_FromAI(), lockPoint - new Vector2(0f, 4f),
                         Vector2.Zero, ModContent.ProjectileType<BssBreachOmen>(), 0, 0f, Main.myPlayer,
                         BssDirector.BreachTelegraphFrames);
-                    //出土预警线：从隆起点沿计划射向铺出（定向，生成即承诺）
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), lockPoint - new Vector2(0f, 8f),
-                        PlannedBreachDir(npc), ModContent.ProjectileType<BssDashOmen>(), 0, 0f, Main.myPlayer,
-                        -1f, -1f, BssDashOmen.PackParams(0, BssDirector.BreachTelegraphFrames, 8));
                     npc.netUpdate = true;
                 }
                 ctx.Mode = BssMoveMode.Hold;
@@ -130,17 +128,17 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 //原先的临出土急刹会让链条失序堆在头后，出土帧甩出发卡折角
                 ctx.LegCommand = BssLegCommand.Tuck;
                 ctx.Mode = BssMoveMode.Steer;
-                if (t > LungeFrame - 12 && lockDone) {
+                if (t > LungeFrame - 14 && lockDone) {
                     Vector2 launchDir = PlannedBreachDir(npc);
                     ctx.MoveTarget = npc.Center + launchDir * 320f;
                     ctx.MoveSpeed = 16f;
-                    ctx.TurnSpeed = 5.5f;
+                    ctx.TurnRadius = BssDirector.BuriedTurnRadius * 0.7f;
                     ctx.AccelRate = 0.2f;
                 }
                 else {
                     ctx.MoveTarget = (lockDone ? lockPoint : ctx.Target.Center) + new Vector2(0f, 300f);
                     ctx.MoveSpeed = 15f;
-                    ctx.TurnSpeed = 3f;
+                    ctx.TurnRadius = BssDirector.BuriedTurnRadius;
                     ctx.AccelRate = 0.14f;
                 }
                 //蓄势聚拢（吸气拍改由身体语言承担）
@@ -246,7 +244,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             float groundY = BssVfx.FindGroundY(new Vector2(exitX, ctx.Target.Center.Y - 240f));
             ctx.MoveTarget = new Vector2(exitX, groundY - BssDirector.CrawlRideHeight);
             ctx.MoveSpeed = 22f;
-            ctx.TurnSpeed = 3f;
+            ctx.TurnRadius = BssDirector.EmergeTurnRadius;
             ctx.AccelRate = 0.12f;
 
             UpdateCrossFx(ctx, npc, t);

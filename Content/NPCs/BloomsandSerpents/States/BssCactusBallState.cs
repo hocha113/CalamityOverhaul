@@ -61,8 +61,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     desired = desired.SafeNormalize(Vector2.Zero) * 8f;
                 }
                 npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.22f);
-                npc.rotation = npc.rotation.AngleLerp(
-                    new Vector2(throwDir, -0.5f).ToRotation() + BssHead.FacingRot - throwDir * 0.5f * late, 0.18f);
+                //后仰蓄势的头朝向：斜前上再随迟滞往后仰（声明瞄准，不跟后退的伺服速度）
+                ctx.AimAngle = new Vector2(throwDir, -0.5f).ToRotation() - throwDir * 0.5f * late;
             }
             else if (t == WindupFrames) {
                 //甩头释放：一帧向前抽，球齐出手，鞭波顺链而下

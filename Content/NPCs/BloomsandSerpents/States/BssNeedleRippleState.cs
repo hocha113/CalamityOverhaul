@@ -75,8 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 desired = desired.SafeNormalize(Vector2.Zero) * 6f;
             }
             npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.18f);
-            npc.rotation = npc.rotation.AngleLerp(
-                new Vector2(FacingToTarget(ctx), -0.8f).ToRotation() + BssHead.FacingRot, 0.1f);
+            ctx.AimAngle = new Vector2(FacingToTarget(ctx), -0.8f).ToRotation();
 
             //波形声明
             if (t >= ArchFrames && t < TelegraphEnd) {

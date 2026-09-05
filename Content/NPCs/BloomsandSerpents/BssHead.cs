@@ -70,10 +70,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
     }
 
     /// <summary>
-    /// 荒花沙蟒头部主控：状态机 + 统一血池 + 爬行/钻沙双身体语言 + 四足步态宿主。
-    /// 身份：中速贴地爬行的节肢巨蟒，入场破土即掀起压场沙暴，屏内来回爬、喷沙、
-    /// 带黄色预警线的冲刺与扑击；鳌足掘沙扬雨与合击、沙浪、沙鳍、龙卷、花刃、流沙、
-    /// 盘身刺阵作全套变化（招表见 <see cref="BssHubState"/>）。
+    /// 荒花沙蟒头部主控：状态机 + 统一血池 + 爬行/钻沙/腾空三套身体语言 + 四足步态宿主。
+    /// 身份：沙漠游龙，入场破土即掀起压场沙暴，贴地快爬直线压迫、蓄力后撤的冲刺与蹲伏扑击，
+    /// 破空天游、盘天环猎、漩涡冲刺、回环沙瀑、回马甩尾撑起空中身段；沙丘柱三招（突刺/腾跃/爆震）
+    /// 把沙漠本身立成场地；鳌足掘沙扬雨与合击、沙浪、沙鳍、龙卷、花刃、流沙、盘身刺阵作区域变化
+    /// （招表见 <see cref="BssHubState"/>）。运动法则：原生 1 倍贴图、全链约 1704px，头是火车头——
+    /// 寻的按转弯半径算、朝向每帧限速，颈段永远跟得上（见 <see cref="BssDirector.MinTurnRadius"/>）。
     /// 联机契约：转场只在权威端裁决（状态走 ai[3]），各端本地跑同一状态机做表现，
     /// 弹幕只在权威端生成，粒子音效全走 !dedServ 门，腿与鳌足是纯本地表现。
     /// </summary>
@@ -424,7 +426,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         #endregion
 
         #region 运动
-        /// <summary>把状态声明的运动模式落到速度与旋转上</summary>
+        /// <summary>
+        /// 把状态声明的运动模式落到速度与旋转上。头的朝向在所有模式下统一经
+        /// <see cref="TurnHead"/> 限速：一帧翻身在 1700px 的身体上就是甩颈，
+        /// 状态声明了 <see cref="BssStateContext.AimAngle"/> 就盯它，否则跟速度方向。
+        /// </summary>
         private void ApplyDeclaredMovement() {
             switch (Context.Mode) {
                 case BssMoveMode.Crawl:
@@ -433,20 +439,36 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 case BssMoveMode.Steer: {
                     float phase = Context.SlitherPhase;
                     SteerMovement(NPC, Context.MoveTarget, Context.MoveSpeed,
-                        Context.TurnSpeed, Context.AccelRate, Context.Slither, ref phase);
+                        Context.TurnRadius, Context.AccelRate, Context.Slither, ref phase);
                     Context.SlitherPhase = phase;
                     break;
                 }
                 case BssMoveMode.Direct:
-                    if (NPC.velocity.LengthSquared() > 0.2f) {
-                        NPC.rotation = NPC.velocity.ToRotation() + FacingRot;
+                    if (!float.IsNaN(Context.AimAngle)) {
+                        TurnHead(Context.AimAngle, 0.35f);
+                    }
+                    else if (NPC.velocity.LengthSquared() > 0.2f) {
+                        TurnHead(NPC.velocity.ToRotation(), 0.6f);
                     }
                     break;
                 default:
-                    //未声明：指数刹停，绝不留残余速度漂移
+                    //未声明：指数刹停，绝不留残余速度漂移；声明了瞄准仍让头慢慢看过去
                     NPC.velocity *= 0.9f;
+                    if (!float.IsNaN(Context.AimAngle)) {
+                        TurnHead(Context.AimAngle, 0.25f);
+                    }
                     break;
             }
+        }
+
+        /// <summary>
+        /// 头部转向共件：先按 lerp 因子缓动，再把单帧步长钳到 <see cref="BssDirector.HeadTurnRateMax"/>。
+        /// 缓动给收尾的柔，限速给大身体的重——180° 掉头至少 14 帧，颈段每帧最多跟转 4°。
+        /// </summary>
+        private void TurnHead(float aimAngle, float lerp) {
+            float target = aimAngle + FacingRot;
+            float eased = NPC.rotation.AngleLerp(target, lerp);
+            NPC.rotation = NPC.rotation.AngleTowards(eased, BssDirector.HeadTurnRateMax);
         }
 
         /// <summary>
@@ -495,16 +517,22 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
             //行进间攻击：声明了瞄准角就让头看目标，身体继续爬
             if (!float.IsNaN(Context.AimAngle)) {
-                NPC.rotation = NPC.rotation.AngleLerp(Context.AimAngle + FacingRot, 0.25f);
+                TurnHead(Context.AimAngle, 0.25f);
             }
             else if (NPC.velocity.LengthSquared() > 0.2f) {
-                NPC.rotation = NPC.rotation.AngleLerp(NPC.velocity.ToRotation() + FacingRot, 0.18f);
+                TurnHead(NPC.velocity.ToRotation(), 0.18f);
             }
         }
 
-        /// <summary>蠕虫寻的转向物理（钻沙/腾空段；镜像世吞重制，旋转改朝下贴图约定）</summary>
+        /// <summary>
+        /// 蠕虫寻的转向物理（钻沙/腾空段；镜像世吞重制，旋转改朝下贴图约定）。
+        /// 转向量按航迹半径计：每帧最大转角 = 速度 / 转弯半径，半径不低于
+        /// <see cref="BssDirector.MinTurnRadius"/>（颈段能弯的极限）。旧式"低速灵巧高速迟钝"的
+        /// 角速度公式在低速时允许每帧 0.4 弧度，头原地打转、1700px 的身体跟着甩——按半径算
+        /// 之后头走的是火车头的弧线，身体自然铺在弧上。
+        /// </summary>
         internal static void SteerMovement(NPC worm, Vector2 targetPos, float moveSpeed,
-            float turnSpeed, float accelRate, float slither, ref float slitherPhase) {
+            float turnRadius, float accelRate, float slither, ref float slitherPhase) {
             Vector2 toTarget = targetPos - worm.Center;
             float distance = toTarget.Length();
             if (distance < 0.01f || moveSpeed <= 0.01f) {
@@ -515,10 +543,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             float currentSpeed = worm.velocity.Length();
             float currentHeading = currentSpeed > 0.01f ? worm.velocity.ToRotation() : desiredHeading;
 
-            //转向随速衰减：低速灵巧高速迟钝
-            float speedFactor = MathHelper.Clamp(currentSpeed / 26f, 0f, 1f);
-            float maxTurn = turnSpeed / 20f * MathHelper.Lerp(2.0f, 0.72f, speedFactor);
+            //航迹曲率约束：转角 = 弧长 / 半径；近停时给角速度地板，能慢慢重新对准
+            float radius = Math.Max(turnRadius, 1f);
+            float maxTurn = Math.Max(currentSpeed / radius, BssDirector.MinTurnRate);
             float newHeading = currentHeading.AngleTowards(desiredHeading, maxTurn);
+            float speedFactor = MathHelper.Clamp(currentSpeed / 26f, 0f, 1f);
 
             //入弯收油出弯全速
             float headingError = Math.Abs(MathHelper.WrapAngle(desiredHeading - newHeading));
@@ -541,7 +570,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
 
             worm.velocity = newHeading.ToRotationVector2() * currentSpeed;
-            worm.rotation = worm.velocity.ToRotation() + FacingRot;
+            worm.rotation = worm.rotation.AngleTowards(worm.velocity.ToRotation() + FacingRot, BssDirector.HeadTurnRateMax);
         }
 
         /// <summary>远距回归：钻地瞬移回场（土遁身份），仅允许的状态生效</summary>
@@ -576,14 +605,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         //入场/转阶段/死亡/撤离不进回归阀（演出不许被瞬移打断）；
-        //流沙与盘身按锁定圆心做参数化运动，瞬移会把几何撕烂，也不进（两招自带超时）；
-        //其余战斗态各招自带超时兜底，收招回 hub 后自然触发回归
+        //流沙、盘身刺阵、漩涡冲刺、回环沙瀑、沙柱腾跃/爆震按锁定圆心/锚点/柱做参数化运动，
+        //瞬移会把几何撕烂，也不进（各自带超时）；其余战斗态各招自带超时兜底，收招回 hub 后自然触发回归
         private static bool AllowFarSnap(BssStateBase state) {
             return state is BssHubState or BssBurrowLungeState or BssSandSpitState
                 or BssCactusBallState or BssNeedleRippleState or BssPetalShakeState
                 or BssSandDashState or BssPounceState or BssGeyserMarchState
                 or BssClawFlingState or BssSandSurgeState or BssFinHuntState
-                or BssDustDevilState or BssPincerSnapState or BssWindBladeState;
+                or BssDustDevilState or BssPincerSnapState or BssWindBladeState
+                or BssSkyWeaveState or BssCoilOrbitState or BssTailSweepState
+                or BssPillarSpikeState;
         }
         #endregion
 

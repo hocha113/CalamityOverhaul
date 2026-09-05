@@ -1,18 +1,16 @@
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
-using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 {
     /// <summary>
-    /// 蹲伏扑击：面向玩家站定 → 八腿蹲紧、双螯高举大张、黄色预警线指向落点 →
+    /// 蹲伏扑击：面向玩家站定 → 八腿蹲紧、双螯高举大张、头盯落点 →
     /// 一帧蹬地抛物跃扑 → 落地沙爆（P2 起掀沙球扇）→ 收势。
     /// 腿架的高光招：蹲伏（Brace 站距外扩）、腾空（Flail 抓空）、落地（全髋下沉）三拍都是腿在演。
-    /// 公平阀：预警线实体全程可见，末 PounceLockLead 帧锁向（预告即承诺，出手不再追瞄）；
+    /// 公平阀：蹲伏姿态本身就是预告（不画预判线），末 PounceLockLead 帧锁向（预告即承诺，出手不再追瞄）；
     /// 抛物弹道可读；伤害窗 = 速度门槛；起跳距离带 [PounceMinRange, PounceMaxRange] 杀贴脸秒杀。
     /// 高飞玩家也够得着（弹道反解朝预测位起跳），是贴地掠冲的对空替补。
     /// </summary>
@@ -111,28 +109,23 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
         }
 
-        /// <summary>蹲伏蓄势：站定、八腿蹲紧、双螯举张、预警线追瞄；末段锁定弹道</summary>
+        /// <summary>扑击瞄准点：预测半程飞行时间的玩家位</summary>
+        private static Vector2 PounceAimPoint(Player target)
+            => target.Center + target.velocity * (BssDirector.PounceFlightTime * 0.5f);
+
+        /// <summary>蹲伏蓄势：站定、八腿蹲紧、双螯举张、头追瞄落点；末段锁定弹道</summary>
         private void UpdateCrouch(BssStateContext ctx, NPC npc) {
             int t = (int)Timer;
             float progress = MathHelper.Clamp(t / (float)BssDirector.PounceCrouchFrames, 0f, 1f);
 
-            //锁向拍之前逐帧反解弹道（与预警线同一预测点），之后死向
+            //锁向拍之前逐帧反解弹道，之后死向
             if (t <= BssDirector.PounceCrouchFrames - BssDirector.PounceLockLead) {
-                launchVel = SolveLaunch(npc.Center, BssDashOmen.PounceAimPoint(ctx.Target));
+                launchVel = SolveLaunch(npc.Center, PounceAimPoint(ctx.Target));
             }
 
-            if (t == 0) {
-                if (!VaultUtils.isClient) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
-                        (BssDashOmen.PounceAimPoint(ctx.Target) - npc.Center).SafeNormalize(Vector2.UnitX),
-                        ModContent.ProjectileType<BssDashOmen>(), 0, 0f, Main.myPlayer,
-                        npc.whoAmI, ctx.Target.whoAmI,
-                        BssDashOmen.PackParams(2, BssDirector.PounceCrouchFrames, BssDirector.PounceLockLead));
-                }
-                if (!Main.dedServ) {
-                    BssVfx.Roar(npc.Center, -0.1f, 0.6f);
-                    SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.6f, Pitch = -0.3f, MaxInstances = 2 }, npc.Center);
-                }
+            if (t == 0 && !Main.dedServ) {
+                BssVfx.Roar(npc.Center, -0.1f, 0.6f);
+                SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.6f, Pitch = -0.3f, MaxInstances = 2 }, npc.Center);
             }
 
             //蹲伏：站定压低，身体向头收拢上膛；头看向预测落点
@@ -207,7 +200,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.Mode = BssMoveMode.Direct;
             ctx.LegCommand = BssLegCommand.Flail;
             npc.velocity.Y = MathHelper.Clamp(npc.velocity.Y + BssDirector.PounceGravity, -32f, 24f);
-            npc.rotation = npc.velocity.ToRotation() + BssHead.FacingRot;
             DeclareJaw(ctx, BssJawCommand.Gape);
 
             float speed = npc.velocity.Length();

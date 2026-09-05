@@ -9,11 +9,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 {
     /// <summary>
-    /// 沙面掠冲：拉开跑道 → 伏低后撤蓄力（反向运动 + 黄色预警线 + 嘶声）→ 一帧爆冲
-    /// 掠过沙面 → 硬刹 → 连段。中速身份下的爆发档：巡曳 8 与掠冲 34 的反差才是速度感。
-    /// 公平阀：预警线实体（<see cref="BssDashOmen"/>）全程可见，出手前 DashLockLead 帧
-    /// 线与射向同拍锁死（预告即承诺）；仰角封顶 ±0.24（贴地承诺，对空走扑击）；
-    /// 伤害窗 = 速度门槛；跑道最短 380 杀贴脸秒杀。P2 起飞行沿途掀沙（慢弧沙弹，非追踪）。
+    /// 沙面掠冲：拉开跑道 → 伏低后撤蓄力（反向运动 + 贴地尘线 + 嘶声）→ 一帧爆冲
+    /// 掠过沙面 → 硬刹 → 连段。巡曳 17 与掠冲 46 的反差才是速度感。
+    /// 公平阀：后撤蓄力本身就是预告（身体动作即承诺，不画预判线），出手前 DashLockLead 帧
+    /// 射向锁死；仰角封顶 ±0.24（贴地承诺，对空走扑击）；
+    /// 伤害窗 = 速度门槛；跑道最短 440 杀贴脸秒杀。P2 起飞行沿途掀沙（慢弧沙弹，非追踪）。
+    /// 蓄力期头始终盯冲刺线（声明 AimAngle），倒退速度不许把头掰向身后。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)BssStateIndex.SandDash, typeof(BssStateContext))]
     internal class BssSandDashState : BssStateBase
@@ -120,36 +121,37 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             }
         }
 
-        /// <summary>蓄力：伏低 + 反向后撤（8 次幂迟滞），预警线从头前铺出并追瞄，末段锁向白闪</summary>
+        /// <summary>贴地掠冲射向：预测 12 帧 + 仰角钳制（贴地承诺）</summary>
+        internal static Vector2 GroundDashAim(Vector2 from, Player target) {
+            Vector2 predicted = target.Center + target.velocity * 12f;
+            Vector2 aim = (predicted - from).SafeNormalize(Vector2.UnitX);
+            float ang = MathHelper.Clamp(MathF.Asin(MathHelper.Clamp(aim.Y, -1f, 1f)),
+                -BssDirector.DashMaxPitch, BssDirector.DashMaxPitch);
+            float sign = aim.X >= 0f ? 1f : -1f;
+            return new Vector2(sign * MathF.Cos(ang), MathF.Sin(ang));
+        }
+
+        /// <summary>蓄力：伏低 + 反向后撤（8 次幂迟滞）+ 贴地尘线，末段锁向</summary>
         private void UpdateWindup(BssStateContext ctx, NPC npc) {
             int t = (int)Timer;
             float progress = MathHelper.Clamp(t / (float)BssDirector.DashWindupFrames, 0f, 1f);
 
-            //锁向拍之前追瞄（与预警线同一公式），之后死向
+            //锁向拍之前追瞄，之后死向
             if (t <= BssDirector.DashWindupFrames - BssDirector.DashLockLead) {
-                lockedDir = BssDashOmen.GroundDashAim(npc.Center, ctx.Target);
+                lockedDir = GroundDashAim(npc.Center, ctx.Target);
             }
 
-            if (t == 0) {
-                //预警线实体：锚在头上追瞄，寿命 = 蓄力全程，末 DashLockLead 帧停追白闪，出手帧收拢
-                if (!VaultUtils.isClient) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, lockedDir,
-                        ModContent.ProjectileType<BssDashOmen>(), 0, 0f, Main.myPlayer,
-                        npc.whoAmI, ctx.Target.whoAmI,
-                        BssDashOmen.PackParams(1, BssDirector.DashWindupFrames, BssDirector.DashLockLead));
-                }
-                if (!Main.dedServ) {
-                    //蓄力起手音：固定提前量，可被玩家内化（低调嘶息 = 伏低吸气）
-                    SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.75f, Pitch = -0.5f, MaxInstances = 2 }, npc.Center);
-                }
+            if (t == 0 && !Main.dedServ) {
+                //蓄力起手音：固定提前量，可被玩家内化（低调嘶息 = 伏低吸气）
+                SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.75f, Pitch = -0.5f, MaxInstances = 2 }, npc.Center);
             }
 
             //反向后撤：迟滞收势，最后几帧猛然吸满。链条已对齐在身后，
-            //后撤 = 头顶进自己的链（全身后拉），聚拢波把身体向头收拢上膛
+            //后撤 = 头顶进自己的链（全身后拉），聚拢波把身体向头收拢上膛；头盯冲刺线不回头
             float late = MathF.Pow(progress, 8f);
             ctx.Mode = BssMoveMode.Direct;
             npc.velocity = Vector2.Lerp(npc.velocity, -lockedDir * (2.5f + 8f * late), 0.25f);
-            npc.rotation = npc.rotation.AngleLerp(lockedDir.ToRotation() + BssHead.FacingRot, 0.25f);
+            ctx.AimAngle = lockedDir.ToRotation();
             ctx.LegCommand = BssLegCommand.Brace;
             ctx.Compression = MathHelper.Lerp(1f, 0.86f, progress);
             ctx.GatherLevel = progress;
@@ -203,7 +205,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.Tuck;
             //复利加速：冲刺沿途越冲越快（速度拉伸波随之拉长身体）
             npc.velocity *= 1.012f;
-            npc.rotation = npc.velocity.ToRotation() + BssHead.FacingRot;
 
             float speed = npc.velocity.Length();
             if (speed > BssDirector.DashContactSpeed) {

@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.PulseKind = 4;
             ctx.BloomGlow = Math.Max(ctx.BloomGlow, 0.85f);
             //头看圈心
-            npc.rotation = npc.rotation.AngleLerp((center - npc.Center).ToRotation() + BssHead.FacingRot, 0.15f);
+            ctx.AimAngle = (center - npc.Center).ToRotation();
 
             if (t < BssDirector.RingSpokeTelegraph) {
                 DeclareJaw(ctx, BssJawCommand.Inhale, t / (float)BssDirector.RingSpokeTelegraph);
@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             float exitGround = BssVfx.FindGroundY(new Vector2(exitX, center.Y - 300f), 1200f);
             ctx.MoveTarget = new Vector2(exitX, exitGround - BssDirector.CrawlRideHeight);
             ctx.MoveSpeed = 18f;
-            ctx.TurnSpeed = 2.8f;
+            ctx.TurnRadius = BssDirector.RingUnwindRadius;
             ctx.AccelRate = 0.1f;
             UpdateCrossFx(ctx, npc);
 

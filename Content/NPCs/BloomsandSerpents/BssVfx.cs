@@ -124,13 +124,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         /// <summary>
         /// 转阶段公平阀：清掉本 boss 已发出的全部敌对弹幕与预告实体（只清自家类型）。
-        /// 隆包与预警线非 hostile 也要清：转场后残留的旧预告是失主的承诺
+        /// 隆包与辐条预警线非 hostile 也要清：转场后残留的旧预告是失主的承诺
         /// （隆包的自喷发只认自然到期，被 Kill 清掉不会放沙球）。
+        /// 沙丘柱只清未成形的威胁（鼓包/钻出中缓沉），滞留柱留作场地与爆震燃料；
+        /// 全场收尾由柱的孤儿守卫兜底（头消失即缓沉）。
         /// </summary>
         internal static void ClearOwnHostileProjectiles() {
             if (VaultUtils.isClient) {
                 return;
             }
+            BssSandPillar.CancelPending();
             int sand = ModContent.ProjectileType<Projectiles.BssSandGlob>();
             int needle = ModContent.ProjectileType<Projectiles.BssNeedleProj>();
             int ball = ModContent.ProjectileType<Projectiles.BssCactusBallProj>();
@@ -141,10 +144,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             int devil = ModContent.ProjectileType<Projectiles.BssDustDevilProj>();
             int windPetal = ModContent.ProjectileType<Projectiles.BssWindPetalProj>();
             int snap = ModContent.ProjectileType<Projectiles.BssPincerSnapProj>();
+            int vortex = ModContent.ProjectileType<Projectiles.BssSandVortexProj>();
             foreach (var p in Main.ActiveProjectiles) {
                 if (p.type == sand || p.type == needle || p.type == ball || p.type == petal
                     || p.type == omen || p.type == dashOmen
-                    || p.type == surge || p.type == devil || p.type == windPetal || p.type == snap) {
+                    || p.type == surge || p.type == devil || p.type == windPetal || p.type == snap
+                    || p.type == vortex) {
                     p.Kill();
                 }
             }

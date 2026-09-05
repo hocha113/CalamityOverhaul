@@ -153,7 +153,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.Brace;
             ctx.ClawCommand = BssClawCommand.Snatch;
             ctx.ClawAim = snapPoint;
-            npc.rotation = npc.rotation.AngleLerp(lungeDir.ToRotation() + BssHead.FacingRot, 0.5f);
+            //钳合帧速度反冲（×−0.2）不许把头翻向身后：头钉在钳点方向
+            ctx.AimAngle = lungeDir.ToRotation();
             DeclareJaw(ctx, BssJawCommand.Bite, snapped ? 0f : 1f);
 
             if (npc.velocity.Length() > BssDirector.DashContactSpeed) {
@@ -198,6 +199,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             if (t < 8) {
                 ctx.ClawCommand = BssClawCommand.Snatch;
                 ctx.ClawAim = snapPoint;
+                ctx.AimAngle = lungeDir.ToRotation();
                 DeclareJaw(ctx, BssJawCommand.Bite, 0f);
             }
 

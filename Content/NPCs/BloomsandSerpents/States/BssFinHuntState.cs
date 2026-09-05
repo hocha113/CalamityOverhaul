@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.Mode = BssMoveMode.Direct;
             Vector2 hold = new(lockX, lockGroundY + BssDirector.FinDepth * 0.85f);
             npc.velocity = Vector2.Lerp(npc.velocity, (hold - npc.Center) * 0.2f, 0.4f);
-            npc.rotation = npc.rotation.AngleLerp(-MathHelper.PiOver2 + BssHead.FacingRot, 0.2f);
+            ctx.AimAngle = -MathHelper.PiOver2;
             ctx.GatherLevel = progress;
             DeclareJaw(ctx, BssJawCommand.Bite, progress);
 
@@ -207,8 +207,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.Mode = BssMoveMode.Direct;
             ctx.LegCommand = BssLegCommand.Flail;
             npc.velocity.Y = MathHelper.Clamp(npc.velocity.Y + BssDirector.FinBiteGravity, -30f, 20f);
-            //竖直穿面：航向锁竖直，不随微小横速抖头
-            npc.rotation = new Vector2(npc.velocity.X * 0.15f, npc.velocity.Y).ToRotation() + BssHead.FacingRot;
+            //竖直穿面：航向锁竖直，不随微小横速抖头；弧顶的翻头交给朝向限速铺成弧
+            ctx.AimAngle = new Vector2(npc.velocity.X * 0.15f, npc.velocity.Y).ToRotation();
 
             float speed = npc.velocity.Length();
             bool rising = npc.velocity.Y < 0f;
@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             float exitGround = BssVfx.FindGroundY(new Vector2(exitX, ctx.Target.Center.Y - 240f));
             ctx.MoveTarget = new Vector2(exitX, exitGround - BssDirector.CrawlRideHeight);
             ctx.MoveSpeed = 20f;
-            ctx.TurnSpeed = 3f;
+            ctx.TurnRadius = BssDirector.EmergeTurnRadius;
             ctx.AccelRate = 0.12f;
 
             float g = BssVfx.FindGroundY(npc.Center - new Vector2(0f, 340f), 1000f);

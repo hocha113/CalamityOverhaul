@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.Mode = BssMoveMode.Steer;
             ctx.MoveTarget = center + new Vector2(0f, BssDirector.QuickDepth);
             ctx.MoveSpeed = BssDirector.LungeDigSpeed;
-            ctx.TurnSpeed = 3f;
+            ctx.TurnRadius = BssDirector.BuriedTurnRadius;
             ctx.AccelRate = 0.14f;
             UpdateDiveFx(ctx, npc);
 
@@ -146,7 +146,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.Mode = BssMoveMode.Direct;
             Vector2 hold = center + new Vector2(0f, BssDirector.QuickDepth * (1f - 0.25f * progress));
             npc.velocity = Vector2.Lerp(npc.velocity, (hold - npc.Center) * 0.15f, 0.3f);
-            npc.rotation = npc.rotation.AngleLerp(-MathHelper.PiOver2 + BssHead.FacingRot, 0.1f);
+            ctx.AimAngle = -MathHelper.PiOver2;
             ctx.GatherLevel = progress;
             ctx.Compression = MathHelper.Lerp(1f, 0.88f, progress);
             DeclareJaw(ctx, BssJawCommand.Inhale, progress);
@@ -224,7 +224,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.Mode = BssMoveMode.Direct;
             ctx.LegCommand = BssLegCommand.Flail;
             npc.velocity.Y = MathHelper.Clamp(npc.velocity.Y + 0.7f, -32f, 20f);
-            npc.rotation = new Vector2(npc.velocity.X * 0.2f, npc.velocity.Y).ToRotation() + BssHead.FacingRot;
+            //竖直穿面：航向锁竖直，弧顶翻头由朝向限速自然铺成一段弧
+            ctx.AimAngle = new Vector2(npc.velocity.X * 0.2f, npc.velocity.Y).ToRotation();
             DeclareJaw(ctx, BssJawCommand.Gape);
 
             float speed = npc.velocity.Length();

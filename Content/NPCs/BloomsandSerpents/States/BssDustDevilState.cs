@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     desired = desired.SafeNormalize(Vector2.Zero) * 8f;
                 }
                 npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.25f);
-                npc.rotation = npc.rotation.AngleLerp(new Vector2(0.35f * ctx.WindSign, -1f).ToRotation() + BssHead.FacingRot, 0.14f);
+                ctx.AimAngle = new Vector2(0.35f * ctx.WindSign, -1f).ToRotation();
 
                 if (t < RoarFrame) {
                     DeclareJaw(ctx, BssJawCommand.Inhale, raise);

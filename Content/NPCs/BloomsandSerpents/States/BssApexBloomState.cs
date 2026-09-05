@@ -67,8 +67,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Timer++;
 
             if (t > EndFrame || t > 80) {
-                //终局宣言后直接盘身刺阵：压轴招在此保证亮相一次，合围的 1.5 秒本身就是热身阀
+                //终局宣言后直接盘身刺阵：压轴招在此保证亮相一次，合围的 1.5 秒本身就是热身阀；
+                //轮换序号拨到 1，刺阵收招后的首手落到 P3 表的扑击接掠冲连段
                 ctx.AttackCooldown = 12;
+                ctx.AttackIndex = 1;
                 ctx.LastPickedState = (int)BssStateIndex.CoilRing;
                 return new BssCoilRingState();
             }

@@ -53,6 +53,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 npc.netUpdate = true;
                 Projectile.NewProjectile(npc.GetSource_FromAI(), new Vector2(breachX, groundY - 4f),
                     Vector2.Zero, ModContent.ProjectileType<BssBreachOmen>(), 0, 0f, Main.myPlayer, BreachFrame);
+
+                //开幕双柱：玩家两翼各起一根置景柱（无伤害、长滞留），预告期与蛇的
+                //破土预告同拍隆隆，蛇出土后紧跟着立起——开幕即立"沙丘"招牌，
+                //也是 P2 爆震首秀的燃料
+                for (int flank = -1; flank <= 1; flank += 2) {
+                    Vector2 anchor = ctx.Target.Center + new Vector2(flank * 440f, 0f);
+                    BssSandPillar.Spawn(npc, anchor,
+                        BssDirector.PillarHeightMax, BssDirector.PillarWidth,
+                        BreachFrame + 10, BssDirector.PillarIntroLinger, armedPillar: false);
+                }
             }
         }
 
@@ -63,9 +73,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.Tuck;
 
             if (t < BreachFrame) {
-                //地下蓄势：钉住不动，预告实体负责地面演出；临破前地面先起风
+                //地下蓄势：钉住不动，预告实体负责地面演出；临破前地面先起风。
+                //头先在地下转到朝上：朝向限速下破土帧才不用边飞边翻身
                 ctx.Mode = BssMoveMode.Hold;
                 npc.velocity = Vector2.Zero;
+                ctx.AimAngle = -MathHelper.PiOver2;
                 DeclareJaw(ctx, BssJawCommand.Clamp);
                 if (t > BreachFrame - 20) {
                     ctx.StormLevel = Math.Max(ctx.StormLevel, (t - (BreachFrame - 20)) / 20f * 0.18f);

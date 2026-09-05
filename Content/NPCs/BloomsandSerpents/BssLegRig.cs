@@ -129,6 +129,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             public Action<Vector2, Vector2, float> SandFx;
             /// <summary>是否允许直接出 Dust（战斗客户端）</summary>
             public bool AllowDust;
+            /// <summary>柱面抓握几何（Grip 指令时有效）</summary>
+            public bool GripActive;
+            public float GripCenterX;
+            public float GripHalfWidth;
+            public float GripTopY;
+            public float GripBottomY;
         }
 
         private struct Leg
@@ -225,6 +231,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 OnPlant = battlePlant,
                 SandFx = null,
                 AllowDust = !Main.dedServ,
+                GripActive = ctx.LegGripActive,
+                GripCenterX = ctx.LegGripCenterX,
+                GripHalfWidth = ctx.LegGripHalfWidth,
+                GripTopY = ctx.LegGripTopY,
+                GripBottomY = ctx.LegGripBottomY,
             };
             Advance(in env);
         }
@@ -283,6 +294,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 else if (env.Command == BssLegCommand.Raise && station < 2) {
                     UpdateRaise(ref leg, li, hip, normal, in env);
                 }
+                else if (env.Command == BssLegCommand.Grip && env.GripActive) {
+                    UpdateGrip(ref leg, li, hip, chainVec, normal, in env);
+                }
                 else {
                     //March 步行 / Brace 蹲伏 / Flail 强制腾空 / Raise 后二站 / Collapse 未失力站
                     UpdateWalk(ref leg, li, hip, normal, chainVec, in env);
@@ -339,6 +353,46 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 + normal * (10f * Scale)
                 + new Vector2(MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + li * 2.3f) * 5f * Scale, 0f);
             leg.Foot = Vector2.Lerp(leg.Foot, pose, 0.16f);
+        }
+
+        /// <summary>
+        /// 柱面抓握（盘柱攀爬）：足端锚到沙柱近壁面，用与步行同一套换步机（快步、小步幅），
+        /// 身体沿柱面上升时腿一路重新抓握。够不着壁面的腿收拢贴体。
+        /// 壁面点是柱心 ± 柱半宽、Y 钳在柱高区间：柱是 Actor 不是物块，摆越途中的探地钳制
+        /// 打到的是远处地面，不干扰。
+        /// </summary>
+        private void UpdateGrip(ref Leg leg, int li, Vector2 hip, Vector2 chainVec, Vector2 normal, in LegEnv env) {
+            float side = Math.Sign(hip.X - env.GripCenterX);
+            if (side == 0f) {
+                side = (li & 1) == 0 ? 1f : -1f;
+            }
+            Vector2 wallPoint = new(
+                env.GripCenterX + side * env.GripHalfWidth,
+                MathHelper.Clamp(hip.Y + 8f * Scale, env.GripTopY, env.GripBottomY));
+
+            if (Vector2.Distance(hip, wallPoint) > MaxReach * 0.97f) {
+                UpdateTuck(ref leg, li, hip, chainVec, normal);
+                return;
+            }
+            leg.DragHeat = MathHelper.Clamp(leg.DragHeat - 0.08f, 0f, 1f);
+
+            if (leg.Swinging) {
+                AdvanceSwing(ref leg, li, in env);
+                return;
+            }
+
+            if (!leg.Planted) {
+                leg.PlantPos = leg.Foot;
+                leg.Planted = true;
+            }
+
+            float drift = Vector2.Distance(leg.PlantPos, wallPoint);
+            float stretch = Vector2.Distance(hip, leg.PlantPos) / MaxReach;
+            if (drift > 30f * Scale || stretch > EmergencyStretch) {
+                BeginSwing(ref leg, wallPoint, 8f, 12f * Scale);
+                return;
+            }
+            leg.Foot = leg.PlantPos;
         }
 
         /// <summary>

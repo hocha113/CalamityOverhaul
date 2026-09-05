@@ -8,10 +8,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 {
     /// <summary>
-    /// 巡曳 hub：在玩家两侧折返点之间中速爬行（整条蛇在屏内爬来爬去，八腿步态与
-    /// 鳌足探路就是这段的看点），喘息拍走完按手写轮换表出招。
-    /// 轮换表各端一致、只有权威端的返回被采纳。核心动作是喷沙与带预警线的冲刺/扑击，
-    /// 体节发射器与刺球作区域变化。
+    /// 爬行巡曳 hub：蜈蚣步态贴地直线逼近玩家（拉远换追赶速），喘息拍走完按手写轮换表出招。
+    /// 轮换表各端一致、只有权威端的返回被采纳。压力招（掠冲/扑击/天游/环猎/漩涡/甩尾/沙鳍/合击）
+    /// 与区域招（喷沙/扬沙/刺球/涟漪/花瓣/沙泉/沙浪/龙卷/花刃/流沙/刺阵）交替。
+    /// hub 只是换招的一口气，不是展示步态的巡游：折返巡曳（2026-09-06 一版）让整场读成贴地蠕动，已撤。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)BssStateIndex.Hub, typeof(BssStateContext))]
     internal class BssHubState : BssStateBase
@@ -24,10 +24,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             int t = (int)Timer;
 
             float dist = Vector2.Distance(npc.Center, ctx.Target.Center);
-            UpdatePatrol(ctx, npc);
+
+            //掉头死区放宽到约三个节距：1700px 的身体每次掉头都是整链叠回自己身上，
+            //玩家在头顶附近小幅横移不该触发
+            ctx.Mode = BssMoveMode.Crawl;
+            ctx.CrawlDirX = FacingToTarget(ctx, BssDirector.SegmentGap * 3f * BssDirector.BodyScale);
+            ctx.CrawlSpeed = dist > 500f ? BssDirector.CrawlChaseSpeed : BssDirector.CrawlCruiseSpeed;
+            ctx.LegCommand = BssLegCommand.March;
 
             //爬行掠沙的底噪
-            if (!Main.dedServ && Main.rand.NextBool(9) && Math.Abs(npc.velocity.X) > 3f) {
+            if (!Main.dedServ && Main.rand.NextBool(9) && Math.Abs(npc.velocity.X) > 4f) {
                 BssVfx.SandTrickle(npc.Bottom + new Vector2(Main.rand.NextFloat(-30f, 30f), 0f), 0.8f);
             }
 
@@ -54,44 +60,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 return pick;
             }
             return null;
-        }
-
-        /// <summary>
-        /// 屏内巡曳：折返点 = 玩家 ± PatrolOffset，爬到即换侧（跨过玩家脚下再折回来），
-        /// 接近折返点先减速再转身（转身是腿架的高光帧，不许瞬间掉头）。
-        /// 玩家拉远则放弃折返直线追赶；巡曳侧跨 hub 持久，收招回来不重置方向。
-        /// </summary>
-        private static void UpdatePatrol(BssStateContext ctx, NPC npc) {
-            float dx = ctx.Target.Center.X - npc.Center.X;
-            ctx.Mode = BssMoveMode.Crawl;
-            ctx.LegCommand = BssLegCommand.March;
-
-            if (Math.Abs(dx) > BssDirector.PatrolChaseDistance) {
-                //拉远：直线追赶（追赶速仍在步行档）
-                ctx.CrawlDirX = Math.Sign(dx);
-                ctx.CrawlSpeed = BssDirector.CrawlChaseSpeed;
-                ctx.PatrolSide = Math.Sign(dx);
-                ctx.PatrolLegTimer = 0;
-                return;
-            }
-
-            if (ctx.PatrolSide == 0) {
-                ctx.PatrolSide = dx >= 0f ? 1 : -1;
-            }
-            float targetX = ctx.Target.Center.X + ctx.PatrolSide * BssDirector.PatrolOffset;
-            float toTarget = targetX - npc.Center.X;
-            ctx.PatrolLegTimer++;
-            if (Math.Abs(toTarget) < BssDirector.PatrolArriveBand || ctx.PatrolLegTimer > BssDirector.PatrolLegMaxFrames) {
-                ctx.PatrolSide = -ctx.PatrolSide;
-                ctx.PatrolLegTimer = 0;
-                targetX = ctx.Target.Center.X + ctx.PatrolSide * BssDirector.PatrolOffset;
-                toTarget = targetX - npc.Center.X;
-            }
-
-            float dir = Math.Sign(toTarget);
-            ctx.CrawlDirX = dir != 0f ? dir : (ctx.CrawlDirX != 0f ? ctx.CrawlDirX : 1f);
-            float ease = MathHelper.Clamp(Math.Abs(toTarget) / BssDirector.PatrolSlowBand, 0f, 1f);
-            ctx.CrawlSpeed = MathHelper.Lerp(BssDirector.CrawlTurnSpeed, BssDirector.CrawlCruiseSpeed, ease);
         }
 
         /// <summary>
@@ -152,15 +120,22 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
         }
 
         /// <summary>
-        /// 手写轮换表：喷沙是每隔几手就回来的主菜，掠冲/扑击/合击/沙鳍是压力招，
-        /// 体节发射器（涟漪/花瓣/花刃）、刺球、沙泉、沙浪、沙雨、龙卷、流沙作区域变化，
-        /// 钻地只做追击连接件与替补。表按"压迫 → 区域 → 喘息"的波形手排，同类不相邻。
-        /// 高飞替补：贴地招（掠冲/沙泉/沙浪/沙鳍/流沙/合击/龙卷/花刃）对空无效，
-        /// 换扑击（抛物上天）、扬沙（高弧沙雨）或钻地。
-        /// 钻地连发闸：上一手已是钻地类（突袭/沙鳍/流沙）就换成替补，不让玩家连看两次沙里的空场。
-        /// 近钳远喷：合击只在玩家进 SnapTriggerRange 时出，否则退回喷沙。
-        /// P3 连段：扑击落地直接接掠冲；涟漪直连花瓣；沙浪出土直接接扬沙（地上一浪、天上一雨）。
-        /// P2 解锁：龙卷、花刃、流沙、花瓣、沙泉。P3 解锁：盘身刺阵（怒放宣言后首招也是它）。
+        /// 手写轮换表：压力招与区域招严格交替（压迫 → 区域 → 喘息的波形），同类不相邻。
+        /// 压力招分两种身体语言：贴地（掠冲/扑击/合击/沙鳍/甩尾/腾跃）与破空（天游/环猎/漩涡/回环），
+        /// 空中招错开排位，一轮里蛇 P1 上天三次、P2 起四次——"沙漠游龙"的身份靠它们撑着。
+        /// 区域招：喷沙/扬沙/刺球/涟漪/花瓣/沙泉/沙浪/龙卷/花刃/流沙/刺阵/沙柱突刺/沙柱爆震，每种一轮最多两手。
+        /// 沙柱三招前置排位且相互毗邻：突刺柱只滞留 16 秒，爆震必须排在突刺两招之内，
+        /// 腾跃紧跟其后借柱（排远了轮到时柱已沉、门槛永远不过——真机时序死穴 2026-08-31）。
+        /// 钻地突袭只做追击连接件与对空替补，不进主轮换。
+        /// 高飞替补：贴地招对空无效，按槽位各配替补（扑击抛物上天、扬沙高弧沙雨、天游/漩涡本身在天上、
+        /// 钻地破土向上；沙柱突刺自带空中凝沙变体，天然对空）。
+        /// 钻地连发闸：上一手已是钻地类（突袭/沙鳍/流沙）就换替补，不让玩家连看两次沙里的空场。
+        /// 近钳远替：合击只在玩家进 SnapTriggerRange 时出，否则退到本槽位的压力替补
+        /// （不许退成喷沙——上一版退成喷沙后 P1 轮换里 14 手有 5 手喷沙且两两相邻，整场读成复读）。
+        /// P2 解锁：漩涡冲刺（转阶段收尾即首秀）、回环沙瀑、龙卷、花刃、流沙、花瓣、沙柱腾跃、沙柱爆震。
+        /// P3 解锁：盘身刺阵（怒放宣言后首招）、回马甩尾（自带掠冲回马枪连段）。
+        /// P3 连段：扑击落地直接接掠冲；沙柱突刺直连爆震（种柱即引爆，爆震自带种柱保底）；
+        /// 涟漪直连花瓣；沙浪出土直接接扬沙（地上一浪、天上一雨）；回环俯冲落地接掠冲由状态自管。
         /// </summary>
         private static IBssState PickAttack(BssStateContext ctx) {
             ctx.QueuedChainState = -1;
@@ -174,17 +149,21 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
 
             IBssState Burrow(Func<IBssState> alt) => lastUnderground ? alt() : new BssBurrowLungeState();
             IBssState Dash() => air ? new BssPounceState() : new BssSandDashState();
-            IBssState Geyser() => air ? Burrow(() => new BssPounceState()) : new BssGeyserMarchState();
             IBssState Fling() => new BssClawFlingState();
+            IBssState Geyser() => air ? Burrow(Fling) : new BssGeyserMarchState();
             IBssState Surge() => air ? Fling() : new BssSandSurgeState();
             IBssState Fin() => air ? new BssPounceState() : lastUnderground ? Dash() : new BssFinHuntState();
-            IBssState Snap() => close && !air ? new BssPincerSnapState() : new BssSandSpitState();
+            IBssState Snap(Func<IBssState> farAlt) => close && !air ? new BssPincerSnapState() : farAlt();
             IBssState Devil() => air ? Fling() : new BssDustDevilState();
             IBssState Gale() => air ? Fling() : new BssWindBladeState();
             IBssState Quick() => air ? new BssPounceState() : lastUnderground ? Geyser() : new BssQuicksandState();
+            IBssState Sweep() => air ? new BssVortexDashState() : new BssTailSweepState();
+            //爆震门槛：场上可点名柱不足就落到本槽位的区域替补（真机时序死穴的保险）
+            IBssState Burst(Func<IBssState> alt)
+                => BssSandPillar.CountDetonatable() >= BssDirector.BurstMinPillars ? new BssPillarBurstState() : alt();
 
             if (ctx.Phase >= 3) {
-                switch (ctx.AttackIndex % 20) {
+                switch (ctx.AttackIndex % 22) {
                     case 1:
                         return new BssSandSpitState();
                     case 2:
@@ -192,120 +171,137 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                         ctx.QueuedChainState = (int)BssStateIndex.SandDash;
                         return new BssPounceState();
                     case 3:
-                        return new BssCoilRingState();
+                        //种柱即引爆：突刺收招直接接爆震（爆震自带种柱保底，连段必成立）
+                        ctx.QueuedChainState = (int)BssStateIndex.PillarBurst;
+                        return new BssPillarSpikeState();
                     case 4:
-                        return Gale();
+                        return Sweep();
                     case 5:
-                        return Snap();
+                        return Gale();
                     case 6:
-                        return new BssSandSpitState();
+                        return new BssPillarVaultState();
                     case 7:
+                        ctx.QueuedChainState = (int)BssStateIndex.PetalShake;
+                        return new BssNeedleRippleState();
+                    case 8:
+                        return new BssLoopCascadeState();
+                    case 9:
                         //沙浪出土直接接扬沙：地上一浪、天上一雨
                         if (!air) {
                             ctx.QueuedChainState = (int)BssStateIndex.ClawFling;
                         }
                         return Surge();
-                    case 8:
-                        return Devil();
-                    case 9:
-                        return Fin();
                     case 10:
-                        return new BssSandSpitState();
+                        return Snap(Dash);
                     case 11:
-                        ctx.QueuedChainState = (int)BssStateIndex.PetalShake;
-                        return new BssNeedleRippleState();
-                    case 12:
-                        return Quick();
-                    case 13:
-                        return Dash();
-                    case 14:
-                        return new BssCoilRingState();
-                    case 15:
                         return new BssCactusBallState();
+                    case 12:
+                        return new BssVortexDashState();
+                    case 13:
+                        return Devil();
+                    case 14:
+                        return Fin();
+                    case 15:
+                        return Geyser();
                     case 16:
-                        return Fling();
+                        return new BssCoilOrbitState();
                     case 17:
                         return new BssSandSpitState();
                     case 18:
-                        return Geyser();
+                        return Quick();
                     case 19:
-                        return Snap();
+                        return new BssCoilRingState();
+                    case 20:
+                        return new BssSkyWeaveState();
+                    case 21:
+                        return Fling();
                     default:
-                        ctx.QueuedChainState = (int)BssStateIndex.SandDash;
-                        return new BssPounceState();
+                        return Dash();
                 }
             }
 
             if (ctx.Phase >= 2) {
-                switch (ctx.AttackIndex % 18) {
+                switch (ctx.AttackIndex % 20) {
                     case 1:
-                        return new BssSandSpitState();
+                        //沙暴身份的招牌：转阶段收尾即漩涡首秀（转阶段把序号归零）
+                        return new BssVortexDashState();
                     case 2:
-                        return new BssPounceState();
+                        return new BssPillarSpikeState();
                     case 3:
-                        return Gale();
-                    case 4:
-                        return Dash();
-                    case 5:
-                        return new BssSandSpitState();
-                    case 6:
-                        return Fin();
-                    case 7:
-                        return Devil();
-                    case 8:
-                        return Snap();
-                    case 9:
-                        return Surge();
-                    case 10:
-                        return new BssSandSpitState();
-                    case 11:
-                        return Geyser();
-                    case 12:
                         return new BssPounceState();
-                    case 13:
-                        return Quick();
-                    case 14:
-                        return Fling();
-                    case 15:
-                        return Dash();
-                    case 16:
+                    case 4:
+                        //爆震紧跟突刺两招内（柱滞留 16 秒）；柱不够落到花刃
+                        return Burst(Gale);
+                    case 5:
+                        return new BssPillarVaultState();
+                    case 6:
+                        return Devil();
+                    case 7:
+                        return new BssLoopCascadeState();
+                    case 8:
                         return new BssPetalShakeState();
-                    case 17:
-                        return new BssSandSpitState();
-                    default:
+                    case 9:
+                        return Fin();
+                    case 10:
+                        return Geyser();
+                    case 11:
+                        return new BssSkyWeaveState();
+                    case 12:
+                        return Surge();
+                    case 13:
+                        return Snap(() => new BssVortexDashState());
+                    case 14:
                         return new BssNeedleRippleState();
+                    case 15:
+                        return new BssCoilOrbitState();
+                    case 16:
+                        return Gale();
+                    case 17:
+                        return Quick();
+                    case 18:
+                        return new BssSandSpitState();
+                    case 19:
+                        return Dash();
+                    default:
+                        return Fling();
                 }
             }
 
-            switch (ctx.AttackIndex % 14) {
+            switch (ctx.AttackIndex % 16) {
                 case 1:
                     return new BssSandSpitState();
                 case 2:
                     return new BssPounceState();
                 case 3:
-                    return Fling();
+                    //沙柱突刺 P1 即有：跺地点名的腿架戏 + 全场沸腾，柱滞留给后面的招当场地
+                    return new BssPillarSpikeState();
                 case 4:
-                    return Fin();
+                    return new BssCoilOrbitState();
                 case 5:
-                    return new BssSandSpitState();
-                case 6:
-                    return Surge();
-                case 7:
-                    return Dash();
-                case 8:
-                    return new BssCactusBallState();
-                case 9:
-                    return Snap();
-                case 10:
-                    return new BssSandSpitState();
-                case 11:
-                    return new BssNeedleRippleState();
-                case 12:
-                    return Dash();
-                case 13:
                     return Fling();
+                case 6:
+                    return Dash();
+                case 7:
+                    return new BssCactusBallState();
+                case 8:
+                    return new BssSkyWeaveState();
+                case 9:
+                    return Geyser();
+                case 10:
+                    return Fin();
+                case 11:
+                    //突刺双槽保出场率
+                    return new BssPillarSpikeState();
+                case 12:
+                    return Snap(() => new BssPounceState());
+                case 13:
+                    return new BssNeedleRippleState();
+                case 14:
+                    return Dash();
+                case 15:
+                    return Surge();
                 default:
-                    return new BssPounceState();
+                    return new BssSkyWeaveState();
             }
         }
     }

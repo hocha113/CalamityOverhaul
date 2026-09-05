@@ -5,8 +5,9 @@ using Terraria;
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
 {
     /// <summary>
-    /// 荒花沙蟒战斗调参中心。身份：贴地爬行的节肢巨蟒，中速巡曳把八腿步态与
-    /// 鳌足姿势展示出来，威胁靠喷沙与带预警线的冲刺/扑击，不靠持续高速。
+    /// 荒花沙蟒战斗调参中心。身份：沙漠里的游龙，贴地快爬与破空腾跃两套身体语言交替，
+    /// 强度对标残酷克眼（冲刺 46px/f、三连冲、连接段 4 帧 + 冷却 10/6/4 的出招密度），
+    /// 八腿步态与鳌足姿势在爬行段和站桩招里展示，不靠拖慢节奏换取可读性。
     /// 克眼后档位，普通模式基数，专家/大师走原版缩放。
     /// </summary>
     internal static class BssDirector
@@ -34,10 +35,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public static IEnumerable<int> BloomOrdinals
             => Enumerable.Range(0, BodyStyleLayout.Length).Where(o => BodyStyleLayout[o] == StyleBloom);
         /// <summary>
-        /// 整体放大（头/体/尾 NPC.scale，节距与腿爪骨长同乘）。贴图为 2x 像素稿，
-        /// 原尺寸下整条蛇细而短，放大后头宽约 160px、体节扇冠约 90px
+        /// 整体倍率（头/体/尾 NPC.scale，节距与腿爪骨长同乘）。锁 1：贴图按原生像素画才自然，
+        /// 曾放大到 1.35（头宽 159、链长约 2300px 超一屏）被用户裁定回退（2026-09-06）。
+        /// 原生尺度：头 118×134、体节 106 宽、节距 82、颈距 64，
+        /// 全链 64 + 19×82 + 82 ≈ 1704px（约 106 格，0.9 屏宽）。运动常量按这个体长标定，见 <see cref="ChainLength"/>
         /// </summary>
-        public const float BodyScale = 1.35f;
+        public const float BodyScale = 1f;
+        /// <summary>全链长（头心到尾心，世界像素）：颈距 + 19 节距 + 尾距，运动几何的标尺</summary>
+        public const float ChainLength = (NeckGap + (BodyCount - 1) * SegmentGap + SegmentGap) * BodyScale;
         /// <summary>
         /// 节距（贴图像素，世界距离再乘 <see cref="BodyScale"/>）。体节帧内容高 98：
         /// 扇冠 0~32、主体 32~70、腰 70~84、前端圆叶 84~97。前节压后节绘制，
@@ -107,71 +112,82 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const float MaxFindDistance = 5600f;
         /// <summary>
         /// 追击阀触发距离：拉远到此距离才插入钻地追击连接件。配合单发闸
-        /// （用过一次必须走一轮轮换才能再用），防止机动战里追击无限复读
+        /// （用过一次必须走一轮轮换才能再用），防止机动战里追击无限复读、
+        /// 轮换表永远轮不到（真机反馈 2026-08-31）。爬速 17/26 档下不需要更近的阀
         /// </summary>
-        public const float ChaseValveDistance = 1500f;
+        public const float ChaseValveDistance = 1900f;
         /// <summary>远距回归阀触发距离（钻地瞬移贴回）</summary>
         public const float FarSnapDistance = 2600f;
 
-        //==================== 爬行（中速：步态是主角）====================
+        //==================== 爬行（hub 直线压迫：贴地快爬是常态，不是展示步态的慢镜头）====================
 
-        /// <summary>巡曳速度（屏内来回爬的常速，八腿换步清晰可读）</summary>
-        public const float CrawlCruiseSpeed = 8f;
-        /// <summary>追赶速度（拉远时的快步，仍在步行档，不进滑刹）</summary>
-        public const float CrawlChaseSpeed = 12f;
-        /// <summary>转身减速：接近巡曳折返点时的爬速</summary>
+        /// <summary>巡曳速度（hub 贴地压向玩家的常速）</summary>
+        public const float CrawlCruiseSpeed = 17f;
+        /// <summary>追赶速度（拉远追赶）</summary>
+        public const float CrawlChaseSpeed = 26f;
+        /// <summary>站定转身速：扑击/扬沙/合击等招在出手距离带内面向玩家时的慢爬</summary>
         public const float CrawlTurnSpeed = 4.5f;
         /// <summary>头心贴地高度（随 <see cref="BodyScale"/> 同比：体节下缘离地约 12px，腿有迈步余地，头下半截照旧埋沙）</summary>
-        public const float CrawlRideHeight = 46f;
+        public const float CrawlRideHeight = 34f * BodyScale;
         /// <summary>地形前探距离</summary>
         public const float CrawlLookahead = 130f;
+        /// <summary>就位减速带：距就位点此距离内从追赶速降到转身速（花刃绕上风侧等就位段共用）</summary>
+        public const float ApproachSlowBand = 200f;
 
-        //==================== 巡曳（hub：在玩家两侧折返爬行，整条蛇始终在屏内）====================
+        //==================== 头部转向（大身体的运动法则：头是火车头，不是甩鞭的手腕）====================
 
-        /// <summary>折返点相对玩家的横向距离（屏宽一半以内，整链在屏内爬过）</summary>
-        public const float PatrolOffset = 480f;
-        /// <summary>到达折返点的判定带</summary>
-        public const float PatrolArriveBand = 70f;
-        /// <summary>折返减速带：距折返点此距离内降到转身速</summary>
-        public const float PatrolSlowBand = 200f;
-        /// <summary>单程最长帧数（地形卡住也要折返）</summary>
-        public const int PatrolLegMaxFrames = 150;
-        /// <summary>拉远追赶阈：玩家离得比这远就不折返，直线追</summary>
-        public const float PatrolChaseDistance = 820f;
+        /// <summary>
+        /// 头部航迹最小转弯半径（像素）。颈段弯角上限 0.35 弧度配节距 82，几何下限
+        /// 82 / (2·sin 0.175) ≈ 236：头转得比这紧，颈段被钳制拉直、身体只能跟着甩——
+        /// "灵活脑袋甩庞大身体"的机械根源。所有寻的转向按半径而非角速度计，这里是全局地板
+        /// </summary>
+        public const float MinTurnRadius = 240f * BodyScale;
+        /// <summary>寻的转向的角速度地板（弧度/帧）：近停时仍能慢慢重新对准，不至于卡死</summary>
+        public const float MinTurnRate = 0.02f;
+        /// <summary>
+        /// 头部朝向每帧最大变化（弧度）：任何模式下头都不许一帧翻身。0.22 ≈ 12.6°/帧，
+        /// 180° 掉头至少 14 帧，颈段（刚度 0.34）每帧最多跟转 4.3°——甩颈从机制上消失
+        /// </summary>
+        public const float HeadTurnRateMax = 0.22f;
+        /// <summary>地下（看不见的）航段允许的转弯半径：链在沙里，几何折角无人看见</summary>
+        public const float BuriedTurnRadius = 130f * BodyScale;
+        /// <summary>出土交还段的转弯半径（头贴地表抬头出面，半可见，介于地下与地板之间）</summary>
+        public const float EmergeTurnRadius = 200f * BodyScale;
 
-        //==================== 沙面掠冲（蓄力后撤 + 预警线 + 一帧爆发 + 硬刹）====================
+        //==================== 沙面掠冲（对标克眼假动作冲刺：蓄力后撤 + 一帧爆发 + 硬刹）====================
 
         /// <summary>就位段帧数（拉开冲刺跑道）</summary>
         public const int DashStalkFrames = 6;
-        /// <summary>蓄力后撤帧数（预告主体：反向运动 + 黄色预警线）</summary>
-        public const int DashWindupFrames = 26;
-        /// <summary>锁向提前量：出手前几帧死向（预告即承诺，预警线同拍白闪锁定）</summary>
-        public const int DashLockLead = 9;
-        /// <summary>掠冲初速（中速身份的爆发档：与巡曳 8 形成四倍反差）</summary>
-        public const float DashSpeed = 34f;
+        /// <summary>蓄力后撤帧数（预告主体：反向运动 + 贴地尘线；运动冲刺不画预判线，用户裁定 2026-09-06）</summary>
+        public const int DashWindupFrames = 16;
+        /// <summary>锁向提前量：出手前几帧死向（预告即承诺）</summary>
+        public const int DashLockLead = 6;
+        /// <summary>掠冲初速（克眼 44 档）</summary>
+        public const float DashSpeed = 46f;
         /// <summary>飞行帧数</summary>
-        public const int DashFlightFrames = 16;
+        public const int DashFlightFrames = 18;
         /// <summary>硬刹帧数（×0.66/帧）</summary>
         public const int DashBrakeFrames = 8;
         /// <summary>接触伤害的速度门槛</summary>
-        public const float DashContactSpeed = 20f;
+        public const float DashContactSpeed = 24f;
         /// <summary>冲刺跑道最短距离：太近先退开再冲，杀贴脸秒杀</summary>
-        public const float DashRunwayMin = 380f;
+        public const float DashRunwayMin = 440f;
         /// <summary>
-        /// 掉头助跑最短路程（约 1.5 节距）：蓄力前沿冲刺线前进这么远，
-        /// 链条重排到身后，后撤蓄力才是"全身拉弓"而非把脖子甩上冲刺线
+        /// 掉头助跑最短路程（三个节距）：蓄力前沿冲刺线前进这么远，
+        /// 颈段重排到身后，后撤蓄力才是"全身拉弓"而非把脖子甩上冲刺线。
+        /// 退开段要在跑道之外多留这份余量。掠冲与回马甩尾共用
         /// </summary>
-        public const float DashAlignRunPx = 120f;
+        public const float DashAlignRunPx = SegmentGap * 3f * BodyScale;
         /// <summary>射向相对水平的最大仰角（弧度，贴地掠过的身份）</summary>
         public const float DashMaxPitch = 0.24f;
-        /// <summary>连冲次数：P1 两段，P2 起三段</summary>
-        public static int DashReps(int phase) => phase >= 2 ? 3 : 2;
+        /// <summary>连冲次数：P1 三段，P2 起四段</summary>
+        public static int DashReps(int phase) => phase >= 2 ? 4 : 3;
         /// <summary>尾迹掀沙间隔帧（P2 起沿冲刺路径掀起沙弹）</summary>
         public const int DashWakeGap = 4;
-        /// <summary>预警线长度（像素）</summary>
+        /// <summary>定向预警线长度（像素；仅盘身刺阵的辐条在用，运动冲刺不画线）</summary>
         public const float DashOmenLength = 1500f;
 
-        //==================== 蹲伏扑击（八腿蹲紧 + 预警线 + 抛物跃扑 + 落地沙爆）====================
+        //==================== 蹲伏扑击（八腿蹲紧 + 抛物跃扑 + 落地沙爆）====================
 
         /// <summary>就位帧数上限（转向面对玩家、爬到起跳距离）</summary>
         public const int PounceStalkFrames = 30;
@@ -179,7 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const float PounceMinRange = 260f;
         /// <summary>起跳最远横距：太远先贴近</summary>
         public const float PounceMaxRange = 760f;
-        /// <summary>蹲伏蓄势帧数（预警线寿命）</summary>
+        /// <summary>蹲伏蓄势帧数（八腿蹲紧 + 双螯举张就是预告）</summary>
         public const int PounceCrouchFrames = 30;
         /// <summary>锁向提前量（出手前死向）</summary>
         public const int PounceLockLead = 9;
@@ -200,16 +216,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
 
         //==================== 破土突袭 ====================
 
-        /// <summary>破土预告帧数（沙丘隆起 omen 与出土预警线的寿命）</summary>
+        /// <summary>破土预告帧数（沙丘隆起 omen 的寿命；出土方向不画线，隆起点即预告）</summary>
         public const int BreachTelegraphFrames = 30;
         /// <summary>破土出土初速</summary>
-        public const float BreachLaunchSpeed = 30f;
+        public const float BreachLaunchSpeed = 34f;
         /// <summary>突袭段重力</summary>
         public const float LungeGravity = 0.58f;
         /// <summary>接触伤害的速度门槛（伤害窗=可见冲势）</summary>
         public const float LungeContactSpeed = 13f;
         /// <summary>地下接近速度（鱼雷档）</summary>
-        public const float LungeDigSpeed = 26f;
+        public const float LungeDigSpeed = 30f;
         /// <summary>突袭循环数：单招收短（P1 两次，P2 起三次），把时长还给轮换密度</summary>
         public static int LungeCycles(int phase) => phase >= 2 ? 3 : 2;
         /// <summary>破土喷发沙弹数（200 度上扇，贴地两侧留逃生道，声明见状态）</summary>
@@ -220,31 +236,70 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         //==================== 喷沙（行进间齐射，不站桩）====================
 
         /// <summary>锁定前的跟踪帧数</summary>
-        public const int SpitTrackFrames = 12;
+        public const int SpitTrackFrames = 10;
         /// <summary>锁定后的吸气帧数</summary>
-        public const int SpitInhaleFrames = 10;
+        public const int SpitInhaleFrames = 8;
         /// <summary>齐射间隔</summary>
-        public const int SpitVolleyGap = 5;
+        public const int SpitVolleyGap = 4;
         /// <summary>齐射次数（每轮 2 发，沿扇面轮转车道）</summary>
-        public const int SpitVolleys = 6;
+        public const int SpitVolleys = 8;
         /// <summary>最小射距：贴脸不吐沙，邀请骑脸压血</summary>
         public const float SpitMinDistance = 230f;
         /// <summary>沙团初速</summary>
-        public const float SandGlobSpeed = 15f;
+        public const float SandGlobSpeed = 16f;
         /// <summary>沙团重力（弹道解算与弹幕本体共用）</summary>
         public const float SandGlobGravity = 0.30f;
         /// <summary>高抛沙团（ai[0]=1 变体）的重力倍率：低重力长滞空，弧顶更高</summary>
         public const float RainGlobGravityMul = 0.7f;
         /// <summary>齐射期爬速（边喷边挪，不站桩也不追着人跑）</summary>
-        public const float SpitCrawlSpeed = 3.5f;
+        public const float SpitCrawlSpeed = 5f;
+
+        //==================== 天游（空中游荡，收短版：铺垫不超三秒）====================
+
+        /// <summary>游荡时长（帧）</summary>
+        public const int WeaveDuration = 168;
+        /// <summary>游荡巡速</summary>
+        public const float WeaveSpeed = 21f;
+        /// <summary>游荡航迹转弯半径（利萨如锚点在动，头以宽弧追它，链在天上铺成 S 形游龙）</summary>
+        public const float WeaveTurnRadius = 320f * BodyScale;
+        /// <summary>游荡中喷沙节拍（预亮 10 帧后出手）</summary>
+        public const int WeaveSpitGap = 30;
+        /// <summary>游荡中洒瓣节拍（P2 起）</summary>
+        public const int WeavePetalGap = 42;
+        /// <summary>俯冲预告帧数（头亮 + 吼 + 锁点）</summary>
+        public const int WeaveDiveTelegraph = 16;
+        /// <summary>俯冲速度</summary>
+        public const float WeaveDiveSpeed = 31f;
+
+        //==================== 盘天环猎（绕玩家转圈收紧）====================
+
+        /// <summary>环猎时长（帧，P3 加长；收短版：环住三秒即收束）</summary>
+        public static int OrbitDuration(int phase) => phase >= 3 ? 210 : 180;
+        /// <summary>
+        /// 起始环径。链长 1704 对 2π·400 = 2513 的收紧环只盖七成，头尾之间三成弧是随环转的逃生门；
+        /// 旧值 450→310 按 840px 体长定，现体长翻倍照比例放大
+        /// </summary>
+        public const float OrbitRadiusStart = 560f * BodyScale;
+        /// <summary>收紧后的环径</summary>
+        public const float OrbitRadiusEnd = 400f * BodyScale;
+        /// <summary>环转角速度（弧度/帧）：0.04×480 ≈ 19 切速，追点系数后头速约 31，比掠冲慢一档是刻意的</summary>
+        public static float OrbitAngularSpeed(int phase) => phase >= 3 ? 0.046f : 0.04f;
+        /// <summary>向心钉刺节拍（P2 起；预亮 10 帧，射向环心非追踪）</summary>
+        public const int OrbitNeedleGap = 28;
+        /// <summary>穿心突刺预告帧数</summary>
+        public const int OrbitExitTelegraph = 16;
+        /// <summary>穿心突刺速度</summary>
+        public const float OrbitExitSpeed = 34f;
+        /// <summary>J 弯切出转弯半径（从环切向掰进穿心线的最紧弧，压在转弯地板附近）</summary>
+        public const float OrbitHookRadius = 260f * BodyScale;
 
         //==================== hub 骚扰刺（攻击欲望的底噪：巡曳中也在咬）====================
 
         /// <summary>骚扰甩刺周期（帧，按阶段提速）</summary>
         public static int HarassGap(int phase) => phase switch {
-            >= 3 => 26,
-            2 => 34,
-            _ => 46,
+            >= 3 => 20,
+            2 => 26,
+            _ => 36,
         };
         /// <summary>骚扰预亮帧数（红花节先亮再射 = 预告）</summary>
         public const int HarassGlowLead = 12;
@@ -290,6 +345,74 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         /// <summary>花瓣出生点相对红花节的横向抖动上限（走廊声明：花道间距≈红花链序差×节距−2×此值）</summary>
         public const float PetalLaneHalfWidth = 26f;
 
+        //==================== 沙爆漩涡冲刺（P2 起：盘旋搓涡 + 弃涡爆冲 + 漩涡后爆）====================
+
+        /// <summary>就位段帧数上限（脱离玩家去侧上锚点，提前到位即早退入盘）</summary>
+        public const int VortexEntryFrames = 24;
+        /// <summary>
+        /// 盘旋搓涡帧数（漩涡蓄力同长，状态与弹幕共读此常数）。
+        /// 角速度按大身体压低后，96 帧扫约 1.2 圈；蓄力越长输出窗越长，是公平阀不是拖沓
+        /// </summary>
+        public const int VortexSpinFrames = 96;
+        /// <summary>锁向塌缩帧数（漩涡缩小 + 粒子静默 = 爆前吸气，末段锁死射向）</summary>
+        public const int VortexCollapseFrames = 14;
+        /// <summary>
+        /// 盘旋半径：起始→收紧。收紧半径 280 的周长 1759 ≈ 链长 1704 = 链条恰好缠满整圈
+        /// （旧 300→150 按 840px 体长定，150 还低于颈段 236 的转弯下限，头在硬掰）
+        /// </summary>
+        public const float VortexRadiusStart = 420f * BodyScale;
+        /// <summary>盘旋收紧后的半径</summary>
+        public const float VortexRadiusEnd = 280f * BodyScale;
+        /// <summary>盘旋角速度起点（弧度/帧）：0.055×420 ≈ 23 切速，追点后头速约 37</summary>
+        public const float VortexOmegaStart = 0.055f;
+        /// <summary>盘旋角速度终点（越搓越快：0.10×280 ≈ 28 切速，头速约 44，仍低于 50 的爆冲 = 速度分层）</summary>
+        public const float VortexOmegaEnd = 0.10f;
+        /// <summary>塌缩弧转弯半径（切向掰进穿刺线，压在地板附近）</summary>
+        public const float VortexCollapseRadius = 250f * BodyScale;
+        /// <summary>锚点相对玩家的侧向距离（漩涡必须在屏内被看见才算预告）</summary>
+        public const float VortexAnchorSide = 500f;
+        /// <summary>锚点抬升（取玩家与地面较高者再上抬此值）</summary>
+        public const float VortexAnchorLift = 250f;
+        /// <summary>爆冲速度（招牌招，高于掠冲 46 = 速度分层）</summary>
+        public const float VortexDashSpeed = 50f;
+        /// <summary>爆冲飞行帧数</summary>
+        public const int VortexFlightFrames = 20;
+        /// <summary>出手后漩涡引爆延迟（蛇先冲走、涡在身后爆：先躲冲刺再看沙雨）</summary>
+        public const int VortexDetonateDelay = 10;
+        /// <summary>后爆沙球环枚数（径向均匀、重力弧线，从玩家盯了一秒半的固定点爆出）</summary>
+        public const int VortexGlobRing = 16;
+        /// <summary>P3 第二波慢环枚数（角度错半步）</summary>
+        public const int VortexGlobRingSecond = 10;
+        /// <summary>P3 第二波相对首爆的延迟帧</summary>
+        public const int VortexSecondWaveDelay = 10;
+        /// <summary>沙球环速度下限（快慢分层 = 内外两圈落点）</summary>
+        public const float VortexGlobSpeedMin = 6f;
+        /// <summary>沙球环速度上限</summary>
+        public const float VortexGlobSpeedMax = 13f;
+
+        //==================== 回环沙瀑（P2 起：天上画正圆泻沙成帘，收环离心俯冲）====================
+
+        /// <summary>入环就位帧数上限（提前到位即早退入环）</summary>
+        public const int LoopEntryFrames = 40;
+        /// <summary>环心相对玩家的侧偏（进入画环帧锁定，不追玩家）</summary>
+        public const float LoopCenterSide = 460f;
+        /// <summary>环心抬升（环底 = 抬升 − 半径 ≈ 210px 离地，环整个悬在头顶）</summary>
+        public const float LoopCenterLift = 540f;
+        /// <summary>环半径（旧 250 低于颈段转弯下限 236 的余量线；330 让一圈正好铺下约 2/3 链长）</summary>
+        public const float LoopRadius = 330f * BodyScale;
+        /// <summary>画满一圈的帧数（角速度 = 2π/此值；96 帧配 330 半径头速约 35，62 帧会飙到 51）</summary>
+        public const int LoopLapFrames = 96;
+        /// <summary>泻沙节拍（帧/枚，节拍疏密即幕帘逃生缝声明；一圈 16 枚）</summary>
+        public const int LoopCascadeGap = 6;
+        /// <summary>收环后沿环找切点的帧数上限（切向对准玩家即早退出手）</summary>
+        public const int LoopAlignFrames = 40;
+        /// <summary>俯冲预告帧数（亮头 + 吼 + 转速减半，锁点即承诺）</summary>
+        public const int LoopDiveTelegraph = 14;
+        /// <summary>俯冲速度</summary>
+        public const float LoopDiveSpeed = 34f;
+        /// <summary>入环前腾空段转弯半径</summary>
+        public const float LoopAscendRadius = 300f * BodyScale;
+
         //==================== 沙泉行军（立起砸地，冲击波沿地行军接连喷发）====================
 
         /// <summary>就位接近帧数上限（贴到出手距离即早退）</summary>
@@ -308,6 +431,118 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const int GeyserOmenFrames = 20;
         /// <summary>单泉喷发沙球数（近竖直上抛，回落是第二拍威胁）</summary>
         public const int GeyserGlobsEach = 3;
+
+        //==================== 回马甩尾（P3：擦身而过 + 过顶急转离心甩针 + 回马枪连段）====================
+
+        /// <summary>就位帧数（拉开擦身跑道）</summary>
+        public const int SweepStalkFrames = 8;
+        /// <summary>蓄力帧数（短版后撤，主菜在急转不在首冲）</summary>
+        public const int SweepWindupFrames = 12;
+        /// <summary>擦身冲刺速度</summary>
+        public const float SweepPassSpeed = 40f;
+        /// <summary>擦身飞行帧数上限（越过玩家即早退入弯）</summary>
+        public const int SweepPassFrames = 22;
+        /// <summary>越身判定距离（沿冲刺向越过玩家此距离即入弯）</summary>
+        public const float SweepOvershoot = 300f;
+        /// <summary>急转段帧数（U 弯半径 280 配 26 速：半圈约 34 帧，留两帧收势余量）</summary>
+        public const int SweepTurnFrames = 36;
+        /// <summary>U 弯转弯半径（过顶回瞄的弧，颈段能跟得上的最紧档）</summary>
+        public const float SweepTurnRadius = 280f * BodyScale;
+        /// <summary>入弯拉升点：沿冲刺向前伸 + 向上抬（弧顶高度约等于转弯半径，弯才是"过顶"而不是原地抽头）</summary>
+        public const float SweepTurnLiftX = 200f * BodyScale;
+        public const float SweepTurnLiftY = 300f * BodyScale;
+        /// <summary>急转甩针节拍（帧/轮）</summary>
+        public const int SweepFlingGap = 4;
+        /// <summary>甩针窗口（入弯后前多少帧内甩，后段留给转向收势）</summary>
+        public const int SweepFlingWindow = 26;
+        /// <summary>甩针速度（方向 = 体节自身运动向 = 物理离心，非瞄准）</summary>
+        public const float SweepNeedleSpeed = 10f;
+
+        //==================== 沙丘柱（场地实体，Actor 承载）====================
+
+        /// <summary>同屏柱数上限（怒放波 16 + 入场双柱 + 腾跃应急柱 + 余量）</summary>
+        public const int PillarMax = 20;
+        /// <summary>柱宽（6 物块 = 96px；体节 106 宽，柱不能比爬它的身体窄太多）</summary>
+        public const float PillarWidth = 96f;
+        /// <summary>柱高下限/上限（随机档；参差天际线是怒放波的沸腾读数）</summary>
+        public const float PillarHeightMin = 700f;
+        public const float PillarHeightMax = 940f;
+        /// <summary>钻出帧数（唯一伤害窗：极锐缓出一口气升满）</summary>
+        public const int PillarEruptFrames = 9;
+        /// <summary>缓沉帧数（缓慢落回地面消失）</summary>
+        public const int PillarSinkFrames = 80;
+        /// <summary>置景柱滞留（入场双柱：站到 P2 爆震首秀当燃料）</summary>
+        public const int PillarIntroLinger = 60 * 45;
+        /// <summary>突刺柱滞留（腾跃/爆震的燃料窗口）</summary>
+        public const int PillarSpikeLinger = 60 * 16;
+        /// <summary>柱体钻出接触伤害（normal/expert，走 GetAttackDamage_ForProjectiles 换算）</summary>
+        public static (float Normal, float Expert) PillarContactDamage => (26f, 22f);
+
+        //==================== 沙柱突刺（跺地锁心，全场怒放式钻出）====================
+
+        /// <summary>立起跺地蓄势帧数（立起剪影 + 跺地即预告主体，跺地帧锁定花心）</summary>
+        public const int SpikeStompFrames = 20;
+        /// <summary>逐根点名间隔帧（快节奏滚开：鼓包波扫过全场、柱群按同序轰起）</summary>
+        public const int SpikeStepGap = 8;
+        /// <summary>单根鼓包预告帧数</summary>
+        public const int SpikeOmenFrames = 22;
+        /// <summary>怒放根数：P1 十二根，P2 十四根，P3 十六根（全场沸腾档）</summary>
+        public static int SpikeCount(int phase) => phase >= 3 ? 16 : phase == 2 ? 14 : 12;
+        /// <summary>怒放车道间距（0/+1/-1/+2/-2 扩散序的槽距；槽距−抖散 ≥ 走廊宽）</summary>
+        public const float SpikeLaneSpacing = 220f;
+        /// <summary>落点相对车道槽位的横向抖散（去机械感，幅度不许吃掉走廊）</summary>
+        public const float SpikeScatterPx = 24f;
+        /// <summary>与最近既有柱的最小间距（柱间走廊 = 声明的逃生道）</summary>
+        public const float SpikeMinGapPx = 180f;
+
+        //==================== 沙柱腾跃（盘柱而上 + 蹬柱爆冲）====================
+
+        /// <summary>接近柱脚的就位帧数上限（贴到即早退）</summary>
+        public const int VaultApproachFrames = 60;
+        /// <summary>盘柱而上的总时长（帧；升到柱顶）</summary>
+        public const int VaultClimbFrames = 84;
+        /// <summary>
+        /// 盘柱横摆角速度（弧度/帧）。106 宽的身体绕不了 96 宽的柱，"螺旋"是头沿柱面左右
+        /// 扫着往上爬、八腿抓壁的近似；摆幅小、摆得慢，头才不会在柱顶甩脖子
+        /// </summary>
+        public const float VaultClimbOmega = 0.09f;
+        /// <summary>横摆半径（相对柱半宽的倍率：贴着柱身扫）</summary>
+        public const float VaultOrbitScale = 1.4f;
+        /// <summary>柱顶盘紧静止拍（爆发前的收势：静止即预告）</summary>
+        public const int VaultCoilFrames = 26;
+        /// <summary>蹬柱上抛滞空帧数（跳到空中再冲：滞空前段可重瞄，末段死向）</summary>
+        public const int VaultHopFrames = 14;
+        /// <summary>蹬柱上抛初速（竖直向）</summary>
+        public const float VaultHopKick = 17f;
+        /// <summary>锁向提前量（出手前死向，预告即承诺）</summary>
+        public const int VaultLockLead = 8;
+        /// <summary>蹬柱爆冲速度（速度分层：掠冲 46 < 本招 48 < 漩涡 50）</summary>
+        public const float VaultDashSpeed = 48f;
+        /// <summary>爆冲飞行帧数</summary>
+        public const int VaultFlightFrames = 19;
+        /// <summary>爆冲硬刹帧数</summary>
+        public const int VaultBrakeFrames = 9;
+        /// <summary>接触伤害的速度门槛</summary>
+        public const float VaultContactSpeed = 24f;
+
+        //==================== 沙柱爆震（怒吼声波环 + 逐柱引爆）====================
+
+        /// <summary>选招门槛：场上可点名柱数不足此值时该槽位落到替补招</summary>
+        public const int BurstMinPillars = 2;
+        /// <summary>后仰怒吼帧数（声波环 + 立起剪影即预告）</summary>
+        public const int BurstRoarFrames = 42;
+        /// <summary>裂纹预闪帧数（怒吼后全柱同亮，错拍延迟另加）</summary>
+        public const int BurstCrackFrames = 30;
+        /// <summary>逐柱错拍间隔帧（近柱先爆，波次可读）</summary>
+        public const int BurstStaggerGap = 9;
+        /// <summary>每柱径向沙球枚数（球环缺口 + 柱间走廊 = 逃生道）</summary>
+        public const int BurstGlobRing = 14;
+        /// <summary>沙球环速度下限（快慢双速分层 = 内外两圈落点）</summary>
+        public const float BurstGlobSpeedMin = 6.5f;
+        /// <summary>沙球环速度上限</summary>
+        public const float BurstGlobSpeedMax = 12.5f;
+        /// <summary>无柱可爆时先种的应急柱数（保底演出：两翼各两根再吼）</summary>
+        public const int BurstFallbackPillars = 4;
 
         //==================== 沙暴（入场即起，全程压场）====================
 
@@ -359,6 +594,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const float SurgeLaunchOffset = 90f;
         /// <summary>翻身后出土帧数上限</summary>
         public const int SurgeEmergeFrames = 60;
+        /// <summary>沙下翻身小圈半径与深度（头在翻身点下方绕一小圈，链在沙里绞成一团；地下不受转弯地板约束）</summary>
+        public const float SurgeRollRadius = 150f * BodyScale;
+        public const float SurgeRollDepth = 230f * BodyScale;
 
         //==================== 沙鳍追猎（沙下追踪鳍浪 → 隆包 → 竖直咬起）====================
 
@@ -422,8 +660,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public const int SnapLungeFrames = 6;
         /// <summary>前扑速度</summary>
         public const float SnapLungeSpeed = 22f;
-        /// <summary>钳点距出手时头心的最远距离（前扑路程 132 + 嘴位 89 + 螯伸展，不超出螯的视觉触及）</summary>
-        public const float SnapReach = 320f;
+        /// <summary>钳点距出手时头心的最远距离（前扑路程 132 + 嘴位 66 + 螯伸展，不超出螯的视觉触及；原生倍率下的账）</summary>
+        public const float SnapReach = 290f;
         /// <summary>钳击判定半径</summary>
         public const float SnapRadius = 60f;
         /// <summary>钳击判定存活帧数</summary>
@@ -483,12 +721,17 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
 
         /// <summary>就位帧数上限</summary>
         public const int RingApproachFrames = 40;
-        /// <summary>环半径（受颈段弯角钳制下限约 316，取 360 让链恰好合环）</summary>
-        public const float RingRadius = 360f;
-        /// <summary>圆心离地高度（环下弧埋沙，上弧越过玩家头顶）</summary>
-        public const float RingCenterLift = 126f;
-        /// <summary>沿环头速</summary>
+        /// <summary>
+        /// 环半径。链长 1704 合环半径 = 1704/2π ≈ 271，取 290 让头尾留约 120px 缺口（头压过尾不叠画）；
+        /// 高于颈段转弯下限 236 有余量。旧 360 是按 1.35 倍体长（2300px）算的
+        /// </summary>
+        public const float RingRadius = 290f * BodyScale;
+        /// <summary>圆心离地高度（环下弧埋沙约三成，上弧越过玩家头顶约 400px）</summary>
+        public const float RingCenterLift = 110f * BodyScale;
+        /// <summary>沿环头速（24/290 ≈ 0.083 弧度/帧，合围一圈约 76 帧）</summary>
         public const float RingHeadSpeed = 24f;
+        /// <summary>解环爬走的转弯半径</summary>
+        public const float RingUnwindRadius = 260f * BodyScale;
         /// <summary>上环并轨帧数</summary>
         public const int RingMergeFrames = 12;
         /// <summary>辐条预告帧数</summary>
@@ -506,16 +749,16 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         /// <summary>解环帧数</summary>
         public const int RingUnwindFrames = 40;
 
-        //==================== 通用节奏 ====================
+        //==================== 通用节奏（推倒版：近乎无缝的出招密度）====================
 
-        /// <summary>hub 连接段最短帧数（换招的一口气；巡曳本身就是看点，不必抢拍）</summary>
-        public const int ConnectorFrames = 6;
+        /// <summary>hub 连接段最短帧数（换招的一口气）</summary>
+        public const int ConnectorFrames = 4;
 
         /// <summary>出招冷却：阶段越深越快（每招自带预告帧兜底可读性，冷却只管衔接）</summary>
         public static int AttackCooldown(int phase) => phase switch {
-            >= 3 => 18,
-            2 => 30,
-            _ => 44,
+            >= 3 => 4,
+            2 => 6,
+            _ => 10,
         };
 
         /// <summary>NPC 弹幕伤害换算：普通/专家双基数</summary>

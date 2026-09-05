@@ -114,6 +114,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Vector2 pose = new(riseAnchor.X, groundY - BssDirector.CrawlRideHeight - 170f * raise);
             Vector2 desired = (pose - npc.Center) * 0.1f;
             npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.3f);
+            //昂起：头朝斜前上，砸地帧再由朝向限速把头压下去（不是一帧翻转）
+            ctx.AimAngle = new Vector2(FacingToTarget(ctx, 0f) * 0.45f, -1f).ToRotation();
 
             //末段绷紧 + 亮花
             if (raise > 0.7f) {

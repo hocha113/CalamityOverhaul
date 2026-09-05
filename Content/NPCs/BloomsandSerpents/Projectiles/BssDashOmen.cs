@@ -11,12 +11,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
 {
     /// <summary>
-    /// 冲刺预警线（黄色，残酷 Boss 同一语法）：蓄势期沿即将出手的射向铺一条细线，
-    /// 末段停追白闪 = 锁定承诺，出手帧收拢让位给冲刺本体。<br/>
-    /// ai[0] 锚 NPC（-1 = 定点）；ai[1] 追踪玩家（-1 = 不追）；ai[2] = <see cref="PackParams"/>。<br/>
-    /// 模式 0 定向（生成速度即射向，破土出土线）；模式 1 贴地掠冲瞄准（预测 + 仰角钳制，
-    /// 与 <see cref="GroundDashAim"/> 同式）；模式 2 扑击瞄准（直指预测位）。
-    /// 瞄准公式与状态侧共用同一静态函数，各端从同步的玩家位姿同算，线即承诺的射向。
+    /// 定向预警线（黄色，残酷 Boss 同一语法）：从生成点沿生成速度方向铺一条细线，
+    /// 末段白闪 = 锁定承诺，到期收拢。现只服务盘身刺阵的辐条（红花 → 圈心的钉刺射线）：
+    /// 运动冲刺（掠冲/扑击/破土）不画预判线——用户裁定这条蛇的身体动作本身就是预告（2026-09-06），
+    /// 原来的掠冲追瞄/扑击追瞄两个模式随之删除。<br/>
+    /// ai[0] 锚 NPC（-1 = 定点）；ai[1] 保留位；ai[2] = <see cref="PackParams"/>。
     /// </summary>
     internal class BssDashOmen : BssModProjectile
     {
@@ -25,13 +24,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
         /// <summary>预警线主色（暖黄，沙色板里的警示色）</summary>
         private static readonly Vector3 LineColor = new(1f, 0.82f, 0.24f);
 
-        /// <summary>模式 + 锁定帧 + 寿命打进 ai[2]（随生成包同步）</summary>
+        /// <summary>模式 + 锁定帧 + 寿命打进 ai[2]（随生成包同步；模式位保留为 0，兼容旧打包格式）</summary>
         internal static float PackParams(int mode, int duration, int lockLead)
             => mode + lockLead * 4f + duration * 256f;
 
         private int AnchorNpc => (int)Projectile.ai[0];
-        private int TrackPlayer => (int)Projectile.ai[1];
-        private int Mode => (int)Projectile.ai[2] % 4;
         private int LockLead => (int)Projectile.ai[2] / 4 % 64;
         private int Duration => (int)Projectile.ai[2] / 256;
         private bool Locked => Projectile.timeLeft <= LockLead;
@@ -51,20 +48,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>贴地掠冲射向：预测 12 帧 + 仰角钳制（贴地承诺），状态与预警线共用</summary>
-        internal static Vector2 GroundDashAim(Vector2 from, Player target) {
-            Vector2 predicted = target.Center + target.velocity * 12f;
-            Vector2 aim = (predicted - from).SafeNormalize(Vector2.UnitX);
-            float ang = MathHelper.Clamp(MathF.Asin(MathHelper.Clamp(aim.Y, -1f, 1f)),
-                -BssDirector.DashMaxPitch, BssDirector.DashMaxPitch);
-            float sign = aim.X >= 0f ? 1f : -1f;
-            return new Vector2(sign * MathF.Cos(ang), MathF.Sin(ang));
-        }
-
-        /// <summary>扑击瞄准点：预测半程飞行时间的玩家位（弹道反解与预警线共用）</summary>
-        internal static Vector2 PounceAimPoint(Player target)
-            => target.Center + target.velocity * (BssDirector.PounceFlightTime * 0.5f);
-
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 if (Duration > 0) {
@@ -77,16 +60,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
             NPC anchor = AnchorNpc.TryGetNPC(out NPC a) ? a : null;
             if (anchor.Alives()) {
                 Projectile.Center = anchor.Center;
-            }
-
-            Player player = TrackPlayer.TryGetPlayer(out Player p) ? p : null;
-            if (!Locked && player.Alives()) {
-                if (Mode == 1) {
-                    Projectile.rotation = GroundDashAim(Projectile.Center, player).ToRotation();
-                }
-                else if (Mode == 2) {
-                    Projectile.rotation = (PounceAimPoint(player) - Projectile.Center).ToRotation();
-                }
             }
 
             Projectile.velocity = Projectile.rotation.ToRotationVector2();
@@ -135,8 +108,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Projectiles
             effect.Parameters["uLockProgress"]?.SetValue(lockT);
             effect.Parameters["uCollapse"]?.SetValue(collapse);
             effect.Parameters["uAspect"]?.SetValue(lineLength / width);
-            //根部藏进头本体：羽化
-            effect.Parameters["uRootFeather"]?.SetValue(Mode == 0 ? 0.02f : 0.06f);
+            //根部贴红花节：轻羽化
+            effect.Parameters["uRootFeather"]?.SetValue(0.02f);
             effect.Parameters["uColor"]?.SetValue(LineColor);
 
             SpriteBatch sb = Main.spriteBatch;

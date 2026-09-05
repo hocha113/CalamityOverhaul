@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                     desired = desired.SafeNormalize(Vector2.Zero) * 8f;
                 }
                 npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.18f);
-                npc.rotation = npc.rotation.AngleLerp(new Vector2(0.15f * ctx.WindSign, -1f).ToRotation() + BssHead.FacingRot, 0.12f);
+                ctx.AimAngle = new Vector2(0.15f * ctx.WindSign, -1f).ToRotation();
             }
 
             //爬升期的隆隆与渗沙
@@ -113,8 +113,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             Timer++;
 
             if (t > EndFrame || t > 160) {
-                //转阶段后的热身阀：回巡曳缓一口气再出招，P2 首手是轮换表的掠冲
+                //转阶段后的热身阀：回巡曳缓一口气再出招；轮换序号归零，P2 首手落到漩涡冲刺首秀
                 ctx.AttackCooldown = 40;
+                ctx.AttackIndex = 0;
                 return new BssHubState();
             }
             return null;

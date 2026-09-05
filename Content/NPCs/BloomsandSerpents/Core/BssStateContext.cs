@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         Flail,
         /// <summary>死亡逐腿失力（配合 CollapsedLegs 计数）</summary>
         Collapse,
+        /// <summary>柱面抓握：足端锚沙柱壁面攀爬（几何由 LegGrip* 声明）</summary>
+        Grip,
         /// <summary>蓄势蹲伏：站距外扩贴地咬定、快步稳桩（起跳前的压缩拍）</summary>
         Brace,
     }
@@ -101,10 +103,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public bool ChaseValveUsed { get; set; }
         /// <summary>上一手选招的状态号（-1 无；钻地连发闸的判据，权威端裁决量）</summary>
         public int LastPickedState { get; set; } = -1;
-        /// <summary>巡曳折返侧（±1，0 未定；hub 在玩家两侧来回爬，跨 hub 进出持久）</summary>
-        public int PatrolSide { get; set; }
-        /// <summary>本段巡曳已用帧数（地形卡住也要折返的计时）</summary>
-        public int PatrolLegTimer { get; set; }
         /// <summary>死亡演出已完，CheckDead 据此放行</summary>
         public bool DeathPerformanceFinished { get; set; }
         #endregion
@@ -114,7 +112,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         /// <summary>Steer 模式目标点</summary>
         public Vector2 MoveTarget { get; set; }
         public float MoveSpeed { get; set; }
-        public float TurnSpeed { get; set; } = 1.6f;
+        /// <summary>
+        /// Steer 模式航迹转弯半径（像素）。转向按半径而非角速度计：长身体的头是火车头，
+        /// 航迹曲率决定颈段能不能跟上；低于 <see cref="BssDirector.MinTurnRadius"/> 会被抬到地板
+        /// （地下航段例外，传 <see cref="BssDirector.BuriedTurnRadius"/>）
+        /// </summary>
+        public float TurnRadius { get; set; } = BssDirector.MinTurnRadius;
         public float AccelRate { get; set; } = 0.08f;
         /// <summary>蛇形扰动强度</summary>
         public float Slither { get; set; }
@@ -124,7 +127,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public float CrawlSpeed { get; set; }
         /// <summary>蛇形相位（持久量）</summary>
         public float SlitherPhase { get; set; }
-        /// <summary>头部瞄准覆盖（弧度；NaN=跟速度走）。行进间攻击用：身体在爬，头看目标</summary>
+        /// <summary>
+        /// 头部瞄准覆盖（弧度；NaN=跟速度走）。Crawl 与 Direct 模式都认：行进间攻击头看目标，
+        /// 后撤蓄力头仍盯冲刺线（否则 Direct 模式会让头跟着倒退速度朝后看，出手帧翻 180°）。
+        /// 任何模式下头的朝向变化都被 <see cref="BssDirector.HeadTurnRateMax"/> 限速
+        /// </summary>
         public float AimAngle { get; set; } = float.NaN;
         #endregion
 
@@ -136,6 +143,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public int CollapsedLegs { get; set; }
         /// <summary>腿整体可见度（钻沙期渐隐）</summary>
         public float LegAlpha { get; set; } = 1f;
+
+        /// <summary>柱面抓握声明（Grip 指令的几何，每帧重声明；盘柱状态喂值）</summary>
+        public bool LegGripActive { get; set; }
+        public float LegGripCenterX { get; set; }
+        public float LegGripHalfWidth { get; set; }
+        public float LegGripTopY { get; set; }
+        public float LegGripBottomY { get; set; }
         #endregion
 
         #region 鳌足指令（每帧重声明；Burst 自衰减跨帧）
@@ -298,9 +312,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         public void BeginFrameDefaults() {
             Mode = BssMoveMode.Hold;
             MoveSpeed = 0f;
+            TurnRadius = BssDirector.MinTurnRadius;
             Slither = 0f;
             AimAngle = float.NaN;
             LegCommand = BssLegCommand.March;
+            LegGripActive = false;
             ClawCommand = BssClawCommand.Idle;
             ClawPhase = 0f;
             ClawBurst *= 0.84f;

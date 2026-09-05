@@ -51,6 +51,22 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core
         Quicksand = 20,
         /// <summary>盘身刺阵：绕玩家盘成巨环，红花沿辐条齐射圈心（P3 压轴）</summary>
         CoilRing = 21,
+        /// <summary>天游：空中长时间蛇形游荡 + 俯冲砸地</summary>
+        SkyWeave = 22,
+        /// <summary>盘天环猎：绕玩家成环收紧 + 穿心突刺</summary>
+        CoilOrbit = 23,
+        /// <summary>沙爆漩涡冲刺：盘旋搓涡 + 弃涡爆冲，漩涡在身后爆（P2 起）</summary>
+        VortexDash = 24,
+        /// <summary>回环沙瀑：天上画正圆泻沙成帘 + 离心俯冲（P2 起）</summary>
+        LoopCascade = 25,
+        /// <summary>回马甩尾：擦身而过 + 急转离心甩针 + 回马枪连段（P3）</summary>
+        TailSweep = 26,
+        /// <summary>沙柱突刺：跺地点名，地刺式沙柱逐根钻出（柱滞留为后续燃料）</summary>
+        PillarSpike = 27,
+        /// <summary>沙柱腾跃：盘柱而上 + 柱顶盘紧 + 蹬柱爆冲（P2 起）</summary>
+        PillarVault = 28,
+        /// <summary>沙柱爆震：后仰怒吼声波环，全柱裂纹预闪后错拍炸沙球环（P2 起）</summary>
+        PillarBurst = 29,
     }
 
     /// <summary>荒花沙蟒状态接口</summary>

@@ -115,11 +115,12 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.LegCommand = BssLegCommand.Tuck;
             DeclareJaw(ctx, BssJawCommand.Clamp);
             ctx.Mode = BssMoveMode.Steer;
-            //沙下小圈：绕翻身点下方转，转向紧、速度中，链在沙里绞成一团
+            //沙下小圈：绕翻身点下方转，链在沙里绞成一团（地下航段，转弯半径不受地板约束）
             float ang = progress * MathHelper.TwoPi * 1.2f * toward;
-            ctx.MoveTarget = rollPoint + new Vector2(MathF.Cos(ang) * 110f, 150f + MathF.Sin(ang) * 60f);
-            ctx.MoveSpeed = 14f;
-            ctx.TurnSpeed = 6f;
+            ctx.MoveTarget = rollPoint + new Vector2(MathF.Cos(ang) * BssDirector.SurgeRollRadius,
+                BssDirector.SurgeRollDepth + MathF.Sin(ang) * BssDirector.SurgeRollRadius * 0.55f);
+            ctx.MoveSpeed = 16f;
+            ctx.TurnRadius = BssDirector.BuriedTurnRadius;
             ctx.AccelRate = 0.2f;
             ctx.GatherLevel = progress;
             ctx.Compression = MathHelper.Lerp(1f, 0.9f, progress);
@@ -212,7 +213,7 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             ctx.Mode = BssMoveMode.Steer;
             ctx.MoveTarget = new Vector2(exitX, exitGround - BssDirector.CrawlRideHeight);
             ctx.MoveSpeed = 18f;
-            ctx.TurnSpeed = 3.2f;
+            ctx.TurnRadius = BssDirector.EmergeTurnRadius;
             ctx.AccelRate = 0.12f;
 
             UpdateCrossFx(ctx, npc);
