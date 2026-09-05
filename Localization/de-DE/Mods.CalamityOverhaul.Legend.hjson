@@ -754,7 +754,7 @@ OnikiriTrialQuestLine: {
 	TrackerWaiting: Es ist noch nicht da
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Nächster Schnitt: {0}
-	BossRushTargetName: Nacht, die nicht zergeht
+	BossRushTargetName: Schlacht von Terminus
 	EventActiveFormat: "{0}: im Gange"
 	Trial_0: Himmelsauge
 	Trial_1: Zwei Schändlichkeiten der Erde
@@ -943,7 +943,7 @@ KikasaTrialQuestLine: {
 	TrackerWaiting: Noch nicht am Platz
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Nächster Platz: {0}
-	BossRushTargetName: Ein voller Tisch
+	BossRushTargetName: Schlacht von Terminus
 	EventActiveFormat: "{0}: im Gange"
 	Trial_0: Weiches erstes Gericht
 	Trial_1: Nachtauge am Himmel

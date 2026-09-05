@@ -3,13 +3,15 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
 {
-    /// <summary>雨系伤害来源类别，命中挂钩以此分辨滴/瀑/泉/洼</summary>
+    /// <summary>雨系伤害来源类别，命中挂钩以此分辨滴/瀑/泉/洼/柱</summary>
     internal enum KikasaRainSourceKind : byte
     {
         Drop,
         Pour,
         Geyser,
         Puddle,
+        /// <summary>血湖形态血珠入水起的血柱（<see cref="KikasaRains.KikasaBloodColumn"/>），不是三泉</summary>
+        Column,
     }
 
     /// <summary>
@@ -106,6 +108,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
         public Color Core;
         /// <summary>画布尺寸倍率（纯视觉，不动判定）</summary>
         public float SizeMul;
+        /// <summary>追击穿透态 0~1（缘一线鬼青、体略透）；由滴自填，符一般不动</summary>
+        public float Ghost;
     }
 
     /// <summary>墨洼绘制配色（端本地；宽度走 <see cref="KikasaRains.KikasaInkPuddle"/> 的判定同源旋钮，不在此改）</summary>
@@ -429,6 +433,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
                 return;
             }
             definition.OnGeyserErupt(TagCtx(geyser.owner), geyser);
+        }
+
+        /// <summary>
+        /// 血柱起柱事件派发：只找标签符（读柱 ai[1]），各端起柱帧各调一次。
+        /// 与 <see cref="OnGeyserErupt"/> 分开：按"一次右键三泉"调校的符（霆雷冠等）若每颗珠子都触发会失衡
+        /// </summary>
+        public static void OnColumnErupt(Projectile column) {
+            if (!TryGetTagDefinition(ReadTagId(column.ai[1]), out KikasaTalismanDefinition definition)) {
+                return;
+            }
+            definition.OnColumnErupt(TagCtx(column.owner), column);
         }
     }
 }

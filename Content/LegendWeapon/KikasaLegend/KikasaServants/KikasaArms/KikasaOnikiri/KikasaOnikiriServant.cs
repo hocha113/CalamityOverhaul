@@ -56,6 +56,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>沉影盘在场判定用：专属械奴恒复制鬼切</summary>
         public int ArmsItemType => OnikiriOverride.ID;
 
+        /// <summary>专属单体：强度由原件等级烘焙，不吃编队摊薄</summary>
+        public int UnitCount => 1;
+
         /// <summary>居合斩痕半长 px</summary>
         private float IaiHalfLen => 130f * bladeScaleLv + 58f;
 

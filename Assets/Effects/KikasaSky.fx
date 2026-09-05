@@ -1,6 +1,7 @@
 // ============================================================================
 //KikasaSky.fx 鬼伞血湖领域天空，跨0深度切片单次绘制，覆盖所有原版背景层
 //血红黄昏：凝血暗红天穹 + 半沉湖平线下的凝血暗日（盘面比血光更暗）+ 湖面血光倒影柱
+//        2026-09 分离调：天顶与湖底沉墨黑、血色只留地平线一带、高光苍白（旧版整屏饱和红判伤眼）
 //        + 无山脊的无际血湖地平线（天空倒影+横向波光）+ 立在远湖里的巨大破纸伞
 //        + 低垂湿重的暗红云带 + 地平血雾。死寂无雨无鸟。
 //远湖巨伞 2026-08 重做：旧"半椭圆壳+圆球顶、无柄无锯齿"实机读成锅盖，删过一轮后拍板
@@ -38,19 +39,20 @@ float uWaterWobble;     //水线噪声波动幅度，与 KikasaGrade 同值
 float4 uLineWave[4];    //水线行波源，与 KikasaGrade 同源同公式，垫底顶边跟着一起荡
 float4 uTideTrough;     //跟脚潮让位坑，与 KikasaGrade 同源同轮廓，垫底顶边跟着分开；闲置全零
 
-//====== 血暮调色板 ======
-static const float3 SKY_TOP    = float3(0.085, 0.012, 0.030);  //凝血暗红近黑
-static const float3 SKY_MID    = float3(0.360, 0.048, 0.068);  //深绯
-static const float3 SKY_LOW    = float3(0.760, 0.130, 0.085);  //地平伤口亮红
-static const float3 SUN_CORE   = float3(0.300, 0.022, 0.032);  //凝血暗日盘面
-static const float3 SUN_RIM    = float3(0.980, 0.300, 0.140);  //盘缘一线亮红
-static const float3 SUN_HAZE   = float3(0.900, 0.180, 0.100);  //日周血光
-static const float3 CLOUD_COL  = float3(0.205, 0.038, 0.048);  //浸血云体
-static const float3 CLOUD_EDGE = float3(0.780, 0.150, 0.095);  //云底伤口红描边
-static const float3 LAKE_DIM   = float3(0.520, 0.180, 0.180);  //湖面倒影乘暗
-static const float3 LAKE_DEEP  = float3(0.110, 0.014, 0.026);  //湖向下沉底色
-static const float3 MIST_COL   = float3(0.470, 0.095, 0.085);  //地平血雾
-static const float3 UMB_COL    = float3(0.052, 0.010, 0.020);  //巨伞剪影
+//====== 血暮调色板（2026-09 分离调：天顶/湖底墨黑、地平血色、高光苍白；红是身份不是照明） ======
+//旧版全屏同一饱和红（sat≈0.86、亮且饱和占 25%）玩家反馈伤眼；亮部常量饱和度封顶 0.75
+static const float3 SKY_TOP    = float3(0.040, 0.026, 0.050);  //天顶墨黑带一丝瘀青（眼睛的休息区）
+static const float3 SKY_MID    = float3(0.270, 0.068, 0.108);  //酒红
+static const float3 SKY_LOW    = float3(0.640, 0.205, 0.160);  //地平伤口：凝血偏褐
+static const float3 SUN_CORE   = float3(0.200, 0.030, 0.045);  //凝血暗日盘面（仍比血光暗）
+static const float3 SUN_RIM    = float3(0.950, 0.560, 0.420);  //盘缘一线苍白血色
+static const float3 SUN_HAZE   = float3(0.760, 0.270, 0.190);  //日周血光
+static const float3 CLOUD_COL  = float3(0.120, 0.045, 0.072);  //瘀紫黑云体
+static const float3 CLOUD_EDGE = float3(0.660, 0.250, 0.200);  //云底描边
+static const float3 LAKE_DIM   = float3(0.470, 0.230, 0.245);  //湖面倒影乘暗
+static const float3 LAKE_DEEP  = float3(0.038, 0.016, 0.034);  //湖向下沉入墨黑
+static const float3 MIST_COL   = float3(0.390, 0.135, 0.140);  //地平血雾
+static const float3 UMB_COL    = float3(0.030, 0.014, 0.026);  //巨伞剪影
 //====== 鬼雨异化色板（压顶湿墨，禁红禁暖） ======
 static const float3 RAIN_SKY_TOP    = float3(0.026, 0.032, 0.040);  //头顶近黑沉云
 static const float3 RAIN_SKY_MID    = float3(0.085, 0.105, 0.115);  //墨青
@@ -106,9 +108,10 @@ float fbm2(float2 uv) {
 float3 skyDome(float2 uv, float aspect, float horizonY) {
     //三段渐变：血暮往地平线越烧越亮；湿墨往地平只剩尸青雾光
     float grad = saturate(uv.y / horizonY);
+    //天顶留大片墨黑休息区，血光收窄贴向地平线
     float3 col = lerp(lerp(SKY_TOP, RAIN_SKY_TOP, uRain),
-        lerp(SKY_MID, RAIN_SKY_MID, uRain), smoothstep(0.05, 0.58, grad));
-    col = lerp(col, lerp(SKY_LOW, RAIN_SKY_LOW, uRain), smoothstep(0.52, 0.97, grad));
+        lerp(SKY_MID, RAIN_SKY_MID, uRain), smoothstep(0.18, 0.68, grad));
+    col = lerp(col, lerp(SKY_LOW, RAIN_SKY_LOW, uRain), smoothstep(0.66, 0.99, grad));
     float wash = fbm2(uv * float2(1.5 * aspect, 1.5) + float2(uTime * 0.005, uCamY * 0.00001));
     col *= 0.93 + wash * 0.14;
 
@@ -119,19 +122,21 @@ float3 skyDome(float2 uv, float aspect, float horizonY) {
     float sr = length(ds);
     float sun = 1.0 - smoothstep(0.128, 0.142, sr);
     float rim = exp(-pow(abs(sr - 0.142) / 0.016, 2.0));
-    float haze = exp(-pow(max(sr - 0.10, 0.0) / 0.30, 1.5));
-    col += lerp(SUN_HAZE, RAIN_SUN_HAZE, uRain) * haze * lerp(0.55, 0.38, uRain);
+    //血光半径 0.24、权重 0.42：日晕不糊满半个天穹
+    float haze = exp(-pow(max(sr - 0.10, 0.0) / 0.24, 1.5));
+    col += lerp(SUN_HAZE, RAIN_SUN_HAZE, uRain) * haze * lerp(0.42, 0.38, uRain);
     col = lerp(col, lerp(SUN_CORE, RAIN_SUN_CORE, uRain), sun);
-    col += lerp(SUN_RIM, RAIN_SUN_RIM, uRain) * rim * lerp(0.85, 0.40, uRain);
+    col += lerp(SUN_RIM, RAIN_SUN_RIM, uRain) * rim * lerp(0.70, 0.40, uRain);
 
     //低垂湿重的云带：横长条带极慢漂，血形态云底一线伤口红、异化换冷衬光
     float2 cuv = float2(uv.x + uCamX * 0.016 / uScreenSize.x + uTime * 0.0028, uv.y);
-    float cField = fbm2(cuv * float2(1.7, 8.5));
+    //低频宽阈值：读成成团厚云而不是铺满天的碎丝噪点（旧 1.7/8.5 + 0.545..0.585 是噪点主因）
+    float cField = fbm2(cuv * float2(1.2, 5.0));
     float yEnv = smoothstep(0.04, 0.16, uv.y) * (1.0 - smoothstep(0.42, 0.60, uv.y));
-    float band = smoothstep(0.545, 0.585, cField) * yEnv;
+    float band = smoothstep(0.50, 0.64, cField) * yEnv;
     float edge = band * (1.0 - band) * 4.0;
     col = lerp(col, lerp(CLOUD_COL, RAIN_CLOUD, uRain), band * (0.82 + 0.06 * uRain));
-    col += lerp(CLOUD_EDGE, RAIN_CLOUD_EDGE, uRain) * edge * 0.30;
+    col += lerp(CLOUD_EDGE, RAIN_CLOUD_EDGE, uRain) * edge * 0.22;
 
     //倾斜雨幡（异化态）：云底垂向湖面的冷灰雨柱，两层缓移
     float su1 = (uv.x + uv.y * 0.16) * 1.9 + uCamX * 0.05 / uScreenSize.x + uTime * 0.006;

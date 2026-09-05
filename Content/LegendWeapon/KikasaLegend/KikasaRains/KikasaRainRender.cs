@@ -36,18 +36,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             int dropType = ModContent.ProjectileType<KikasaInkDrop>();
             int pourType = ModContent.ProjectileType<KikasaInkPour>();
             int umbrellaType = ModContent.ProjectileType<KikasaRainUmbrella>();
+            int columnType = ModContent.ProjectileType<KikasaBloodColumn>();
+            int geyserType = ModContent.ProjectileType<KikasaInkGeyser>();
 
+            //墨形态体与血形态体分两批(不同 Effect 不能共批);血珠/血柱/血索/血形态三泉走血批
             bool anyInk = false;
+            bool anyBlood = false;
             bool anyUmbrella = false;
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
                 if (!proj.active) {
                     continue;
                 }
-                anyInk |= proj.type == dropType || proj.type == pourType;
-                anyUmbrella |= proj.type == umbrellaType;
+                if (proj.type == dropType) {
+                    if (proj.ModProjectile is KikasaInkDrop drop && drop.IsBloodBead) {
+                        anyBlood = true;
+                    }
+                    else {
+                        anyInk = true;
+                    }
+                }
+                else if (proj.type == pourType) {
+                    anyInk = true;
+                }
+                else if (proj.type == columnType) {
+                    anyBlood = true;
+                }
+                else if (proj.type == geyserType) {
+                    anyBlood |= proj.ModProjectile is KikasaInkGeyser geyser && geyser.BloodMode;
+                }
+                else if (proj.type == umbrellaType) {
+                    anyUmbrella = true;
+                    anyBlood |= proj.ModProjectile is KikasaRainUmbrella umbrella && umbrella.SiphonVisible;
+                }
             }
-            if (!anyInk && !anyUmbrella) {
+            if (!anyInk && !anyBlood && !anyUmbrella) {
                 return;
             }
 
@@ -57,9 +80,91 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             if (anyInk) {
                 DrawInkBodies(spriteBatch, dropType, pourType, view);
             }
+            if (anyBlood) {
+                DrawBloodBodies(spriteBatch, dropType, columnType, geyserType, umbrellaType, view);
+            }
             if (anyUmbrella) {
                 DrawUmbrellas(spriteBatch, umbrellaType, view);
             }
+        }
+
+        /// <summary>
+        /// 血形态批(KikasaBloodRain):层序 血形态三泉 → 血柱 → 血索 → 血珠。
+        /// 柱与索纵向体量大,可见性用加高的视窗判;共享参数一帧一次,逐体只上形变参数
+        /// </summary>
+        private static void DrawBloodBodies(SpriteBatch spriteBatch, int dropType, int columnType,
+            int geyserType, int umbrellaType, Rectangle view) {
+            Effect blood = EffectLoader.KikasaBloodRain?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            Rectangle tallView = view;
+            tallView.Inflate(0, 420);
+
+            if (blood != null && canvas != null && noise != null) {
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                    SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
+                    blood, Main.GameViewMatrix.TransformationMatrix);
+                GraphicsDevice gd = Main.instance.GraphicsDevice;
+                gd.Textures[1] = noise;
+                gd.SamplerStates[1] = SamplerState.LinearWrap;
+                blood.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                blood.Parameters["uColGhost"]?.SetValue(KikasaInk.GhostCore.ToVector3());
+
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.type == geyserType && tallView.Contains(proj.Center.ToPoint())
+                        && proj.ModProjectile is KikasaInkGeyser geyser && geyser.BloodMode) {
+                        geyser.DrawBloodColumn(spriteBatch, blood, canvas);
+                    }
+                }
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.type == columnType && tallView.Contains(proj.Center.ToPoint())
+                        && proj.ModProjectile is KikasaBloodColumn column) {
+                        column.DrawColumnQuad(spriteBatch, blood, canvas);
+                    }
+                }
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.type == umbrellaType
+                        && proj.ModProjectile is KikasaRainUmbrella umbrella && umbrella.SiphonVisible) {
+                        umbrella.DrawSiphonQuad(spriteBatch, blood, canvas);
+                    }
+                }
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.type == dropType && view.Contains(proj.Center.ToPoint())
+                        && proj.ModProjectile is KikasaInkDrop drop && drop.IsBloodBead) {
+                        drop.DrawBloodQuad(spriteBatch, blood, canvas);
+                    }
+                }
+                spriteBatch.End();
+                return;
+            }
+
+            //精灵回退(血形态三泉的回退由泉自己的 PreDraw 承担)
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
+                null, Main.GameViewMatrix.TransformationMatrix);
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile proj = Main.projectile[i];
+                if (!proj.active) {
+                    continue;
+                }
+                if (proj.type == columnType && tallView.Contains(proj.Center.ToPoint())
+                    && proj.ModProjectile is KikasaBloodColumn column) {
+                    column.DrawColumnFallback(spriteBatch);
+                }
+                else if (proj.type == umbrellaType
+                    && proj.ModProjectile is KikasaRainUmbrella umbrella && umbrella.SiphonVisible) {
+                    umbrella.DrawSiphonFallback(spriteBatch);
+                }
+                else if (proj.type == dropType && view.Contains(proj.Center.ToPoint())
+                    && proj.ModProjectile is KikasaInkDrop drop && drop.IsBloodBead) {
+                    drop.DrawInk(spriteBatch);
+                }
+            }
+            spriteBatch.End();
         }
 
         private static void DrawInkBodies(SpriteBatch spriteBatch, int dropType, int pourType, Rectangle view) {
@@ -75,12 +180,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 gd.Textures[1] = noise;
                 gd.SamplerStates[1] = SamplerState.LinearWrap;
 
-                //共享参数一帧一次,逐体只上形变参数
+                //共享参数一帧一次,逐体只上形变参数(瀑与滴各自重设四色,血形态瀑换血色板)
                 ink.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
                 ink.Parameters["uColBody"]?.SetValue(KikasaInk.InkBody.ToVector3());
                 ink.Parameters["uColDeep"]?.SetValue(KikasaInk.InkDeep.ToVector3());
                 ink.Parameters["uColCore"]?.SetValue(KikasaInk.BloodCore.ToVector3());
                 ink.Parameters["uColSheen"]?.SetValue(KikasaInk.WetSheen.ToVector3());
+                ink.Parameters["uColGhost"]?.SetValue(KikasaInk.GhostCore.ToVector3());
 
                 //墨瀑最底(体量大,垫在墨滴之下)
                 for (int i = 0; i < Main.maxProjectiles; i++) {
@@ -94,7 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     Projectile proj = Main.projectile[i];
                     if (proj.active && proj.type == dropType
                         && view.Contains(proj.Center.ToPoint())
-                        && proj.ModProjectile is KikasaInkDrop drop) {
+                        && proj.ModProjectile is KikasaInkDrop drop && !drop.IsBloodBead) {
                         drop.DrawInkQuad(spriteBatch, ink, canvas);
                     }
                 }
@@ -115,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     pour.DrawPourFallback(spriteBatch);
                 }
                 else if (proj.type == dropType && view.Contains(proj.Center.ToPoint())
-                    && proj.ModProjectile is KikasaInkDrop drop) {
+                    && proj.ModProjectile is KikasaInkDrop drop && !drop.IsBloodBead) {
                     drop.DrawInk(spriteBatch);
                 }
             }

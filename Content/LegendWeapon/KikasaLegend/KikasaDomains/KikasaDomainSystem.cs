@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             KikasaDomain.UpdateAll();
             UpdateSkyActivation();
             KikasaDomainDeco.Update();
+            KikasaDiveClearing.Update();
             KikasaLakeFX.Update();
             KikasaWispFX.Update();
         }
@@ -83,6 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
             KikasaDomain.RefreshViewed();
             KikasaDomainDeco.Clear();
+            KikasaDiveClearing.Clear();
             KikasaLakeFX.Clear();
             KikasaHoundReflection.Clear();
             KikasaWispFX.Clear();
@@ -133,28 +135,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 return;
             }
 
-            //血暮染色：物块留可读性，背景染重些让地形剪影从血空里剥出来；
+            //血暮染色：物块走尘玫瑰低饱和光（红是身份不是照明，玩家/敌人/物块保留本色可读；
+            //旧 (214,96,82) 把整个世界染成鲑红，与红天红湖叠成整屏单色相），
+            //背景压向暗酒红让地形剪影从天空里剥出来；
             //鬼雨异化转冷雨压顶（湿墨色板），染得更重更沉；鬼梦再向暗红黑深一层
 
             float rain = KikasaDomain.ViewedRainBlend;
             float dream = KikasaDomain.ViewedDreamBlend;
-            Color duskTile = Color.Lerp(new(214, 96, 82), new(52, 62, 68), rain);
-            Color duskBg = Color.Lerp(new(126, 34, 32), new(34, 42, 48), rain);
+            Color duskTile = Color.Lerp(new(200, 140, 128), new(52, 62, 68), rain);
+            Color duskBg = Color.Lerp(new(62, 22, 36), new(34, 42, 48), rain);
             //梦色板：物块暗红余温，背景压向黑红，地形从红空里剥成剪影
             duskTile = Color.Lerp(duskTile, new(150, 52, 44), dream);
             duskBg = Color.Lerp(duskBg, new(64, 12, 14), dream);
             tileColor = Color.Lerp(tileColor, duskTile,
                 presence * MathHelper.Lerp(MathHelper.Lerp(0.4f, 0.55f, rain), 0.60f, dream));
             backgroundColor = Color.Lerp(backgroundColor, duskBg,
-                presence * MathHelper.Lerp(MathHelper.Lerp(0.5f, 0.72f, rain), 0.80f, dream));
+                presence * MathHelper.Lerp(MathHelper.Lerp(0.55f, 0.72f, rain), 0.80f, dream));
 
             //保底环境光（对齐鬼切"日光换色而非熄灭"）：领域自带血暮天光，夜里点不灭。
             //上面的部分插值在夜晚基色近黑时抬不起亮度，这里按形态给露天日光一个下限；
             //白天原有观感高于下限，分毫不动
 
-            Color floorTile = Color.Lerp(new(146, 58, 52), new(84, 102, 110), rain);
+            Color floorTile = Color.Lerp(new(128, 72, 68), new(84, 102, 110), rain);
             floorTile = Color.Lerp(floorTile, new(118, 46, 42), dream);
-            Color floorBg = Color.Lerp(new(88, 30, 28), new(46, 58, 66), rain);
+            Color floorBg = Color.Lerp(new(56, 22, 30), new(46, 58, 66), rain);
             floorBg = Color.Lerp(floorBg, new(64, 18, 18), dream);
             RaiseToFloor(ref tileColor, floorTile, presence);
             RaiseToFloor(ref backgroundColor, floorBg, presence);

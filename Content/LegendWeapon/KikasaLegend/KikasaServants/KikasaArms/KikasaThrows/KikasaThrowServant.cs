@@ -105,6 +105,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         private int handCount = MaxHands;
 
+        public int UnitCount => handCount;
+
         //==================== 本地表现量 ====================
 
         private readonly bool[] breachDone = new bool[MaxHands];

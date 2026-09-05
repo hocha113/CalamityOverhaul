@@ -754,7 +754,7 @@ OnikiriTrialQuestLine: {
 	TrackerWaiting: Его ещё нет
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Следующий удар: {0}
-	BossRushTargetName: Ночь, что не рассеять
+	BossRushTargetName: Битва Завершения
 	EventActiveFormat: "{0}: идёт"
 	Trial_0: Ночное око небосвода
 	Trial_1: Два зла скверной земли
@@ -943,7 +943,7 @@ KikasaTrialQuestLine: {
 	TrackerWaiting: Ещё не сел за стол
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Следующее место: {0}
-	BossRushTargetName: Стол полон гостей
+	BossRushTargetName: Битва Завершения
 	EventActiveFormat: "{0}: идёт"
 	Trial_0: Мягкое желе первой подачи
 	Trial_1: Подглядывающее око ночного свода

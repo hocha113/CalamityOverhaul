@@ -3927,7 +3927,7 @@ CWRItem: {
 	TemperatureText: Temperatura de Combustao
 	InternalStoredEnergy: Energia Interna Armazenada
 	BrutalWorldItemText: Exclusivo do Mundo Cruel
-	// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
+	// BrutalRelicSeriesText: Brutal Relic · Brutal World Exclusive
 	LegendItemUpgradeDisable:
 		'''
 		Esta arma lendaria foi configurada para desabilitar atualizacoes no mundo atual.
@@ -3939,7 +3939,7 @@ CWRItem: {
 		TemperatureText: Temperatura de Combustao
 		InternalStoredEnergy: Armazenamento de Energia
 		BrutalWorldItemText: Exclusivo do Mundo Cruel
-		// BrutalRelicSeriesText: Brutal Relic · Cruel World Exclusive
+		// BrutalRelicSeriesText: Brutal Relic · Brutal World Exclusive
 		LegendItemUpgradeDisable:
 			'''
 			Esta arma lendaria foi configurada para desabilitar atualizacoes no mundo atual.

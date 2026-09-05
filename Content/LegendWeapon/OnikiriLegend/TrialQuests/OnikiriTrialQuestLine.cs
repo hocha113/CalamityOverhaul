@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
             TrackerWaiting = this.GetLocalization(nameof(TrackerWaiting), () => "它还不在");
             TrackerFighting = this.GetLocalization(nameof(TrackerFighting), () => "{0}: {1:0%}");
             TrackerBrief = this.GetLocalization(nameof(TrackerBrief), () => "下一刀：{0}");
-            BossRushTargetName = this.GetLocalization(nameof(BossRushTargetName), () => "散不掉的夜");
+            BossRushTargetName = this.GetLocalization(nameof(BossRushTargetName), () => "终焉之战");
             EventActiveFormat = this.GetLocalization(nameof(EventActiveFormat), () => "{0}: 进行中");
 
             TrialTitles = new LocalizedText[TRIAL_COUNT];
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
                 "遗世炎龙",     //18 犽戎
                 "星流震鸣",     //19 星流巨械
                 "窒息灾岚",     //20 至尊灾厄
-                "残夜重聚",     //21 BossRush/散不掉的夜
+                "残夜重聚",     //21 BossRush/终焉之战
             ];
             for (int i = 0; i < TRIAL_COUNT; i++) {
                 int idx = i;

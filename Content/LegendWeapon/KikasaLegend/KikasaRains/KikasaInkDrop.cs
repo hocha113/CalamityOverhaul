@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -56,6 +57,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>头顶偏置基准:远距先瞄目标上方再俯冲,雨还是从上面来的</summary>
         private const float ApexAboveTarget = 116f;
 
+        /// <summary>
+        /// 追击穿透门:坠落段咬着活目标且距离在此之内时,妖伞的墨不认地形——
+        /// 光标选目标不查视线,墙后的怪原先只会让滴死在墙上(反馈:雨滴不穿墙)。
+        /// 自由落体滴与远距追击滴照旧撞地形留渍,墨的落点特色不丢
+        /// </summary>
+        private const float PhaseGatePx = 300f;
+
         private enum DropPhase : byte
         {
             /// <summary>抛洒段:真弹道学上抛,越过顶点交给坠落</summary>
@@ -110,12 +118,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private float nearWind;
         //坠落段碰撞武装:首次身处空气后才生效,室内上抛扎进天花板的滴穿回房内再落(反馈七·#74)
         private bool plungeArmed;
+        //追击穿透态:近距咬着活目标时不认地形(端本地,由同步目标与位置确定性推得);
+        //穿墙入口只留一次渗墨渍;ghostVisual 是绘制用的平滑量
+        private bool phasing;
+        private bool prevInsideSolid;
+        private bool phaseSplatDone;
+        private float ghostVisual;
 
         /// <summary>
         /// 墨印位:亲手指挥的滴(手动墨雨/墨瀑散射)命中给目标盖墨印。
         /// 生成后由伞/瀑在归属端赋值,命中钩只在归属端跑,端本地即可不需同步(同 penetrate 先例)
         /// </summary>
         internal bool AppliesTag;
+
+        /// <summary>
+        /// 血柱高度倍率(归属端本地,同 AppliesTag 先例):手动 1 / 自卫滴 0.6 / 瀑散射 0.4。
+        /// ai[2] 位段 bit0..23 已满,新标记只能走端本地字段;柱子生成只在归属端,够用
+        /// </summary>
+        internal float ColumnHeightMul = 1f;
+
+        /// <summary>瀑散射滴:起小柱(宽 0.7、伤害再减半)</summary>
+        internal bool ColumnScatter;
+
+        //血形态:首帧按归属玩家的同步领域态定材质,飞行中不再改(各端同一答案,最多差一两帧);
+        //首次入水起一次血柱,再入水只溅不起
+        private bool bloodBead;
+        private bool columnFired;
+
+        /// <summary>血珠材质(血湖形态生成的滴),绘制分批用</summary>
+        internal bool IsBloodBead => bloodBead;
+
+        /// <summary>身在湖中(水下段绘制转凝血)</summary>
+        internal bool InLake => inLake;
 
         //本地表现
         private float life;
@@ -166,6 +200,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     int size = (int)(22 * Projectile.scale);
                     Projectile.Resize(size, size);
                 }
+                //血湖形态出生的滴是血珠:材质与入水起柱都看这一位
+                bloodBead = KikasaBloodForm.Active(Main.player[Projectile.owner]);
             }
 
             switch (Phase) {
@@ -177,9 +213,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     break;
             }
 
+            //穿透态的绘制量六帧平滑,缘光渐起渐退不硬切
+            ghostVisual = MathHelper.Lerp(ghostVisual, phasing ? 1f : 0f, 1f / 6f);
+
             Vector2 normal = Projectile.velocity.UnitVector();
             PRTLoader.NewParticle<PRT_KikasaInkMist>(Projectile.Center + normal * 6f,
-                normal * Main.rand.NextFloat(0.4f, 1f), KikasaInk.InkDeep,
+                normal * Main.rand.NextFloat(0.4f, 1f),
+                phasing ? KikasaInk.GhostDeep : bloodBead ? KikasaInk.BloodDeep : KikasaInk.InkDeep,
                 Main.rand.NextFloat(0.6f, 0.8f) * Projectile.scale)?.Configure(Main.rand.Next(18, 26));
 
             //弓身量:速度方向的角变化率,平滑后交给笔触
@@ -210,14 +250,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 //入水沿:墨在水面晕开一片墨膜,稠血咬住来势
                 inLake = true;
                 float ke = MathHelper.Clamp(Projectile.velocity.Length() / plungeMaxSpeed, 0.25f, 1f);
+                Vector2 surface = new(Projectile.Center.X, kdp.LakeWorldY);
                 if (!Main.dedServ && KikasaDomain.Viewed == kdp) {
-                    KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 0.8f);
-                    KikasaDomainDeco.SplashAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 5);
+                    KikasaDomainDeco.RippleAt(surface, 0.8f);
+                    KikasaDomainDeco.SplashAt(surface, 5);
                 }
-                KikasaInkFX.AddLakeBlot(Projectile.owner, Projectile.Center.X,
-                    (36f + ke * 30f) * Projectile.scale);
+                if (!bloodBead) {
+                    //墨滴才留黑墨膜;血珠落进血湖,血上留墨读成脏斑,水面反馈交给起柱
+                    KikasaInkFX.AddLakeBlot(Projectile.owner, Projectile.Center.X,
+                        (36f + ke * 30f) * Projectile.scale);
+                }
                 KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.42f, -0.25f, 4);
                 Projectile.velocity *= 0.65f;
+
+                //血湖形态:首次入水在湖面起血柱(归属端生成,随生成包同步);珠子照旧穿进水里继续追
+                if (bloodBead && !columnFired) {
+                    columnFired = true;
+                    if (Main.myPlayer == Projectile.owner && KikasaBloodForm.Active(owner)
+                        && MathF.Abs(Projectile.Center.X - owner.Center.X) <= KikasaLakeSurface.HalfWidth) {
+                        KikasaBloodColumn.SpawnFromDrop(Projectile, this, surface, ke);
+                    }
+                }
             }
             else if (inLake && lakeAlive && Projectile.Center.Y < kdp.LakeWorldY - 6f) {
                 //出水沿:破水而出,小水花复常速(迟滞带防贴线抖动)
@@ -234,8 +287,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             if (inLake) {
                 //水下粘阻:每帧轻咬,追击终速约降到六成五;拖尾冒细泡
+                //(血珠红进红,泡沫尾加密成浅色尾迹,靠它读位置)
                 Projectile.velocity *= 0.97f;
-                if ((int)life % 4 == 0 && Main.rand.NextBool(2)) {
+                int bubbleEvery = bloodBead ? 2 : 4;
+                if ((int)life % bubbleEvery == 0 && Main.rand.NextBool(2)) {
                     PRTLoader.NewParticle<PRT_KikasaLakeBubble>(
                         Projectile.Center - Projectile.velocity.UnitVector() * 8f
                             + Main.rand.NextVector2Circular(4f, 4f),
@@ -244,6 +299,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                         ?.Configure(Main.rand.Next(30, 56), kdp.LakeWorldY);
                 }
             }
+            else if (bloodBead && !Main.dedServ && Projectile.velocity.Length() > 9f
+                && (int)life % 3 == 0) {
+                //血珠飞行剥离:速度越快甩出越多的小血珠,每滴每 3 帧至多一颗
+                Vector2 back = -Projectile.velocity.UnitVector();
+                PRTLoader.NewParticle<PRT_KikasaBloodGlob>(
+                    Projectile.Center + back * Main.rand.NextFloat(8f, 16f) * Projectile.scale
+                        + Main.rand.NextVector2Circular(3f, 3f),
+                    Projectile.velocity * 0.25f + back.RotatedByRandom(0.6f) * Main.rand.NextFloat(0.5f, 1.5f),
+                    KikasaInk.BloodBody, Main.rand.NextFloat(0.28f, 0.42f) * Projectile.scale)
+                    ?.Configure(Main.rand.Next(14, 22));
+            }
 
             //坠落段的实心检测。碰撞在坠落段首次身处空气后才武装:室内上抛扎进天花板的滴
             //先穿回房内再正常落地,不死在顶上(反馈七·#74);
@@ -251,13 +317,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             if (Phase == DropPhase.Plunge) {
                 bool insideSolid = Collision.SolidCollision(
                     Projectile.position, Projectile.width, Projectile.height);
-                if (!plungeArmed) {
+                if (phasing) {
+                    //穿透态:不认地形也不武装,出态时若还在石头里就等出到空气再武装,不死在墙芯;
+                    //穿墙入口留一次渗墨渍,墙上仍有痕
+                    plungeArmed = false;
+                    if (insideSolid && !prevInsideSolid && !phaseSplatDone && !Main.dedServ) {
+                        phaseSplatDone = true;
+                        KikasaInkFX.AddGroundSplat(Projectile.Center, Projectile.velocity,
+                            (12f + 4f * MathHelper.Clamp(Projectile.velocity.Length() / plungeMaxSpeed, 0f, 1f))
+                                * Projectile.scale);
+                    }
+                }
+                else if (!plungeArmed) {
                     plungeArmed = !insideSolid;
                 }
                 else if (insideSolid) {
                     onTileHit = true;
                     Projectile.Kill();
                 }
+                prevInsideSolid = insideSolid;
             }
         }
 
@@ -367,6 +445,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
             }
             if (target == null || homingGaveUp) {
+                phasing = false;
                 UpdateGravityFall();
                 return;
             }
@@ -374,6 +453,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             homingT++;
             float dist = Vector2.Distance(target.Center, Projectile.Center);
             minTargetDist = MathF.Min(minTargetDist, dist);
+            //近距咬着活目标即入穿透态;放弃追踪(下方护栏)同帧退出
+            phasing = dist < PhaseGatePx;
 
             //防绕圈护栏:追太久,或已擦身而过且渐行渐远,放弃追踪转坠落
             bool flyby = minTargetDist < 100f && dist > minTargetDist + 140f;
@@ -387,6 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
                 else {
                     homingGaveUp = true;
+                    phasing = false;
                     UpdateGravityFall();
                     return;
                 }
@@ -529,7 +611,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
             }
 
-            //迸溅:半球墨珠反弹(贴法线快)+一口墨雾在空气里晕开,预算 ≤6 粒
+            //迸溅:半球墨珠反弹(贴法线快)+一口墨雾在空气里晕开,预算 ≤6 粒;血珠换血珠族
             Vector2 normal = -impactVel.SafeNormalize(Vector2.UnitY);
             float mainAngle = normal.ToRotation();
             int count = (int)(2 + 3 * ke);
@@ -538,12 +620,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 float speedRatio = 1f - MathF.Abs(spread) / MathHelper.PiOver2;
                 Vector2 vel = (mainAngle + spread).ToRotationVector2()
                     * Main.rand.NextFloat(1.8f, 6.5f) * (0.35f + 0.65f * speedRatio) * (0.5f + ke);
-                PRTLoader.NewParticle<PRT_KikasaInkBead>(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
-                    vel, Main.rand.NextBool(3) ? KikasaInk.InkDeep : KikasaInk.InkBody,
-                    Main.rand.NextFloat(0.14f, 0.22f) * Projectile.scale)?.Configure(Main.rand.Next(18, 30));
+                Vector2 at = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+                if (bloodBead) {
+                    PRTLoader.NewParticle<PRT_KikasaBloodGlob>(at, vel,
+                        Main.rand.NextBool(3) ? KikasaInk.BloodBright : KikasaInk.BloodBody,
+                        Main.rand.NextFloat(0.3f, 0.48f) * Projectile.scale)?.Configure(Main.rand.Next(18, 30));
+                }
+                else {
+                    PRTLoader.NewParticle<PRT_KikasaInkBead>(at, vel,
+                        Main.rand.NextBool(3) ? KikasaInk.InkDeep : KikasaInk.InkBody,
+                        Main.rand.NextFloat(0.14f, 0.22f) * Projectile.scale)?.Configure(Main.rand.Next(18, 30));
+                }
             }
             PRTLoader.NewParticle<PRT_KikasaInkMist>(Projectile.Center + normal * 6f,
-                normal * Main.rand.NextFloat(0.4f, 1f), KikasaInk.InkDeep,
+                normal * Main.rand.NextFloat(0.4f, 1f), bloodBead ? KikasaInk.BloodDeep : KikasaInk.InkDeep,
                 Main.rand.NextFloat(0.8f, 1.2f) * Projectile.scale)?.Configure(Main.rand.Next(28, 40));
 
             KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.42f + 0.22f * ke, -0.35f, 5);
@@ -650,6 +740,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Deep = IsGhostDrop ? KikasaInk.GhostDeep : KikasaInk.InkDeep,
                 Core = IsGhostDrop ? KikasaInk.GhostCore : KikasaInk.BloodCore,
                 SizeMul = 1f,
+                Ghost = ghostVisual,
             };
             if (TalismanTagId != 0) {
                 KikasaTalismanHooks.ModifyDropDraw(Projectile, ref draw);
@@ -657,6 +748,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             fx.Parameters["uColBody"]?.SetValue(draw.Body.ToVector3());
             fx.Parameters["uColDeep"]?.SetValue(draw.Deep.ToVector3());
             fx.Parameters["uColCore"]?.SetValue(draw.Core.ToVector3());
+            fx.Parameters["uColSheen"]?.SetValue(KikasaInk.WetSheen.ToVector3());
+            fx.Parameters["uGhost"]?.SetValue(MathHelper.Clamp(draw.Ghost, 0f, 1f));
             fx.Parameters["uStretch"]?.SetValue(stretch);
             fx.Parameters["uWobAmp"]?.SetValue(wobAmp);
             fx.Parameters["uWobPhase"]?.SetValue(life * 0.5f + Seed * 6f);
@@ -673,10 +766,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Projectile.rotation, canvas.Size() * 0.5f, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>精灵回退:分层 Extra_98：暗缘给体积、墨体近黑、血芯与 A=0 加色玻头</summary>
+        /// <summary>
+        /// 血珠着色器路径(KikasaBloodRain TechBead):逐珠上载形变/穿透/入水参数,
+        /// 色板走浓血四件,符染色照常改 Body/Deep/Core;共享参数会被上一颗污染,全量重设
+        /// </summary>
+        internal void DrawBloodQuad(SpriteBatch sb, Effect fx, Texture2D canvas) {
+            if (VisualFade <= 0.01f) {
+                return;
+            }
+            float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.05f, 0f, 1.4f);
+            bool apexDwell = Phase == DropPhase.Toss && Projectile.velocity.Y > -1.2f;
+            float wobAmp = apexDwell ? 0.15f : 0.06f;
+            KikasaDropDrawParams draw = new() {
+                Body = IsGhostDrop ? KikasaInk.GhostBody : KikasaInk.BloodBody,
+                Deep = IsGhostDrop ? KikasaInk.GhostDeep : KikasaInk.BloodDeep,
+                Core = IsGhostDrop ? KikasaInk.GhostCore : KikasaInk.BloodBright,
+                SizeMul = 1f,
+                Ghost = ghostVisual,
+            };
+            if (TalismanTagId != 0) {
+                KikasaTalismanHooks.ModifyDropDraw(Projectile, ref draw);
+            }
+            fx.Parameters["uColBody"]?.SetValue(draw.Body.ToVector3());
+            fx.Parameters["uColDeep"]?.SetValue(draw.Deep.ToVector3());
+            fx.Parameters["uColBright"]?.SetValue(draw.Core.ToVector3());
+            fx.Parameters["uColSheen"]?.SetValue(KikasaInk.BloodSheen.ToVector3());
+            fx.Parameters["uColGhost"]?.SetValue(KikasaInk.GhostCore.ToVector3());
+            fx.Parameters["uStretch"]?.SetValue(stretch);
+            fx.Parameters["uWobAmp"]?.SetValue(wobAmp);
+            fx.Parameters["uWobPhase"]?.SetValue(life * 0.5f + Seed * 6f);
+            fx.Parameters["uSeed"]?.SetValue(Seed);
+            fx.Parameters["uFade"]?.SetValue(VisualFade);
+            fx.Parameters["uBend"]?.SetValue(MathHelper.Clamp(bend, -1f, 1f));
+            fx.Parameters["uGhost"]?.SetValue(MathHelper.Clamp(draw.Ghost, 0f, 1f));
+            fx.Parameters["uSubmerged"]?.SetValue(inLake ? 1f : 0f);
+            fx.CurrentTechnique = fx.Techniques["TechBead"];
+            fx.CurrentTechnique.Passes[0].Apply();
+
+            //珠比墨条略小略重:头圆占画布上半,卫星滴拖在下半
+            float side = (58f + stretch * 26f) * Projectile.scale * draw.SizeMul;
+            Vector2 scale = new(side / canvas.Width, side / canvas.Height);
+            sb.Draw(canvas, Projectile.Center - Main.screenPosition, null, Color.White,
+                Projectile.rotation, canvas.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+        }
+
+        /// <summary>精灵回退:分层 Extra_98：暗缘给体积、墨体近黑、血芯与 A=0 加色玻头;血珠换浓血三层</summary>
         internal void DrawInk(SpriteBatch sb) {
             Texture2D tex = CWRAsset.Extra_98?.Value;
             if (tex == null || VisualFade <= 0.01f) {
+                return;
+            }
+            if (bloodBead) {
+                DrawBloodFallback(sb, tex);
                 return;
             }
             float fade = VisualFade;
@@ -707,18 +848,71 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Deep = IsGhostDrop ? KikasaInk.GhostDeep : KikasaInk.InkDeep,
                 Core = IsGhostDrop ? KikasaInk.GhostCore : KikasaInk.BloodCore,
                 SizeMul = 1f,
+                Ghost = ghostVisual,
             };
             if (TalismanTagId != 0) {
                 KikasaTalismanHooks.ModifyDropDraw(Projectile, ref draw);
             }
             Vector2 bodyScale = new Vector2(0.24f * (1f - stretch * 0.3f), 0.36f * (1f + stretch * 1.7f))
                 * jiggle * Projectile.scale * draw.SizeMul;
-            sb.Draw(tex, pos, null, draw.Deep * (0.9f * fade), Projectile.rotation, origin,
+            //穿透态:体外一圈鬼青缘光(A=0 加色),体略透
+            if (draw.Ghost > 0.02f) {
+                sb.Draw(tex, pos, null, (KikasaInk.GhostCore with { A = 0 }) * (0.55f * fade * draw.Ghost),
+                    Projectile.rotation, origin, bodyScale * new Vector2(1.55f, 1.14f), SpriteEffects.None, 0f);
+            }
+            float bodyFade = fade * (1f - 0.15f * draw.Ghost);
+            sb.Draw(tex, pos, null, draw.Deep * (0.9f * bodyFade), Projectile.rotation, origin,
                 bodyScale * new Vector2(1.3f, 1.06f), SpriteEffects.None, 0f);
-            sb.Draw(tex, pos, null, draw.Body * fade, Projectile.rotation, origin,
+            sb.Draw(tex, pos, null, draw.Body * bodyFade, Projectile.rotation, origin,
                 bodyScale, SpriteEffects.None, 0f);
-            sb.Draw(tex, pos, null, draw.Core * (0.4f * fade), Projectile.rotation, origin,
+            sb.Draw(tex, pos, null, draw.Core * (0.4f * bodyFade), Projectile.rotation, origin,
                 bodyScale * new Vector2(0.3f, 0.7f), SpriteEffects.None, 0f);
+        }
+
+        /// <summary>血珠精灵回退:暗缘挂边 → 血体 → 体心血亮 → 偏一侧的窄反光带;入水转凝血</summary>
+        private void DrawBloodFallback(SpriteBatch sb, Texture2D tex) {
+            float fade = VisualFade;
+            Vector2 origin = tex.Size() * 0.5f;
+            float speed = Projectile.velocity.Length();
+            float stretch = MathHelper.Clamp(speed * 0.045f, 0f, 1.4f);
+            float wob = MathF.Sin(life * 0.5f + Seed * 6f) * 0.08f;
+            Vector2 jiggle = new(1f + wob, 1f - wob * 0.8f);
+            Vector2 pos = Projectile.Center - Main.screenPosition;
+
+            KikasaDropDrawParams draw = new() {
+                Body = IsGhostDrop ? KikasaInk.GhostBody : KikasaInk.BloodBody,
+                Deep = IsGhostDrop ? KikasaInk.GhostDeep : KikasaInk.BloodDeep,
+                Core = IsGhostDrop ? KikasaInk.GhostCore : KikasaInk.BloodBright,
+                SizeMul = 1f,
+                Ghost = ghostVisual,
+            };
+            if (TalismanTagId != 0) {
+                KikasaTalismanHooks.ModifyDropDraw(Projectile, ref draw);
+            }
+            if (inLake) {
+                draw.Body = Color.Lerp(draw.Body, KikasaInk.BloodClot, 0.7f);
+                draw.Core = Color.Lerp(draw.Core, KikasaInk.BloodClot, 0.7f);
+            }
+            Vector2 bodyScale = new Vector2(0.28f * (1f - stretch * 0.25f), 0.30f * (1f + stretch * 1.3f))
+                * jiggle * Projectile.scale * draw.SizeMul;
+            if (draw.Ghost > 0.02f) {
+                sb.Draw(tex, pos, null, (KikasaInk.GhostCore with { A = 0 }) * (0.55f * fade * draw.Ghost),
+                    Projectile.rotation, origin, bodyScale * new Vector2(1.5f, 1.14f), SpriteEffects.None, 0f);
+            }
+            float bodyFade = fade * (1f - 0.15f * draw.Ghost);
+            sb.Draw(tex, pos, null, draw.Deep * bodyFade, Projectile.rotation, origin,
+                bodyScale * new Vector2(1.22f, 1.08f), SpriteEffects.None, 0f);
+            sb.Draw(tex, pos, null, draw.Body * bodyFade, Projectile.rotation, origin,
+                bodyScale, SpriteEffects.None, 0f);
+            sb.Draw(tex, pos, null, draw.Core * (0.55f * bodyFade), Projectile.rotation, origin,
+                bodyScale * new Vector2(0.55f, 0.6f), SpriteEffects.None, 0f);
+            //窄反射带:偏一侧的细长亮痕(A=0 加色),不是圆高光
+            if (!inLake) {
+                Vector2 bandOff = new Vector2(-bodyScale.X * tex.Width * 0.3f, -bodyScale.Y * tex.Height * 0.08f)
+                    .RotatedBy(Projectile.rotation);
+                sb.Draw(tex, pos + bandOff, null, (KikasaInk.BloodSheen with { A = 0 }) * (0.5f * bodyFade),
+                    Projectile.rotation, origin, bodyScale * new Vector2(0.12f, 0.45f), SpriteEffects.None, 0f);
+            }
         }
     }
 }

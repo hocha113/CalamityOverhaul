@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.GameModes
         internal static LocalizedText AsuraNeedBrutal;
 
         public override void SetStaticDefaults() {
-            BrutalName = this.GetLocalization(nameof(BrutalName), () => "Cruel World");
+            BrutalName = this.GetLocalization(nameof(BrutalName), () => "Brutal World");
             AsuraName = this.GetLocalization(nameof(AsuraName), () => "Asura Hell");
             AnnihilationName = this.GetLocalization(nameof(AnnihilationName), () => "Death's End");
             BrutalOnLine = this.GetLocalization(nameof(BrutalOnLine),
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.GameModes
             BossRefuse = this.GetLocalization(nameof(BossRefuse),
                 () => "A boss still lives. The pact cannot be altered now");
             AsuraNeedBrutal = this.GetLocalization(nameof(AsuraNeedBrutal),
-                () => "Awaken Cruel World first");
+                () => "Awaken Brutal World first");
         }
 
         /// <summary>指定表现脸在指定开关方向下的台词</summary>

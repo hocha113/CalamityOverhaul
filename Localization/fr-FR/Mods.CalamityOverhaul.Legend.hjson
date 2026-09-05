@@ -754,7 +754,7 @@ OnikiriTrialQuestLine: {
 	TrackerWaiting: Il n'est pas encore là
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Prochaine lame : {0}
-	BossRushTargetName: La nuit qui ne se disperse pas
+	BossRushTargetName: Bataille du Terminus
 	EventActiveFormat: "{0}: en cours"
 	Trial_0: Œil nocturne du firmament
 	Trial_1: Deux fléaux de la terre souillée
@@ -943,7 +943,7 @@ KikasaTrialQuestLine: {
 	TrackerWaiting: Pas encore à table
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Prochain couvert : {0}
-	BossRushTargetName: Table pleine d'invités
+	BossRushTargetName: Bataille du Terminus
 	EventActiveFormat: "{0}: en cours"
 	Trial_0: Première assiette : gelée
 	Trial_1: Œil qui épie le ciel nocturne

@@ -90,6 +90,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             return scale;
         }
 
+        /// <summary>械奴编队每多一份复制体，编队合计出力增加的份额（单份 = 1）</summary>
+        private const float PackStackStep = 0.4f;
+
+        /// <summary>
+        /// 械奴编队内的单只出力摊薄：湖藏沉了几把就出几把，但合计只按 1 + 0.4×(n−1) 涨
+        /// （1/2/3/4/5 把合计 1.0/1.4/1.8/2.2/2.6，单只 1.0/0.70/0.60/0.55/0.52）。
+        /// 这是械奴相对改前的全部削弱：单把不变，4 把 −45%、5 把 −48%（用户拍板 2026/9/5，"减 45% 左右"）；
+        /// 5 把迷你鲨 = 5 倍是反馈里的超模根因。由 <see cref="KikasaServantBalanceGlobal"/> 在命中端统一乘，
+        /// 演出（枪数/节奏）不动
+        /// </summary>
+        internal static float PackDamageScale(int units) {
+            if (units <= 1) {
+                return 1f;
+            }
+            return (1f + PackStackStep * (units - 1)) / units;
+        }
+
         //==================== 伞奴（潦） ====================
 
         /// <summary>伞奴上限：基数 5，每枚潦影 +1，封顶 8</summary>

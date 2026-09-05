@@ -113,6 +113,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>编队鞭数：owner 在 Summon 里定值，ExtraAI 随包同步；远端首包前按满编</summary>
         private int whipCount = MaxWhips;
 
+        public int UnitCount => whipCount;
+
         //==================== 本地表现量（不入同步，节拍闩防快照回卷重播）====================
 
         private readonly bool[] breachDone = new bool[MaxWhips];

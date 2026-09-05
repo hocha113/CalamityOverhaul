@@ -754,7 +754,7 @@ OnikiriTrialQuestLine: {
 	TrackerWaiting: Aún no está
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Siguiente tajo: {0}
-	BossRushTargetName: La noche que no se dispersa
+	BossRushTargetName: Batalla del Término
 	EventActiveFormat: "{0}: en curso"
 	Trial_0: Ojo nocturno del firmamento
 	Trial_1: Dos males de la tierra impura
@@ -943,7 +943,7 @@ KikasaTrialQuestLine: {
 	TrackerWaiting: Aún no se ha sentado
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Siguiente cubierto: {0}
-	BossRushTargetName: Mesa llena de invitados
+	BossRushTargetName: Batalla del Término
 	EventActiveFormat: "{0}: en curso"
 	Trial_0: Primera ración: gelatina
 	Trial_1: Ojo que acecha el cielo nocturno
