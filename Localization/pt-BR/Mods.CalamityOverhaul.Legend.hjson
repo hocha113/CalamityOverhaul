@@ -724,8 +724,8 @@ OnikiriText: {
 		// HiddenBody: Uncarved mei keep power and burden off this ledger. Carve first, then read
 		// EngravedMark: On the blade
 		// SourceFactory: Already on the blade when drawn from under the torii
-		// SourceGiftFormat: After you cut down "{0}", Hiiro will bring the rubbing
-		// SourceGiftUnknown: Hiiro will bring the rubbing on some night
+		// SourceGiftFormat: After you cut down "{0}", Himura Mayo will bring the rubbing
+		// SourceGiftUnknown: Himura Mayo will bring the rubbing on some night
 		// SourceGiftJoin: " or "
 		// SourceDeed: No one gifts this. Prove it with the blade yourself
 		// SourceUnknown: Provenance unknown; the ledger is silent

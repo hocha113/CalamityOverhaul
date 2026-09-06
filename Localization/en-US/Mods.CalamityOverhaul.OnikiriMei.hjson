@@ -213,7 +213,7 @@ OniMeiRubbingNuekiri: {
 OniMeiRubbingKamihi: {
 	DisplayName: Kami-hi
 	Tooltip: Dashing through enemies leaves paper effigies; striking effigies transmits damage and vulnerability; dash cost +12% while paper stands
-	Origin: A master paper-mounter cuts with divine precision, separating form from shadow in one stroke. This groove learns the art of peeling form, shearing the enemy's shadow into the Omote world to cut paper as flesh
+	Origin: A master paper-mounter cuts with divine precision, separating form from shadow in one stroke. This groove learns the art of peeling form, shearing the enemy's shadow into Omote to cut paper as flesh
 	Power:
 		'''
 		"Paper-Effigy": Kamui Flash Step passing through an enemy leaves an effigy lasting 7s at the landing point (up to 2 effigies simultaneously)
@@ -221,7 +221,7 @@ OniMeiRubbingKamihi: {
 		Inflicts a 1.5s wounded state on the true body, during which it takes 12% increased damage from Onikiri
 		'''
 	Burden: While paper effigies exist on the field, Kamui Flash Step vigor cost is increased by 12%
-	DeedHint: In the Ura ghost domain, sever 20 omokage paper effigies while holding Onikiri
+	DeedHint: In Ura, sever 20 omokage paper effigies while holding Onikiri
 }
 
 OniMeiRubbingSorahi: {

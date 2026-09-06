@@ -213,7 +213,7 @@ OniMeiRubbingNuekiri: {
 OniMeiRubbingKamihi: {
 	DisplayName: Kami-hi
 	Tooltip: Traverser un ennemi en pas éclair laisse une effigie de papier transmettant dégâts et vulnérabilité au corps réel ; coût en vigueur du pas éclair accru tant que l'effigie existe
-	Origin: Le maître colleur de papier maniait la lame avec une virtuosité divine : un seul coup tranchait la forme et l'ombre à la fois. Cette gorge s'inspire de cet art de séparation, découpant l'ombre de l'ennemi au passage pour la laisser dans le monde Omote : trancher le papier revient à trancher la chair
+	Origin: Le maître colleur de papier maniait la lame avec une virtuosité divine : un seul coup tranchait la forme et l'ombre à la fois. Cette gorge s'inspire de cet art de séparation, découpant l'ombre de l'ennemi au passage pour la laisser dans Omote : trancher le papier revient à trancher la chair
 	Power:
 		'''
 		「Ombre Omote」traverser un ennemi avec le pas éclair Kamui laisse une effigie de papier de la cible au point d'arrivée pendant 7 secondes (au plus 2 effigies sur le terrain)
@@ -221,7 +221,7 @@ OniMeiRubbingKamihi: {
 		Fait également entrer le corps réel dans un état vulnérable durant 1,5 seconde, augmentant les dégâts subis d'Onikiri de 12%
 		'''
 	Burden: Tant qu'une effigie de papier est sur le terrain, le coût en vigueur du pas éclair Kamui augmente de 12%
-	DeedHint: Dans le monde Ura du domaine spectral, trancher 20 effigies de papier Omokage avec Onikiri en main
+	DeedHint: Dans l'Ura, trancher 20 effigies de papier Omokage avec Onikiri en main
 }
 
 OniMeiRubbingSorahi: {

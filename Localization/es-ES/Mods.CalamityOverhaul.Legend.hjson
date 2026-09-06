@@ -724,8 +724,8 @@ OnikiriText: {
 		HiddenBody: Una inscripción sin grabar no consigna en el códice ni efecto ni precio. Grábala primero, luego lee
 		EngravedMark: Ahora en la hoja
 		SourceFactory: Ya estaba en la hoja al desenvainarla bajo el torii
-		SourceGiftFormat: Tras abatir a «{0}», Himayo te entregará el calco
-		SourceGiftUnknown: Himayo te entregará el calco alguna noche
+		SourceGiftFormat: Tras abatir a «{0}», Himura Mayo te entregará el calco
+		SourceGiftUnknown: Himura Mayo te entregará el calco alguna noche
 		SourceGiftJoin: » o «
 		SourceDeed: Nadie la regala. Esta inscripción hay que demostrarla con la hoja
 		SourceUnknown: Procedencia desconocida; el códice no la consigna

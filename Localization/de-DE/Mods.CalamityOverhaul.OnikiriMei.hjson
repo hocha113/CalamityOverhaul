@@ -213,7 +213,7 @@ OniMeiRubbingNuekiri: {
 OniMeiRubbingKamihi: {
 	DisplayName: Kami-hi
 	Tooltip: Durchschreiten von Gegnern per Blitzschritt hinterlässt Papierschemen; Hiebe auf die Schemen leiten Schaden und Verwundbarkeit weiter; Papiere im Feld verteuern den Schritt
-	Origin: Meisterhafte Papiermacher führen die Klinge mit überirdischer Präzision: Ein einziger Schnitt trennt Gestalt und Schatten sauber voneinander. Diese Hohlkehle folgt der Kunst des Schälens – beim Vorbeigleiten schneidet sie den Schatten des Feindes in die diesseitige Welt, Papier zu schneiden gleich wie Fleisch
+	Origin: Meisterhafte Papiermacher führen die Klinge mit überirdischer Präzision: Ein einziger Schnitt trennt Gestalt und Schatten sauber voneinander. Diese Hohlkehle folgt der Kunst des Schälens – beim Vorbeigleiten schneidet sie den Schatten des Feindes nach Omote, Papier zu schneiden gleich wie Fleisch
 	Power:
 		'''
 		„Schattenbild“: Durchdringt ein Kamui-Blitzschritt einen Gegner, hinterlässt er am Zielpunkt ein 7 Sekunden währendes Papierschemen des Ziels (bis zu 2 Schemen gleichzeitig im Feld)
@@ -221,7 +221,7 @@ OniMeiRubbingKamihi: {
 		Zugleich gerät der Leib für 1,5 Sekunden in einen Verwundungszustand, in dem er 12% mehr Schaden durch Onikiri erleidet
 		'''
 	Burden: Solange Papierschemen im Feld existieren, sind die Ausdauerkosten des Kamui-Blitzschritts um 12% erhöht
-	DeedHint: Zerschlage in der Ura-Geisterwelt insgesamt 20 Antlitz-Papierschemen mit Onikiri in der Hand
+	DeedHint: Zerschlage in Ura insgesamt 20 Antlitz-Papierschemen mit Onikiri in der Hand
 }
 
 OniMeiRubbingSorahi: {

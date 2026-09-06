@@ -148,11 +148,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans.Ros
         public override void SetDefaults() {
             //先于基类注册真实文案，基类的占位默认因键已存在不再生效
             this.GetLocalization("Origin",
-                () => "霞是天边烧起来的雨。符师赶在日出前收了一捧，符纸烤得焦黄，符倒是成了");
+                () => "破晓与薄暮时分，天际残云若烈火燃烧。借这一瞬天光入水，极冷之雨亦能燃起霞光");
             this.GetLocalization("Power",
-                () => "「焚霞」日出与日落前后各一个半时辰内，墨系伤害 +18%，墨滴命中点燃\"霞焰\"短暂灼烧；霞时全套雨具染作橙金");
+                () => "「焚霞」日出与日落前后各一个半小时内，墨系伤害提升 18%，墨滴命中点燃「霞焰」造成短暂灼烧，期间全套雨势晕染为金橙色");
             this.GetLocalization("Burden",
-                () => "正午与深夜墨系伤害 -6%");
+                () => "正午与深夜时段，墨系伤害降低 6%");
             base.SetDefaults();
             Item.rare = ItemRarityID.Purple;
         }

@@ -177,7 +177,7 @@ KikasaTalismanXiao: {
 KikasaTalismanMei: {
 	DisplayName: Mold Rain Talisman
 	Tooltip: Ink drops inflict mold rot, infested foes release infectious spore clouds upon death; drop direct damage -10%
-	Origin: Continuous plum rains leave江南 damp and sunless, mold blossoming across walls and trunks. Once moisture takes on decay, it clings like poison
+	Origin: Continuous plum rains leave Jiangnan damp and sunless, mold blossoming across walls and trunks. Once moisture takes on decay, it clings like poison
 	Power: "'Mold Rain': drops inflict 'Mold Rot' on hit (stacks up to 10, dealing continuous damage based on stacks); afflicted enemies dying burst into spore clouds, passing half their stacks to nearby foes with light damage"
 	Burden: Drop direct damage -10%
 }

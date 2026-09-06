@@ -724,8 +724,8 @@ OnikiriText: {
 		HiddenBody: Uncarved mei keep power and burden off this ledger. Carve first, then read
 		EngravedMark: On the blade
 		SourceFactory: Already on the blade when drawn from under the torii
-		SourceGiftFormat: After you cut down "{0}", Hiiro will bring the rubbing
-		SourceGiftUnknown: Hiiro will bring the rubbing on some night
+		SourceGiftFormat: After you cut down "{0}", Himura Mayo will bring the rubbing
+		SourceGiftUnknown: Himura Mayo will bring the rubbing on some night
 		SourceGiftJoin: " or "
 		SourceDeed: No one gifts this. Prove it with the blade yourself
 		SourceUnknown: Provenance unknown; the ledger is silent
@@ -987,59 +987,51 @@ KikasaTrialQuestLine: {
 		'''
 	TrialSummary_3:
 		'''
-		A rotten thought festers underground, or a nest of blood-boring worms
-		One sniff downwind tells you: spoiled
-		The lake says spoiled is still a flavor—serve it
-		Keep your gloves on, that juice clings
+		A festering nest of rotten meat lies beneath the earth, crawling with blood-boring maggots
+		Leaving it alone only lets the rot run deeper, go smash it apart
+		Keep your gloves on tight, that sludge is impossible to wash off skin
 		'''
 	TrialSummary_4:
 		'''
-		A jar of sweetness in the jungle, a stubborn head out in the snow
-		Pick one to bring—the lake is open to both tastes today
-		The sweet one stings, the stubborn one stomps
-		Either way, don't come back empty-handed
+		A venomous bee in the jungle, a stubborn deer in the snowfields blind in one eye
+		Take down whichever you encounter first, their tempers are equally foul
+		One carries a poison stinger, the other stomps with blizzards, do not get careless
 		'''
 	TrialSummary_5:
 		'''
-		Old bones hang at the dungeon door, addicted to keeping watch
-		Bones never soak soft, the lake knows—it just wants to hear the crack
-		End his vigil; keep the key for yourself
-		Bone dregs settle nicely, good for paving
+		An ancient skeleton hangs by the dungeon gate, clinging to his post after a lifetime of watching
+		Old as he is, his obsession is heavier than an iron lock
+		Break his watch, take the key, and let him rest in the soil
 		'''
 	TrialSummary_6:
 		'''
-		A heap of gel calls itself a god, purple and black stirred together
-		The lake never lacks water—what it lacks is a mouthful this big
-		Lay it flat, see what it really melts into
-		Don't drink; that isn't for you
+		Purple and red sludge stirred together, yet bold enough to call itself a god
+		Scattered and impure, it will never amount to anything grand
+		Go break it apart and dissolve it, spares the ground from being fouled
 		'''
 	TrialSummary_7:
 		'''
-		A wall of flesh stands stacked across hell, blocking everyone's road
-		Something hot—just the thing to cool the lake's temper
-		Pierce it, and the world will change—that's not on you
-		The canopy stops sparks, go without worry
+		A colossal wall of flesh spans across hell, blocking the road completely
+		Feels scorchingly hot even through the umbrella curtain, stifling to breathe
+		Pierce it through, if the world shifts on its head afterward, that is none of your concern
 		'''
 	TrialSummary_8:
 		'''
-		A pink smear hangs over the Hallow, flying with a crystal guard
-		The lake has tasted grounded gel; never the flying kind
-		Drag her down, crystals and all
-		Mind the shards, they chafe the ribs
+		A soft pink slime hovers in mid-air, bringing an entourage even when marching to battle
+		Dressed up so gaudily, putting on quite the show
+		Bring her down, grand as the display is, it cannot withstand a single downpour
 		'''
 	TrialSummary_9:
 		'''
-		The bloomsand serpent is back, its red blooms festered into cysts
-		Don't step in the golden puddles, that is its drool
-		The lake takes every flavor, it just hates what this one did to the sand
-		Go, invite it to the bottom, and shake the umbrella clean after
+		A giant worm bursting with festering blossoms burrowed from the dunes, dripping golden pus
+		Looks nastier than things rotted in water, one breath up close is choking
+		Go dispatch it, rinse the umbrella canopy clean before you return
 		'''
 	TrialSummary_10:
 		'''
-		Someone forged three iron things: a chain, two lamps, a frame of bones
-		Iron never soaks through; steep it forever and it still tastes of rust
-		Not the lake's favorite, but a feast can't lack these three courses
-		One at a time—don't let them all wake on the same night
+		Someone built three iron contraptions: a chain, searchlights, and a four-armed steel skeleton
+		Reeks of raw iron, clanking and noisy
+		Dismantle them one by one, do not let them swarm together
 		'''
 	TrialSummary_11:
 		'''

@@ -77,8 +77,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 () => "未凿之铭，赋效与代价皆不载于谱。先得其铭，再读其文");
             EngravedMark = this.GetLocalization(nameof(EngravedMark), () => "此刻在刀");
             SourceFactory = this.GetLocalization(nameof(SourceFactory), () => "自鸟居下拔出时便在刀上");
-            SourceGiftFormat = this.GetLocalization(nameof(SourceGiftFormat), () => "斩落「{0}」之后，绯真夜会把拓本递来");
-            SourceGiftUnknown = this.GetLocalization(nameof(SourceGiftUnknown), () => "绯真夜会在某一夜把拓本递来");
+            SourceGiftFormat = this.GetLocalization(nameof(SourceGiftFormat), () => "斩落「{0}」之后，绯村真夜会把拓本递来");
+            SourceGiftUnknown = this.GetLocalization(nameof(SourceGiftUnknown), () => "绯村真夜会在某一夜把拓本递来");
             SourceGiftJoin = this.GetLocalization(nameof(SourceGiftJoin), () => "」或「");
             SourceDeed = this.GetLocalization(nameof(SourceDeed), () => "无人相赠。此铭须持刀自证");
             SourceUnknown = this.GetLocalization(nameof(SourceUnknown), () => "来历不详，谱上无载");

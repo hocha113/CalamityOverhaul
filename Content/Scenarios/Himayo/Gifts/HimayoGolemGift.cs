@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "手腕酸不酸？快揉一揉，那大石敦子硬邦邦的，砍上去震得胳膊生疼");
+            L0 = this.GetLocalization(nameof(L0), () => "手腕酸不酸？快揉一揉，那大石墩子硬邦邦的，砍上去震得胳膊生疼");
             L1 = this.GetLocalization(nameof(L1), () => "刀锋险些都崩出豁口来了，我住里头都感觉一阵地动山摇");
             L2 = this.GetLocalization(nameof(L2), () => "往后对付这种硬疙瘩，多找找破绽，别老实巴交拿刃硬磕呀");
             L3 = this.GetLocalization(nameof(L3), () => "刀要是崩坏了我可饶不了你，快坐下缓口气吧");

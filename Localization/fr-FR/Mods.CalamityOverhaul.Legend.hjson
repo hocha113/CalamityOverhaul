@@ -724,8 +724,8 @@ OnikiriText: {
 		HiddenBody: Une inscription non gravée n'inscrit ni effet ni prix dans ce codex. Gravez d'abord, puis lisez
 		EngravedMark: Sur la lame
 		SourceFactory: Déjà sur la lame quand on l'a tirée sous le torii
-		SourceGiftFormat: Après avoir abattu 「{0}」, Hiiro vous apportera l'estampage
-		SourceGiftUnknown: Hiiro apportera l'estampage une certaine nuit
+		SourceGiftFormat: Après avoir abattu 「{0}」, Himura Mayo vous apportera l'estampage
+		SourceGiftUnknown: Himura Mayo apportera l'estampage une certaine nuit
 		SourceGiftJoin: 」 ou 「
 		SourceDeed: Personne ne l'offre. Prouvez-le vous-même avec la lame
 		SourceUnknown: Provenance inconnue ; le codex se tait

@@ -213,7 +213,7 @@ OniMeiRubbingNuekiri: {
 OniMeiRubbingKamihi: {
 	DisplayName: Kami-hi
 	Tooltip: Atravessar inimigos com a investida deixa efígies de papel; golpear efígies transmite dano e vulnerabilidade; custo de investida +12% enquanto houver papéis
-	Origin: Um mestre na arte do papel corta com precisão divina, separando forma e sombra num só traço. Esta ranhura aprendeu o método de descascar a forma, tosquiando a silhueta do inimigo para o mundo Omote para cortar o papel feito carne viva
+	Origin: Um mestre na arte do papel corta com precisão divina, separando forma e sombra num só traço. Esta ranhura aprendeu o método de descascar a forma, tosquiando a silhueta do inimigo para Omote para cortar o papel feito carne viva
 	Power:
 		'''
 		"Efígie de Papel": o Passo Relâmpago Kamui ao atravessar um inimigo deixa uma efígie durando 7s no local de aterrissagem (até 2 efígies simultâneas)
@@ -221,7 +221,7 @@ OniMeiRubbingKamihi: {
 		Aplica também um estado vulnerável de 1,5s ao corpo verdadeiro, durante o qual ele recebe 12% a mais de dano da Onikiri
 		'''
 	Burden: Enquanto houver efígies de papel no campo, o consumo de vigor do Passo Relâmpago Kamui aumenta em 12%
-	DeedHint: No domínio espectral do mundo Ura, corte 20 efígies de papel omokage empunhando a Onikiri
+	DeedHint: Em Ura, corte 20 efígies de papel omokage empunhando a Onikiri
 }
 
 OniMeiRubbingSorahi: {

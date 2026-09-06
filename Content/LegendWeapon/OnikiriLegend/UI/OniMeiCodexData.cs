@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     {
         /// <summary>出厂即在刀上</summary>
         Factory,
-        /// <summary>绯真夜的首领赠礼</summary>
+        /// <summary>绯村真夜的首领赠礼</summary>
         Gift,
         /// <summary>手持鬼切自证的刀縁</summary>
         Deed,
