@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Projectiles
     /// </summary>
     internal class FssStickyCyst : FssModProjectile
     {
-        public override string Texture => CWRConstant.NPC + "BSS/CactusBall";
+        public override string Texture => CWRConstant.NPC + "FSS/Cyst";
 
         private bool Stuck => Projectile.localAI[0] == 1f;
         private int Fuse => Math.Max((int)Projectile.ai[0], 10);
@@ -124,8 +124,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Projectiles
             float pulse = 1f + swell * 0.35f
                 + MathF.Sin(Main.GlobalTimeWrappedHourly * (8f + swell * 22f)) * 0.05f * swell;
 
-            //本体（坏死染色，漫反射乘光照）
-            Color body = lightColor.MultiplyRGB(FssVfx.SkinMul);
+            //本体（贴图自带坏死底色，漫反射乘光照）
+            Color body = lightColor;
             Main.EntitySpriteDraw(tex, drawPos, null, body, Projectile.rotation,
                 origin, Projectile.scale * pulse, SpriteEffects.None, 0);
 

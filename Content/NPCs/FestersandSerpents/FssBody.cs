@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
     /// </summary>
     internal class FssBody : FssModNPC
     {
-        public override string Texture => CWRConstant.NPC + "BSS/Body";
+        public override string Texture => CWRConstant.NPC + "FSS/Body";
 
         /// <summary>链序（生成时写入 npc.ai[0]）</summary>
         protected int Ordinal => (int)NPC.ai[0];

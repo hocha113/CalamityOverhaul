@@ -10,9 +10,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
 {
     /// <summary>
     /// 脓蕾沙蟒图鉴沙盒：腐化沙暮色里的招牌动线循环。段链与八腿由
-    /// <see cref="SerpentPortraitRig"/> 驱动（贴图与荒花同源），蒙皮走
-    /// <c>FssCorruptSkin</c> 着色器换皮（缺编回退 <see cref="FssVfx.SkinMul"/> 手染，
-    /// 剪影模式同走回退路），囊肿节配灵液辉光与滴漏
+    /// <see cref="SerpentPortraitRig"/> 驱动，贴图用脓蕾自己的改色组（坏死紫底 + 金脓），
+    /// <c>FssCorruptSkin</c> 着色器只叠动态层（缺编与剪影模式直接画贴图），
+    /// 囊肿节配灵液辉光与滴漏
     /// </summary>
     internal sealed class FssPortraitActor : BossPortraitActor
     {
@@ -27,8 +27,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
 
         /// <summary>腐沙暮色环境光（着色器路径的顶点色）</summary>
         private static readonly Color Ambient = new(230, 224, 238);
-        /// <summary>腿的手染环境色（≈ Ambient × SkinMul 再压一档）</summary>
-        private static readonly Color LegAmbient = new(140, 120, 170);
+        /// <summary>腿与鳌足的环境色（改色贴图自带坏死紫，这里只比本体压暗一档做层次）</summary>
+        private static readonly Color LegAmbient = new(196, 188, 212);
 
         public override Vector2 SceneHalfSize => new(322f, 258f);
 
@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
 
         private FssPortraitActor() {
             rig = new SerpentPortraitRig(bodyCount: 12, segmentGap: 80f, sandY: 122f, patrolHalfWidth: 236f);
+            rig.UseFesterLegSkin();
             rig.OnDive = pos => SandBurst(pos, -Vector2.UnitY, 10, 0.8f);
             rig.OnLand = pos => SandBurst(pos, -Vector2.UnitY, 9, 0.9f);
             //落步爪咬/滑刹犁沙的微尘（步足模拟的沙效出口）
@@ -132,9 +133,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             => ordinal < rig.TailOrdinal && FssStateContext.IsCystOrdinal(ordinal);
 
         private void DrawWorm(SpriteBatch sb, in PortraitFrame frame) {
-            Texture2D headTex = SerpentPortraitRig.HeadTex?.Value;
-            Texture2D bodyTex = SerpentPortraitRig.BodyTex?.Value;
-            Texture2D tailTex = SerpentPortraitRig.TailTex?.Value;
+            Texture2D headTex = SerpentPortraitRig.FssHeadTex?.Value;
+            Texture2D bodyTex = SerpentPortraitRig.FssBodyTex?.Value;
+            Texture2D tailTex = SerpentPortraitRig.FssTailTex?.Value;
+            Texture2D jawLeft = FssHead.JawLeftAsset?.Value;
+            Texture2D jawRight = FssHead.JawRightAsset?.Value;
             if (headTex == null || bodyTex == null || tailTex == null) {
                 return;
             }
@@ -169,7 +172,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                 ApplySkin(shader, headTex, headTex.Bounds, 0.031f, 0f, headSwell, vein);
                 //颚先于头本体（根藏头底），沿用头的皮肤参数
                 BssJawDraw.Draw(sb, rig.HeadPos, rig.HeadRotation,
-                    BssJawDraw.IdleOpen(Time * 3f), Ambient, Vector2.Zero);
+                    BssJawDraw.IdleOpen(Time * 3f), Ambient, Vector2.Zero, 1f, jawLeft, jawRight);
                 sb.Draw(headTex, rig.HeadPos, null, Ambient, rig.HeadRotation,
                     headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
 
@@ -177,7 +180,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                 BossPortraitStage.BeginAlpha(sb, in frame);
             }
             else {
-                Color skin = frame.Tint(Ambient.MultiplyRGB(FssVfx.SkinMul));
+                //缺编/剪影：贴图自带坏死底色，直接按环境色画
+                Color skin = frame.Tint(Ambient);
                 for (int i = segs.Length - 1; i >= 0; i--) {
                     bool isTail = i == rig.TailOrdinal;
                     Texture2D tex = isTail ? tailTex : bodyTex;
@@ -188,7 +192,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
                         origin, 1f, SpriteEffects.None, 0f);
                 }
                 BssJawDraw.Draw(sb, rig.HeadPos, rig.HeadRotation,
-                    BssJawDraw.IdleOpen(Time * 3f), skin, Vector2.Zero);
+                    BssJawDraw.IdleOpen(Time * 3f), skin, Vector2.Zero, 1f, jawLeft, jawRight);
                 sb.Draw(headTex, rig.HeadPos, null, skin, rig.HeadRotation,
                     headTex.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
             }
