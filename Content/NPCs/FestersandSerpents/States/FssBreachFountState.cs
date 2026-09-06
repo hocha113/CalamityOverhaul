@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             ctx.Mode = FssMoveMode.Steer;
             ctx.MoveTarget = new Vector2(ctx.Target.Center.X, surface + 380f);
             ctx.MoveSpeed = FssDirector.LungeDigSpeed;
-            ctx.TurnSpeed = 2.4f;
+            ctx.TurnRadius = FssDirector.BuriedTurnRadius;
             ctx.AccelRate = 0.1f;
             ctx.Slither = 0.5f;
 
@@ -136,11 +136,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             ctx.LegCommand = FssLegCommand.Tuck;
             ctx.LegAlpha = 0f;
             ctx.Mode = FssMoveMode.Steer;
-            //末 12 帧把转向目标抬到浅层：航向从"扎向深处"沿弧翻成"竖直向上"
-            bool preAscent = phaseTimer >= FssDirector.BreachTelegraphFrames - 12;
+            //末 14 帧把转向目标抬到浅层：航向从"扎向深处"沿弧翻成"竖直向上"
+            //（地下航段，转弯半径不受地板约束：17 速配 91 半径每帧 0.19 弧度，90° 约 9 帧）
+            bool preAscent = phaseTimer >= FssDirector.BreachTelegraphFrames - 14;
             ctx.MoveTarget = new Vector2(lockedX, breachGroundY + (preAscent ? 40f : 380f));
             ctx.MoveSpeed = preAscent ? 17f : 14f;
-            ctx.TurnSpeed = preAscent ? 5.5f : 2.6f;
+            ctx.TurnRadius = preAscent ? FssDirector.BuriedTurnRadius * 0.7f : FssDirector.BuriedTurnRadius;
             ctx.AccelRate = preAscent ? 0.2f : 0.08f;
             ctx.Compression = Math.Min(ctx.Compression, 0.9f);
             ctx.GatherLevel = MathHelper.Clamp(

@@ -368,7 +368,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         #endregion
 
         #region 运动
-        /// <summary>把状态声明的运动模式落到速度与旋转上</summary>
+        /// <summary>
+        /// 把状态声明的运动模式落到速度与旋转上。头的朝向在所有模式下统一经
+        /// <see cref="TurnHead"/> 限速：一帧翻身在两千多像素的身体上就是甩颈，
+        /// 状态声明了 <see cref="FssStateContext.AimAngle"/> 就盯它，否则跟速度方向
+        /// （与荒花 BssHead 同一套法则）。
+        /// </summary>
         private void ApplyDeclaredMovement() {
             switch (Context.Mode) {
                 case FssMoveMode.Crawl:
@@ -377,20 +382,36 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
                 case FssMoveMode.Steer: {
                     float phase = Context.SlitherPhase;
                     SteerMovement(NPC, Context.MoveTarget, Context.MoveSpeed,
-                        Context.TurnSpeed, Context.AccelRate, Context.Slither, ref phase);
+                        Context.TurnRadius, Context.AccelRate, Context.Slither, ref phase);
                     Context.SlitherPhase = phase;
                     break;
                 }
                 case FssMoveMode.Direct:
-                    if (NPC.velocity.LengthSquared() > 0.2f) {
-                        NPC.rotation = NPC.velocity.ToRotation() + FacingRot;
+                    if (!float.IsNaN(Context.AimAngle)) {
+                        TurnHead(Context.AimAngle, 0.35f);
+                    }
+                    else if (NPC.velocity.LengthSquared() > 0.2f) {
+                        TurnHead(NPC.velocity.ToRotation(), 0.6f);
                     }
                     break;
                 default:
-                    //未声明：指数刹停，绝不留残余速度漂移
+                    //未声明：指数刹停，绝不留残余速度漂移；声明了瞄准仍让头慢慢看过去
                     NPC.velocity *= 0.9f;
+                    if (!float.IsNaN(Context.AimAngle)) {
+                        TurnHead(Context.AimAngle, 0.25f);
+                    }
                     break;
             }
+        }
+
+        /// <summary>
+        /// 头部转向共件：先按 lerp 因子缓动，再把单帧步长钳到 <see cref="FssDirector.HeadTurnRateMax"/>。
+        /// 缓动给收尾的柔，限速给大身体的重。
+        /// </summary>
+        private void TurnHead(float aimAngle, float lerp) {
+            float target = aimAngle + FacingRot;
+            float eased = NPC.rotation.AngleLerp(target, lerp);
+            NPC.rotation = NPC.rotation.AngleTowards(eased, FssDirector.HeadTurnRateMax);
         }
 
         /// <summary>耙沙拍相位修正（同 BSS：push 峰值压在功率段中点）</summary>
@@ -431,16 +452,20 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
 
             //行进间攻击：声明了瞄准角就让头看目标，身体继续爬
             if (!float.IsNaN(Context.AimAngle)) {
-                NPC.rotation = NPC.rotation.AngleLerp(Context.AimAngle + FacingRot, 0.25f);
+                TurnHead(Context.AimAngle, 0.25f);
             }
             else if (NPC.velocity.LengthSquared() > 0.2f) {
-                NPC.rotation = NPC.rotation.AngleLerp(NPC.velocity.ToRotation() + FacingRot, 0.18f);
+                TurnHead(NPC.velocity.ToRotation(), 0.18f);
             }
         }
 
-        /// <summary>蠕虫寻的转向物理（钻沙/腾空段；同 BSS 口径，旋转朝下贴图约定）</summary>
+        /// <summary>
+        /// 蠕虫寻的转向物理（钻沙/腾空段；同 BSS 口径，旋转朝下贴图约定）。
+        /// 转向量按航迹半径计：每帧最大转角 = 速度 / 转弯半径。旧式按角速度的公式
+        /// 在低速时允许每帧 0.4 弧度，头原地打转、身体跟着甩。
+        /// </summary>
         internal static void SteerMovement(NPC worm, Vector2 targetPos, float moveSpeed,
-            float turnSpeed, float accelRate, float slither, ref float slitherPhase) {
+            float turnRadius, float accelRate, float slither, ref float slitherPhase) {
             Vector2 toTarget = targetPos - worm.Center;
             float distance = toTarget.Length();
             if (distance < 0.01f || moveSpeed <= 0.01f) {
@@ -451,10 +476,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             float currentSpeed = worm.velocity.Length();
             float currentHeading = currentSpeed > 0.01f ? worm.velocity.ToRotation() : desiredHeading;
 
-            //转向随速衰减：低速灵巧高速迟钝
-            float speedFactor = MathHelper.Clamp(currentSpeed / 26f, 0f, 1f);
-            float maxTurn = turnSpeed / 20f * MathHelper.Lerp(2.0f, 0.72f, speedFactor);
+            //航迹曲率约束：转角 = 弧长 / 半径；近停时给角速度地板，能慢慢重新对准
+            float radius = Math.Max(turnRadius, 1f);
+            float maxTurn = Math.Max(currentSpeed / radius, FssDirector.MinTurnRate);
             float newHeading = currentHeading.AngleTowards(desiredHeading, maxTurn);
+            float speedFactor = MathHelper.Clamp(currentSpeed / 26f, 0f, 1f);
 
             //入弯收油出弯全速
             float headingError = Math.Abs(MathHelper.WrapAngle(desiredHeading - newHeading));
@@ -477,7 +503,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             }
 
             worm.velocity = newHeading.ToRotationVector2() * currentSpeed;
-            worm.rotation = worm.velocity.ToRotation() + FacingRot;
+            worm.rotation = worm.rotation.AngleTowards(worm.velocity.ToRotation() + FacingRot, FssDirector.HeadTurnRateMax);
         }
 
         /// <summary>远距回归：钻地瞬移回场（土遁身份），仅允许的状态生效</summary>

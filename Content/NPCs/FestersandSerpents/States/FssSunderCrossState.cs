@@ -158,12 +158,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             ctx.Mode = FssMoveMode.Steer;
             ctx.MoveTarget = headAnchor;
             ctx.MoveSpeed = 26f;
-            ctx.TurnSpeed = 3f;
+            ctx.TurnRadius = FssDirector.MinTurnRadius * 1.3f;
             ctx.AccelRate = 0.12f;
             ctx.Slither = 0.4f;
             ctx.LegCommand = FssLegCommand.Flail;
 
-            FssHead.SteerMovement(leader, leaderAnchor, 26f, 2.8f, 0.12f, 0.4f, ref leaderSlither);
+            FssHead.SteerMovement(leader, leaderAnchor, 26f, FssDirector.MinTurnRadius * 1.3f, 0.12f, 0.4f, ref leaderSlither);
 
             bool headOk = Vector2.Distance(npc.Center, headAnchor) < 130f;
             bool leaderOk = Vector2.Distance(leader.Center, leaderAnchor) < 130f;
@@ -181,19 +181,20 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
         private void UpdateAlignGlide(FssStateContext ctx, NPC npc, NPC leader) {
             Vector2 predict = PredictTarget(ctx, 9f);
 
+            //对齐弧压在转弯地板上：13 速配 240 半径每帧 0.054 弧度，90° 约 29 帧，窗口给到 32
             ctx.Mode = FssMoveMode.Steer;
             ctx.MoveTarget = predict;
             ctx.MoveSpeed = 13f;
-            ctx.TurnSpeed = 5f;
+            ctx.TurnRadius = FssDirector.MinTurnRadius;
             ctx.AccelRate = 0.16f;
             ctx.LegCommand = FssLegCommand.Flail;
             ctx.CystGlow = Math.Max(ctx.CystGlow, 0.5f);
 
-            FssHead.SteerMovement(leader, predict, 13f, 5f, 0.16f, 0f, ref leaderSlither);
+            FssHead.SteerMovement(leader, predict, 13f, FssDirector.MinTurnRadius, 0.16f, 0f, ref leaderSlither);
 
             bool headOk = HeadingAligned(npc, predict, 0.3f);
             bool leaderOk = HeadingAligned(leader, predict, 0.3f);
-            if ((headOk && leaderOk) || phaseTimer > 20) {
+            if ((headOk && leaderOk) || phaseTimer > 32) {
                 phase = Phase.Windup;
                 phaseTimer = 0;
                 locked = false;
@@ -229,11 +230,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                 }
             }
 
-            //双向后撤（反向运动即预告）；领节面向冲线不面向撤向。
+            //双向后撤（反向运动即预告）；头与领节都面向冲线不面向撤向（声明瞄准）。
             //对齐滑翔已把两条链甩到各自冲线身后，后撤 = 双双全身拉弓
             ctx.Mode = FssMoveMode.Direct;
             npc.velocity = -lockHead * (w * w * 8f);
-            npc.rotation = npc.rotation.AngleLerp(lockHead.ToRotation() + FssHead.FacingRot, 0.35f);
+            ctx.AimAngle = lockHead.ToRotation();
             leader.velocity = -lockLeader * (w * w * 8f);
             ctx.SplitLeaderAim = lockLeader.ToRotation();
             ctx.GatherLevel = w;
@@ -287,7 +288,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             NPC weldSeg = seamOrdinal - 1 < ctx.Segments.Count && seamOrdinal >= 1
                 ? ctx.Segments[seamOrdinal - 1] : npc;
             Vector2 weldPoint = weldSeg.Center;
-            FssHead.SteerMovement(leader, weldPoint, 30f, 3.4f, 0.14f, 0.2f, ref leaderSlither);
+            FssHead.SteerMovement(leader, weldPoint, 30f, FssDirector.MinTurnRadius, 0.14f, 0.2f, ref leaderSlither);
 
             if (Vector2.Distance(leader.Center, weldPoint) < FssDirector.SunderMergeSnapDist
                 || phaseTimer > FssDirector.SunderMergeFrames) {

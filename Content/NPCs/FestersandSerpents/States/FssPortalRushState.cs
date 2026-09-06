@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                 ctx.Mode = FssMoveMode.Steer;
                 ctx.MoveTarget = entryPoint;
                 ctx.MoveSpeed = 30f;
-                ctx.TurnSpeed = 3.2f;
+                ctx.TurnRadius = FssDirector.MinTurnRadius * 1.2f;
                 ctx.AccelRate = 0.13f;
                 ctx.Slither = 0.3f;
                 if (Vector2.Distance(npc.Center, entryPoint) < 70f

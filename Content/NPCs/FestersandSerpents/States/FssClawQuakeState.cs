@@ -99,8 +99,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             ctx.Compression = Math.Min(ctx.Compression, 0.93f);
             if (ctx.Target.Alives()) {
                 float toward = FacingToTarget(ctx, 0f);
-                float poseAng = new Vector2(toward, 0.35f).ToRotation();
-                npc.rotation = npc.rotation.AngleLerp(poseAng + FssHead.FacingRot, 0.12f);
+                ctx.AimAngle = new Vector2(toward, 0.35f).ToRotation();
             }
 
             ctx.ClawCommand = FssClawCommand.Slam;

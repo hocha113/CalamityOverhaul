@@ -64,9 +64,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             ctx.LegCommand = FssLegCommand.Tuck;
 
             if (t < FssDirector.IntroBreachFrame) {
-                //地下蓄势：钉住不动，污染扩散演出铺开（拍一）
+                //地下蓄势：钉住不动，污染扩散演出铺开（拍一）；头先在地下转到朝上，破土帧不用边飞边翻身
                 ctx.Mode = FssMoveMode.Hold;
                 npc.velocity = Vector2.Zero;
+                ctx.AimAngle = -MathHelper.PiOver2;
                 ctx.StormLevel = Math.Max(ctx.StormLevel, 0.3f * t / FssDirector.IntroStainFrames);
                 UpdateStainSpread(ctx, npc, t);
             }

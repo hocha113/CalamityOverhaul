@@ -4,8 +4,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
 {
     /// <summary>
     /// 脓蕾沙蟒战斗调参中心。荒花沙蟒的上位变异体：肉后初期、机械三王同级，
-    /// 普通模式基数，专家/大师走原版缩放。比原版更长更庞大（26+7 节、scale 1.15），
-    /// 出招密度对标残酷世吞，弹幕威胁围绕灵液池场地经济组织。
+    /// 普通模式基数，专家/大师走原版缩放。比原版更长更庞大（26+7 节，靶点全靠链长表达，
+    /// 贴图按原生 1 倍画），出招密度对标残酷世吞，弹幕威胁围绕灵液池场地经济组织。
+    /// 运动法则与荒花同源：头是火车头，寻的按转弯半径算、朝向每帧限速，颈段永远跟得上。
     /// </summary>
     internal static class FssDirector
     {
@@ -17,10 +18,16 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         public const int GrowthSegments = 7;
         /// <summary>囊肿节间隔：ordinal % CystStep == CystStep-1 的体节带脓疮（发射器）</summary>
         public const int CystStep = 3;
-        /// <summary>节距（复用 BSS 体节素材，放大后的链距）</summary>
+        /// <summary>节距（复用 BSS 体节素材）</summary>
         public const float SegmentGap = 80f;
-        /// <summary>整体放大（更庞大的读数，贴图暂借 BSS）</summary>
-        public const float BodyScale = 1.15f;
+        /// <summary>
+        /// 整体倍率（头/体/尾 NPC.scale）。锁 1：像素贴图非整数放大会糊，曾是 1.15 被用户裁定回退
+        /// （2026-09-06，与荒花同批）。"更庞大"由链长表达：P1 26 节约 2080px、P2 33 节约 2640px，
+        /// 比荒花（1704px）长 22%~55%
+        /// </summary>
+        public const float BodyScale = 1f;
+        /// <summary>P1 全链长（头心到尾心，世界像素）：运动几何的标尺；蜕变后再加 GrowthSegments 节</summary>
+        public const float ChainLength = (BodyCount + 1) * SegmentGap * BodyScale;
         /// <summary>链序数组上限（26+7+尾 = 34，留余量）</summary>
         public const int MaxOrdinals = 40;
 
@@ -81,10 +88,27 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         public const float CrawlCruiseSpeed = 18f;
         /// <summary>压迫速度（拉远追赶）</summary>
         public const float CrawlChaseSpeed = 27f;
-        /// <summary>头心贴地高度（体格更大，抬得更高）</summary>
-        public const float CrawlRideHeight = 40f;
+        /// <summary>头心贴地高度（与荒花同一套贴图、同一高度；随 <see cref="BodyScale"/> 同比）</summary>
+        public const float CrawlRideHeight = 34f * BodyScale;
         /// <summary>地形前探距离</summary>
         public const float CrawlLookahead = 150f;
+
+        //==================== 头部转向（大身体的运动法则，与荒花同源）====================
+
+        /// <summary>
+        /// 头部航迹最小转弯半径（像素）。颈段弯角上限 0.35 弧度配节距 80，几何下限
+        /// 80 / (2·sin 0.175) ≈ 230：头转得比这紧，颈段被钳制拉直、两千多像素的身体只能跟着甩。
+        /// 所有寻的转向按半径而非角速度计，这里是全局地板
+        /// </summary>
+        public const float MinTurnRadius = 240f * BodyScale;
+        /// <summary>寻的转向的角速度地板（弧度/帧）：近停时仍能慢慢重新对准</summary>
+        public const float MinTurnRate = 0.02f;
+        /// <summary>头部朝向每帧最大变化（弧度）：任何模式下头都不许一帧翻身（180° 至少 14 帧）</summary>
+        public const float HeadTurnRateMax = 0.22f;
+        /// <summary>地下（看不见的）航段允许的转弯半径：链在沙里，折角无人看见</summary>
+        public const float BuriedTurnRadius = 130f * BodyScale;
+        /// <summary>出土交还段的转弯半径（半可见）</summary>
+        public const float EmergeTurnRadius = 200f * BodyScale;
 
         //==================== 入场（污染扩散 + 双弧破土，两拍演出）====================
 
@@ -150,11 +174,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         /// <summary>冲刺跑道最短距离：太近先退开再冲，杀贴脸秒杀</summary>
         public const float SkimRunwayMin = 460f;
         /// <summary>
-        /// 掉头助跑最短路程（约 3.5 节距，含放大系数）：蓄力前沿冲刺线前进这么远，
-        /// 链条重排到身后，后撤蓄力才是"全身拉弓"而非把脖子甩上冲刺线。
+        /// 掉头助跑最短路程（三个节距）：蓄力前沿冲刺线前进这么远，
+        /// 颈段重排到身后，后撤蓄力才是"全身拉弓"而非把脖子甩上冲刺线。
         /// 退开段要在跑道之外多留这份余量。毒冲与疮爆掠航共用。
         /// </summary>
-        public const float SkimAlignRunPx = 180f;
+        public const float SkimAlignRunPx = SegmentGap * 3f * BodyScale;
         /// <summary>射向相对水平的最大仰角（弧度，贴地掠过的身份）</summary>
         public const float SkimMaxPitch = 0.24f;
         /// <summary>连冲次数：P1 三段，P2 起四段</summary>
@@ -242,8 +266,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
 
         /// <summary>入环就位帧数上限（提前到位即早退入圈）</summary>
         public const int CoilEntryFrames = 40;
-        /// <summary>环径（圈内即战场，圈本身即笼压）</summary>
+        /// <summary>环径（圈内即战场，圈本身即笼压；周长 2953，P1 链盖七成、P2 链盖九成，头尾缺口是逃生门）</summary>
         public const float CoilRadius = 470f;
+        /// <summary>入环腾空段转弯半径</summary>
+        public const float CoilEntryTurnRadius = 320f * BodyScale;
         /// <summary>基础角速（弧度/帧；P3 提速档见 CoilOmega）</summary>
         public static float CoilOmega(int phase) => phase >= 3 ? 0.052f : 0.045f;
         /// <summary>圈数：P1 一圈、P2 一圈半、P3 两圈</summary>

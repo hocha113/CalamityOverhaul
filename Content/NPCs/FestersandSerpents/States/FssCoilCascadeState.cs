@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                     ctx.Mode = FssMoveMode.Steer;
                     ctx.MoveTarget = center + angle.ToRotationVector2() * FssDirector.CoilRadius;
                     ctx.MoveSpeed = 27f;
-                    ctx.TurnSpeed = 3f;
+                    ctx.TurnRadius = FssDirector.CoilEntryTurnRadius;
                     ctx.AccelRate = 0.12f;
                     ctx.Slither = 0.5f;
                     ctx.LegCommand = FssLegCommand.Flail;
@@ -118,8 +118,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                             }
                         }
                         else {
+                            //收油聚拢的 8 帧头盯切向（声明瞄准，不被减速中的环上速度带偏）
                             npc.velocity *= 0.86f;
-                            npc.rotation = npc.rotation.AngleLerp(exitDashDir.ToRotation() + FssHead.FacingRot, 0.35f);
+                            ctx.AimAngle = exitDashDir.ToRotation();
                         }
                     }
                     else {
@@ -175,7 +176,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             ctx.Mode = FssMoveMode.Steer;
             ctx.MoveTarget = center + aheadAng.ToRotationVector2() * FssDirector.CoilRadius;
             ctx.MoveSpeed = omega * FssDirector.CoilRadius * 1.25f;
-            ctx.TurnSpeed = 3.6f;
+            //航迹半径略小于环径：追点要能切进环内而不是被甩到环外
+            ctx.TurnRadius = FssDirector.CoilRadius * 0.85f;
             ctx.AccelRate = 0.14f;
             ctx.Slither = 0.25f;
             ctx.LegCommand = FssLegCommand.Flail;

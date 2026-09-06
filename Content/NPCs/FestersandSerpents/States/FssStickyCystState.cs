@@ -51,14 +51,13 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                 npc.velocity = new Vector2(ctx.CrawlDirX * 7.5f, -2.2f);
             }
             else if (t <= FlingFrame + 6) {
-                //甩后随动：头快速前压（后仰→前甩的完整弧），身体惯性滑一小段。
-                //Hold 模式不碰旋转（Direct 会按速度向覆写手动压头），减速由 Hold 自带
+                //甩后随动：头前压（后仰→前甩的完整弧），身体惯性滑一小段；减速由 Hold 自带，
+                //头朝向走 AimAngle 声明（限速下约 6 帧压到位）
                 ctx.Mode = FssMoveMode.Hold;
                 ctx.LegCommand = FssLegCommand.Raise;
                 ctx.FrontRaise *= 0.55f;
                 float face = ctx.CrawlDirX >= 0f ? 0f : MathHelper.Pi;
-                float forward = face + ctx.CrawlDirX * 0.5f;
-                npc.rotation = npc.rotation.AngleLerp(forward + FssHead.FacingRot, 0.45f);
+                ctx.AimAngle = face + ctx.CrawlDirX * 0.5f;
             }
             else {
                 //收势回爬

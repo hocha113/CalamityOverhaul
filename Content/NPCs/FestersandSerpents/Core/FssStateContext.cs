@@ -99,7 +99,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         /// <summary>Steer 模式目标点</summary>
         public Vector2 MoveTarget { get; set; }
         public float MoveSpeed { get; set; }
-        public float TurnSpeed { get; set; } = 1.6f;
+        /// <summary>
+        /// Steer 模式航迹转弯半径（像素）。转向按半径而非角速度计：长身体的头是火车头，
+        /// 航迹曲率决定颈段能不能跟上；低于 <see cref="FssDirector.MinTurnRadius"/> 会被抬到地板
+        /// （地下航段例外，传 <see cref="FssDirector.BuriedTurnRadius"/>）
+        /// </summary>
+        public float TurnRadius { get; set; } = FssDirector.MinTurnRadius;
         public float AccelRate { get; set; } = 0.08f;
         /// <summary>蛇形扰动强度</summary>
         public float Slither { get; set; }
@@ -109,7 +114,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         public float CrawlSpeed { get; set; }
         /// <summary>蛇形相位（持久量）</summary>
         public float SlitherPhase { get; set; }
-        /// <summary>头部瞄准覆盖（弧度；NaN=跟速度走）。行进间攻击用：身体在爬，头看目标</summary>
+        /// <summary>
+        /// 头部瞄准覆盖（弧度；NaN=跟速度走）。Crawl 与 Direct/Hold 模式都认：行进间攻击头看目标，
+        /// 后撤蓄力头仍盯冲刺线（否则 Direct 模式会让头跟着倒退速度朝后看，出手帧翻 180°）。
+        /// 任何模式下头的朝向变化都被 <see cref="FssDirector.HeadTurnRateMax"/> 限速
+        /// </summary>
         public float AimAngle { get; set; } = float.NaN;
         #endregion
 
@@ -273,6 +282,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
         public void BeginFrameDefaults() {
             Mode = FssMoveMode.Hold;
             MoveSpeed = 0f;
+            TurnRadius = FssDirector.MinTurnRadius;
             Slither = 0f;
             AimAngle = float.NaN;
             LegCommand = FssLegCommand.March;

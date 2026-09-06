@@ -132,10 +132,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                     }
                 }
             }
-            //链条已对齐在身后，后撤 = 全身后拉，聚拢波把身体向头收拢上膛
+            //链条已对齐在身后，后撤 = 全身后拉，聚拢波把身体向头收拢上膛；头盯掠航线不回头
             float w = phaseTimer / (float)FssDirector.RippleWindupFrames;
             npc.velocity = -lockDir * (w * w * 8f);
-            npc.rotation = npc.rotation.AngleLerp(lockDir.ToRotation() + FssHead.FacingRot, 0.35f);
+            ctx.AimAngle = lockDir.ToRotation();
             ctx.GatherLevel = w;
 
             if (phaseTimer >= FssDirector.RippleWindupFrames) {

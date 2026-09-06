@@ -134,11 +134,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
                 }
             }
 
-            //后撤反向运动（二次方迟滞：末段猛吸）；头部快速插值入向（禁一帧瞬转）。
+            //后撤反向运动（二次方迟滞：末段猛吸）；头盯冲刺线（声明瞄准，Direct 模式不再被倒退速度掰向身后）。
             //链条已对齐在身后，后撤 = 全身后拉，聚拢波把身体向头收拢上膛
             float w = phaseTimer / (float)FssDirector.SkimWindupFrames;
             npc.velocity = -lockDir * (w * w * 9f);
-            npc.rotation = npc.rotation.AngleLerp(lockDir.ToRotation() + FssHead.FacingRot, 0.35f);
+            ctx.AimAngle = lockDir.ToRotation();
             ctx.GatherLevel = w;
 
             //尘线车道（客户端；锁向后线更实）

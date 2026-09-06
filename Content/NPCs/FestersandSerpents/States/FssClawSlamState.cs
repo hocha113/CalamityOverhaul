@@ -104,8 +104,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             ctx.Compression = Math.Min(ctx.Compression, 0.95f);
             if (ctx.Target.Alives()) {
                 float toward = FacingToTarget(ctx, 0f);
-                float poseAng = new Vector2(toward, 0.35f).ToRotation();
-                npc.rotation = npc.rotation.AngleLerp(poseAng + FssHead.FacingRot, 0.12f);
+                ctx.AimAngle = new Vector2(toward, 0.35f).ToRotation();
             }
 
             //鳌足夯地编舞（各端同相位）
