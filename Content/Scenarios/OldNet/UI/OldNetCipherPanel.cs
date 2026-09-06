@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.Scenarios.OldNet.Gen;
 using CalamityOverhaul.Content.Scenarios.OldNet.NPCs;
 using CalamityOverhaul.Content.Scenarios.OldNet.Tiles;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;

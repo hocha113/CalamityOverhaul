@@ -1,6 +1,7 @@
 // ============================================================================
 //FssCorruptSkin.fx 脓蕾沙蟒变异体表（单 technique，整链 Immediate 批共用）
-//暗色变异底：亮度重映射把 BSS 暖沙压向坏死紫（保留原图明暗细节）+ 病斑噪声
+//暗色变异底：已烘进 FSS 改色贴图（Doc/tools/fss_recolor.py 与旧版亮度重映射同式），
+//  着色器直接取贴图色作底 + 病斑噪声——图鉴/调试窗口看到的底色与游戏内一致
 //湿亮流层：沿体轴缓移的湿光带（活体渗液的读数）
 //灵液脉络：域扭曲单脊线成连贯金脉网，尾→头行波涌动（uPhase 链序连续，跨节不断线）
 //囊肿热点：uSwell 驱动的节心金光（鼓包/充能读数）
@@ -41,15 +42,8 @@ float4 FesterPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     //链空间坐标：local.y 沿体轴（贴图前方朝下约定），加 uPhase 跨节续接
     float2 chainUV = float2(local.x * 0.9, (local.y + uPhase) * 0.5);
 
-    //---------------- 暗色变异底 ----------------
-    float lum = dot(body.rgb, float3(0.30, 0.59, 0.11));
-    float3 deep = float3(0.13, 0.10, 0.19);
-    float3 mid  = float3(0.31, 0.24, 0.41);
-    float3 hi   = float3(0.56, 0.49, 0.45);
-    float3 base = lerp(deep, mid, smoothstep(0.04, 0.50, lum));
-    base = lerp(base, hi, smoothstep(0.50, 0.95, lum));
-    //留一分原色，换皮不糊脸
-    base = lerp(base, body.rgb, 0.16);
+    //---------------- 暗色变异底（贴图自带坏死紫 + 金脓，直接取色）----------------
+    float3 base = body.rgb;
 
     //病斑：低频噪声明暗斑块（每节 uSeed 去相关）
     float blotch = Nrm(tex2D(noiseSampler, chainUV * 0.8 + uSeed * 3.7).r);

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
     /// <summary>尾节：复用体节跟链逻辑，单帧贴图、更小判定</summary>
     internal class FssTail : FssBody
     {
-        public override string Texture => CWRConstant.NPC + "BSS/Tail";
+        public override string Texture => CWRConstant.NPC + "FSS/Tail";
 
         public override void SetStaticDefaults() {
             Main.npcFrameCount[Type] = 1;

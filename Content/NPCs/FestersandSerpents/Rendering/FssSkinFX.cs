@@ -16,7 +16,9 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
     /// 全部压在头的 PreDraw 里，体节/尾自身 PreDraw 返回 false。集中绘制的两个理由：
     /// 1. 体表着色器整链一次批切换（ScrapCommander 合同，禁每节重启）；
     /// 2. 鼓包蠕动/囊肿资源等跨节表现需要链序连续的参数空间。
-    /// 全帧固定两次批切换（进 Immediate、回 Deferred）；着色器缺失走手染回退。
+    /// 全帧固定两次批切换（进 Immediate、回 Deferred）；着色器缺失走朴素回退。
+    /// 贴图本身已是坏死紫底（FSS 改色组），着色器只叠病斑/湿光/金脉/囊肿/裂隙的动态层，
+    /// 回退路径直接乘光照画贴图，不再手染。
     /// </summary>
     internal static class FssSkinFX
     {
@@ -260,14 +262,14 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             }
             float jawOpen = BssJawDraw.ResolveOpen(ctx.ClawCommand, ctx.ClawPhase, ctx.ClawBurst, ctx.GaitPhase);
             Vector2 headWorld = npc.Center + HeadDrawOffset(ctx);
-            Color tint = shader != null
-                ? Lighting.GetColor(npc.Center.ToTileCoordinates()) * fade
-                : Lighting.GetColor(npc.Center.ToTileCoordinates()).MultiplyRGB(FssVfx.SkinMul) * fade;
+            //贴图已是坏死紫底，着色器有无都只乘光照
+            Color tint = Lighting.GetColor(npc.Center.ToTileCoordinates()) * fade;
             if (shader != null) {
                 shader.Parameters["uUvRect"]?.SetValue(new Vector4(0f, 0f, 1f, 1f));
                 shader.CurrentTechnique.Passes[0].Apply();
             }
-            BssJawDraw.Draw(sb, headWorld, npc.rotation, jawOpen, tint, screenPos, npc.scale);
+            BssJawDraw.Draw(sb, headWorld, npc.rotation, jawOpen, tint, screenPos, npc.scale,
+                FssHead.JawLeftAsset?.Value, FssHead.JawRightAsset?.Value);
         }
 
         private static void DrawHeadCoreFallback(SpriteBatch sb, Vector2 screenPos, FssStateContext ctx) {
@@ -279,7 +281,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             Vector2 mainPos = npc.Center - screenPos + HeadDrawOffset(ctx);
             float fade = 1f - npc.alpha / 255f;
             Color light = Lighting.GetColor(npc.Center.ToTileCoordinates());
-            sb.Draw(texture, mainPos, frameRec, light.MultiplyRGB(FssVfx.SkinMul) * fade, npc.rotation,
+            sb.Draw(texture, mainPos, frameRec, light * fade, npc.rotation,
                 origin, npc.scale, SpriteEffects.None, 0f);
         }
 
@@ -387,7 +389,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             (Rectangle frame, _) = SegFrame(seg, texture);
             Vector2 origin = SegOrigin(seg, frame);
             Vector2 drawPos = seg.Center + SegDrawOffset(ctx, seg) - screenPos;
-            Color body = Lighting.GetColor(seg.Center.ToTileCoordinates()).MultiplyRGB(FssVfx.SkinMul);
+            Color body = Lighting.GetColor(seg.Center.ToTileCoordinates());
             if (Ruptured(ctx, ordinal)) {
                 body = Color.Lerp(body, FssVfx.NecroShadow, 0.66f);
             }

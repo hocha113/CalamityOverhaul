@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ModLoader;
@@ -6,8 +6,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
 {
     /// <summary>
-    /// MagicMorph 族玩家状态：蓄力进度、右键闩锁、模式窗、回血预算与雨云偏好。<br/>
-    /// 全部为实例字段（每玩家一份）；蓄力/模式只在本地玩家路径写入与消费，
+    /// MagicMorph 族玩家状态：回血预算，以及 R2 保留件的蓄力进度、右键闩锁、模式窗与雨云偏好。<br/>
+    /// 全部为实例字段（每玩家一份）；只在本地玩家路径写入与消费，
     /// 联机时远端玩家的这些字段保持默认值，跨端可见的行为由真弹幕承载
     /// </summary>
     internal class GsMorphPlayer : ModPlayer
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
         /// <summary>右键按住期间的防重触发闩锁（松开右键复位）</summary>
         public bool AltLatch;
 
-        /// <summary>模式切换型 B 形态（吹叶机/滋滋橙）的持续截止帧</summary>
+        /// <summary>模式切换型 B 形态（吹叶机风暴窗）的持续截止帧</summary>
         public uint ModeUntil;
 
         /// <summary>模式窗绑定的武器物品 ID</summary>
@@ -92,11 +92,6 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
                 && scheme is GsMorphScheme morph) {
                 Player.maxRunSpeed *= morph.ChargeSlowdown;
                 Player.accRunSpeed *= morph.ChargeSlowdown;
-            }
-            //虹桥友方增益：本端玩家踩在任意虹桥带内 +8% 移速（各端本地自查，桥为全端可见真弹幕）
-            if (Player.whoAmI == Main.myPlayer && GsRainbowBridgeProj.LocalPlayerOnAnyBridge(Player)) {
-                Player.maxRunSpeed *= 1.08f;
-                Player.accRunSpeed *= 1.08f;
             }
         }
 

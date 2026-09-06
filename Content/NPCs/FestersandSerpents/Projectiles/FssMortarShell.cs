@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Projectiles
     /// </summary>
     internal class FssMortarShell : FssModProjectile
     {
-        public override string Texture => CWRConstant.NPC + "BSS/CactusBall";
+        public override string Texture => CWRConstant.NPC + "FSS/Cyst";
 
         private int FlightFrames => Math.Max((int)Projectile.ai[0], 10);
 
@@ -134,8 +134,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Projectiles
                     Projectile.rotation - i * 0.05f, origin, Projectile.scale * (0.55f + 0.35f * t), SpriteEffects.None, 0);
             }
 
-            //本体：坏死染色实体 + 灵液鼓光层
-            Color body = lightColor.MultiplyRGB(FssVfx.SkinMul);
+            //本体：贴图自带坏死底色，乘光照 + 灵液鼓光层
+            Color body = lightColor;
             Main.EntitySpriteDraw(tex, drawPos, null, body, Projectile.rotation,
                 origin, Projectile.scale, SpriteEffects.None, 0);
             float pulse = 0.55f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 14f);
