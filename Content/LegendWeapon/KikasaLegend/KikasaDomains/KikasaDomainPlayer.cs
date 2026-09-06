@@ -657,6 +657,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 busy = Phase != KikasaDomainPhase.Closed;
                 return false;
             }
+            //绝对帧戳只在当前世界会话内有意义,进出子世界后 GameUpdateCount 回跳,
+            //残留的戳会把翻转一直当作再受理间隔内拒掉(反馈七·#154),剩余帧超过一段间隔即视为脏值清零
+            if (flipReacceptAt - Main.GameUpdateCount > FlipReacceptGapFrames) {
+                flipReacceptAt = 0;
+            }
             if (RiseT < 0.999f || OniRainWorldTransition.Active || OniRainDescentTransition.Active
                 || Main.GameUpdateCount < flipReacceptAt) {
                 busy = true;
@@ -1769,6 +1774,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             riseBeatNear = false;
             riseBeatFar = false;
             lastCommandFrame = -1;
+            //换世界后旧帧戳作废(ClearWorld 走到这里)
+            flipReacceptAt = 0;
             ResetTideState();
         }
     }

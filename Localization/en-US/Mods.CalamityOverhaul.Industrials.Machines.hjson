@@ -506,6 +506,7 @@ MushroomFarmer: {
 		'''
 		Consumes power to cultivate mushrooms on nearby grass and glowing mushrooms on mushroom grass
 		Harvests them automatically, occasionally yielding mushroom grass seeds
+		Also cuts down vines hanging under mushroom grass; each segment has a 50% chance to yield a glowing mushroom
 		Right-click to open the control panel
 		'''
 }

@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
     /// <summary>
     /// 鬼伞·沉溺权威核心。封印=直接移除（无掉落不算击杀，CyberBanish 同款），
     /// 服务器只验资格/距离/频率，不验领域，服务器没有领域状态是既定契约；
-    /// 领域就绪由客户端预检。定身走轻量方案：权威端逐帧钉位+定期 netUpdate，
-    /// 40 帧短持有后在抓握节拍移除真身，此后演出全靠客户端鬼影。
+    /// 领域就绪由客户端预检。定身：权威端对整组上冻结租约停 AI（蠕虫邻节死亡不改型），
+    /// 逐帧钉位+定期 netUpdate 做双保险，40 帧短持有后在抓握节拍移除真身，此后演出全靠客户端鬼影。
     /// BOSS 门槛：未在本世界击败过的 BOSS 级目标沉不下去，请求解析处按
     /// <see cref="KikasaBossGate.DrownBlocked"/> 分流去 <see cref="KikasaScourge"/> 鞭笞。
     /// </summary>
@@ -54,7 +54,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             public NetworkNPCIdentity Identity;
             /// <summary>受理帧捕获的 npc.position，逐帧钉回</summary>
             public Vector2 Pin;
+            /// <summary>持有窗冻结租约，权威端本地，不过网</summary>
+            public TimeFreezeLease Lease;
         }
+
+        /// <summary>持有窗租约的冻结源标记</summary>
+        private sealed class GrabFreeze { }
 
         internal sealed class DrownActivation
         {
@@ -87,8 +92,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// 已击败月总部件的战斗无敌窗不挡抓取，见 <see cref="KikasaMoonLordDrown.IsDefeatedPart"/>。
         /// </summary>
         public static bool IsEligibleTarget(NPC npc)
+            => IsEligibleCompanion(npc)
+            && (!npc.dontTakeDamage || KikasaMoonLordDrown.IsDefeatedPart(npc));
+
+        /// <summary>
+        /// 同场伙伴（<see cref="CWRLoad.AllBossCompanionSets"/>）作为组员的资格：技术性守卫照过，
+        /// 唯独不看 dontTakeDamage。史莱姆之神核心恒不可伤，不随圣卫一起走它就会自己消散爆掉落，
+        /// 违背"沉溺=移除、不算击杀无掉落"。只限组员，核心仍不能作为悬停主目标（否则鞭笞分流会打到它）
+        /// </summary>
+        private static bool IsEligibleCompanion(NPC npc)
             => npc?.active == true && npc.lifeMax > 0
-            && (!npc.dontTakeDamage || KikasaMoonLordDrown.IsDefeatedPart(npc))
             && npc.type != NPCID.DD2LanePortal && npc.type != NPCID.DD2EterniaCrystal
             && !CyberBanish.IsBanishing(npc.whoAmI)
             && !IsDrowningAuthority(npc.whoAmI);
@@ -425,29 +438,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 DrownId = ++nextDrownId,
                 Seed = Main.rand.NextFloat(1000f),
             };
-            activation.Targets.Add(new DrownTarget { Identity = primary, Pin = target.position });
+            activation.Targets.Add(CaptureTarget(target, primary));
 
-            //蠕虫等整组一起封印；月总按核心索引收齐（含无敌残口），组员不再走资格过滤
+            //蠕虫等整组一起封印，同场伙伴（双子/史莱姆之神）一并收；月总按核心索引收齐（含无敌残口），组员不再走资格过滤
             bool moonFamily = KikasaMoonLordDrown.IsPart(target.type);
             if (moonFamily) {
                 KikasaMoonLordDrown.CollectFamily(target, groupBuffer);
             }
             else {
-                NpcGroupHelper.CollectGroup(target, groupBuffer);
+                NpcGroupHelper.CollectEncounter(target, groupBuffer);
             }
             for (int i = 0; i < groupBuffer.Count; i++) {
                 NPC member = groupBuffer[i];
                 if (member == null || member == target) {
                     continue;
                 }
-                if (!moonFamily && !IsEligibleTarget(member)) {
-                    continue;
+                if (!moonFamily) {
+                    //伙伴表成员放行 dontTakeDamage（史莱姆之神核心），其余组员照常过资格
+                    bool eligible = NpcGroupHelper.AreCompanions(target.type, member.type)
+                        ? IsEligibleCompanion(member)
+                        : IsEligibleTarget(member);
+                    if (!eligible) {
+                        continue;
+                    }
                 }
                 if (moonFamily && IsDrowningAuthority(member.whoAmI)) {
                     continue;
                 }
                 if (NetworkNPCIdentity.TryCapture(member, out NetworkNPCIdentity id)) {
-                    activation.Targets.Add(new DrownTarget { Identity = id, Pin = member.position });
+                    activation.Targets.Add(CaptureTarget(member, id));
                 }
             }
             groupBuffer.Clear();
@@ -462,6 +481,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 StartShowFrom(activation);
             }
             return true;
+        }
+
+        /// <summary>
+        /// 记一个持有目标并上冻结租约停掉它的 AI。持有窗只钉位置不停 AI 时，窗内任一节被召唤物/DoT 打死，
+        /// 原版蠕虫 AI 会把邻节就地改型（type 变、GlobalNPC 重建），按类型键的身份随即失配，
+        /// 组员被除名活到移除之后、主段丢失整场取消（反馈七·#123/#110）；AI 不跑就不改型
+        /// </summary>
+        private static DrownTarget CaptureTarget(NPC npc, NetworkNPCIdentity identity) => new() {
+            Identity = identity,
+            Pin = npc.position,
+            Lease = AcquireGrabLease(npc),
+        };
+
+        private static TimeFreezeLease AcquireGrabLease(NPC npc)
+            => TimeFreezeSystem.AcquireNPC<GrabFreeze>(npc, npc.Center, npc.whoAmI,
+                TimeFreezeAnchorPriority.Authoritative);
+
+        private static void ReleaseTargetLeases(DrownActivation activation, Vector2? releaseVelocity) {
+            for (int j = 0; j < activation.Targets.Count; j++) {
+                DrownTarget target = activation.Targets[j];
+                if (target.Identity.TryResolve(out NPC npc)) {
+                    TimeFreezeSystem.ReleaseNPC(npc, target.Lease, releaseVelocity);
+                }
+            }
         }
 
         private static void StartShowFrom(DrownActivation activation) {
@@ -525,6 +568,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 }
                 for (int j = activation.Targets.Count - 1; j >= 1; j--) {
                     if (!activation.Targets[j].Identity.TryResolve(out _)) {
+                        //槽位若还活着(身份换代)租约按代校验自然作废,这里只是尽早退掉
+                        TimeFreezeSystem.ReleaseNPC(Main.npc[activation.Targets[j].Identity.Index],
+                            activation.Targets[j].Lease);
                         activation.Targets.RemoveAt(j);
                     }
                 }
@@ -539,7 +585,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
         }
 
-        //权威钉身：位置钉回受理帧，速度钳零；周期 netUpdate 让客户端贴紧
+        //权威钉身：位置钉回受理帧，速度钳零；周期 netUpdate 让客户端贴紧。
+        //租约是主保险(AI 停摆),钉身留作双保险;租约被别处清掉就地重挂
 
         private static void PinTargets(DrownActivation activation) {
             bool push = activation.Timer % 8 == 0;
@@ -550,6 +597,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 }
                 npc.position = target.Pin;
                 npc.velocity = Vector2.Zero;
+                if (!TimeFreezeSystem.IsLeaseActive(npc, target.Lease)) {
+                    target.Lease = AcquireGrabLease(npc);
+                    activation.Targets[j] = target;
+                }
                 if (push && Main.netMode == NetmodeID.Server) {
                     npc.netUpdate = true;
                 }
@@ -565,6 +616,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 moonCoreWho = KikasaMoonLordDrown.CoreIndexOf(primaryNpc);
             }
 
+            //真身要走了,租约不留在槽位上
+            ReleaseTargetLeases(activation, Vector2.Zero);
             for (int j = 0; j < activation.Targets.Count; j++) {
                 if (!activation.Targets[j].Identity.TryResolve(out NPC npc)) {
                     continue;
@@ -594,6 +647,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         }
 
         private static void CancelActivation(DrownActivation activation, int index, string clause) {
+            //放行:恢复冻结前的速度快照,被抓住的东西接着原来的路走
+            ReleaseTargetLeases(activation, null);
             activations.RemoveAt(index);
             cooldowns[activation.OwnerWho] = CooldownFrames / 2;
             Reject(activation.OwnerWho, $"cancel:{clause}");

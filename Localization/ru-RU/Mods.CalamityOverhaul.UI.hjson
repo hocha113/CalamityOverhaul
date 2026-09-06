@@ -383,6 +383,11 @@ HerbFarmer: {
 		StatusIdle: Ожидание
 		StatusNoPower: Нет энергии
 		StatusOff: Отключено
+		// StatusWaitingBloom: Awaiting Bloom
+		// StatusGrowing: Growing
+		// StatusFull: Produce Full
+		// StatusNoSeeds: No Seeds
+		// StatusNoSoil: No Valid Soil
 		EnergyLabel: Энергия
 		SeedHint: Положите семена трав
 		TakeHint: Нажмите, чтобы забрать

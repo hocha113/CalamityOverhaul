@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
     /// <summary>
     /// 蘑菇农场机TP:范围内的草地播普通蘑菇,蘑菇草播发光蘑菇,采收入仓。<br/>
     /// 蘑菇没有种子物品,播种输入换成地表类型扫描;蘑菇即种即收,产率由播种节拍限制。<br/>
+    /// 蘑菇草底面垂下的吊藤(<see cref="TileID.MushroomVines"/>)原版每段 1/2 掉发光蘑菇,叠层农场里是大头产出,
+    /// 一并按串采收;清株须自底向顶,原版 TileFrame 会把失去上方支撑的藤段连锁杀掉并把掉落撒在地上。<br/>
     /// 物块改动与采收掷骰仅权威端执行(主线程经 Defer),动作演出经修订号搭全量包广播
     /// </summary>
     internal class MushroomFarmerTP : BaseBattery
@@ -206,9 +208,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
 
                     Tile tile = Main.tile[x, y];
                     if (tile.HasTile) {
-                        //可采收:普通蘑菇(tile3 蘑菇帧)或发光蘑菇植株
+                        //可采收:普通蘑菇(tile3 蘑菇帧)、发光蘑菇植株,以及蘑菇吊藤(只记每串顶段,整串一次收)
                         if ((tile.TileType == TileID.Plants && tile.TileFrameX == MushroomFrameX)
-                            || tile.TileType == TileID.MushroomPlants) {
+                            || tile.TileType == TileID.MushroomPlants
+                            || IsVineChainTop(x, y, tile)) {
                             harvestSpots.Add(new Point16(x, y));
                         }
                         continue;
@@ -231,6 +234,28 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                     }
                 }
             }
+        }
+
+        /// <summary>吊藤串的顶段:本格是蘑菇吊藤且上方不是吊藤,即直接挂在蘑菇草底面的那一段</summary>
+        private static bool IsVineChainTop(int x, int y, Tile tile) {
+            if (tile.TileType != TileID.MushroomVines) {
+                return false;
+            }
+            Tile above = Main.tile[x, y - 1];
+            return !above.HasTile || above.TileType != TileID.MushroomVines;
+        }
+
+        /// <summary>从顶段向下找到吊藤串的最后一段,返回其 Y;原版单串至多十来段,越界即停</summary>
+        private static int FindVineChainBottom(Point16 top) {
+            int bottom = top.Y;
+            while (WorldGen.InWorld(top.X, bottom + 1, 5)) {
+                Tile next = Main.tile[top.X, bottom + 1];
+                if (!next.HasTile || next.TileType != TileID.MushroomVines) {
+                    break;
+                }
+                bottom++;
+            }
+            return bottom;
         }
 
         #endregion
@@ -412,6 +437,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                     }
 
                     int produceType;
+                    int produceCount = 1;
                     if (tile.TileType == TileID.Plants && tile.TileFrameX == MushroomFrameX) {
                         //普通蘑菇固定掉一枚
                         produceType = ItemID.Mushroom;
@@ -427,6 +453,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                         else {
                             produceType = ItemID.None;
                         }
+                    }
+                    else if (tile.TileType == TileID.MushroomVines) {
+                        //吊藤整串收:每段镜像原版 1/2 掉发光蘑菇,不出种子;
+                        //下方藤段先自底向顶清掉,否则顶段一断原版会连锁杀掉下方并把掉落撒在地上
+                        int bottom = FindVineChainBottom(spot);
+                        produceCount = 0;
+                        for (int y = spot.Y; y <= bottom; y++) {
+                            if (Main.rand.NextBool()) {
+                                produceCount++;
+                            }
+                        }
+                        for (int y = bottom; y > spot.Y; y--) {
+                            WorldGen.KillTile(spot.X, y, false, false, true);
+                        }
+                        if (VaultUtils.isServer && bottom > spot.Y) {
+                            NetMessage.SendTileSquare(-1, spot.X, spot.Y + 1, 1, bottom - spot.Y);
+                        }
+                        produceType = produceCount > 0 ? ItemID.GlowingMushroom : ItemID.None;
                     }
                     else {
                         continue;
@@ -446,7 +490,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                         continue;
                     }
 
-                    int remain = InsertItem(Produce, produceType, 1);
+                    int remain = InsertItem(Produce, produceType, produceCount);
                     if (remain > 0) {
                         DropItem(new Item(produceType, remain));
                     }
@@ -532,9 +576,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                 return;
             }
 
-            //株本体可能已被清掉(采收),读地基判菇种最可靠:蘑菇草=发光蘑菇的蓝辉
+            //株本体可能已被清掉(采收),读地基判菇种最可靠:蘑菇草=发光蘑菇的蓝辉;吊藤的"地基"在上方
             Tile below = Framing.GetTileSafely(pos.X, pos.Y + 1);
-            bool glowKind = below.HasTile && below.TileType == TileID.MushroomGrass;
+            Tile above = Framing.GetTileSafely(pos.X, pos.Y - 1);
+            bool glowKind = (below.HasTile && below.TileType == TileID.MushroomGrass)
+                || (above.HasTile && above.TileType == TileID.MushroomGrass);
             Color sporeColor = glowKind ? new Color(95, 160, 255) : new Color(226, 220, 205);
 
             //孢子飞线:沿下垂弧线洒一串孢子,初速取弧线切向;
@@ -660,7 +706,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                                 visualShroomSpots.Add(new Point16(x, y));
                             }
                         }
-                        else if (tile.TileType == TileID.MushroomPlants) {
+                        else if (tile.TileType == TileID.MushroomPlants || tile.TileType == TileID.MushroomVines) {
+                            //吊藤也是发光菇源,一样冒蓝孢子
                             if (visualGlowShroomSpots.Count < 60) {
                                 visualGlowShroomSpots.Add(new Point16(x, y));
                             }

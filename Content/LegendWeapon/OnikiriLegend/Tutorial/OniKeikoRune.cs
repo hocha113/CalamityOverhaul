@@ -149,13 +149,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             Item.UseSound = SoundID.Item29 with { Pitch = -0.55f, Volume = 0.5f };
         }
 
-        /// <summary>补一枚符进行囊,已有则不重发</summary>
+        /// <summary>补一枚符进行囊,已有(含各类银行)则不重发</summary>
         internal static void GrantTo(Player player) {
             if (Main.dedServ || player?.whoAmI != Main.myPlayer) {
                 return;
             }
             int type = ModContent.ItemType<OniKeikoRune>();
-            if (!player.HasItem(type)) {
+            if (!player.HasItemInAnyInventory(type)) {
                 player.GiveItem(player.GetSource_Misc("CWR_OnikiriKeikoRune"), type);
             }
             VaultUtils.Text(OnikiriTutorialLead.DeclineNotice.Value, OnikiriUITheme.GoldInlay);

@@ -73,6 +73,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             //清除所有buff
             ClearAllBuffs(player);
+            //喝药冷却是独立字段,药水疾病 buff 删了它不归零、照旧挡喝药(反馈七·#132)
+            player.potionDelay = 0;
 
             player.SetResurrectionValue(0);//复苏进度归零
 

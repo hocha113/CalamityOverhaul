@@ -21,8 +21,10 @@ BottlingMachine: {
 	// DisplayName: Bottling Machine
 	/* Tooltip:
 		'''
-		Fills empty bottles and buckets from stored fluid, or drains full containers back into the buffer
-		Each job costs 5UE; products go to the output slot
+		Right-click holding empty bottles or buckets to load them; they are filled from the stored fluid
+		Right-click holding full bottles or buckets to load them; they are emptied and the fluid returns to the pipelines
+		Draws fluid from pipelines while bottling; otherwise stored fluid flows back into the pipelines
+		Each job costs 5UE; right-click empty-handed to take the product, Shift + right-click takes everything
 		Both slots connect to item pipelines for automatic transfer
 		''' */
 }
@@ -487,6 +489,7 @@ PotionBeacon: {
 
 HerbFarmer: {
 	// NoEnergyText: Insufficient energy!
+	// FullText: Produce storage is full!
 	// DisplayName: Herb Farming Machine
 	/* Tooltip:
 		'''
@@ -504,6 +507,7 @@ MushroomFarmer: {
 		'''
 		Consumes power to cultivate mushrooms on nearby grass and glowing mushrooms on mushroom grass
 		Harvests them automatically, occasionally yielding mushroom grass seeds
+		Also cuts down vines hanging under mushroom grass; each segment has a 50% chance to yield a glowing mushroom
 		Right-click to open the control panel
 		''' */
 }

@@ -59,6 +59,15 @@ namespace CalamityOverhaul
         public static List<int> SkeletronPrimeSegments;
         /// <summary>全部体节表</summary>
         public static List<List<int>> AllBossSegmentLists { get; private set; }
+        /// <summary>双子魔眼（两只独立实体，同场同沉）</summary>
+        public static List<int> TwinsCompanions;
+        /// <summary>史莱姆之神（核心 + 两圣卫 + 两分裂体，核心恒不可伤，不拉它就会自己消散爆掉落，整组必须一起走）</summary>
+        public static List<int> SlimeGodCompanions;
+        /// <summary>
+        /// 同场同沉伙伴表。与体节表不同，这里的成员是各自独立的 boss 实体，只有"整场一起移除"的动作
+        /// （鬼伞沉溺）按它成组；肢解/骇入/域冻结仍按体节表，不受此表影响
+        /// </summary>
+        public static List<List<int>> AllBossCompanionSets { get; private set; }
         /// <summary>蠕虫体节</summary>
         public static int[] WormBodys { get; private set; }
         #endregion
@@ -174,6 +183,16 @@ namespace CalamityOverhaul
                 GolemSegments,
                 SkeletronSegments,
                 SkeletronPrimeSegments,
+            ];
+
+            TwinsCompanions = [NPCID.Retinazer, NPCID.Spazmatism];
+            SlimeGodCompanions = [CWRID.NPC_SlimeGodCore, CWRID.NPC_EbonianPaladin, CWRID.NPC_CrimulanPaladin,
+                CWRID.NPC_SplitEbonianPaladin, CWRID.NPC_SplitCrimulanPaladin];
+            //灾厄缺席时 CWRID 取值为 0,剔掉免得类型 0 混进表里
+            SlimeGodCompanions.RemoveAll(type => type <= NPCID.None);
+            AllBossCompanionSets = [
+                TwinsCompanions,
+                SlimeGodCompanions,
             ];
 
             WormBodys = [
@@ -294,6 +313,7 @@ namespace CalamityOverhaul
             NPCValue.ImmuneFrozen?.Clear();
             ProjValue.ImmuneFrozen?.Clear();
             AllBossSegmentLists = null;
+            AllBossCompanionSets = null;
         }
         #endregion
 

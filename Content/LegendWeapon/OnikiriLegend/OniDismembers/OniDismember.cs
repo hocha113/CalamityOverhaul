@@ -749,12 +749,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         /// <summary>逐帧、挂 PostUpdateNPCs</summary>
         internal static void UpdateAll() {
+            //改铭台/点鬼簿的世界冻结只拦实体 AI,ModSystem 钩子照跑,
+            //停滞倒计时与碎片演出计时在时停里一并停住,失效清理照常(反馈七·#157)
+            bool frozen = WorldFreezeSystem.IsActive;
+
             for (int i = lockEntries.Count - 1; i >= 0; i--) {
                 DismemberLockEntry entry = lockEntries[i];
                 NPC npc = Main.npc[entry.NpcIndex];
                 if (!npc.active || npc.type != entry.NpcType
                     || !TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease)) {
                     lockEntries.RemoveAt(i);
+                    continue;
+                }
+                if (frozen) {
                     continue;
                 }
 
@@ -771,6 +778,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 NPC npc = Main.npc[entry.NpcIndex];
                 if (!npc.active || npc.type != entry.NpcType) {
                     Entries.RemoveAt(i);
+                    continue;
+                }
+                if (frozen) {
                     continue;
                 }
 

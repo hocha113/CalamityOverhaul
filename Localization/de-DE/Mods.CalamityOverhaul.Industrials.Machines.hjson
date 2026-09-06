@@ -488,6 +488,7 @@ PotionBeacon: {
 
 HerbFarmer: {
 	NoEnergyText: Energie reicht nicht!
+	// FullText: Produce storage is full!
 	DisplayName: Kräuterfarm
 	Tooltip:
 		'''

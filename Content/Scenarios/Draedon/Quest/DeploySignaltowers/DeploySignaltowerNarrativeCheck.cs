@@ -77,12 +77,15 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 return;
             }
 
+            //旗在起演成功后才落,否则起演失败这一次就把整段完成剧情(含奖励与后续登门)永久跳过(反馈七·#149)
+            questCompleteCheckTimer = 0;
+            if (!NarrativeRouter.Begin<QuestCompleteScenario>()) {
+                return;
+            }
             DraedonStorySync.WriteDraedon(
                 d => d.DeploySignaltowerQuestCompleted = true,
                 d => d.DeploySignaltowerQuestCompleted = true);
             DSTPlayer.HasDeploySignaltowerQuestByWorld = false;
-            NarrativeRouter.Begin<QuestCompleteScenario>();
-            questCompleteCheckTimer = 0;
         }
 
         public override void ClearWorld() {

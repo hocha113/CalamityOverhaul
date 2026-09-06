@@ -385,6 +385,11 @@ HerbFarmer: {
 		// StatusIdle: Idle
 		// StatusNoPower: No Power
 		// StatusOff: Disabled
+		// StatusWaitingBloom: Awaiting Bloom
+		// StatusGrowing: Growing
+		// StatusFull: Produce Full
+		// StatusNoSeeds: No Seeds
+		// StatusNoSoil: No Valid Soil
 		// EnergyLabel: Power
 		// SeedHint: Place herb seeds
 		// TakeHint: Click to retrieve

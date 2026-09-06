@@ -262,6 +262,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                     i--;
                 }
             }
+            //喝药冷却是独立字段,药水疾病 buff 删了它不归零、照旧挡喝药(反馈七·#132)
+            owner.potionDelay = 0;
             //海妖八音盒的必死是玩家字段不是 debuff，清 buff 洗不掉——对齐比目鱼重启的清诅咒口径（反馈 #7）。
             //只在被诅咒者本机执行强停，免得本函数被旁观端回放时误停自己的会话
             if (owner.whoAmI == Main.myPlayer

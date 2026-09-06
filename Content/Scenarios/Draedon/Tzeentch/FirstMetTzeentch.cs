@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
@@ -93,18 +94,31 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch
             RandTimer = Main.rand.Next(60 * 13, 60 * 20);
         }
 
+        /// <summary>登门条件按持久旗推导，量子塔委托已完成且尚未初见</summary>
+        private static bool ShouldVisit()
+            => DraedonStorySync.ReadDraedon(d => d.DeploySignaltowerQuestCompleted, d => d.DeploySignaltowerQuestCompleted)
+            && !DraedonStorySync.ReadDraedon(d => d.FirstMetTzeentch, d => d.FirstMetTzeentch);
+
         public static void Tick() {
+            //Spawn 只是本会话的静态闩,委托完成到登门之间有十几秒窗,窗内退出世界(或被 boss 顶着再退出)
+            //闩就丢了,而委托旗已永久为真、再没人调 Open,初见永远不来(反馈七·#149)
+            //这里按持久旗补挂,重进世界照常登门,Open 仍保留给委托完成当场起算
             if (!Spawn) {
+                if (ShouldVisit()) {
+                    Open();
+                }
                 return;
             }
 
-            if (DraedonStorySync.ReadDraedon(d => d.FirstMetTzeentch, d => d.FirstMetTzeentch)) {
+            if (!ShouldVisit()) {
                 Spawn = false;
                 RandTimer = 0;
                 return;
             }
 
-            if (CWRWorld.HasBoss || CWRWorld.BossRush) {
+            //委托完成的对话还在播、身在子世界时挂起倒计时不抢场
+            if (CWRWorld.HasBoss || CWRWorld.BossRush
+                || NarrativeTriggerGate.IsBusy || SubWorldRef.AnyActiveSubWorld()) {
                 return;
             }
 

@@ -489,6 +489,7 @@ PotionBeacon: {
 
 HerbFarmer: {
 	NoEnergyText: Énergie insuffisante!
+	// FullText: Produce storage is full!
 	DisplayName: Machine de culture d'herbes
 	Tooltip:
 		'''

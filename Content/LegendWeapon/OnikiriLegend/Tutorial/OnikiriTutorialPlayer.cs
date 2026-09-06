@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         /// <summary>
         /// 稽古符补发巡检:婉拒且从未完成的档,符是教程唯一重开入口,
         /// 而试炼委托门禁又押在教程完成位上——符意外丢失(丢弃/销毁/掉落)会把委托链永久锁死。
-        /// 低频检查,已持有(含鼠标上)不重发;GrantTo 自带在场去重与播报
+        /// 低频检查,已持有(含各类银行与鼠标上)不重发;GrantTo 自带在场去重与播报
         /// </summary>
         private void TickRuneReissue() {
             if (runeReissued || IsRunning || Main.dedServ
@@ -335,7 +335,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 return;
             }
             int runeType = ModContent.ItemType<OniKeikoRune>();
-            if (Player.HasItem(runeType)) {
+            //HasItem 只扫背包,收进存钱罐/保险箱的符每次进世界都会被再发一枚(反馈七·#116)
+            if (Player.HasItemInAnyInventory(runeType)) {
                 return;
             }
             Item mouse = Main.mouseItem;

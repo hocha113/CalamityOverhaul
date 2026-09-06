@@ -383,6 +383,11 @@ HerbFarmer: {
 		StatusIdle: Leerlauf
 		StatusNoPower: Kein Strom
 		StatusOff: Deaktiviert
+		// StatusWaitingBloom: Awaiting Bloom
+		// StatusGrowing: Growing
+		// StatusFull: Produce Full
+		// StatusNoSeeds: No Seeds
+		// StatusNoSoil: No Valid Soil
 		EnergyLabel: Energie
 		SeedHint: Kräutersamen einlegen
 		TakeHint: Klicken zum Entnehmen

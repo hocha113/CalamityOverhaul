@@ -678,6 +678,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills.Resta
                     }
                 }
             }
+            //喝药冷却是独立字段,药水疾病 buff 删了它不归零、照旧挡喝药(反馈七·#132)
+            player.potionDelay = 0;
             //深渊侧状态一并重启：复苏归零、被诅咒的海妖音乐盒闭嘴
             player.SetResurrectionValue(0);
             if (player.TryGetModPlayer<Items.Tools.SirenMusicalBoxPlayer>(out var sirenPlayer)

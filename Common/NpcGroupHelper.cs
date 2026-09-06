@@ -134,6 +134,45 @@ namespace CalamityOverhaul.Common
             AppendAiLinkChain(root, output);
         }
 
+        /// <summary>
+        /// 同场同沉：先按 <see cref="CollectGroup(NPC, List{NPC}, bool)"/> 收体节组，再把
+        /// <see cref="CWRLoad.AllBossCompanionSets"/> 里与 root 同场的其余独立实体连同它们各自的体节组一并收进来
+        /// （双子沉一只带走另一只、史莱姆之神圣卫带走核心）。只给"整场一起移除"的动作用，
+        /// 肢解/骇入/域冻结仍按体节口径走 CollectGroup
+        /// </summary>
+        public static void CollectEncounter(NPC root, List<NPC> output, bool clear = true) {
+            CollectGroup(root, output, clear);
+            if (root == null || !root.active) {
+                return;
+            }
+            List<int> companions = FindCompanionSet(root.type);
+            if (companions == null) {
+                return;
+            }
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC n = Main.npc[i];
+                if (!n.active || !companions.Contains(n.type) || output.Contains(n)) {
+                    continue;
+                }
+                CollectGroup(n, companionScratch);
+                for (int k = 0; k < companionScratch.Count; k++) {
+                    if (!output.Contains(companionScratch[k])) {
+                        output.Add(companionScratch[k]);
+                    }
+                }
+            }
+            companionScratch.Clear();
+        }
+
+        /// <summary>两 type 是否同一伙伴组（伙伴表内成员才为真，同 type 也算）</summary>
+        public static bool AreCompanions(int typeA, int typeB) {
+            List<int> set = FindCompanionSet(typeA);
+            return set != null && set.Contains(typeB);
+        }
+
+        //伙伴收集的复用容器
+        private static readonly List<NPC> companionScratch = [];
+
         /// <summary>收集群组成员 whoAmI，含 ai 体节链补集</summary>
         public static void CollectGroupIndices(NPC root, List<int> output, bool clear = true) {
             if (output == null) {
@@ -267,6 +306,21 @@ namespace CalamityOverhaul.Common
                 var list = all[i];
                 if (list != null && list.Contains(type)) {
                     return list;
+                }
+            }
+            return null;
+        }
+
+        //伙伴表查找，找不到返回 null
+        private static List<int> FindCompanionSet(int type) {
+            var all = CWRLoad.AllBossCompanionSets;
+            if (all == null) {
+                return null;
+            }
+            for (int i = 0; i < all.Count; i++) {
+                var set = all[i];
+                if (set != null && set.Contains(type)) {
+                    return set;
                 }
             }
             return null;

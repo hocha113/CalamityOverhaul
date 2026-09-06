@@ -490,6 +490,7 @@ PotionBeacon: {
 
 HerbFarmer: {
 	NoEnergyText: Нехватка энергии!
+	// FullText: Produce storage is full!
 	DisplayName: Травяная ферма
 	Tooltip:
 		'''

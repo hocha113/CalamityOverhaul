@@ -487,6 +487,7 @@ PotionBeacon: {
 
 HerbFarmer: {
 	NoEnergyText: ¡Energía insuficiente!
+	// FullText: Produce storage is full!
 	DisplayName: Granja de hierbas
 	Tooltip:
 		'''

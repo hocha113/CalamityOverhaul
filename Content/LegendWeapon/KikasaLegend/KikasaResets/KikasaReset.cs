@@ -660,6 +660,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaResets
                     i--;
                 }
             }
+            //喝药冷却是独立字段,原版只在药水疾病 buff 在场时才把 buffTime 抄进去,
+            //buff 删了它就停在旧值继续挡喝药,图标没了却喝不了(反馈七·#132)
+            player.potionDelay = 0;
             //海妖八音盒的必死是玩家字段不是 debuff，清 buff 洗不掉——与比目鱼重启同款收口（反馈 #7）
             if (player.TryGetModPlayer<Items.Tools.SirenMusicalBoxPlayer>(out var sirenPlayer)
                 && sirenPlayer.IsCursed) {

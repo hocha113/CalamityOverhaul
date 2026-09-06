@@ -162,9 +162,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         }
 
         /// <summary>沉溺被门槛拦下：BOSS 级且未击败，这一按该是鞭笞不是拖拽。
-        /// 月总已击败后可沉，完成收尾见 <see cref="KikasaMoonLordDrown"/></summary>
+        /// 月总已击败后可沉，完成收尾见 <see cref="KikasaMoonLordDrown"/>。
+        /// 终焉之战进行中 BOSS 级一律拦下，沉溺移除真身不走 OnKill，灾厄 BossRush 见场上无 boss 就重召当前阶段，
+        /// 阶段永不推进、出场音反复播（反馈七·#158/#159）</summary>
         internal static bool DrownBlocked(NPC npc)
-            => IsBossLevel(npc) && !IsDefeated(npc);
+            => IsBossLevel(npc) && (!IsDefeated(npc) || CWRWorld.BossRush);
     }
 
     /// <summary>
