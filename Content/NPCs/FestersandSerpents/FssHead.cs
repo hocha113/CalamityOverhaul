@@ -71,13 +71,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
     internal class FssHead : FssModNPC, ICWRLoader
     {
         #region 数据
-        //FSS 贴图组：由 BSS 素材改色生成（Doc/tools/fss_recolor.py，坏死紫底 + 灵液金红类），
-        //把着色器曾经的亮度重映射烘进贴图——图鉴/调试窗口/地图头像/召唤物直接显示的就是脓蕾的样子，
-        //识别性贴图不与荒花共用（用户裁定 2026-09-06）
-        public override string Texture => CWRConstant.NPC + "FSS/Head";
-        public override string BossHeadTexture => CWRConstant.NPC + "FSS/Head_Boss";
+        public override string Texture => CWRConstant.NPC + "BSS/Head";
+        public override string BossHeadTexture => CWRConstant.NPC + "BSS/Head_Boss";
 
-        /// <summary>贴图前方朝下的旋转修正（沙蟒素材表统一约定）</summary>
+        /// <summary>贴图前方朝下的旋转修正（BSS 素材表统一约定）</summary>
         internal const float FacingRot = -MathHelper.PiOver2;
 
         //同步槽：ai[0]=统一血池上限 ai[1]=体节总数 ai[2]=阶段 ai[3]=状态机
@@ -86,22 +83,17 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
 
         internal const string StormFilterName = "CalamityOverhaul:FssFesterStorm";
 
-        /// <summary>腿贴图（BSS 步足稿的改色版）</summary>
-        [VaultLoaden(CWRConstant.NPC + "FSS/LegUpper")]
+        /// <summary>腿贴图（共用 BSS 步足正式稿；要专属稿换路径即可）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegUpper")]
         internal static Asset<Texture2D> LegUpperAsset = null;
-        [VaultLoaden(CWRConstant.NPC + "FSS/LegLower")]
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> LegLowerAsset = null;
-        /// <summary>疮杵臂贴图（腿节稿改色版）</summary>
-        [VaultLoaden(CWRConstant.NPC + "FSS/LegUpper")]
+        /// <summary>疮杵臂贴图（共用 BSS 步足腿节稿）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegUpper")]
         internal static Asset<Texture2D> ClawClubAsset = null;
-        /// <summary>长镰臂贴图（胫爪稿改色版）</summary>
-        [VaultLoaden(CWRConstant.NPC + "FSS/LegLower")]
+        /// <summary>长镰臂贴图（共用 BSS 胫爪稿）</summary>
+        [VaultLoaden(CWRConstant.NPC + "BSS/LegLower")]
         internal static Asset<Texture2D> ClawSickleAsset = null;
-        /// <summary>颚两瓣（改色版；铰链像素与 BSS 同稿，见 <see cref="BloomsandSerpents.BssJawDraw"/>）</summary>
-        [VaultLoaden(CWRConstant.NPC + "FSS/JawLeft")]
-        internal static Asset<Texture2D> JawLeftAsset = null;
-        [VaultLoaden(CWRConstant.NPC + "FSS/JawRight")]
-        internal static Asset<Texture2D> JawRightAsset = null;
 
         private NpcStateMachine<FssStateContext> stateMachine;
         internal FssStateContext Context { get; private set; }

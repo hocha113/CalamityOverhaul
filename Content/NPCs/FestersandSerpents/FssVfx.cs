@@ -28,9 +28,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         internal static readonly Color TaintedSand = new(152, 124, 94);
 
         /// <summary>
-        /// 体表乘色：把仍在借用的原版暖沙贴图（吞沙炮霰弹的 SandBallFalling）压向坏死紫。
-        /// 本体/腿/鳌足/囊肿/炮弹已换 FSS 改色贴图（Assets/NPCs/FSS，Doc/tools/fss_recolor.py 生成），
-        /// 自带底色不再手染。
+        /// 体表乘色（着色器未接管时的手染回退：把 BSS 暖沙贴图压向坏死紫，
+        /// 保细节不糊剪影；着色器上线后仍作为腿/残影的廉价同源染色）。
         /// </summary>
         internal static readonly Color SkinMul = new(172, 152, 205);
 

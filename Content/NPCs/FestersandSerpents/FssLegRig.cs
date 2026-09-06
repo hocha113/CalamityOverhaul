@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
     ///
     /// 变异性格层：足端痉挛微颤（高频小抖与步行大周期分层）、关节灵液滴漏、
     /// 踉跄（确定性哈希驱动的低概率落短补步——病态的不齐整）。
-    /// 贴图用 FSS 改色腿骨（BSS 稿的坏死紫版），只乘光照。
+    /// 贴图借 BSS 腿骨素材，统一乘 SkinMul 压向坏死紫。
     /// </summary>
     internal class FssLegRig
     {
@@ -543,7 +543,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
         /// <summary>
         /// 画十腿：按走地权重升序绘制——背侧/悬空排先画且压暗略细，走地排后画且全亮。
         /// 绘制髋叠加该站落步下沉量而足端不动 → 抓地瞬间支撑腿被压短。
-        /// 腿贴图是 FSS 改色版（自带坏死紫底），只乘光照。
+        /// 统一乘 SkinMul 手染坏死紫（与整链手染回退同源）。
         /// </summary>
         public void Draw(SpriteBatch sb, Vector2 screenPos, FssStateContext ctx) {
             if (ctx.LegAlpha <= 0.03f) {
@@ -582,7 +582,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
                 float groundness = leg.Groundness;
                 Color light = Lighting.GetColor((int)(leg.Hip.X / 16f), (int)(leg.Hip.Y / 16f));
                 float dim = MathHelper.Lerp(0.62f, 1f, groundness) * (1f - leg.Limp * 0.35f);
-                Color tint = new Color((byte)(light.R * dim), (byte)(light.G * dim), (byte)(light.B * dim), (byte)255) * fade;
+                Color tint = new Color((byte)(light.R * dim), (byte)(light.G * dim), (byte)(light.B * dim), (byte)255)
+                    .MultiplyRGB(FssVfx.SkinMul) * fade;
 
                 Vector2 hip = leg.Hip + new Vector2(0f, ctx.StationBob[li / 2] * StationDipPx);
                 float thick = MathHelper.Lerp(0.95f, 1.05f, groundness);

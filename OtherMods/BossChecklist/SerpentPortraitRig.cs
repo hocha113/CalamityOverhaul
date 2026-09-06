@@ -1,7 +1,6 @@
 using CalamityOverhaul.Content.NPCs;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents;
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
-using CalamityOverhaul.Content.NPCs.FestersandSerpents;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -18,7 +17,7 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
     /// </summary>
     internal sealed class SerpentPortraitRig
     {
-        //==================== 贴图（荒花原稿；脓蕾用自己的改色组，见 Fss* 三件）====================
+        //==================== 共享贴图（两条沙蟒同用 BSS 素材，脓蕾靠 shader 换皮）====================
 
         [VaultLoaden(CWRConstant.NPC + "BSS/Head")]
         internal static Asset<Texture2D> HeadTex = null;
@@ -26,13 +25,6 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         internal static Asset<Texture2D> BodyTex = null;
         [VaultLoaden(CWRConstant.NPC + "BSS/Tail")]
         internal static Asset<Texture2D> TailTex = null;
-        /// <summary>脓蕾专属改色组（坏死紫底 + 金脓；Doc/tools/fss_recolor.py 生成），帧几何与 BSS 稿一致</summary>
-        [VaultLoaden(CWRConstant.NPC + "FSS/Head")]
-        internal static Asset<Texture2D> FssHeadTex = null;
-        [VaultLoaden(CWRConstant.NPC + "FSS/Body")]
-        internal static Asset<Texture2D> FssBodyTex = null;
-        [VaultLoaden(CWRConstant.NPC + "FSS/Tail")]
-        internal static Asset<Texture2D> FssTailTex = null;
 
         /// <summary>
         /// 体节帧底部隔帧留白（像素）。帧高 108：旧三款 98 行内容落在 4~102（上留 4 下留 6），
@@ -107,12 +99,6 @@ namespace CalamityOverhaul.OtherMods.BossChecklist
         public Action<Vector2, Vector2, float> OnLegSandFx;
         /// <summary>是否带鳌足（荒花专属剪影；脓蕾共用本 rig 但无鳌足）</summary>
         public bool WithClaws;
-
-        /// <summary>换用脓蕾改色腿骨（默认荒花稿）：托管的步足 rig 贴图覆写</summary>
-        public void UseFesterLegSkin() {
-            legRig.UpperTexOverride = FssHead.LegUpperAsset;
-            legRig.LowerTexOverride = FssHead.LegLowerAsset;
-        }
         /// <summary>鳌足共用战斗端骨架（待机呼吸摆，埋沙自动收拢）</summary>
         private readonly BssClawRig clawRig = new();
 

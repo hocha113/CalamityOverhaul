@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Projectiles
     /// </summary>
     internal class FssHuskShard : FssModProjectile
     {
-        public override string Texture => CWRConstant.NPC + "FSS/Body";
+        public override string Texture => CWRConstant.NPC + "BSS/Body";
 
         private float spin;
 

@@ -346,7 +346,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
             }
             Vector2 mid = limb.Joints[3];
             Color light = Lighting.GetColor((int)(mid.X / 16f), (int)(mid.Y / 16f));
-            Color tint = new Color((byte)(light.R * dim), (byte)(light.G * dim), (byte)(light.B * dim), (byte)255) * fade;
+            Color tint = new Color((byte)(light.R * dim), (byte)(light.G * dim), (byte)(light.B * dim), (byte)255)
+                .MultiplyRGB(FssVfx.SkinMul) * fade;
             DrawLimbCore(sb, ref limb, li, screenPos, tint);
         }
 

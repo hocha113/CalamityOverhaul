@@ -1,6 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BloomsandSerpents.Core;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -757,10 +756,6 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             }
         }
 
-        /// <summary>腿骨贴图覆写（null = 荒花默认稿）：脓蕾图鉴托管本 rig 时换成自己的改色腿</summary>
-        internal Asset<Texture2D> UpperTexOverride { get; set; }
-        internal Asset<Texture2D> LowerTexOverride { get; set; }
-
         /// <summary>按走地权重升序：暗排在底、亮排在面（角色过渡时序随之连续换层）</summary>
         private void BuildDrawOrder(Span<int> order) {
             for (int i = 0; i < TotalLegs; i++) {
@@ -779,11 +774,10 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         }
 
         /// <summary>画一条腿的四段骨节（基节/腿节/胫爪/爪尖；髋端叠 bob 下沉，足端踩定；骨宽随倍率）</summary>
-        private void DrawLeg(SpriteBatch sb, in Leg leg, Vector2 screenPos, Color tint, float bobPx, float scale) {
-            Texture2D upperTex = (UpperTexOverride ?? BssHead.LegUpperAsset)?.Value;
-            Texture2D lowerTex = (LowerTexOverride ?? BssHead.LegLowerAsset)?.Value;
-            //爪尖微节共用胫爪稿（覆写时也跟着换）
-            Texture2D clawTex = (LowerTexOverride ?? BssHead.LegClawAsset)?.Value;
+        private static void DrawLeg(SpriteBatch sb, in Leg leg, Vector2 screenPos, Color tint, float bobPx, float scale) {
+            Texture2D upperTex = BssHead.LegUpperAsset?.Value;
+            Texture2D lowerTex = BssHead.LegLowerAsset?.Value;
+            Texture2D clawTex = BssHead.LegClawAsset?.Value;
             if (upperTex == null || lowerTex == null) {
                 return;
             }

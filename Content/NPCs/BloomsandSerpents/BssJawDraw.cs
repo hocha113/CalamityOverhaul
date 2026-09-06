@@ -98,13 +98,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         /// <summary>
         /// 画两瓣颚。headCenter 为头本体绘制中心（含绘制偏移），headRotation 为头旋转；
         /// 调用方须在画头本体之前调用，颚根才会被头压住。
-        /// 贴图默认取荒花的两瓣；脓蕾传自己的改色版（铰链像素同稿，几何共用）。
         /// </summary>
         internal static void Draw(SpriteBatch sb, Vector2 headCenter, float headRotation,
-            float jawOpen, Color tint, Vector2 screenPos, float scale = 1f,
-            Texture2D leftTex = null, Texture2D rightTex = null) {
-            Texture2D left = leftTex ?? BssHead.JawLeftAsset?.Value;
-            Texture2D right = rightTex ?? BssHead.JawRightAsset?.Value;
+            float jawOpen, Color tint, Vector2 screenPos, float scale = 1f) {
+            Texture2D left = BssHead.JawLeftAsset?.Value;
+            Texture2D right = BssHead.JawRightAsset?.Value;
             if (left == null || right == null) {
                 return;
             }

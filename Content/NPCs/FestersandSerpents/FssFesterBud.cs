@@ -9,11 +9,11 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
     /// <summary>
     /// 脓化花蕾：荒花沙蟒召唤物被暗影之魂沁染的变异体。沙漠地表使用，唤来脓蕾沙蟒。
     /// 条件：沙漠 + 地表 + 场上无本体——不设进度门槛，前置由配方里的暗影之魂把关。
-    /// 贴图是花蕾稿的改色专属版（坏死紫 + 金脓），不与荒花召唤物共用。
+    /// 贴图暂借刺球素材（与带刺花蕾同源）。
     /// </summary>
     internal class FssFesterBud : FssModItem
     {
-        public override string Texture => CWRConstant.NPC + "FSS/FesterBud";
+        public override string Texture => CWRConstant.NPC + "BSS/CactusBall";
 
         public override void SetStaticDefaults() {
             ItemID.Sets.SortingPriorityBossSpawns[Type] = 9;
