@@ -750,17 +750,17 @@ OnikiriOverride: {
 }
 
 OnikiriTrialQuestLine: {
-	QuestCategory: Prüfung
-	TrackerWaiting: Es ist noch nicht da
+	QuestCategory: Onikiri · Schnittprüfungen
+	TrackerWaiting: Es ist noch nicht da. Warten wir, oder fordern wir es heraus?
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Nächster Schnitt: {0}
 	BossRushTargetName: Schlacht von Terminus
 	EventActiveFormat: "{0}: im Gange"
 	Trial_0: Himmelsauge
-	Trial_1: Zwei Schändlichkeiten der Erde
-	Trial_2: Zusammengeballter Unrat
+	Trial_1: Zwillingsgreuel der Erde
+	Trial_2: Zusammengeballter Schandhort
 	Trial_3: Anmaßender Gott
-	Trial_4: Fleischwand der Grenze
+	Trial_4: Schranken-Fleischwand
 	Trial_5: Eiternde Sandschuppen
 	Trial_6: Abgrundglut
 	Trial_7: Dröhnende Eisenschlange
@@ -780,138 +780,136 @@ OnikiriTrialQuestLine: {
 	Trial_21: Nacht, die sich wieder sammelt
 	TrialSummary_0:
 		'''
-		Am Himmel ist irgendwas, ich weiß auch nicht was
-		Fühlt sich an, als würde uns jemand anstarren, und die Klinge wird unruhig
-		Geh nachsehen, komm zurück und sag mir, was das überhaupt war
-		Ach ja, nicht zu lange den Kopf in den Nacken. Tut der Nacken weh
+		Am Himmel scheint die ganze Zeit etwas herabzublicken, im Schwert wird einem ganz bang
+		Ich kann selbst nicht genau sagen, was es ist – steig mal hinauf und schau nach
+		Reck den Hals nicht zu lange in die Höhe, sonst schmerzt dir das Genick. Wenn du fertig bist, erzähl mir davon
 		'''
 	TrialSummary_1:
 		'''
-		Aus der Erde kommen zwei schiefe Sachen, ich unterscheide sie nicht
-		Was zuerst den Kopf rausstreckt, das schneidest du. Nicht beide zugleich anstarren
-		Die Klinge merkt, wenn der Geschmack nicht stimmt. Du gehst vor
+		Der Wind aus dem fauligen Land riecht stechend scharf, stinkend und schwer, als verbärgen sich darin zwei verschiedene Biester
+		Wenn du auf sie triffst, greif dir das, was zuerst anstürmt, verzettel dich nicht zwischen beiden
+		Sobald die Luft übel riecht, zieh schnell die Klinge; je eher wir fertig sind, desto eher können wir wieder durchatmen
 		'''
 	TrialSummary_2:
 		'''
-		Da hat sich Unrat zu einem Klumpen geballt, schon der Wind davon nervt
-		Steh nicht rum und glotz. Geh das wegmachen
-		Wenn du zurückkommst, zählt zuerst, dass es erledigt ist
+		Tief unter der Erde hat sich dieser Schandunrat zu einem dicken Klumpen geballt, das klebt einem schon von weitem im Mund
+		Wenn wir das einfach so lassen, gibt das nur noch mehr Ärger, geh und schlag es in Stücke
+		Pass im Morast gut auf deine Schritte auf, damit du nicht von oben bis unten vollgesudelt zurückkommst
 		'''
 	TrialSummary_3:
 		'''
-		Irgendwas nennt sich Gott. Da muss ich schon lachen
-		Wären Namen so leicht, würde sich niemand mehr anstrengen
-		Geh nachprüfen. Wenn es sich wirklich so nennt, nimm ihm den Namen auseinander
-		Hey, ich schick dich nicht zum Beten. Hör zu
+		Man hört munkeln, da drüben gebe sich ein Schlammklumpen als Gottheit aus – da muss ich ja fast lachen
+		Wenn es so leicht wäre, sich große Namen zuzulegen, warum sollte sich dann noch jemand mit harter Übung abmühen?
+		Schau mal nach, was wirklich dahintersteckt. Wenn es nur Spuk und Gehabe ist, stech mit einem Schnitt mitten durch
+		Und hör gut zu: Du gehst hin, um es zu zerplatzen, nicht um davor auf die Knie zu fallen!
 		'''
 	TrialSummary_4:
 		'''
-		Vorne ist wie zugemauert, ich sag nicht womit
-		Ist der Weg zu, mach ihn auf
-		Wie es sich dahinter anfühlt, reden wir, wenn du zurück bist
+		Tief unten ist der Weg wie von einer riesigen Fleischwand abgeriegelt, selbst wenn man das Schwert durch die Luft zieht, fühlt es sich dumpf an
+		Wo kein Weg ist, muss man ihn eben freihauen
+		Wenn dieser Kampf überstanden ist, wird sich die Welt da draußen wohl wandeln. Reiß dich zusammen, wenn du durch bist, sprechen wir weiter
 		'''
 	TrialSummary_5:
 		'''
-		Die Wüste riecht anders, faule Blüten mit Eiter, da wühlt was
-		Lass es nicht tiefer graben. Geh und schneid es ab
-		Und stoß die Klinge nicht in die Beulen, hier wohnt noch jemand
+		Unter dem Wüstensand rumort es gewaltig, der Sand wälzt sich hin und her, als würde sich ein riesiger Wurm mit aller Kraft nach unten bohren
+		Halt ihn auf, ehe er zu tief verschwindet
+		Triff sauber mit der Klinge und steck nicht das ganze Schwert bis zum Heft in die Schlammpampe, ich wohne schließlich hier drin – lass mir ein bisschen sauberen Platz!
 		'''
 	TrialSummary_6:
 		'''
-		Die Feuergrube da drüben brennt noch, als wollte jemand nicht ausgehen
-		Mach sie aus, und pass auf die Füße auf
-		Verbrennst du dich, kann ich nicht pusten
+		In der Feuergrube glimmt es immer noch rot, selbst aus dieser Ferne fühlt sich das Schwert kochend heiß an
+		Geh und mach es aus, es muss ja nicht ewig brennen
+		Pass auf den Lavabänken auf deine Füße auf; wenn du dir Brandblasen holst, pustet dir keiner die Sohlen ab
 		'''
 	TrialSummary_7:
 		'''
-		Da hat eins einen lauten Namen, klingt erst mal furchteinflößend
-		Im Eisen rührt sich was. Geh und stoß nach, ob das nur große Töne sind
-		Wett nicht mit ihm, wessen Name größer ist
+		Aus der Tiefe hallt ein Beben herauf, das mit jedem Schritt lauter wird, das Schwert vibriert förmlich mit – klingt nach einem riesigen Eisenkoloss
+		Ganz gleich, wie furchterregend sein Name ist: Eisen bleibt Eisen. Geh und probier aus, wie hart er wirklich ist
+		Schlag nicht stur Kante auf Kante gegen das massive Eisen, such dir Fugen, damit dir nicht die Hände taub werden
 		'''
 	TrialSummary_8:
 		'''
-		Zwei Punkte am Himmel, als hätten sie sich verabredet
-		Kommen sie als Paar, trenn sie. Lass dich nicht von beiden anstarren
-		Wenn du zurück bist, kannst du meckern, ob sie wie Menschen aussehen
+		Am Himmel sind zwei Lichtflecken aufgetaucht, als hätten sie sich verabredet – von beiden Seiten gleichzeitig angestarrt zu werden, ist ziemlich unangenehm
+		Zu zweit sind sie schwer zu packen. Halt Abstand und erledige einen nach dem anderen, lass dich bloß nicht in die Zange nehmen
+		Husch, husch, beeil dich! Wenn du zurück bist, erzählst du mir, wie die beiden wirklich aussahen
 		'''
 	TrialSummary_9:
 		'''
-		Alt und neu durcheinander, sieht schief aus, aber ich hab's noch nicht klar
-		Geh und sortier das. Lass dich nicht bluffen
-		Wenn du zurück bist, reden wir, welche Seite überhaupt echt war
+		Was von dort herüberdröhnt, klingt reichlich seltsam: Eisengestelle und Knochentrümmer, ungelenk und halbgar aneinandergeflickt
+		Wie groß das Gestell auch aufgetürmt sein mag, es bleibt zusammengestoppelt – lass dich von dem Theater nicht einschüchtern
+		Such die Gelenke und Nahtstellen, zerlege es in seine Einzelteile und erzähl mir hinterher, welches Stück davon überhaupt echt war
 		'''
 	TrialSummary_10:
 		'''
-		Ein Schatten läuft zu sehr wie ein Mensch. Das Gesicht hab ich nicht gesehen, und schon ekelt's mich
-		Steh nicht da und starr. Geh das wegmachen
-		Wen es nachmacht, das schimpfen wir, wenn du zurück bist
+		Da vorne bewegt sich ein Schatten, dessen Gangart viel zu sehr an einen Menschen erinnert – doch von lebendiger Wärme fehlt jede Spur
+		Je krampfhafter solche Fälschungen den menschlichen Gang nachahmen, desto widerwärtiger sind sie. Bleib da bloß nicht stehen und glotz
+		Geh hin, zieh die Klinge und schlag es in Stücke. Wen es nachgeäfft hat, können wir bereden, wenn es erledigt ist
 		'''
 	TrialSummary_11:
 		'''
-		Unten blüht was, das nicht blühen sollte. Der Geruch stimmt schon nicht
-		Ist sie verblüht, mach sie weg. Lass sie nicht hier, um mich zu nerven
-		Blumenhändlerregeln später. Du gehst zuerst
+		Aus der Tiefe des Dschungels weht ein Duft herauf, süßlich zwar, doch darunter schwelt ein Gestank von Fäulnis und Welke
+		Wie schön eine Blüte auch blüht: Wenn das Herz verfault ist, muss man sie abschneiden, sonst verdirbt das ganze Dickicht
+		Über die Kunst des Blumenstutzens reden wir, wenn du zurück bist. Mach schon, und pass auf die Schlingranken auf
 		'''
 	TrialSummary_12:
 		'''
-		Im Steinhaus sitzt eins, das sich nicht gern bewegt. Sieht hart aus
-		Wirf es um. Schlag die Klinge nicht gegen Stein, das spür ich auch
-		Werden die Hände taub, reib sie, wenn du zurück bist
+		Im Steinbau hockt ein riesiger Felsklotz, der sich kein Stück von der Stelle rührt, sieht verdammt schwer und wuchtig aus
+		Bring ihn irgendwie zu Fall und schlag ihn in Trümmer, aber schlag mit der Klinge nicht stur auf harten Stein – wenn die Schneide splittert, tut mir das auch weh
+		Sollten dir die Handgelenke taub werden, schüttle sie hinterher erst mal ordentlich aus
 		'''
 	TrialSummary_13:
 		'''
-		Vor dem Kerker murmelt jemand, als wäre er noch nicht fertig
-		Unterbrich das, die Ohren sollen nicht mitmüde werden
-		Was er gemurmelt hat, später. Glaub es jedenfalls nicht
+		Vor dem Kerkertor hockt eine Schar Gestalten und murmelt unentwegt vor sich hin, da schmerzen einem glatt die Ohren
+		Geh direkt hin und unterbrich sie, damit der Lärm endlich aufhört
+		Was für wirres Zeug sie da auch daherbrabbeln – glaub kein einziges Wort davon, mach schnell Schluss und komm bald zurück
 		'''
 	TrialSummary_14:
 		'''
-		Auf dem Mond lastet irgendwas. Den Kopf heben fühlt sich schon schwer an
-		Geh das wegmachen. Steh nicht nur da und starr nach oben
-		Wenn du zurück bist, frag ich, ob du kaputt bist
+		Über dem Firmament lastet eine gewaltige finstere Wolke, allein beim Aufblicken schnürt es einem die Brust zu
+		Wenn das Ding dort oben im Weg hängt, flieg hinauf und schlag es herunter
+		Bleib nicht einfach unten stehen und starr ins Leere, nimm es ernst! Wenn du heil zurück bist, frage ich dich, wie müde du bist
 		'''
 	TrialSummary_15:
 		'''
-		Vom Erdkern her wird's heiß, bei mir fühlt sich's auch vorgewärmt an
-		Geh. Die Schneide wird heiß, das weißt du vorher
-		Bleib nicht zu lange in der Hitze. Fertig, dann weg
+		Vom Erdkern steigen Hitzewellen herauf, die Klinge, in der ich ruhe, wird schon ganz heiß gebacken
+		Aus der Nähe wird dieser Gang garantiert sengend heiß, stell dich von vornherein darauf ein
+		Verzettle dich nicht in der glühenden Hitze, schlag zu und zieh dich sofort wieder zurück
 		'''
 	TrialSummary_16:
 		'''
-		In der Feuchte da haben sich Geister zu einem Knäuel geballt. Ich zähl nicht
-		Nimm den ganzen Klumpen, nicht eins nach dem anderen
-		Übernachte da nicht. Wenn du zurück bist, nörgle ich nochmal
+		Da unten ist es feucht und modrig, ein ganzer Haufen Grollgeister dreht dort seine Runden – so viele, dass ich gar keine Lust habe, sie zu zählen
+		Da sie schon alle auf einem Haufen hocken, pick sie nicht einzeln heraus: Hol einmal sauber aus und fege alles mit einem Klingenstrich weg
+		Im Kerker ist es kalt und klamm, bleib bloß nicht zu lange dort unten. Erledige die Sache und komm rasch wieder rauf
 		'''
 	TrialSummary_17:
 		'''
-		Die Richtung ist zu leer, bei mir wird's auch schwer
-		Ich kann nicht sagen, was es ist. Es stimmt einfach nicht
-		Geh. Steh nicht allein da und glotz. Siehst du nichts klar, pass zuerst auf dich auf
-		Reden wir, wenn du zurück bist. Leben geht vor klarsehen
+		In jener Richtung gähnt eine völlige Leere, mir wird ganz flau im Magen und das Schwert zieht schwer nach unten
+		Ich kann dir auch nicht sagen, was für ein Ungeheuer uns da entgegenkommt, sei bloß auf der Hut
+		Erstarr dort nicht vor Schreck! Ganz gleich, wie gefährlich es wird – dass du heil und gesund zurückkehrst, zählt mehr als alles andere
 		'''
 	TrialSummary_18:
 		'''
-		Es soll noch so einen Drachen geben. Wahr oder nicht, du gehst hin
-		Die Schneide wird wohl heiß. Steck sie nicht gleich weg
-		Federn will ich nicht. Hauptsache, du kommst zurück
+		Man erzählt sich, am Rande des Flammenmeeres hause noch immer solch ein gewaltiger Drache. Ob wahr oder nicht, geh und sieh nach
+		Wenn es zum Gefecht kommt, wird die Klinge im Feuer glühend heiß werden, beiß die Zähne zusammen
+		Um seltene Drachenschuppen oder Glutdrachenfedern schere ich mich nicht, solange du in einem Stück zurückkommst
 		'''
 	TrialSummary_19:
 		'''
-		Ein Knall von weit weg, und die Ohren machen zuerst schlapp
-		Geh und mach, dass sie aufhören, und schütz die Ohren unterwegs
-		Summt's noch, wenn du zurück bist, suchen wir uns was Stilleres
+		Schon von weitem hört man die Eisenkanonen scheppern und krachen, mir dröhnt der Schädel von dem Getöse
+		Mach schnell, dass diese Eisendinger Ruhe geben, und schütz dir unterwegs die Ohren
+		Wenn es dir hinterher immer noch in den Ohren saust, suchen wir uns ein stilles Plätzchen zum Ausruhen
 		'''
 	TrialSummary_20:
 		'''
-		Die Luft da ist schwer und stockt, als ginge eine Tür nicht auf
-		Geh und mach Schluss. Steh nicht in der Tür und atme das ein
-		Wenn du zurück bist, sag ich dir, wie man durchatmet
+		Die Luft dort drüben ist zäh und schwer, ein einziger Atemzug fühlt sich an, als bliebe einem die Luft in der Kehle stecken
+		Geh und spalte diesen Dunst, bleib bloß nicht dumm im Zugwind stehen und atme diese Stickluft ein
+		Wenn du zurück bist, zeige ich dir, wie man den Atem wieder richtig fließen lässt
 		'''
 	TrialSummary_21:
 		'''
-		Sie sammeln sich wieder, als ginge nie etwas ganz auseinander
-		Das hier wird länger
-		Steh fest, bevor es losgeht. Wackeln nörgle ich, wenn du zurück bist
+		Als ließen sie sich nie ganz vertreiben, rotten sie sich alle wieder zusammen
+		Dieser Kampf dürfte eine ganze Weile dauern – schwing frei heraus, ich habe aus dem Schwert ein Auge auf dich
+		Achte vor jedem Hieb auf festen Stand! Wenn du siegreich zurückkehrst, meckere ich, falls du ins Wanken geraten bist
 		'''
 }
 
@@ -939,202 +937,179 @@ KikasaOverride: {
 }
 
 KikasaTrialQuestLine: {
-	QuestCategory: Prüfung
-	TrackerWaiting: Noch nicht am Platz
+	QuestCategory: Kikasa · Das sinkende Mahl
+	TrackerWaiting: Noch nicht am Platz – bitte es herbei oder warte ein Weilchen
 	TrackerFighting: "{0}: {1:0%}"
-	TrackerBrief: Nächster Platz: {0}
+	TrackerBrief: Nächster Gang: {0}
 	BossRushTargetName: Schlacht von Terminus
 	EventActiveFormat: "{0}: im Gange"
-	Trial_0: Weiches erstes Gericht
+	Trial_0: Weicher erster Gang
 	Trial_1: Nachtauge am Himmel
-	Trial_2: Doppelfäulnis der Erde
-	Trial_3: Moder unter der Erde
-	Trial_4: Süßer Saft und störrische Hufe
-	Trial_5: Alte Knochen vor der Tür
-	Trial_6: Bunter Götterleim
-	Trial_7: Heißes Fleisch quer über den Weg
+	Trial_2: Schandkost der Faulerde
+	Trial_3: Moderige Tiefen
+	Trial_4: Süßer Saft und starrsinniger Huf
+	Trial_5: Dürres Gebein vor dem Tor
+	Trial_6: Buntgemischter Götterleim
+	Trial_7: Heißes Fleisch quer über den Pfad
 	Trial_8: Geflügeltes Rosagel
-	Trial_9: Goldener Geifer im faulen Sand
-	Trial_10: Drei Eisen
-	Trial_11: Rote Dschungelblüte
-	Trial_12: Kristallschale, federndes Fleisch
-	Trial_13: Tempelstein
-	Trial_14: Wellenschlagendes Flügelschwein
-	Trial_15: Nachtglanz
-	Trial_16: Restgesang vor der Tür
-	Trial_17: Spiegel hinter dem Mond
-	Trial_18: Artgenossen am Tisch
-	Trial_19: Alter im Säuremeer
-	Trial_20: Götterfresser jenseits des Himmels
-	Trial_21: Ungelöschte Feuerfeder
-	Trial_22: Höchstes Eisen, höchstes Feuer
-	Trial_23: Volles Schlussmahl
+	Trial_9: Goldspeichel im Schandsand
+	Trial_10: Drei Eisenköstlichkeiten
+	Trial_11: Rote Blüte des Regenwalds
+	Trial_12: Kristallpanzer-Bissen
+	Trial_13: Tempeltrotzstein
+	Trial_14: Wellenwerfendes Flügelschwein
+	Trial_15: Nachtfirmament-Glanz
+	Trial_16: Restgesang an der Pforte
+	Trial_17: Spiegelbild hinter dem Mond
+	Trial_18: Artgleiche an einer Tafel
+	Trial_19: Ältester im Säuremeer
+	Trial_20: Leeren-Götterfresser
+	Trial_21: Unverlöschliche Flammenschwinge
+	Trial_22: Äußerstes Eisen und äußerste Glut
+	Trial_23: Voll besetztes Schlussmahl
 	TrialSummary_0:
 		'''
-		Am Bergfuß liegt etwas Weiches, blau, wackelt ohne Ende
-		Der See hat noch nie Gel gekostet. Er will wissen, wie der Biss klingt
-		Lock es unter den Schirm. Klebrig ist egal
-		Läuft es aus, nenn es Suppe
+		Am Fuß der Berge liegt ein blau schimmernder Haufen weichen Schlamms und zittert ohne Unterlass
+		Wer weiß, woher dieser aufgedunsene Klumpen zusammengekrochen ist – nichts weiter als leeres Getue
+		Geh und schlag ihn auseinander, lass ihn nicht dauernd im Weg herumliegen
 		'''
 	TrialSummary_1:
 		'''
-		Nachts ein Auge, das sehr unhöflich starrt
-		Der See runzelt sich, sobald er den Blick fängt. Die Schirmrippen jucken
-		Geh und drück diesen Blick ins Wasser
-		Was schaut, muss irgendwann die Augen schließen
+		Des Nachts hängt am Himmel stets ein riesiges Auge und starrt einen unverschämt an
+		Blinzelt nicht ein einziges Mal – da schaudert es einen am ganzen Leib
+		Geh und hol es vom Himmel herunter. Wenn das Auge erst zu ist, erspart uns das eine Menge Verdruss
 		'''
 	TrialSummary_2:
 		'''
-		Aus der Erde: eins lang, oder ein nasses Hirn
-		Beide stinken. Der See weist niemanden ab. Was dir über den Weg läuft, das nimmst du
-		Stücke nicht auflesen. Die fließen von selbst
+		Zwei Schandkreaturen, die aus dem fauligen Erdreich kriechen: ein langer Wurm und ein nasses Gehirn
+		Schon aus meilenweiter Ferne riecht man diesen stechenden Schlammgestank
+		Nimm dir das vor, was dir zuerst in die Quere kommt. Hack es in Stücke, aber komm mir bloß nicht voller Modergestank zurück
 		'''
 	TrialSummary_3:
 		'''
-		Unter der Erde fault ein Gedanke, oder ein Nest, das Herzen frisst
-		Am Wind merkst du: verdorben
-		Der See sagt, verdorben ist auch ein Geschmack. Bring es
-		Handschuhe anlassen. Der Saft bleibt kleben
+		Tief unter der Erde fault ein modriger Fleischhort voller blutbohrender Würmer
+		Lässt man das auf sich beruhen, fault es nur immer tiefer – geh direkt hin und schlag es kurz und klein
+		Zieh die Handschuhe fest an, dieser Saft lässt sich von Haut und Fleisch nur mühsam abwaschen
 		'''
 	TrialSummary_4:
 		'''
-		Im Regenwald sickert Süßes, im Schnee trotzt etwas
-		Bring eins. Der See hat heute für beide Geschmäcker Platz
-		Süßes sticht, Trotziges stampft
-		Komm nicht mit leeren Händen
+		Im Regenwald lauert eine Giftwespe, in der Eiswüste ein störrischer Hirsch, der auf einem Auge blind ist
+		Nimm dir das Tier vor, dem du zuerst begegnest – ihr Gemüt ist eines hitziger als das andere
+		Der Giftstachel brennt, der welke Huf bringt Schneegestöber; nimm keinen von beiden auf die leichte Schulter
 		'''
 	TrialSummary_5:
 		'''
-		Vor dem Kerker hängt ein alter Wächter, dem das Wachen zur Sucht wurde
-		Knochen weichen nicht auf, der See weiß das. Er will nur das Knacken hören
-		Nimm ihm den Atem, behalt den Schlüssel
-		Knochensplitter setzen sich. Gut zum Pflastern
+		Vor dem Kerkertor hängt ein altes Klappergebein, das sein ganzes Leben lang Wache hielt und noch immer nicht loslassen mag
+		In solchen Jahren ist die Verblendung härter als ein Eisenschloss
+		Geh und unterbrich seine Nachtwache. Nimm ihm die Schlüssel ab und schick ihn zur ewigen Ruhe in die Erde
 		'''
 	TrialSummary_6:
 		'''
-		Ein Gelhaufen kann reden und springen, rot und violett durcheinander
-		Wasser hat der See genug. Ihm fehlt ein Bissen so groß
-		Reiß es auseinander, sieh, wozu es zerläuft
-		Nicht trinken. Das ist nicht für dich
+		Violett und Schwarz zu einem Topf zäher Pampe verrührt – und maßt sich doch an, sich Gott zu nennen
+		Wirr und unrein zusammengekleistert, daraus wird ohnehin nichts von Dauer
+		Geh und schlag es in Stücke, lass es zerfließen, damit es hier nicht länger den Boden besudelt
 		'''
 	TrialSummary_7:
 		'''
-		In der Hölle steht eine Wand aus Gesichtsfleisch quer über allen Wegen
-		Heiß ist gut. Der See kühlt
-		Stirbt sie, dreht sich die Welt. Das lastet nicht auf dir
-		Die Schirmfläche hält Funken ab. Geh ruhig
+		Mitten in der Hölle versperrt eine gewaltige Fleischwand den gesamten weiteren Weg
+		Selbst durch den Schirmschleier brennt die Hitze unerträglich herüber
+		Stoß einfach mitten durch. Wenn sich die Welt danach wandelt, ist das nicht deine Schuld
 		'''
 	TrialSummary_8:
 		'''
-		Über dem Heiligen Land hängt rosa Gel, mit Wache
-		Bodengel hat der See schon. Fliegendes noch nicht
-		Zieh sie herunter, Knochen und alles
-		Tritt nicht auf die Splitter. Die scheuern die Rippen
+		Am Himmel schwebt ein rosafarbenes Stück Gelee und bringt zum Kämpfen auch noch Hofstaat mit
+		Kunterbunt herausgeputzt – wahrlich kein kleines Gehabe
+		Hol es herunter; wie groß das Theater auch sein mag, einem Regenguss hält es nicht stand
 		'''
 	TrialSummary_9:
 		'''
-		Die Sandschlange ist zurück, rote Blüten zu Eiterbeulen
-		Tritt nicht in die goldenen Pfützen. Das ist ihr Speichel
-		Der See nimmt jeden Geschmack. Ihm stinkt nur, dass sie den Sand hat sauer werden lassen
-		Geh, lad sie auf den Grund, schüttle den Schirm sauber, dann komm
+		Aus dem Sand kriecht ein großer Wurm voller modriger Geschwüre und hinterlässt eine Spur aus goldenem Eiter
+		Sieht noch widerlicher aus als im Wasser Verfaultes, schon aus der Nähe dreht es einem den Magen um
+		Geh und mach ihm den Garaus. Spül die Schirmbespannung sauber, ehe du zurückkehrst
 		'''
 	TrialSummary_10:
 		'''
-		Jemand hat drei Eisen gemacht: eine Kette, zwei Lampen, ein Vierarmgestell
-		Eisen sinkt nicht durch. Lange genug eingeweicht stinkt es nach Rost
-		Der See mag das nicht, aber am Tisch dürfen sie nicht fehlen
-		Eins nach dem anderen. Lass sie nicht in derselben Nacht erschrecken
+		Irgendjemand hat drei blecherne Apparate geschmiedet: Ketten, Glühbirnen und ein vierarmiges Stahlgestell
+		Schmeckt herb nach rohem Eisen, laut und lärmend
+		Zerlege sie Stück für Stück, lass sie sich bloß nicht zusammenrotten
 		'''
 	TrialSummary_11:
 		'''
-		Im Regenwald sitzt eine große rote Blume und schläft
-		Wer sie weckt, kommt selten ganz zurück
-		Der See will ihren Saft. Im Wasser sitzt die Farbe richtig
-		Ranken am Schirm einfach schneiden. Keine Höflichkeit
+		Tief im Regenwald schläft eine riesige rote Blüte, deren Ranken wild umherwuchern
+		Weckt man sie auf, gerät sie furchtbar in Zorn und schlingt sich um alles, was sich regt
+		Reiß sie mit den Wurzeln aus. Wenn sich Ranken um den Schirm wickeln, schneide sie glatt ab
 		'''
 	TrialSummary_12:
 		'''
-		Unter dem Strand sitzt eine große Garnele, Kristallpanzer, häutet sich
-		Wenn die Schere zuschnappt, knallt das Wasser, eine halbe See weit hörbar
-		Der See will diesen federnden Bissen schon lange. Geh, lad sie ein
-		Die Schale wechselt sie selbst. Den Schlag pass du auf
+		Unter dem Strand lauert eine Fangschreckenkrabbe in glänzend hartem Panzer und häutet sich unablässig
+		Schlägt sie mit den Scheren zu, spaltet sie das Wasser – ein ganz schöner Aufruhr
+		Lass sie ihre Schale wechseln, sooft sie will, aber gib auf ihre Schläge acht, damit du nicht unversehens eins abbekommst
 		'''
 	TrialSummary_13:
 		'''
-		Im Tempel hockt ein Vierkantkopf
-		Stein sinkt am schnellsten. Der Sammlung fehlt genau eins
-		Mach die Mechanik kaputt, bring die Schale ganz
-		Die Gischt, die dabei aufsteht, ist dein Lohn
+		Im Tempel hockt ein viereckiger Felsklotz und rührt sich ewig nicht von der Stelle
+		Das Räderwerk mag ausgeklügelt sein, doch schlägt man es auf, ist es am Ende bloß ein hohles Gestell
+		Geh und schlag es in Trümmer, damit es in der Felsenkammer nicht länger den Weg versperrt
 		'''
 	TrialSummary_14:
 		'''
-		Auf dem Meer ein Schwein mit Flügeln, das Wellen schlägt wie ein Mensch
-		Der See mag das nicht. Das Temperament des Wassers steht keinem Schwein zu
-		In welches Wasser du es drückst, sagst du
-		Den Köder geb ich. Den Wurm angelst du
+		Im Meer tummelt sich ein geflügeltes Schwein, das meint, wie ein Mensch Sturm und Wellen peitschen zu müssen
+		Sollte erst mal in den Spiegel schauen: Das Temperament des Wassers lässt sich von einem Meerschwein nicht befehligen
+		Drück es zurück in die Tiefe, damit es nicht dauernd vor den Augen herumplantscht
 		'''
 	TrialSummary_15:
 		'''
-		Nachts fliegt über Heiligem Land etwas Leuchtendes, das Temperament folgt der Sonne
-		Der See hält ihr Bild nicht. Zu hell bleibt nicht auf dem Wasser
-		Geh nachts, knete das Licht dunkel und bring es
-		Reizt du sie am Tag, trägst du die Folge selbst
+		Am nächtlichen Himmel zieht ein gleißendes Wesen seine Bahnen – mitten in der Nacht blendet das unerträglich
+		Ich mag kein allzu grelles Licht, da ermüden die Augen
+		Schleich dich im Schutz der Nacht heran und reib diesen Schein matt. Am hellichten Tag solltest du ihr nicht in die Quere kommen
 		'''
 	TrialSummary_16:
 		'''
-		Vor dem Kerker murmelt einer, als ginge der Himmel auf
-		Der See versteht keine Sutren. Er versteht nur, dass etwas hereingelassen werden soll
-		Unterbrich ihn. Lass das Ritual auf halbem Weg verfaulen
-		Fallen Perlen, nicht aufheben. Der See nimmt keine Fälschungen
+		Vor dem Kerkertor murmelt jemand unaufhörlich Gebete, dass einem die Ohren wehtun
+		Was er da aus der Leere herabbeschwören will, verheißt nichts Gutes
+		Unterbrich dieses Ritual, ehe der Aufruhr nicht mehr zu bändigen ist
 		'''
 	TrialSummary_17:
 		'''
-		Der hinter dem Mond ist heruntergekommen, überall Augen
-		Was vom Himmel fällt, ist im See nur ein Spiegelbild
-		Geh, hol das Original des Spiegels
-		Das Mondlicht in jener Nacht wird gut sein. Sieh einmal für mich hin
+		Jener gewaltige Schatten hinter dem Mond steigt nun herab, über und über mit Augen bedeckt
+		Nachdem er all die Äonen auf die Menschenwelt herabgestarrt hat, ist es Zeit für ein Ende
+		Geh und zerstreue ihn. Und wirf nach getaner Tat stellvertretend für mich einen Blick auf das Mondlicht dieser Nacht
 		'''
 	TrialSummary_18:
 		'''
-		Tief im Kerker treibt eine Seele, Jahrhunderte lang geflickt
-		Sogar die Geister im See ziehen sich in die Rippen zurück
-		Artgenossen umbringen klingt hässlich. Nenn es einen gemeinsamen Tisch
-		Nach diesem Auftrag wird es unter dem Schirm enger. Halt durch
+		Tief im Kerker treibt ein gewaltiger Knäuel Grollgeister, seit Jahrhunderten geflickt und verstrickt
+		Im Grunde von gleicher Art wie ich – tagaus, tagein zu klagen, ist schon beim Zusehen ermüdend
+		Lass sie sich endlich ganz auflösen. Zur Stille zurückzukehren ist besser, als dort unten ewig Qualen zu leiden
 		'''
 	TrialSummary_19:
 		'''
-		Unter dem Schwefelmeer liegt ein Altes, sauer im Leib, saurer im Temperament
-		Der See und er gehen Jahre nebeneinander. Keiner achtet des anderen Wasser
-		Geh und richte aus: der Tisch steht, er möge sinken
-		Er beißt, die Zähne sitzen noch. Pass auf
+		Unter dem Schwefelmeer liegt ein uraltes Scheusal begraben, durchdrungen von Säure, mit einem Gemüt noch beißender als die Brühe
+		Damals kreuzten sich unsere Wege, und keiner wich auch nur einen halben Schritt
+		Geh und mach ihm für mich den Garaus. Begleiche diese alte Rechnung für mich
 		'''
 	TrialSummary_20:
 		'''
-		Ein langer Wurm kreist jenseits des Himmels, die Sterne weichen aus
-		Er hat Götter verschluckt. Der See will wissen, wie ein Gott schmeckt
-		Lass ihn einmal in Wasser tauchen, das ihm nicht zusteht
-		Die Schale gehört dir. Das Fleisch dem See
+		Jener riesige Wurm, der oben seine Kreise zieht – man munkelt, er habe selbst Götter verschlungen
+		Auf welcher Stufe ein Gott steht, kümmert mich nicht, doch wie er über dem Kopf kreist, macht einen ganz schwindelig
+		Hol ihn herunter. Den harten Panzer behalte für dich, um den Rest brauchst du dich nicht zu scheren
 		'''
 	TrialSummary_21:
 		'''
-		Am anderen Ende des Dschungels nährt jemand ein Feuer, das brennt, wer weiß wie lange
-		Feuer und See sind alte Gegner. Diesmal soll Schluss sein
-		Drück das Feuer aus. Die letzte Kelle gießt der See selbst
-		Nasse Federn steigen nicht. Lass keine zurück
+		Am anderen Ende des Regenwalds brennt ein loderndes Feuer, seit wer weiß wie vielen Jahren ungelöscht
+		Loderndes Feuer und Sturmregen vertragen sich seit Urzeiten nicht
+		Geh und lösch dieses Feuer. Wenn die Federn durchnässt sind, können sie nicht mehr aufsteigen – so ist es recht
 		'''
 	TrialSummary_22:
 		'''
-		Die letzten zwei Tische zusammen: einer nur Eisen, einer nur Feuer
-		Stolz des Handwerkers, Zwang der Hexe. Der See will beide auf dem Grund sehen
-		Die Reihenfolge ist deine. Lebend am Tisch reichen
-		Nach dieser Mahlzeit ist der See fast voll
+		Die letzten beiden harten Schlachten fallen zusammen: ein Heer eiserner Marionetten und eine Hexe, deren Besessenheit nicht schwindet
+		Keine von beiden Seiten ist leicht zu nehmen, sie lassen dieser Welt keine Sekunde Ruhe
+		Die Reihenfolge ist deine Sache. Nimm dir das Schnellere zuerst vor, die Hauptsache ist, dass du lebend herauskommst
 		'''
 	TrialSummary_23:
 		'''
-		Sie sind alle wieder da, oder das Alte im Abgrund ist aufgewacht
-		Ein voller Tisch. Der See hat vom Warten schon Wasser gezogen
-		Du hältst den Schirm. Eins nach dem anderen
-		Ist diese Mahlzeit vorbei, hört der Regen auf
+		Jene gefallenen Schatten haben sich von Neuem versammelt, oder der uralte Drache im Abgrund ist erwacht
+		Ganz gleich, was zutrifft – der Aufmarsch wird gewiss nicht gering sein
+		Halt den Schirm fest in der Hand, Schritt für Schritt. Wenn dieser Kampf vorbei ist … sollte sich wohl auch der Regen draußen endlich legen
 		'''
 }
 

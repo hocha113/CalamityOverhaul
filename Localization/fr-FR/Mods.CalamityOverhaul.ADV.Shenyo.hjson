@@ -35,150 +35,150 @@ ShenyoDollGift: {
 }
 
 ShenyoFesterSerpentGift: {
-	L0: Ce qui pourrit dans le sable est encore plus laid que ce qui pourrit dans l'eau
-	L1: Ce pus doré n'est pas du miel. Approche le nez, et tu comprendras
-	L2: Quand tu auras fini, rince la toile. Une tache de pus séchée ne se gratte plus
+	L0: Ce qui rampe hors du sable est encore plus laid que ce qui a pourri dans l'eau
+	L1: Ce jus gluant qui en découle n'a rien de bon non plus, fétide et poisseux
+	L2: Une fois fini, rince bien la toile du parapluie, la crasse séchée est impossible à essuyer
 }
 
 ShenyoBossRushGift: {
-	L0: Ils sont tous revenus, ou c'est le vieux du fond de l'abîme qui s'est réveillé ?
-	L1: Quoi qu'il en soit, ce n'était pas une promenade
-	L2: Tiens-toi droit. Ne titube pas devant moi
-	L3: Quand ce repas sera fini, la pluie devrait s'arrêter
+	L0: Ils se sont tous rassemblés à nouveau, ou bien c'est cette chose au fond de l'abîme qui s'est réveillée ?
+	L1: Que ce soit l'un ou l'autre, ça ne risquait pas d'être facile
+	L2: Tiens-toi bien d'aplomb, arrête de vaciller devant mes yeux
+	L3: Une fois ce combat achevé, la pluie dehors devrait enfin cesser
 }
 
 ShenyoCalamityEvilGift: {
-	L0: Nichée après nichée, ça s'enfonce dans le sang et dans la chair. Rien que de les voir, ça fait mal
-	L1: Toi, au moins, tu n'as pas peur de la douleur
-	L2: La prochaine fois, fais attention. Mon parapluie arrête la pluie, pas ces bestioles
+	L0: Tout un nid grouillant qui ronge la chair et les os, rien que de les voir me fatigue
+	L1: Toi, par contre, tu n'as pas l'air de trop craindre la douleur
+	L2: Fais plus attention désormais, ce parapluie peut parer la pluie, mais il ne pare pas cette vermine
 }
 
 ShenyoCultistGift: {
-	L0: Il n'arrête pas de marmonner. Quel bruit
-	L1: Ce qu'il voulait lâcher n'avait rien de bon
-	L2: Tu as bien fait de l'interrompre. Ça lui aura évité d'en faire trop
+	L0: Marmonner sans fin devant la porte, c'est assourdissant et lassant
+	L1: Ce qu'il cherchait à attirer d'en haut n'augure rien de bon
+	L2: Tu as bien fait de couper court, avant que le spectacle ne devienne incontrôlable
 }
 
 ShenyoDevourerOfGodsGift: {
-	L0: Celle qui tourne dans le ciel, on dit qu'elle a déjà avalé des dieux
-	L1: Quel goût a un dieu, ça m'intrigue un peu
-	L2: Garde la carapace si tu veux. La chair, tu n'as pas besoin de me la laisser
+	L0: Ce serpent enroulé à travers le ciel, on dit qu'il a même dévoré des dieux
+	L1: Quel degré peut bien atteindre un dieu, je suis un peu curieuse de le savoir
+	L2: Garde cette épaisse carapace pour toi, inutile de me rapporter sa chair à voir
 }
 
 ShenyoDukeFishronGift: {
-	L0: Même un porc qui s'essaie à soulever les vagues, il faut le voir
+	L0: Un porc marin qui s'avise de lever des vagues comme un homme, quelle drôle d'idée
 	L1: Le tempérament de l'eau n'est pas à lui de le commander
-	L2: Le renvoyer sous l'eau, c'est déjà ça. Au moins il ne titubera plus sous mes yeux
+	L2: Le renfoncer sous l'eau était la meilleure chose à faire, ça lui évitera de clapoter sans cesse devant mes yeux
 }
 
 ShenyoEmpressGift: {
-	L0: Les choses trop claires fatiguent mes yeux
-	L1: Le jour, on n'a pas à la provoquer. Toi, bien sûr, tu choisis toujours le plus dur
-	L2: Tu as même froissé la lumière jusqu'à l'assombrir. Ça, c'est de toi
+	L0: Les choses aussi éblouissantes me blessent les yeux
+	L1: Il n'y avait aucun besoin d'aller la chercher en plein jour, pourtant tu choisis toujours la voie la plus ardue
+	L2: Tu as froissé cet éclat jusqu'à l'assombrir, je t'accorde une certaine habileté
 }
 
 ShenyoEvilBossGift: {
-	L0Worm: Une qui sort de la terre, anneau après anneau. Dégoûtant
-	L1Worm: L'odeur de sang est plus lourde que la pluie... Tant que tu le supportes
-	L0Brain: Un cerveau étalé au grand air, sans même avoir froid
-	L1Brain: Ce genre de chose, un regard de trop et ça salit les yeux
-	L2: C'est fini, tant mieux. Ne reviens pas imprégné de cette odeur
+	L0Worm: Ce long ver annelé tiré de la vase empeste bien pire qu'une eau stagnante
+	L1Worm: Une odeur plus lourde que celle des mares mortes, et pourtant tu l'endures fort bien
+	L0Brain: Un cerveau devrait sagement rester niché dans les os, étalé à l'air libre il doit avoir froid
+	L1Brain: Une telle saleté est repoussante rien qu'à la regarder
+	L2: C'est bien que tu l'aies nettoyé, ne reviens pas vers moi trempé de cette puanteur
 }
 
 ShenyoExoAndSCalGift: {
-	L0: L'orgueil de l'artisan, l'obsession de la sorcière. Mis ensemble, ça se marie assez bien
-	L1: Tu as levé les deux tables. Ta journée n'aura pas été perdue
-	L2: Des jours comme celui-ci, il n'y en aura plus beaucoup
+	L0: L'orgueil de la mécanique et l'obsession de la sorcière, réunis ensemble ils forment une belle paire
+	L1: Les deux côtés ont été mesurés et pesés, ta peine n'aura pas été vaine aujourd'hui
+	L2: Désormais en ce monde, il sera bien rare de revoir un tel tumulte
 }
 
 ShenyoEyeOfCthulhuGift: {
-	L0: Se balader la nuit avec un œil grand ouvert, sans même avoir peur de se faire peur
-	L1: Ça ne cligne même pas. Ça vous donne la chair de poule
-	L2: Il s'est fermé. Tant mieux. Ce qu'on ne voit plus ne trouble plus
+	L0: Ouvrir un œil géant dans la nuit pour épier partout, sans même avoir peur de s'effrayer soi-même
+	L1: Fixer droit devant sans cligner, de quoi donner la chair de poule
+	L2: Qu'il se soit fermé vaut mieux, ça évite une nuisance pour les yeux
 }
 
 ShenyoGolemGift: {
-	L0: Une tête de pierre, et elle saute encore
-	L1: Une fois brisée, ce n'était qu'une coquille vide
-	L2: Cette écume, tu l'as gagnée toi-même. Je n'ai pas levé le petit doigt
+	L0: Une colonne de pierre du temple qui sautille pour de bon
+	L1: En la brisant, ce n'était au fond qu'une carcasse creuse
+	L2: Ces embruns, tu les as soulevés de tes propres mains, je ne t'ai pas aidé
 }
 
 ShenyoKingSlimeGift: {
-	L0: Ça aussi, ça se prend pour un roi ?
-	L1: Tout mou, mais ça sait sauter
-	L2: Quand tu tomberas sur quelque chose de vraiment coriace, ne l'imite pas à faire le malin
+	L0: Une flaque de boue toute molle, mérite-t-elle seulement de me mesurer ?
+	L1: Elle rebondissait avec entrain, au moins
+	L2: Quand tu croiseras des périls véritables plus tard, n'imite pas ses fanfaronnades vides
 }
 
 ShenyoSeaShrimpGift: {
-	L0: Cette crevette sous la plage, toute de cristal, un coup de poing qui vide l'eau
-	L1: Elle mue couche après couche, et son caractère n'a pas ramolli d'un pouce
-	L2: Le bruit creux fait peur, mais tu l'as reçue. Tes mains savent y faire
+	L0: Cette squille tapie sous la grève, toute étincelante, frappe du poing au point de disperser l'eau
+	L1: Elle a beau muer couche après couche, son tempérament ne s'est pas adouci d'un pouce
+	L2: Le fracas semblait terrifiant, mais tu l'as reçu de front, tes mains connaissent leur métier
 }
 
 ShenyoMechsGift: {
-	L0: Chaînes, ampoules, ossature. Mis ensemble, on dirait une blague
-	L1: L'odeur de fer est lourde. Je n'aime pas, toi tu ne t'en plains pas
-	L2: Ranger les trois d'un coup, avoue que tu as de la patience
+	L0: Chaînes de fer, projecteurs, ossature d'acier, bricolés ensemble comme une farce
+	L1: L'odeur métallique est bien lourde, je ne l'aime guère, pourtant tu ne sembles pas t'en soucier
+	L2: Tout démonter d'une seule traite, tu as de la patience en toi
 }
 
 ShenyoMoonLordGift: {
-	L0: Celui derrière la lune, lui aussi a vu du pays
-	L1: Couvert d'yeux. Un peu comme la pluie sous mon parapluie
-	L2: La lune de ce soir n'est pas trop mal
+	L0: Cette immense ombre au zénith a fini elle aussi par se dissiper
+	L1: Couverte d'yeux de la tête aux pieds, cela ressemble un peu au rideau de pluie sous mon parapluie
+	L2: Le clair de lune ce soir semble bien agréable, contemple-le un instant de plus pour moi
 }
 
 ShenyoOldDukeGift: {
-	L0: Ce vieux, il a le caractère plus aigre que l'eau acide
-	L1: On s'est croisés quelques fois. Ni l'un ni l'autre n'a cédé
-	L2: Cette fois, c'est toi qui as gagné
+	L0: Cette vieille relique sous la mer sulfureuse a le tempérament plus âcre que l'eau acide
+	L1: Nous nous sommes croisés plusieurs fois autrefois, et aucun n'a cédé d'un demi-pas
+	L2: Réglé par ta main cette fois-ci, retiens cela comme une dette effacée pour moi
 }
 
 ShenyoPlanteraGift: {
-	L0: Une fleur qui dormait. La réveiller, c'est s'attirer des ennuis
-	L1: Ces lianes qui s'enroulent, ça ressemble un peu à mon parapluie quand il refuse de se fermer
-	L2: Le suc t'a taché les mains. En rentrant, lave-les
+	L0: Réveiller une fleur endormie dans les profondeurs était forcément une source d'ennuis
+	L1: La façon dont ces lianes folles s'emmêlent et étranglent me rappelle l'époque où mon parapluie refusait de se fermer
+	L2: La sève qui tache tes mains est bien poisseuse, n'oublie pas de puiser de l'eau pour les laver
 }
 
 ShenyoPolterghastGift: {
-	L0: Ces âmes dans le donjon, raccommodées depuis des siècles
-	L1: Ce sont de pauvres êtres qu'on peut vraiment tuer
-	L2: Qu'elles se dissipent, c'est déjà mieux que de rester suspendues là
+	L0: Ces âmes en lambeaux au tréfonds du donjon, rapiécées depuis des siècles
+	L1: Au fond ce sont mes semblables, nul besoin de gaspiller de la pitié pour elles
+	L2: Qu'elles se dispersent en silence dans l'eau vaut mieux que de rester là à se lamenter sans fin
 }
 
 ShenyoQueenBeeOrDeerclopsGift: {
-	L0Bee: C'est sucré, et le caractère est tout aussi vif. Ça va ensemble
-	L1Bee: Le miel est une bonne chose. Dommage qu'elle ne veuille pas le partager
-	L0Deer: Ce borgne a un sacré caractère
-	L1Deer: Un bout de bois, et tout ce tapage
-	L2: Cette fois, tu n'es pas blessé ?
+	L0Bee: Douce, c'est vrai, mais le dard à sa queue pique comme le feu
+	L1Bee: Le miel est une bonne chose, dommage qu'elle le garde si jalousement
+	L0Deer: Ce colosse borgne a un tempérament encore plus têtu que le mien
+	L1Deer: Un sabot desséché comme du vieux bois, capable pourtant de lever un tel blizzard
+	L2: Après tout ce remue-ménage, tu n'as pas attrapé de coups, n'est-ce pas ?
 }
 
 ShenyoQueenSlimeGift: {
-	L0: Toute rose, toute tendre. Elle sait se parer
-	L1: Et elle amène des gardes. Quelle mise en scène
-	L2: La mise en scène la plus grande ne tient pas une averse
+	L0: Toute rose et tendre, elle aime bien soigner sa mise
+	L1: Sortir guerroyer avec une suite, quel grand déploiement d'apparat
+	L2: Tout cet apparat ne résiste pas à une seule averse
 }
 
 ShenyoSkeletronGift: {
-	L0: Garder la porte pendant tant d'années, les os devraient être tendres
-	L1: À ma place, j'aurais depuis longtemps lâché l'affaire
-	L2: La porte du donjon est ouverte. Entre avec soin. Ne prends pas goût à l'attendre comme lui
+	L0: Monter la garde devant la porte depuis toutes ces années, les os doivent être devenus bien fragiles
+	L1: Si ç'avait été moi, j'aurais délaissé cette veille depuis bien longtemps
+	L2: La porte du donjon est ouverte, regarde bien où tu mets les pieds, ne deviens pas stupide comme ce vieux serviteur
 }
 
 ShenyoSlimeGodGift: {
-	L0: Du violet et du noir brouillés ensemble, et ça ose se dire dieu
-	L1: Il a tout de même un peu de talent, pour coller tant d'horreurs en un seul tas
-	L2: Que ça fonde, tant mieux. Ça évitera de salir l'endroit
+	L0: Du rouge et du violet barbouillés ensemble, et ça ose se prétendre divin
+	L1: Avoir pu agglomérer tant de désordre en un seul amas dénote tout de même un certain degré
+	L2: Que tout soit dissous et nettoyé est pour le mieux, cela évite de salir les lieux
 }
 
 ShenyoWallOfFleshGift: {
-	L0: Ce mur de chair en enfer, même à travers mon parapluie je le trouve trop chaud
-	L1: Tu l'as transpercé, et le monde a changé avec. Ce genre de chose, tu le fais avec une certaine aisance
-	L2: Des spectacles comme celui-ci, il y en aura encore
+	L0: Cet immense mur de chair sous la terre, même à travers le rideau de pluie je le trouvais étouffant de chaleur
+	L1: Le transpercer de part en part a réécrit les règles de ce monde, ta frappe a été nette
+	L2: Des spectacles de ce degré, il y en aura bien d'autres par la suite
 }
 
 ShenyoYharonGift: {
-	L0: Un feu qui brûle depuis tant d'années, il était temps qu'il s'éteigne
-	L1: Le feu et la pluie n'ont jamais fait bon ménage
-	L2: Une plume mouillée ne vole plus
+	L0: Un feu ardent qui brûlait depuis je ne sais combien d'années a fini lui aussi par s'éteindre
+	L1: Le feu et l'eau ne se mêlent jamais, tenter de les forcer ensemble ne mène à rien
+	L2: Les plumes toutes trempées ne s'envoleront plus jamais, et c'est très bien ainsi
 }

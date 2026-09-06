@@ -35,150 +35,150 @@ ShenyoDollGift: {
 }
 
 ShenyoFesterSerpentGift: {
-	L0: Things that fester in the sand look even worse than things that rot in water
-	L1: That golden pus is not honey, one sniff up close and you will understand
-	L2: Rinse the umbrella when you are done, dried pus stains never scrape off
+	L0: Things dragged out of the sand look even worse than things rotted in water
+	L1: That sludge dripping off it is nothing good either, foul and sticky
+	L2: Rinse the umbrella clean when you are done, dried scum is impossible to wipe off
 }
 
 ShenyoBossRushGift: {
-	L0: Did they all come back, or did that old thing in the abyss wake?
-	L1: Either way, this trip was no stroll
-	L2: Stand steady. Do not sway in front of me
-	L3: Once this meal is finished, the rain ought to stop
+	L0: Did they all gather back, or did that old thing down in the abyss finally stir?
+	L1: Whichever it is, this was never going to be easy
+	L2: Stand steady, quit swaying in front of me
+	L3: Once this fight is done, the rain outside should finally clear
 }
 
 ShenyoCalamityEvilGift: {
-	L0: Nest after nest, boring into blood and flesh. It hurts just to look
-	L1: You, though, do not seem to mind the pain
-	L2: Be more careful next time. This umbrella keeps off the rain, not those bugs
+	L0: A whole crawling nest that gnaws through flesh and bone, annoying just to look at
+	L1: You, though, do not seem to care much about pain
+	L2: Be more careful from now on, this umbrella can turn rain, but it cannot turn those vermin
 }
 
 ShenyoCultistGift: {
-	L0: Muttering on and on. Loud
-	L1: That thing he meant to let out is nothing good
-	L2: Good you cut him off, before the scene got out of hand
+	L0: Muttering on and on outside the door, loud and tiresome
+	L1: Whatever he was trying to draw down is nothing good
+	L2: Good that you cut it short, before the spectacle got out of hand
 }
 
 ShenyoDevourerOfGodsGift: {
-	L0: That one circling the sky, they say it has swallowed gods
-	L1: What a god tastes like, I am a little curious
-	L2: Keep the shell if you like. You need not leave the meat for me
+	L0: That serpent coiling across the sky, they say it has swallowed gods
+	L1: What level a god reaches, I am somewhat curious
+	L2: Keep that hard carapace for yourself, you need not bring the flesh for me to see
 }
 
 ShenyoDukeFishronGift: {
-	L0: A pig learning to throw waves like a person. That is something
-	L1: The temper of water is not its to wield
-	L2: Good that you shoved it back under. Saves it from swaying under my eyes
+	L0: A sea pig learning to stir up waves like a man, strange enough
+	L1: The temper of water is not for it to boss around
+	L2: Shoving it back into the depths was for the best, saves it from splashing around before my eyes
 }
 
 ShenyoEmpressGift: {
-	L0: Things this bright strain these eyes
-	L1: No need to pick a fight with her in daylight. You, of course, go straight for the hard one
-	L2: You rubbed the light dim. I will grant you that
+	L0: Things this blinding hurt my eyes
+	L1: There was no need to pick a fight with her in broad daylight, yet you always choose the troublesome path
+	L2: You rubbed that glare dim, so I will grant you some skill
 }
 
 ShenyoEvilBossGift: {
-	L0Worm: One crawled out of the dirt, segment after segment. Disgusting
-	L1Worm: The stink is heavier than rainwater... If you can stand it, fine
-	L0Brain: A brain laid out in the open, and it does not even mind the cold
-	L1Brain: Things like this, one look too many and they soil the eyes
-	L2: Good that it is over. Do not come back soaked in that stink
+	L0Worm: That segmented serpent dragged from the mire reeks worse than stagnant water
+	L1Worm: An odor heavier than dead ponds, yet you stomach it just fine
+	L0Brain: A brain belongs tucked inside bone, splayed open like that it must feel cold
+	L1Brain: Filth like that is an eyesore just looking at it
+	L2: Good that you finished it, do not come back to me soaked in that stench
 }
 
 ShenyoExoAndSCalGift: {
-	L0: A craftsman's pride, a witch's obsession. Together they almost match
-	L1: Both tables cleared. Today was not wasted
-	L2: Days like this will not come around many more times
+	L0: The pride of artifice and the obsession of a witch, brought together they make quite a pair
+	L1: Both sides have been weighed and measured, you did not run in vain today
+	L2: From now on in this world, there will hardly be another commotion of this scale
 }
 
 ShenyoEyeOfCthulhuGift: {
-	L0: One eye open all night, looking everywhere, and not even afraid of scaring itself
-	L1: Does not even blink. Makes the skin crawl
-	L2: Closed now. Good. Out of sight, out of mind
+	L0: Staring all over the night with one giant eye, not even afraid of giving itself a fright
+	L1: Glares right at you without a blink, enough to make skin crawl
+	L2: Closed now, for the better, saves the eyesore
 }
 
 ShenyoGolemGift: {
-	L0: A stone head, and it still hops
-	L1: Crack it open and it is nothing but an empty shell
-	L2: That splash you earned yourself. I did not help
+	L0: A stone pillar from the temple that actually hops around
+	L1: Smashed open, it was nothing but an empty shell after all
+	L2: You kicked up that spray with your own hands, I did not help you
 }
 
 ShenyoKingSlimeGift: {
-	L0: And this calls itself a king?
-	L1: Soft all over, but it can bounce
-	L2: When you meet something truly nasty, do not learn its bluster
+	L0: A soft puddle of muck, does it even deserve to measure me?
+	L1: Bounces eagerly enough, at least
+	L2: When you meet truly perilous things later, do not mimic its empty bluster
 }
 
 ShenyoSeaShrimpGift: {
-	L0: That shrimp under the beach, all crystal shell, one punch that knocks the water hollow
-	L1: It sheds shell after shell, yet its temper never softens a bit
-	L2: The hollow crack sounds scary, but you caught it, so your hands know their craft
+	L0: That mantis shrimp hidden beneath the shore, glistening bright, punches hard enough to shatter the water
+	L1: Sheds shell after shell, but its temper never softened one bit
+	L2: The crack sounded terrifying, but you took it head-on, so your hands know their craft
 }
 
 ShenyoMechsGift: {
-	L0: Chains, a light bulb, a skeleton. Together they look like a joke
-	L1: The iron stink is heavy. I dislike it, you do not mind
-	L2: All three cleaned up at once. I will grant you patience
+	L0: Iron chains, searchlights, a steel skeleton, cobbled together like a farce
+	L1: The iron stench is heavy, I dislike it, yet you seem unbothered
+	L2: Dismantled all at once, you have some patience in you
 }
 
 ShenyoMoonLordGift: {
-	L0: The one behind the moon. That at least has seen the world
-	L1: Eyes all over, a little like the rain under this umbrella
-	L2: The moonlight tonight is not bad at all
+	L0: That massive shadow across the sky has finally broken apart
+	L1: Covered in eyes, almost like the curtain of rain beneath this umbrella
+	L2: The moonlight tonight looks pleasant enough, take a good look at it for me
 }
 
 ShenyoOldDukeGift: {
-	L0: That old thing, temper sourer than sour water
-	L1: We have crossed paths a few times. Neither of us ever gave ground
-	L2: This time you won
+	L0: That stubborn relic beneath the Sulphurous Sea, temper sourer than acid
+	L1: We crossed paths a few times back then, and neither yielded a step
+	L2: Finished by your hand this time, count it as settling a score for me
 }
 
 ShenyoPlanteraGift: {
-	L0: A sleeping flower. Wake her and there will be trouble
-	L1: The way those vines cling, a little like my umbrella when it will not close
-	L2: If the sap stained your hands, wash them when you get back
+	L0: Waking a flower sleeping in the depths was bound to be trouble
+	L1: The way those vines thrash and strangle, reminds me of when my umbrella would not close
+	L2: Sap stains on your hands are sticky, remember to draw water and wash them clean
 }
 
 ShenyoPolterghastGift: {
-	L0: Those souls in the dungeon, stitched and restitched for centuries
-	L1: They are poor souls that can actually be killed
-	L2: Scattered is better than hanging there
+	L0: Those tattered souls drifting deep in the dungeon, patched together for centuries
+	L1: In the end they are kin to what I am, no need to waste pity on them
+	L2: Better that they scatter quietly in the water than hang there grieving forever
 }
 
 ShenyoQueenBeeOrDeerclopsGift: {
-	L0Bee: Sweet, yes, and the temper just as sharp. They match
-	L1Bee: Honey is a good thing. Pity it will not share
-	L0Deer: This one-eyed thing has a stubborn temper
-	L1Deer: A single stick of wood, and all that noise
-	L2: This trip, you are not hurt, are you?
+	L0Bee: Sweet as it is, the sting on its tail hurts like fire
+	L1Bee: Honey is a fine thing, pity it guarded it so jealously
+	L0Deer: That one-eyed brute, stubborn even compared to me
+	L1Deer: A withered husk of a hoof, yet it kicks up such a blizzard
+	L2: After all that tumbling around, you are not bruised, are you?
 }
 
 ShenyoQueenSlimeGift: {
-	L0: All pink and tender. It does know how to dress
-	L1: Even brought an honor guard. Quite the show
-	L2: Show or not, it will not last a rain
+	L0: All soft and pink, quite eager to dress up
+	L1: Marching to battle with an entourage, quite the display
+	L2: Grand as the display was, it could not withstand a single downpour
 }
 
 ShenyoSkeletronGift: {
-	L0: Guarding that door for so many years, the bones ought to be soft by now
-	L1: If it were me, I would have quit long ago
-	L2: The dungeon door is open. Watch your step in there. Do not pick up its habit of sitting still until waiting becomes a vice
+	L0: Standing watch before the gate all those years, the bones must have gone brittle long ago
+	L1: Were it me, I would have abandoned the vigil ages past
+	L2: The dungeon door is open, watch your step inside, do not turn foolish like that old servant
 }
 
 ShenyoSlimeGodGift: {
-	L0: Purple and black stirred together, and it still dares to call itself a god
-	L1: It has some skill, I will grant, mashing that much filth into one lump
-	L2: Melted is better. Saves it from fouling the place
+	L0: Red and purple stirred into a sludge, yet bold enough to speak of godhood
+	L1: Bundling so many messy things into one heap, I suppose it has some depth
+	L2: Melted clean away is best, spares the ground from being sullied
 }
 
 ShenyoWallOfFleshGift: {
-	L0: That wall of flesh in hell, even through the umbrella I find it too hot
-	L1: You punched through, and the world changed with it. This sort of thing, you do rather smoothly
-	L2: Spectacle like this, there will be plenty more later
+	L0: That massive wall of meat down below, even through the rain I found it stiflingly hot
+	L1: Piercing it through rewrote the rules of this world, you struck swiftly enough
+	L2: Spectacles of this depth, there will be plenty more ahead
 }
 
 ShenyoYharonGift: {
-	L0: A fire that has burned for so many years. It ought to go out
-	L1: Fire and rain were never meant to get along
-	L2: Once the feathers are wet, they will not float
+	L0: A blaze burning for who knows how many years, extinguished at last
+	L1: Fire and storm never mix, forcing them together comes to nothing
+	L2: Feathers soaked through will never lift again, as it should be
 }

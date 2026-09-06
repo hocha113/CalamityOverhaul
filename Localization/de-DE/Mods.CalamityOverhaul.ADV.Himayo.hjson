@@ -4,9 +4,9 @@ FirstMetHimayo: {
 	Line2: Warte, erst mal prüfen … Ist das eine Geisterbeschwörung?
 	Line3: Nein …
 	Line4: Warum sitzt mein Bewusstsein jetzt in einem Schwert?
-	Line5: Mir ist so schwindelig … Ich kapier überhaupt nicht, was hier los ist
-	Line6: Aber das Schwert liegt in deiner Hand …
-	Line7: Ab heute, pass bitte gut auf mich auf, ja?
+	Line5: Mir ist so schwindelig … Ich kapier überhaupt nicht, was hier los ist.
+	Line6: Aber da die Klinge nun in deinen Händen liegt …
+	Line7: Ab heute pass bitte gut auf mich auf!
 }
 
 ToriiShrine: {
@@ -21,142 +21,142 @@ ItCametoThis: {
 }
 
 HimayoEyeOfCthulhuGift: {
-	L0: Ach ja, bei uns gab's früher einen, der im Schlaf die Augen nicht zumachte
-	L1: Nicht das gruselige Aufreißen. Lider halb zu, starrte die Deckenbalken an, als würde er vor sich hin dämmern
-	L2: Decke fest eingewickelt, Haus totenstill. Einmal bin ich unter seinem Fenster vorbei und hätte fast um Hilfe geschrien
-	L3: Am nächsten Tag war er ganz normal, hat vom Feld aus nach mir gerufen, ich solle Blumentöpfe schleppen
-	L4: Ach, beim Reden … und dann dieses Riesenauge am Himmel … jetzt bin ich auch müde
+	L0: Puh … endlich ist es unten. Von so einem riesigen Glotzauge die halbe Nacht angestarrt zu werden, da kriegt man echt eine Gänsehaut
+	L1: Aber die ganze Zeit so zu glotzen ohne einmal zu blinzeln – tun dem nicht selbst die Augen weh?
+	L2: Weil ich vorhin so lange angestarrt wurde, bin ich selbst schon ganz schläfrig geworden
+	L3: Hier, hab in der Nähe eine Kleinigkeit aufgestöbert. Halt gut fest und verlier es nicht
+	L4: Ruh dich ein Weilchen aus, heute Nacht können wir endlich mal die Augen zumachen und ruhig schlafen
 }
 
 HimayoEvilBossGift: {
-	L0Worm: Igitt … Stück für Stück im Dreck verklemmt
-	L1Worm: Stinkt wie eine frisch umgegrabene Schlammrinne. Will ich nicht noch mal riechen
-	L0Brain: Gehirne gehören ordentlich in den Schädel
-	L1Brain: Matschig draußen ausgebreitet. Ein Blick, und mir tut der Kopf weh
+	L0Worm: Dieser Wurm, der da stückweise im Matsch feststeckte – das stinkt nach faulem Schlamm wie aus einem frisch ausgehobenen Graben, ich krieg hier drin kaum Luft
+	L1Worm: Schlag die Klinge sauber und steck sie weg, lass uns an einen luftigen Ort gehen und den Wind genießen
+	L0Brain: So ein nasser, glibberiger Klumpen, da sträuben sich einem die Nackenhaare. Ein Gehirn gehört doch ordentlich in den Schädel
+	L1Brain: Die Schneide klebt total voll, wisch sie schnell mit einem Tuch ab, aber bloß nicht an deinen eigenen Kleidern
 }
 
 HimayoCalamityEvilGift: {
-	L0: Steh nicht einfach da und glotz. Hol wenigstens einmal Luft
-	L1: Der Klumpen vorhin … findest du nicht, der sah aus wie verdorbene Bohnenpaste?
-	L2: Super. Eigentlich war ich nicht hungrig, jetzt hab ich mich selbst hungrig geredet
-	L3: Wenn du auch Hunger hast, geh was essen. Nach einem Kampf durchhalten wirkt nur dumm
-	L4: Und wisch dir die Hände nicht übers Gesicht … nicht weil man dreckig ist. Danach brennen die Augen echt
+	L0: Dieser wirre Klumpen, der sich da vorhin zusammengequetscht hat … sah fast ein bisschen wie zerdrückte rote Bohnenpaste aus
+	L1: Ähem, erst hab ich gar nicht dran gedacht, aber kaum spricht man es aus, kriegt man Hunger
+	L2: Wenn du auch Hunger hast, such dir was zu essen. Direkt nach einem harten Kampf auf stur zu machen, ist das Dümmste überhaupt
+	L3: Hab nebenbei eine Kleinigkeit mitgehen lassen, hier, nimm
+	L4: Und wisch dir den Schmodder an den Händen nicht ins Gesicht! Wenn das in die Augen kommt, brennt es wie die Hölle, glaub mir
 }
 
 HimayoSlimeGodGift: {
-	L0: Klebrig ist es schon. Aber als Kind in den Schlamm nach dem Regen zu treten, war schlimmer
-	L1: Wenigstens kriecht das nicht in die Schuhe. Naja … geht noch
-	L2: Hier. Frag nicht, wo ich das her habe. Fragst du, tu ich, als hätte ich nichts gehört
+	L0: Wenn man oft genug durch Matsch gewatet ist, fühlt sich diese Götterpampe gar nicht mal so übel an
+	L1: Wenigstens ist sie nicht am Hosenbein runter in die Stiefel gekrochen, ein bisschen Götter-Anstand hat sie also noch
+	L2: Hab das hier so nebenbei aus dem Geleeberg gefischt, nimm schon. Und frag mich bloß nicht, wo genau ich das hergeholt habe
 }
 
 HimayoWallOfFleshGift: {
-	L0: ……Sie ist wirklich gefallen. Diese Fleischmauer ist um
-	L1: Ob ich froh bin, weiß ich nicht. Fühlt sich nur an, als würde sich das Wetter drehen
-	L2: Der Weg danach wird wohl härter. Solange du das selbst weißt
+	L0: ……Du hast sie wirklich gespalten, die ganze Fleischwand ist in sich zusammengekracht
+	L1: Wie soll ich sagen … mit einem Schlag fühlt sich die ganze Luft anders an, sogar die finstere Aura im Schwert ist um ein ganzes Stück schwerer geworden
+	L2: Von jetzt an wird die Welt da draußen wohl noch ungemütlicher … Aber egal, halt das Schwert fest, ich bin ja bei dir
 }
 
 HimayoFesterSerpentGift: {
-	L0: Warte, was ist diesmal auf der Schneide … Eiter?
-	L1: Ich wohne im Schwert, ja? Der Fischstand hat gerade zu, und jetzt wird's eine Klinik
-	L2: Immer noch kein Fenster. Die Station hat nicht mal eine Lüftung
-	L3: Nächstes Mal schneid an einem saubereren Ort. Hier krieg ich das nicht getrocknet
+	L0: Warte mal, was schabt denn diesmal von der Klinge ab, gelber Sand und Eiter? Was für ein seltsamer Gestank
+	L1: Ich hocke hier im Schwert ganz ohne Fenster, das ist ja fast wie in einer Kloake
+	L2: Lass mir doch wenigstens ein bisschen saubere Luft übrig, hier drin kriegt man das echt nicht gelüftet
+	L3: Such dir nächstes Mal was Frischeres zum Draufhauen aus, selbst eine Krabbe mit harter Schale ist besser als so ein riesiger Schandwurm
 }
 
 HimayoBrimstoneElementalGift: {
-	L0: Die Hitze ist noch da. Schau, die Pfütze dampft immer noch
-	L1: Was passiert, wenn du den Fuß reinsteckst? ……Warte, ich hab nicht gesagt, dass du das wirklich tun sollst
-	L2: Also erst mal nicht anfassen. Vorsicht, heiß
+	L0: Ringsum brodeln die Lavapfützen immer noch und spucken weißen Dampf, wenn wir hier stehen bleiben, kochen uns die Fußsohlen weg
+	L1: Glotz nicht so verträumt in die Funken, pass auf, dass dir kein Loch in die Stiefel brennt
+	L2: Die Klinge ist noch glühend heiß, häng sie erst mal an die Hüfte zum Abkühlen, lass uns schnell an ein kühleres Plätzchen
 }
 
 HimayoDestroyerGift: {
-	L0: Zerstörer … klingt erst mal furchteinflößend
-	L1: Und dann schlägst du ihn, und es ist nur ein sehr langes Stück Schrott
-	L2: Hier, nimm das. Lass es nicht fallen. Fällt es, heb ich es nicht auf
+	L0: Hat einen Höllenlärm veranstaltet, aber wenn man ihn auseinanderbaut, ist es wirklich nur eine lange Kette massiver Eisenräder
+	L1: Das Gerumpel hat mir so den Schädel durchgeschüttelt, dass mir die Ohren jetzt noch dröhnen
+	L2: Hab aus dem Eisenkern ein solides Teil herausgezogen. Halt es gut fest, wenn es dir auf die Füße fällt, trag ich dich nicht
 }
 
 HimayoTwinsGift: {
-	L0: Zwei Leute zu lange anstarren, und man muss wirklich lachen
-	L1: Du kennst das, oder? Je mehr man es unterdrückt, desto mehr zuckt der Mundwinkel von allein
-	L2: Früher hab ich mit Leuten gewettet, wer zuerst nachgibt. Verloren hab immer ich
-	L3: Gerade die zwei am Himmel … egal. Denk ich dran, muss ich wieder lachen
+	L0: Eines rot, eines grün, sausen wie wild am Himmel herum und glotzen mit Augen groß wie Kupfertöpfe
+	L1: Mitten im Kampf hab ich mich die ganze Zeit gefragt: Wenn die beiden zusammenkrachen, wird ihnen dann gegenseitig schwindelig?
+	L2: Früher hab ich mit anderen um die Wette gestarrt, wer zuerst lachen muss – und jedes Mal verloren
+	L3: Pff … allein wenn ich mir vorstelle, wie die beiden mit den Köpfen aneinanderknallen, muss ich schon kichern
 }
 
 HimayoSkeletronPrimeGift: {
-	L0: Der Kopf ist noch der alte Knochen, der Leib ist komplett neues Eisengestell
-	L1: Als hätte jemand mitten beim Umziehen rausstürzen müssen. Sieht furchtbar schief aus
-	L2: Nächstes Mal erst fertig anziehen, dann kämpfen, ja? Ich werd schon nervös, nur vom Zuschauen
+	L0: Oben sitzt ein uralter Totenschädel, aber unten dran hängen vier nagelneue riesige Eisensägen
+	L1: Sieht aus, als hätte sich jemand erst halb angezogen und wäre dann Hals über Kopf losgestürmt, um sich zu prügeln – total lächerlich
+	L2: Das Knochengerüst liegt in Trümmern. Bevor die Eisenarme ganz kalt werden, schau mal nach, ob was Brauchbares dabei ist
 }
 
 HimayoCalamitasCloneGift: {
-	L0: Sogar die Art zu gehen nachmachen. Schon der Anblick nervt
-	L1: Nicht dass ich Angst hätte … es ist nur widerlich. Je ähnlicher, desto unechter
-	L2: Hier. Frag nicht, wo ich das rausgeholt habe. Fragst du, tu ich, als hätte ich nichts gehört
+	L0: Puh … endlich verweht. Der Schatten, der da in der Luft schwebte, hat sich so steif bewegt wie eine Marionette an Fäden
+	L1: Je krampfhafter so ein Ding versucht, wie ein lebendiger Mensch zu wirken, desto unechter und steifer sieht es aus. Da schüttelt es einen richtig
+	L2: Aus der Asche ist eine Abreibung gefallen. Nimm sie ruhig, die hier ist diesmal wirklich echt
 }
 
 HimayoPlanteraGift: {
-	L0: Ist eine Blume verblüht, schneidest du sie einfach ab
-	L1: Verdorrte Stiele aufzuheben hat keinen Sinn. Sie brauchen Platz und machen nur schlecht Laune
-	L2: Bei uns machen das alle Blumenhändler so. Verblüht, abgeschnitten, kein Herumtrödeln
-	L3: Ach, warum erzähl ich dir das. Du bist ja nicht gekommen, um bei mir Blumen zu kaufen
+	L0: Puh, die Ranken sind endlich verwelkt, stinkt nach faulen Wurzeln und modriger Erde
+	L1: Bei uns im Blumendorf heißt es immer: Wenn eine Blume am Herzen fault, muss man sie mit der Wurzel ausreißen, ganz gleich wie schön sie war – sonst geht das ganze Blumenbeet ein
+	L2: Verdorrte Blätter und Äste, die im Boden verfaulen, sind ohnehin kein schöner Anblick, nehmen nur Platz weg und nerven
+	L3: Klopf die Blütenblätter und Blattfetzen vom Schwert ab. Sobald alles sauber ist, brechen wir auf
 }
 
 HimayoGolemGift: {
-	L0: Sind die Handgelenke noch taub? Die Schultern auch mal lockern
-	L1: Gegen so einen Stein zu knallen, die Erschütterung kriecht bis in die Handfläche
-	L2: Früher waren mir die Schwielen auch taub vom Stoß. War echt unangenehm
-	L3: Und hau mit der Klinge nicht immer hart dagegen. Springt die Schneide, bin ich die, der's leidtut
+	L0: Tun dir die Handgelenke weh? Knete sie schnell mal durch. Dieser dicke Steinbrocken war steinhart, da zieht der Schlag bis in die Knochen
+	L1: Die Schneide hätte fast eine Scharte abbekommen, ich hab hier drin gedacht, die Welt geht unter
+	L2: Wenn du es künftig mit solchen harten Brocken zu tun hast, such nach Schwachstellen und hack nicht wie ein gutmütiger Trottel stumpf mit der Schneide drauf
+	L3: Wenn die Klinge splittert, zieh ich dir die Ohren lang! Jetzt setz dich erst mal hin und hol Luft
 }
 
 HimayoCultistGift: {
-	L0: Vor der Tür ist endlich Ruhe
-	L1: Die Ohren können sich ausruhen. Das fromme Gemurmel vorhin, da wollte ich mir die Ohren zuhalten
+	L0: Puh … vor der Kerkertür ist endlich mal wieder Ruhe eingekehrt
+	L1: Wie diese Bande da im Kreis ohne Pause ihren Zauberkram vor sich hin gemurmelt hat, da haben mir die Ohren wehgetan, so nervig war das
 }
 
 HimayoMoonLordGift: {
-	L0: Der Mond, der am Himmel lastete, ist endlich weg
-	L1: Frohsinn ist das auch nicht …
-	L2: Nur dass etwas, das ewig auf dem Scheitel saß, plötzlich fehlt. Kommt einem erst mal ungewohnt vor
+	L0: Dieser riesige graue Schatten am Firmament … ist endlich völlig verweht
+	L1: Diese drückende Schwere, die so lange auf einem lastete, ist mit einem Mal weg. Jetzt, wo das Mondlicht herabfällt, ist man fast ein bisschen benommen
+	L2: Stehst du noch auf den Beinen? Es war wirklich kein leichter Weg bis hierher. Heute Nacht hast du dir eine ordentliche Mütze Schlaf verdient
 }
 
 HimayoProvidenceGift: {
-	L0: Tss, die Luft ringsum ist fast verbrannt
-	L1: Der Handrücken ist heiß und straff. Hier zu stehen ist, als würde man in einer Grube Süßkartoffeln rösten
-	L2: Nimm das. Bleib nicht hier stehen und röst weiter. Abhauen
+	L0: Uff … die Hitzewelle will gar nicht abflauen, meine Hände glühen schon ganz rot
+	L1: Hier zu stehen fühlt sich an, als würde man am offenen Feuerofen hocken und Süßkartoffeln rösten, mir sengt es glatt die Haarspitzen an
+	L2: Den heißen Abreibungsabdruck hab ich dir schon rausgeklaubt. Pack ihn gut ein und nichts wie weg hier, lass uns ein kühles Gewässer suchen
 }
 
 HimayoPolterghastGift: {
-	L0: Hier ist's so feucht wie Wäsche, die eine Woche drinnen hängt und nie trocken wird
-	L1: An so einem kalten, dumpfen Ort schlafen, am nächsten Morgen tut der Rücken weh
-	L2: Nicht mal ein Fenster zum Lüften, und kein Holz für ein Kohlenbecken
-	L3: Wenn's erledigt ist, weg. Bloß nicht hier übernachten
+	L0: Dieser modrige Wind hier unten kriecht einem bis in die Knochen, genau wie nasse Wäsche, die zwei Wochen im Zimmer hing und nie trocken wurde
+	L1: Nicht mal ein Fenster zum Durchlüften gibt es hier, geschweige denn Holz für ein Kohlebecken. Wer hier schläft, dem tut morgen früh garantiert das Kreuz weh
+	L2: Die Grollgeister sind alle hinweggefegt, aber die Kälte kriecht einem immer noch unter die Kleider
+	L3: Bleib bloß nicht länger in diesem feuchten Loch hocken. Rauf an die Oberfläche und ans Lagerfeuer, sonst holst du dir noch eine Lungenentzündung
 }
 
 HimayoDevourerOfGodsGift: {
-	L0: Der Kopf vorhin … so groß, dass man irgendwann nicht mehr wusste, was man eigentlich ansieht
-	L1: Als hätte jemand dem Himmel ein riesiges Stück herausgebissen
-	L2: ……Egal. So gesagt klingt's noch unheimlicher
+	L0: Als dieser riesige Leib vorhin aus der Leere gewalzt kam … sah es wirklich aus, als hätte jemand ein riesiges Stück aus dem Himmel herausgebissen
+	L1: Als ich in diesen bodenlosen schwarzen Schlund hinabgeblickt habe, war ich für einen Moment selbst ganz starr
+	L2: Hey, wieder zu dir kommen! Erst als ich gesehen habe, dass an dir noch alle Arme und Beine dran sind, ist mir ein Stein vom Herzen gefallen
 }
 
 HimayoYharonGift: {
-	L0: Die Schneide ist noch glühend, und bei mir ist's auch stickig heiß
-	L1: Ehrlich, in der Scheide ist's gerade wie in einem Backofen
-	L2: Steck die Klinge nicht gleich zurück. Die, die sich verbrennt, bin ich
-	L3: Hier, das erst mal zur Seite. Wenn's kühler ist, weitersehen
+	L0: Die Klinge glüht feuerrot, hier drinnen fühlt es sich an wie in einer Schmiedeesse
+	L1: Steck sie bloß noch nicht in die Scheide, sonst werd ich hier noch zu einem gerösteten Klistiergeist
+	L2: Häng sie locker an die Seite in den Wind, damit sie abkühlt. Puh … diese Riesenmotte hatte vielleicht eine Bärenkraft
+	L3: Den hervorgeholten Abreibungsabdruck legen wir erst mal beiseite, den schauen wir uns an, wenn er richtig abgekühlt ist
 }
 
 HimayoExoMechsGift: {
-	L0: Nach dem ganzen Donnern summt's immer noch in den Ohren
-	L1: Als würde jemand mit einem kleinen Hammer im Schädel klopfen. Nervt zu Tode
-	L2: Lass uns schnell einen stillen Platz finden und den Ohren Urlaub geben
+	L0: Das ohrenbetäubende Geklapper und Gedonner hat endlich aufgehört. Nach diesem Trommelfeuer eben summt es mir jetzt noch in den Ohren
+	L1: Als würde jemand mit einem kleinen Hämmerchen ununterbrochen im Schädel herumhämmern, furchtbar
+	L2: Lass uns schnell weg von diesem verbrannten Eisengestank und ein ruhiges Tal suchen, um wieder zu Atem zu kommen
 }
 
 HimayoSupremeCalamitasGift: {
-	L0: Die Luft dort vorhin war schwer und stockend
-	L1: Geh in den Wind oder wasch dir das Gesicht kalt … nicht weil du dreckig bist. Damit du wieder klar wirst
-	L2: Allerdings … solche Szenen, die einem die Luft nehmen, kenne ich von früher ziemlich gut
+	L0: Die Barriere ist zerbrochen … diese Asche und die erdrückende Schwere, die einem die Luft abgeschnürt haben, haben sich endlich aufgelöst
+	L1: Bleib nicht so erstarrt im Zugwind stehen! Hol tief Luft, oder wasch dir das Gesicht mit kaltem Wasser aus, um wieder zu Sinnen zu kommen
+	L2: Früher, als ich mich um böse Geister gekümmert habe, hab ich solche lebensgefährlichen Schlachten oft erlebt … Aber diesmal hatte ich dich an meiner Seite
 }
 
 HimayoBossRushGift: {
-	L0: Erst mal stehen bleiben. Nicht zappeln
-	L1: Fest stehen … die Luft ist noch nicht einmal. Gut, dass du zurück bist
+	L0: Bleib erst mal ganz ruhig stehen … die Beine zittern dir wohl, was?
+	L1: Atme erst mal ganz langsam und gleichmäßig durch … Du hast dich durch den ganzen langen Weg gekämpft, gute Arbeit. Willkommen zurück
 }

@@ -1,162 +1,162 @@
 FirstMetHimayo: {
 	SpeakerName: Himura Mayo
 	Line1: ……¿Sigo viva?
-	Line2: Espera, déjame comprobarlo… ¿esto es una evocación?
+	Line2: Espera, déjame asegurarme primero… ¿esto es una invocación de espíritus?
 	Line3: No…
-	Line4: ¿Por qué está ahora mi conciencia dentro de una espada?
-	Line5: La cabeza me da vueltas… no entiendo nada de lo que está pasando
-	Line6: Aunque, ya que la hoja está en tus manos…
-	Line7: Desde hoy, cuida bien de mí
+	Line4: ¿Por qué está mi conciencia metida dentro de una espada?
+	Line5: Me da vueltas la cabeza… no entiendo nada de lo que está pasando.
+	Line6: Pero ya que la hoja está en tus manos…
+	Line7: ¡A partir de hoy, cuida bien de mí!
 }
 
 ToriiShrine: {
-	InteractHint: "[Clic derecho] Desenvainar"
+	InteractHint: "[Clic derecho] Desenvainar la hoja"
 	SealedHint: "[Clic derecho] Sujetar la empuñadura"
-	InventoryFullHint: El inventario está lleno. Libera un espacio antes de desenvainar
+	InventoryFullHint: El inventario está lleno. Haz un hueco antes de desenvainar la hoja
 }
 
 ItCametoThis: {
-	Line1: De verdad no quería llegar a esto
-	Line2: A partir de ahora, este mundo lo tomo yo
+	Line1: De verdad que no quería llegar a esto
+	Line2: A partir de ahora, este mundo queda bajo mi mando
 }
 
 HimayoEyeOfCthulhuGift: {
-	L0: Ah, sí. En el pueblo había uno que no podía cerrar los ojos al dormir
-	L1: No de esa forma aterradora, bien abiertos. Párpados a medias, mirando la viga, como si estuviera en las nubes
-	L2: Manta bien arropada, la casa en un silencio mortal. Una vez pasé bajo su ventana y casi pido ayuda
-	L3: Al día siguiente estaba bien, gritándome desde el campo que le ayudara a llevar macetas
-	L4: Ay, de tanto hablar… mirando ese ojo enorme en el cielo, a mí también me entra sueño
+	L0: Uf… por fin cayó. Que semejante ojo te mire fijamente durante media noche me ponía los pelos de punta
+	L1: Pero quedarse mirando así sin pestañear una sola vez, ¿no le dolerán a él mismo los ojos?
+	L2: De tanto rato bajo esa mirada, hasta a mí me estaba entrando sueño
+	L3: Toma, encontré esto por aquí cerca. Agárralo bien, no lo vayas a perder
+	L4: Descansa un rato; esta noche por fin podremos cerrar los ojos y dormir a gusto
 }
 
 HimayoEvilBossGift: {
-	L0Worm: Qué asco… trozo a trozo, apretados en la tierra
-	L1Worm: Huele a zanja de barro recién abierta. No quiero volver a olerlo
-	L0Brain: Los cerebros deberían quedarse bien dentro del cráneo
-	L1Brain: Empapado y tendido ahí fuera. Con una mirada ya me duele la cabeza
+	L0Worm: Ese bicho apretujado por trozos en el fango huele a zanja podrida recién abierta, ¡qué asfixia aquí dentro!
+	L1Worm: Sacude la hoja, límpiala y enváinala; vámonos a algún sitio con brisa a que nos dé el aire
+	L0Brain: Esa masa húmeda da escalofríos con solo mirarla; los sesos deberían estar bien guardaditos dentro del cráneo
+	L1Brain: La hoja quedó toda pringosa, pásale un trapo rápido, ¡y no te la vayas a frotar en la ropa!
 }
 
 HimayoCalamityEvilGift: {
-	L0: No te quedes plantado. Al menos respira un par de veces
-	L1: Ese montón de antes, todo apelotonado… ¿no te pareció pasta de judía roja echada a perder?
-	L2: Pues ya está. No tenía hambre y me la he buscado yo sola
-	L3: Si tú también tienes hambre, ve a buscar algo. Aguantar a secas queda tonto
-	L4: Y no te pases la mano por la cara… no es que me dé asco, es que después pica de verdad en los ojos
+	L0: Ese amasijo amontonado de antes… la verdad es que se parecía un montón a pasta de judía roja machacada
+	L1: Ejem, antes ni lo había pensado, pero de decirlo en voz alta me ha entrado hambre
+	L2: Si tú también tienes hambre ve a buscar algo de comer, hacerse el duro justo tras una pelea es de lo más tonto
+	L3: De paso pesqué esta cosita, toma, quédatela
+	L4: Ah, y no te restriegues las manos sucias por la cara, que te van a arder los ojos de verdad, hazme caso
 }
 
 HimayoSlimeGodGift: {
-	L0: Pegajoso, sí. Pero de niña pisé el barro después de la lluvia, y eso era peor
-	L1: Al menos esto no se mete en los zapatos. Bueno… se puede aguantar
-	L2: Toma. No preguntes de dónde lo saqué. Si preguntas, haré como que no oigo
+	L0: Pegajoso es un rato, pero después de tanto pisar lodo, esta masa divina de gelatina tampoco sienta tan mal
+	L1: Al menos no se nos escurrió por las perneras dentro de las botas, bastante consideración para ser un dios
+	L2: Saqué esto del montón de gelatina, tómalo, y ni se te ocurra preguntar de dónde lo saqué
 }
 
 HimayoWallOfFleshGift: {
-	L0: …De verdad. Ese muro de carne ha caído
-	L1: No sé si alegrarme o no. Solo siento que… el cielo va a cambiar
-	L2: El camino de ahora en adelante será más duro. Con que lo sepas tú, basta
+	L0: …De verdad la partiste en dos, todo ese muro de carne se vino abajo
+	L1: Cómo decirlo… el ambiente cambió por completo de golpe, hasta la hoja se siente un punto más cargada de rencor
+	L2: El camino de aquí en adelante va a ser mucho más duro… Pero bueno, sujeta bien la espada, que yo estoy aquí contigo
 }
 
 HimayoFesterSerpentGift: {
-	L0: Espera. ¿Esto en el filo es… pus?
-	L1: Yo vivo en la espada. Apenas cerró la pescadería y ya la han convertido en clínica
-	L2: Y sin ventanas. La sala ni siquiera tiene un respiradero
-	L3: La próxima vez elige un sitio más limpio para clavar. Aquí no hay forma de secar nada
+	L0: Espera, ¿qué es esto que ha quedado raspado en el filo, arena amarilla y pus? Qué peste tan rara
+	L1: Yo vivo aquí dentro sin una mísera ventana, esto parece ya una charca hedionda
+	L2: Déjame un poco de aire limpio, que aquí no hay cómo ventilar
+	L3: La próxima vez búscate algo más limpio contra lo que pelear, ¡hasta un cangrejo de caparazón duro sería mejor que ese bicho infecto!
 }
 
 HimayoBrimstoneElementalGift: {
-	L0: El calor aún no se ha ido. Mira ese charco, todavía echa humo blanco
-	L1: ¿Qué pasaría si metieras el pie? …Espera, no te he dicho que lo pruebes de verdad
-	L2: En fin, no lo toques. Quema
+	L0: Las charcas de lava de alrededor todavía están humeando en blanco; como nos quedemos aquí, se nos van a asar las plantas de los pies
+	L1: ¡No te quedes embobado mirando las chispas! Cuidado no se te queme un agujero en la bota
+	L2: El filo aún quema al tacto, cuélgatelo al cinto para que se enfríe y vámonos a un sitio más fresco
 }
 
 HimayoDestroyerGift: {
-	L0: Lo llaman Destructor… suena imponente
-	L1: Y al tumbarlo, no es más que un trozo larguísimo de chatarra
-	L2: Toma, guarda esto. Si se te cae, yo no lo recojo
+	L0: Menudo estruendo atronador armaba, pero al desarmarlo, no era más que una ristra larguísima de ruedas de hierro macizo
+	L1: Me retumbó la cabeza tan fuerte que todavía me zumban los oídos
+	L2: Saqué una pieza bien dura de su núcleo de hierro; agárrala fuerte, que si se te cae y te chafa el pie, ¡yo no te llevo a cuestas!
 }
 
 HimayoTwinsGift: {
-	L0: Si dos se miran demasiado rato, de verdad te entra la risa
-	L1: Ya sabes, cuanto más te aguantas, más ganas. La comisura se te sube sola
-	L2: Antes apostaba con la gente a quién se reía primero. Perdía siempre
-	L3: Hace un momento, mirando esas dos en el cielo… da igual, de pensarlo me dan ganas otra vez
+	L0: Uno rojo y otro verde, revoloteando como locos por el cielo con los ojos abiertos como campanas
+	L1: En mitad de la pelea pensaba: si se chocaran el uno contra el otro, ¿no se marearían de mirarse?
+	L2: Antes jugaba a ver quién aguantaba más sin reírse con los demás, y siempre perdía yo
+	L3: Pfff… ¡solo de imaginarme a los dos dándose un cabezazo me entra la risa!
 }
 
 HimayoSkeletronPrimeGift: {
-	L0: La cabeza sigue siendo el hueso de siempre. El cuerpo, todo armazón nuevo
-	L1: Como si se hubiera cambiado a medias y hubiera salido corriendo. Da un mal rollo terrible
-	L2: La próxima vez que salga a pelear, que se vista del todo. Hasta yo me pongo nerviosa por él
+	L0: Con una calavera vieja por cabeza, pero con cuatro sierras de hierro nuevecitas puestas debajo
+	L1: Parecía alguien que se pone medio traje y sale corriendo a trompadas, daba vergüenza ajena mirarlo
+	L2: El esqueleto ha quedado desparramado por el suelo; mientras esos brazos de hierro sigan tibios, mira a ver si hay algo útil
 }
 
 HimayoCalamitasCloneGift: {
-	L0: Hasta la forma de andar la copia. Solo de verlo ya molesta
-	L1: No es que le tenga miedo… es que da grima. Cuanto más se parece, más falso se ve
-	L2: Toma. No preguntes de dónde lo saqué. Si preguntas, haré como que no oigo
+	L0: Uf… por fin se desvaneció. Esa sombra flotando en el aire se movía tan tiesa como un títere con hilos
+	L1: Cuanto más forzaba imitar a un ser vivo, más falsa y rígida parecía, daba repelús solo de mirarla
+	L2: De entre las cenizas cayó un calco; tómalo, esta vez te aseguro que es auténtico
 }
 
 HimayoPlanteraGift: {
-	L0: Si la flor se ha marchitado, hay que cortarla de un tajo
-	L1: Dejar el tallo seco no sirve de nada. Ocupa sitio y además cabrea
-	L2: En el pueblo, los que venden flores lo hacen todos así: se marchita, se corta, sin enredos
-	L3: Ay, ¿y yo para qué te cuento esto? Tampoco has venido a comprarme flores
+	L0: Uf, por fin se marchitaron las lianas; huele a raíces podridas y a tierra ácida
+	L1: En mi pueblo de las flores siempre decíamos: si a una flor se le pudre el centro, da igual la pena que dé, hay que arrancarla de raíz, o se echará a perder todo el bancal
+	L2: Las ramas muertas pudriéndose en la tierra afean la vista, solo ocupan espacio y molestan
+	L3: Sacude los pétalos rotos y los capullos machacados del filo; limpia bien y pongámonos en marcha
 }
 
 HimayoGolemGift: {
-	L0: ¿Aún te hormiguean las muñecas? Los hombros también hay que frotarlos un rato
-	L1: Chocar contra una piedra así, el temblor te sube hasta la palma
-	L2: A mí también me dejó el hueco del pulgar entumecido. Un asco
-	L3: Y no uses la hoja para golpear a lo bruto. Si se astilla, la que lo siente soy yo
+	L0: ¿Te duelen las muñecas? Frótalas un poco, ese pedrusco era duro de narices, chocar contra él te sacude los brazos
+	L1: Por poco se nos mella el filo; yo ahí dentro sentí como un terremoto
+	L2: En adelante, contra esos pedruscos busca las junturas, ¡no le des de plano con el filo como si fueras tonto!
+	L3: Como me rompas la espada no te lo perdonaré, ¡así que siéntate a tomar aire!
 }
 
 HimayoCultistGift: {
-	L0: Por fin se ha callado la puerta
-	L1: Los oídos pueden descansar. Ese rezo de hace un rato, tan rimbombante, me daban ganas de taparme los oídos
+	L0: Uf… por fin hay silencio en la puerta de la mazmorra
+	L1: Ese grupito murmurando rezos sin parar me tenía la cabeza zumbando, qué molestia más insoportable
 }
 
 HimayoMoonLordGift: {
-	L0: La luna que aplastaba el cielo por fin se ha disuelto
-	L1: Tampoco es que esté contenta…
-	L2: Es que eso que te oprimía la coronilla de pronto ya no está, y de golpe te sientes rara
+	L0: Esa sombra gris tan inmensa en el cielo… por fin se ha disipado del todo
+	L1: Esa pesadez que aplastaba el pecho de pronto desapareció; al caer la luz de la luna, uno se queda hasta aturdido
+	L2: ¿Sigues en pie? Llegar hasta aquí no ha sido nada fácil, esta noche te has ganado dormir a pierna suelta
 }
 
 HimayoProvidenceGift: {
-	L0: Tch. Hasta el aire de alrededor está a punto de chamuscarse
-	L1: El dorso de la mano te arde. Estar aquí es como que te metan en un hoyo a asar batatas
-	L2: Guarda esto y no te quedes plantado a seguir asándote. Vámonos ya
+	L0: Uff… la ola de calor aún no se va, el dorso de las manos se me ha puesto al rojo vivo
+	L1: Estar aquí de pie es como ponerse en cuclillas junto a un horno recién prendido asando batatas, se me van a chamuscar las puntas del pelo
+	L2: Ya te saqué el calco caliente, recógelo y salgamos echando leches de aquí, busquemos un sitio con agua fresca
 }
 
 HimayoPolterghastGift: {
-	L0: Aquí hay una humedad como de ropa tendida dentro de casa una semana, que no seca
-	L1: Dormir en un sitio tan húmedo y frío, al día siguiente la cintura duele seguro
-	L2: Ni una ventana para ventilar. Quieres un brasero y no hay leña
-	L3: Termina y vete. No pases la noche aquí
+	L0: Esta brisa subterránea te cala hasta el tuétano de los huesos, como ropa húmeda tendida medio mes a oscuras
+	L1: Sin una sola ventana para ventilar y sin leña para encender un brasero; si dormimos aquí, mañana nos va a doler la espalda de verdad
+	L2: Las almas en pena han quedado barridas, pero el frío sigue metiéndose por la ropa
+	L3: No nos quedemos en este pozo húmedo, subamos a la superficie a calentarnos al fuego, no vayamos a coger un buen resfriado
 }
 
 HimayoDevourerOfGodsGift: {
-	L0: Esa cabeza de hace un rato… tan grande que, de mirarla mucho, ya no sabías qué estabas viendo
-	L1: Como si alguien hubiera mordido de un bocado un pedazo entero del cielo
-	L2: …Da igual. Dicho así, suena aún más de miedo
+	L0: Cuando ese cuerpo colosal cruzó el vacío hace un momento… parecía de verdad que le hubieran arrancado un bocado enorme al cielo
+	L1: Mirando ese pozo negro sin fondo que dejaba debajo, hasta a mí se me fue el santo al cielo un segundo
+	L2: ¡Despierta! Verte entero, sin que te falte un brazo ni una pierna, es lo que me deja el corazón tranquilo
 }
 
 HimayoYharonGift: {
-	L0: El filo aún quema. De este lado también me ahogo de calor
-	L1: De verdad, ahora mismo la vaina es como un horno
-	L2: No metas la hoja todavía. La que lo pasa mal con el calor soy yo
-	L3: Toma, deja esto a un lado. Cuando refresque, hablamos
+	L0: La hoja está que arde al rojo vivo, ahí dentro es como si me hubieran metido en la fragua de un herrero
+	L1: No te des prisa en envainarla, ¡o voy a acabar convertida en un espíritu de espada a la brasa!
+	L2: Cuélgala al costado al aire para que se enfríe; uf… esa polilla gigante tenía una fuerza descomunal
+	L3: Dejé el calco a un lado por ahora, míralo cuando se haya enfriado bien
 }
 
 HimayoExoMechsGift: {
-	L0: Con el estruendo de hace un rato, los oídos aún me zumban
-	L1: Como si alguien martilleara dentro del cráneo. Una lata
-	L2: Busquemos un sitio quieto y descansemos. Que los oídos se tomen un descanso
+	L0: Todo ese estruendo metálico por fin se apagó; el bombardeo de artillería de hace un rato todavía me tiene los oídos pitando
+	L1: Era como si alguien me estuviera martillando la coronilla sin parar con un martillito, ¡qué desesperación!
+	L2: Salgamos rápido de este sitio apestando a hierro chamuscado y busquemos un valle tranquilo donde recobrar el aliento
 }
 
 HimayoSupremeCalamitasGift: {
-	L0: El aire de allá, hace un momento, pesaba y se quedaba quieto
-	L1: Ve a que te dé el viento, o lávate la cara con agua fría… no es que me des asco, es para que despejes
-	L2: Aunque… este tipo de escena que te deja sin aire, antes yo sí que estaba acostumbrada
+	L0: La barrera se rompió… esa ceniza y esa opresión que no dejaban respirar por fin se han disipado
+	L1: No te quedes ahí parado como un pasmarote con el viento de cara; respira hondo o échate agua fría en la cara para espabilar
+	L2: Antes, lidiando con espíritus malignos, vi muchas situaciones a vida o muerte como esta… pero esta vez, te tenía a ti a mi lado
 }
 
 HimayoBossRushGift: {
-	L0: Párate. No te muevas
-	L1: Afirma los pies… ni siquiera has recobrado el aliento. Con que hayas vuelto, basta
+	L0: Quédate quieto un segundo… te tiemblan las piernas, ¿verdad?
+	L1: Toma aire despacio y con calma… Ha sido un viaje larguísimo y te has esforzado mucho. Me alegro de que estés de vuelta
 }

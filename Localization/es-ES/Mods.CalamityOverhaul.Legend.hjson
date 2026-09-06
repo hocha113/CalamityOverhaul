@@ -750,8 +750,8 @@ OnikiriOverride: {
 }
 
 OnikiriTrialQuestLine: {
-	QuestCategory: Prueba
-	TrackerWaiting: Aún no está
+	QuestCategory: Onikiri · Tajos de prueba
+	TrackerWaiting: Aún no ha llegado; aguarda un poco o salgamos a buscarlo
 	TrackerFighting: "{0}: {1:0%}"
 	TrackerBrief: Siguiente tajo: {0}
 	BossRushTargetName: Batalla del Término
@@ -759,159 +759,157 @@ OnikiriTrialQuestLine: {
 	Trial_0: Ojo nocturno del firmamento
 	Trial_1: Dos males de la tierra impura
 	Trial_2: Nido de inmundicia apiñada
-	Trial_3: Dios de nombre prestado
-	Trial_4: Muro de carne que corta el mundo
+	Trial_3: Falso dios presuntuoso
+	Trial_4: Muro de carne divisorio
 	Trial_5: Escamas de pus en arena podrida
-	Trial_6: Brasas del abismo
+	Trial_6: Brasas en el abismo
 	Trial_7: Serpiente de hierro atronadora
 	Trial_8: Pupilas demoníacas gemelas
 	Trial_9: Restos viejos y nuevos
-	Trial_10: Sombra que imita
+	Trial_10: Sombra simulada
 	Trial_11: Flor sombría de la jungla
 	Trial_12: Ídolo terco del templo
-	Trial_13: Plegaria loca a la puerta antigua
-	Trial_14: Luna que se viene abajo
-	Trial_15: Resplandor del fuego del corazón
-	Trial_16: Racimo de rencor en la humedad
-	Trial_17: Vacío que devora mundos
-	Trial_18: Dragón de fuego que quedó atrás
-	Trial_19: Fragor del flujo estelar
-	Trial_20: Tormenta de calamidad que ahoga
-	Trial_21: La noche que se reúne otra vez
+	Trial_13: Plegaria insana ante el portal
+	Trial_14: Luna pálida que se cierne
+	Trial_15: Resplandor ígneo del núcleo
+	Trial_16: Racimo de rencor en la penumbra
+	Trial_17: Fauces que devoran el vacío
+	Trial_18: Dragón de fuego rezagado
+	Trial_19: Fragor de acero exoestelar
+	Trial_20: Tormenta de calamidad asfixiante
+	Trial_21: Oscuridad renacida
 	TrialSummary_0:
 		'''
-		En el cielo pasa algo, y yo no sabría decir qué
-		Solo que nos están mirando, y la hoja también se pone inquieta
-		Ve a ver, y cuando vuelvas dime qué demonios era
-		Ah, y no eches la cabeza atrás demasiado rato: se te va a cargar el cuello
+		Siempre tengo la sensación de que algo nos vigila desde el cielo oscuro, y hasta la espada tiembla en mis manos
+		No sabría decir con certeza qué es; sube a la noche a echar un vistazo
+		No te quedes con la cabeza levantada todo el tiempo que se te va a quedar tieso el cuello; cuando vuelvas me cuentas qué viste
 		'''
 	TrialSummary_1:
 		'''
-		Por la tierra podrida tiran dos cosas raras, no las distingo
-		La que saque la cabeza primero, esa cortas. No las mires a las dos
-		La hoja te dirá que el sabor no cuadra. Tú ve primero
+		El viento que sopla de la tierra corrupta trae dos pestes insoportables, densas y nauseabundas, que ni yo sé distinguir
+		Si te topas con ellos, arremete contra el primero que se te tire encima; no dejes que te acorralen entre los dos
+		Desenvaina en cuanto el aire empiece a oler raro, despáchalos rápido y sal pitando a tomar aire limpio
 		'''
 	TrialSummary_2:
 		'''
-		Ahí la inmundicia se ha apelotonado; solo el viento de eso ya empalaga
-		No te quedes mirando. Ve y arréglalo
-		Volver con eso hecho importa más que cualquier otra cosa
+		En lo profundo del subsuelo se ha formado una madriguera de inmundicia; huele a cieno pringoso y asqueroso incluso desde lejos
+		Dejarlo estar solo hará que se pudra más hondo; ve y desbarátalo de una vez por todas
+		Mira bien por dónde pisas entre el barro, ¡no vuelvas pringado hasta arriba de lodo!
 		'''
 	TrialSummary_3:
 		'''
-		Dicen que hay una cosa que se llama dios. Casi me río
-		Si los nombres se cogieran así, quién se iba a molestar en avanzar
-		Ve a comprobarlo. Si de verdad se atreve a llamarse así, desmóntalo
-		Oye, no te mando a rezar. Escucha bien
+		He oído a la gente decir que una masa informe de fango se hace llamar dios por ahí; casi me da la risa
+		Si ponerse títulos divinos fuera tan fácil, ¿quién se molestaría en entrenar y cultivar el espíritu?
+		Ve a ver qué sabe hacer de verdad; y si solo está haciéndose pasar por un espíritu sagrado, ensártalo de un solo tajo
+		Escúchame bien: vas a atravesarlo, ¡no seas tonto y te pongas a arrodillarte a rezarle!
 		'''
 	TrialSummary_4:
 		'''
-		Delante parece tapado, y yo no sabría decir con qué
-		Si el camino no pasa, ábrelo
-		Lo que se siente al otro lado, lo hablamos cuando vuelvas
+		Abajo del todo, cerca del fondo del mundo, un muro colosal de carne ha tapiado el camino; hasta cortar el aire da sensación de ahogo
+		Si el paso está cerrado, no queda otra que abrirlo a tajos
+		En cuanto termine esta pelea el mundo entero va a cambiar; no bajes la guardia, ya hablaremos con calma cuando logres pasar
 		'''
 	TrialSummary_5:
 		'''
-		El desierto huele distinto: flores podridas mezcladas con pus, algo está hozando
-		No dejes que cave hondo. Ve a cortarlo
-		Y no metas la hoja en los abscesos: aquí todavía vive alguien
+		Hay un alboroto tremendo bajo las dunas; la arena se revuelve sin parar como si un bicho gigantesco estuviera escarbando hacia abajo
+		Intercepta a esa criatura antes de que se entierre demasiado hondo
+		Apunta bien el golpe y no hundas toda la empuñadura en el lodo podrido; acuérdate de que yo vivo aquí dentro, ¡déjame un rincón limpio!
 		'''
 	TrialSummary_6:
 		'''
-		El fogón de aquel lado sigue encendido, como si alguien se negara a apagarse
-		Ve a apagarlo, y mira por dónde pisa
-		Si te quemas, yo no te lo voy a soplar
+		El foso de fuego de aquel lado sigue al rojo vivo; la hoja se siente ardiendo incluso desde esta distancia
+		Ve a apagarlo de una vez, no tiene sentido dejar que siga ardiendo eternamente
+		Ten cuidado con dónde pisas en los bancos de magma; como te quemes las suelas, no esperes que nadie te las sople
 		'''
 	TrialSummary_7:
 		'''
-		Hay uno con un nombre muy sonoro. De oído intimida
-		El hierro se mueve: ve a tocarlo, a ver si es solo humo
-		No compitas a ver quién tiene el nombre más grande
+		Los temblores que suben de la tierra son cada vez más fuertes; la espada vibra a su compás, suena como un coloso envuelto en hierro
+		Por muy aterrador que suene el nombre, el hierro sigue siendo hierro; ve a comprobar qué tan dura tiene la coraza
+		No te líes a golpes de frente contra el metal macizo; busca las junturas para no quedarte con las manos entumecidas
 		'''
 	TrialSummary_8:
 		'''
-		Dos puntos en el cielo, como si hubieran quedado
-		Si salen en pareja, sepáralos. No te comas las dos miradas a la vez
-		Cuando vuelvas ya te quejarás de si se parecen a una persona
+		Dos destellos en el cielo nocturno como si se hubieran puesto de acuerdo para salir a la vez; que te miren de dos lados da mal cuerpo
+		Peleando en pareja se cubren bien, así que toma distancia y desmóntalos uno a uno; no te dejes atrapar en el fuego cruzado
+		Venga, ve con paso ligero y me cuentas qué pinta tenían cuando estés de vuelta
 		'''
 	TrialSummary_9:
 		'''
-		Allí lo viejo y lo nuevo están revueltos: se ve raro, pero yo aún no distingo
-		Ve a aclararlo. No te dejes blufear
-		Cuando vuelvas diremos de qué lado era de verdad
+		El ambiente que llega de allí se siente rarísimo: armazones de hierro atornillados a huesos viejos, ensamblados a medias
+		Por muy grande que sea el andamio sigue estando pegado a parches; no dejes que semejante fachada te asuste
+		Apunta a las junturas donde se articulan y desmóntalo pieza a pieza; a la vuelta me dices qué parte era la auténtica
 		'''
 	TrialSummary_10:
 		'''
-		Hay una sombra que anda demasiado como una persona. No le he visto la cara y ya me crispa
-		No te quedes mirándola. Ve y arréglalo
-		A quién copia, lo hablamos cuando vuelvas
+		Hay una sombra ahí delante que camina demasiado parecida a una persona viva, pero no tiene ni una pizca de calor humano
+		Esas imitaciones que copian el andar de la gente son las más traicioneras; no te quedes ahí plantado mirándole a los ojos
+		Da un paso al frente y haz pedazos esa forma falsa; ya hablaremos de a quién estaba copiando cuando hayas terminado
 		'''
 	TrialSummary_11:
 		'''
-		Abajo hay una flor que no debería haberse abierto. El olor ya no cuadra
-		Si está gastada, arréglalo. No me la dejes para que me fastidie
-		Las reglas del florista, luego. Tú ve primero
+		Un aroma dulzón sube desde el fondo de la jungla, pero por debajo apesta a marchito y podrido
+		Por muy bonita que se abra una flor, si se le pudre el corazón hay que podarla de raíz, o terminará echando a perder toda la maleza
+		Ya te enseñaré el arte de podar flores cuando vuelvas; anda, ve con cuidado no te vayas a enredar en las lianas
 		'''
 	TrialSummary_12:
 		'''
-		En la casa de piedra hay un ídolo que no le gusta moverse. Se ve duro
-		Tíralo. No golpees la hoja contra la piedra: yo también lo noto
-		Si se te duermen las manos, frótalas cuando vuelvas
+		Un ídolo enorme de piedra está sentado dentro del templo negándose a moverse del sitio; se ve pesado y terco
+		Búscate las mañas para derribarlo y desencajarle las junturas; no vayas a golpear la hoja a lo bruto contra la roca dura, que si se mella a mí también me duele
+		Si se te quedan las muñecas temblando del impacto, sacúdelas bien cuando estés de vuelta
 		'''
 	TrialSummary_13:
 		'''
-		En la puerta de la mazmorra hay quien murmura, como si no hubiera acabado
-		Interrúmpelos. Que las orejas descansen
-		Qué rezaban, lo hablamos luego. De todos modos no te lo creas
+		Hay un grupo de túnicas a la puerta de la mazmorra murmurando galimatías sin parar; tengo la cabeza como un bombo de oírlos
+		Ve y córtales el canturreo de golpe, que nos ahorres el ruido a los dos
+		Digan las tonterías que digan entre rezos, no te creas ni una sola sílaba; remata el asunto y vuelve pronto
 		'''
 	TrialSummary_14:
 		'''
-		Encima de la luna parece que pesa algo. Alzar la cabeza ya carga
-		Ve a quitarlo. No te quedes ahí mirando al cielo
-		Cuando vuelvas te preguntaré si estás hecho polvo
+		Una densa bóveda de penumbra parece aplastar el cielo; con solo mirar hacia arriba ya se siente opresión en el pecho
+		Si está ahí estorbando en lo alto, álzate y arrójala abajo de un tajo
+		No te quedes ahí abajo embobado mirando; tómate la pelea en serio, y cuando vuelvas sano y salvo ya te preguntaré si estás cansado
 		'''
 	TrialSummary_15:
 		'''
-		El corazón de la tierra calienta por allí; de este lado también parece que precalienta
-		Ve. El filo va a quemar, tenlo claro de antemano
-		No te quedes mucho en el calor. Termina y lárgate
+		Oleadas de calor no paran de subir desde el núcleo de la tierra; el acero donde reposo ya está que arde
+		Acercarse esta vez va a ser un suplicio abrasador, tenlo bien presente antes de ir
+		No alargues las cosas en mitad de ese calor sofocante; asesta golpes certeros y sal de ahí cuanto antes
 		'''
 	TrialSummary_16:
 		'''
-		Por la humedad los espectros se han apelotonado. No los cuento
-		Arréglalo todo el racimo. No los recojas uno a uno
-		Y no pases la noche allí: cuando vuelvas ya te lo machaco
+		En la humedad de las profundidades hierve un enjambre de almas errantes; son tantas que ni me molesto en contarlas
+		Ya que están todas apelotonadas en un montón, no pierdas el tiempo cazándolas una a una; bárrelas de un solo barrido limpio
+		La mazmorra es helada y húmeda, no te quedes ahí abajo demasiado rato; haz la faena y sube de inmediato
 		'''
 	TrialSummary_17:
 		'''
-		Esa dirección está demasiado vacía. De este lado también pesa
-		Yo no sabría decir qué es. Solo que no cuadra
-		Ve. Cuando llegues no te quedes solo mirando al vacío; si no ves claro, ocúpate primero de ti
-		Lo hablamos cuando vuelvas. Seguir vivo importa más que ver claro
+		Aquella dirección se siente completamente vacía; el corazón se me encoge con solo asomarme y la hoja pesa como el plomo
+		No sabría decir qué clase de titán viene hacia nosotros, así que mantén la guardia bien alta
+		No te quedes pasmado en cuanto lo veas; por muy peligroso que pinte, ¡volver con vida importa más que cualquier otra cosa!
 		'''
 	TrialSummary_18:
 		'''
-		Dicen que queda un dragón así. Si es verdad o no, ve a verlo
-		El filo probablemente queme: no lo envaines con prisa
-		Trofeos no quiero. Con que volváis con vida, basta
+		Dicen que aún queda un dragón terco al borde del mar de ceniza; ve a comprobar si el rumor es cierto
+		En cuanto crucen aceros la hoja probablemente se pondrá al rojo vivo; aguanta como puedas
+		A mí me dan igual las escamas o plumas raras de dragón; lo único que quiero es que vuelvas enterito
 		'''
 	TrialSummary_19:
 		'''
-		Un estruendo a lo lejos, y las orejas se rinden primero
-		Ve a hacerlos callar, y cuídate los oídos por el camino
-		Si al volver aún zumban, busca un sitio quieto
+		Se oye el retumbar de los cañones de hierro a leguas de distancia; me palpita la cabeza de semejante estruendo
+		Ve a callar a esas monstruosidades mecánicas, y tápate bien los oídos por el camino
+		Si cuando vuelvas todavía te zumban los oídos, te buscaré un rincón bien tranquilo donde puedas descansar
 		'''
 	TrialSummary_20:
 		'''
-		El aire por allí se pone pesado, se estanca, como una puerta que no ventila
-		Ve a cortarlo. No te quedes en el umbral aspirando eso
-		Cuando vuelvas te diré cómo tomar aire
+		El aire por allí está pegajoso y estancado; respirar hondo una sola vez se siente como tragar plomo
+		Ve y ábrete paso a tajos; no te quedes parado como un tonto en mitad del temporal tragándote todo ese humo sofocante
+		Cuando estés de vuelta sano y salvo, ya te enseñaré los ritmos de respiración de mi tierra
 		'''
 	TrialSummary_21:
 		'''
-		Se vuelven a juntar, como si nada se dispersara del todo
-		Esta va a durar
-		Antes de empezar, ponte firme; cuando vuelvas ya te suelto el sermón
+		Esas sombras caídas vuelven a congregarse como si nunca fuera posible purificarlas del todo
+		Esta contienda va a alargarse un buen rato; pelea a tus anchas, que yo estaré aquí mismo en la espada cuidándote las espaldas
+		Afianza bien los pies en el suelo antes de golpear; cuando vuelvas victorioso, ya te regañaré si te vi trastabillar
 		'''
 }
 
@@ -939,202 +937,179 @@ KikasaOverride: {
 }
 
 KikasaTrialQuestLine: {
-	QuestCategory: Prueba
-	TrackerWaiting: Aún no se ha sentado
+	QuestCategory: Kikasa · El banquete del hundimiento
+	TrackerWaiting: Aún no ha tomado asiento; ve a invitarlo, o aguarda un poco
 	TrackerFighting: "{0}: {1:0%}"
-	TrackerBrief: Siguiente cubierto: {0}
+	TrackerBrief: Siguiente plato: {0}
 	BossRushTargetName: Batalla del Término
 	EventActiveFormat: "{0}: en curso"
-	Trial_0: Primera ración: gelatina
-	Trial_1: Ojo que acecha el cielo nocturno
-	Trial_2: Dos carnes de tierra podrida
-	Trial_3: Rancio de las profundidades
-	Trial_4: Néctar y pezuñas tercas
-	Trial_5: Huesos secos a la puerta
-	Trial_6: Gelatina divina revuelta
-	Trial_7: Carne caliente a través del camino
-	Trial_8: Gelatina rosa alada
-	Trial_9: Baba dorada en arena podrida
+	Trial_0: Primer plato blando
+	Trial_1: Ojo acechante de la noche
+	Trial_2: Bocados de tierra infecta
+	Trial_3: Despojos del abismo profundo
+	Trial_4: Néctar dulce y pezuñas tercas
+	Trial_5: Huesos secos ante el portal
+	Trial_6: Masa divina heterogénea
+	Trial_7: Carne ardiente atravesada en la senda
+	Trial_8: Gelatina rosada alada
+	Trial_9: Baba áurea en arenas pútridas
 	Trial_10: Tres sabores de hierro
-	Trial_11: Estambre rojo de la selva
-	Trial_12: Carne elástica de caparazón de cristal
-	Trial_13: Piedra terca del templo
-	Trial_14: Cerdo alado que alborota las olas
-	Trial_15: Resplandor del cielo nocturno
-	Trial_16: Canto a medias a la puerta
-	Trial_17: Reflejo de la cara oculta
-	Trial_18: Los suyos a la misma mesa
-	Trial_19: Viejo huésped del mar ácido
-	Trial_20: Devorador de dioses más allá del cielo
-	Trial_21: Pluma ardiente que no se apaga
-	Trial_22: Hierro extremo y fuego extremo
-	Trial_23: Banquete final a mesa llena
+	Trial_11: Flor carmesí de la selva
+	Trial_12: Manjar de caparazón cristalino
+	Trial_13: Risco tenaz del templo
+	Trial_14: Verraco alado agitador de olas
+	Trial_15: Resplandor celeste nocturno
+	Trial_16: Rezurreo quebrado ante la puerta
+	Trial_17: Reflejo tras la faz lunar
+	Trial_18: Comensales de la misma estirpe
+	Trial_19: Huésped añejo del mar ácido
+	Trial_20: Sierpe del vacío ultraterrenal
+	Trial_21: Pluma inextinguible de fuego
+	Trial_22: Acero supremo y llama suprema
+	Trial_23: Banquete colmado del final
 	TrialSummary_0:
 		'''
-		Al pie de la montaña se ha tendido algo blando, azul, que no para de temblar
-		El lago no ha probado gelatina: quiere saber qué eco deja el bocado
-		Tráelo bajo el paraguas, no te quejes de lo pegajoso
-		Si se deshace, que sea caldo
+		Una masa informe de lodo azulado yace temblando sin cesar al pie de las montañas
+		Un volumen hinchado congregado desde quién sabe dónde; mera bravata vacía
+		Ve y dispérsala en pedazos; que no se quede estorbando en medio del camino
 		'''
 	TrialSummary_1:
 		'''
-		De noche hay un ojo, y mira sin ninguna educación
-		En cuanto el lago lo ve, frunce el ceño y las varillas pican
-		Ve, y hunde esa mirada en el agua
-		Quien mira, al final cierra los ojos
+		Un ojo descomunal pende en el cielo nocturno, clavando la mirada con insolencia
+		Ni siquiera pestañea una vez; suficiente para erizar la piel
+		Ve y arrójalo al suelo; una vez cerrados sus ojos, nos ahorrará un mundo de molestias
 		'''
 	TrialSummary_2:
 		'''
-		De la tierra podrida salen dos: una larga, o un seso húmedo
-		Las dos huelen a sangre; el lago no echa invitados, quédate con el que te cruce
-		Los trozos no hace falta recogerlos, ellos solos se cuelan
+		Dos engendros brotados del suelo podrido: un largo reptil y un cerebro empapado
+		Incluso desde la lejanía se percibe su penetrante hedor a fango
+		Despacha al primero con el que te cruces en el camino; hazlo pedazos y no vuelvas bañado en su pestilencia
 		'''
 	TrialSummary_3:
 		'''
-		Bajo tierra pudre un pensamiento, o un nido de gusanos que comen el corazón
-		Basta oler el viento: lo podrido ya ha criado bichos
-		El lago dice que lo rancio también es sabor. Tráelo
-		No te quites los guantes: ese jugo se pega a la gente
+		Bajo tierra se pudre una madriguera de carne descompuesta, infestada de alimañas que horadan la sangre
+		Dejarla desatendida solo hará que la putrefacción se ahonde; ve directamente y desbarátala
+		Ajusta bien tus guantes; esos jugos impregnados en la piel no se limpian con facilidad
 		'''
 	TrialSummary_4:
 		'''
-		En la selva hay un néctar que rezuma; en la nieve, algo que patea con terquedad
-		Trae uno: hoy el lago abre los dos gustos
-		Lo dulce pica, lo terco pisotea
-		No vuelvas con las manos vacías
+		En la selva acecha un avispón venenoso, y en la tundra hay un ciervo testarudo y tuerto
+		Bastará con que abatas al primero con quien te tropieces; su temperamento es hosco por igual
+		El aguijón destila veneno y la pezuña desgastada alza vendavales; no bajes la guardia ante ninguno
 		'''
 	TrialSummary_5:
 		'''
-		En la puerta de la mazmorra cuelga un viejo de oficio, enganchado a velar por otros
-		Los huesos no se ablandan al remojo, el aura tampoco; el lago lo sabe, pero quiere oír ese crujido
-		Córtalo el aliento, quédate la llave
-		Las esquirlas al fondo pavimentan bien
+		Un viejo esqueleto permanece suspendido ante las puertas de la mazmorra, apegado a hacer guardia de por vida
+		Pese a sus años, su terquedad pesa más que un cerrojo de hierro
+		Ve e interrumpe su vigilia nocturna; arrebátale la llave y permítele reposar por fin bajo tierra
 		'''
 	TrialSummary_6:
 		'''
-		Hay una gelatina que habla y salta, roja y violeta revueltas
-		Al lago nunca le falta agua: le falta un bocado de este tamaño
-		Desmenúzala, a ver en qué se deshace de verdad
-		No bebas de prisa: eso no es para ti
+		Un engrudo de púrpuras y negros revueltos en una misma masa, y aun así osa proclamarse dios de palabra
+		Desordenado y confuso; a fin de cuentas jamás llegará a nada trascendente
+		Ve y tritúralo hasta disolverlo, para evitar que manche este lugar con su presencia
 		'''
 	TrialSummary_7:
 		'''
-		En el infierno hay un muro de cara de carne, tapando el camino de todos
-		Lo caliente sienta bien: el lago apaga el fuego
-		Cuando muera, el mundo cambia; eso no es culpa tuya
-		La tela para las chispas. Ve sin miedo
+		Un muro inmenso de carne cruza el infierno, bloqueando por completo cualquier avance
+		Incluso a través de la tela del paraguas el calor sofoca; resulta abrasadoramente molesto
+		Traspásalo sin titubear; si el mundo cambia a su paso, no será asunto tuyo
 		'''
 	TrialSummary_8:
 		'''
-		Sobre la tierra sagrada cuelga una gelatina rosa, y trae guardias
-		El lago ya probó la gelatina del suelo; la que vuela, nunca
-		Bájala, huesos y todo
-		No pises los cristales: lastiman las varillas
+		Una masa de gelatina rosada flota en el aire; sale a la batalla acompañada de su propio séquito
+		Tan aparatosa y llena de adornos; todo un despliegue de ostentación
+		Derríbala de un golpe; por suntuosa que sea la pompa, no resistirá un solo chaparrón
 		'''
 	TrialSummary_9:
 		'''
-		Ha vuelto la pitón de las flores del desierto: las flores rojas se han hecho abscesos
-		No pises los charcos dorados de la arena: eso es su baba
-		El lago acepta cualquier sabor; lo que le molesta es que haya agriado toda una playa de arena
-		Ve, invítala a hundirse. Sacude el paraguas antes de volver
+		De las arenas brota un gusano colosal cuajado de brotes purulentos, rezumando una baba dorada por el suelo
+		Resulta más nauseabundo que aquello descompuesto en agua; respirar cerca produce arcadas
+		Ve y despáchalo; al terminar, enjuaga bien la tela del paraguas antes de volver
 		'''
 	TrialSummary_10:
 		'''
-		Alguien forjó tres soldados de oro: una cadena, dos lámparas, un armazón de cuatro brazos
-		El hierro no se empapa; a fuerza de remojo solo huele a óxido
-		Al lago no le gusta este bocado, pero en la mesa no puede faltar
-		Uno a uno. No los asustes a los tres la misma noche
+		Alguien forjó tres artefactos mecánicos de hierro: cadenas, reflectores y un armazón de cuatro brazos
+		El hedor a metal crudo es insoportable, y su estrépito resulta molesto
+		Desmantélalos uno a uno; no dejes que se agrupen para causar estragos a la vez
 		'''
 	TrialSummary_11:
 		'''
-		En la selva se esconde una flor enorme y roja: verla basta para dormirse
-		Quien la despierta, pocos vuelven enteros
-		El lago quiere su miel; en el agua queda justo
-		Si las lianas se enredan en el paraguas, córtalas. Sin cortesía
+		En lo profundo de la selva duerme una flor carmesí gigante cuyas lianas crecen desbocadas por doquier
+		Al despertarla demuestra un temperamento temible, aferrándose a cuanto se cruce en su camino
+		Ve y arráncala de raíz; si las enredaderas se ciñen al paraguas, córtalas sin vacilar
 		'''
 	TrialSummary_12:
 		'''
-		Bajo la playa se esconde una gamba enorme, caparazón de cristal, y muda
-		Cuando la pinza azota, el agua estalla: se oye a media mar
-		El lago lleva tiempo deseando este bocado elástico. Ve, invítala
-		El caparazón lo cambia ella; el puñetazo, míralo tú
+		Bajo la orilla marina reposa una galera, envuelta en un caparazón resplandeciente y capaz de mudar de piel
+		Al golpear con sus pinzas es capaz de quebrar el agua; desata una conmoción nada desdeñable
+		Deja que mude la concha a su antojo, pero observa atentamente sus golpes; no vayas a recibir uno desprevenido
 		'''
 	TrialSummary_13:
 		'''
-		En el templo se agazapa una cabeza cuadrada
-		La piedra se hunde más rápido; a la colección del lago le falta justo una
-		Desmonta sus mecanismos y tráete el caparazón entero
-		La ola que levante, esa es tu propina
+		Un bloque de piedra de cabeza cuadrada permanece en cuclillas en el templo, negándose a moverse un palmo
+		Sus mecanismos fueron calculados con minuciosidad, pero al romperlo no es más que una estructura vacía
+		Ve y hazlo pedazos; no tiene sentido permitirle ocupar la sala bloqueando el paso
 		'''
 	TrialSummary_14:
 		'''
-		En el mar hay un cerdo que le han salido alas y se pone a alborotar las olas
-		Al lago no le gusta: el genio del agua no se lo dicta un cerdo
-		En qué agua lo hundes, lo decides tú
-		El cebo lo pongo yo; el gusano lo pescas tú
+		En el mar nada un puerco provisto de alas que pretende agitar tormentas a imitación de los hombres
+		No se mira en el espejo; el temperamento del agua no es algo que un cerdo marino pueda gobernar
+		Húndelo de vuelta en las aguas profundas, para que deje de chapotear ante nuestra vista
 		'''
 	TrialSummary_15:
 		'''
-		De noche, sobre la tierra sagrada vuela una luminosa, el humor atado al sol
-		El lago no la retiene: lo demasiado brillante no se queda en la superficie
-		Ve de noche; amasa esa luz hasta oscurecerla y tráela
-		Si la provocas de día, las consecuencias son tuyas
+		Una figura resplandeciente surca el firmamento nocturno, cegadora en mitad de la oscuridad
+		Me desagradan las luces demasiado intensas; resulta fatigoso mirarlas
+		Aprovecha la noche para mitigar ese fulgor; bajo la luz del día, ni se te ocurra provocarla
 		'''
 	TrialSummary_16:
 		'''
-		En la puerta de la mazmorra hay uno que reza, y reza tan fuerte que el cielo va a abrirse
-		El lago no entiende sutras: solo entiende que quiere meter algo
-		Córtalo. Que el rito se pudra a medias
-		Si se le cae el rosario, no lo recojas: el lago no acepta falsificaciones
+		Alguien entona rezos incesantes ante el portal de la mazmorra; los oídos se fatigan de tanto escucharlo
+		Aquello que pretende invocar desde el vacío no sigue una senda adecuada
+		Interrumpe ese ritual antes de que el tumulto crezca más allá de todo control
 		'''
 	TrialSummary_17:
 		'''
-		El de detrás de la luna ha bajado, cubierto de ojos
-		Lo que cae del cielo al lago no es más que un reflejo
-		Ve, y recógele el original del reflejo
-		Esa noche la luna estará bonita: mírala una vez por mí
+		Esa gigantesca sombra tras la faz de la luna finalmente va a descender, cubierta de ojos por doquier
+		Tras vigilar el mundo mortal durante incontables eras, ha llegado la hora de ponerle fin
+		Ve y dispérsala en pedazos; cuando acabe la contienda, contempla la luz de la luna un instante por mí
 		'''
 	TrialSummary_18:
 		'''
-		En lo hondo de la mazmorra flota un alma zurcida, remendada siglos
-		Hasta los espectros que remojan en el lago se encogen entre las varillas al verla
-		Matarse entre los suyos suena feo: dilo como compartir mesa
-		Después de este encargo, bajo el paraguas irá un poco justo. Aguanta
+		En las profundidades de la mazmorra flota una densa masa de almas en pena, remendadas y atadas durante siglos
+		A fin de cuentas pertenecen a la misma naturaleza que yo; verlas lamentarse sin tregua resulta agotador
+		Haz que se disuelvan de una vez; descansar en silencio es preferible a seguir sufriendo allá abajo
 		'''
 	TrialSummary_19:
 		'''
-		Bajo el Mar de Azufre pesa un viejo, ácido de escamas y de genio
-		El lago y él se conocen de años: ninguno acepta el agua del otro
-		Llévale recado: la mesa está puesta, que se hunda
-		Muerde, y los dientes aún sirven. Ten cuidado
+		Bajo el Mar Sulfuroso yace sepultado un ser decrépito, rezumando acidez y con un genio más hosco que el propio ácido
+		Cruzamos caminos en su día, y ninguno de los dos cedió jamás medio palmo
+		Ve y liquídalo en mi lugar; considéralo saldar una vieja cuenta por mí
 		'''
 	TrialSummary_20:
 		'''
-		Hay un gusano largo dando vueltas fuera del cielo, y las estrellas se apartan
-		Ha tragado dioses; al lago le pica saber a qué sabe un dios
-		Hazlo entrar en un agua en la que no debía entrar
-		El caparazón es tuyo, la carne del lago
+		Esa serpiente descomunal que serpentea en lo alto; se rumorea que ha devorado a los mismos dioses
+		A qué nivel o plano llegue un dios no me concierne, pero verla dar vueltas sobre la cabeza causa mareo
+		Derríbala; quédate con ese caparazón endurecido y no prestes atención al resto
 		'''
 	TrialSummary_21:
 		'''
-		Al otro lado de la jungla crían una bola de fuego, que arde no se sabe desde cuándo
-		El fuego y el lago son viejos enemigos; esta vez hay que zanjarse
-		Apaga ese fuego: la última cucharada la echa el lago
-		La pluma mojada ya no vuela. No dejes ni una
+		Al otro lado de la selva arde una hoguera voraz; han pasado incontables años y jamás se ha extinguido
+		El fuego ardiente y el viento lluvioso han sido incompatibles desde tiempos ancestrales
+		Ve y extingue esa llama; una vez que las plumas se empapan nunca vuelven a alzarse, tal y como debe ser
 		'''
 	TrialSummary_22:
 		'''
-		Las dos últimas mesas se abren juntas: una toda de hierro, otra solo de fuego
-		El orgullo de un artesano y la obsesión de una bruja: el lago quiere ver cómo se hunden
-		El orden lo eliges tú; con llegar vivo a la mesa, basta
-		Cuando se acabe este plato, el lago estará casi lleno
+		Las dos pruebas más brutales han confluido al unísono: una legión de autómatas de hierro y una bruja aferrada a su obsesión
+		Ninguno de los dos bandos es presa fácil; han privado a este mundo de un solo instante de sosiego
+		Elige el orden a tu criterio; despacha primero a los más ágiles, y asegúrate de salir con vida
 		'''
 	TrialSummary_23:
 		'''
-		Han vuelto todos, o el viejo del abismo se ha despertado
-		Mesa llena: el lago ha esperado tanto que el agua ha subido
-		Tú solo lleva el paraguas, uno a uno
-		Cuando se acabe este plato, la lluvia para
+		Aquellas sombras caídas en el pasado han vuelto a congregarse, o quizá el viejo dragón del abismo ha despertado
+		Sea cual fuere, el despliegue no será en absoluto menor
+		Afianza el paraguas en tu mano y avanza paso a paso; cuando termine esta batalla… la lluvia exterior también debería cesar
 		'''
 }
 

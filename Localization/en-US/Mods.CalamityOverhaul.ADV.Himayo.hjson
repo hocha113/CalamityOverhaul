@@ -21,142 +21,142 @@ ItCametoThis: {
 }
 
 HimayoEyeOfCthulhuGift: {
-	L0: Right—back home we used to have a guy who couldn't close his eyes when he slept.
-	L1: Not the creepy wide-open kind. Lids half down, staring at the beam like he was spacing out.
-	L2: Blankets tucked tight, house dead quiet. One time I walked past his window and almost yelled for help.
-	L3: Next day he was fine, hollering from the fields for me to help haul flower pots.
-	L4: Ah, talking about it… looking at that giant eye in the sky, I'm getting sleepy too.
+	L0: Whew... it's finally down. Being stared down by an eyeball that big for half the night gave me chills
+	L1: But staring like that without blinking once, doesn't it get tired of its own eyes aching?
+	L2: Stared at for so long, I was starting to doze off myself
+	L3: Here, fished out a little something nearby, hold on to it, don't drop it
+	L4: Take a breather, tonight we can finally close our eyes and get some real sleep
 }
 
 HimayoEvilBossGift: {
-	L0Worm: Gross… chunk after chunk jammed in the dirt.
-	L1Worm: Reeks like a freshly turned mud ditch. Enough, I don't want to smell that again.
-	L0Brain: Brains belong properly tucked inside a skull.
-	L1Brain: Soggy and sprawled out in the open, one look and my head throbs.
+	L0Worm: Those chunks jammed in the mud, the stench is like a ditch freshly dug up, suffocating me in here
+	L1Worm: Shake the blade clean and sheath it, let's find some breezy spot to air out
+	L0Brain: Soggy and exposed, makes my skin crawl just looking at it, brains belong tucked inside a skull
+	L1Brain: The blade is all sticky, wipe it down with a rag, and don't wipe it on your clothes
 }
 
 HimayoCalamityEvilGift: {
-	L0: Don't just stand there spacing out. Catch your breath, at least.
-	L1: That clump earlier… doesn't it look a lot like spoiled red bean paste?
-	L2: Great, now I made myself hungry talking about it.
-	L3: If you're hungry too, go find something to eat. Toughing it out after a fight is the dumbest move.
-	L4: And don't wipe your hands on your face. Not because you're dirty—it'll sting your eyes, seriously.
+	L0: That messy clump piled up earlier... looked an awful lot like smashed red bean paste
+	L1: Ahem, didn't think much of it before, but saying it out loud made me hungry
+	L2: If you're hungry too go find some food, toughing it out right after a fight is the dumbest move
+	L3: Grabbed a little curio while I was at it, here, take it
+	L4: And don't rub the grime on your face, it'll sting your eyes, trust me on this
 }
 
 HimayoSlimeGodGift: {
-	L0: Sticky, sure. But stepping in muddy sludge after rain as a kid was way worse than this.
-	L1: At least this won't seep into boots. Well… pretty tolerable, all things considered.
-	L2: Here. Ask where I pulled it from and I'll pretend I didn't hear.
+	L0: Sticky, sure, but after wading through enough mud, this puddle of divine paste isn't too bad
+	L1: At least it didn't seep down the trouser legs into our boots, quite divine of it, really
+	L2: Scooped this out of the jelly pile, take it, and don't ask where I found it
 }
 
 HimayoWallOfFleshGift: {
-	L0: …It really fell. That wall of flesh collapsed.
-	L1: Not sure if I'm happy or not. Just feels like… the weather is about to turn.
-	L2: The road ahead is probably going to get a lot rougher. Just keep your wits about you.
+	L0: ...It really broke, that whole wall of flesh collapsed
+	L1: How should I put it, the air shifted all at once, and even the edge inside feels a notch heavier
+	L2: The road ahead is going to be a lot rougher... Still, hold the blade tight, I'm right here with you
 }
 
 HimayoFesterSerpentGift: {
-	L0: Hold on, what's on the blade this time… pus?
-	L1: I live inside here! The seafood stall just closed and now it's a clinic.
-	L2: Still no window—sick wards should at least get a vent!
-	L3: Next time pick somewhere cleaner to cut. I have nowhere left to air this place out.
+	L0: Hold on, what scraped onto the edge this time, yellow sand and pus? What a bizarre stench
+	L1: I live inside here without a single window, it's practically a mud puddle now
+	L2: Leave me some clean air, there's really no room to air out in here
+	L3: Pick something cleaner next time, even a hard-shelled crab beats a giant festering worm
 }
 
 HimayoBrimstoneElementalGift: {
-	L0: Heat's still hanging. Look at that puddle over there, still steaming.
-	L1: What happens if you stick a foot in? …Wait, I wasn't telling you to actually try!
-	L2: Anyway, don't touch it. It'll burn.
+	L0: The lava shoals around are still sputtering white smoke, stand here any longer and our soles will cook
+	L1: Stop staring at the sparks, watch out or you'll burn a hole right through your boots
+	L2: The edge is still hot to the touch, hang it by your hip to cool off, let's head somewhere cooler
 }
 
 HimayoDestroyerGift: {
-	L0: Called "The Destroyer"… sounds scary enough.
-	L1: Turns out it's just a really long, clunky strip of scrap iron.
-	L2: Here, take this. Don't drop it on the ground—I'm not picking it up for you.
+	L0: Made such an earth-shattering racket, but crack it open and it's really just a long string of solid iron wheels
+	L1: Shook my head so hard it's still buzzing right now
+	L2: Pulled a sturdy piece from the iron core, hold tight, if it drops and crushes your foot, I'm not carrying you
 }
 
 HimayoTwinsGift: {
-	L0: Stare at someone too long and you really can't help but laugh.
-	L1: You know that feeling, right? The harder you try to hold it in, the more your mouth curls up on its own.
-	L2: I used to have staring contests back home, and I always lost every single time.
-	L3: Looking at those two up there… never mind, thinking about it makes me want to laugh again.
+	L0: One red and one green, darting across the sky with eyes bulging like copper bells
+	L1: Halfway through I kept wondering: if they crashed into each other, would they make each other dizzy?
+	L2: Back then I used to play staring contests with people, and I lost every single time
+	L3: Pfft... just imagining the two of them bumping heads makes me want to laugh
 }
 
 HimayoSkeletronPrimeGift: {
-	L0: Head's still the old skull, but the body got replaced with a shiny new iron frame.
-	L1: Like someone rushed out in the middle of changing clothes—looks awkward as hell.
-	L2: Next time, get fully dressed before charging into battle, okay? I'm getting second-hand anxiety just watching.
+	L0: An ancient skull on top, but fitted with four brand-new giant iron saws underneath
+	L1: Like someone pulled on half an outfit and rushed out the door to brawl, awkward to even look at
+	L2: The skeleton's completely scattered, while those iron arms are still warm, see if there's anything handy
 }
 
 HimayoCalamitasCloneGift: {
-	L0: Even mimicking the walking posture… so irritating.
-	L1: Not that I'm afraid of it… it just feels uncanny. The closer the mimicry, the faker it looks.
-	L2: Here. Ask where I pulled this from and I'll pretend I didn't hear.
+	L0: Whew... finally dispersed, that figure floating in the air moved as stiffly as a puppet on strings
+	L1: The harder it tried to mimic a living person, the faker and stiffer it felt, creepy just watching it
+	L2: A rubbing dropped from the ashes, take it, this one's definitely real
 }
 
 HimayoPlanteraGift: {
-	L0: When flowers wither, you snip them right off without hesitation.
-	L1: Leaving dry stems is pointless. It takes up space and just makes people irritable.
-	L2: Flower sellers back home always did it like that—spent means cut, no lingering around.
-	L3: Ah, why am I babbling about this? You didn't come here to buy flowers from me anyway.
+	L0: Whew, the vines finally withered away, stinks of rotten roots and sour soil
+	L1: Back home we always said: once a flower rots at the core, pull it up by the roots no matter how pretty it was, or the whole bed is ruined
+	L2: Dead stems rotting in the dirt are an eyesore anyway, just clutter, annoying to look at
+	L3: Brush the petal scraps and crushed buds off the blade, tidy up and let's get going
 }
 
 HimayoGolemGift: {
-	L0: Are your wrists still numb? Take a moment to loosen up your shoulders too.
-	L1: Striking hard stone like that sends the shockwave all the way into the center of your palm.
-	L2: My grip used to go numb from the recoil too, and it felt awful.
-	L3: And don't keep slamming the blade head-on into solid rock. If the edge chips, I'm the one who suffers!
+	L0: Do your wrists ache? Rub them quick, that big stone pillar was rock-solid, swinging into it jars right up the arms
+	L1: The edge nearly notched against it, sitting inside felt like an earthquake
+	L2: When dealing with hard rocks like that, look for seams, don't go hacking edge-first like an honest fool
+	L3: If you chip the blade I won't let you hear the end of it, sit down and catch your breath
 }
 
 HimayoCultistGift: {
-	L0: Finally quiet outside the door.
-	L1: Our ears can rest at last. That frantic chanting earlier had me wanting to cover my ears the whole time.
+	L0: Whew... the dungeon door is finally dead quiet
+	L1: That circle muttering on and on without stopping made my ears throb, irritating beyond belief
 }
 
 HimayoMoonLordGift: {
-	L0: That moon looming over the sky has finally dispersed.
-	L1: Can't say I feel relieved or happy…
-	L2: Just feels like something that was pressing down on our heads forever is suddenly gone, and it feels a little strange.
+	L0: That massive gray shadow over the sky... it's finally cleared away completely
+	L1: The heaviness pressing down for so long suddenly vanished, the moonlight coming down leaves you dazed for a second
+	L2: Still on your feet? Getting this far wasn't easy, tonight you've earned a solid night's sleep
 }
 
 HimayoProvidenceGift: {
-	L0: Tch, the air around here is practically scorched.
-	L1: The back of my hand feels tight from the heat. Standing here is like being buried in a fire pit to roast sweet potatoes.
-	L2: Take this. Don't just stand here getting baked—let's get out of here quick.
+	L0: Sss... heatwave hasn't faded, the backs of our hands are baked red
+	L1: Standing here feels like squatting by a fresh-fired kiln roasting sweet potatoes, even hair tips feel scorched
+	L2: Picked out the hot rubbing for you already, hold tight and let's pull back, find some water to cool off
 }
 
 HimayoPolterghastGift: {
-	L0: It's so damp here, like clothes hung indoors for a whole week that never dry out.
-	L1: Sleeping in a chilly, gloomy place like this guarantees a sore back the next morning.
-	L2: There's not even a window to air it out, and no charcoal to light a brazier.
-	L3: Finish up and let's go. Definitely don't spend the night here.
+	L0: The draft down here chills right to the bone, like damp laundry hung in a dark room for half a month
+	L1: Not a single window to air out, no firewood for a brazier, sleep here and tomorrow your lower back will ache for sure
+	L2: The vengeful souls are all swept flat, but the cold air is still creeping into our clothes
+	L3: Don't linger in this damp pit, head back up to a campfire so we don't catch a deep chill
 }
 
 HimayoDevourerOfGodsGift: {
-	L0: That head earlier… was so massive that staring at it made me forget what I was even looking at.
-	L1: It felt as if a giant chunk of the sky had been violently bitten away.
-	L2: …Never mind, putting it that way probably sounds even scarier.
+	L0: When that massive body rolled out of the void earlier... it really looked like someone took a bite right out of the sky
+	L1: Staring down into that bottomless black maw, I spaced out for a second myself
+	L2: Snap out of it, seeing you whole and sound without missing an arm or a leg, that's what puts my heart at ease
 }
 
 HimayoYharonGift: {
-	L0: The blade is still burning hot, and my side is sweltering too.
-	L1: Honestly, inside the scabbard right now feels no different from an oven.
-	L2: Don't rush to sheath it just yet—I'm the one getting toasted in here!
-	L3: Here, set this aside for now. We can look at it once things cool down.
+	L0: The blade is glowing red-hot, inside here feels like being shoved into a blacksmith's forge
+	L1: Don't sheath it in a hurry, or I'll end up as a roasted sword spirit
+	L2: Hang it loose to catch the wind and cool down, whew... that overgrown moth had terrifying muscle
+	L3: Left the rubbing aside for now, take a look once it's properly cooled off
 }
 
 HimayoExoMechsGift: {
-	L0: After all that deafening bombardment, my ears are still buzzing non-stop.
-	L1: Feels like someone is tapping a tiny hammer inside my skull—so annoying!
-	L2: Let's find somewhere quiet to rest up and give our ears a break.
+	L0: Clatter and crash finally sputtered out, the artillery bombardment earlier has my ears ringing even now
+	L1: Exactly like someone tapping away inside my skull with a little hammer, annoying to death
+	L2: Let's get away from all this scorched iron stench and find a quiet valley to catch our breath
 }
 
 HimayoSupremeCalamitasGift: {
-	L0: The atmosphere over there earlier was heavy and suffocating.
-	L1: Go catch some fresh breeze, or splash some cold water on your face… not because you're dirty, but to clear your head.
-	L2: Though… suffocating atmospheres like that, I used to be quite accustomed to them.
+	L0: The barrier shattered... that suffocating ash and crushing pressure finally drifted apart
+	L1: Don't stand frozen in the draft, take a deep breath, or splash some cold water on your face to wake up
+	L2: Back when I handled malevolent spirits, life-or-death scrapes like this were nothing new... But this time, I had you beside me
 }
 
 HimayoBossRushGift: {
-	L0: Hold on, don't move around yet.
-	L1: Steady your footing… you haven't even caught your breath yet. It's good to have you back.
+	L0: Stand still for a second... legs wobbling, aren't they?
+	L1: Catch your breath slow and steady... You fought through the whole long road, welcome back
 }

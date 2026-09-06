@@ -1,215 +1,215 @@
 KikasaTalismanLin: {
 	DisplayName: Sceau de bruine
-	Tooltip: Le rythme de la pluie d'encre s'accélère, plus dense tant qu'elle tient ; chaque goutte un peu plus légère
-	Origin: Le vieux scribe disait : pas besoin de déranger le Roi-Dragon pour la pluie, un Sceau de bruine suffit. Des gouttes plus petites, peu importe, l'essentiel est qu'elle ne s'arrête pas
-	Power: 「Bruine」rythme de la pluie d'encre +20%, les gouttes s'enchaînent ; environ dix secondes de pluie ininterrompue forment 「Averse」: un voile de pluie tombe sous l'ombrelle et le rythme accélère encore de 10% ; l'accumulation se dissipe à l'arrêt, ranger l'ombrelle la coupe de moitié
-	Burden: Dégâts par goutte -6%
+	Tooltip: Le rythme de la pluie d'encre s'accélère, la pluie continue forme un voile de bruine ; dégâts d'une goutte isolée -6%
+	Origin: Jinan connaît de fréquentes pluies, et la bruine sur les rives du lac Daming tombe souvent sans discontinuer des journées entières. Si douce soit-elle, elle ne cesse jamais, imprégnant peu à peu ciel et terre
+	Power: 「Bruine」le rythme des gouttes d'encre s'accélère de 20% ; maintenir la pluie d'encre environ 10 secondes active l'état 「Averse」 : un voile de fines gouttes serrées retombe sous le parapluie, accélérant le rythme de 10% supplémentaires ; cesser d'ouvrir le parapluie dissipe lentement l'effet, refermer le parapluie le réduit instantanément de moitié
+	Burden: Dégâts d'impact direct d'une goutte d'encre réduits de 6%
 }
 
 KikasaTalismanLao: {
 	DisplayName: Sceau de flaque d'encre
-	Tooltip: Les gouttes d'encre forment toujours une flaque ; la flaque boit la pluie, monte, puis déborde ; les coups directs un peu plus légers
-	Origin: Le scribe détestait voir la pluie sécher sitôt tombée, toute une averse d'encre gâchée, alors il dessina ce sceau pour la garder au sol. Une minute de plus, c'est une minute de plus
-	Power: 「Flaque」les gouttes d'encre forment toujours une flaque à l'impact (sans attendre le quatrième palier 『Inclinaison du lac』), durée des flaques +50%, portée +30% ; les gouttes qui rejoignent une flaque existante font monter le niveau, la troisième la fait déborder : la surface s'élargit d'un pas et lance des vagues de trop-plein des deux côtés (50% des dégâts de flaque chacune)
-	Burden: Dégâts directs des gouttes -5%
+	Tooltip: Les gouttes d'encre forment toujours une flaque au sol, la flaque absorbe la pluie et déborde en vagues déferlantes ; dégâts directs -5%
+	Origin: L'eau s'accumule dans les creux, et les gouttes stagnant au sol finissent par former une eau dormante. Une eau dormante est insondable, reliée à d'invisibles courants souterrains
+	Power: 「Flaque」les gouttes d'encre forment obligatoirement une flaque d'encre au sol, durée de la flaque +50%, portée +30% ; les gouttes tombant dans une flaque existante en élèvent le niveau d'eau, et après en avoir absorbé trois elle déborde en projetant de chaque côté une vague déferlante infligeant 50% des dégâts de la flaque
+	Burden: Dégâts d'impact direct d'une goutte d'encre réduits de 5%
 }
 
 KikasaTalismanPei: {
-	DisplayName: Sceau de déluge
-	Tooltip: L'encre s'accumule plus vite en ombrelle inversée ; le bol plein se déverse comme une vanne ; la pluie ordinaire un peu plus lente
-	Origin: Le pire pour demander la pluie, c'est de le faire à moitié. Ce sceau ne répond qu'à une chose : s'il doit pleuvoir, que ce soit un déluge
-	Power: 「Déluge」vitesse d'accumulation inversée +35%, dégâts des geysers d'encre +20% ; à pleine charge le bord du bol déborde de perles et d'un bas murmure, verser à cet instant ouvre la vanne : une onde explose à la source (80% des dégâts de cascade) et la chute d'encre s'élargit
-	Burden: Rythme de la pluie d'encre ralenti de 8%
+	DisplayName: Sceau de trombes d'eau
+	Tooltip: La vitesse d'accumulation d'encre inversée augmente, verser à pleine charge déclenche une onde de choc violente ; rythme de la pluie normale ralenti de 8%
+	Origin: Quand l'averse soudaine se déverse à verse, c'est comme si la voûte céleste rompait ses digues. Soit la pluie ne tombe pas, soit elle tombe sans aucune retenue
+	Power: 「Trombes d'eau」la vitesse d'accumulation d'encre en tenant le parapluie inversé augmente de 35%, les dégâts du geyser d'encre augmentent de 20% ; dès la pleine charge, verser ouvre les vannes et fait éclater une onde de choc à la source de la cascade, infligeant 80% des dégâts de la cascade et élargissant le torrent
+	Burden: Rythme de la pluie d'encre normale ralenti de 8%
 }
 
 KikasaTalismanSha: {
 	DisplayName: Sceau de pluie vive
-	Tooltip: L'ombrelle se lève très vite, le premier temps lâche trois gouttes d'affilée ; le temps suivant est un peu plus lent
-	Origin: Le scribe croisa des brigands de nuit : ombrelle ouverte, pluie, ombrelle rangée, le tout en un clin d'œil. Ensuite il écrivit ce « vite » dans un sceau
-	Power: 「Pluie vive」temps de levée de l'ombrelle -75% ; le premier temps lâche forcément trois gouttes rapides (75% de dégâts chacune)
-	Burden: Après le triple, l'intervalle du temps suivant +40%
+	Tooltip: Le parapluie se déploie à très grande vitesse, le premier temps fait tomber trois gouttes vives d'affilée ; l'intervalle suivant le trio est prolongé de 40%
+	Origin: Une averse soudaine frappe souvent avec une vivacité imprévisible, refermant en un éclair toute voie de retraite
+	Power: 「Pluie vive」le temps nécessaire pour ouvrir et déployer le parapluie est réduit de 75% ; le premier temps d'ouverture fait tomber trois gouttes vives consécutives, chacune infligeant 75% de dégâts
+	Burden: Après avoir déclenché la triple pluie, l'intervalle menant au temps suivant est prolongé de 40%
 }
 
 KikasaTalismanYin: {
 	DisplayName: Sceau de fleur d'encre
-	Tooltip: Les gouttes empilent des traces d'encre ; à cinq couches une fleur d'encre explose ; les coups directs un peu plus légers
-	Origin: Une goutte d'encre sur papier humide, si on ne l'essuie pas, s'étale en fleur. Le scribe disait que les ennemis aussi : encore quelques gouttes, et ça fleurit
-	Power: 「Fleur d'encre」les gouttes laissent une trace (jusqu'à cinq couches, chacune fait perdre de la vie) ; à cinq couches la fleur s'ouvre, inflige 160% des dégâts de goutte et vide les couches
-	Burden: Dégâts directs des gouttes -8%
+	Tooltip: Toucher avec une goutte accumule des marques d'encre, empiler cinq couches les fait éclore en dégâts explosifs ; dégâts directs d'une goutte -8%
+	Origin: Une goutte d'encre épaisse déposée sur un papier de riz humide s'épanouit le long des fibres en une tache vivante. Couche après couche de teintes superposées, elle finit toujours par transpercer la feuille
+	Power: 「Fleur d'encre」toucher une cible avec une goutte d'encre laisse une marque (jusqu'à 5 couches, infligeant un saignement continu proportionnel au nombre de couches) ; à 5 couches la fleur d'encre éclot, explosant pour 160% des dégâts d'une goutte et dissipant toutes les couches
+	Burden: Dégâts d'impact direct d'une goutte d'encre réduits de 8%
 }
 
 KikasaTalismanLu: {
-	DisplayName: Sceau de rosée
-	Tooltip: Les gouttes condensent parfois une perle de rosée, la ramasser soigne ; le rythme de pluie un peu plus lent
-	Origin: Les écritures disent que la rosée du ciel écarte toutes les maladies. Le scribe n'obtint jamais ce miracle, alors il se contenta du suivant : un peu de douceur dans chaque goutte
-	Power: 「Rosée」12% de chance à l'impact de condenser une perle de rosée ; la ramasser soigne 2 points de vie ; trois au plus sur le terrain
+	DisplayName: Sceau de douce rosée
+	Tooltip: Toucher avec une goutte condense parfois une perle de rosée, la ramasser restaure de la vie ; rythme de la pluie d'encre ralenti de 6%
+	Origin: À l'aube, la végétation se pare de rosée au parfum doucement sucré. Pouvoir recueillir quelques gouttes de rosée pure au cœur d'une pluie sombre et tourmentée est une grâce précieuse
+	Power: 「Douce rosée」toucher un ennemi avec une goutte d'encre a 12% de chances de condenser une perle de rosée, la ramasser rend 2 points de vie (au plus 3 perles sur le terrain simultanément)
 	Burden: Rythme de la pluie d'encre ralenti de 6%
 }
 
 KikasaTalismanFei: {
-	DisplayName: Sceau de brume
-	Tooltip: Une goutte sur trois devient brume et laisse un brouillard qui brûle et ralentit ; la goutte de brume elle-même est plus légère
-	Origin: À mi-montagne, la pluie se change souvent en brume qui s'accroche. Le scribe trouva cette tenacité plus gênante qu'une goutte, alors il la mit dans le sceau
-	Power: 「Brume」une goutte sur trois devient brume : deux secondes de brouillard à l'impact, les ennemis dedans subissent des dégâts et perdent 10% de vitesse
-	Burden: Dégâts de la goutte de brume -30%
+	DisplayName: Sceau de brume dense
+	Tooltip: Chaque troisième goutte d'encre se mue en brume, laissant au sol un brouillard qui blesse et ralentit ; dégâts directs de la goutte de brume -30%
+	Origin: Lorsque la vapeur d'eau atteint son comble, la pluie tombante se condense en un brouillard glacial et humide. Ceux qui s'y égarent perdent leurs repères, transpercés par une humidité qui glace les os
+	Power: 「Brume dense」chaque troisième goutte d'encre projetée se transforme en goutte de brume : laisse à l'impact un brouillard d'encre durant 2 secondes, les ennemis à l'intérieur subissant des dégâts continus et voyant leur vitesse réduite de 10%
+	Burden: Dégâts directs de la goutte de brume réduits de 30%
 }
 
 KikasaTalismanXian: {
-	DisplayName: Sceau de perles
-	Tooltip: Les grosses gouttes éclatent en cinq perles d'encre rebondissantes ; les flaques un peu plus petites
-	Origin: La grosse pluie sur les dalles fait rebondir les perles à mi-corps. Le scribe écrivit ce rebond dans le sceau, et apprit aux perles à mordre
-	Power: 「Perles」les grosses gouttes éclatent en cinq perles d'encre (30% de dégâts chacune), chaque perle peut encore rebondir deux fois
-	Burden: Rayon des flaques -15%
+	DisplayName: Sceau de perles jaillissantes
+	Tooltip: Les gouttes d'encre lourdes éclatent au sol en cinq perles d'encre bondissantes ; rayon des flaques générées -15%
+	Origin: Les gouttes s'écrasant de haut sur les dalles de pierre volent en éclats jaillissants. D'apparence minuscules et éparses, leurs ricochets successifs n'en blessent pas moins sans trêve
+	Power: 「Perles jaillissantes」les gouttes d'encre lourdes éclatent à l'impact en 5 fines perles d'encre, infligeant chacune 30% des dégâts de la goutte d'origine et pouvant rebondir 2 fois de plus
+	Burden: Le rayon des flaques d'encre générées est réduit de 15%
 }
 
 KikasaTalismanXi: {
 	DisplayName: Sceau de marée
-	Tooltip: Les flaques respirent comme la marée et se ruent vers les ennemis proches ; durée des flaques un peu plus courte
-	Origin: Le scribe vécut trois ans au bord de mer et n'apprit qu'une chose : l'eau n'attend pas qu'on la piétine, elle se jette d'elle-même
-	Power: 「Marée」les flaques d'encre gagnent le caractère de la marée : elles montent et descendent, une nouvelle encre qui tombe dans une flaque envoie une vague vers l'ennemi le plus proche, le bord inflige 50% des dégâts de flaque
-	Burden: Durée des flaques -20%
+	Tooltip: Les flaques d'encre ondulent en rythme et se ruent vers les ennemis proches ; durée des flaques -20%
+	Origin: L'eau coule vers les creux et suit le flux et le reflux. Une nappe d'eau habitée par la marée n'attend jamais qu'on la foule : là où la marée monte, l'eau engloutit d'elle-même
+	Power: 「Marée」les flaques d'encre acquièrent le rythme des marées : respirant et enflant en cadence, chaque nouvelle goutte tombant dans une flaque existante lance une vague déferlante vers l'ennemi le plus proche, l'écume infligeant 50% des dégâts de la flaque
+	Burden: Durée des flaques d'encre réduite de 20%
 }
 
 KikasaTalismanZi: {
 	DisplayName: Sceau d'imprégnation
-	Tooltip: Les ennemis dans une flaque s'imprègnent couche par couche et subissent plus de dégâts d'encre ; la flaque elle-même est plus légère
-	Origin: Pour teindre le tissu, il faut le laisser tremper trois jours. Le scribe a teint du tissu, il sait ce que vaut un « trempage »
-	Power: 「Imprégnation」les ennemis dans une flaque d'encre s'imprègnent sans cesse (jusqu'à huit couches), chaque couche augmente de 2,5% les dégâts d'encre qu'ils subissent
-	Burden: Dégâts de la flaque -25%
+	Tooltip: Les ennemis demeurant dans une flaque accumulent une vulnérabilité croissante ; dégâts de base des flaques -25%
+	Origin: Quand l'étoffe plonge dans la cuve de teinture, plus elle trempe longtemps, plus la couleur s'ancre en profondeur. Ce qui marine dans l'eau croupie voit, avec le temps, ses os mêmes s'amollir
+	Power: 「Imprégnation」les ennemis séjournant dans une flaque d'encre accumulent en continu l'état d'imprégnation (jusqu'à 8 couches), chaque couche augmentant de 2,5% les dégâts paranormaux d'encre qu'ils subissent
+	Burden: Dégâts de base des flaques d'encre réduits de 25%
 }
 
 KikasaTalismanTing: {
 	DisplayName: Sceau de geyser de foudre
-	Tooltip: Les geysers d'encre deviennent des colonnes de foudre qui enchaînent les ennemis proches ; les cascades font parfois naître un petit geyser de foudre ; accumulation un peu plus lente
-	Origin: Rien n'effraie plus qu'un lac sous l'orage. L'éclair entre dans l'eau, tout le lac s'allume. Le scribe dessina ce sceau d'après cette scène
-	Power: 「Geyser de foudre」hauteur des colonnes +50%, l'impact enchaîne la foudre vers deux ennemis proches au plus (50% des dégâts de geyser chacun) ; une cascade non remplie a 25% de chances de faire naître un petit geyser de foudre à l'atterrissage
-	Burden: Vitesse d'accumulation inversée -13%
+	Tooltip: Les geysers d'encre jaillissent en trombes d'éclairs conducteurs ; vitesse d'accumulation inversée -13%
+	Origin: La surface d'un lac par nuit d'orage est d'un grand péril : lorsque la foudre s'abat sur l'onde calme, les profondeurs se muent en un instant en une mer électrique tourbillonnante
+	Power: 「Geyser de foudre」hauteur de jaillissement des geysers d'encre +50%, propageant à l'impact des éclairs en chaîne vers au plus 2 ennemis proches (chacun subissant 50% des dégâts du geyser) ; une cascade versée avant pleine charge a également 25% de chances de faire jaillir un petit geyser de foudre à l'atterrissage
+	Burden: Vitesse d'accumulation d'encre inversée réduite de 13%
 }
 
 KikasaTalismanHong: {
 	DisplayName: Sceau du pont d'arc-en-ciel
-	Tooltip: Après une cascade, un pont d'arc-en-ciel se dresse : bonus dessous, brûlure sur la travée ; cascade un peu plus étroite
-	Origin: Un arc-en-ciel après la pluie est de bon augure. Le scribe le dessina dans le sceau : la pluie s'arrête, le pont se dresse, tous ceux dessous en profitent
-	Power: 「Pont d'arc-en-ciel」après une cascade, un pont se dresse cinq secondes au-dessus du point d'impact : vitesse +10% et dégâts d'invocation +10% dessous ; les ennemis qui traversent la travée subissent 40% des dégâts de cascade toutes les demi-secondes
-	Burden: Largeur de la cascade -10%
+	Tooltip: La fin d'une cascade dresse un pont d'arc-en-ciel offrant vitesse et brûlant les ennemis qui le traversent ; largeur de la cascade -10%
+	Origin: Dès que l'averse s'apaise, un rai de soleil perce la nuée pour faire naître un arc-en-ciel dans les vapeurs d'eau. Une lueur fugitive et passagère, évanouie en un souffle
+	Power: 「Pont d'arc-en-ciel」lorsque la cascade d'encre s'achève, elle fait naître au-dessus de l'impact un pont d'arc-en-ciel durant 5 secondes : sous l'arc, votre vitesse augmente de 10% et les dégâts d'invocation de 10% ; les ennemis traversant l'arc subissent 40% des dégâts de la cascade toutes les 0,5 seconde
+	Burden: Largeur de la cascade d'encre réduite de 10%
 }
 
 KikasaTalismanHang: {
 	DisplayName: Sceau de miasme nocturne
-	Tooltip: Les dégâts d'encre montent la nuit, les flaques exhalent des colonnes de miasme ; un peu plus faibles le jour
-	Origin: Le dicton dit qu'il ne faut pas toucher aux vapeurs de la nuit. Le scribe en embouteilla une fiole, et le dicton avait raison. Alors c'est l'ennemi qui touchera
-	Power: 「Miasme nocturne」dégâts d'encre +15% la nuit, les flaques exhalent sans cesse des colonnes de miasme (30% des dégâts de goutte toutes les demi-secondes)
-	Burden: Dégâts d'encre -5% le jour
+	Tooltip: Les dégâts d'encre augmentent de nuit et les flaques exhalent des colonnes de miasmes ; dégâts d'encre de jour -5%
+	Origin: Les anciens disaient que les vapeurs nocturnes s'élevant des eaux mortes au cœur de la nuit blessaient le plus profondément. L'humidité mêlée d'un froid funeste oppresse la poitrine des vivants
+	Power: 「Miasme nocturne」de nuit, les dégâts d'encre augmentent de 15%, et les flaques dégagent en permanence des colonnes de miasmes (infligeant 30% des dégâts d'une goutte toutes les 0,5 seconde)
+	Burden: En journée, les dégâts d'encre sont réduits de 5%
 }
 
 KikasaTalismanBao: {
 	DisplayName: Sceau de grêle
-	Tooltip: Tous les quatre temps, toutes les gouttes deviennent de gros grêlons : coups lourds perce-armure, sans flaque ; les temps ordinaires un peu plus légers
-	Origin: La grêle, c'est le mauvais caractère de la pluie, elle casse tuiles et bassines et personne ne l'arrête. Le scribe n'a pas voulu la dresser, seulement convenir : tous les quatre temps, un temps pour elle
-	Power: 「Grêle」le quatrième temps est forcément une salve complète, toutes les gouttes deviennent de gros grêlons : taille x1,6, dégâts x2,2, perce l'armure et recule fort ; les gros grêlons ne laissent pas de flaque
-	Burden: Dégâts de goutte des temps ordinaires -8%
+	Tooltip: Chaque quatrième temps transforme toutes les gouttes en lourds grêlons perce-armure ; dégâts directs des gouttes normales -8%
+	Origin: La pluie glaciale cristallise, crevant les nuages dans sa chute. La grêle qui tombe fracasse tuiles et écuelles, dépouillée de toute la douceur patiente des pluies ordinaires
+	Power: 「Grêle」chaque quatrième temps déclenche obligatoirement une salve complète, toutes les gouttes se muant en lourds grêlons : volume +60%, dégâts +120%, brisant la défense ennemie et infligeant un puissant recul, sans laisser de flaque au sol
+	Burden: Dégâts directs des gouttes lors des temps normaux réduits de 8%
 }
 
 KikasaTalismanShu: {
 	DisplayName: Sceau de pluie opportune
-	Tooltip: Pendant trois secondes après une blessure, la pluie se densifie et chaque goutte soigne ; le rythme habituel un peu plus lent
-	Origin: Dans les récits, celui qui arrive juste à temps s'appelle « Pluie opportune ». Ce sceau suit la même règle : dès que le maître de l'ombrelle encaisse, la pluie doit être là
-	Power: 「Pluie opportune」pendant trois secondes après une blessure, l'intervalle des temps est réduit de moitié, la pluie devient d'or, chaque goutte qui touche soigne 1 point de vie ; recharge de douze secondes
-	Burden: Intervalle habituel des temps de pluie +5%
+	Tooltip: Subir des dégâts rend la pluie extrêmement dense pendant trois secondes et chaque coup soigne ; intervalle de pluie normale +5%
+	Origin: Le dicton nomme l'aide providentielle une pluie opportune. Si la pluie survient pile à l'instant du danger, elle peut véritablement écarter un désastre
+	Power: 「Pluie opportune」durant 3 secondes après avoir subi des dégâts, l'intervalle entre les gouttes est réduit de moitié et la pluie se teinte d'or, chaque coup touchant un ennemi restaurant 1 point de vie (temps de recharge de 12 secondes)
+	Burden: L'intervalle de pluie en temps normal est prolongé de 5%
 }
 
 KikasaTalismanLong: {
-	DisplayName: Sceau de cascade
-	Tooltip: La cascade devient un torrent qui pousse les ennemis ; la cascade dure moins longtemps
-	Origin: Quand la crue dévale, personne ne tient debout. Le scribe en a vu une du haut de la falaise, et n'a écrit qu'un « pousser » dans le sceau
-	Power: 「Cascade」la chute d'encre devient un torrent : le corps de la cascade pousse sans cesse les ennemis sur sa ligne, le recul des coups à la source +35%
-	Burden: Durée de la cascade -20%
+	DisplayName: Sceau de torrent impétueux
+	Tooltip: La cascade devient un courant puissant refoulant les ennemis ; durée de la cascade -20%
+	Origin: Les torrents de montagne dévalent en trombe, charriant boue et rocaille dans une furie que rien n'arrête. Devant de tels flots, nulle troupe ne saurait tenir debout
+	Power: 「Torrent impétueux」la cascade d'encre devient un torrent tumultueux : le flot refoule en continu les ennemis sur son passage, et le recul des coups directs à la source augmente de 35%
+	Burden: Durée de la cascade réduite de 20%
 }
 
 KikasaTalismanShuang: {
 	DisplayName: Sceau du miroir de givre
-	Tooltip: Les flaques gèlent en miroirs de givre : marcher dessus ralentit, une goutte brise le miroir en explosion ; les flaques ne se prolongent plus
-	Origin: Après la descente du givre, l'eau des flaques gèle en une nuit, on dirait un miroir, jusqu'à ce qu'on marche dessus. Ce que le scribe a recueilli, c'est justement ce « ça a l'air inoffensif »
-	Power: 「Miroir de givre」les grosses gouttes gèlent en flaques de givre (sans attendre le quatrième palier 『Inclinaison du lac』), la flaque devient un miroir : elle ne brûle plus, qui marche dessus est ralenti de 40% ; une goutte d'encre qui frappe le miroir le brise, les dégâts d'explosion suivent la durée restante et dressent des pics de glace
-	Burden: Chaque miroir reste seul, les flaques ne peuvent plus fusionner pour prolonger leur durée
+	Tooltip: Les flaques gèlent en miroirs de givre ralentissant les ennemis, une goutte brisant le miroir en pieux de glace ; les flaques ne peuvent fusionner
+	Origin: Après les gelées de fin d'automne, les mares au sol durcissent dès l'aube en une mince vitre de glace fragile. Lisse comme un miroir, c'est en y posant le pied que l'on découvre le péril caché
+	Power: 「Miroir de givre」les gouttes d'encre lourdes gèlent à l'impact en minces flaques givrées devenant des miroirs de givre : elles ne brûlent plus les ennemis, les cibles y pénétrant perdent 40% de vitesse ; une goutte frappant le miroir le brise sur-le-champ, libérant des dégâts explosifs selon sa durée restante et dressant des pieux de glace
+	Burden: Les miroirs de givre restent isolés, les flaques ne pouvant fusionner entre elles pour prolonger leur durée
 }
 
 KikasaTalismanZha: {
 	DisplayName: Sceau du tambour de pluie
-	Tooltip: Sept temps d'affilée avec au moins une touche, le huitième triple toutes les gouttes ; après le gros coup, un temps de silence
-	Origin: Les gouttes sur l'ombrelle sont déjà un tambour. Le scribe en a saisi le truc : ne manquez pas un temps, le huitième sonne le plus fort
-	Power: 「Tambour de pluie」un anneau de sept points pend au sommet de l'ombrelle : au moins une goutte par temps pendant sept temps d'affilée, et le huitième frappe toutes les gouttes à x3, comme un gros coup de tambour ; un temps manqué recommence le compte
-	Burden: Après le gros coup, la pluie s'arrête un temps
+	Tooltip: Toucher pendant sept temps consécutifs triple les dégâts de toutes les gouttes au huitième temps ; courte pause de pluie après la frappe lourde
+	Origin: La pluie battant la toile tendue du parapluie d'huile résonne en cadence comme un tambour de guerre. Quand le rythme ne dévie d'aucun battement, le coup final révèle sa vérité
+	Power: 「Tambour de pluie」le bord du parapluie rassemble sept marques de battement : toucher au moins une fois par temps pendant sept temps consécutifs fait tripler les dégâts de toutes les gouttes au huitième temps ; rater un temps réinitialise le compte
+	Burden: Après avoir déclenché la puissante frappe du tambour, le temps suivant suspend brièvement la pluie
 }
 
 KikasaTalismanNi: {
 	DisplayName: Sceau tricolore
-	Tooltip: Les gouttes alternent trois teintes : rouge explosif, cyan ralentissant, violet vulnérabilisant ; dégâts de goutte légèrement réduits
-	Origin: « L'encre a cinq couleurs », dit le métier. Le scribe n'en pouvait payer que trois. Heureusement le rouge explose, le cyan s'accroche, le violet ronge, ça suffit
-	Power: 「Tricolore」les gouttes prennent trois teintes à tour de rôle : le rouge explose (40% de dégâts de zone), le cyan ralentit de 15%, le violet augmente de 5% les dégâts d'encre subis
-	Burden: Dégâts des gouttes -5%
+	Tooltip: Les gouttes alternent entre trois vertus : éclat rouge, lenteur cyan, érosion violette ; dégâts de base des gouttes -5%
+	Origin: Les eaux paranormales changent de teintes de manière imprévisible. Empruntant la ferveur de l'eau rouge, la stagnation de l'eau cyan et l'érosion de l'eau pourpre, les trois couleurs tournoient, chacune avec son dessein
+	Power: 「Tricolore」les gouttes alternent en séquence entre trois couleurs : les gouttes rouges provoquent une petite déflagration (40% de dégâts de zone), les gouttes cyan ralentissent les ennemis de 15%, les gouttes pourpres augmentent de 5% les dégâts d'encre subis
+	Burden: Dégâts de base des gouttes d'encre réduits de 5%
 }
 
 KikasaTalismanWen: {
-	DisplayName: Sceau d'écriture des nuages
-	Tooltip: Trois étoiles-sceaux autour de l'ombrelle se chargent aux impacts, puis se jettent en flèches d'encre à tête chercheuse ; rythme de pluie un peu plus lent
-	Origin: L'écriture des nuages, c'est celle que le Dao pose sur les nuages, nulle main mortelle ne la copie. Le scribe en a copié l'idée, les caractères sont ratés, mais ils ont appris à voler
-	Power: 「Écriture des nuages」trois étoiles-sceaux tournent au bord de l'ombrelle, chaque impact de goutte les charge ; à pleine charge l'étoile de service se jette en flèche d'encre à tête chercheuse (120% des dégâts de goutte)
-	Burden: Intervalle des temps de pluie +8%
+	DisplayName: Sceau des runes nébuleuses
+	Tooltip: Les étoiles runiques du bord se chargent à l'impact, tirant une flèche d'eau guidée à pleine charge ; intervalle de pluie +8%
+	Origin: Les anciens grimoires tracent des caractères runiques dans les nuages. Si les mortels peinent à en saisir tout le mystère, copier leurs formes sur un sceau insuffle à l'eau sa propre vitalité spirituelle
+	Power: 「Runes nébuleuses」trois étoiles runiques gravitent autour du parapluie, chaque coup de goutte accumulant l'énergie de l'étoile active ; à pleine charge, l'étoile tire d'elle-même une flèche d'encre guidée infligeant 120% des dégâts d'une goutte
+	Burden: Intervalle entre les gouttes de pluie prolongé de 8%
 }
 
 KikasaTalismanPo: {
 	DisplayName: Sceau d'âme lunaire
-	Tooltip: La nuit, les impacts font croître une lune ; à pleine lune, la prochaine cascade devient cascade lunaire ; inutile le jour
-	Origin: Le scribe s'exerçait la nuit et vit une petite lune au sommet de l'ombrelle : plus il frappait, plus elle s'arrondissait. Nourrie jusqu'au quinze, elle verse une belle cascade
-	Power: 「Âme lunaire」la nuit, une lune d'encre pend au sommet de l'ombrelle et croît à chaque impact ; à pleine lune, la prochaine cascade devient cascade lunaire : largeur x1,5, les coups laissent une explosion de marque lunaire (35% de dégâts de zone)
-	Burden: Ce sceau ne fait rien le jour
+	Tooltip: Ouvrir le parapluie de nuit accumule le clair de lune pour déverser une cascade blafarde à pleine charge ; sans effet de jour
+	Origin: Au cœur de la nuit silencieuse, le clair de lune se déverse sur les gouffres profonds comme du givre sur l'eau. Recueillir cette clarté glacée sous la toile libère une cascade pareille à un fleuve de glace
+	Power: 「Âme lunaire」toucher des cibles de nuit avec le parapluie ouvert accumule les phases lunaires ; à plénitude, la prochaine cascade inversée devient une cascade lunaire blafarde : portée de la cascade +50%, les cibles touchées subissant une déflagration d'empreinte lunaire (35% de dégâts de zone)
+	Burden: Ce sceau est totalement inopérant en plein jour
 }
 
 KikasaTalismanXiao: {
 	DisplayName: Sceau des neuf cieux
-	Tooltip: L'ombrelle monte très haut, les gouttes plongent plus vite et plus fort ; rythme de pluie un peu plus lent
-	Origin: La même goutte, du toit, fait une éclaboussure ; des neuf cieux, elle fait un cratère. Le raisonnement du scribe était aussi simple que ça
-	Power: 「Neuf cieux」hauteur de l'ombrelle doublée, les gouttes plongent du haut : vitesse terminale +40%, dégâts +25%, un anneau d'ombre de pluie apparaît d'abord au point d'impact
-	Burden: Intervalle des temps de pluie +10%
+	Tooltip: Le parapluie flotte à très haute altitude, les gouttes plongeant de haut gagnent vitesse et dégâts ; intervalle de pluie +10%
+	Origin: Les gouttes des avant-toits ne troublent que la surface, mais la pluie tombant du zénith des neuf cieux transperce la pierre. Plus l'eau part de haut, plus sa chute est impétueuse
+	Power: 「Neuf cieux」la hauteur du parapluie est doublée, les gouttes tombant à la verticale depuis une très haute altitude : vitesse terminale +40%, dégâts d'impact direct +25%, une ombre avertissant de la chute apparaissant au sol au préalable
+	Burden: Intervalle entre les gouttes de pluie prolongé de 10%
 }
 
 KikasaTalismanMei: {
-	DisplayName: Sceau de moisissure
-	Tooltip: Les gouttes appliquent une pourriture moite qui fait perdre de la vie ; à la mort, les spores infectent les alentours ; coups directs un peu plus légers
-	Origin: Quarante jours de pluie des prunes, et de la moisissure poussa dans le coffret à sceaux. Le scribe n'osa pas l'essuyer. C'est la pluie qui l'a élevée, ça compte comme de la famille
-	Power: 「Moisissure」les gouttes appliquent « Pourriture moite » (jusqu'à dix couches, perte de vie selon les couches) ; un ennemi moisi qui meurt crache un brouillard de spores, transmet la moitié de ses couches aux ennemis proches et inflige un petit coup
-	Burden: Dégâts directs des gouttes -10%
+	DisplayName: Sceau de pluie moisissante
+	Tooltip: Les gouttes infligent une pourriture toxique, les ennemis infectés libérant un nuage de spores à leur mort ; dégâts directs d'une goutte -10%
+	Origin: Durant la saison des pluies d'été au Jiangnan, l'humidité persistante fait éclore la moisissure sur les malles et les murs. Dès que l'eau se charge d'une fétidité malsaine, elle s'incruste comme un poison dans la chair
+	Power: 「Pluie moisissante」toucher avec une goutte inflige l'état 「Moisissure」 (jusqu'à 10 couches, infligeant des dégâts continus selon le nombre de couches) ; un ennemi rongé qui succombe explose en un nuage de spores, transmettant la moitié de ses couches aux ennemis proches avec de légers dégâts de zone
+	Burden: Dégâts d'impact direct d'une goutte d'encre réduits de 10%
 }
 
 KikasaTalismanPi: {
-	DisplayName: Sceau de tonnerre céleste
-	Tooltip: Pendant dix secondes après une cascade, les gouttes appellent parfois un éclair ; geysers un peu plus légers
-	Origin: La méthode des Cinq Tonnerres du Dao enseigne « tirer la foudre avec la pluie ». Le scribe n'a retenu que la seconde moitié. Heureusement, de la pluie, il n'en manque pas
-	Power: 「Tonnerre céleste」chaque cascade versée ouvre une fenêtre de dix secondes : pendant ce temps, 20% des impacts de goutte appellent un éclair sur le point touché (180% de dégâts, traverse tout le trajet de l'éclair)
-	Burden: Dégâts des geysers -20%
+	DisplayName: Sceau du tonnerre céleste
+	Tooltip: Après une cascade, ouvre une fenêtre permettant aux gouttes d'appeler la foudre céleste ; dégâts d'explosion du geyser -20%
+	Origin: Les eaux accumulées attirent la foudre sous les vapeurs des grands marécages. Quand la crue atteint son paroxysme, le tonnerre emprunte naturellement l'eau pour fendre l'horizon
+	Power: 「Tonnerre céleste」achever une cascade ouvre une fenêtre d'appel de foudre durant 10 secondes : chaque coup de goutte a 20% de chances d'appeler un éclair céleste perforant, infligeant 180% des dégâts d'une goutte
+	Burden: Dégâts d'explosion du geyser réduits de 20%
 }
 
 KikasaTalismanXia: {
-	DisplayName: Sceau de crépuscule ardent
-	Tooltip: À l'aube et au crépuscule, les dégâts d'encre montent fort et les gouttes allument une flamme d'aurore ; un peu plus faibles à midi et au plus profond de la nuit
-	Origin: L'aurore, c'est la pluie qui brûle au bord du ciel. Le scribe en ramassa une poignée avant le lever du soleil, le papier a jauni, mais le sceau a pris
-	Power: 「Crépuscule ardent」pendant un moment et demi d'heure autour du lever et du coucher du soleil, dégâts d'encre +18%, les gouttes allument une « Flamme d'aurore » qui brûle un instant ; à ces heures tout le kit de pluie se teint d'orangé-or
-	Burden: Dégâts d'encre -6% à midi et au plus profond de la nuit
+	DisplayName: Sceau de braise crépusculaire
+	Tooltip: Aux heures de l'aube et du crépuscule, les dégâts d'encre s'envolent et allument des flammes d'aurore ; dégâts réduits de 6% à midi et minuit
+	Origin: Aux premières lueurs de l'aube et au déclin du jour, les nuées lointaines s'embrasent comme un feu de forêt. En infusant cette clarté éphémère dans l'eau, la pluie la plus froide peut s'embraser de lueurs d'aurore
+	Power: 「Braise crépusculaire」durant trois heures autour du lever et du coucher du soleil, les dégâts d'encre augmentent de 18%, et toucher allume une 「Flamme d'aurore」 infligeant une brève brûlure, toute la pluie prenant une teinte dorée et orangée
+	Burden: À midi et à minuit pile, les dégâts d'encre sont réduits de 6%
 }
 
 KikasaTalismanJi: {
-	DisplayName: Sceau de ciel dégagé
-	Tooltip: Les impacts à ombrelle ouverte accumulent de l'éclaircie ; ranger l'ombrelle abat un rayon de jour au réticule ; dégâts un peu réduits tant que l'ombrelle est ouverte
-	Origin: Quand la pluie cède au ciel clair, une colonne de lumière passe dans la fente des nuages. Le scribe a guetté une quinzaine et en a pris l'empreinte avant que les nuages ne se referment
-	Power: 「Éclaircie」les impacts à ombrelle ouverte accumulent de l'éclaircie ; à l'instant où on la range, les nuages s'ouvrent et un rayon de jour s'abat au réticule, les dégâts suivent l'accumulation, les plus forts à pleine charge
-	Burden: Dégâts d'encre -8% tant que l'ombrelle est ouverte
+	DisplayName: Sceau de ciel serein
+	Tooltip: Ouvrir le parapluie accumule la clarté, le refermer abat un rayon de lumière céleste au curseur ; dégâts d'encre réduits de 8% tant qu'il est ouvert
+	Origin: Quelque denses que soient les nuages, vient toujours l'instant où l'azur reparaît. Le rayon de soleil qui transperce la nuée à l'instant où l'on referme la toile est le plus éblouissant de tous
+	Power: 「Éclaircie」toucher des cibles avec le parapluie ouvert accumule la clarté du ciel ; à l'instant précis où le parapluie se referme, la nuée s'entrouvre et un rayon ardent s'abat sur le curseur, ses dégâts dépendant de la charge accumulée
+	Burden: Tous les dégâts d'encre sont réduits de 8% tant que le parapluie reste ouvert
 }
 
 KikasaTalismanYu: {
-	DisplayName: Sceau de danse de pluie
-	Tooltip: Les impacts accumulent le rite ; à pleine charge l'autel s'ouvre : pluie dense, gouttes plus dures, flaques et geysers débloqués, trois geysers à la fin ; un peu plus terne hors du grand rite
-	Origin: Pour prier la pluie, les Anciens dressaient un autel, dansaient et faisaient sonner les huit instruments : le rite s'appelait « danse de pluie ». Le scribe a plié toute la cérémonie dans un sceau : l'ombrelle est le chaman, la pluie est la réponse
-	Power: 「Grand rite」les impacts de pluie d'encre accumulent le compte du rite ; à pleine charge l'autel s'ouvre de lui-même pour dix secondes : intervalle des temps réduit de moitié, gouttes teintes d'encre-arc-en-ciel et dégâts +15%, toutes forment une flaque, geysers entièrement ouverts ; à la fin, trois geysers jaillissent sous l'ombrelle
-	Burden: Dégâts d'encre -10% hors du Grand rite
+	DisplayName: Sceau de la danse de pluie
+	Tooltip: Toucher accumule les offrandes pour déclencher le grand rite avec déluge serré et geysers ; dégâts d'encre normaux réduits de 10%
+	Origin: Jadis lors des grandes sécheresses, on dressait des autels pour prier la pluie : les chamans dansaient au son des tambours, un rite nommé danse de pluie. Le parapluie sert de médium spirituel, et le déluge qui répond est l'écho même du ciel
+	Power: 「Grand rite」les coups d'encre accumulent les offrandes, la jauge pleine déclenchant une posture de 「Grand rite」 durant 10 secondes : intervalle de pluie réduit de moitié, dégâts des gouttes +15%, chaque impact forme une flaque et tous les geysers s'ouvrent ; en se retirant, trois geysers jaillissent simultanément sous le parapluie
+	Burden: En dehors du Grand rite, tous les dégâts d'encre sont réduits de 10%
 }

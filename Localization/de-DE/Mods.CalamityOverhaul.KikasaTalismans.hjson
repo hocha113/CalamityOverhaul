@@ -1,215 +1,215 @@
 KikasaTalismanLin: {
 	DisplayName: Nieseltalisman
-	Tooltip: Tintenregen-Takt wird schneller, ununterbrochener Regen wird immer dichter; jeder Tropfen etwas leichter
-	Origin: Der alte Talismanmeister sagte: Um Regen zu erbitten, muss man den Drachenkönig nicht bemühen, ein Nieseltalisman reicht. Kleinere Tropfen sind egal, Hauptsache, er hört nicht auf
-	Power: »Nieselregen« Tintenregen-Takt +20 %, Tropfen folgen dicht aufeinander; etwa zehn Sekunden ununterbrochener Regen bilden »Landregen«: unter dem Schirm hängt ein Nieselschleier, der Takt beschleunigt noch einmal um 10 %; hörst du auf, löst sich der Aufbau, holst du den Schirm ein, fällt er sofort auf die Hälfte
-	Burden: Einzeltropfenschaden -6 %
+	Tooltip: Tintenregen-Takt wird schneller, ununterbrochener Regen verdichtet sich zum Regenschleier; Einzeltropfenschaden -6%
+	Origin: In Jinan fällt viel Regen, und der Niesel am Ufer des Daming-Sees währt oft tagelang ohne Unterlass. Der Regen fällt sanft, doch unablässig, und tränkt allmählich Himmel und Erde
+	Power: „Nieselregen“: Tintenregen-Takt um 20% beschleunigt; etwa 10 Sekunden ununterbrochener Regen erzeugen den Zustand „Regenschleier“: Dichte Regenfäden fallen unter dem Schirm herab, der Takt beschleunigt sich um weitere 10%; beim Schließen des Schirms verflüchtigt sich der Regen allmählich, beim Einholen halbiert er sich sofort
+	Burden: Direkter Tropfenschaden um 6% verringert
 }
 
 KikasaTalismanLao: {
 	DisplayName: Tintenlachen-Talisman
-	Tooltip: Tintentropfen bilden beim Landen immer eine Tintenlache; die Lache trinkt den Regen, steigt und läuft über; Direkttreffer etwas leichter
-	Origin: Dem Talismanmeister war es zuwider, dass Regen im Moment des Aufschlags schon trocknet und eine ganze Tintenflut umsonst war. Also zeichnete er diesen Talisman, damit der Regen länger auf dem Boden bleibt. Jeder Augenblick extra zählt
-	Power: »Lachenbildung« Tintentropfen bilden beim Landen immer eine Tintenlache (vierte Stufe ›See kippen‹ nicht nötig), Lachen halten +50 % länger und greifen +30 % weiter aus; Tropfen, die in eine bestehende Lache fallen, heben den Pegel, die dritte füllt sie zum Überlaufen: die Fläche weitet sich einen Schritt und schlägt Überlaufwellen nach beiden Seiten (je 50 % Lachenschaden)
-	Burden: Direktschaden der Tropfen -5 %
+	Tooltip: Tintentropfen bilden beim Aufprall stets Tintenlachen, Lachen tränken Regen bis zum Überlaufen mit Wogen; Direktschaden -5%
+	Origin: Wasser sammelt sich in Senken; bleibt der Regen lange am Boden stehen, sammelt er sich zu totem Wasser. Totem Wasser sieht man die Tiefe nicht an, es birgt ungesehene Unterströmungen
+	Power: „Lachenstau“: Tintentropfen bilden beim Bodenkontakt stets eine Tintenlache, Lachendauer um 50% verlängert, Wirkungsbereich um 30% vergrößert; Tropfen in bestehenden Lachen heben den Wasserstand, nach Aufnahme von drei Güssen läuft die Lache über und wirft nach beiden Seiten Wogen mit je 50% des Lachenschadens auf
+	Burden: Direkter Tropfenschaden um 5% verringert
 }
 
 KikasaTalismanPei: {
 	DisplayName: Platzregen-Talisman
-	Tooltip: Umgedrehtes Aufladen geht schneller; ist die Schale voll, kippt sie wie ein geöffnetes Wehr; gewöhnlicher Regen etwas langsamer
-	Origin: Beim Bitten um Regen ist halbherziges Nieseln das Schlimmste. Dieser Talisman erfüllt nur eine Bitte: wenn es regnet, dann in Strömen
-	Power: »Platzregen« Tempo des umgedrehten Aufladens +35 %, Tintenquell-Schaden +20 %; bei voller Ladung perlen Tropfen am Schalenrand und es summt leise, und genau dann zu gießen öffnet das Wehr: am Ursprung des Falls explodiert ein Stoß (80 % Fallschaden) und der Tintenfall wird breiter
-	Burden: Tintenregen-Takt 8 % langsamer
+	Tooltip: Umgekehrtes Aufladen beschleunigt, voller Tintenfall entfesselt schwere Schockwelle; regulärer Regentakt -8%
+	Origin: Wenn ein Wolkenbruch herniedergeht, bricht der Himmel wie ein geborstener Damm. Der Regen zögert erst – bricht er aber los, kennt er keine Zurückhaltung mehr
+	Power: „Platzregen“: Tempo des umgekehrten Aufladens um 35% erhöht, Tintenquellschaden um 20% erhöht; bei voller Ladung öffnet sich die Flut sofort mit einer Flächenschockwelle am Ursprung, die 80% des Fallschadens zufügt und den Strom verbreitert
+	Burden: Regulärer Tintenregen-Takt um 8% verlangsamt
 }
 
 KikasaTalismanSha: {
 	DisplayName: Eilregen-Talisman
-	Tooltip: Der Schirm steigt fast sofort; der erste Takt wirft drei schnelle Tropfen hintereinander; der Takt danach hinkt etwas
-	Origin: Der Talismanmeister traf nachts auf der Straße Räuber: Schirm auf, Regen nieder, Schirm weg, alles in einem Lidschlag. Danach schrieb er dieses eine Wort »schnell« in einen Talisman
-	Power: »Eilregen« Aufsteigzeit des Schirms -75 %; der erste Takt wirft immer drei schnelle Tropfen (je 75 % Schaden)
-	Burden: Nach der Dreierfolge Intervall des nächsten Takts +40 %
+	Tooltip: Schirm spannt sich extrem schnell auf, erster Takt wirft drei Eiltropfen in Folge; Intervall nach der Salve +40%
+	Origin: Plötzliche Schauer brechen oft unvorhersehbar los; im Nu schneiden dichte Regenfäden jeden Rückweg ab
+	Power: „Eilregen“: Aufspannzeit des Schirms um 75% verkürzt; der erste Takt wirft stets drei Eiltropfen hintereinander, die je 75% Schaden verursachen
+	Burden: Nach Auslösung des Dreifachschauers verlängert sich das Intervall bis zum nächsten Takt um 40%
 }
 
 KikasaTalismanYin: {
 	DisplayName: Tintenblüten-Talisman
-	Tooltip: Tropfentreffer stapeln Tintenspuren; bei fünf Stapeln blühen sie zu einem Ausbruch auf; Direkttreffer etwas leichter
-	Origin: Ein Tintentropfen auf nassem Papier, den man nicht wischt, blüht von selbst zur Blüte. Der Talismanmeister sagte, Feinde seien dasselbe: ein paar Tropfen mehr, und sie blühen
-	Power: »Tintenblüte« Tintentropfen hinterlassen bei Treffern Spuren (höchstens fünf Stapel, jeder zapft Leben); bei fünf Stapeln blüht die Tinte auf, richtet 160 % Tropfenschaden an und löscht die Stapel
-	Burden: Direktschaden der Tropfen -8 %
+	Tooltip: Tropfentreffer stapeln Tintenmale, bei fünf Stapeln blüht eine Schadensexplosion auf; direkter Tropfenschaden -8%
+	Origin: Fällt dichte Tusche auf feuchtes Reispapier, breitet sie sich alsbald entlang der Fasern zu einem Fleck aus. Schicht auf Schicht getränkt, muss sie am Ende die Faser sprengen
+	Power: „Tintenblüte“: Treffende Tintentropfen hinterlassen Tintenmale (bis zu 5 Stapel, die kontinuierlichen Blutungsschaden verursachen); bei 5 Stapeln blüht die Tintenblüte auf, detoniert für 160% des Tropfenschadens und tilgt alle Stapel
+	Burden: Direkter Tropfenschaden um 8% verringert
 }
 
 KikasaTalismanLu: {
 	DisplayName: Süßtau-Talisman
-	Tooltip: Tropfentreffer verdichten manchmal Tautropfen; aufheben stellt Leben wieder her; Regentakt etwas langsamer
-	Origin: In den Schriften fällt Süßtau vom Himmel und wehrt jede Krankheit ab. Der Talismanmeister hat dieses Wunder nie erbeten bekommen und nahm das Nächstbeste: in jedem Tropfen ein wenig Süße ansammeln
-	Power: »Süßtau« Tintentropfen verdichten bei Treffer mit 12 % Chance einen Tautropfen; aufheben stellt 2 Leben wieder her; höchstens drei auf dem Feld
-	Burden: Tintenregen-Takt 6 % langsamer
+	Tooltip: Tropfentreffer kondensieren gelegentlich Tautropfen, deren Aufnahme Leben regeneriert; Regentakt -6%
+	Origin: Am frühen Morgen sammelt sich Tau auf Gräsern und Laub, das Wasser schmeckt leise süß. Im düsteren Regensturm einige Tropfen reinen Taues zu bündeln, ist ein seltenes Glück
+	Power: „Süßtau“: Tintentropfen haben bei Treffern eine Chance von 12%, einen Tautropfen zu kondensieren; das Aufsammeln stellt 2 Lebenspunkte wieder her (höchstens 3 Tautropfen gleichzeitig im Feld)
+	Burden: Tintenregen-Takt um 6% verlangsamt
 }
 
 KikasaTalismanFei: {
-	DisplayName: Nebelbinde-Talisman
-	Tooltip: Jeder dritte Tropfen wird zum Nebeltropfen und hinterlässt am Aufschlag verlangsamenden, ätzenden Tintennebel; der Nebeltropfen selbst ist leichter
-	Origin: Bergregen wird oft auf halber Strecke zu Nebel, der sich an einen klammert und nicht loslässt. Der Talismanmeister fand dieses Klammern hartnäckiger als jeden Tropfen, packte es in den Talisman und ließ es für sich arbeiten
-	Power: »Nebelbinde« jeder dritte Tintentropfen wird zum Nebeltropfen: am Treffer bleibt zwei Sekunden Tintennebel, Feinde darin nehmen Dauerschaden und verlieren 10 % Tempo
-	Burden: Schaden des Nebeltropfens -30 %
+	DisplayName: Nebeltalisman
+	Tooltip: Jeder dritte Tropfen wird zum Nebeltropfen, der schädigenden und verlangsamenden Dunst hinterlässt; Nebeltropfenschaden -30%
+	Origin: Steht die Luft voller Feuchtigkeit, verdichtet sich der Fallregen zu nasskaltem Nebel. Wer darin gefangen ist, verliert jede Richtung und spürt die Kälte bis ins Mark
+	Power: „Nebelhülle“: Jeder dritte versprühte Tintentropfen wird zum Nebeltropfen: Am Trefferort verweilt 2 Sekunden lang Tintennebel; Feinde im Nebel erleiden kontinuierlichen Schaden und ihre Bewegungsgeschwindigkeit sinkt um 10%
+	Burden: Eigenschaden des Nebeltropfens um 30% verringert
 }
 
 KikasaTalismanXian: {
 	DisplayName: Spritzperlen-Talisman
-	Tooltip: Große Tropfen zerspringen beim Landen in fünf hüpfende Tintenperlen; Tintenlachen etwas kleiner
-	Origin: Starkregen auf Steinplatten schleudert Perlen hüfthoch und durchnässt einen komplett. Der Talismanmeister schrieb diesen Sprung in den Talisman und brachte den Perlen das Beißen bei
-	Power: »Spritzperlen« große Tropfen zerspringen beim Landen in fünf Tintenperlen (je 30 % Schaden), jede kann noch zweimal hüpfen
-	Burden: Lachenradius -15 %
+	Tooltip: Schwere Tropfen zerspringen beim Aufprall in fünf springende Tintenperlen; Lachenradius -15%
+	Origin: Wassertropfen stürzen aus großer Höhe auf den Blaustein und zerspringen in alle Winde. Scheinbar winzig und zerstreut, vermögen sie im Abprallen fortwährend Wunden zu schlagen
+	Power: „Spritzperlen“: Schwere Tintentropfen zerspringen beim Aufprall in 5 feine Tintenperlen, die jeweils 30% des Schadens des ursprünglichen Tropfens verursachen und je 2 weitere Male abprallen können
+	Burden: Radius entstehender Tintenlachen um 15% verkleinert
 }
 
 KikasaTalismanXi: {
 	DisplayName: Gezeitentalisman
-	Tooltip: Tintenlachen atmen mit der Tide und wogen von selbst auf nahe Feinde zu; Lachenleben etwas kürzer
-	Origin: Der Talismanmeister lebte drei Jahre am Meer und lernte genau eine Sache: Wasser wartet nicht, bis jemand hineintritt. Es kommt von selbst
-	Power: »Gezeiten« Tintenlachen gewinnen Tide: sie schwellen und ebben, und frische Tinte, die in eine Lache fällt, schickt sie auf den nächsten Feind zu; der Wellenrand richtet 50 % Lachenschaden an
-	Burden: Lachenleben -20 %
+	Tooltip: Tintenlachen wogen im Rhythmus selbstständig auf nahe Feinde zu; Lachendauer -20%
+	Origin: Wasser fließt stets nach unten und folgt dem Auf und Ab der Gezeiten. Eine Lache, in der die Flut schlummert, harrt nicht träge aus, sondern stürzt sich mit der Woge auf alles Lebendige
+	Power: „Gezeiten“: Tintenlachen erhalten Gezeitenrhythmus: Sie schwellen und ebben im Takt; fällt ein neuer Tropfen in eine bestehende Lache, wogt sie auf den nächsten Feind zu, wobei der Wellenkamm 50% des Lachenschadens zufügt
+	Burden: Lachendauer um 20% verkürzt
 }
 
 KikasaTalismanZi: {
-	DisplayName: Tränk-Talisman
-	Tooltip: Feinde, die in Tintenlachen stehen, sammeln Tränkschichten und nehmen tieferen Tintenschaden; die Lache selbst ist leichter
-	Origin: Stoff muss drei volle Tage in der Küpe liegen, bevor die Farbe greift. Der Talismanmeister hat selbst gefärbt und weiß besser als jeder, was »einweichen« vermag
-	Power: »Tränkung« Feinde in einer Tintenlache sammeln ununterbrochen Tränkschichten (höchstens acht); jede Schicht erhöht den Tintenschaden, den sie nehmen, um 2,5 %
-	Burden: Lachenschaden -25 %
+	DisplayName: Tränktalisman
+	Tooltip: In Lachen verweilende Feinde erleiden tieferen Schaden; Basisschaden der Lache -25%
+	Origin: Taucht ein Tuch in den Färbebottich, dringt die Farbe umso tiefer ein, je länger es ruht. Was lange in stehendem Wasser liegt, dem erweichen mit der Zeit auch die Knochen
+	Power: „Tränkung“: Gegner in Tintenlachen sammeln fortwährend Tränkungsstapel an (bis zu 8), wobei jeder Stapel den erlittenen Tintenschaden um 2,5% erhöht
+	Burden: Basisschaden der Tintenlachen um 25% verringert
 }
 
 KikasaTalismanTing: {
 	DisplayName: Donnerquell-Talisman
-	Tooltip: Tintenquellen werden zu Donnersäulen und ketten Blitze an nahe Feinde; Tintenfälle wecken beim Aufschlag manchmal einen kleinen Donnerquell; Aufladen etwas langsamer
-	Origin: Ein See in der Gewitternacht ist das Fürchterlichste. Der Blitz schlägt ins Wasser, und der ganze See leuchtet mit. Der Talismanmeister zeichnete genau dieses Bild
-	Power: »Donnerquell« Quellsäulen +50 % höher, Treffer ketten Blitze an bis zu zwei nahe Feinde (je 50 % Quellschaden); selbst ein nicht voll aufgeladener Tintenfall weckt beim Aufschlag mit 25 % Chance einen kleinen Donnerquell
-	Burden: Tempo des umgedrehten Aufladens -13 %
+	Tooltip: Tintenquellen steigen zu Donnerströmen empor und leiten Blitze weiter; umgekehrtes Aufladetempo -13%
+	Origin: In einer Gewitternacht birgt der See die größte Gefahr: Schlägt der Blitz in das stille Wasser ein, wandelt sich die Tiefe im Nu in ein wogendes Meer aus Blitzen
+	Power: „Donnerquell“: Ausbruchshöhe der Tintenquellen um 50% erhöht; Treffer leiten Kettenblitze an bis zu 2 nahe Gegner weiter (jeweils 50% des Quellschadens); ungefüllt herabgestürzte Tintenfälle haben beim Aufprall eine Chance von 25%, eine kleine Donnerquelle zu entfachen
+	Burden: Tempo des umgekehrten Aufladens um 13% verringert
 }
 
 KikasaTalismanHong: {
 	DisplayName: Regenbogenbrücken-Talisman
-	Tooltip: Nach dem Tintenfall spannt sich eine Regenbogenbrücke: Segen darunter, Brand auf der Spanne; der Fall etwas schmaler
-	Origin: Ein Regenbogen nach dem Regen ist ein gutes Zeichen. Der Talismanmeister zeichnete das Zeichen einfach in den Talisman: hört der Regen auf, steht die Brücke, und wer darunter steht, teilt das Glück
-	Power: »Regenbogenbrücke« nach dem Tintenfall spannt sich fünf Sekunden eine Brücke über dem Aufschlag: darunter Bewegungstempo +10 %, Beschwörungsschaden +10 %; Feinde, die die Spanne kreuzen, nehmen alle halbe Sekunde 40 % Fallschaden
-	Burden: Fallbreite -10 %
+	Tooltip: Der Tintenfall spannt eine Regenbogenbrücke mit Bewegungsvorteil und brennt Feinde beim Durchschreiten; Fallbreite -10%
+	Origin: Legt sich der Schauer und dringt das Sonnenlicht durch die Wolkenrisse, spiegelt sich im aufsteigenden Dunst ein flüchtiger Regenbogen – ein zarter Schein, der rasch vergeht
+	Power: „Regenbogenbrücke“: Nach dem Gießen des Tintenfalls bildet sich 5 Sekunden lang eine Regenbogenbrücke über dem Zielort: Darunter steigen Bewegungsgeschwindigkeit um 10% und Beschwörungsschaden um 10%; Gegner auf der Brücke erleiden alle 0,5 Sekunden 40% des Fallschadens
+	Burden: Trefferbreite des Tintenfalls um 10% geschmälert
 }
 
 KikasaTalismanHang: {
-	DisplayName: Nachtmiasma-Talisman
-	Tooltip: Nachts steigt der Tintenschaden, Tintenlachen dampfen Miasmasäulen; bei Tag etwas schwächer
-	Origin: Der alte Spruch heißt: nächtlichen Dunst nicht anrühren. Der Talismanmeister füllte trotzdem eine Flasche, und der Spruch stimmte. Dann sollen eben die Feinde ihn anrühren
-	Power: »Nachtmiasma« nachts Tintenschaden +15 %, Tintenlachen dampfen ununterbrochen Miasmasäulen (alle halbe Sekunde 30 % Tropfenschaden)
-	Burden: Bei Tag Tintenschaden -5 %
+	DisplayName: Nachtdunst-Talisman
+	Tooltip: Nachts höherer Tintenschaden und Lachen dampfen Dunstsäulen auf; tagsüber Tintenschaden -5%
+	Origin: Nach altem Glauben verwundet der nächtliche Dunst aus finsteren Wassern am tiefsten. Die Feuchte birgt eisige Kälte in sich, die dem Lebenden die Brust zuschnürt
+	Power: „Nachtdunst“: Nachts ist der Tintenschaden um 15% erhöht und Tintenlachen dampfen unablässig Miasmasäulen auf (fügen alle 0,5 Sekunden 30% des Tropfenschadens zu)
+	Burden: Bei Tag ist der Tintenschaden um 5% verringert
 }
 
 KikasaTalismanBao: {
 	DisplayName: Hageltalisman
-	Tooltip: Jeder vierte Takt wird ganz zu Riesenhagel: rüstungsbrechende Schläge, keine Lachen; gewöhnliche Takte etwas leichter
-	Origin: Hagel ist das jähzornige Temperament des Regens, zerschlägt Ziegel und Becken, und niemand hält ihn auf. Der Talismanmeister wollte ihn nicht zähmen; er handelte nur: alle vier Takte gehört ihm einer
-	Power: »Hagel« jeder vierte Takt ist eine volle Salve, alle Tropfen werden zu Riesenhagel: Größe x1,6, Schaden x2,2, Treffer brechen Rüstung und stoßen hart zurück; Riesenhagel hinterlässt keine Tintenlachen
-	Burden: Tropfenschaden gewöhnlicher Takte -8 %
+	Tooltip: Jeder vierte Takt verwandelt alle Tropfen in rüstungsbrechende Riesenhagelkörner; regulärer Tropfenschaden -8%
+	Origin: Kalter Regen kristallisiert und stürzt jäh aus den Wolken. Hagel zerschlägt Ziegel und Schalen, bar jeder Sanftheit gewöhnlichen Regens
+	Power: „Hagelschlag“: Jeder vierte Takt löst garantiert eine volle Salve aus, bei der alle Tropfen zu schwerem Hagel werden: Größe +60%, Schaden +120%, zerreißt gegnerische Abwehr mit starkem Rückstoß; hinterlässt keine Tintenlachen
+	Burden: Direktschaden der Tropfen in regulären Takten um 8% verringert
 }
 
 KikasaTalismanShu: {
 	DisplayName: Rettungsregen-Talisman
-	Tooltip: Drei Sekunden nach einem Treffer verdichtet sich der Regen und jeder Tropfen heilt; gewöhnlicher Takt etwas langsamer
-	Origin: In den Geschichten heißt, wer genau dann kommt, wenn Hilfe braucht, »Rettungsregen«. Dieser Talisman folgt derselben Regel: sobald der Schirmherr einen Schlag abbekommt, muss der Regen sofort da sein
-	Power: »Rettungsregen« drei Sekunden nach einem Treffer halbieren sich die Taktabstände, der Regen wird gold, und jeder Treffertropfen stellt 1 Leben wieder her; zwölf Sekunden Abklingzeit
-	Burden: Gewöhnlicher Taktabstand +5 %
+	Tooltip: Nach erlittenem Schaden wird der Regen für 3 Sekunden extrem dicht und heilt pro Treffer; reguläres Intervall +5%
+	Origin: Im Volksmund nennt man rettende Helfer in der Not einen „Rettungsregen“. Vermag der Regen im bangsten Moment niederzugehen, kann er in der Tat manch Unheil abwenden
+	Power: „Rettungsregen“: Für 3 Sekunden nach erlittenem Schaden halbiert sich das Regenintervall und die Fäden erglänzen golden; jeder Treffer auf einen Feind stellt 1 Lebenspunkt wieder her (12 Sekunden Abklingzeit nach Auslösung)
+	Burden: Regulärer Taktabstand des Tintenregens um 5% verlängert
 }
 
 KikasaTalismanLong: {
 	DisplayName: Sturzflut-Talisman
-	Tooltip: Der Tintenfall wird zum Sturzbach und schiebt Feinde mit der Strömung; der Fall hält kürzer
-	Origin: Kommt die Sturzflut den Berg herab, behält niemand den Stand. Der Talismanmeister sah das einmal vom Fels und schrieb daheim nur das eine Wort »stürzen« in den Talisman
-	Power: »Sturzflut« der Tintenfall wird zum Sturzbach: der Körper schiebt Feinde auf der Falllinie mit der Strömung, Direkttreffer des Falls stoßen +35 % stärker zurück
-	Burden: Falldauer -20 %
+	Tooltip: Der Tintenfall wird zur reißenden Strömung, die Feinde fortreißt; Falldauer -20%
+	Origin: Wenn die Bergflut zu Tale stürzt, reißt sie Geröll und Sand mit unwiderstehlicher Wucht mit sich. Selbst ein Heer vermag in solch reißendem Schwall nicht standzuhalten
+	Power: „Sturzflut“: Der Tintenfall verwandelt sich in eine reißende Flut: Schiebt Feinde auf der Falllinie unerbittlich mit der Strömung fort, der direkte Rückstoß am Ursprung steigt um 35%
+	Burden: Falldauer um 20% verkürzt
 }
 
 KikasaTalismanShuang: {
 	DisplayName: Frostspiegel-Talisman
-	Tooltip: Tintenlachen gefrieren zu Frostspiegeln: Betreten verlangsamt, Tropfen zerschlagen den Spiegel zum Ausbruch; Lachen lassen sich nicht erneuern
-	Origin: Nach dem Reiffall gefriert das Lachenwasser über Nacht zu dünnem Eis, sieht aus wie ein Spiegel, bis man hineintritt. Was der Talismanmeister sammelte, war genau diese Schicht »sieht harmlos aus«
-	Power: »Frostspiegel« große Tropfen gefrieren beim Landen von selbst zur Frostlache (vierte Stufe ›See kippen‹ nicht nötig); die Lache wird zum Spiegel: sie ätzt nicht mehr, Betreten verlangsamt um 40 %; trifft ein Tintentropfen die Fläche, zerspringt der Spiegel sofort, der Ausbruch richtet Schaden nach verbleibender Spiegellebenszeit an und stellt Eiszapfen auf
-	Burden: Jeder Spiegel steht für sich; Tintenlachen können nicht verschmelzen, um die Lebenszeit zu erneuern
+	Tooltip: Lachen gefrieren zu Reifspiegeln, Betreten verlangsamt, Tropfeneinschlag sprengt Eiszapfen; Lachen können nicht verschmelzen
+	Origin: Nach dem Spätherbstfrost gefriert das Wasser am Boden im Morgengrauen zu einer spröden Eisschicht. Glatt wie ein Spiegel verbirgt sie die tödliche Gefahr erst unter dem Tritt
+	Power: „Frostspiegel“: Schwere Tropfen gefrieren am Boden zu einer Reiflache: Schadet Feinden nicht mehr dauerhaft, verlangsamt Betretende jedoch um 40%; trifft ein Tropfen den Spiegel, zerspringt er sofort in einer Eiszapfenexplosion, deren Schaden mit der Restlebenszeit skaliert
+	Burden: Frostspiegel stehen für sich; Lachen können nicht verschmelzen, um ihre Lebensdauer zu erneuern
 }
 
 KikasaTalismanZha: {
 	DisplayName: Regentrommel-Talisman
-	Tooltip: Sieben Takte hintereinander treffen, dann schlägt der achte mit dreifachem Tropfenschaden; danach setzt der Regen einen Takt aus
-	Origin: Tropfen auf dem Schirm sind schon eine Trommel. Der Talismanmeister hörte den Trick: kein Takt darf fehlen, dann klingt der achte am lautesten
-	Power: »Regentrommel« über der Krone hängt ein Sieben-Punkt-Trommelring: trifft mindestens ein Tropfen in jedem von sieben Takten, schlägt der achte mit allen Tropfen x3, wie ein Trommelschlag; fehlt ein Takt, zählt es von vorn
-	Burden: Nach dem schweren Schlag setzt der Regen einen Takt aus
+	Tooltip: Nach sieben getroffenen Takten entfesselt der achte Takt dreifachen Schaden; danach kurze Regenpause
+	Origin: Prasselt schwerer Regen auf die straffe Ölpapierbespannung des Schirms, klingt es wie das Schlagen einer Trommel. Weicht der Takt keinen Deut ab, offenbart der letzte Schlag seine wahre Kraft
+	Power: „Regentrommel“: Am Schirmrand sammeln sich sieben Trommelmale: Trifft in sieben aufeinanderfolgenden Takten jeweils mindestens ein Tropfen das Ziel, richtet der achte Takt dreifachen Schaden an; verfehlt ein Takt, setzt sich der Zähler zurück
+	Burden: Nach dem schweren Trommelschlag setzt der Regen für einen Takt kurz aus
 }
 
 KikasaTalismanNi: {
-	DisplayName: Dreifarb-Talisman
-	Tooltip: Tropfen färben reihum drei Farben: Rot explodiert, Cyan verlangsamt, Violett vertieft Wunden; Tropfenschaden etwas geringer
-	Origin: »Tinte hat fünf Farben«, heißt es im Handwerk. Der Talismanmeister konnte sich nur drei leisten. Gut, dass Rot sprengt, Cyan klammert und Violett ätzt; das reicht
-	Power: »Dreifarb« Tintentropfen färben der Reihe nach drei Farben: rote Tropfen explodieren beim Treffer (40 % Flächenschaden), cyanfarbene verlangsamen Feinde um 15 %, violette erhöhen den Tintenschaden, den sie nehmen, um 5 %
-	Burden: Tropfenschaden -5 %
+	DisplayName: Dreifarben-Talisman
+	Tooltip: Tropfen wechseln zyklisch zwischen drei Attributen: Rot-Explosion, Cyan-Verlangsamung, Violett-Ätzung; Basisschaden -5%
+	Origin: Das Spukwasser wandelt seine Farben unvorhersehbar. Es leiht sich die Wildheit des roten Wassers, die Trägheit des blauen und die Ätzung des violetten – drei Farben im Fluss, jede mit eigenem Wesen
+	Power: „Dreifarben“: Versprühte Tropfen wechseln der Reihe nach drei Farben: Rote Tropfen explodieren im Umkreis (40% Flächenschaden), cyanfarbene verlangsamen Feinde um 15%, violette erhöhen den erlittenen Tintenschaden um 5%
+	Burden: Basisschaden der Tropfen um 5% verringert
 }
 
 KikasaTalismanWen: {
-	DisplayName: Wolkenschrift-Talisman
-	Tooltip: Drei Schriftsterne am Schirmrand laden sich bei Treffern; ist einer voll, wirft er sich als verfolgende Tintenbolzen; Regentakt etwas langsamer
-	Origin: Wolkenschrift ist die Schrift, die der Dao auf Wolken setzt; keine sterbliche Hand kopiert sie. Der Talismanmeister kopierte, was er konnte: die Zeichen kamen schief, aber sie lernten fliegen
-	Power: »Wolkenschrift« drei Wolkenschrift-Sterne kreisen am Schirmrand und laden sich mit jedem Tropfentreffer; ist die Ladung voll, wirft sich der diensthabende Stern als verfolgende Tintenbolzen (120 % Tropfenschaden)
-	Burden: Taktabstand +8 %
+	DisplayName: Wolkensiegel-Talisman
+	Tooltip: Siegelsterne am Schirmrand laden sich durch Treffer auf und verschießen zielsuchende Wasserpfeile; Regenintervall +8%
+	Origin: Die in alten Schriften verzeichneten Wolkensiegelzeichen entziehen sich dem vollen Verständnis der Sterblichen. Doch zeichnet man ihre Gestalt in Talismane nach, verleiht dies dem Wasser beseelte Kraft
+	Power: „Wolkensiegel“: Drei Wolkensiegelsterne umkreisen den Schirmrand und laden sich bei Tropfentreffern auf; ist ein Stern voll geladen, schleudert er selbstständig einen zielsuchenden Tintenpfeil ab, der 120% des Tropfenschadens zufügt
+	Burden: Taktabstand des Tintenregens um 8% verlängert
 }
 
 KikasaTalismanPo: {
 	DisplayName: Mondseelen-Talisman
-	Tooltip: Nachttreffer füllen einen Tintenmond; bei Vollmond wird der nächste Tintenfall zum Mondfall; bei Tag wirkungslos
-	Origin: Nachts beim Üben merkte der Talismanmeister einen kleinen Mond über dem Schirm: je mehr er traf, desto runder wurde er. Bis zum Fünfzehnten nähren, und er gießt einen großen Fall
-	Power: »Mondseele« nachts hängt ein Tintenmond über dem Schirm und wird mit jedem Treffer voller; bei Vollmond wird der nächste Tintenfall zum Mondfall: Breite x1,5, seine Schläge hinterlassen Mondspur-Ausbrüche (35 % Flächenschaden)
-	Burden: Dieser Talisman wirkt bei Tag nicht
+	Tooltip: Aufgespanntes Halten bei Nacht sammelt Mondlicht für einen bleichen Mondfall; am Tage wirkungslos
+	Origin: In tiefer Nacht ergießt sich das Mondlicht wie Reif auf stille Gewässer. Sammelt man dieses kühle Licht unter dem Schirm und gießt es herab, bricht es wie ein eisiger Strom hervor
+	Power: „Mondseele“: Nächtliche Tropfentreffer sammeln Mondphasen; bei Vollmond wird der nächste umgekehrte Fall zum bleichen Mondfall: Wirkungsbereich um 50% vergrößert, Treffer lösen Mondfleck-Explosionen aus (35% Flächenschaden)
+	Burden: Dieser Talisman ist tagsüber vollkommen wirkungslos
 }
 
 KikasaTalismanXiao: {
 	DisplayName: Neunhimmel-Talisman
-	Tooltip: Der Schirm steigt hoch; Tropfen stürzen schneller und härter; Regentakt etwas langsamer
-	Origin: Derselbe Tropfen macht vom Dachrand einen Spritzer und vom neunten Himmel einen Krater. Die Rechnung des Talismanmeisters war genau so schlicht
-	Power: »Neun Himmel« Schwebhöhe des Schirms verdoppelt, Tropfen stürzen aus der Höhe: Endgeschwindigkeit +40 %, Schaden +25 %, am Aufschlag taucht zuerst ein Regenschattenring auf
-	Burden: Taktabstand +10 %
+	Tooltip: Schirm steigt in gewaltige Höhen, stürzende Tropfen gewinnen massiv an Tempo und Wucht; Regenintervall +10%
+	Origin: Vom Dach herabtropfendes Wasser wirft nur kleine Wellen, doch Regen, der aus dem neunten Himmel stürzt, zerschmettert Fels und Stein. Je höher der Ursprung, desto wilder der Sturz
+	Power: „Neun Himmel“: Schwebehöhe des Schirms verdoppelt, Tropfen stürzen senkrecht aus großer Höhe herab: Endgeschwindigkeit um 40% erhöht, Direktschaden um 25% gesteigert, Regenschatten am Boden kündigen den Einschlag an
+	Burden: Taktabstand des Tintenregens um 10% verlängert
 }
 
 KikasaTalismanMei: {
-	DisplayName: Schimmelregen-Talisman
-	Tooltip: Tropfentreffer stapeln Schimmelfraß; Schimmelfeinde platzen im Tod zu ansteckenden Sporen; Direkttreffer etwas leichter
-	Origin: Vierzig Tage Pflaumenregen, und im Talismankasten wuchs Schimmel. Der Talismanmeister konnte sich nicht überwinden, ihn abzuwischen. Auch das hat der Regen großgezogen, also zählt es als Familie
-	Power: »Schimmelregen« Tintentropfen hängen bei Treffer »Schimmelfraß« an (höchstens zehn Stapel, jeder zapft Leben); stirbt ein Schimmelfeind, sprüht er Sporennebel, gibt die Hälfte der Stapel an nahe Feinde weiter und richtet kleinen Schaden an
-	Burden: Direktschaden der Tropfen -10 %
+	DisplayName: Moderregen-Talisman
+	Tooltip: Tropfen belegen Feinde mit Moderfäule, erliegende Wirte setzen ansteckende Sporenwolken frei; direkter Tropfenschaden -10%
+	Origin: In der Pflaumenregenzeit im Süden weicht die Nässe nicht aus Mauern und Truhen und Schimmel sprießt hervor. Nimmt die Feuchte erst Fäulnis an, haftet sie wie Gift am Gebein
+	Power: „Moderfäule“: Treffende Tropfen belegen Ziele mit Moderfäule (bis zu 10 Stapel mit kontinuierlichem Schaden); stirbt ein befallener Feind, stößt er eine Sporenwolke aus, die die Hälfte der Stapel auf nahe Feinde überträgt und leichten Flächenschaden anrichtet
+	Burden: Direkter Tropfenschaden um 10% verringert
 }
 
 KikasaTalismanPi: {
 	DisplayName: Himmelsdonner-Talisman
-	Tooltip: Zehn Sekunden nach einem gegossenen Tintenfall rufen Tropfentreffer manchmal einen Blitz gerade herab; Tintenquellen etwas leichter
-	Origin: Die Fünf-Donner-Methode des Dao lehrt »mit dem Regen den Blitz ziehen«. Der Talismanmeister beherrschte nur die zweite Hälfte. Zum Glück hat er Regen im Überfluss
-	Power: »Himmelsdonner« nach jedem gegossenen Tintenfall öffnet sich ein zehnsekündiges Fenster: darin rufen Tropfentreffer mit 20 % Chance einen Blitz gerade auf den Trefferpunkt (180 % Schaden, durch die ganze Blitzbahn)
-	Burden: Quellschaden -20 %
+	Tooltip: Nach dem Gießen des Tintenfalls können Tropfen kurzzeitig Himmelsblitze herabrufen; Quellausbruchschaden -20%
+	Origin: Stehendes Wasser zieht den Blitz an, wenn Dunst aus den Mooren steigt. Erreicht die Flut ihren Scheitel, bahnt sich der Donner den Weg durch das Wasser und durchstößt die Wolken
+	Power: „Himmelsdonner“: Nach jedem Tintenfall öffnet sich ein 10 Sekunden währendes Blitzfenster: Treffende Tropfen haben eine Chance von 20%, einen Himmelsblitz herabzurufen, der 180% durchdringenden Blitzschaden verursacht
+	Burden: Ausbruchsschaden der Tintenquellen um 20% verringert
 }
 
 KikasaTalismanXia: {
-	DisplayName: Glutdämmer-Talisman
-	Tooltip: In der Dämmerung steigt der Tintenschaden stark, Tropfen zünden Glutflamme; mittags und tief in der Nacht etwas schwächer
-	Origin: Abendrot ist Regen, der am Himmelrand brennt. Der Talismanmeister schöpfte eine Handvoll vor Sonnenaufgang; das Papier briet sich gelb, der Talisman aber war fertig
-	Power: »Glutdämmer« je eineinhalb Doppelstunden um Sonnenaufgang und Sonnenuntergang: Tintenschaden +18 %, Tropfentreffer zünden kurz »Glutflamme«; in der Dämmerung färbt sich das ganze Regenzeug orange-gold
-	Burden: Mittags und tief in der Nacht Tintenschaden -6 %
+	DisplayName: Abendglut-Talisman
+	Tooltip: In Morgen- und Abenddämmerung steigt der Tintenschaden drastisch mit Glutflammen; zu Mittag und Mitternacht Schaden -6%
+	Origin: In der Morgen- und Abenddämmerung glühen die Wolken wie loderndes Feuer. Fängt man dieses Himmelslicht im Wasser ein, vermag selbst der kälteste Regen in Flammenglanz zu erstrahlen
+	Power: „Abendglut“: Je anderthalb Stunden um Sonnenauf- und -untergang ist der Tintenschaden um 18% erhöht, Tropfentreffer zünden „Glutflammen“ an und die gesamte Regenausrüstung schimmert goldorange
+	Burden: Zur Mittags- und Mitternachtszeit ist der Tintenschaden um 6% verringert
 }
 
 KikasaTalismanJi: {
-	DisplayName: Aufklar-Talisman
-	Tooltip: Treffer bei aufgespanntem Schirm sammeln Klarheit; holst du ihn ein, kracht am Fadenkreuz ein Himmelsstrahl nieder; solange der Schirm oben ist, etwas weniger Schaden
-	Origin: Im Augenblick, in dem Regen dem Klaren weicht, fällt durch die Wolkennaht eine Lichtsäule. Der Talismanmeister hockte einen halben Monat und rieb sie ab, bevor die Wolken sich schlossen
-	Power: »Aufklaren« Treffer bei aufgespanntem Schirm sammeln Klarheit; im Moment des Einholens reißt eine Wolkenlücke, und am Fadenkreuz kracht ein Himmelsstrahl nieder; der Schaden richtet sich nach dem Gesammelten, am vollsten am heftigsten
-	Burden: Solange der Schirm oben ist, Tintenschaden -8 %
+	DisplayName: Himmelkuhl-Talisman
+	Tooltip: Gespannter Schirm sammelt Heiterkeit, das Einholen schleudert einen Himmelsstrahl aufs Ziel; Tintenschaden während des Haltens -8%
+	Origin: Wie schwer die Wolken auch lasten, einst bricht die Sonne hindurch. Jener Strahl, der beim Schließen des Schirms die Wolkendecke zerreißt, ist der gleißendste von allen
+	Power: „Aufklaren“: Treffer bei aufgespanntem Schirm sammeln heitere Himmelskraft; im Moment des Schließens bricht die Wolkendecke auf und schleudert einen sengenden Himmelsstrahl auf das Fadenkreuz, dessen Schaden mit der Ladung skaliert
+	Burden: Während der Schirm aufgespannt bleibt, sind alle Tintenschäden um 8% verringert
 }
 
 KikasaTalismanYu: {
 	DisplayName: Regentanz-Talisman
-	Tooltip: Treffer sammeln Ritualzahl; ist sie voll, öffnet sich der Altar: dichter Regen, härtere Tropfen, Lachen und Quellen voll auf, zum Schluss drei Quellen zugleich; außerhalb des großen Ritus etwas stumpfer
-	Origin: Die Alten baten um Regen, bauten einen Altar, tanzten und sangen alle acht Klänge; das Ritual hieß »Regentanz«. Der Talismanmeister faltete das ganze Fest in einen Talisman: der Schirm ist der Schamane, der Regen die Antwort
-	Power: »Großer Yu« Tintenregentreffer sammeln Ritualzahl; ist sie voll, öffnet sich von selbst zehn Sekunden der »Große Yu«: Taktabstände halbiert, Tropfen in Regenbogentinte bei +15 % Schaden, alle bilden Lachen, Tintenquellen voll auf; schließt das Ritual, brechen unter dem Schirm drei Quellen zugleich aus
-	Burden: Außerhalb des Großen Yu Tintenschaden -10 %
+	Tooltip: Treffer sammeln Ritualpunkte für den Großen Regentanz mit Starkregen und Quellen; regulärer Tintenschaden -10%
+	Origin: Bei großer Dürre errichteten die Ahnen Altäre, tanzten zu Trommeln und erflehten den Regen – das Ritual des Wu-Yu. Der Schirm dient als Mittler, der strömende Wolkenbruch als Antwort von Himmel und Erde
+	Power: „Großer Regentanz“: Treffer sammeln Ritualpunkte bis zur automatischen Auslösung des 10 Sekunden währenden „Großen Regentanzes“: Regenintervall halbiert, Tropfenschaden +15%, alle Tropfen bilden Lachen, alle Quellen brechen aus; beim Verstreichen schießen drei Quellen unter dem Schirm empor
+	Burden: Außerhalb des Großen Regentanzes ist jeglicher Tintenschaden um 10% verringert
 }

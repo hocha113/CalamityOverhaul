@@ -1,422 +1,422 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
-	Tooltip: Wounded foes take far more, and a personal kill refunds stance; weapon damage -2%
-	Origin: The night of the clan's test cut, this blade took the head and the beard beneath the chin in one stroke — the whiskers were found still clinging to the edge. The old name Higekiri, the Beard-Cutter, was earned that night
+	Tooltip: Massively increases damage against wounded foes, personal execution refunds stance; weapon damage -2%
+	Origin: The night of the Minamoto clan's test cut, this blade took the criminal's head and the beard beneath the chin in a single stroke. The name Higekiri began that night
 	Power:
 		'''
-		Beard-Cutter: once a foe drops below 35% life, hits from the blade itself start scaling with the wound
-		The thinner its life, the bigger the bonus: up to +60% on regular foes, up to +45% on bosses
-		Finishing it yourself also refunds 8 stance, once per action
+		"Beard-Cutter": direct blade hits deal scaling damage against targets below 35% life, scaling higher as life depletes
+		Deals up to +60% damage to regular enemies, and up to +45% damage to bosses
+		If the strike slays the target directly, refunds 8 stance (at most once per action)
 		'''
-	Burden: Weapon damage -2%. While a foe is still healthy, this edge is duller than the original name
+	Burden: Weapon base damage reduced by 2%
 }
 
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
-	Tooltip: The original inscription. Nothing granted, nothing charged
-	Origin: Watanabe no Tsuna carried it at the bridge of Ichijo-Modoribashi and cut an oni's arm clean off; the demon fled and never dared return for it. A blade that had cut an oni was named Onikiri for the feat, and the name has stayed nailed to the tang ever since
-	Power: The original inscription. Everything this blade already has stays exactly as it is
+	Tooltip: Original inscription, preserves Onikiri's baseline attributes without bonus or penalty
+	Origin: Watanabe no Tsuna wielded this blade at the bridge of Ichijo-Modoribashi and severed an oni's arm, driving it away in agony. The demon-slaying blade received the inscription Onikiri, carved deep into the tang across the ages
+	Power: Preserves all baseline properties of Onikiri without additional bonuses or effects
 	Burden: None
 }
 
 OniMeiRubbingShishinoko: {
 	DisplayName: Shishi-no-ko
-	Tooltip: Land all five beats and the fifth adds two crossing waves; beat interval +2%
-	Origin: One night, left by its master's pillow, the blade roared on its own — a lion's cry, heard through the whole house. The master renamed it Shishi-no-ko, the Lion's Cub, and set the name in gold inlay to give that one roar its due
+	Tooltip: Completing the full five-beat combo adds crossing blade waves on the finisher; combo interval +2%
+	Origin: Legend tells this blade once rested by the lord's pillow, roaring like a lion in the dead of night and shaking the estate. Astounded by its power, the master inlaid its name in gold onto the tang, renaming it Shishi-no-ko
 	Power:
 		'''
-		Lion's Roar: run all five combo beats through without a dash or a big art cutting in, and the fifth beat closes like a lion's jaws
-		Two waves cross out of it, each for 22% of a blade hit
+		"Lion's Roar": completing the full five-beat basic combo without interruption by Flash Step or arts
+		The fifth beat releases two crossing slash waves, each dealing damage equal to 22% of weapon base damage
 		'''
-	Burden: Combo beat interval +2%. A roar has to be drawn in first, so the blade runs a touch slower
+	Burden: Basic combo attack interval extended by 2%
 }
 
 OniMeiRubbingTomokiri: {
 	DisplayName: Tomokiri
-	Tooltip: Dash-cancelling a combo leaves a Guilt slash behind; damage taken +6% while held
-	Origin: Two treasured blades of the clan were tested edge against edge, and this one cut its companion clean in two. The fault was chiseled in as its name — Tomokiri, the Friend-Cutter — and its temper has run violent ever since
+	Tooltip: Flash Step cancelling a combo leaves a delayed echo slash in place; damage taken +6% while held and stacks dash vigor cost
+	Origin: Two treasured Minamoto blades were tested edge against edge; this blade's edge proved too sharp, cleaving its companion clean in two. Renamed Tomokiri for slaying its fellow blade, its temperament grew ever more violent
 	Power:
 		'''
-		Guilt-Echo: when a Kamui flash step cuts your combo short, the interrupted swing stays behind
-		It bites down on its own a moment later for 35% of a blade hit
+		"Guilt Echo": using Kamui Flash Step to cancel the current combo leaves the interrupted swing behind as an echo
+		After a short delay it strikes in place, dealing damage equal to 35% of weapon base damage
 		'''
 	Burden:
 		'''
-		While you hold this blade, damage you take is +6%
-		Every echo adds one layer of Guilt, up to three, and each layer makes your next dash cost 4 more vigor
-		Land the Zanshin strike after a dash and the whole debt is paid off at once
+		Damage taken while holding this blade increased by 6%
+		Each Guilt Echo stacks 1 layer of "Guilt" (up to 3), each layer making the next Flash Step cost 4 more vigor
+		Landing a follow-up Zanshin strike after a dash clears all Guilt
 		'''
 }
 
 OniMeiRubbingKazehi: {
 	DisplayName: Kaze-hi
-	Tooltip: Dashes cost 15% less vigor and Sakura Flight 20% less; ink brand damage -20%
-	Origin: The edge-setter cut this groove long and straight, calling it a lane left open for the wind. Swing, and the wind arrives first — by the time you hear it, the blade is already back
-	Power: Wind-Rider: Kamui flash step vigor cost -15%, Sakura Flight drain -20%
-	Burden: Ink brands left by dashes deal -20% damage. This groove was cut for lightness, not for slaughter
+	Tooltip: Greatly reduces vigor cost of Kamui Flash Step and Sakura Flight; ink brand explosion damage -20%
+	Origin: The swordsmith carved a long, straight groove into the blade to guide wind along the steel. As it swings the wind arrives first, dying down just as the edge returns to its sheath
+	Power: "Wind-Rider": Kamui Flash Step vigor cost reduced by 15%, Sakura Flight vigor drain rate reduced by 20%
+	Burden: Explosion damage of ink brands left by Kamui Flash Step reduced by 20%
 }
 
 OniMeiRubbingChihi: {
 	DisplayName: Chi-hi
-	Tooltip: Landing hits gives vigor back; natural regen -35%
-	Origin: Other grooves are opened to lighten the blade; not this one. The edge-setter was blunt when he handed the sword over: this channel is for blood — the faster it runs, the faster your breath comes back
+	Tooltip: Blade hits grant extra vigor; natural vigor recovery greatly slowed and recovery delay increased
+	Origin: The blood groove carved into the steel is deep and resolute. The smith declared upon completion that this channel is cut for warm blood: the more it bathes in blood, the swifter the wielder's breath returns
 	Power:
 		'''
-		Bloodletting: the first hit of each combo beat returns 1 extra vigor
-		Every Zanshin strike after a dash returns 4 extra
+		"Bloodflow": the first hit of each basic combo beat restores 1 extra vigor
+		Zanshin strikes following a Kamui Flash Step restore 4 extra vigor on hit
 		'''
-	Burden: Natural regen -35%, and you wait 0.3s longer before it starts back up after spending. No blood on the edge, little breath returned
+	Burden: Natural vigor recovery speed reduced by 35%, skills consuming vigor require an additional 0.3s delay before natural recovery begins
 }
 
 OniMeiRubbingFudo: {
 	DisplayName: Fudo
-	Tooltip: Take a hit mid-art and spend stance to soften it; stance gain -15%
-	Origin: The carver followed the brushwork of the seed syllable Kan and brought the Immovable One, flames at his back, onto the side of the blade. This deity's whole office is steadiness: whatever comes, he sits unmoved
+	Tooltip: Taking hits during uninterruptible art animations consumes stance to heavily reduce damage; stance gain -15%
+	Origin: The carver chiseled the seed syllable "Kan" into the steel, reverently inscribing Fudo Myoo backed by blazing flames. Taken from the Immovable One's vow: through raging storms, sitting unmoved as a mountain
 	Power:
 		'''
-		Immovable: get hit during a Zanshin strike, Annihilating Flash, or Finale Slash, the arts you cannot pull out of, and the Immovable One takes it for you
-		It spends 20 stance, leaves that hit at 65% damage and 25% knockback, then rests 2.5s
+		"Immovable Guard": taking damage during the locked animations of Zanshin strike, Annihilating Flash, or Finale Slash
+		Consumes 20 stance to reduce damage taken to 65% and knockback to 25% (2.5-second cooldown)
 		'''
-	Burden: Everyday stance gain -15%, since the guarding strength is skimmed off your build-up. Dismemberment backlash is never shielded
+	Burden: Standard stance gain speed reduced by 15%, cannot guard against dismemberment self-damage
 }
 
 OniMeiRubbingKurikara: {
 	DisplayName: Kurikara
-	Tooltip: An execution banks three dragonfire layers, one spent per full combo; vigor cap -10%
-	Origin: Carved on the blade is Kurikara the dragon king: a black dragon coiled around a sword, jaws open to swallow the point. It is an old subject of blade carving, with gold still set in the seams of the scales
+	Tooltip: Executions grant three stacks of dragonfire, combo finisher consumes dragonfire for a coiling slash; max vigor -10%
+	Origin: The blade is carved with the aspect of Kurikara the Dragon King: a black dragon coiled around a sacred sword, jaws agape to swallow the tip. Gold inlay gleams in the scales, bearing Buddhist wrath against evil
 	Power:
 		'''
-		Dragon-Coil: after an execution the blade lights three layers of dragonfire, good for ten seconds
-		Every time you finish a full five-beat combo, the fifth beat burns one layer into a coiling slash for 50% of a blade hit
+		"Dragonfire Loop": successfully executing a foe grants 3 stacks of dragonfire lasting 10s
+		Completing a full five-beat basic combo consumes 1 stack to unleash a forward coiling slash, dealing 50% of weapon base damage
 		'''
-	Burden: Vigor cap -10%. Where the dragon coils, the breath runs narrow
+	Burden: Max vigor reduced by 10%
 }
 
 OniMeiRubbingTessetsu: {
 	DisplayName: Tessetsu
-	Tooltip: First hit of each beat deals +25% to steel and machines; weapon damage -10%
-	Origin: Someone inspected the blade and sneered: big name, edge like a length of raw iron. The smith took no offense and chiseled the heckle into the tang as it was — raw iron, then; iron against iron shows the true work
-	Power: Iron-Cut: the first hit of each combo beat deals +25% damage to steel and machine foes, the ones that throw sparks when you cut them
-	Burden: Weapon damage -10%. On flesh it really does feel like a length of dull iron
+	Tooltip: First hit of each combo beat deals +25% damage to mechanical and metal foes; regular weapon damage -10%
+	Origin: A connoisseur once sneered at this blade, mocking its hollow reputation and dull color like raw iron. The smith took no offense, chiseling the mockery straight into the tang: raw iron shows its true worth when shattering steel
+	Power: "Iron-Cut": the first hit of each basic combo beat deals +25% damage to foes that spark upon taking damage, such as machines and metal entities
+	Burden: Weapon base damage reduced by 10%
 }
 
 OniMeiRubbingKyushu: {
 	DisplayName: Kyushu
-	Tooltip: Heads only, and wounded heads harder than Higekiri manages; weapon damage -3%
-	Origin: Some blades take a new name for every fine head they cut, and enjoy the parade each time. This inscription's bearer wanted none of it: heads fall as before, the name stays as before — a blade that cuts clean needs no new name to frighten anyone
+	Tooltip: Massive execution damage scaling strictly against heads or standalone targets; regular weapon damage -3%
+	Origin: In ancient times many prized blades changed their names to boast of slaying generals. This master eschewed such vanity: heads fall as before, the name stays as before; true edges need no hollow titles for reverence
 	Power:
 		'''
-		Head-Hunt: the bonus only counts heads, or foes that have no separate segments to begin with
-		Once it drops below 35% life your hits start scaling with the wound, and the thinner its life the bigger the bonus
-		Up to +85% on regular foes, up to +60% on bosses
+		"Head-Hunt": landing direct hits on enemy heads or non-segmented standalone targets below 35% life deals massive damage scaling with missing life
+		Deals up to +85% damage to regular enemies, and up to +60% damage to bosses
 		'''
-	Burden: Weapon damage -3%. Bodies, tails, and other segments do not count as a head
+	Burden: Weapon base damage reduced by 3%, ineffective against body or tail segments of enemies
 }
 
 OniMeiRubbingIkiai: {
 	DisplayName: Ikiai
-	Tooltip: A full combo's fifth beat throws a sword arc along your aim; beat interval +4%
-	Origin: Old swordsmen say that in a long standoff the two sides' breathing locks together, and whoever closes that breath first lands first. This inscription records the craft: hold it in, match the beat, drop the blade
-	Power: Breath-Wave: finish a full five-beat combo and the fifth beat throws a curved sword arc along your aim for 55% of a blade hit, cutting up to three foes before it breaks up
-	Burden: Combo beat interval +4%
+	Tooltip: Five-beat combo finisher fires a piercing sword beam toward the cursor; combo attack interval +4%
+	Origin: Swordsmen say that during standoffs, breath locks together between duelists; whoever matches breath first strikes first. This inscription records that very discipline
+	Power: "Breath": completing the five-beat basic combo fires a crescent sword wave toward the cursor on the fifth beat, dealing 55% of weapon base damage, piercing up to 3 enemies
+	Burden: Basic combo attack interval extended by 4%
 }
 
 OniMeiRubbingKyoko: {
 	DisplayName: Kyoko
-	Tooltip: Back off to bank a cut, then close in and it lands harder; hammering up close blurs your focus
-	Origin: A blade tester roared into an empty valley and no echo came back — with no one around, the whole breath pressed itself back into the blade. This carving records that pent-up cry
+	Tooltip: Stepping back banks force for massive melee damage, slows nearby foes when idle; rapid point-blank spam causes brief blur
+	Origin: A blade tester bellowed into a desolate gorge, met with utter silence. In the empty expanse, that roaring vitality coiled and stored itself within the steel
 	Power:
 		'''
-		Hollow-Roar: keep 16 tiles clear of enemies for 1.5s and the blade banks a cut for you
-		Your next hit within 16 tiles deals +25%; hits landed further out do not spend it, so the banked cut keeps
-		When the blade idles it rings on its own: 1.5s without landing a hit, or with nothing near you, it slows foes within 20 tiles for 0.4s every 1.5s
+		"Hollow Roar": remaining outside 16 tiles of enemies for 1.5s stores force
+		Your first hit within 16 tiles after storing force deals +25% damage (hits landed further away do not consume this effect)
+		When no enemies are near or no hits are landed for 1.5s, slows enemies within 20 tiles for 0.4s every 1.5s
 		'''
-	Burden: Four close-range hits inside 0.6s blur your focus for 0.4s, and close-range damage drops 5% for that window
+	Burden: Landing 4 point-blank hits within 0.6s causes 0.4s of blurred focus, reducing point-blank damage by 5% during the blur
 }
 
 OniMeiRubbingKarikiri: {
 	DisplayName: Karikiri
-	Tooltip: A dash leaves a decoy that eats one hit for you; 4s before you get another
-	Origin: A student copied his master's stance ten parts in ten, and the master gave one verdict: too alike — alike enough to read false at a glance. This inscription records that false body: however well it stands, it is only a shadow that takes the blade in your stead
+	Tooltip: Flash Step leaves a decoy nullifying one hit completely; damage taken increased while decoy stands or after it breaks
+	Origin: A student copied his master's footwork to perfection, yet the master only sighed that it was too alike to be real. This inscription becomes a phantom form, taking a blow in place of the true body
 	Power:
 		'''
-		False Body: starting a Kamui flash step leaves a frozen-pose decoy standing for 1.5s
-		Anything that comes at you in that window, foe or projectile, is taken by the decoy instead
-		Once it has spent itself, you wait 4s before you can leave another
+		"False Body": starting a Kamui Flash Step leaves a static decoy lasting 1.5s in place
+		While the decoy exists, taking damage from any enemy or projectile is completely nullified by the decoy (4-second cooldown)
 		'''
 	Burden:
 		'''
-		While the decoy stands, damage taken and dash cost are both +12%
-		For 1s after it shatters, damage taken is +18%
-		A decoy that simply runs out of time does not count as shattered
+		While the decoy stands, damage taken and dash vigor cost are both increased by 12%
+		For 1s after the decoy is shattered, damage taken is increased by 18% (natural expiration incurs no penalty)
 		'''
 }
 
 OniMeiRubbingMokukiri: {
 	DisplayName: Mokukiri
-	Tooltip: Finish a paid normal dash and the next cut deals +35%; a whiff spends it too
-	Origin: The instant a flash step runs its course, everything around falls quiet. Old swordsmen know the next cut out of that silence is the heaviest. The name says it plainly: the silent cut
-	Power: Silent-Kill: for 0.75s after a paid normal flash step runs its course, your next combo swing or Zanshin strike deals +35%
-	Burden: A whiff spends it just the same, and dashing again clears it. Free execution dashes never bank it
+	Tooltip: Finishing a standard dash briefly empowers the next strike; whiffing still consumes the buff
+	Origin: The instant a flash step settles, heaven and earth seem to fall into quiet. Seasoned swordsmen know that when killing intent is veiled in silence, the strike lands heaviest
+	Power: "Silent Kill": for 0.75s after completing a standard Kamui Flash Step, the next basic combo swing or Zanshin strike deals +35% damage
+	Burden: Whiffing the empowered strike still consumes the state, and dashing again clears the bonus; free dashes from executions cannot trigger Silent Kill
 }
 
 OniMeiRubbingKumokiri: {
 	DisplayName: Kumo-kiri
-	Tooltip: Three cuts pin a web; closing it cuts everything inside; regen -25% while anchors stand
-	Origin: Minamoto no Raiko lay sick in bed when a tsuchigumo, disguised as a priest, came to bind him in silk. He snatched up the blade, cut the threads and wounded the beast, and the next day followed the blood trail and destroyed its nest. The blade has been called Kumo-kiri, the Spider-Cutter, ever since
+	Tooltip: Blade hits pin three silk anchors to close a web dealing damage and binding foes; natural recovery slowed while web is woven
+	Origin: Minamoto no Raiko lay bedridden with illness when a tsuchigumo disguised as a monk crept in to bind him in silk. Raiko drew his blade, severed the threads, and tracked the blood to eradicate its nest, renaming the blade Kumokiri
 	Power:
 		'''
-		Ink-Silk: when the blade itself lands a hit, it pins a silk anchor at the cut point for 4s
-		Spread them out: the same foe gives no second anchor within 0.4s, and two anchors need roughly six tiles between them
-		The third anchor strings an ink-silk triangle that sags, then snaps toward its centre, cutting every foe it sweeps for 90% of a blade hit and binding them 1s
-		After it closes, 1.5s pass before you can weave again
+		"Ink Silk": direct blade hits pin an ink silk anchor lasting 4s (the same enemy cannot be pinned again within 0.4s, adjacent anchors require roughly 6 tiles spacing)
+		Pinning 3 anchors connects a triangular ink web that snaps toward the center, dealing 90% of weapon base damage to all trapped enemies and immobilizing them for 1s
+		After closing the web, 1.5s cooldown is required before pinning anchors again
 		'''
-	Burden: While any anchor still stands, natural regen -25%. An anchor left to expire wastes the cut that set it
-	DeedHint: Slay thirty arachnids — spiders, blood crawlers, sand scorpions, any eight-legged wall-crawler counts. Cut down enough and the blade learns that stench by itself
+	Burden: While unclosed silk anchors remain on the field, natural vigor recovery speed is reduced by 25%
+	DeedHint: Slay 30 spiders, scorpions, or arachnid creatures while holding Onikiri
 }
 
 OniMeiRubbingOnimaru: {
 	DisplayName: Oni-maru
-	Tooltip: Stand still and the blade flies off to cut on its own; you have no blade while it is out
-	Origin: Onimaru Kunitsuna, of the Five Great Swords. Its master was tormented night after night by a small oni in his dreams, until one night the blade toppled from its stand on its own and severed the oni head carved on the brazier's leg — the nightmares ended on the spot. The man does not move; the blade moves by itself
+	Tooltip: Standing still launches the blade to strike nearby foes; conventional blade handling disabled while detached
+	Origin: Onimaru Kunitsuna, one of the Five Great Swords. Legend tells Hojo Tokimasa was haunted nightly by a demon until the blade toppled onto a brazier on its own, severing the carved demon head and banishing the evil forever
 	Power:
 		'''
-		Self-Cut: stand nearly still for 1s and the blade goes on standby
-		From then on it spends 10 of your vigor every 1.5s to fly at a foe within 40 tiles, cut for 140% of a blade hit, and return to the sheath
+		"Self-Cut": standing still with the blade for 1s enters standby
+		Every 1.5s during standby, consumes 10 vigor to fly toward an enemy within 40 tiles, delivering a strike dealing 140% of weapon base damage before returning
 		'''
-	Burden: The blade is out of your hands for the whole flight, so no combo, no flash step, no Sakura Flight. With nothing nearby it will not launch
-	DeedHint: Hold the blade and stand dead still for ten seconds, without stepping away even when a hit lands — hold your ground, and the blade moves for you that once
+	Burden: While the blade is flying, basic combos, Kamui Flash Step, and Sakura Flight cannot be used; will not launch if no valid targets are nearby
+	DeedHint: Stand still while holding Onikiri, take a hit, and maintain standing still for a cumulative 10s
 }
 
 OniMeiRubbingRaikiri: {
 	DisplayName: Rai-kiri
-	Tooltip: The fifth beat and the big arts call lightning under open sky; beat interval +6%, nothing indoors
-	Origin: Tachibana Dosetsu was sheltering under a tree when a bolt of lightning came down on his head; he drew and cut back at it, and lived. The blade has been called Raikiri, the Thunder-Cutter, ever since
+	Tooltip: Fifth beat and arts call heavenly lightning under open sky; combo interval +6%, cannot call lightning under ceilings
+	Origin: Tachibana Dosetsu sheltered from rain beneath a tree when lightning struck; Dosetsu drew his blade and cleaved the lightning bolt, miraculously surviving. His sword was renamed Raikiri, renowned across all provinces
 	Power:
 		'''
-		Thunder-Call: when the fifth beat, a Zanshin strike, Annihilating Flash, or Finale Slash lands and there is open sky overhead, a bolt drops from the top of the world
-		The bolt deals 70% of a blade hit, and in a thunderstorm one strike can call up to three
+		"Thunder-Cut": when the fifth combo beat, Zanshin strike, Annihilating Flash, or Finale Slash hits an enemy under an open sky, calls down a thunder pillar onto the target
+		The lightning pillar deals 70% of weapon base damage; in thunderstorms, up to 3 lightning pillars are called down per strike
 		'''
-	Burden: Combo beat interval +6%, sunny days included, because the wind-up is paid either way. Blocked overhead or underground, no bolt falls
-	DeedHint: Slay a boss-tier foe in a storm under open sky, and the edge learns the bolt
+	Burden: Basic combo attack interval extended by 6% (active in clear weather too); blocked overhead or underground cannot call lightning
+	DeedHint: Slay any boss while holding Onikiri under an open sky during a thunderstorm
 }
 
 OniMeiRubbingNuekiri: {
 	DisplayName: Nue-kiri
-	Tooltip: Finish a combo airborne and the fifth beat becomes a ground slam; no dashing for 0.7s after landing
-	Origin: A nue coiled over the palace roof at night, and Minamoto no Yorimasa's arrow brought it down out of the clouds. The finishing cut, dealt the instant it hit the ground, drove straight down along the fall — and that plunge is what this inscription remembers
+	Tooltip: Completing a five-beat combo mid-air turns the finisher into a ground slam dragging foes; cannot dash briefly after landing
+	Origin: Ominous clouds gathered over the palace as the beast Nue wailed in the night. Minamoto no Yorimasa drew his bow to fell the beast, drawing his blade downward in its fall to slay it, taking that very plunging force
 	Power:
 		'''
-		Nue-Dive: finish a full combo at least three tiles off the ground and the fifth beat stops swinging sideways, diving at the floor instead
-		The landing opens a shock ring about 12 tiles across for 120% of a blade hit, and drags nearby foes toward the impact
+		"Nue-Dive": completing the basic combo at least 3 tiles off the ground turns the fifth beat into a powerful groundward dive
+		The impact generates a shockwave roughly 12 tiles in radius, dealing 120% of weapon base damage and dragging nearby foes toward the impact
 		'''
-	Burden: No flash steps for about 0.7s after you land. Fought close to the ground, the fifth beat stays an ordinary fifth beat
-	DeedHint: At night, rise thirty tiles above the ground and slay a flying foe, and the blade learns that plunge
+	Burden: Cannot use Kamui Flash Step for about 0.7s after landing; ground swings retain the standard horizontal fifth beat
+	DeedHint: At night and over 30 tiles above ground, slay a flying enemy while holding Onikiri
 }
 
 OniMeiRubbingKamihi: {
 	DisplayName: Kami-hi
-	Tooltip: Dashing through a foe drops a paper cutout; cutting the paper hits the foe; dashes cost more while paper stands
-	Origin: A master paper-mounter's cut leaves paper as paper and shadow as shadow. This groove studied that hand: passing through a foe, it trims their silhouette off and leaves it standing where it was — while the paper stands, the account can be settled against it
+	Tooltip: Dashing through enemies leaves paper effigies; striking effigies transmits damage and vulnerability; dash cost +12% while paper stands
+	Origin: A master paper-mounter cuts with divine precision, separating form from shadow in one stroke. This groove learns the art of peeling form, shearing the enemy's shadow into the Omote world to cut paper as flesh
 	Power:
 		'''
-		Paper-Effigy: dashing through a foe leaves a paper cutout of it where you land, good for 7s, two on the field at most
-		Cutting that paper deals 80% of a blade hit straight to the foe itself
-		It also opens a wound on the foe for 1.5s, and your hits land 12% harder while that wound is open
+		"Paper-Effigy": Kamui Flash Step passing through an enemy leaves an effigy lasting 7s at the landing point (up to 2 effigies simultaneously)
+		Attacking the effigy deals 80% of weapon base damage, transmitting the full damage directly to the true body
+		Inflicts a 1.5s wounded state on the true body, during which it takes 12% increased damage from Onikiri
 		'''
-	Burden: Dash vigor cost +12% while any effigy stands
-	DeedHint: Sever twenty omokage paper silhouettes in the Ura world, and the hand learns how paper is cut
+	Burden: While paper effigies exist on the field, Kamui Flash Step vigor cost is increased by 12%
+	DeedHint: In the Ura ghost domain, sever 20 omokage paper effigies while holding Onikiri
 }
 
 OniMeiRubbingSorahi: {
 	DisplayName: Sora-hi
-	Tooltip: One extra dash off the ground and double regen; the first 0.75s after landing gives nothing back
-	Origin: The master who opened this groove kept an odd theory: breath is like people — the moment its feet touch the ground, it turns lazy. So he cut the blade featherlight, to keep you in the air a little longer; while you float, the breath comes looking for you
+	Tooltip: Natural recovery doubled and grants an extra air dash while airborne; recovery pauses briefly upon landing
+	Origin: The smith kept an eccentric theory: human vigor turns sluggish the moment feet touch the earth. Only by crafting the blade featherlight to leap through the air can one align with heaven's wind and draw vitality
 	Power:
 		'''
-		Air-Groove: natural regen doubles while both feet are off the ground, and you get one extra dash
-		An air dash that runs out leaves you hovering at its endpoint for half a second
+		"Air-Groove": natural vigor recovery speed is doubled while airborne, granting one additional air dash
+		Completing an air dash leaves you hovering at the endpoint for 0.5s
 		'''
-	Burden: Natural regen drops to zero for 0.75s after you land, and dashing on the ground costs 10% more vigor
-	DeedHint: Stay off the ground for fifteen straight seconds and land at least five blade hits meanwhile, and the groove learns to float
+	Burden: Natural vigor recovery pauses entirely for 0.75s after landing; ground Flash Step vigor cost increased by 10%
+	DeedHint: Remain airborne continuously for 15s, landing at least 5 hits with Onikiri during the flight
 }
 
 OniMeiRubbingKagamihi: {
 	DisplayName: Kagami-hi
-	Tooltip: A dash endpoint stands a paper mirror that copies your next cut; weapon damage -5%
-	Origin: Mirror polishers all know it: the figure in the glass looks synchronized, but always runs half a beat behind. The one who opened this groove wanted exactly that half beat — let the one in the mirror deal your follow-up cut. Late, but it arrives
+	Tooltip: Flash Step endpoint erects a paper mirror replica copying your next strike; weapon base damage -5%
+	Origin: Mirror polishers know the reflection seems synchronized yet carries a faint delay. The groove carver seized that very delay, letting the mirror phantom swing a fraction behind
 	Power:
 		'''
-		Mirror-Echo: the endpoint of a Kamui flash step stands a paper mirror for 2s
-		The next time you cut, the figure in the mirror repeats that same cut for 45% of a blade hit, then shatters
+		"Mirror Echo": Kamui Flash Step endpoint erects a paper mirror phantom lasting 2s
+		When you swing your next blade strike, the phantom synchronously copies the cut and shatters, dealing 45% of weapon base damage
 		'''
-	Burden: Weapon damage -5%. The copy swings from wherever the mirror stands, so whether it connects is on you
-	DeedHint: Finish a mimic with the Zanshin strike — Calamity's counterfeit counts among the imitators too
+	Burden: Weapon base damage reduced by 5%; the replicated strike swings from the mirror's position and orientation, dependent on placement
+	DeedHint: Slay a Mimic using the Zanshin strike (Calamity Clone's counterfeit chests also count)
 }
 
 OniMeiRubbingAmahi: {
 	DisplayName: Ama-hi
-	Tooltip: Sakura Flight drips ink that pools and binds where it lands; Sakura drain +15%
-	Origin: The gutter under the eaves is also called an amahi, a rain channel. The edge-setter cut this groove with the eaves in mind: rain you catch should not run off for nothing — fly on, and let it drip onto whoever waits under the blade
+	Tooltip: Sakura Flight drops ink rain that pools into binding mire; Sakura Flight vigor cost +15%
+	Origin: Gutters catching rain beneath eaves share this name. The smith fashioned the groove after roof channels: caught rain must not fall in vain, dripping down upon the foes waiting beneath the blade
 	Power:
 		'''
-		Ink-Rain: while cruising in Sakura Flight, a bead of ink drops every 0.1s for 12% of a blade hit
-		Beads spread into puddles where they land, and foes that step in are bound for half a second
+		"Ink Rain": cruising in Sakura Flight drops an ink bead dealing 12% of weapon base damage every 0.1s
+		Ink beads spread into puddles upon landing, immobilizing enemies entering the mire for 0.5s
 		'''
-	Burden: Sakura Flight drain +15%. Carrying rain the whole way costs
-	DeedHint: Fly Sakura Flight through the rain for ten straight seconds; petals must soak through before water will stay
+	Burden: Sakura Flight vigor drain rate increased by 15%
+	DeedHint: Cruise continuously in Sakura Flight during rain for 10s
 }
 
 OniMeiRubbingTsuzurihi: {
 	DisplayName: Tsuzuri-hi
-	Tooltip: Ink brands from one dash cut lines between each other; a lone brand deals -30%
-	Origin: Tsuzuri is the bookbinder's stitch: one needle, one hole, and when the thread pulls tight the loose pages become a book. The one who opened this groove uses ink brands for stitch holes: string the marks together, and they close into a line
-	Power: Mark-Stitch: ink brands from the same dash all go off together and cut lines between one another, each line for 35% of a blade hit
-	Burden: A lone ink brand deals -30%. Catch only one foe per dash and this groove is a pure loss
-	DeedHint: Pierce six different foes in one dash, and the marks stitch
+	Tooltip: Ink brands from a single dash detonate and connect lines; single ink brand base damage -30%
+	Origin: Bookbinders stitch loose leaves with needle and thread, pulling tight to bind loose sheets into a volume. This groove treats ink brands as stitches, closing the circle into a killing array
+	Power: "Mark-Stitch": multiple ink brands left from a single Kamui Flash Step detonate together, forming intersecting cutting lines between one another, each dealing 35% of weapon base damage
+	Burden: Single ink brand base damage reduced by 30% (if a dash passes through only one target, overall damage is reduced)
+	DeedHint: Pass through at least 6 distinct enemies in a single Kamui Flash Step
 }
 
 OniMeiRubbingBonsho: {
 	DisplayName: Bonsho
-	Tooltip: Hold full stance without a Finale and the blade tolls itself; half your stance buys a ring of control
-	Origin: A temple bell waits for someone to strike it; the one carved on this blade does not. The carver put it plainly: build your stance full and sit on it, and the bell will let it go for you
+	Tooltip: Full stance without releasing executions automatically tolls the bell; costs half stance to replace the execution
+	Origin: Temple bells require a striker to ring, yet the ancient bell carved on this steel waits for no external hand. Building full momentum without release causes the bell to toll of itself, sounding alarm across the wild
 	Power:
 		'''
-		Bell-Toll: hold full stance for 3s without releasing Finale Slash and the blade tolls on its own
-		Foes within 30 tiles each take 60% of a blade hit and are bound 1.5s, and your stance drops to 50
+		"Bell-Toll": remaining at full stance for 3s without releasing Finale Slash causes the blade to toll on its own
+		Releases a shockwave dealing 60% of weapon base damage to all enemies within 30 tiles and immobilizing them for 1.5s, dropping stance to 50
 		'''
-	Burden: Once the bell rings, that Finale is gone. Full stance forces you to pick one
-	DeedHint: Bring a boss down without using Annihilating Flash or Finale Slash the whole fight — knock the bell down just like that
+	Burden: The toll directly consumes full stance and forfeits the current Finale Slash opportunity
+	DeedHint: Slay any boss throughout the entire battle without ever using Annihilating Flash or Finale Slash
 }
 
 OniMeiRubbingHannya: {
 	DisplayName: Hannya
-	Tooltip: Drop low and the mask turns demon: heavier hits and lifesteal; frail while it is out, duller before it turns
-	Origin: The hannya mask of Noh plays the instant a woman's grudge turns her face into a demon's. The carver set that mask into the steel: push a person to the very edge, and the face turns over on its own
+	Tooltip: Low life manifests the demon face for extra damage and lifesteal; damage taken increased during demon face, normal damage -4%
+	Origin: The Noh Hannya mask captures the moment a woman's grief turns human features into a demon. Carved on the blade, it signifies that when cornered at death's door, one's nature inverts into an asura of wrath
 	Power:
 		'''
-		Mask-Shift: below 35% of your own life the mask turns demon, blade damage +20%, and every hit restores 0.5% of your max life
-		While the demon face is out, every third hit brings up a mask that bites for 50% of a blade hit
+		"Mask-Shift": dropping below 35% life manifests the furious demon mask: blade damage +20%, each hit restores 0.5% max life
+		Landing 3 hits during the demon mask manifests a ghost face that bites the target for 50% of weapon base damage
 		'''
-	Burden: Damage taken +15% while the demon face is out. In maiden form, weapon damage -4%
-	DeedHint: Slay a boss while your own life sits below one tenth, and the mask can turn
+	Burden: Damage taken increased by 15% during demon mask; while above 35% life in normal form, weapon base damage is reduced by 4%
+	DeedHint: Slay any boss while holding Onikiri with your own life sitting below 10%
 }
 
 OniMeiRubbingKaresansui: {
 	DisplayName: Karesansui
-	Tooltip: Plant your feet to rake a sand garden that stays put, cutting and feeding stance
-	Origin: A garden master raises mountains and seas with nothing but sand and stone — not one drop of water. The carver cut that raked pattern into the blade, saying that a swordsman who stands firm enough can rake a sand garden underfoot with his blade's edge
+	Tooltip: Standing still rakes a persistent sand garden that cuts foes and speeds stance gain; moving cancels charge
+	Origin: Garden masters rake boundless waves from fine sand without water. The carver channeled that spirit into the blade: only those who stand in calm concentration can furrow a garden of stillness with sword-intent
 	Power:
 		'''
-		Sand-Garden: stand nearly still for 1.5s and a sand field about 20 tiles across is raked at your feet, lasting 5s
-		The field cuts every half second for 18% of a blade hit
-		While you stand inside your own field, stance gain +30%
+		"Sand Garden": standing still for 1.5s rakes a sand garden field 20 tiles in radius lasting 5s
+		Deals 18% of weapon base damage to enemies inside every 0.5s
+		Standing within your own sand garden increases stance gain speed by 30%
 		'''
-	Burden: You have to plant first, and moving clears what you have built up
-	DeedHint: Hold one spot for thirty seconds of combat without taking a hit, and the sand can be raked
+	Burden: Opening the garden requires remaining still to charge, moving cancels the charge progress
+	DeedHint: Fight continuously for 30s while holding Onikiri without moving or taking any damage
 }
 
 OniMeiRubbingSenju: {
 	DisplayName: Senju
-	Tooltip: Six ghost arms join the Finale Slash freeze; afterwards vigor zeroes and dashing is locked 3s
-	Origin: The Thousand-Armed Kannon offers one hand to each soul it ferries. The carver cut the thousand hands into the blade and set its rule: every one the Finale sends off must have a hand there to receive them
-	Power: Thousand-Arms: during the Finale Slash freeze, six sword-bearing ghost arms rise behind you and cut with it, each for 30% of a blade hit
-	Burden: After the Finale your vigor drops to zero and you cannot flash step for 3s
-	DeedHint: Send off eight different bosses with the Finale Slash, one hand for each name
+	Tooltip: Finale Slash freeze adds six ghost arms striking together; resets vigor to zero and locks dashing for 3s
+	Origin: The Thousand-Armed Kannon extends boundless hands to ferry mortal suffering. The carver inlaid this aspect into the steel, establishing this rule: every soul ferried by the art must be met with a blade in hand
+	Power: "Thousand Arms": during the Finale Slash freeze, six sword-bearing ghost arms rise behind you to strike together, each dealing 30% of weapon base damage
+	Burden: Executing Finale Slash resets vigor to zero, and Kamui Flash Step cannot be used for 3s
+	DeedHint: Slay 8 distinct bosses using Finale Slash while holding Onikiri
 }
 
 OniMeiRubbingKogehi: {
 	DisplayName: Koge-hi
-	Tooltip: Dashes leave up to five burns along the whole path; weapon damage -4%
-	Origin: The master who opened this groove lived by the lava shallows and had seen too many people who never watch their feet. This groove, he said, is cut for stepping clear of the heat: you run through, and the burn stays on the ground behind you — for whoever gives chase
+	Tooltip: Kamui Flash Step leaves scorching ground along its path; weapon base damage -4%
+	Origin: The smith dwelt beside lava shallows, watching those who failed to mind their footing. He opened this fire groove to leap clear, leaving the searing heat behind for pursuers
 	Power:
 		'''
-		Scorch-Trail: a Kamui flash step leaves up to five burns spread along its full path, each burning 1.5s
-		A foe standing in one is scorched every half second for 14% of a blade hit
-		A new burn dropped within two tiles of an old one just refreshes it
+		"Scorch Trail": Kamui Flash Step leaves up to 5 scorching zones lasting 1.5s along its path
+		Enemies stepping into scorched ground take continuous burn damage equal to 14% of weapon base damage every 0.5s
+		New burns overlapping within 2 tiles of older ones simply refresh the duration
 		'''
-	Burden: Weapon damage -4%; make the difference back with the burns your footwork lays down
+	Burden: Weapon base damage reduced by 4%, lost output must be recouped through scorch trails
 }
 
 OniMeiRubbingKanhi: {
 	DisplayName: Kan-hi
-	Tooltip: Let the blade go cold and natural regen runs 2.25x; dash and Sakura costs +8%
-	Origin: A long bench sits by the sword shop's door, and the master rests there listening to the street once the work is done. People must learn to rest, he says: quiet the ears, and the breath returns quicker. This groove is that bench
-	Power: Quiet-Breath: after two seconds without cutting anything, natural regen runs at 2.25x
-	Burden: Dash and Sakura Flight costs +8%. Breath earned in the quiet is repaid in motion
+	Tooltip: Disengaging from combat greatly accelerates natural vigor recovery; Flash Step and Sakura Flight costs +8%
+	Origin: A long bench rests before the sword shop where the smith watches the busy market when resting. In stillness breath is nourished, and this groove captures that tranquil rest
+	Power: "Quiet Breath": after disengaging from combat and landing no hits for 2s, natural vigor recovery speed increases to 2.25x
+	Burden: Kamui Flash Step and Sakura Flight vigor costs both increase by 8%
 }
 
 OniMeiRubbingTodohi: {
 	DisplayName: Todo-hi
-	Tooltip: Hits glue foes down for 0.6s; dashes take 0.1s longer to come back
-	Origin: This groove came out of a strange quench: the edge drags sticky through flesh, and whatever takes the cut stalls a step. The edge-setter never called it a flaw — it is the other one that sticks, not you
-	Power: Ink-Bound: a hit from the blade itself glues the foe down for 0.6s, dropping regular movement to 88% and boss movement to 96%
-	Burden: Dashes take 0.1s longer to come back around. Ink-Bound and Numbed do not stack on the same foe, only the stronger one applies
+	Tooltip: Blade hits bind and slow enemies; Flash Step start has a brief startup delay
+	Origin: A peculiar quench left the edge dragging through flesh, hindering whatever it cuts. The smith took pride in it: what is bound is the struck foe, not the hand wielding the steel
+	Power: "Ink-Bound": direct blade hits slow enemy movement for 0.6s, dropping regular enemies to 88% and bosses to 96%
+	Burden: Kamui Flash Step has an additional 0.1s startup delay; Ink-Bound and Numbed do not stack on the same enemy, only applying the strongest slow
 }
 
 OniMeiRubbingShiorihi: {
 	DisplayName: Shiori-hi
-	Tooltip: Finish one foe and the edge prunes the most wounded one nearby; natural regen -10%
-	Origin: A gardener prunes by one rule: once the shears are out, take the wilted stems in the same pass and spare yourself a second trip. The one who opened this groove used to be a gardener
+	Tooltip: Slaying a foe launches a pruning blade at nearby wounded enemies; natural recovery -10%, whiffed Zanshin penalizes vigor
+	Origin: Gardeners prune foliage with care: wherever the shears move, withered stems nearby are clipped in the same pass. The one who opened this groove followed that craft
 	Power:
 		'''
-		Petal-Prune: when your blade finishes a foe, it looks 15 tiles out from where that foe fell
-		It picks another foe under half life, chases it down, and prunes for 25% of a blade hit
-		Finding nobody starts no cooldown; a successful prune rests 0.75s
+		"Petal-Prune": directly slaying a target searches within 15 tiles for another enemy below 50% life
+		Launches a pruning blade to pursue that target, dealing 25% of weapon base damage (no cooldown if no target is found; 0.75s cooldown on trigger)
 		'''
-	Burden: Natural regen -10%. A Zanshin strike that hits nothing costs 2 extra vigor. Kills made by the pruning blade never set off another
+	Burden:
+		'''
+		Natural vigor recovery speed reduced by 10%
+		Zanshin strike following a dash consumes 2 extra vigor if it whiffs
+		Kills caused by the pruning blade cannot chain into another prune
+		'''
 }
 
 OniMeiRubbingShiohi: {
 	DisplayName: Shio-hi
-	Tooltip: Swing on the tide for vigor and a heavier Zanshin; off-beat combos come out dull
-	Origin: The edge-setter grew up by the sea and whets blades to the rhythm of the tide. The tide rises and falls, he says, and so does a man's breath: a cut made on the rising tide, the sea repays
+	Tooltip: Swinging to the tidal rhythm restores vigor on hit, on-tide Zanshin strikes harder; off-beat combos slightly weakened
+	Origin: The smith grew up by the sea, grinding blades to the rhythm of swelling tides. Tides rise and fall as human breath ebbs and flows; striking on the surge, the sea returns vigor
 	Power:
 		'''
-		Tide-Beat: a tide head runs under the vigor stroke on a 0.8s cycle, and the 0.2s at its crest is the on-tide window
-		Combos started on the tide return 3 vigor on their first hit, and an on-tide Zanshin strike deals +8%
+		"Tide-Beat": a tide marker pulses on a 0.8s cycle below the vigor bar, the 0.2s peak being the on-tide window
+		Basic combos swung within the on-tide window restore 3 extra vigor on first hit; on-tide Zanshin strikes deal +8% damage
 		'''
-	Burden: Off-tide combos deal -3%. The tide is read the moment you press, so catching it on the hit does not count
+	Burden: Basic combos swung off-beat deal 3% reduced damage (judged at the moment the swing key is pressed, not on hit)
 }
 
 OniMeiRubbingShibori: {
 	DisplayName: Shibori
-	Tooltip: Dashing through a foe or eating a hit mid-art numbs whatever touched you; stance gain -15%
-	Origin: A numbed hand must not let go of the grip — that is the first year of sword school. The master who cut this carving turned the lesson around: numb me by one measure, and whatever touched me goes numb by ten
+	Tooltip: Dashing through or taking hits during art animations numbs foes; standard stance gain -15%
+	Origin: Novice swordsmen must endure the ache of numbed wrists. The carver turned the principle around: if I endure one measure of shock, the striking foe shall suffer ten
 	Power:
 		'''
-		Numb-Counter: dashing through a foe numbs it outright
-		Take contact damage during an art you cannot pull out of and you may spend 15 stance to leave that hit at 85% and numb whatever landed it, then rest 1.5s
-		A numbed foe moves slower for 0.75s, down to 90% for regular foes and 98% for bosses, and its contact damage drops 10%
+		"Numb-Counter": Kamui Flash Step passing through an enemy inflicts the "Numbed" state directly
+		Taking contact damage during locked art animations consumes 15 stance to reduce damage to 85% and numb the attacker (1.5s cooldown)
+		Numbed enemies move slower for 0.75s (regular foes down to 90%, bosses to 98%) and deal 10% reduced contact damage
 		'''
-	Burden: Everyday stance gain -15%
+	Burden: Standard stance gain speed reduced by 15%
 }
 
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
-	Tooltip: Hostile projectile damage -12% and knockback -65%; stance gain -15%
-	Origin: Arrows and stones fill a battlefield, and one ringing of the ears is enough to panic a man. The old soldier who cut this inscription left a single line: steady yourself first, stand firm, then move — what flies at you will hurt less
-	Power: Quell: hostile projectiles that hit you deal -12% damage, and their knockback is left at 35%
-	Burden: Stance gain -15%. In a pure melee scrap this carving mostly sits idle
+	Tooltip: Heavily reduces hostile projectile damage and knockback; standard stance gain -15%
+	Origin: Arrows and stones clash before the battle lines, panicking the weak. The veteran who carved this line knew that amid flying arrows, planting one's stance firm cuts the wound in half
+	Power: "Quell": taking damage from hostile projectiles reduces damage by 12% and reduces knockback taken to 35%
+	Burden: Standard stance gain speed reduced by 15%; this carving offers limited benefit in pure close-quarters melee combat
 }
 
 OniMeiRubbingAshidome: {
 	DisplayName: Ashidome
-	Tooltip: Plant for 0.75s and your next big art or fifth beat deals +25%
-	Origin: Every fencing master opens the first lesson the same way: stop swaying on your feet. Planted feet hold strength, and held strength gives the strike its weight. This inscription keeps that first lesson for you
-	Power: Planted-Step: stand nearly still for 0.75s to bank a cut, and your next fifth beat, Zanshin strike, Annihilating Flash, or Finale Slash deals +25%
-	Burden: The bank is spent the moment the art starts, whiff included. Moving clears it
+	Tooltip: Standing still stores force to heavily boost the next fifth beat or art; moving clears charge
+	Origin: A master's first lesson: unsteady footing wastes all craft. Only with firm roots can vigor gather, and gathered vigor unleashed shatters mountains
+	Power: "Planted-Step": standing still for 0.75s stores force, increasing the damage of the next basic combo fifth beat, Zanshin strike, Annihilating Flash, or Finale Slash by 25%
+	Burden: The empowered strike is consumed upon attack, whiffing does not refund; moving immediately clears all stored force
 }
 
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
-	Tooltip: Executions leave one patch of embers on the ground, never more than one; vigor cap -5%
-	Origin: After a forge is banked for the night, the warmth in the chamber keeps till morning. The edge-setter borrowed that rule for the blade: the fire is out, the heat is not
+	Tooltip: Executions leave persistent burning embers at the impact; max vigor -5%, dash cost +10% while embers burn
+	Origin: After the forge fire is banked, embers within the hearth retain warmth throughout the night. The smith borrowed this nature: though flames recede, the searing heat remains
 	Power:
 		'''
-		Ember-Field: an execution leaves a field of embers at the focus, burning 3s
-		The same foe is scorched every 0.75s for 16% of a blade hit
-		There is only ever one field; another execution moves it somewhere new
+		"Ember-Field": successfully executing a foe leaves an ember field lasting 3s at the impact
+		Enemies within the field take burn damage equal to 16% of weapon base damage every 0.75s
+		Only one field can exist at a time; executing again moves the field to the new position
 		'''
-	Burden: Vigor cap -5%. While the embers are still burning, dashes cost 10% more vigor
+	Burden: Max vigor reduced by 5%; while the ember field burns, Kamui Flash Step vigor cost is increased by 10%
 }

@@ -780,138 +780,136 @@ OnikiriTrialQuestLine: {
 	Trial_21: Ténèbres qui se rassemblent
 	TrialSummary_0:
 		'''
-		Il se passe quelque chose dans le ciel, et je ne saurais pas dire quoi
-		On se sent épié, et la lame s'agite aussi
-		Allez voir, puis revenez me dire ce que c'était
-		Ah, et ne restez pas le nez en l'air trop longtemps. Ça fatigue le cou
+		J'ai toujours l'impression que quelque chose épie depuis le ciel, et dans la lame ça s'inquiète aussi
+		Je ne saurais pas dire ce que c'est, monte là-haut jeter un coup d'œil
+		Ne reste pas tout le temps la tête levée en l'air, ça fait mal au cou, reviens tout me raconter une fois le combat fini
 		'''
 	TrialSummary_1:
 		'''
-		Deux tiraillements louches du côté de la terre pourrie, je ne les distingue pas
-		Celui qui sort la tête le premier, c'est celui-là que vous tranchez. Ne les fixez pas tous les deux
-		La lame saura que le goût est faux. Vous partez d'abord
+		Le vent venu de la terre corrompue a une odeur très forte, lourde et fétide, comme si deux choses s'y cachaient
+		Si tu tombes dessus, frappe en premier celle qui saute la première, ne cours pas après les deux à la fois
+		Dès que l'odeur devient louche sors vite le sabre, finis vite pour sortir prendre l'air au plus tôt
 		'''
 	TrialSummary_2:
 		'''
-		Là-bas la souillure s'est agrégée en une masse ; rien que le vent de ça déjà écœure
-		Ne restez pas à regarder. Allez vous en occuper
-		En revenir avec ça réglé passe avant tout le reste
+		Là-dessous, l'air vicié s'est aggloméré en un gros tas, même de loin on le sent tout poisseux
+		Le laisser tranquille ne fera qu'empirer les choses, va donc le disperser à coups de sabre
+		Regarde où tu marches dans la boue, ne va pas revenir couvert de gadoue de la tête aux pieds
 		'''
 	TrialSummary_3:
 		'''
-		On dit qu'une chose se prétend dieu. J'ai presque ri
-		Si les noms s'attrapaient comme ça, qui s'embêterait encore à progresser
-		Allez vérifier. Si elle ose vraiment s'appeler ainsi, démontez-la
-		Hé, ce n'est pas pour prier. Écoutez bien
+		J'ai entendu dire qu'un tas de boue par là-bas se prétendait dieu, ça me fait presque rire
+		Si c'était si facile de se choisir un titre, à quoi bon s'embêter à s'entraîner si dur ?
+		Va voir ce qu'il a réellement dans le ventre, et s'il ne fait que jouer les esprits, perce-le d'un coup de lame
+		Écoute-moi bien, hein : c'est pour le transpercer, ne va pas faire l'andouille et te prosterner devant lui
 		'''
 	TrialSummary_4:
 		'''
-		Devant, ça a l'air bouché, et je ne saurais pas par quoi
-		La route ne passe pas : ouvrez-la
-		Ce que ça fait de l'autre côté, on en parlera à votre retour
+		Plus loin au tréfonds de la terre, c'est comme si un grand mur de chair bloquait complètement la route, rien qu'à fendre l'air la lame se sent oppressée
+		Quand la route est barrée, il ne reste plus qu'à trancher
+		Après cette bataille, le monde autour va sûrement changer d'allure, reste bien sur tes gardes, on discutera quand tu auras passé l'épreuve
 		'''
 	TrialSummary_5:
 		'''
-		L'odeur du désert a changé : fleurs pourries mêlées de pus, quelque chose creuse
-		Ne le laissez pas s'enfoncer. Allez le couper
-		Et ne plantez pas la lame dans les abcès : quelqu'un habite encore ici
+		Il y a un grand remue-ménage sous les dunes, le sable se retourne dans tous les sens, comme un gros ver qui creuse à toute vitesse vers le fond
+		Pendant qu'il n'est pas encore trop profond, va lui barrer la route
+		Vise bien tes coups, n'enfonce pas tout le sabre dans la mélasse, c'est que j'habite là-dedans moi, laisse-moi un coin propre
 		'''
 	TrialSummary_6:
 		'''
-		Le foyer de ce côté brûle encore, comme si quelqu'un refusait de s'éteindre
-		Allez l'éteindre, et surveillez vos pieds en chemin
-		Si vous vous brûlez, je ne pourrai pas souffler dessus pour vous
+		Le gouffre ardent rougeoie encore par là-bas, même d'aussi loin la lame est déjà brûlante
+		Va donc éteindre tout ça, inutile de le laisser flamber sans arrêt
+		Fais attention où tu mets les pieds sur les bancs de lave, si tu te brûles personne ne soufflera sur tes plaies
 		'''
 	TrialSummary_7:
 		'''
-		Il y a un type au nom très sonore. Ça impressionne à l'oreille
-		Le fer remue : allez le tâter, voir si ce n'est que du vent
-		Ne rivalisez pas pour savoir qui a le plus grand nom
+		Les secousses sous la terre deviennent de plus en plus fortes à chaque instant, le sabre en tremble avec elles, on dirait un colosse tout de fer vêtu
+		Même avec un nom à faire peur, de la ferraille reste de la ferraille, va tester un peu sa dureté
+		Ne cogne pas comme un sourd contre le métal dur, vise les jointures pour ne pas t'engourdir les mains
 		'''
 	TrialSummary_8:
 		'''
-		Deux points dans le ciel, comme s'ils s'étaient donné rendez-vous
-		S'ils viennent par paire, séparez-les. Ne prenez pas les deux regards à la fois
-		À votre retour, vous pourrez râler sur leur ressemblance avec des humains
+		Il y a deux éclats dans le ciel nocturne qui sont sortis ensemble comme s'ils s'étaient donné rendez-vous, être épié des deux côtés c'est vraiment désagréable
+		Comme ils font la paire ils ne sont pas faciles à manier, prends de la distance et bats-les un par un, ne reste pas coincé au milieu à encaisser des deux côtés
+		Vas-y vite, sois vif, et reviens me dire à quoi ils ressemblent pour de vrai
 		'''
 	TrialSummary_9:
 		'''
-		Là-bas l'ancien et le neuf se mêlent : ça cloche, mais je n'y vois pas encore clair
-		Allez démêler ça. Ne vous laissez pas bluffer
-		On dira ensuite de quel côté c'était vrai
+		L'écho qui vient de là-bas est bien étrange, des armatures de fer mêlées à des débris d'os, assemblés de bric et de broc
+		Même montée en grand, une charpente reste un assemblage, ne te laisse pas bluffer par ses grands airs
+		Frappe aux jointures pour le démonter morceau par morceau, puis reviens me dire quelle partie était la vraie
 		'''
 	TrialSummary_10:
 		'''
-		Une ombre marche trop comme un humain. Je n'ai pas vu le visage et ça m'agace déjà
-		Ne restez pas à vous regarder. Allez vous en occuper
-		Qui elle copie, on en parlera à votre retour
+		Une ombre devant marche bien trop comme un humain, pourtant elle n'a pas la moindre odeur de vivant sur elle
+		Plus un faux truc imite la démarche humaine, plus c'est louche, ne reste pas planté là à le regarder dans le blanc des yeux
+		Avance et sors la lame pour briser cette forme, qui elle imitait, on en parlera une fois le combat fini
 		'''
 	TrialSummary_11:
 		'''
-		En bas, une fleur qui n'aurait pas dû s'ouvrir. L'odeur est déjà fausse
-		Si elle est fanée, réglez ça. Ne me la laissez pas sur les bras
-		Les règles du fleuriste, plus tard. Partez d'abord
+		Il y a un parfum sucré qui monte du fond de la jungle, mais en dessous ça sent le dépérissement et la pourriture
+		Une fleur a beau être jolie, une fois son cœur flétri et pourri il faut la couper, de peur qu'elle ne gâte tout le bosquet
+		Pour la taille des fleurs je t'expliquerai tout à ton retour, vas-y vite, attention aux lianes sous tes pieds
 		'''
 	TrialSummary_12:
 		'''
-		Dans la maison de pierre, une idole qui n'aime pas bouger. Ça a l'air dur
-		Renversez-la. Ne cognez pas la lame contre la pierre : je le sentirais aussi
-		Si les mains s'engourdissent, frottez-les à votre retour
+		Dans la bâtisse de pierre trône un gros bloc de roche qui refuse de bouger, il a l'air bien lourd et bien coriace
+		Trouve un moyen de le renverser et de le disloquer, mais ne va pas cogner le tranchant contre la roche brute, l'ébrécher me ferait mal à moi aussi
+		Si tes poignets sont tout engourdis, secoue-les bien en revenant
 		'''
 	TrialSummary_13:
 		'''
-		Devant le donjon, on marmonne, comme si ce n'était pas fini
-		Coupez-les. Épargnez les oreilles
-		Ce qu'ils psalmodiaient, on en parlera plus tard. N'y croyez pas
+		À l'entrée du donjon il y a un groupe qui marmonne des trucs incompréhensibles sans arrêt, ça fatigue les oreilles rien qu'à écouter
+		Va directement les interrompre, qu'ils arrêtent de casser les oreilles de tout le monde
+		Peu importe les bêtises qu'ils récitent, n'en crois pas un mot, finis vite et reviens vite
 		'''
 	TrialSummary_14:
 		'''
-		Quelque chose pèse sur la lune. Lever la tête suffit à alourdir
-		Allez l'ôter. Ne restez pas là à regarder en l'air
-		À votre retour, je vous demanderai si vous êtes épuisé
+		On dirait qu'un immense nuage sombre pèse sur le firmament, lever la tête donne une sensation d'étouffement dans la poitrine
+		Puisqu'il gêne là-haut, monte lui régler son compte
+		Ne reste pas bêtement planté en dessous à rêvasser, prends ça au sérieux, quand tu seras rentré je te demanderai si tu es fatigué
 		'''
 	TrialSummary_15:
 		'''
-		Le cœur de la terre chauffe par là : de mon côté aussi, on dirait que ça préchauffe
-		Allez-y. Le tranchant va brûler : sachez-le d'avance
-		Ne restez pas trop longtemps dans la chaleur. Finissez et partez
+		Des bouffées de chaleur montent sans cesse du cœur de la planète, la lame où je loge est déjà toute brûlante
+		S'approcher cette fois-ci va faire une chaleur infernale, sois prévenu d'avance
+		Ne traîne pas dans cet air étouffant et brûlant, frappe et replie-toi aussitôt
 		'''
 	TrialSummary_16:
 		'''
-		Du côté de l'humidité, les spectres s'agglutinent. Je ne compte pas
-		Réglez le tas entier. Ne les ramassez pas un par un
-		Et n'y passez pas la nuit : je vous le rabâcherai à votre retour
+		Le fond est tout moite, tout un tas d'âmes en peine s'y bousculent en rond, il y en a tellement que j'ai la flemme de compter
+		Puisqu'elles sont toutes agglutinées en tas, ne t'amuse pas à les choisir une par une, vise bien et balaie tout d'un coup de sabre
+		Le donjon est glacial et humide, n'y reste pas trop longtemps, finis le travail et remonte vite
 		'''
 	TrialSummary_17:
 		'''
-		Cette direction est trop vide. De mon côté aussi, ça s'alourdit
-		Je ne saurais pas dire ce que c'est. Juste que ça cloche
-		Allez-y. Une fois là, ne restez pas seul à regarder dans le vide ; si vous n'y voyez pas clair, occupez-vous d'abord de vous
-		On en parlera à votre retour. Rester en vie passe avant de voir clair
+		Cette direction semble complètement vide, le cœur se serre d'angoisse et la lame devient toute lourde vers le bas
+		Je ne saurais pas dire quel genre de monstre colossal arrive vers nous, mais sois extrêmement prudent
+		Une fois sur place ne reste pas ébahi à regarder dans le vide, peu importe le danger, te voir rentrer sain et sauf passe avant tout
 		'''
 	TrialSummary_18:
 		'''
-		On dit qu'il reste encore un dragon comme ça. Vrai ou faux, allez voir
-		Le tranchant brûlera sans doute : ne le rengainez pas trop vite
-		Je ne veux pas de trophée. Que vous reveniez, ça suffit
+		On raconte qu'au bout de la mer de feu il reste encore un grand dragon, vrai ou faux va voir de tes yeux
+		Au combat la lame va sûrement chauffer à blanc, endure un peu
+		Ces rares écailles ou plumes de dragon m'importent peu, tant que tu reviens en un seul morceau ça me suffit
 		'''
 	TrialSummary_19:
 		'''
-		Un grondement au loin, et les oreilles lâchent d'abord
-		Allez les faire taire, et protégez-vous les oreilles en chemin
-		Si ça bourdonne encore à votre retour, trouvez un endroit calme
+		D'aussi loin j'entends le vacarme des canons de fer, ça me donne mal au crâne
+		Va vite faire taire ces machins de ferraille, et protège bien tes oreilles en chemin
+		Si ça bourdonne encore dans tes oreilles à ton retour, je t'accompagnerai trouver un coin tranquille pour te reposer
 		'''
 	TrialSummary_20:
 		'''
-		L'air par là s'alourdit, stagne, comme une porte qui n'aère pas
-		Allez y mettre fin. Ne restez pas sur le seuil à respirer ça
-		À votre retour, je vous dirai comment reprendre votre souffle
+		L'air par là-bas est lourd et gluant, rien qu'en respirer une gorgée ça reste coincé dans la poitrine
+		Va fendre tout ça, ne reste pas bêtement dans le vent à respirer cette fumée étouffante
+		Quand tu seras revenu, je t'apprendrai comment retrouver ton souffle
 		'''
 	TrialSummary_21:
 		'''
-		Elles se rassemblent encore, comme si rien ne se dissipait vraiment
-		Cette fois durera plus longtemps
-		Tenez-vous bien avant d'engager ; je vous rabâcherai encore à votre retour
+		C'est comme si on ne pouvait jamais s'en débarrasser, les voilà qui se rassemblent encore tous ensemble
+		Ce combat risque de durer un bon moment, donne-toi à fond, je te regarderai depuis la lame
+		Assure bien tes appuis avant de frapper, et quand tu seras rentré vainqueur je te ferai la morale pour savoir si tu as vacillé
 		'''
 }
 
@@ -971,170 +969,147 @@ KikasaTrialQuestLine: {
 	Trial_23: Banquet final à table pleine
 	TrialSummary_0:
 		'''
-		Au pied des collines, quelque chose de mou s'étale, bleu et tremblant sans fin
-		Le lac n'a jamais goûté de gelée : il veut savoir quel écho fait la morsure
-		Attirez-la sous l'ombrelle, ne vous plaignez pas du collant
-		Si ça fond, ce sera de la soupe
+		Au pied des montagnes s'étale une masse de boue bleuâtre qui tremblote sans arrêt
+		Une carcasse boursouflée assemblée d'on ne sait où, de la pure fanfaronnade
+		Va la disperser à coups de parapluie, qu'elle arrête d'encombrer le chemin
 		'''
 	TrialSummary_1:
 		'''
-		La nuit, un œil vous fixe, sans aucune politesse
-		Dès que le lac l'aperçoit, il fronce les sourcils, et les baleines de l'ombrelle démangent
-		Allez, enfoncez ce regard dans l'eau
-		Ceux qui regardent finissent tous par fermer les yeux
+		La nuit, un grand œil reste suspendu dans les airs à fixer les gens sans aucune politesse
+		Sans même cligner une seule fois, de quoi donner la chair de poule
+		Va le faire tomber de là-haut, une fois ses yeux fermés, ça nous évitera bien des tracas
 		'''
 	TrialSummary_2:
 		'''
-		La terre pourrie en sort deux : une longue, ou une cervelle humide
-		Les deux sentent le sang ; le lac ne chasse pas les hôtes, prenez celui qui croise votre route
-		Inutile de ramasser les morceaux, ils couleront d'eux-mêmes
+		Deux abominations sorties de la terre corrompue : un long ver et un cerveau visqueux
+		Même de loin on sent leur puanteur de vase écœurante
+		Occupe-toi en premier de celui que tu croiseras en route, découpe-le et ne reviens pas trempé de cette fétidité
 		'''
 	TrialSummary_3:
 		'''
-		Sous terre pourrit une pensée, ou un nid de vers qui mangent le cœur
-		Un coup de vent suffit : le rance a déjà fait des vers
-		Le lac dit que le rance est encore une saveur. Apportez-le
-		Ne retirez pas les gants : ce jus s'attache
+		Sous terre pourrit un nid de chair infecte, grouillant de petites bêtes qui percent le sang
+		Le laisser tranquille ne fera que le faire pourrir plus profondément, va directement le détruire
+		Mets de bons gants étanches, ces sucs qui collent à la peau ne sont pas faciles à nettoyer
 		'''
 	TrialSummary_4:
 		'''
-		Dans la jungle, un nectar suinte ; dans la neige, quelque chose piétine avec entêtement
-		Apportez-en un : le lac ouvre aujourd'hui les deux goûts
-		Le sucré pique, l'entêté frappe du sabot
-		Ne revenez pas les mains vides
+		Dans la jungle se cache une abeille venimeuse, et dans les neiges erre un cerf têtu borgne
+		Prends celui que tu rencontreras en premier, ils ont tous les deux un sacré caractère
+		Dard empoisonné et sabots chargés de blizzard, ne baisse ta garde d'aucun côté
 		'''
 	TrialSummary_5:
 		'''
-		À la porte du donjon pend un vieux de métier, accroché à veiller pour les autres
-		Les os ne ramollissent pas à force de tremper, l'aura non plus ; le lac le sait, mais il veut entendre ce craquement
-		Coupez-lui le souffle, gardez la clé
-		Les débris d'os au fond paveront bien le chemin
+		À la porte du donjon est suspendu un vieux squelette de garde, veillant toute sa vie sans vouloir lâcher prise
+		À son grand âge, son obstination est plus lourde qu'un verrou de fer
+		Va interrompre sa garde de nuit, prends sa clé et envoie-le reposer sous terre
 		'''
 	TrialSummary_6:
 		'''
-		Une gelée qui parle et saute, rouge et violet tout mêlés
-		Le lac ne manque jamais d'eau : ce qui lui manque, c'est une bouchée de cette taille
-		Déchirez-la, voyez en quoi elle fond vraiment
-		Ne buvez pas trop vite : ce n'est pas pour vous
+		Du violet et du noir touillés dans un pot de mélasse, et ça a l'audace de se prétendre dieu
+		Un mélange disparate et confus qui ne deviendra jamais rien de grand
+		Va le briser et le dissoudre, pour éviter qu'il ne souille les lieux en traînant ici
 		'''
 	TrialSummary_7:
 		'''
-		En enfer, un mur de chair barre le chemin de tout le monde
-		Le brûlant est excellent : le lac saura calmer le feu
-		Quand il meurt, le monde change : ce n'est pas de votre faute
-		La toile de l'ombrelle arrête les escarbilles. Allez-y sans crainte
+		En enfer se dresse un immense mur de chair barrant complètement la route
+		Même à travers la toile du parapluie la chaleur est étouffante et insupportable
+		Transperce-le, tout simplement ; si le monde change après coup, cela ne te regarde pas
 		'''
 	TrialSummary_8:
 		'''
-		Au-dessus de la terre sacrée pend une gelée rose, avec des gardes
-		Le lac a goûté la gelée du sol ; celle qui vole, jamais
-		Tirez-la vers le bas, ossature comprise
-		Ne marchez pas sur les éclats : ça écorche les baleines
+		En l'air flotte une gelée toute rose et tendre, qui part au combat accompagnée d'une suite
+		Plein d'artifices tape-à-l'œil, elle se donne de grands airs
+		Fais-la tomber de là-haut ; peu importe ses grands airs, rien ne tient face à une bonne averse
 		'''
 	TrialSummary_9:
 		'''
-		Le serpent des fleurs pourries est de retour : les fleurs rouges ont tourné en abcès
-		Ne marchez pas dans les flaques dorées du sable : c'est sa bave
-		Le lac accepte tous les goûts ; il lui reproche seulement d'avoir aigri tout un désert
-		Allez, invitez-le à couler. Secouez l'ombrelle avant de rentrer
+		Hors du sable rampe un grand ver couvert de fleurs pourries, qui bave un pus doré sur le sol
+		C'est encore plus dégoûtant que ce qui a pourri dans l'eau, s'en approcher donne la nausée rien qu'à l'odeur
+		Va t'en débarrasser, et rince bien la toile du parapluie avant de revenir
 		'''
 	TrialSummary_10:
 		'''
-		Quelqu'un a forgé trois soldats d'or : une chaîne, deux perles-lampes, un cadre à quatre bras
-		Le fer ne s'imbibe jamais ; à force de tremper, il ne sent plus que la rouille
-		Le lac n'aime pas cette bouchée, mais un banquet ne peut pas s'en passer
-		Un à la fois. Ne les effrayez pas tous la même nuit
+		On ne sait qui a fabriqué trois mécanismes de ferraille : une chaîne, des ampoules et une armature d'acier à quatre bras
+		L'odeur de fer brut est lourde, et ils font un boucan infernal
+		Démonte-les un par un, ne les laisse pas s'agiter tous ensemble
 		'''
 	TrialSummary_11:
 		'''
-		Au fond de la jungle, une grande fleur rouge : la voir suffit à endormir
-		Peu de ceux qui la réveillent reviennent entiers
-		Le lac veut son nectar : il teinte l'eau juste comme il faut
-		Des lianes sur l'ombrelle ? Coupez, sans politesse
+		Au tréfonds de la jungle sommeille une grande fleur rouge aux lianes proliférantes
+		La réveiller attisera son mauvais caractère, elle s'enroulera autour de quiconque passe
+		Va l'arracher jusqu'à la racine, et si des lianes s'accrochent au parapluie, tranche-les net
 		'''
 	TrialSummary_12:
 		'''
-		Sous la plage se terre une grande crevette, carapace de cristal, et elle mue
-		Quand la pince claque, l'eau explose : on l'entend à une demi-mer
-		Le lac convoite cette bouchée élastique depuis longtemps. Allez l'inviter
-		La carapace, elle la change toute seule ; le coup, c'est à vous d'y prendre garde
+		Sous la plage se terre une grande squille parée d'une carapace dure et luisante, capable de muer
+		Un seul coup de pince peut disperser l'eau, elle fait un sacré vacarme
+		Laisse-la changer de carapace à sa guise, mais surveille bien ses coups de poing pour ne pas en recevoir un par surprise
 		'''
 	TrialSummary_13:
 		'''
-		Dans le temple squatte une tête carrée
-		La pierre coule le plus vite ; à la collection du lac, il en manque justement une
-		Démontrez ses mécanismes, apportez la carcasse entière
-		L'écume qu'elle soulève, c'est votre pourboire
+		Dans le temple est accroupi un gros bloc de pierre à tête carrée qui ne bouge pas d'un pouce
+		Ses mécanismes sont agencés avec précision, mais une fois brisé ce n'est qu'une carcasse creuse
+		Va le démolir, inutile de le laisser bloquer le passage dans la salle
 		'''
 	TrialSummary_14:
 		'''
-		En mer, un porc a poussé des ailes et s'avise de soulever les vagues
-		Le lac ne le supporte pas : le caractère de l'eau n'est pas à un porc de commander
-		Enfoncez-le dans l'eau que vous voudrez
-		L'appât, c'est moi ; le ver, c'est vous qui le pêchez
+		Dans la mer vit un porc affublé d'ailes qui tente de lever des vagues comme un homme
+		Sans même regarder son reflet, le tempérament de l'eau n'est pas à un porc marin de le commander
+		Renfonce-le dans les profondeurs de l'eau, ça lui évitera de clapoter sans cesse sous mes yeux
 		'''
 	TrialSummary_15:
 		'''
-		La nuit, une lumineuse vole au-dessus de la terre sacrée, l'humeur calée sur le soleil
-		Le lac ne peut pas la retenir : trop brillante pour rester à la surface
-		Allez-y de nuit ; pétrissez cette lumière jusqu'à l'assombrir, et ramenez-la
-		La provoquer en plein jour, les conséquences sont pour vous
+		Dans le ciel nocturne vole une créature toute resplendissante, d'un éclat aveuglant en pleine nuit
+		Je n'aime pas les choses trop éblouissantes, cela me fatigue les yeux
+		Profite de la nuit pour ternir sa lumière, mais ne va surtout pas la provoquer en plein jour
 		'''
 	TrialSummary_16:
 		'''
-		À la porte du donjon, un psalmodieur chante si fort que le ciel va s'ouvrir
-		Le lac n'entend pas les sutras : seulement qu'il veut faire entrer quelque chose
-		Coupez-le. Que le rite pourrisse à mi-chemin
-		S'il lâche son chapelet, ne le ramassez pas : le lac n'accepte pas les contrefaçons
+		À l'entrée du donjon quelqu'un marmonne sans fin, de quoi faire gonfler les oreilles
+		Ce qu'il tente d'attirer depuis le vide n'a rien de recommandable
+		Interromps ce rituel avant que le tumulte ne devienne incontrôlable
 		'''
 	TrialSummary_17:
 		'''
-		Celui derrière la lune est descendu, couvert d'yeux
-		Ce qui tombe du ciel dans le lac n'est plus qu'un reflet
-		Allez, ramenez l'original du reflet
-		Le clair de lune sera beau cette nuit-là : regardez-le une fois pour moi
+		Cette grande ombre derrière la lune s'apprête à descendre, couverte d'yeux de la tête aux pieds
+		À force d'épier le monde des mortels depuis tant d'éons, l'heure est venue d'y mettre un terme
+		Va la disperser, et après le combat, contemple le clair de lune ce soir un peu plus pour moi
 		'''
 	TrialSummary_18:
 		'''
-		Au fond du donjon flotte une âme rapiécée depuis des siècles
-		Même les spectres qui trempent dans le lac se recroquevillent dans les baleines à sa vue
-		S'entre-tuer entre les siens sonne mal : dites plutôt partager la table
-		Après cette commande, ça sera un peu serré sous l'ombrelle. Supportez
+		Au fond du donjon flotte une vaste nuée d'âmes en peine, rapiécées et enchevêtrées depuis des siècles
+		Ce sont mes semblables en un sens, mais à gémir ainsi jour après jour, c'est lassant à regarder
+		Va faire en sorte qu'elles se dispersent enfin ; retourner au calme vaut mieux que de souffrir là-dessous
 		'''
 	TrialSummary_19:
 		'''
-		Sous la mer sulfureuse repose un vieux, acide d'écaille et d'humeur
-		Le lac et lui se connaissent depuis des années : aucun des deux n'accepte l'eau de l'autre
-		Portez-lui ce mot : la table est prête, qu'il veuille bien couler
-		Il mord, et les dents tiennent encore. Prenez garde
+		Sous la mer sulfureuse est enfouie une vieille créature immortelle, toute chargée d'acidité, au caractère plus âcre que son eau
+		Nous nous sommes affrontés autrefois, sans qu'aucun ne cède un demi-pas
+		Va régler son compte pour moi, retiens cela comme une vieille dette effacée
 		'''
 	TrialSummary_20:
 		'''
-		Un long ver tourne hors du ciel, et les étoiles s'écartent
-		Il a avalé des dieux ; le lac voudrait bien savoir quel goût a un dieu
-		Faites-le plonger dans une eau où il n'aurait jamais dû entrer
-		La carapace est pour vous, la chair pour le lac
+		Ce grand serpent qui tournoie dans le ciel, on raconte qu'il a même dévoré des dieux
+		Quel degré atteint un dieu ne m'importe guère, mais le voir tourner au-dessus de nos têtes donne le vertige
+		Fais-le tomber, garde sa solide carapace pour toi, et ne te soucie pas du reste
 		'''
 	TrialSummary_21:
 		'''
-		De l'autre côté de la jungle, on nourrit une boule de feu, qui brûle depuis on ne sait combien d'années
-		Le feu et le lac sont de vieux ennemis ; cette fois, il faut en finir
-		Étouffez ce feu : la dernière louche, le lac la versera lui-même
-		Les plumes mouillées ne volent plus. N'en laissez pas une
+		Du côté de la jungle brûle un brasier ardent qui ne s'est pas éteint depuis des années
+		Le feu ardent et la tempête ont toujours été inconciliables
+		Va éteindre ce brasier ; des plumes trempées ne s'envoleront plus jamais, et c'est très bien ainsi
 		'''
 	TrialSummary_22:
 		'''
-		Les deux dernières tables s'ouvrent ensemble : l'une tout fer, l'autre rien que feu
-		L'orgueil d'un artisan et l'obsession d'une sorcière : le lac veut voir les deux couler
-		L'ordre vous appartient ; venez seulement à table vivant
-		Après ce repas, le lac sera à peu près plein
+		Les deux dernières rudes batailles se rencontrent à la fois : des marionnettes de fer d'un côté, une sorcière captive de son obsession de l'autre
+		Aucun des deux n'est facile à vivre, privant ce monde du moindre instant de paix
+		Choisis l'ordre qui te plaît, règle au plus vite le premier, veille simplement à en ressortir vivant
 		'''
 	TrialSummary_23:
 		'''
-		Ils sont tous revenus, ou le vieux de l'abîme s'est réveillé
-		Un banquet à table pleine : le lac a attendu si longtemps que le niveau a monté
-		Vous n'avez qu'à tenir l'ombrelle ; un à la fois
-		Quand ce repas sera fini, la pluie s'arrêtera
+		Ceux qui sont tombés autrefois se sont rassemblés à nouveau, ou bien c'est le vieux dragon des abysses qui s'est réveillé
+		Quel que soit le cas, le spectacle sera d'envergure
+		Tiens bien ton parapluie en main, avance pas à pas, et une fois ce combat achevé... la pluie dehors devrait enfin cesser
 		'''
 }
 

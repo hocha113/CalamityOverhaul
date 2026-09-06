@@ -21,142 +21,142 @@ ItCametoThis: {
 }
 
 HimayoEyeOfCthulhuGift: {
-	L0: Au fait, chez nous, il y avait un type qui n'arrivait pas à fermer les yeux en dormant
-	L1: Pas le genre grand ouvert qui fait peur. Les paupières à demi baissées, pile en face de la poutre, comme s'il rêvassait
-	L2: Couette bien rentrée, maison d'un silence à faire peur. Une fois, en passant sous sa fenêtre, j'ai failli crier au secours
-	L3: Le lendemain il allait très bien, et m'appelait du champ pour l'aider à porter des pots de fleurs
-	L4: Ah, à force d'en parler, en regardant ce gros œil dans le ciel... moi aussi, ça me donne sommeil
+	L0: Ouf... il est enfin tombé. Être fixée par un œil géant comme ça pendant la moitié de la nuit, ça m'a donné des frissons dans le dos
+	L1: Mais à fixer comme ça sans cligner une seule fois, il n'en a pas marre d'avoir les yeux qui piquent ?
+	L2: À force d'être fixée si longtemps, moi aussi je commençais à piquer du nez
+	L3: Tiens, j'ai déniché un petit quelque chose tout près, prends-le bien et ne le perds pas
+	L4: Reposons-nous un peu, cette nuit on va enfin pouvoir fermer les yeux pour de bon
 }
 
 HimayoEvilBossGift: {
-	L0Worm: Dégueu... morceau après morceau, coincés dans la terre
-	L1Worm: Ça sent le fossé de boue tout juste retourné. Je ne veux plus sentir ça
-	L0Brain: Un cerveau, ça devrait rester bien au chaud dans une boîte crânienne
-	L1Brain: Tout mou, étalé dehors... un seul regard et j'ai mal à la tête
+	L0Worm: Tous ces tronçons coincés dans la boue, l'odeur fétide est comme celle d'un fossé vaseux fraîchement retourné, j'étouffais là-dedans
+	L1Worm: Secoue bien la lame et rengaine-la, trouvons un coin aéré pour prendre l'air
+	L0Brain: Ce gros tas humide et mou donne la chair de poule rien qu'à le voir, un cerveau devrait sagement rester dans sa boîte crânienne
+	L1Brain: La lame est toute poisseuse, vite, essuie-la avec un chiffon, et surtout ne va pas t'essuyer sur tes habits
 }
 
 HimayoCalamityEvilGift: {
-	L0: Arrête de rester planté là à rêvasser. Reprends ton souffle, au moins
-	L1: Ce tas tout à l'heure... tu ne trouves pas que ça ressemblait à de la pâte de haricots avariée ?
-	L2: Super. Je n'avais pas faim, et je me suis donné faim moi-même
-	L3: Si tu as faim aussi, va te trouver à manger. S'obstiner après un combat, c'est bête
-	L4: Et ne te frotte pas le visage avec les mains... ce n'est pas que tu sois sale, mais ça pique vraiment les yeux
+	L0: Ce gros tas tout mélangé d'il y a un instant... bizarrement, on aurait dit de la pâte de haricots rouges écrasée
+	L1: Hum, je n'y pensais pas au début, mais de l'avoir dit à voix haute m'a donné faim
+	L2: Si tu as faim toi aussi, va te trouver quelque chose à manger, faire le dur après un combat c'est la pire bêtise
+	L3: J'ai attrapé une petite babiole au passage et je te la donne, prends-la
+	L4: Et ne te frotte pas le visage avec les mains sales, si tu t'en mets dans les yeux ça va piquer pour de vrai, fais-moi confiance là-dessus
 }
 
 HimayoSlimeGodGift: {
-	L0: C'est collant, d'accord. Mais le jour où, gosse, j'ai marché dans la boue après la pluie, c'était bien pire
-	L1: Au moins ça ne se faufile pas dans les chaussures. Bon... on peut vivre avec
-	L2: Tiens. Ne me demande pas d'où je l'ai sorti. Si tu demandes, je ferai semblant de ne pas entendre
+	L0: À force de patauger dans la vase, je trouve que cette pâte divine n'était pas si désagréable au toucher
+	L1: Au moins elle ne s'est pas faufilée le long des jambes de pantalon jusqu'au fond des bottes, elle a au moins cette allure divine
+	L2: J'ai repêché ça au vol dans le tas de gelée, prends-le, et ne me demande surtout pas où je l'ai trouvé
 }
 
 HimayoWallOfFleshGift: {
-	L0: ...Il est vraiment tombé. Ce mur de chair s'est écroulé
-	L1: Je ne saurais pas dire si je suis contente. Juste... on dirait que le temps va tourner
-	L2: La suite sera probablement plus rude. Toi, tu le sais déjà
+	L0: ...On l'a vraiment fendu en deux, tout le mur de chair s'est écroulé
+	L1: Comment dire... l'atmosphère a changé d'un seul coup, même l'aura maléfique dans la lame est devenue bien plus lourde
+	L2: Le monde qui nous attend sera sûrement encore plus rude... Enfin, tiens bien le sabre, je suis là avec toi
 }
 
 HimayoFesterSerpentGift: {
-	L0: Attends, cette fois sur la lame... c'est du pus ?
-	L1: Moi je vis là-dedans ! L'étal de fruits de mer vient de fermer, et voilà qu'on ouvre une infirmerie
-	L2: Toujours pas de fenêtre. Une salle de malades, ça devrait au moins avoir un soupirail
-	L3: La prochaine fois, choisis un endroit plus propre pour frapper. Ici, je n'ai nulle part où aérer
+	L0: Attends un peu, ce qui a coulé sur le tranchant cette fois, c'est du sable jaune et du pus ? Quelle drôle d'odeur
+	L1: Je vis dans ce sabre sans la moindre fenêtre, c'est presque devenu une mare de boue
+	L2: Laisse-moi un peu d'air propre, on ne peut vraiment pas aérer ici
+	L3: La prochaine fois choisis un truc plus propre à affronter, même un crabe à carapace dure vaudrait mieux qu'un gros ver purulent
 }
 
 HimayoBrimstoneElementalGift: {
-	L0: La chaleur n'est pas encore partie. Regarde cette flaque, elle fume encore
-	L1: Et si on y mettait un pied ? ...Attends, je ne t'ai pas dit d'essayer pour de vrai
-	L2: Bref, n'y touche pas. Ça brûle
+	L0: Les bancs de lave autour fument encore en gargouillant, rester planté là va nous faire cuire la plante des pieds
+	L1: Arrête de rêvasser en regardant les étincelles, fais attention à ne pas brûler la semelle de tes bottes
+	L2: La lame est encore brûlante, laisse-la refroidir à ta hanche, allons vite trouver un coin plus frais
 }
 
 HimayoDestroyerGift: {
-	L0: On l'appelle le Destructeur... Ça en impose
-	L1: Une fois à terre, ce n'était qu'une grande bande de ferraille
-	L2: Tiens, prends ça. Ne le laisse pas tomber. Si ça tombe, ce n'est pas moi qui ramasse
+	L0: Ça faisait un boucan de tonnerre à tout casser, mais une fois démonté, ce n'est vraiment qu'une longue série de grosses roues de fer plein
+	L1: Ça m'a tellement secoué le crâne que j'en ai encore les oreilles qui bourdonnent
+	L2: J'ai déniché un morceau bien solide dans le noyau de fer, tiens-le bien, s'il tombe sur ton pied je ne te porterai pas
 }
 
 HimayoTwinsGift: {
-	L0: Quand deux personnes se regardent trop longtemps, on ne peut vraiment pas s'empêcher de rire
-	L1: Tu vois le genre ? Plus on retient, plus ça monte, et les commissures se lèvent toutes seules
-	L2: Avant, je faisais des concours de regard. C'était toujours moi qui perdais
-	L3: Tout à l'heure, en regardant ces deux-là dans le ciel... laisse tomber, rien que d'y penser j'ai encore envie de rire
+	L0: L'un rouge et l'autre vert, à voltiger dans tous les sens avec leurs yeux écarquillés comme des cloches de bronze
+	L1: Au milieu du combat je me demandais : s'ils se rentraient dedans, est-ce qu'ils se donneraient le vertige l'un à l'autre ?
+	L2: Autrefois je jouais à des concours de regard, et c'était toujours moi qui perdais
+	L3: Pff... rien qu'à imaginer la scène où ils se cognent la tête, je n'arrive pas à m'empêcher de rire
 }
 
 HimayoSkeletronPrimeGift: {
-	L0: La tête, c'est encore le vieux crâne. Le corps, par contre, tout neuf en fer
-	L1: On dirait quelqu'un qui s'est rhabillé à moitié et s'est précipité dehors. C'est d'un maladroit
-	L2: La prochaine fois, qu'il finisse de s'habiller avant de se battre, d'accord ? Je m'impatiente à sa place
+	L0: Il se balade avec un vieux crâne sur le dessus, mais avec quatre grandes scies de fer flambant neuves en dessous
+	L1: On dirait quelqu'un qui s'est habillé à moitié et s'est précipité dehors pour se battre, c'est d'un ridicule à voir
+	L2: Le squelette est tout éparpillé par terre, pendant que ces bras de fer sont encore tièdes, voyons s'il y a quelque chose de pratique
 }
 
 HimayoCalamitasCloneGift: {
-	L0: Même la démarche, il faut qu'il la copie. Rien que de voir ça, ça m'agace
-	L1: Ce n'est pas que j'en aie peur... ça me donne juste la chair de poule. Plus c'est ressemblant, plus ça sonne faux
-	L2: Tiens. Ne me demande pas d'où je l'ai sorti. Si tu demandes, je ferai semblant de ne pas entendre
+	L0: Ouf... enfin dissipée, cette silhouette flottant dans les airs bougeait aussi raidement qu'une marionnette tirée par des fils
+	L1: Plus elle s'efforçait d'imiter un vivant, plus elle sonnait faux et guindé, ça donnait des frissons rien qu'à la regarder
+	L2: Un estampage est tombé des cendres, prends-le, cette fois ce n'est pas un faux
 }
 
 HimayoPlanteraGift: {
-	L0: Quand une fleur a fini de s'ouvrir, on la coupe net
-	L1: Garder les tiges sèches ne sert à rien. Ça prend de la place, et ça agace rien qu'à les voir
-	L2: Chez nous, les fleuristes font tous comme ça : fanée, on coupe, sans s'éterniser
-	L3: Ah, pourquoi je te raconte ça ? Tu n'es pas venu m'acheter des fleurs
+	L0: Ouf, les lianes ont enfin fini de flétrir, ça sent la racine pourrie et la terre humide
+	L1: Chez nous au village fleuri on dit toujours : quand le cœur d'une fleur pourrit, même si on y tient, il faut l'arracher avec ses racines, sinon c'est tout le parterre qui y passe
+	L2: Les branches mortes et les feuilles flétries qui pourrissent au sol n'ont rien de beau, ça prend de la place et ça tape sur les nerfs
+	L3: Secoue les débris de pétales et de bourgeons collés au sabre, une fois nettoyé on se met en route
 }
 
 HimayoGolemGift: {
-	L0: Les poignets sont encore engourdis ? Il faudra aussi te masser les épaules
-	L1: Quand on cogne contre une pierre pareille, le choc remonte jusqu'au creux de la paume
-	L2: Moi aussi, ça m'engourdissait le creux du pouce. C'était pénible
-	L3: Et n'envoie pas toujours le sabre se casser les dents sur la roche. Si le tranchant s'ébrèche, c'est moi qui en souffre
+	L0: Tu as mal aux poignets ? Frotte-les vite, ce gros bloc de pierre était dur comme du roc, frapper dessus fait trembler les bras jusqu'aux os
+	L1: Le tranchant a failli s'ébrécher, moi qui vis dedans j'ai eu l'impression que la terre tremblait
+	L2: Plus tard face à de tels blocs de pierre, cherche plutôt les points faibles, ne va pas cogner bêtement avec le tranchant
+	L3: Si le sabre s'abîme je ne te raterai pas, alors assieds-toi vite et reprends ton souffle
 }
 
 HimayoCultistGift: {
-	L0: Devant la porte, ça s'est enfin calmé
-	L1: Les oreilles peuvent se reposer. Toute cette psalmodie à n'en plus finir, j'avais envie de me les boucher
+	L0: Ouf... l'entrée du donjon est enfin complètement redevenue calme
+	L1: Ce groupe qui marmonnait sans fin des incantations bizarres, ça m'a gonflé les oreilles, c'était d'un agaçant
 }
 
 HimayoMoonLordGift: {
-	L0: La lune qui pesait sur le ciel s'est enfin dissipée
-	L1: Je ne dirais pas que je suis contente...
-	L2: C'est juste que ce qui nous écrasait le crâne depuis toujours a disparu d'un coup, et ça fait un peu bizarre
+	L0: Cette immense ombre grise sur le firmament... elle s'est enfin totalement dissipée
+	L1: Tout ce poids étouffant qui nous écrasait depuis si longtemps s'est vidé d'un coup, le clair de lune qui retombe laisse presque étourdi
+	L2: Tu tiens encore debout ? Le chemin jusqu'ici n'a vraiment pas été facile, ce soir tu as bien mérité une nuit de vrai sommeil
 }
 
 HimayoProvidenceGift: {
-	L0: Tch, l'air autour est presque grillé
-	L1: Le dos de la main est tendu par la chaleur. Rester ici, c'est comme être jeté dans un trou pour rôtir des patates
-	L2: Prends ça. Ne reste pas planté à te faire cuire. On dégage
+	L0: Pss... la vague de chaleur ne s'est pas calmée, le dos de la main est tout rouge d'avoir cuit
+	L1: Rester ici, c'est comme s'accroupir près d'un four à pain tout juste allumé pour faire rôtir des patates douces, même la pointe des cheveux semble roussie
+	L2: J'ai retiré l'estampage brûlant pour toi, tiens-le bien et filons, trouvons un endroit avec de l'eau pour nous rafraîchir
 }
 
 HimayoPolterghastGift: {
-	L0: Ici, c'est humide comme du linge séché une semaine à l'intérieur, qui ne sèche jamais
-	L1: Dormir dans un endroit aussi froid et sombre, le lendemain le dos est forcément en compote
-	L2: Pas même une fenêtre pour aérer, et pas de charbon pour un brasero
-	L3: On finit et on s'en va. Surtout, on ne passe pas la nuit ici
+	L0: Ce vent glacial sous terre souffle une humidité jusque dans la moelle des os, comme du linge mouillé pendu depuis deux semaines dans une chambre sans sécher
+	L1: Pas la moindre fenêtre pour aérer, pas de bois pour allumer un brasero, dormir ici c'est le mal de dos garanti pour demain
+	L2: Les âmes en peine ont toutes été balayées, mais l'air froid continue de se faufiler dans nos vêtements
+	L3: Ne traînons pas dans cette fosse froide et sombre, remontons à la surface près d'un bon feu pour éviter d'attraper froid
 }
 
 HimayoDevourerOfGodsGift: {
-	L0: Cette tête, tout à l'heure... tellement énorme qu'à force de regarder, on ne savait plus ce qu'on regardait
-	L1: Comme si on avait arraché d'un coup une énorme bouchée au ciel
-	L2: ...Laisse tomber. Dit comme ça, c'est encore plus flippant
+	L0: Quand ce corps colossal a roulé hors du vide tout à l'heure... on aurait vraiment dit que quelqu'un arrachait un énorme morceau de ciel
+	L1: En regardant ce gouffre noir sans fond en dessous, moi aussi je suis restée bouche bée un instant
+	L2: Reviens à toi, te voir entier sans un bras ou une jambe en moins, c'est ça qui me soulage vraiment le cœur
 }
 
 HimayoYharonGift: {
-	L0: La lame brûle encore, et de mon côté aussi ça étouffe
-	L1: Franchement, le fourreau en ce moment, c'est un four
-	L2: Ne range pas le sabre tout de suite. C'est moi qui me fais griller là-dedans
-	L3: Tiens, pose ça de côté. On verra quand ça aura refroidi
+	L0: La lame est rougeoyante de chaleur, là-dedans c'est comme être jetée dans la forge d'un forgeron
+	L1: Ne te presse pas de rengainer le sabre, sinon je vais vraiment finir en esprit de lame grillé
+	L2: Laisse-le pendre au vent à tes côtés pour qu'il refroidisse, ouf... ce gros papillon avait une force colossale
+	L3: J'ai posé l'estampage de côté, prends-le pour le regarder une fois qu'il aura bien refroidi
 }
 
 HimayoExoMechsGift: {
-	L0: Après ce bombardement, j'ai encore les oreilles qui bourdonnent
-	L1: On dirait que quelqu'un tape un petit marteau dans mon crâne. C'est insupportable
-	L2: Allons trouver un coin calme pour nous poser. Offrons des vacances à nos oreilles
+	L0: Tout ce vacarme de ferraille s'est enfin éteint, les tirs d'artillerie tout à l'heure me font encore bourdonner les oreilles
+	L1: C'est exactement comme si un petit marteau tapait sans arrêt dans mon crâne, c'est insupportable
+	L2: Partons vite loin de cet endroit qui empeste le fer brûlé, trouvons une vallée tranquille pour souffler un bon coup
 }
 
 HimayoSupremeCalamitasGift: {
-	L0: L'ambiance, de ce côté-là, pesait l'air jusqu'à le figer
-	L1: Va te mettre au vent, ou rince-toi le visage à l'eau froide... ce n'est pas pour te laver, c'est pour te réveiller
-	L2: Ceci dit... ce genre de scène qui coupe le souffle, j'y étais assez habituée, avant
+	L0: La barrière s'est brisée... cette cendre étouffante et cette oppression écrasante se sont enfin dissipées
+	L1: Ne reste pas figé dans le vent sans bouger, respire un grand coup, ou passe-toi un coup d'eau froide sur le visage pour te réveiller
+	L2: Autrefois quand je m'occupais d'esprits malfaisants, des situations frôlant la mort j'en ai vu passer... mais cette fois, tu étais à mes côtés
 }
 
 HimayoBossRushGift: {
-	L0: Reste là. Ne bouge pas
-	L1: Tiens-toi bien... tu n'as même pas encore repris ton souffle. Te revoilà, c'est déjà ça
+	L0: Reste d'abord immobile... les jambes tremblent, pas vrai ?
+	L1: Reprends ton souffle lentement et calmement... Tu t'es donné tant de mal tout au long de cette route, bienvenue parmi nous
 }

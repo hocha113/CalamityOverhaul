@@ -735,407 +735,382 @@ OnikiriText: {
 }
 
 OnikiriOverride: {
-	// DisplayName: Onikiri
-	/* Tooltip:
+	DisplayName: Onikiri
+	Tooltip:
 		'''
-		Hold left-click to drive the five-beat Crimson Rend combo; landing hits builds Stance
-		Vigor fuels Flash Step and Sakura Flight; half and full Stance each unlock a tier of execution
-		''' */
-	// KeyLabelFlashStep: Kamui Flash Step
-	// KeyLabelSakura: Sakura Flight
-	// KeyLabelExecute: Execute
-	// KeyLabelDomain: Domain Expansion
-	// KeyLabelFlip: Omote/Ura Flip
-	// KeyLabelTeleport: Domain Teleport
+		Segure o botão esquerdo para desferir o combo de cinco golpes Fenda Carmesim; acertar golpes acumula Postura
+		O vigor abastece o Passo Relâmpago e o Voo Sakura; metade e o total de Postura desbloqueiam, cada um, um nível de execução
+		'''
+	KeyLabelFlashStep: Passo Relâmpago Kamui
+	KeyLabelSakura: Voo Sakura
+	KeyLabelExecute: Executar
+	KeyLabelDomain: Expansão de Domínio
+	KeyLabelFlip: Inversão Omote/Ura
+	KeyLabelTeleport: Teleporte de Domínio
 }
 
 OnikiriTrialQuestLine: {
-	// QuestCategory: Onikiri · Trial Cuts
-	// TrackerWaiting: It isn't here yet. Wait, or we go ask for it
-	// TrackerFighting: "{0}: {1:0%}"
-	// TrackerBrief: Next cut: {0}
-	// BossRushTargetName: Battle of Terminus
-	// EventActiveFormat: "{0}: underway"
-	// Trial_0: Skybound Eye
-	// Trial_1: Twain Evils of the Soil
-	// Trial_2: Clustered Blight
-	// Trial_3: Presumptuous God
-	// Trial_4: The Dividing Flesh
-	// Trial_5: Pus-Rotten Scales
-	// Trial_6: Ashes in the Abyss
-	// Trial_7: Roaring Metal Serpent
-	// Trial_8: Twin Demon Eyes
-	// Trial_9: Mingled Remains
-	// Trial_10: Mimicked Silhouette
-	// Trial_11: Bloom in the Depths
-	// Trial_12: Temple Golem
-	// Trial_13: Mad Chant at the Gate
-	// Trial_14: Looming Pale Moon
-	// Trial_15: Corefire Radiance
-	// Trial_16: Phantasmal Cluster
-	// Trial_17: Void Devourer
-	// Trial_18: Lingering Fire Dragon
-	// Trial_19: Deafening Exo-Steel
-	// Trial_20: Stifling Calamity
-	// Trial_21: Recurrent Darkness
-	/* TrialSummary_0:
+	QuestCategory: Prova
+	TrackerWaiting: Ainda não está presente
+	TrackerFighting: "{0}: {1:0%}"
+	TrackerBrief: Próximo corte: {0}
+	BossRushTargetName: Batalha do Fim
+	EventActiveFormat: "{0}: Em andamento"
+	Trial_0: Olho Noturno do Firmamento
+	Trial_1: Gêmeos Malditos da Terra Corrompida
+	Trial_2: Ninho Aglomerado de Imundície
+	Trial_3: O Falso Deus
+	Trial_4: Muralha Divisora de Carne
+	Trial_5: Escamas de Areia e Pus
+	Trial_6: Cinzas do Abismo
+	Trial_7: Serpente Trovejante de Ferro
+	Trial_8: Olhos Demoníacos Gêmeos
+	Trial_9: Carcaça Híbrida de Metal e Osso
+	Trial_10: Vulto Ilusório
+	Trial_11: Flor Oculta da Selva
+	Trial_12: Guardião Pétreo do Templo
+	Trial_13: Oração Frenética do Portal
+	Trial_14: Queda da Lua Pálida
+	Trial_15: Fulgor Ardente do Núcleo
+	Trial_16: Aglomerado de Almas Rancorosas
+	Trial_17: Devorador do Vazio
+	Trial_18: Dragão das Chamas Esquecidas
+	Trial_19: Estrondo do Aço Exo
+	Trial_20: Tempestade Sufocante da Calamidade
+	Trial_21: Reunião da Noite Remanescente
+	TrialSummary_0:
 		'''
-		There's something going on up in the sky, and I can't say what
-		Just feels like we're being watched, and the blade's getting restless too
-		Go take a look, then come back and tell me what it even was
-		Oh—and don't tip your head back too long. Neck'll ache
-		''' */
-	/* TrialSummary_1:
+		Fico com a impressão de que tem algo lá em cima encarando a gente, e até a lâmina fica inquieta aqui dentro
+		Eu não sei dizer direito o que é, então sobe lá pra dar uma espiada
+		Não fica com o pescoço esticado pra cima o tempo todo senão vai doer. Quando terminar, volta aqui pra me contar
 		'''
-		Two wrong pulls from the dirt that way—I can't tell them apart
-		Whichever sticks its head out first, cut that one. Don't stare at both
-		The blade will know the taste is off. You go first
-		''' */
-	/* TrialSummary_2:
+	TrialSummary_1:
 		'''
-		Filth bunched into one blob over there—even the wind of it is annoying
-		Don't stand around staring. Go deal with it
-		Getting it done matters more than anything else when you're back
-		''' */
-	/* TrialSummary_3:
+		O vento que vem daquela terra podre traz um cheiro horrível, pesado e rançoso, como se escondesse duas pestes diferentes
+		Se cruzar com elas, corta primeiro a que pular na sua frente, não tenta dar conta das duas ao mesmo tempo
+		Se o cheiro azedar, desembainha logo a espada. Quanto mais rápido terminar, mais cedo a gente sai pra tomar um ar
 		'''
-		Heard some puddle calls itself a god. Almost made me laugh
-		If names were that easy, who'd bother working
-		Go check. If it really calls itself that, take the name apart
-		Hey—I'm not sending you to worship. Listen carefully
-		''' */
-	/* TrialSummary_4:
+	TrialSummary_2:
 		'''
-		Up ahead feels blocked shut, and I can't say by what
-		Road's closed, so open it
-		How it feels past that—we'll talk when you're back
-		''' */
-	/* TrialSummary_5:
+		Aquela sujeira toda embaixo da terra se juntou numa maçaroca só, dá pra sentir a inhaca grudenta até de longe
+		Deixar aquilo largado só vai trazer mais dor de cabeça, então vai lá e espalha tudo num golpe só
+		Presta atenção onde pisa nessa lama, vê se não volta coberto de sujeira da cabeça aos pés
 		'''
-		The desert smells different now, rotten blooms mixed with pus, something's burrowing
-		Don't let it dig deep. Go cut it off
-		And keep the blade out of the cysts, someone lives in here
-		''' */
-	/* TrialSummary_6:
+	TrialSummary_3:
 		'''
-		Fire pit that way is still lit, like someone won't go out
-		Put it out, and watch your feet while you're at it
-		If you burn yourself, I can't blow on it for you
-		''' */
-	/* TrialSummary_7:
+		Ouvi falarem que uma maçaroca de lodo por ali tá se autoproclamando divindade. Quase caí na risada
+		Se fosse tão fácil assim inventar títulos divinos, ninguém ia perder tempo treinando e se aprimorando
+		Vai lá ver quanta força ela realmente tem. Se for só encenação barata, fura aquilo com um golpe só
+		Presta atenção no que eu tô dizendo: você vai lá pra estourar aquilo, nem pense na besteira de se ajoelhar pra rezar!
 		'''
-		There's a thing with a loud name. Sounds scary enough
-		Iron's making noise—go poke it, see if it's all bluster
-		Don't race it for whose name is bigger
-		''' */
-	/* TrialSummary_8:
+	TrialSummary_4:
 		'''
-		Two dots in the sky, like they agreed to come out together
-		If they show up as a pair, handle them separate—don't take both glares
-		When you're back you can complain whether they look human
-		''' */
-	/* TrialSummary_9:
+		Lá no fundo da terra parece que o caminho foi bloqueado por uma muralha imensa de carne, até cortar o vento dá uma sensação abafada
+		Se a passagem tá trancada, o único jeito é partir ao meio
+		Depois dessa luta o mundo ao redor provavelmente vai mudar de figura. Fica esperto! Quando passar por essa, a gente conversa
 		'''
-		Old and new mixed together over there—feels wrong, but I haven't seen clear
-		Go sort it out. Don't get bluffed
-		We'll talk later which side was even real
-		''' */
-	/* TrialSummary_10:
+	TrialSummary_5:
 		'''
-		A shadow walking too much like a person—I haven't seen the face and I'm already annoyed
-		Don't freeze staring. Go deal with it
-		Who it's copying—we'll swear about that when you're back
-		''' */
-	/* TrialSummary_11:
+		O chão do deserto tá num alvoroço danado, a areia remexendo sem parar como se um vermezão gigante tivesse cavando feito louco pra baixo
+		Antes que ele se enfie fundo demais, vai lá e corta a passagem dele
+		Mira bem onde enfia a lâmina, nada de enfiar a espada inteira na gosma podre! Eu moro aqui dentro, deixa um cantinho limpo pra mim
 		'''
-		Something blooming down below that shouldn't. Smell's already wrong
-		If it's spent, deal with it. Don't leave it to bother me
-		Florist rules later. You go first
-		''' */
-	/* TrialSummary_12:
+	TrialSummary_6:
 		'''
-		Something in the stone house that doesn't like moving. Looks hard
-		Knock it down. Don't bash the blade on stone—I feel that too
-		If your hands go numb, rub them when you're back
-		''' */
-	/* TrialSummary_13:
+		Aquela fornalha lá na frente ainda tá vermelha em brasa, e até daqui a lâmina já tá esquentando
+		Vai lá e apaga logo aquilo, não faz sentido deixar queimando pra sempre
+		Cuidado onde pisa ao passar pelas poças de lava. Se queimar a sola do pé, não vai ter ninguém pra assoprar por você!
 		'''
-		People muttering at the dungeon door, like they aren't finished
-		Interrupt them. Spare the ears
-		What they were chanting—we'll talk later. Don't believe it
-		''' */
-	/* TrialSummary_14:
+	TrialSummary_7:
 		'''
-		Something like it's pressing on the moon. Looking up feels heavy
-		Go get rid of it. Don't just stand there staring up
-		When you're back I'll ask if you're worn out
-		''' */
-	/* TrialSummary_15:
+		Os tremores vindo de debaixo da terra tão ficando mais fortes a cada instante, até a espada tá vibrando junto. Tem cara de ser um grandalhão coberto de ferro
+		O nome pode até botar medo, mas ferro continua sendo ferro. Vai lá testar a dureza dele
+		Não fica batendo de frente contra o aço maciço, procura as frestas pra não ficar com as mãos dormentes
 		'''
-		Heat from the earth's heart that way—my side feels preheated too
-		Go. The edge will run hot—know that ahead of time
-		Don't linger in the heat. Finish and pull out
-		''' */
-	/* TrialSummary_16:
+	TrialSummary_8:
 		'''
-		Ghosts knotted in the damp over there. I'm not counting
-		Handle the whole clump. Don't pick them one by one
-		And don't overnight there—I'll nag you about that when you're back
-		''' */
-	/* TrialSummary_17:
+		Apareceram dois pontos brilhantes no céu, parece até que combinaram de sair juntos. Ser encarado dos dois lados ao mesmo tempo é horrível
+		Eles se protegem bem em dupla, então mantém distância e resolve um de cada vez, nada de ficar preso no fogo cruzado
+		Anda logo, vai na agilidade! Quando voltar, você me conta que cara eles tinham
 		'''
-		That direction feels too empty. I'm going heavy on my side too
-		I can't say what it is. Just wrong
-		Go. Don't stand there alone spacing out—if you can't see clear, look after yourself first
-		We'll talk when you're back. Staying alive beats seeing clear
-		''' */
-	/* TrialSummary_18:
+	TrialSummary_9:
 		'''
-		Heard there's still a dragon like this. True or not, you go see
-		Edge'll probably burn—don't sheath it in a hurry
-		I don't want feathers. Just come back yourself
-		''' */
-	/* TrialSummary_19:
+		A vibração que vem dali tá muito esquisita, uma armação de ferro remendada com ossos velhos, tudo mal encaixado
+		Por maior que seja a carcaça, continua sendo um remendo só. Não vai se deixar impressionar pelo tamanho
+		Mira nas juntas pra desmontar aquilo peça por peça. Quando voltar, me conta qual pedaço era de verdade
 		'''
-		One boom from far off and the ears quit first
-		Go make them stop, and cover your ears on the way
-		If they're still buzzing when you're back, find somewhere quiet
-		''' */
-	/* TrialSummary_20:
+	TrialSummary_10:
 		'''
-		Air over there goes heavy and stagnant, like a door that won't air out
-		Go end it. Don't freeze in the doorway breathing that in
-		When you're back I'll tell you how to clear your head
-		''' */
-	/* TrialSummary_21:
+		Tem um vulto ali na frente que anda parecido demais com uma pessoa viva, mas não tem nem um pingo de calor humano
+		Essas imitações falsificadas que tentam copiar o jeito de andar de gente são as mais traiçoeiras. Não fica parado aí encarando
+		Avança, desembainha a lâmina e quebra essa ilusão. Quem ele tava querendo imitar a gente descobre depois que acabar
 		'''
-		They're gathering again, like nothing ever fully breaks apart
-		This one'll run long. You take it. I'll watch
-		Stand steady before you start—I'll nag you about swaying when you're back
-		''' */
+	TrialSummary_11:
+		'''
+		Subiu um perfume lá das profundezas da selva, adocicado no começo, mas com um fedor podre de decadência por baixo
+		Não importa o quanto uma flor seja bonita, se o miolo apodreceu tem que cortar fora, senão estraga o canteiro todo
+		As lições de poda de flores eu te explico com calma quando você voltar. Vai logo, e cuidado com as trepadeiras no caminho!
+		'''
+	TrialSummary_12:
+		'''
+		Tem um pedregulho enorme sentado no templo que não quer sair do lugar de jeito nenhum, parece pesado e teimoso
+		Dá um jeito de tombar ele e arrebentar a estrutura, mas nada de esmurrar a lâmina na pedra pura! Se lascar o fio, eu também sinto
+		Se o pulso ficar dormente de tanto impacto, chacoalha bem a mão quando voltar
+		'''
+	TrialSummary_13:
+		'''
+		Tem um bando de túnica na porta da masmorra resmungando uma cantilena sem fim, meus ouvidos já tão cansados só de escutar
+		Vai lá e corta o falatório deles logo, poupa os nossos ouvidos desse barulho
+		Não importa que bobagens eles tão recitando, não acredita em uma única palavra. Termina o serviço e volta logo
+		'''
+	TrialSummary_14:
+		'''
+		Parece que tem uma nuvem escura gigantesca pesando sobre o céu, olhar pra cima até aperta o peito
+		Se tá atrapalhando lá em cima, sobe lá e derruba aquilo de uma vez
+		Não fica aí embaixo moscando, leva a sério! Quando você voltar são e salvo, eu te pergunto se tá muito cansado
+		'''
+	TrialSummary_15:
+		'''
+		O calor do coração da terra tá subindo em ondas, até a lâmina onde eu moro já tá pelando de quente
+		Chegar perto dessa vez vai queimar pra valer, fica avisado desde já
+		Não fica enrolando naquele bafo fervendo: acerta o golpe e sai fora bem rápido
+		'''
+	TrialSummary_16:
+		'''
+		Lá embaixo tá úmido demais, juntou um enxame de almas penadas rodopiando que eu até perdi a conta de quantas tem
+		Já que tão todas amontoadas, não perde tempo caçando uma por uma, limpa tudo numa varrida só da lâmina
+		A masmorra é fria e úmida, não vai ficar de bobeira lá dentro! Termina logo e sobe de volta
+		'''
+	TrialSummary_17:
+		'''
+		Aquela direção parece completamente vazia, dá um aperto no peito só de olhar, e a lâmina tá pesando pra baixo
+		Eu não sei que monstro gigante tá vindo na nossa direção, então redobra o cuidado
+		Quando chegar lá, não vai ficar paralisado de espanto. Por mais perigoso que seja, você voltar inteirinho é o que mais importa
+		'''
+	TrialSummary_18:
+		'''
+		Dizem que lá no fim do mar de fogo ainda restou um dragão enorme. Se é verdade ou não, vai lá conferir
+		Na hora da briga a lâmina provavelmente vai ficar em brasa, aguenta firme
+		Eu não ligo pra escamas raras nem penas de dragão, só quero que você volte são e salvo, num pedaço só
+		'''
+	TrialSummary_19:
+		'''
+		Dá pra ouvir o canhoneio de ferro estrondando de léguas de distância, minha cabeça tá latejando com essa barulheira
+		Vai lá e faz aquele bando de lata calar a boca, e protege os ouvidos no caminho
+		Se os seus ouvidos continuarem zumbindo quando voltar, eu acho um cantinho sossegado pra você descansar
+		'''
+	TrialSummary_20:
+		'''
+		O ar por ali tá viscoso e pesado, puxar o ar parece engolir chumbo no peito
+		Vai lá e corta aquela névoa ao meio, nada de ficar parado na ventania respirando aquele ar abafado
+		Quando voltar são e salvo, eu te ensino as técnicas de respiração da minha terra natal
+		'''
+	TrialSummary_21:
+		'''
+		Parece que essas sombras nunca somem de vez, tão todas se amontoando de novo
+		Essa luta vai se arrastar por um bom tempo, então solta os braços e luta com tudo! Eu vou tá aqui dentro da lâmina de olho em você
+		Antes de atacar, firma bem os pés no chão. Quando a gente sair vitorioso, eu ainda vou te dar uma bronca se você tiver bambeado as pernas!
+		'''
 }
 
 KikasaOverride: {
-	// DisplayName: Kikasa
-	/* Tooltip:
+	DisplayName: Kikasa
+	Tooltip:
 		'''
-		Hold left click to hover the umbrella overhead, dropping homing ink rain to a steady beat
-		Hold right click to charge ink upside down; release to pour out an ink torrent
-		Rain and torrents you command by hand stamp an Ink Seal; your summons deal bonus damage to sealed targets
-		''' */
-	// GhostCountLine: Minion slots {0} · {1}
-	// TierName0: Drizzle
-	// TierName1: Side Toss
-	// TierName2: Volley
-	// TierName3: Lake Tilt
-	// KeyLabelDomain: Domain Expansion
-	// KeyLabelSink: Sink into the Lake
-	// KeyLabelMutate: Flip the Lake
-	// KeyLabelWheel: Shade Wheel
-	// KeyLabelRestart: Self-Restart
-	// KeyLabelTeleport: Domain Teleport
-	// KeyLabelPanorama: Lakeheart
-	// MutateFallback: Middle Mouse
+		Segure o botão esquerdo para planar o guarda-chuva sobre a cabeça, fazendo chover tinta teleguiada num compasso constante
+		Segure o botão direito para virar o guarda-chuva e acumular tinta; solte para despejar uma torrente de tinta
+		A chuva e a torrente comandadas por suas mãos aplicam um Selo de Tinta; seus lacaios causam dano adicional aos alvos selados
+		'''
+	GhostCountLine: Espaços de lacaio {0} · {1}
+	TierName0: Chuvisco
+	TierName1: Arremesso Lateral
+	TierName2: Salva
+	TierName3: Tombo do Lago
+	KeyLabelDomain: Expansão de Domínio
+	KeyLabelSink: Afundar no Lago
+	KeyLabelMutate: Inverter o Lago
+	KeyLabelWheel: Roda de Espectros
+	KeyLabelRestart: Reinício Pessoal
+	KeyLabelTeleport: Teleporte de Domínio
+	KeyLabelPanorama: Coração do Lago
+	MutateFallback: Botão do Meio do Mouse
 }
 
 KikasaTrialQuestLine: {
-	// QuestCategory: Kikasa · The Sinking Feast
-	// TrackerWaiting: Not seated yet—go invite it, or wait a while
-	// TrackerFighting: "{0}: {1:0%}"
-	// TrackerBrief: Next course: {0}
-	// BossRushTargetName: Battle of Terminus
-	// EventActiveFormat: "{0}: In progress"
-	// Trial_0: Soft First Course
-	// Trial_1: Night-Staring Eye
-	// Trial_2: Foul Soil Morsels
-	// Trial_3: Festering Depths
-	// Trial_4: Sweet Nectar and Stubborn Hooves
-	// Trial_5: Old Bones at the Gate
-	// Trial_6: Motley God-Gel
-	// Trial_7: Flesh Across the Path
-	// Trial_8: Winged Pink Gel
-	// Trial_9: Golden Drool in Rotten Sand
-	// Trial_10: Three Tastes of Iron
-	// Trial_11: Crimson Bloom of the Jungle
-	// Trial_12: Crystal-Shelled Morsel
-	// Trial_13: Temple Boulder
-	// Trial_14: Wave-Stirring Winged Boar
-	// Trial_15: Nocturnal Radiance
-	// Trial_16: Chanting at the Portal
-	// Trial_17: Moonback Reflection
-	// Trial_18: Kinfolk at the Table
-	// Trial_19: Ancient Acid-Bather
-	// Trial_20: Void Serpent Beyond
-	// Trial_21: Unquenched Blazing Plume
-	// Trial_22: Peak Iron and Peak Flame
-	// Trial_23: The Full Table Feast
-	/* TrialSummary_0:
+	QuestCategory: Prova
+	TrackerWaiting: Ainda não se sentou
+	TrackerFighting: "{0}: {1:0%}"
+	TrackerBrief: Próximo prato: {0}
+	BossRushTargetName: Batalha do Fim
+	EventActiveFormat: "{0}: Em andamento"
+	Trial_0: Primeiro Prato Macio
+	Trial_1: Olho à Espreita na Noite
+	Trial_2: Iguarias da Terra Corrompida
+	Trial_3: Ranços Subterrâneos
+	Trial_4: Néctar Doce e Casco Teimoso
+	Trial_5: Ossos Velhos no Portal
+	Trial_6: Geleia Divina Impura
+	Trial_7: Carne Pelo Caminho
+	Trial_8: Geleia Rosada Alada
+	Trial_9: Saliva Dourada na Areia Podre
+	Trial_10: Três Sabores de Ferro
+	Trial_11: Broto Carmesim da Selva
+	Trial_12: Petisco de Casca Cristalina
+	Trial_13: Rochedo do Templo
+	Trial_14: Javali Alado Agitador de Ondas
+	Trial_15: Resplendor Noturno
+	Trial_16: Cantilena Diante do Portal
+	Trial_17: Reflexo no Dorso da Lua
+	Trial_18: Semelhantes Dividindo a Mesa
+	Trial_19: Veterano do Mar Ácido
+	Trial_20: O Devorador Além do Firmamento
+	Trial_21: Pluma Ardente Perpétua
+	Trial_22: O Ápice do Ferro e do Fogo
+	Trial_23: O Banquete de Mesa Cheia
+	TrialSummary_0:
 		'''
-		Something soft wobbles at the foot of the hills, blue and endless
-		The lake has never tasted gel—it wants to know what the bite sounds like
-		Lure it under the umbrella, never mind the stickiness
-		If it melts, call it soup
-		''' */
-	/* TrialSummary_1:
+		Uma poça flácida de gosma azul estirada aos pés da colina, tremendo sem parar
+		Uma carcaça estufada recolhida de sabe-se lá onde, nada além de empáfia vazia
+		Vá e desfaça-a em pedaços. Não permita que fique no caminho atrapalhando a passagem
 		'''
-		An eye stares at people in the night, quite rudely
-		The lake wrinkles whenever it catches that stare—it makes the ribs itch
-		Go press that gaze into the water
-		Things that watch all learn to close their eyes eventually
-		''' */
-	/* TrialSummary_2:
+	TrialSummary_1:
 		'''
-		Things come burrowing out of the foul soil—one long, or one wet lump of brain
-		Both taste of rot; the lake isn't picky, take whichever crosses your path
-		Don't gather the pieces, let them flow in on their own
-		''' */
-	/* TrialSummary_3:
+		Pelo meio da noite, um olhão imenso paira no firmamento, encarando descaradamente
+		Não pestaneja uma única vez, o bastante para causar calafrios na espinha
+		Vá derrubá-lo. Com aquele olho fechado, poupa-nos de uma irritação desnecessária
 		'''
-		A rotten thought festers underground, or a nest of blood-boring worms
-		One sniff downwind tells you: spoiled
-		The lake says spoiled is still a flavor—serve it
-		Keep your gloves on, that juice clings
-		''' */
-	/* TrialSummary_4:
+	TrialSummary_2:
 		'''
-		A jar of sweetness in the jungle, a stubborn head out in the snow
-		Pick one to bring—the lake is open to both tastes today
-		The sweet one stings, the stubborn one stomps
-		Either way, don't come back empty-handed
-		''' */
-	/* TrialSummary_5:
+		Duas abominações rastejando para fora da terra podre: uma serpente comprida e uma maçaroca de cérebro ensopado
+		Sente-se o cheiro pungente de lama fétida a léguas de distância
+		Resolva a primeira que cruzar o seu caminho. Corte-a em pedaços e não volte empapado de fedor
 		'''
-		Old bones hang at the dungeon door, addicted to keeping watch
-		Bones never soak soft, the lake knows—it just wants to hear the crack
-		End his vigil; keep the key for yourself
-		Bone dregs settle nicely, good for paving
-		''' */
-	/* TrialSummary_6:
+	TrialSummary_3:
 		'''
-		A heap of gel calls itself a god, purple and black stirred together
-		The lake never lacks water—what it lacks is a mouthful this big
-		Lay it flat, see what it really melts into
-		Don't drink; that isn't for you
-		''' */
-	/* TrialSummary_7:
+		Nas profundezas apodrece um ninho de carne corrompida, coalhado de vermes que perfuram a carne
+		Deixar aquilo de lado só fará com que apodreça mais fundo. Vá direto e arrebente aquilo
+		Ajuste bem as luvas; aquele caldo asqueroso na pele é difícil de lavar
 		'''
-		A wall of flesh stands stacked across hell, blocking everyone's road
-		Something hot—just the thing to cool the lake's temper
-		Pierce it, and the world will change—that's not on you
-		The canopy stops sparks, go without worry
-		''' */
-	/* TrialSummary_8:
+	TrialSummary_4:
 		'''
-		A pink smear hangs over the Hallow, flying with a crystal guard
-		The lake has tasted grounded gel; never the flying kind
-		Drag her down, crystals and all
-		Mind the shards, they chafe the ribs
-		''' */
-	/* TrialSummary_9:
+		Na selva esconde-se uma vespa peçonhenta; na tundra gélida habita um cervo teimoso e caolho
+		Escolha o primeiro com quem topar e dê cabo dele; ambos têm temperamentos intratáveis
+		O ferrão goteja veneno, o casco ressequido levanta nevascas. Não se descuide de nenhum dos dois
 		'''
-		The bloomsand serpent is back, its red blooms festered into cysts
-		Don't step in the golden puddles, that is its drool
-		The lake takes every flavor, it just hates what this one did to the sand
-		Go, invite it to the bottom, and shake the umbrella clean after
-		''' */
-	/* TrialSummary_10:
+	TrialSummary_5:
 		'''
-		Someone forged three iron things: a chain, two lamps, a frame of bones
-		Iron never soaks through; steep it forever and it still tastes of rust
-		Not the lake's favorite, but a feast can't lack these three courses
-		One at a time—don't let them all wake on the same night
-		''' */
-	/* TrialSummary_11:
+		Junto ao portão da masmorra resta um velho esqueleto de vigia, apegado à sua guarda por toda a existência
+		Carrega idade tão avançada, mas a obstinação é mais pesada que trancas de ferro
+		Interrompa a sua vigília, tome a chave e mande-o descansar sob a terra
 		'''
-		Deep in the jungle a great bloom smolders, red, asleep
-		Few who wake her come back whole
-		The lake wants her sap; it colors the water just right
-		Vines on the umbrella? Cut them, no courtesy needed
-		''' */
-	/* TrialSummary_12:
+	TrialSummary_6:
 		'''
-		A big shrimp nests under the beach, dressed in crystal shell, and it molts
-		When its claw snaps, the water cracks, heard half a sea away
-		The lake has craved this springy bite for ages, go and send the invitation
-		The shell it sheds on its own, the punch you dodge on your own
-		''' */
-	/* TrialSummary_13:
+		Púrpura e negro misturados num caldeirão viscoso, ousando chamar a si mesmo de divindade
+		Uma mistura tosca e desconexa jamais alcançará grande estatura
+		Vá e desfaça aquilo até dissolver, para que não suje este chão
 		'''
-		A stone one squats in the temple—blockheaded, fond of hopping
-		Stone sinks fastest; the lake's collection is short exactly one
-		Break its workings and bring the shell whole
-		The splash it throws up is your reward
-		''' */
-	/* TrialSummary_14:
+	TrialSummary_7:
 		'''
-		A pig out at sea grew wings and dares to stir up waves
-		The lake can't stand it: water's temper is not a pig's to wield
-		Press it back into the water—which water, you decide
-		The lake provides the bait; you dig the worm
-		''' */
-	/* TrialSummary_15:
+		No inferno estende-se uma colossal muralha de carne, barrando por completo a passagem adiante
+		Mesmo através do dossel do guarda-chuva sente-se o calor sufocante e opressivo
+		Perfure-a de lado a lado. Se o mundo mudar com isso, nada terá a ver com você
 		'''
-		A glowing one flies the Hallow at night, her temper tied to the sun
-		The lake cannot hold her image—too bright for the surface to keep
-		Go by night; knead that light dim and bring it back
-		Provoke her at noon and the consequences are yours to keep
-		''' */
-	/* TrialSummary_16:
+	TrialSummary_8:
 		'''
-		A chanter stands at the dungeon door, chanting the sky half-open
-		The lake doesn't understand scripture—only that he means to let something in
-		Interrupt him; let the rite rot half-finished
-		If his beads drop, leave them—the lake takes no counterfeits
-		''' */
-	/* TrialSummary_17:
+		Suspensa no ar está uma massa rosada e macia, que marcha para a briga cercada de comitiva
+		Toda enfeitada, uma pompa deveras extravagante
+		Derrube-a de lá. Por maior que seja a pompa, não resistirá a um único aguaceiro
 		'''
-		The one behind the moon has come down, covered in eyes
-		Whatever falls from the sky is only a reflection once it's in the lake
-		Go collect the reflection's original
-		The moon will be lovely that night—watch it once for me
-		''' */
-	/* TrialSummary_18:
+	TrialSummary_9:
 		'''
-		A patched-up soul drifts in the dungeon's depths, mended over centuries
-		Even the ghosts steeping in the lake shrink into the ribs at the sight of it
-		Killing your own kind is an ugly phrase—call it sharing a table
-		After this order the umbrella gets crowded; bear with it
-		''' */
-	/* TrialSummary_19:
+		Da areia ergue-se uma serpente coberta de flores pútridas, gotejando pus dourado pelo chão
+		Mais asquerosa de se ver do que as que apodrecem na água, o cheiro de perto chega a sufocar
+		Dê um fim nela. Ao terminar, enxágue bem a copa do guarda-chuva antes de retornar
 		'''
-		An old thing lies pressed under the Sulphurous Sea, sour in scale and temper
-		The lake and he go way back; neither respects the other's water
-		Deliver a message: the table is set, and he is invited to sink
-		He bites, and his teeth are still good—take care
-		''' */
-	/* TrialSummary_20:
+	TrialSummary_10:
 		'''
-		A long worm circles beyond the sky, and the stars keep out of its way
-		It has swallowed gods; the lake wonders what god tastes like
-		Make it dive into water it should never have entered
-		The shell is yours, the meat belongs to the lake
-		''' */
-	/* TrialSummary_21:
+		Alguém forjou três engrenagens de ferro: correntes, holofotes e uma ossatura de aço com quatro braços
+		O fedor de ferro cru é pesado, ruidoso e espalhafatoso
+		Desmonte peça por peça, não os deixe agir todos ao mesmo tempo
 		'''
-		Across the jungle they keep a ball of fire, burning who knows how long
-		Fire and the lake are old rivals; time to settle it
-		Press that blaze out—the lake will pour the last ladle itself
-		Wet feathers don't fly; leave not one
-		''' */
-	/* TrialSummary_22:
+	TrialSummary_11:
 		'''
-		The last two tables open together: one all iron, one only fire
-		A craftsman's pride and a witch's obsession—the lake wants to watch both settle to the bottom
-		Any order you like; just come to the table alive
-		After this meal, the lake is about full
-		''' */
-	/* TrialSummary_23:
+		Nas profundezas da selva repousa uma enorme flor carmesim, espalhando vinhas desenfreadas por todo lado
+		Se a despertar, o temperamento dela é furioso, enroscando-se em tudo o que vê pela frente
+		Arranque-a pela raiz. Se as vinhas tentarem enrolar no guarda-chuva, corte-as sem cerimônia
 		'''
-		They have all come back, or the old one in the abyss has woken
-		A full table at last—the lake's water rose just from waiting
-		You only mind the umbrella; take them one by one
-		When this feast is done, the rain stops
-		''' */
+	TrialSummary_12:
+		'''
+		Oculto sob a areia da praia aninha-se um grande camarão, trajando carapaça cristalina e trocando de casca
+		Balança as tenazes e desfere um golpe capaz de fender as águas, estrondo considerável
+		Deixe-o trocar de casca à vontade. Observe bem os golpes e não seja apanhado de surpresa
+		'''
+	TrialSummary_13:
+		'''
+		No templo acocora-se um monólito quadrado que recusa-se a arredar o pé
+		Mecanismos engenhosos por dentro, mas arrebentado ao meio não passa de uma carcaça oca
+		Desfaça-o em pedaços, não convém deixá-lo ocupando o salão e trancando o caminho
+		'''
+	TrialSummary_14:
+		'''
+		No mar há um porco com asas querendo levantar ondas como se fosse homem
+		Deveria olhar-se no espelho; o temperamento da água não se curva aos caprichos de um porco marinho
+		Afunde-o de volta nas profundezas, poupa-me de vê-lo agitando-se diante dos meus olhos
+		'''
+	TrialSummary_15:
+		'''
+		Pelo céu noturno voa uma figura reluzente, ferindo a vista em plena escuridão
+		Desagrada-me aquilo que brilha em demasia, contemplar cansa a vista
+		Aproveite o manto da noite para esmaecer aquele brilho. Jamais vá provocá-la em plena luz do dia
+		'''
+	TrialSummary_16:
+		'''
+		Diante do portal da masmorra alguém murmura preces sem parar, cansando os ouvidos
+		Aquilo que ele tenta puxar do vazio não pertence a um bom caminho
+		Interrompa aquele ritual, antes que a agitação fuja ao controle
+		'''
+	TrialSummary_17:
+		'''
+		A imensa sombra por trás da lua está prestes a descer, coberta de olhos por toda parte
+		Fitou o reino mortal por incontáveis eras; é hora de pôr um fim a isso
+		Vá e desfaça-a em pedaços. Depois de terminar, contemple o luar desta noite mais uma vez por mim
+		'''
+	TrialSummary_18:
+		'''
+		Nas profundezas da masmorra flutua um vasto nó de almas rancorosas, remendadas e cerzidas há séculos
+		São da mesma laia que eu no fim das contas; lamentando dia após dia, cansa apenas de assistir
+		Disperse-as de uma vez por todas. O retorno à quietude é melhor do que aquele tormento eterno
+		'''
+	TrialSummary_19:
+		'''
+		Sob o Mar Sulfuroso jaz sepultado um fóssil imortal, exalando acidez e com temperamento pior que água azeda
+		Cruzamos caminhos tempos atrás, e nenhum cedeu um palmo sequer
+		Vá liquidá-lo em meu favor. Considere como o acerto de uma velha conta minha
+		'''
+	TrialSummary_20:
+		'''
+		A grande serpente que circula no firmamento, reza a lenda que devorou até deuses
+		A que nível um deus chega não me interessa, mas vê-la rodopiando sobre a cabeça causa tontura
+		Derrube-a de lá. Fique com a couraça rígida para você, ignore o resto
+		'''
+	TrialSummary_21:
+		'''
+		Nos confins da selva arde uma labareda furiosa que jamais apagou-se através dos anos
+		O fogo ardente e as tempestades de vento e chuva nunca se toleraram desde eras imemoriais
+		Vá extinguir essas chamas. Penas ensopadas nunca mais voarão, como deve ser
+		'''
+	TrialSummary_22:
+		'''
+		As duas últimas contendas brutais encontraram-se: uma hoste de marionetes de ferro e uma bruxa atada a obsessões
+		Nenhum dos lados é adversário simples, privando esta terra de um só momento de paz
+		A ordem fica a seu critério, despache o mais ágil primeiro. Basta que saia de lá com vida
+		'''
+	TrialSummary_23:
+		'''
+		As sombras outrora derrotadas reuniram-se novamente, ou talvez o antigo dragão do fundo do abismo tenha despertado
+		Seja qual for a verdade, a comoção não será modesta
+		Segure firme o guarda-chuva e avance passo a passo. Findando esta contenda... a chuva lá fora deverá finalmente cessar
+		'''
 }
 
 KikasaText: {

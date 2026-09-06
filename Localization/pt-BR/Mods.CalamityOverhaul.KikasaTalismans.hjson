@@ -1,215 +1,215 @@
 KikasaTalismanLin: {
-	// DisplayName: Fine Rain Talisman
-	// Tooltip: Faster rain beats, denser still as the rain holds; each drop slightly lighter
-	// Origin: The old scribe said: no need to trouble the Dragon King for rain—one Fine Rain Talisman will do. Small drops are fine, so long as they never stop
-	// Power: "'Fine Rain': ink-rain tempo +20%, drops falling one after another; about ten seconds of unbroken rain builds 'Lin': a drizzle veil hangs beneath the umbrella and the tempo quickens another 10%; the buildup fades when the rain stops, and recalling the umbrella halves it at once"
-	// Burden: Drop damage -6%
+	DisplayName: Talismã da Chuva Serena
+	Tooltip: Compasso da chuva acelerado, chuva contínua forma um véu de chuvisco; dano de gota individual -6%
+	Origin: Jinan é terra de muitas chuvas, e o chuvisco às margens do Lago Daming costuma cair sem trégua por dias a fio. A chuva é mansa, porém incessante, empapando aos poucos todo o céu e a terra
+	Power: "Chuva Serena": cadência da chuva de tinta acelerada em 20%; manter a chuva por cerca de 10 segundos entra no estado "Chuva Firme": um véu cerrado de chuvisco desce sob o guarda-chuva acelerando a cadência em mais 10%; parar a chuva dissipa o efeito aos poucos, recolher o guarda-chuva reduz o acúmulo pela metade de imediato
+	Burden: Dano direto da gota reduzido em 6%
 }
 
 KikasaTalismanLao: {
-	// DisplayName: Ink Puddle Talisman
-	// Tooltip: Ink drops always pool into puddles; puddles drink the rain, rising until they overflow; direct hits slightly lighter
-	// Origin: The scribe hated seeing rain dry up the moment it landed—a whole inkfall wasted—so he drew this talisman to keep the rain on the ground a while longer
-	// Power: "'Pooling': ink drops always pool into puddles on landing (no need to reach the fourth tier, Lake Tilt), and puddles last +50% and spread +30%; drops merging into an existing puddle raise its water level, and the third one overflows it: the puddle widens a step and slaps out overflow surges to both sides (50% puddle damage each)"
-	// Burden: Drop direct damage -5%
+	DisplayName: Talismã da Poça de Tinta
+	Tooltip: Gotas de tinta sempre formam poças ao tocar o chão; poças absorvem chuva até transbordar em ondas; dano de acerto direto -5%
+	Origin: As águas acumulam-se nos terrenos baixos; a chuva que tomba e não se dissipa acumula-se numa poça de água estagnada. Águas paradas são fundas e conectam-se a correntezas ocultas
+	Power: "Poça Acumulada": gotas de tinta sempre formam poças ao tocar o solo, com duração da poça aumentada em 50% e área de cobertura em 30%; gotas que caírem em poças existentes elevam o nível da água, e após absorverem três torrentes transbordam, arremessando ondas para ambos os lados causando dano equivalente a 50% da poça cada
+	Burden: Dano direto da gota reduzido em 5%
 }
 
 KikasaTalismanPei: {
-	// DisplayName: Downpour Talisman
-	// Tooltip: Faster inverted charging; a full bowl tips like a floodgate; steady rain slightly slower
-	// Origin: The worst prayer for rain is a half-hearted one. This talisman answers a single request: if it rains, let it pour
-	// Power: "'Downpour': inverted charge rate +35%, ink geyser damage +20%; at full charge the bowl brims over with beads and a low hum, and pouring right then opens the gate: a burst erupts at the fall's source (80% pour damage) and the inkfall runs wider"
-	// Burden: Ink-rain tempo 8% slower
+	DisplayName: Talismã do Aguaceiro Torrencial
+	Tooltip: Acúmulo invertido de tinta acelerado, torrente com carga máxima dispara uma onda de choque devastadora; cadência da chuva padrão -8%
+	Origin: Quando desaba um aguaceiro, o firmamento parece romper-se feito dique frouxo. A chuva ou não cai, ou desaba sem poupar nada
+	Power: "Aguaceiro": velocidade de acúmulo de tinta invertido aumentada em 35%, dano do gêiser de tinta aumentado em 20%; no instante da carga máxima, libera a comporta da torrente de imediato, detonando uma onda de choque na origem que causa dano equivalente a 80% da torrente e alarga o fluxo do dilúvio
+	Burden: Cadência padrão da chuva de tinta reduzida em 8%
 }
 
 KikasaTalismanSha: {
-	// DisplayName: Swift Rain Talisman
-	// Tooltip: The umbrella rises near-instantly; the opening beat drops three rapid drops in a row; the beat after lags slightly
-	// Origin: The scribe met robbers on a night road—umbrella up, rain down, umbrella away, all in a blink. Afterward he wrote that one word, "fast", into a talisman
-	// Power: "'Swift Rain': umbrella rise time -75%; the opening beat always drops a rapid triple (75% damage each)"
-	// Burden: After the triple, the next beat's interval +40%
+	DisplayName: Talismã da Chuva Rápida
+	Tooltip: Abertura do guarda-chuva quase instantânea, primeiro compasso despeja três gotas rápidas em sucessão; intervalo após a salva +40%
+	Origin: As pancadas repentinas de chuva chegam sem aviso, e num piscar de olhos as cortinas de água já fecharam qualquer rota de fuga
+	Power: "Chuva Rápida": tempo de abertura do guarda-chuva reduzido em 75%; o primeiro compasso ao abrir sempre faz tombar três gotas rápidas em sucessão, cada uma causando 75% do dano
+	Burden: Após disparar a salva tripla, o intervalo até o próximo compasso é prolongado em 40%
 }
 
 KikasaTalismanYin: {
-	// DisplayName: Ink Bloom Talisman
-	// Tooltip: Drop hits stack ink marks; at five stacks they bloom into a burst; direct hits slightly lighter
-	// Origin: Leave a drop of ink on wet paper and it blooms into a flower by itself. The scribe said enemies work the same way—land a few more drops, and they bloom
-	// Power: "'Ink Bloom': ink drops leave marks on hit (up to five stacks, each bleeding over time); at five stacks the ink blooms, dealing 160% drop damage and clearing the stacks"
-	// Burden: Drop direct damage -8%
+	DisplayName: Talismã da Flor de Tinta
+	Tooltip: Acertos de gotas acumulam marcas de tinta, detonando em dano explosivo ao atingir cinco camadas; dano direto da gota -8%
+	Origin: Uma gota densa de tinta caindo no papel Xuan úmido logo se expande ao longo das fibras numa mancha floral. Camadas sobre camadas de tinta embebida hão de rasgar o papel afinal
+	Power: "Flor de Tinta": gotas de tinta deixam marcas ao acertar (acumulando até 5 camadas, causando dano de sangramento contínuo proporcional); ao atingir 5 camadas a flor de tinta desabrocha, detonando com dano equivalente a 160% do dano da gota e dissipando todas as camadas
+	Burden: Dano direto da gota reduzido em 8%
 }
 
 KikasaTalismanLu: {
-	// DisplayName: Sweet Dew Talisman
-	// Tooltip: Drop hits sometimes condense dewdrops; picking one up restores life; rain beats slightly slower
-	// Origin: The scriptures say sweet dew falls from heaven and wards off all illness. The scribe never managed that miracle, so he settled for the next best thing: a little sweetness saved up in every drop
-	// Power: "'Sweet Dew': ink drops have a 12% chance on hit to condense a dewdrop; picking one up restores 2 life; at most three afield"
-	// Burden: Ink-rain tempo 6% slower
+	DisplayName: Talismã do Orvalho Doce
+	Tooltip: Acertos de gotas ocasionalmente condensam orvalho, recuperando vida ao ser recolhido; cadência da chuva de tinta -6%
+	Origin: Pela manhã a folhagem condensa orvalho, com vapor d'água de sabor suave. Conseguir reunir algumas gotas de orvalho límpido em meio a uma tempestade sombria já é uma bênção rara
+	Power: "Orvalho Doce": gotas de tinta têm 12% de chance ao acertar inimigos de condensar uma gota de orvalho, que restaura 2 pontos de vida ao ser coletada (máximo de 3 orvalhos simultâneos em campo)
+	Burden: Cadência da chuva de tinta reduzida em 6%
 }
 
 KikasaTalismanFei: {
-	// DisplayName: Lingering Mist Talisman
-	// Tooltip: Every third drop becomes a mist-drop, leaving a slowing, searing fog where it lands; the mist-drop itself is lighter
-	// Origin: Halfway down a mountain, rain often turns to mist that clings and will not let go. The scribe found that clinging worse than any raindrop, so he took it into the talisman and put it to work
-	// Power: "'Lingering Mist': every third ink drop becomes a mist-drop—its impact leaves a fog for two seconds, and foes inside take damage over time and lose 10% speed"
-	// Burden: Mist-drop damage -30%
+	DisplayName: Talismã da Névoa Densa
+	Tooltip: Cada terceira gota de tinta converte-se em névoa, deixando névoa espessa que fere e desacelera; dano direto da gota de névoa -30%
+	Origin: Quando a umidade atinge o ápice, a chuva condensa-se numa névoa gélida e espessa. Quem nela se perde perde o rumo, sentindo o frio úmido calar fundo na carne e nos ossos
+	Power: "Névoa Densa": cada terceira gota de tinta converte-se em gota de névoa: deixa no local de impacto uma névoa durando 2 segundos, causando dano contínuo e reduzindo a velocidade de movimento dos inimigos dentro dela em 10%
+	Burden: Dano direto do projétil de névoa reduzido em 30%
 }
 
 KikasaTalismanXian: {
-	// DisplayName: Scattering Pearls Talisman
-	// Tooltip: Large drops shatter into five bouncing ink pearls on landing; puddles slightly smaller
-	// Origin: Heavy rain on flagstones sends beads leaping waist-high and soaks you through. The scribe wrote that leap into the talisman, and taught the beads to bite
-	// Power: "'Scattering Pearls': large drops shatter on landing into five ink pearls (30% damage each), and each pearl can bounce twice more"
-	// Burden: Puddle radius -15%
+	DisplayName: Talismã das Pérolas Salpicadas
+	Tooltip: Gotas pesadas de tinta quebram-se em cinco pérolas saltitantes ao tocar o chão; raio da poça gerada -15%
+	Origin: Gotas despencando do alto contra pedras azuis partem-se em contas espalhadas por toda parte. Parecem miúdas e dispersas, mas saltam sem parar ferindo a tudo de novo
+	Power: "Pérolas Salpicadas": gotas pesadas de tinta estilhaçam-se ao tocar o solo em 5 pequenas pérolas de tinta, cada uma causando dano equivalente a 30% da gota original e capaz de quicar mais 2 vezes
+	Burden: Raio da poça de tinta formada reduzido em 15%
 }
 
 KikasaTalismanXi: {
-	// DisplayName: Tide Talisman
-	// Tooltip: Puddles breathe like the tide and surge at nearby foes; puddle lifespan slightly shorter
-	// Origin: The scribe lived three years by the sea and learned exactly one thing: water does not wait to be stepped in—it goes over by itself
-	// Power: "'Tide': ink puddles gain the tide's nature—they swell and ebb, and fresh ink landing in one sends it surging at the nearest foe, the wave-edge dealing 50% puddle damage"
-	// Burden: Puddle lifespan -20%
+	DisplayName: Talismã da Maré
+	Tooltip: Poças de tinta avançam ritmicamente em ondas contra inimigos próximos; duração da poça -20%
+	Origin: A água corre para os declives e pulsa ao ritmo das marés. Poças que guardam a natureza da maré nunca aguardam inertes; onde a maré avança, a água traga por si só
+	Power: "Maré": poças de tinta adquirem ritmo de maré: inflando e vazando ao ritmo da respiração, gotas novas que caem numa poça existente arremessam ondas na direção do inimigo mais próximo, a crista causando dano equivalente a 50% da poça
+	Burden: Duração da poça reduzida em 20%
 }
 
 KikasaTalismanZi: {
-	// DisplayName: Ink Soak Talisman
-	// Tooltip: Foes soaking in puddles gain stacks that deepen the ink damage they take; the puddle itself is lighter
-	// Origin: Cloth must steep in the vat three full days before the dye takes. The scribe once dyed cloth, and knows better than anyone what "soaking" can do
-	// Power: "'Ink Soak': foes standing in an ink puddle keep gaining soak (up to eight stacks); each stack increases the ink damage they take by 2.5%"
-	// Burden: Puddle damage -25%
+	DisplayName: Talismã da Tintura Imersa
+	Tooltip: Inimigos que permanecem nas poças sofrem vulnerabilidade crescente; dano base da poça -25%
+	Origin: Tecido mergulhado no tacho de tingimento absorve a cor quanto mais tempo repousa. O que se banha em água estagnada, com o passar dos dias, sente até os próprios ossos amolecerem
+	Power: "Tintura Imersa": inimigos sobre poças de tinta acumulam continuamente camadas de imersão (até 8 camadas), cada camada aumentando em 2,5% o dano espectral de tinta recebido
+	Burden: Dano base da poça reduzido em 25%
 }
 
 KikasaTalismanTing: {
-	// DisplayName: Thunder Geyser Talisman
-	// Tooltip: Ink geysers become thunder columns that chain lightning to nearby foes; cascades sometimes raise a small thunder-geyser on landing; charging slightly slower
-	// Origin: Nothing is more frightening than a lake in a thunderstorm—lightning strikes the water and the whole lake lights up with it. The scribe drew this talisman from that one sight
-	// Power: "'Thunder Geyser': geyser columns +50% taller, and hits chain lightning to up to two nearby foes (50% geyser damage each); even an unfilled cascade has a 25% chance to raise a small thunder-geyser on landing"
-	// Burden: Inverted charge rate -13%
+	DisplayName: Talismã do Gêiser Trovejante
+	Tooltip: O gêiser de tinta irrompe em torrente elétrica que encadeia raios; taxa de acúmulo invertido -13%
+	Origin: As noites tempestuosas sobre o lago são as mais perigosas: quando o relâmpago atinge as águas serenas, a profundeza inteira transforma-se num oceano revolto de eletricidade
+	Power: "Gêiser Trovejante": altura da erupção do gêiser de tinta aumentada em 50%, encadeando raios após o impacto para até 2 inimigos próximos (causando 50% do dano do gêiser cada); torrentes derramadas sem carga completa também têm 25% de chance de despertar um pequeno gêiser trovejante ao tocar o solo
+	Burden: Velocidade de acúmulo de tinta invertido reduzida em 13%
 }
 
 KikasaTalismanHong: {
-	// DisplayName: Rainbow Bridge Talisman
-	// Tooltip: After a cascade ends, a rainbow bridge arches up—buffs beneath it, burns along its span; the cascade is slightly narrower
-	// Origin: A rainbow after rain is a good omen. The scribe simply drew the omen into the talisman: the moment the rain stops, the bridge goes up, and everyone beneath it shares the luck
-	// Power: "'Rainbow Bridge': when a cascade ends, a rainbow arches over the landing point for five seconds—+10% movement speed and +10% summon damage beneath it, and foes crossing the span take 40% cascade damage every half second"
-	// Burden: Cascade width -10%
+	DisplayName: Talismã da Ponte do Arco-Íris
+	Tooltip: A torrente ergue uma ponte de arco-íris concedendo velocidade e queimando quem a atravessar; largura da torrente -10%
+	Origin: Logo após a tempestade amainar, a luz do sol rompe a fresta das nuvens, projetando um arco-íris sobre o vapor d'água que sobe. Um vislumbre efêmero que se esvai num piscar de olhos
+	Power: "Ponte do Arco-Íris": após derramar a torrente, condensa-se uma ponte de arco-íris sobre o ponto de impacto durando 5 segundos: sob a ponte, sua velocidade de movimento aumenta em 10% e o dano de invocação em 10%; inimigos que cruzarem o arco sofrem dano equivalente a 40% da torrente a cada 0,5s
+	Burden: Largura de acerto da torrente reduzida em 10%
 }
 
 KikasaTalismanHang: {
-	// DisplayName: Night Miasma Talisman
-	// Tooltip: Ink damage rises at night and puddles steam up miasma columns; slightly weaker by day
-	// Origin: The old saying goes—never touch the night vapors. The scribe bottled some anyway, and the saying proved true. So now it is the enemy's problem
-	// Power: "'Night Miasma': ink damage +15% at night, and ink puddles keep steaming up miasma columns (30% drop damage every half second)"
-	// Burden: Ink damage -5% by day
+	DisplayName: Talismã do Miasma Noturno
+	Tooltip: Dano de tinta aumentado à noite e poças exalam colunas de névoa miasmática; dano de tinta diurno -5%
+	Origin: Diziam os antigos que os vapores noturnos que sobem de águas fétidas ferem com maior crueldade. A umidade misturada à friagem sombria oprime o peito dos vivos
+	Power: "Miasma Noturno": dano de tinta aumentado em 15% durante a noite, e poças de tinta evaporam continuamente colunas de miasma (causando dano equivalente a 30% da gota a cada 0,5s)
+	Burden: Dano de tinta reduzido em 5% durante o dia
 }
 
 KikasaTalismanBao: {
-	// DisplayName: Hailstone Talisman
-	// Tooltip: Every fourth beat all drops become great hail—armor-breaking heavy hits that leave no puddles; ordinary beats slightly lighter
-	// Origin: Hail is the rain's violent temper—it smashes tiles and basins and no one can stop it. The scribe never tried to tame it; he only struck a deal: every four beats, one beat is yours
-	// Power: "'Hailstone': every fourth beat is a guaranteed full volley, all drops turned to great hail—size x1.6, damage x2.2, hits break armor and knock back hard; great hail leaves no puddles"
-	// Burden: Ordinary-beat drop damage -8%
+	DisplayName: Talismã do Granizo
+	Tooltip: Cada quarto compasso converte as gotas em granizos pesados destruidores de armadura; dano de gotas normais -8%
+	Origin: A chuva fria cristaliza-se e despenca veloz cortando as nuvens. O granizo cai quebrando telhas e estraçalhando vasos, desprovido de qualquer brandura das chuvas mansas
+	Power: "Granizo": cada quarto compasso garante uma salva total, convertendo todas as gotas em granizos pesados: tamanho aumentado em 60%, dano aumentado em 120%, rasgando a defesa inimiga e infligindo forte repulsão; granizos não formam poças de tinta ao tocar blocos
+	Burden: Dano direto das gotas nos compassos comuns reduzido em 8%
 }
 
 KikasaTalismanShu: {
-	// DisplayName: Timely Rain Talisman
-	// Tooltip: For three seconds after you are hurt, the rain doubles its pace and every drop heals; ordinary tempo slightly slower
-	// Origin: In the old tales, the one who arrives just when help is needed is called "Timely Rain". This talisman follows the same rule: the moment the umbrella's master takes a blow, the rain must arrive at once
-	// Power: "'Timely Rain': for three seconds after you are hurt, rain-beat interval is halved, the rain turns gold, and every drop that hits restores 1 life; twelve-second cooldown"
-	// Burden: Ordinary rain-beat interval +5%
+	DisplayName: Talismã da Chuva Oportuna
+	Tooltip: A chuva torna-se densa e cura a cada gota por três segundos após sofrer dano; intervalo de chuva padrão +5%
+	Origin: Os contos populares chamam o socorro na hora do perigo de "chuva oportuna". Se a chuva consegue desabar no exato momento da crise, pode de fato afastar uma calamidade fatal
+	Power: "Chuva Oportuna": por 3 segundos após sofrer dano, o intervalo da chuva cai pela metade e os fios d'água tingem-se de dourado, curando 1 ponto de vida a cada gota que acertar um inimigo (recarga de 12 segundos após ativar)
+	Burden: Intervalo entre gotas em condições normais aumentado em 5%
 }
 
 KikasaTalismanLong: {
-	// DisplayName: Scouring Falls Talisman
-	// Tooltip: The cascade becomes a torrent that shoves foes along the flow; the cascade runs shorter
-	// Origin: When a flash flood comes down, no one keeps their footing. The scribe watched one from a clifftop, came home, and wrote a single word into the talisman: "rush"
-	// Power: "'Scouring Falls': the cascade becomes a torrent—its body keeps shoving foes on the fall line along the flow, and direct hits from the cascade knock back +35%"
-	// Burden: Cascade duration -20%
+	DisplayName: Talismã da Torrente Impetuosa
+	Tooltip: A torrente torna-se uma forte correnteza que empurra inimigos; duração da torrente -20%
+	Origin: As trombas d'água das montanhas descem caudalosas arrastando lama e pedras, com fúria incontível. Nem milhares de soldados conseguiriam firmar os pés diante de tal correnteza
+	Power: "Torrente Impetuosa": a torrente de tinta converte-se em fluxo impetuoso: empurra continuamente os inimigos ao longo do percurso da água, e a repulsão do impacto na origem da torrente aumenta em 35%
+	Burden: Duração da torrente de tinta reduzida em 20%
 }
 
 KikasaTalismanShuang: {
-	// DisplayName: Frost Mirror Talisman
-	// Tooltip: Puddles freeze into frost mirrors—treading slows foes, drop hits shatter the mirror for a burst; puddles cannot be renewed
-	// Origin: After Frost's Descent, puddle water freezes overnight into thin ice—it looks like a mirror, until you step on it. What the scribe collected was exactly that layer of "looks harmless"
-	// Power: "'Frost Mirror': large drops freeze into frost puddles where they land (no need to reach the fourth tier, Lake Tilt); the mirror no longer sears—treading foes are slowed 40%, and an ink drop striking the mirror shatters it at once, bursting for damage scaled to its remaining life and raising ice spikes"
-	// Burden: Each mirror stands alone—puddles cannot merge to renew their life
+	DisplayName: Talismã do Espelho de Geada
+	Tooltip: Poças congelam em espelhos finos de geada, pisar neles causa lentidão e impactos de gotas detonam espinhos de gelo; poças não se fundem
+	Origin: Após a geada do fim do outono, as poças de água ao amanhecer congelam numa lâmina fina e quebradiça de gelo. Lisa feito espelho, basta pisar nela para notar a armadilha oculta
+	Power: "Espelho de Geada": gotas pesadas de tinta congelam ao tocar o chão formando poças de geada que viram espelhos de gelo: não queimam mais os inimigos, alvos que pisarem neles perdem 40% de velocidade de movimento; gotas de tinta que atingirem a superfície estilhaçam o espelho imediatamente, causando dano explosivo proporcional ao tempo restante e erguendo estacas de gelo
+	Burden: Cada espelho de geada permanece independente, sendo impossível fundir poças para renovar a duração
 }
 
 KikasaTalismanZha: {
-	// DisplayName: Rain Drum Talisman
-	// Tooltip: Land hits on seven straight beats and the eighth strikes at triple damage; the rain rests one beat after
-	// Origin: Raindrops on an umbrella are already a drum. The scribe heard the trick of it: miss not a single beat, and the eighth rings loudest
-	// Power: "'Rain Drum': a seven-point drum-ring hangs at the umbrella's crown—land at least one drop on each of seven straight beats, and the eighth beat strikes with all drops at x3 damage, like a massed drum; miss a beat and the count restarts"
-	// Burden: After the heavy beat the rain rests one beat
+	DisplayName: Talismã do Tambor de Chuva
+	Tooltip: Acertar sete compassos consecutivos faz o oitavo explodir com dano triplicado; a chuva pausa brevemente após o golpe pesado
+	Origin: A chuva torrencial batendo no papel oleado esticado do guarda-chuva soa ritmada, retumbando feito tambor. Quando a cadência não falha, o golpe final revela a sua verdadeira força
+	Power: "Tambor de Chuva": reúnem-se sete marcas de tambor na borda do guarda-chuva: acertar ao menos uma gota em cada um de sete compassos consecutivos faz com que todas as gotas do oitavo compasso causem o triplo do dano original; errar um compasso reinicia a contagem
+	Burden: Após disparar o golpe pesado do tambor, o próximo compasso sofre uma breve pausa na chuva
 }
 
 KikasaTalismanNi: {
-	// DisplayName: Tricolor Talisman
-	// Tooltip: Drops cycle three dyes—red bursts, cyan slows, violet deepens wounds; drop damage slightly reduced
-	// Origin: "'Ink holds five colors,' goes the saying in the trade. The scribe could only afford three—but red bursts, cyan clings, violet corrodes, and that is plenty"
-	// Power: "'Tricolor': ink drops take three dyes in turn—red drops burst on hit (40% splash), cyan drops slow foes 15%, violet drops increase ink damage taken by 5%"
-	// Burden: Drop damage -5%
+	DisplayName: Talismã Tricolor
+	Tooltip: As gotas alternam ciclicamente entre três atributos: explosão rubra, lentidão ciano e corrosão púrpura; dano base da gota -5%
+	Origin: As águas espectrais transformam-se de modo imprevisível. Tomando o ardor da água rubra, a inércia da água ciano e a corrosão da água púrpura, as três cores fluem em harmonia com propósitos distintos
+	Power: "Tricolor": as gotas de tinta alternam em rotação por três propriedades coloridas: gotas rubras detonam em pequena área ao acertar (40% de dano disperso), gotas ciano reduzem a velocidade do inimigo em 15%, e gotas púrpuras aumentam o dano de tinta sofrido pelo alvo em 5%
+	Burden: Dano base da gota reduzido em 5%
 }
 
 KikasaTalismanWen: {
-	// DisplayName: Cloud Script Talisman
-	// Tooltip: Three script-stars circle the umbrella and charge on hits; at full charge one hurls itself as a homing ink bolt; rain beats slightly slower
-	// Origin: Cloud script is the writing the Dao sets on clouds; no mortal hand can copy it. The scribe copied what he could—the characters came out wrong, but they learned to fly
-	// Power: "'Cloud Script': three cloud-script stars circle the umbrella's rim, charged by every drop hit; when the charge fills, the star on duty hurls itself as a homing ink bolt (120% drop damage)"
-	// Burden: Rain-beat interval +8%
+	DisplayName: Talismã dos Selos das Nuvens
+	Tooltip: As estrelas de selo na borda carregam com acertos, disparando flechas de água teleguiadas com carga cheia; intervalo da chuva +8%
+	Origin: Antigos pergaminhos retratam a escrita em selo oculta nas nuvens. Embora os mortais não consigam decifrar todo o seu mistério, traçar seus contornos nos talismãs sopra vida e volição sobre as águas
+	Power: "Selos das Nuvens": três estrelas de selo orbitam a borda do guarda-chuva, carregando energia a cada acerto de gota de tinta; quando carregada, a estrela da vez arremessa uma flecha de tinta teleguiada causando dano equivalente a 120% da gota
+	Burden: Intervalo entre gotas da chuva aumentado em 8%
 }
 
 KikasaTalismanPo: {
-	// DisplayName: Moonsoul Talisman
-	// Tooltip: Night hits wax an ink moon; at full moon the next cascade becomes a moonfall; useless by day
-	// Origin: Practicing at night, the scribe noticed a small moon over the umbrella: the more he struck, the rounder it grew. Feed it to the fifteenth, and it pours one grand fall
-	// Power: "'Moonsoul': at night an ink moon hangs over the umbrella, waxing with every hit; at full moon the next cascade becomes a moonfall—width x1.5, its strikes leaving moon-mark bursts (35% splash)"
-	// Burden: This talisman does nothing by day
+	DisplayName: Talismã da Alma Lunar
+	Tooltip: Abrir o guarda-chuva à noite acumula luar, liberando uma torrente lunar pálida com carga cheia; completamente ineficaz de dia
+	Origin: Na calada da noite, o luar derrama-se sobre a lagoa funda como geada sobre as águas. Recolher essa luz serena sob o guarda-chuva faz com que, ao derramar-se, desabe como torrente de gelo
+	Power: "Alma Lunar": acertar gotas enquanto aberto à noite acumula fases lunares; ao atingir a plenitude, a próxima torrente invertida converte-se numa cascata lunar pálida: área da torrente aumentada em 50%, e alvos atingidos sofrem explosões lunares (35% de dano em área)
+	Burden: Este talismã é completamente ineficaz durante o dia
 }
 
 KikasaTalismanXiao: {
-	// DisplayName: Nine Heavens Talisman
-	// Tooltip: The umbrella climbs high; drops plunge faster and harder; rain beats slightly slower
-	// Origin: The same raindrop makes a splash from the eaves, and a crater from the ninth heaven. The scribe's reasoning was exactly that simple
-	// Power: "'Nine Heavens': umbrella hover height doubled, drops turned to high plunges—terminal speed +40%, damage +25%, and a rain-shadow ring surfaces at the landing point first"
-	// Burden: Rain-beat interval +10%
+	DisplayName: Talismã dos Nove Céus
+	Tooltip: O guarda-chuva ascende a grande altitude, e gotas caindo do alto ganham velocidade e dano imensos; intervalo da chuva +10%
+	Origin: Pingos do beiral provocam apenas marolas no chão, mas a chuva que tomba do ápice dos nove céus perfura rochas e fende pedregulhos. Quanto mais alto o nascedouro da água, mais feroz é o tombo
+	Power: "Nove Céus": a altura de flutuação do guarda-chuva é duplicada, e as gotas caem verticalmente de grande altitude: velocidade terminal aumentada em 40%, dano de acerto direto aumentado em 25%, com anéis de sombra projetados no chão alertando o ponto de impacto antes da queda
+	Burden: Intervalo entre gotas da chuva aumentado em 10%
 }
 
 KikasaTalismanMei: {
-	// DisplayName: Mold Rain Talisman
-	// Tooltip: Drop hits stack mold-rot; molded foes burst into infectious spores on death; direct hits slightly lighter
-	// Origin: Forty days of plum rain, and mold grew in the talisman chest. The scribe could not bring himself to wipe it off—the rain raised it too, so it counts as family
-	// Power: "'Mold Rain': ink drops apply Mold-Rot on hit (up to ten stacks, bleeding per stack); when a molded foe dies it bursts into a spore cloud, passing half its stacks to nearby foes with a small hit"
-	// Burden: Drop direct damage -10%
+	DisplayName: Talismã da Chuva Mofada
+	Tooltip: Gotas de tinta aplicam podridão e mofo, e alvos infectados explodem em névoa de esporos ao morrer; dano direto da gota -10%
+	Origin: Na estação das chuvas de ameixa no sul, a garoa cai interminável sem sol, e os cantos das paredes e baús cobrem-se de bolor. Quando a umidade impregna-se de veneno podre, cola-se aos ossos feito praga incurável
+	Power: "Chuva Mofada": gotas de tinta aplicam o estado "Corrosão de Mofo" ao acertar (acumula até 10 camadas, causando dano contínuo proporcional); inimigos infectados ao morrer explodem numa nuvem de esporos, transmitindo metade de suas camadas aos inimigos próximos com dano leve em área
+	Burden: Dano direto da gota reduzido em 10%
 }
 
 KikasaTalismanPi: {
-	// DisplayName: Heavenly Thunder Talisman
-	// Tooltip: For ten seconds after a cascade is poured, drop hits sometimes call a thunderbolt straight down; geysers slightly lighter
-	// Origin: The Five Thunders method of the Dao teaches "draw the lightning with the rain". The scribe never mastered the first half—luckily, rain he has in abundance
-	// Power: "'Heavenly Thunder': each finished cascade opens a ten-second window—within it, drop hits have a 20% chance to call a thunderbolt straight down on the point struck (180% damage along the whole bolt's path)"
-	// Burden: Geyser damage -20%
+	DisplayName: Talismã do Trovão Celestial
+	Tooltip: Breve janela após a torrente permite que as gotas invoquem raios diretos com estrondo; dano da explosão do gêiser -20%
+	Origin: Águas estagnadas atraem raios sob o vapor dos grandes pântanos. Quando as águas atingem o limite, os trovões descem conduzidos pela umidade, rasgando o céu e a terra
+	Power: "Trovão Celestial": despejar uma torrente de tinta abre uma janela de invocação de raios de 10 segundos: durante esse tempo, gotas de tinta têm 20% de chance ao acertar de invocar um raio celeste que atinge o alvo diretamente, causando dano perfurante equivalente a 180% da gota
+	Burden: Dano da erupção do gêiser reduzido em 20%
 }
 
 KikasaTalismanXia: {
-	// DisplayName: Twilight Blaze Talisman
-	// Tooltip: At dawn and dusk ink damage burns fiercer and drop hits ignite glow-flame; slightly weaker at noon and midnight
-	// Origin: The glow is rain set alight at the sky's edge. The scribe gathered a handful before sunrise—the paper baked yellow, but the talisman took
-	// Power: "'Twilight Blaze': for a stretch around sunrise and sunset, ink damage +18% and drop hits ignite a brief Glow-Flame burn; in those hours the whole rain-kit turns orange-gold"
-	// Burden: Ink damage -6% at noon and midnight
+	DisplayName: Talismã do Crepúsculo Flamejante
+	Tooltip: Dano de tinta sobe expressivamente no alvorecer e crepúsculo inflamando labaredas; dano ao meio-dia e meia-noite -6%
+	Origin: Ao romper da aurora e ao cair do crepúsculo, as nuvens no horizonte ardem feito labaredas vivas. Trazendo essa luz fugaz para as águas, até a mais fria das chuvas inflama-se em clarão rubro
+	Power: "Crepúsculo Flamejante": durante uma hora e meia antes e depois do nascer e do pôr do sol, o dano de tinta aumenta em 18%, e gotas inflamam o estado "Labareda Crepuscular" causando breve queimadura, tingindo todo o conjunto de chuva num tom dourado-alaranjado
+	Burden: Durante o meio-dia e a meia-noite, o dano de tinta é reduzido em 6%
 }
 
 KikasaTalismanJi: {
-	// DisplayName: Clear Skies Talisman
-	// Tooltip: Hits while the umbrella is up store clear-sky force; on recall a beam of daylight crashes down at the cursor; damage slightly reduced while the umbrella is up
-	// Origin: The moment rain gives way to clear sky, a pillar of light slips through the cloud seam. The scribe kept watch for half a month and took its rubbing before the clouds could close
-	// Power: "'Clearing': hits while the umbrella is raised keep storing clear-sky force; the instant it is recalled the clouds part, and a beam of daylight crashes down at the cursor—damage scales with what was stored, fiercest at full"
-	// Burden: Ink damage -8% while the umbrella is raised
+	DisplayName: Talismã do Céu Claro
+	Tooltip: Manter o guarda-chuva aberto acumula claridade, e recolhê-lo faz desabar um feixe de luz punitivo no cursor; dano de tinta -8% enquanto aberto
+	Origin: Por mais densas que sejam as nuvens, há sempre o momento em que o céu se abre e o sol desponta. A luz do sol que rasga a névoa no instante em que o guarda-chuva se fecha é a mais ofuscante de todas
+	Power: "Céu Claro": manter o guarda-chuva aberto e acertar golpes acumula a intenção do céu limpo; no exato instante em que o guarda-chuva é recolhido, as nuvens partem-se e um feixe incandescente de luz solar desaba sobre o cursor, com dano proporcional à carga acumulada
+	Burden: Todo o dano do conjunto de tinta é reduzido em 8% enquanto o guarda-chuva permanecer aberto
 }
 
 KikasaTalismanYu: {
-	// DisplayName: Rain Dance Talisman
-	// Tooltip: Hits build the rite; at full it opens the altar—denser rain, fiercer drops, puddles and geysers fully unlocked, three geysers at the close; slightly duller outside the rite
-	// Origin: To pray for rain, the ancients raised an altar, danced upon it, and sounded all eight instruments—a rite named the Rain Dance. The scribe folded the whole ceremony into one talisman: the umbrella is the shaman, and the rain is the answer
-	// Power: "'Great Rite': ink-rain hits build the rite; at full it opens the altar of itself for ten seconds—rain beats halved, drops dyed rainbow at +15% damage and all of them pooling, geysers fully unlocked; when the rite closes, three ink geysers erupt beneath the umbrella"
-	// Burden: Ink damage -10% outside the Great Rite
+	DisplayName: Talismã da Dança da Chuva
+	Tooltip: Acertos acumulam oferendas rituais para evocar o Grande Rito, com chuva torrencial, poças e gêiseres destravados; dano padrão -10%
+	Origin: Nas secas antigas, erguiam-se altares para rogar por chuva, e os xamãs dançavam ao ritmo de tambores num rito chamado Dança da Chuva. O guarda-chuva é o médium espiritual; e a chuva caudalosa, a resposta dos céus
+	Power: "Grande Rito": gotas de tinta acumulam oferendas ao acertar; ao encher a carga, entra automaticamente no estado "Grande Rito" por 10 segundos: intervalo entre gotas reduzido pela metade, dano de gotas aumentado em 15%, todas as gotas formam poças de tinta e todos os gêiseres destravam-se; ao encerrar o rito, três gêiseres irrompem sob a copa
+	Burden: Fora do estado do Grande Rito, todo o dano de tinta é reduzido em 10%
 }
