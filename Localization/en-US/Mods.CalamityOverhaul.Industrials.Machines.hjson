@@ -21,8 +21,10 @@ BottlingMachine: {
 	DisplayName: Bottling Machine
 	Tooltip:
 		'''
-		Fills empty bottles and buckets from stored fluid, or drains full containers back into the buffer
-		Each job costs 5UE; products go to the output slot
+		Right-click holding empty bottles or buckets to load them; they are filled from the stored fluid
+		Right-click holding full bottles or buckets to load them; they are emptied and the fluid returns to the pipelines
+		Draws fluid from pipelines while bottling; otherwise stored fluid flows back into the pipelines
+		Each job costs 5UE; right-click empty-handed to take the product, Shift + right-click takes everything
 		Both slots connect to item pipelines for automatic transfer
 		'''
 }

@@ -56,6 +56,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
 
     /// <summary>
     /// 瓶装机TP:输入槽放空瓶/空桶时抽储液装满,放整瓶/整桶时倒空进储液,成品入输出槽。
+    /// 储液罐只是过桥缓冲:装瓶时向液管要液,其余时候把液体交还液管。
     /// 作业只在权威端推进并结算,槽位变化以事件包推给客户端;
     /// 输入输出槽经 StorageProvider 对接物品管道
     /// </summary>
@@ -70,7 +71,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
         public int FluidType { get; set; }
         public int FluidAmount { get; set; }
         public int FluidCapacity => 4 * FluidHelper.UnitsPerTile;
-        public FluidNetRole FluidRole => FluidNetRole.Consumer;
+        /// <summary>
+        /// 对液管的角色随输入槽切换:只有等着装的空容器在槽里时才当耗液机让管道灌入;
+        /// 倒空满容器时以及空闲时都当液源,管道把储液抽回管网。
+        /// 此前恒为耗液机,倒空回收的液体困在机内只能重新装瓶,出不了管网(玩家反馈"只存水不出水")。
+        /// 角色只由已同步的输入槽推出,各端读到的方向一致
+        /// </summary>
+        public FluidNetRole FluidRole {
+            get {
+                if (InputItem != null && !InputItem.IsAir && BottlingRecipes.FillTable.ContainsKey(InputItem.type)) {
+                    return FluidNetRole.Consumer;
+                }
+                return FluidNetRole.Source;
+            }
+        }
         public bool CanAcceptFluid(int liquidId) => FluidHelper.DefaultCanAccept(this, liquidId);
         #endregion
 

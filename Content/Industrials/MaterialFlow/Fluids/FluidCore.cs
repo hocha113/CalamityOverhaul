@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
     {
         /// <summary>管道(彼此压差均衡)</summary>
         Pipe,
-        /// <summary>液源(泵),管道从中抽液</summary>
+        /// <summary>液源(泵;瓶装机倒空与空闲时),管道从中抽液</summary>
         Source,
-        /// <summary>耗液机(灌注机/瓶装机/岩浆发电机),管道单向灌入</summary>
+        /// <summary>耗液机(灌注机/岩浆发电机;瓶装机装瓶时),管道单向灌入</summary>
         Consumer,
         /// <summary>储液罐,按充盈比例差双向流动</summary>
         Storage,
