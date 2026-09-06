@@ -52,7 +52,7 @@ OniMeiRubbingKazehi: {
 	DisplayName: Kaze-hi
 	Tooltip: Reduz expressivamente o custo de vigor do Passo Relâmpago Kamui e do Voo Sakura; dano de explosão das marcas de tinta -20%
 	Origin: O cuteleiro abriu uma ranhura reta e estreita na lâmina para guiar o vento pelo aço. Ao brandir, o vento corta primeiro, cessando apenas quando o fio já regressou à bainha
-	Power: "Cavaleiro do Vento": custo de vigor do Passo Relâmpago Kamui reduzido em 15%, taxa de drenagem de vigor do Voo Sakura reduzida em 20%
+	Power: '''"Cavaleiro do Vento": custo de vigor do Passo Relâmpago Kamui reduzido em 15%, taxa de drenagem de vigor do Voo Sakura reduzida em 20%'''
 	Burden: Dano de explosão das marcas de tinta deixadas pelo Passo Relâmpago Kamui reduzido em 20%
 }
 
@@ -96,7 +96,7 @@ OniMeiRubbingTessetsu: {
 	DisplayName: Tessetsu
 	Tooltip: Primeiro acerto de cada golpe do combo causa +25% de dano a inimigos metálicos e mecânicos; dano geral da arma -10%
 	Origin: Um avaliador zombou desta lâmina tempos atrás, escarnecendo de sua fama oca e do fio fosco como ferro bruto. O ferreiro não se ofendeu, gravando a própria mofa na espiga: ferro bruto só revela seu valor ao despedaçar o aço
-	Power: "Corte de Ferro": o primeiro acerto de cada golpe do combo básico causa +25% de dano a inimigos que soltam faíscas ao serem atingidos, como autômatos e criaturas blindadas
+	Power: '''"Corte de Ferro": o primeiro acerto de cada golpe do combo básico causa +25% de dano a inimigos que soltam faíscas ao serem atingidos, como autômatos e criaturas blindadas'''
 	Burden: Dano base da arma reduzido em 10%
 }
 
@@ -116,7 +116,7 @@ OniMeiRubbingIkiai: {
 	DisplayName: Ikiai
 	Tooltip: O quinto golpe do combo dispara uma rajada cortante perfurante na direção do cursor; intervalo do combo +4%
 	Origin: Dizem os espadachins que nos duelos de vida ou morte a respiração dos contendores se entrelaça; aquele que sincronizar primeiro o fôlego fará sua lâmina atingir primeiro. Esta inscrição preserva essa mesmíssima disciplina
-	Power: "Respiração": ao concluir o combo básico de cinco golpes, o quinto golpe dispara uma rajada em arco na direção do cursor, causando dano equivalente a 55% do dano base da arma e perfurando até 3 inimigos
+	Power: '''"Respiração": ao concluir o combo básico de cinco golpes, o quinto golpe dispara uma rajada em arco na direção do cursor, causando dano equivalente a 55% do dano base da arma e perfurando até 3 inimigos'''
 	Burden: Intervalo de ataque do combo básico aumentado em 4%
 }
 
@@ -153,7 +153,7 @@ OniMeiRubbingMokukiri: {
 	DisplayName: Mokukiri
 	Tooltip: Concluir uma investida comum fortalece brevemente o próximo golpe; golpear o vazio também consome o efeito
 	Origin: No instante em que o passo relâmpago se assenta, o céu e a terra parecem mergulhar no silêncio absoluto. Os espadachins veteranos sabem bem: quando a intenção assassina se oculta no silêncio, o golpe cai com peso devastador
-	Power: "Morte Silenciosa": por 0,75s após concluir um Passo Relâmpago Kamui padrão pago, o próximo golpe do combo ou Zanshin causa +35% de dano
+	Power: '''"Morte Silenciosa": por 0,75s após concluir um Passo Relâmpago Kamui padrão pago, o próximo golpe do combo ou Zanshin causa +35% de dano'''
 	Burden: Desferir o golpe no vazio consome o estado da mesma forma, e realizar outra investida dissipa o bônus; investidas gratuitas de execução não ativam Morte Silenciosa
 }
 
@@ -267,7 +267,7 @@ OniMeiRubbingTsuzurihi: {
 	DisplayName: Tsuzuri-hi
 	Tooltip: Marcas de tinta de uma única investida detonam e traçam linhas cortantes entre si; dano base de marca única -30%
 	Origin: O encadernador une folhas soltas com agulha e linha; ao puxar o fio, as páginas dispersas formam um livro austero. Esta ranhura enxerga as marcas como pontos de costura, entrelaçando-as numa trama letal
-	Power: "Ponto de Tinta": quando várias marcas de tinta de um único Passo Relâmpago Kamui detonam, formam linhas de corte interceptoras entre si, cada uma causando dano equivalente a 35% do dano base da arma
+	Power: '''"Ponto de Tinta": quando várias marcas de tinta de um único Passo Relâmpago Kamui detonam, formam linhas de corte interceptoras entre si, cada uma causando dano equivalente a 35% do dano base da arma'''
 	Burden: Dano base de uma marca isolada reduzido em 30% (se a investida atravessar apenas um alvo, o dano geral será prejudicado)
 	DeedHint: Atravesse ao menos 6 inimigos distintos num único Passo Relâmpago Kamui
 }
@@ -316,7 +316,7 @@ OniMeiRubbingSenju: {
 	DisplayName: Senju
 	Tooltip: O congelamento da Dança Final acrescenta seis braços empunhando espadas; zera o vigor e bloqueia investidas por 3s
 	Origin: A Grande Compaixão dos Mil Braços estende incontáveis mãos para acolher as aflições do mundo mortal. O entalhador embutiu essa efígie em ouro na lâmina, ditando esta regra austera: cada alma levada pela arte deve ser recebida por uma mão empunhando o aço
-	Power: "Mil Braços": durante o congelamento dramático da Dança Final, surgem seis braços espectrais empunhando espadas às suas costas para cortar juntos, cada um causando 30% do dano base da arma
+	Power: '''"Mil Braços": durante o congelamento dramático da Dança Final, surgem seis braços espectrais empunhando espadas às suas costas para cortar juntos, cada um causando 30% do dano base da arma'''
 	Burden: Executar a Dança Final zera todo o vigor acumulado e impede o uso do Passo Relâmpago Kamui por 3s
 	DeedHint: Elimine 8 tipos distintos de chefes utilizando a Dança Final empunhando a Onikiri
 }
@@ -338,7 +338,7 @@ OniMeiRubbingKanhi: {
 	DisplayName: Kan-hi
 	Tooltip: Romper o combate acelera imensamente a recuperação natural de vigor; custos de vigor do Passo Relâmpago e Voo Sakura +8%
 	Origin: Diante da ferraria repousa um banco de madeira onde o cuteleiro costuma descansar observando o burburinho da vila. Quando o espírito alcança a quietude, o fôlego se renova; este sulco esculpe esse sossego
-	Power: "Fôlego Sereno": ao romper o combate e passar 2s sem desferir acertos com a espada, a taxa de recuperação natural de vigor aumenta para 2,25x
+	Power: '''"Fôlego Sereno": ao romper o combate e passar 2s sem desferir acertos com a espada, a taxa de recuperação natural de vigor aumenta para 2,25x'''
 	Burden: O custo de vigor do Passo Relâmpago Kamui e a drenagem do Voo Sakura aumentam em 8%
 }
 
@@ -346,7 +346,7 @@ OniMeiRubbingTodohi: {
 	DisplayName: Todo-hi
 	Tooltip: Golpes da lâmina retêm e reduzem a velocidade dos inimigos; o Passo Relâmpago tem um breve atraso na arrancada
 	Origin: Uma têmpera incomum tornou o fio viscoso ao atravessar a carne, emperrando o passo de tudo o que corta. O ferreiro orgulhou-se disso: quem fica amarrado é o alvo ferido, e não a mão que empunha o aço
-	Power: "Prisão Viscosa": acertos diretos de lâmina atrasam a movimentação do inimigo por 0,6s, reduzindo a velocidade de inimigos normais para 88% e de chefes para 96%
+	Power: '''"Prisão Viscosa": acertos diretos de lâmina atrasam a movimentação do inimigo por 0,6s, reduzindo a velocidade de inimigos normais para 88% e de chefes para 96%'''
 	Burden: O Passo Relâmpago Kamui ganha um atraso inicial adicional de 0,1s; Prisão Viscosa e Adormecido não se acumulam no mesmo alvo, aplicando apenas a maior redução
 }
 
@@ -396,7 +396,7 @@ OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Reduz expressivamente o dano e a repulsão sofridos de projéteis hostis; ganho padrão de postura -15%
 	Origin: Flechas e pedras cruzam a vanguarda da batalha, e o zumbido nos ouvidos apavora os fracos. O veterano que cravou este lema sabia que, em meio à saraivada, fincar os pés firme como rocha reduz a ferida pela metade
-	Power: "Aquietar": ao sofrer dano de projéteis hostis, o dano recebido é reduzido em 12% e a repulsão sofrida cai para 35% do valor original
+	Power: '''"Aquietar": ao sofrer dano de projéteis hostis, o dano recebido é reduzido em 12% e a repulsão sofrida cai para 35% do valor original'''
 	Burden: Velocidade de ganho padrão de postura reduzida em 15%; oferece utilidade limitada em combates puramente corpo a corpo
 }
 
@@ -404,7 +404,7 @@ OniMeiRubbingAshidome: {
 	DisplayName: Ashidome
 	Tooltip: Ficar imóvel acumula força para aumentar drasticamente o dano do próximo quinto golpe ou arte; mover-se dissipa o foco
 	Origin: A primeira lição do mestre: base instável arruína todas as técnicas. Apenas com raízes firmes o vigor se condensa; e quando esse vigor concentrado rompe o ar, desmorona montanhas
-	Power: "Passo Plantado": permanecer completamente imóvel segurando a lâmina por 0,75s completa o acúmulo de força, aumentando em 25% o dano do próximo quinto golpe do combo, Zanshin, Lampejo Aniquilador ou Dança Final
+	Power: '''"Passo Plantado": permanecer completamente imóvel segurando a lâmina por 0,75s completa o acúmulo de força, aumentando em 25% o dano do próximo quinto golpe do combo, Zanshin, Lampejo Aniquilador ou Dança Final'''
 	Burden: O golpe fortalecido consome o bônus no acionamento, sem reembolso caso erre; mover-se cancela imediatamente todo o foco acumulado
 }
 

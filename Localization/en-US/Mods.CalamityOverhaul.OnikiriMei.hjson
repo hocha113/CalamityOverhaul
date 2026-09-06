@@ -52,7 +52,7 @@ OniMeiRubbingKazehi: {
 	DisplayName: Kaze-hi
 	Tooltip: Greatly reduces vigor cost of Kamui Flash Step and Sakura Flight; ink brand explosion damage -20%
 	Origin: The swordsmith carved a long, straight groove into the blade to guide wind along the steel. As it swings the wind arrives first, dying down just as the edge returns to its sheath
-	Power: "Wind-Rider": Kamui Flash Step vigor cost reduced by 15%, Sakura Flight vigor drain rate reduced by 20%
+	Power: '''"Wind-Rider": Kamui Flash Step vigor cost reduced by 15%, Sakura Flight vigor drain rate reduced by 20%'''
 	Burden: Explosion damage of ink brands left by Kamui Flash Step reduced by 20%
 }
 
@@ -96,7 +96,7 @@ OniMeiRubbingTessetsu: {
 	DisplayName: Tessetsu
 	Tooltip: First hit of each combo beat deals +25% damage to mechanical and metal foes; regular weapon damage -10%
 	Origin: A connoisseur once sneered at this blade, mocking its hollow reputation and dull color like raw iron. The smith took no offense, chiseling the mockery straight into the tang: raw iron shows its true worth when shattering steel
-	Power: "Iron-Cut": the first hit of each basic combo beat deals +25% damage to foes that spark upon taking damage, such as machines and metal entities
+	Power: '''"Iron-Cut": the first hit of each basic combo beat deals +25% damage to foes that spark upon taking damage, such as machines and metal entities'''
 	Burden: Weapon base damage reduced by 10%
 }
 
@@ -116,7 +116,7 @@ OniMeiRubbingIkiai: {
 	DisplayName: Ikiai
 	Tooltip: Five-beat combo finisher fires a piercing sword beam toward the cursor; combo attack interval +4%
 	Origin: Swordsmen say that during standoffs, breath locks together between duelists; whoever matches breath first strikes first. This inscription records that very discipline
-	Power: "Breath": completing the five-beat basic combo fires a crescent sword wave toward the cursor on the fifth beat, dealing 55% of weapon base damage, piercing up to 3 enemies
+	Power: '''"Breath": completing the five-beat basic combo fires a crescent sword wave toward the cursor on the fifth beat, dealing 55% of weapon base damage, piercing up to 3 enemies'''
 	Burden: Basic combo attack interval extended by 4%
 }
 
@@ -153,7 +153,7 @@ OniMeiRubbingMokukiri: {
 	DisplayName: Mokukiri
 	Tooltip: Finishing a standard dash briefly empowers the next strike; whiffing still consumes the buff
 	Origin: The instant a flash step settles, heaven and earth seem to fall into quiet. Seasoned swordsmen know that when killing intent is veiled in silence, the strike lands heaviest
-	Power: "Silent Kill": for 0.75s after completing a standard Kamui Flash Step, the next basic combo swing or Zanshin strike deals +35% damage
+	Power: '''"Silent Kill": for 0.75s after completing a standard Kamui Flash Step, the next basic combo swing or Zanshin strike deals +35% damage'''
 	Burden: Whiffing the empowered strike still consumes the state, and dashing again clears the bonus; free dashes from executions cannot trigger Silent Kill
 }
 
@@ -267,7 +267,7 @@ OniMeiRubbingTsuzurihi: {
 	DisplayName: Tsuzuri-hi
 	Tooltip: Ink brands from a single dash detonate and connect lines; single ink brand base damage -30%
 	Origin: Bookbinders stitch loose leaves with needle and thread, pulling tight to bind loose sheets into a volume. This groove treats ink brands as stitches, closing the circle into a killing array
-	Power: "Mark-Stitch": multiple ink brands left from a single Kamui Flash Step detonate together, forming intersecting cutting lines between one another, each dealing 35% of weapon base damage
+	Power: '''"Mark-Stitch": multiple ink brands left from a single Kamui Flash Step detonate together, forming intersecting cutting lines between one another, each dealing 35% of weapon base damage'''
 	Burden: Single ink brand base damage reduced by 30% (if a dash passes through only one target, overall damage is reduced)
 	DeedHint: Pass through at least 6 distinct enemies in a single Kamui Flash Step
 }
@@ -316,7 +316,7 @@ OniMeiRubbingSenju: {
 	DisplayName: Senju
 	Tooltip: Finale Slash freeze adds six ghost arms striking together; resets vigor to zero and locks dashing for 3s
 	Origin: The Thousand-Armed Kannon extends boundless hands to ferry mortal suffering. The carver inlaid this aspect into the steel, establishing this rule: every soul ferried by the art must be met with a blade in hand
-	Power: "Thousand Arms": during the Finale Slash freeze, six sword-bearing ghost arms rise behind you to strike together, each dealing 30% of weapon base damage
+	Power: '''"Thousand Arms": during the Finale Slash freeze, six sword-bearing ghost arms rise behind you to strike together, each dealing 30% of weapon base damage'''
 	Burden: Executing Finale Slash resets vigor to zero, and Kamui Flash Step cannot be used for 3s
 	DeedHint: Slay 8 distinct bosses using Finale Slash while holding Onikiri
 }
@@ -338,7 +338,7 @@ OniMeiRubbingKanhi: {
 	DisplayName: Kan-hi
 	Tooltip: Disengaging from combat greatly accelerates natural vigor recovery; Flash Step and Sakura Flight costs +8%
 	Origin: A long bench rests before the sword shop where the smith watches the busy market when resting. In stillness breath is nourished, and this groove captures that tranquil rest
-	Power: "Quiet Breath": after disengaging from combat and landing no hits for 2s, natural vigor recovery speed increases to 2.25x
+	Power: '''"Quiet Breath": after disengaging from combat and landing no hits for 2s, natural vigor recovery speed increases to 2.25x'''
 	Burden: Kamui Flash Step and Sakura Flight vigor costs both increase by 8%
 }
 
@@ -346,7 +346,7 @@ OniMeiRubbingTodohi: {
 	DisplayName: Todo-hi
 	Tooltip: Blade hits bind and slow enemies; Flash Step start has a brief startup delay
 	Origin: A peculiar quench left the edge dragging through flesh, hindering whatever it cuts. The smith took pride in it: what is bound is the struck foe, not the hand wielding the steel
-	Power: "Ink-Bound": direct blade hits slow enemy movement for 0.6s, dropping regular enemies to 88% and bosses to 96%
+	Power: '''"Ink-Bound": direct blade hits slow enemy movement for 0.6s, dropping regular enemies to 88% and bosses to 96%'''
 	Burden: Kamui Flash Step has an additional 0.1s startup delay; Ink-Bound and Numbed do not stack on the same enemy, only applying the strongest slow
 }
 
@@ -396,7 +396,7 @@ OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Heavily reduces hostile projectile damage and knockback; standard stance gain -15%
 	Origin: Arrows and stones clash before the battle lines, panicking the weak. The veteran who carved this line knew that amid flying arrows, planting one's stance firm cuts the wound in half
-	Power: "Quell": taking damage from hostile projectiles reduces damage by 12% and reduces knockback taken to 35%
+	Power: '''"Quell": taking damage from hostile projectiles reduces damage by 12% and reduces knockback taken to 35%'''
 	Burden: Standard stance gain speed reduced by 15%; this carving offers limited benefit in pure close-quarters melee combat
 }
 
@@ -404,7 +404,7 @@ OniMeiRubbingAshidome: {
 	DisplayName: Ashidome
 	Tooltip: Standing still stores force to heavily boost the next fifth beat or art; moving clears charge
 	Origin: A master's first lesson: unsteady footing wastes all craft. Only with firm roots can vigor gather, and gathered vigor unleashed shatters mountains
-	Power: "Planted-Step": standing still for 0.75s stores force, increasing the damage of the next basic combo fifth beat, Zanshin strike, Annihilating Flash, or Finale Slash by 25%
+	Power: '''"Planted-Step": standing still for 0.75s stores force, increasing the damage of the next basic combo fifth beat, Zanshin strike, Annihilating Flash, or Finale Slash by 25%'''
 	Burden: The empowered strike is consumed upon attack, whiffing does not refund; moving immediately clears all stored force
 }
 
