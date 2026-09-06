@@ -48,19 +48,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             tag["Incinerator_SmeltingProgress"] = SmeltingProgress;
             tag["Incinerator_Temperature"] = Temperature;
             if (InputItem != null && !InputItem.IsAir) {
-                tag["Incinerator_InputItem"] = ItemIO.Save(InputItem);
+                tag["Incinerator_InputItem"] = CWRSaveData.SaveItemTag(InputItem);
             }
             if (OutputItem != null && !OutputItem.IsAir) {
-                tag["Incinerator_OutputItem"] = ItemIO.Save(OutputItem);
+                tag["Incinerator_OutputItem"] = CWRSaveData.SaveItemTag(OutputItem);
             }
         }
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (!tag.TryGet("Incinerator_SmeltingProgress", out SmeltingProgress)) {
+            if (!tag.TrySafeGet("Incinerator_SmeltingProgress", out SmeltingProgress)) {
                 SmeltingProgress = 0;
             }
-            if (!tag.TryGet("Incinerator_Temperature", out Temperature)) {
+            if (!tag.TrySafeGet("Incinerator_Temperature", out Temperature)) {
                 Temperature = 0;
             }
             InputItem = CWRSaveData.LoadItemFromTag(tag, "Incinerator_InputItem", nameof(IncineratorData));

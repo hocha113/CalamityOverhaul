@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids;
 using CalamityOverhaul.Content.Items.Materials;
@@ -354,8 +355,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.MagmaThermal
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            FluidType = tag.TryGet("FluidType", out int type) ? type : LiquidID.Lava;
-            FluidAmount = tag.TryGet("FluidAmount", out int amount) ? amount : 0;
+            FluidType = tag.TrySafeGet("FluidType", out int type) ? type : LiquidID.Lava;
+            FluidAmount = tag.TrySafeGet("FluidAmount", out int amount) ? amount : 0;
         }
         #endregion
 

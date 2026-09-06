@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Scenarios.Kiame.Overlay;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Actors;
@@ -61,10 +62,10 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Gate
             IsGenerated = false;
             GatePosition = Vector2.Zero;
             try {
-                if (tag != null && tag.TryGet(nameof(IsGenerated), out bool generated)) {
+                if (tag != null && tag.TrySafeGet(nameof(IsGenerated), out bool generated)) {
                     IsGenerated = generated;
                 }
-                if (tag != null && tag.TryGet(nameof(GatePosition), out Vector2 pos)) {
+                if (tag != null && tag.TrySafeGet(nameof(GatePosition), out Vector2 pos)) {
                     GatePosition = pos;
                 }
             } catch (Exception ex) {

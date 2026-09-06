@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.EntrustManager.Styles;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.EntrustManager.Styles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -795,9 +796,9 @@ namespace CalamityOverhaul.Content.EntrustManager
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet(Name + ":selectedCategory", out int cat))
+            if (tag.TrySafeGet(Name + ":selectedCategory", out int cat))
                 selectedCategoryIndex = Math.Clamp(cat, 0, categoryKeys.Length - 1);
-            if (tag.TryGet(Name + ":styleIndex", out int si)) {
+            if (tag.TrySafeGet(Name + ":styleIndex", out int si)) {
                 currentStyleIndex = Math.Clamp(si, 0, availableStyles.Count - 1);
                 SetStyle(availableStyles[currentStyleIndex]);
             }

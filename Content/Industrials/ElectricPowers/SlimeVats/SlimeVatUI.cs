@@ -280,10 +280,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.SlimeVats
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("SlimeVatUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("SlimeVatUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
-            if (tag.TryGet("SlimeVatUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("SlimeVatUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
         }

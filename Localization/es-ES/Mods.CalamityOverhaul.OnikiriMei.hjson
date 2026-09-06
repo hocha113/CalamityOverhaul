@@ -264,7 +264,7 @@ OniMeiRubbingAmahi: {
 		Al caer, la gota se extiende en un charco de tinta; el enemigo que pisa queda atado medio segundo
 		'''
 	Burden: Gasto de vigor del vuelo de sakura +15%. Volar con una lluvia a cuestas sale caro
-	DeedHint: En un día de lluvia, vuela con sakura diez segundos seguidos; solo cuando los pétalos están empapados se queda el agua
+	DeedHint: En un día de lluvia, acumula diez segundos de vuelo de sakura; no hace falta hacerlo de una sola vez
 }
 
 OniMeiRubbingTsuzurihi: {

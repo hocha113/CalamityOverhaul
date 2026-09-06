@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CalamityOverhaul.Common;
+using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -43,7 +44,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors
         }
 
         public override void LoadWorldData(TagCompound tag)
-            => HasArrived = tag.TryGet(nameof(HasArrived), out bool arrived) && arrived;
+            => HasArrived = tag.TrySafeGet(nameof(HasArrived), out bool arrived, nameof(VictorWorldState)) && arrived;
 
         public override void NetSend(BinaryWriter writer) => writer.Write(HasArrived);
 

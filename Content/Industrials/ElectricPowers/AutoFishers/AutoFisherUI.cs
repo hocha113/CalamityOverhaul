@@ -340,10 +340,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("AutoFisherUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("AutoFisherUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
-            if (tag.TryGet("AutoFisherUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("AutoFisherUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
         }

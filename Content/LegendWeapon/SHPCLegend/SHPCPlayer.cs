@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using CalamityOverhaul.Content.TimeFreezes;
 using System.Collections.Generic;
@@ -254,7 +255,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     for (int s = 0; s < SHPCData.SlotCount; s++) {
                         Item m = Presets[p][s];
                         if (m != null && !m.IsAir) {
-                            tag[$"SHPC_Preset_{p}_{s}"] = ItemIO.Save(m);
+                            tag[$"SHPC_Preset_{p}_{s}"] = CWRSaveData.SaveItemTag(m);
                         }
                     }
                 }
@@ -288,7 +289,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 Presets ??= CreateEmptyPresets();
 
                 //活跃预设，旧档默认0
-                ActivePreset = tag.TryGet("SHPC_ActivePreset", out int savedPreset)
+                ActivePreset = tag.TrySafeGet("SHPC_ActivePreset", out int savedPreset)
                     ? System.Math.Clamp(savedPreset, 0, PresetCount - 1)
                     : 0;
 
@@ -296,7 +297,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 bool isNewFormat = tag.ContainsKey("SHPC_ActivePreset");
                 for (int p = 0; p < PresetCount; p++) {
                     for (int s = 0; s < SHPCData.SlotCount; s++) {
-                        if (tag.TryGet($"SHPC_Preset_{p}_{s}", out TagCompound modTag)) {
+                        if (tag.TrySafeGet($"SHPC_Preset_{p}_{s}", out TagCompound modTag)) {
                             try {
                                 Presets[p][s] = ItemIO.Load(modTag);
                             } catch {
@@ -312,7 +313,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 //旧档SHPC_Mod_i迁到预设0
                 if (!isNewFormat) {
                     for (int i = 0; i < SHPCData.SlotCount; i++) {
-                        if (tag.TryGet($"SHPC_Mod_{i}", out TagCompound modTag)) {
+                        if (tag.TrySafeGet($"SHPC_Mod_{i}", out TagCompound modTag)) {
                             try {
                                 Presets[0][i] = ItemIO.Load(modTag);
                             } catch {
@@ -335,14 +336,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
                 //碎片钳位防坏档
                 const int ShardHardCap = 9_999_999;
-                if (tag.TryGet("SHPC_MoldShards", out List<int> shardList) && shardList != null) {
+                if (tag.TrySafeGet("SHPC_MoldShards", out List<int> shardList) && shardList != null) {
                     int copy = System.Math.Min(SHPCData.SlotCount, shardList.Count);
                     for (int i = 0; i < copy; i++) {
                         MoldShards[i] = System.Math.Clamp(shardList[i], 0, ShardHardCap);
                     }
                 }
                 //图鉴过滤失效type
-                if (tag.TryGet("SHPC_DiscoveredModules", out List<int> discList) && discList != null) {
+                if (tag.TrySafeGet("SHPC_DiscoveredModules", out List<int> discList) && discList != null) {
                     foreach (int t in discList) {
                         if (t > 0 && IsValidShpcModuleType(t)) {
                             DiscoveredModules.Add(t);
@@ -350,7 +351,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     }
                 }
                 //钉选校验类别，失败降-1
-                if (tag.TryGet("SHPC_PinnedReforgeTarget", out List<int> pinList) && pinList != null) {
+                if (tag.TrySafeGet("SHPC_PinnedReforgeTarget", out List<int> pinList) && pinList != null) {
                     int copy = System.Math.Min(SHPCData.SlotCount, pinList.Count);
                     for (int i = 0; i < copy; i++) {
                         int target = pinList[i];

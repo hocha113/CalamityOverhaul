@@ -539,11 +539,12 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override void LoadData(TagCompound tag) {
-            if (tag.TryGet("HasSirenMusicalBox", out bool value)) {
+            if (tag.TrySafeGet("HasSirenMusicalBox", out bool value, nameof(SirenMusicalBoxPlayer))) {
                 HasSirenMusicalBox = value;
             }
 
-            curseActive = tag.TryGet("SirenMusicalBoxCurseActive", out bool savedCurseActive) && savedCurseActive;
+            curseActive = tag.TrySafeGet("SirenMusicalBoxCurseActive", out bool savedCurseActive, nameof(SirenMusicalBoxPlayer))
+                && savedCurseActive;
             curseResolvingDeath = false;
             curseTimer = 0;
             curseResolveTimer = 0;
@@ -553,13 +554,13 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            if (tag.TryGet("SirenMusicalBoxCurseTimer", out int savedCurseTimer)) {
+            if (tag.TrySafeGet("SirenMusicalBoxCurseTimer", out int savedCurseTimer, nameof(SirenMusicalBoxPlayer))) {
                 curseTimer = Math.Clamp(savedCurseTimer, 0, MusicDuration);
             }
-            if (tag.TryGet("SirenMusicalBoxCurseResolvingDeath", out bool savedResolvingDeath)) {
+            if (tag.TrySafeGet("SirenMusicalBoxCurseResolvingDeath", out bool savedResolvingDeath, nameof(SirenMusicalBoxPlayer))) {
                 curseResolvingDeath = savedResolvingDeath;
             }
-            if (tag.TryGet("SirenMusicalBoxCurseResolveTimer", out int savedResolveTimer)) {
+            if (tag.TrySafeGet("SirenMusicalBoxCurseResolveTimer", out int savedResolveTimer, nameof(SirenMusicalBoxPlayer))) {
                 curseResolveTimer = savedResolveTimer;
             }
 

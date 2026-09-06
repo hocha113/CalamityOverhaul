@@ -130,10 +130,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 List<TagCompound> itemTags = [];
                 foreach (var item in StoredItems) {
                     if (item == null) {
-                        itemTags.Add(ItemIO.Save(new Item()));
+                        itemTags.Add(CWRSaveData.SaveItemTag(new Item()));
                     }
                     else {
-                        itemTags.Add(ItemIO.Save(item));
+                        itemTags.Add(CWRSaveData.SaveItemTag(item));
                     }
                 }
                 tag["_StoredItems"] = itemTags;
@@ -145,26 +145,26 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
             try {
-                if (tag.TryGet("_IsThrowing", out bool throwing)) {
+                if (tag.TrySafeGet("_IsThrowing", out bool throwing)) {
                     IsThrowing = throwing;
                 }
-                if (tag.TryGet("_ThrowSpeed", out float speed)) {
+                if (tag.TrySafeGet("_ThrowSpeed", out float speed)) {
                     ThrowSpeed = speed;
                 }
-                if (tag.TryGet("_ThrowAngle", out float angle)) {
+                if (tag.TrySafeGet("_ThrowAngle", out float angle)) {
                     ThrowAngle = angle;
                 }
-                if (tag.TryGet("_ThrowInterval", out int interval)) {
+                if (tag.TrySafeGet("_ThrowInterval", out int interval)) {
                     ThrowInterval = interval;
                 }
-                if (tag.TryGet("_ThrowDirection", out float direction)) {
+                if (tag.TrySafeGet("_ThrowDirection", out float direction)) {
                     ThrowDirection = direction;
                 }
-                if (tag.TryGet("_AmmoShootMode", out bool ammoMode)) {
+                if (tag.TrySafeGet("_AmmoShootMode", out bool ammoMode)) {
                     AmmoShootMode = ammoMode;
                 }
 
-                if (tag.TryGet("_StoredItems", out List<TagCompound> itemTags)) {
+                if (tag.TrySafeGet("_StoredItems", out List<TagCompound> itemTags)) {
                     StoredItems.Clear();
                     foreach (var itemTag in itemTags) {
                         StoredItems.Add(CWRSaveData.LoadItemTag(itemTag, $"{nameof(ThrowerTP)}:_StoredItems"));

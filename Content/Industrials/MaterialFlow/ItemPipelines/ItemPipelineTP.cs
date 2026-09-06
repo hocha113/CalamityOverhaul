@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters;
 using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
@@ -929,16 +930,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
 
             try {
-                if (tag.TryGet("ItemPipeline_Mode", out int mode) && Enum.IsDefined(typeof(ItemPipelineMode), mode)) {
+                if (tag.TrySafeGet("ItemPipeline_Mode", out int mode) && Enum.IsDefined(typeof(ItemPipelineMode), mode)) {
                     Mode = (ItemPipelineMode)mode;
                 }
 
                 //数值走 TryGet，防脏键抛异常
-                if (tag.TryGet("ItemPipeline_ItemType", out int itemType) && itemType > ItemID.None && itemType < ItemLoader.ItemCount) {
-                    int stack = tag.TryGet("ItemPipeline_Stack", out int s) ? s : 0;
-                    int prefix = tag.TryGet("ItemPipeline_Prefix", out int p) ? p : 0;
-                    float progress = tag.TryGet("ItemPipeline_Progress", out float prog) ? prog : 0f;
-                    int sourceDir = tag.TryGet("ItemPipeline_SourceDirection", out int sd) ? sd : -1;
+                if (tag.TrySafeGet("ItemPipeline_ItemType", out int itemType) && itemType > ItemID.None && itemType < ItemLoader.ItemCount) {
+                    int stack = tag.TrySafeGet("ItemPipeline_Stack", out int s) ? s : 0;
+                    int prefix = tag.TrySafeGet("ItemPipeline_Prefix", out int p) ? p : 0;
+                    float progress = tag.TrySafeGet("ItemPipeline_Progress", out float prog) ? prog : 0f;
+                    int sourceDir = tag.TrySafeGet("ItemPipeline_SourceDirection", out int sd) ? sd : -1;
 
                     //合理性矫正
                     if (stack > 0) {
@@ -958,7 +959,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 try {
                     //新格式优先；旧档整卡物品由垫片回填
                     if (!Filter.TryLoad(tag, "ItemPipeline_Filter")
-                        && tag.TryGet<TagCompound>("ItemPipeline_ItemFilter", out var filterTag) && filterTag != null
+                        && tag.TrySafeGet<TagCompound>("ItemPipeline_ItemFilter", out var filterTag) && filterTag != null
                         && ItemIO.Load(filterTag) is Item legacyCard && legacyCard.ModItem is ItemFilter card) {
                         Filter.CopyFrom(card.Filter);
                     }

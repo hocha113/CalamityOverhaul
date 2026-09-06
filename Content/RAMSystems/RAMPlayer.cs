@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -90,10 +91,10 @@ namespace CalamityOverhaul.Content.RAMSystems
                 usedRecoveryUpgradeChips = 0;
             }
             else {
-                usedCapacityUpgradeChips = tag.TryGet(SaveKey_CapacityChips, out int cap)
+                usedCapacityUpgradeChips = tag.TrySafeGet(SaveKey_CapacityChips, out int cap, nameof(RAMPlayer))
                     ? SanitizeCapacityChipCount(cap)
                     : GetLegacyCapacityChipCount(tag);
-                usedRecoveryUpgradeChips = tag.TryGet(SaveKey_RecoveryChips, out int rec)
+                usedRecoveryUpgradeChips = tag.TrySafeGet(SaveKey_RecoveryChips, out int rec, nameof(RAMPlayer))
                     ? SanitizeRecoveryChipCount(rec)
                     : GetLegacyRecoveryChipCount(tag);
             }
@@ -668,14 +669,14 @@ namespace CalamityOverhaul.Content.RAMSystems
             => unchecked((int)(candidate - baseline)) > 0;
 
         private static int GetLegacyCapacityChipCount(TagCompound tag) {
-            if (!tag.TryGet(SaveKey_BaseMax, out int max)) {
+            if (!tag.TrySafeGet(SaveKey_BaseMax, out int max, nameof(RAMPlayer))) {
                 return 0;
             }
             return SanitizeCapacityChipCount(max - RamSystem.DefaultBaseMaxRam);
         }
 
         private static int GetLegacyRecoveryChipCount(TagCompound tag) {
-            if (!tag.TryGet(SaveKey_BaseRecover, out float rec) || !float.IsFinite(rec)) {
+            if (!tag.TrySafeGet(SaveKey_BaseRecover, out float rec, nameof(RAMPlayer)) || !float.IsFinite(rec)) {
                 return 0;
             }
             int count = (int)MathF.Round((rec - RamSystem.DefaultBaseRecoveryRate)

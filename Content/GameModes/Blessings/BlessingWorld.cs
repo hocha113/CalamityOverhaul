@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.GameModes.UI;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GameModes.UI;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -52,7 +53,7 @@ namespace CalamityOverhaul.Content.GameModes.Blessings
 
         public override void LoadWorldData(TagCompound tag) {
             Slain.Clear();
-            if (!tag.TryGet("BlessingSlain", out List<string> list) || list == null) {
+            if (!tag.TrySafeGet("BlessingSlain", out List<string> list, nameof(BlessingWorld)) || list == null) {
                 return;
             }
             foreach (string id in list) {

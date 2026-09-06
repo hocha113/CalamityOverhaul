@@ -308,10 +308,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Apiaries
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("ApiaryUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("ApiaryUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
-            if (tag.TryGet("ApiaryUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("ApiaryUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
         }

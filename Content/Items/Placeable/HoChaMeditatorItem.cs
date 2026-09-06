@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Common;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.IO;
@@ -92,11 +93,11 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override int TargetTileID => ModContent.TileType<HoChaMeditator>();
         public bool Left;
         public override void SaveData(TagCompound tag) {
-            tag.Add("_Left", Left);
+            tag["_Left"] = Left;
         }
 
         public override void LoadData(TagCompound tag) {
-            if (!tag.TryGet("_Left", out Left)) {
+            if (!tag.TrySafeGet("_Left", out Left, nameof(HoChaMeditatorTP))) {
                 Left = false;
             }
         }

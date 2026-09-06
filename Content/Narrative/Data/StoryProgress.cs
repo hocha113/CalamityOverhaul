@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using InnoVault.DataModules;
 using InnoVault.Narrative.Progress;
 using System;
@@ -63,7 +64,7 @@ namespace CalamityOverhaul.Content.Narrative.Data
 
         public override void LoadData(TagCompound tag, int loadedVersion) {
             Reset();
-            if (tag.TryGet("progress", out List<string> progressEntries)) {
+            if (tag.TrySafeGet("progress", out List<string> progressEntries)) {
                 foreach (string entry in progressEntries) {
                     int eq = entry.LastIndexOf('=');
                     if (eq > 0
@@ -74,12 +75,12 @@ namespace CalamityOverhaul.Content.Narrative.Data
                 }
             }
             LoadStringMap(tag, "choices", choices);
-            if (tag.TryGet("flags", out List<string> flagEntries)) {
+            if (tag.TrySafeGet("flags", out List<string> flagEntries)) {
                 foreach (string flag in flagEntries) {
                     flags[flag] = true;
                 }
             }
-            if (tag.TryGet("counters", out List<string> counterEntries)) {
+            if (tag.TrySafeGet("counters", out List<string> counterEntries)) {
                 foreach (string entry in counterEntries) {
                     int eq = entry.LastIndexOf('=');
                     if (eq > 0 && int.TryParse(entry[(eq + 1)..], out int value)) {
@@ -91,7 +92,7 @@ namespace CalamityOverhaul.Content.Narrative.Data
         }
 
         private static void LoadStringMap(TagCompound tag, string key, Dictionary<string, string> target) {
-            if (!tag.TryGet(key, out List<string> entries)) {
+            if (!tag.TrySafeGet(key, out List<string> entries)) {
                 return;
             }
             foreach (string entry in entries) {

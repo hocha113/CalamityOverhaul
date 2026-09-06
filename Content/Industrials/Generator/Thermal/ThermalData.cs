@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System;
 using System.IO;
 using Terraria;
@@ -89,14 +90,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            ChargeCool = tag.TryGet("ThermalData_ChargeCool", out int cc) ? cc : 0;
+            ChargeCool = tag.TrySafeGet("ThermalData_ChargeCool", out int cc) ? cc : 0;
             //旧档 tag 名 ThermalData_FEvalue
-            Temperature = tag.TryGet("ThermalData_Temperature", out float temp) ? temp
-                        : tag.TryGet("ThermalData_FEvalue", out float oldTemp) ? oldTemp : 0f;
-            BurnTimeRemaining = tag.TryGet("ThermalData_BurnTimeRemaining", out int btr) ? btr : 0;
-            BurnTimeMax = tag.TryGet("ThermalData_BurnTimeMax", out int btm) ? btm : 0;
-            HeatPerTick = tag.TryGet("ThermalData_HeatPerTick", out float hpt) ? hpt : 0f;
-            FuelItem = tag.TryGet("ThermalData_FuelItem", out Item fi) ? fi : new Item();
+            Temperature = tag.TrySafeGet("ThermalData_Temperature", out float temp) ? temp
+                        : tag.TrySafeGet("ThermalData_FEvalue", out float oldTemp) ? oldTemp : 0f;
+            BurnTimeRemaining = tag.TrySafeGet("ThermalData_BurnTimeRemaining", out int btr) ? btr : 0;
+            BurnTimeMax = tag.TrySafeGet("ThermalData_BurnTimeMax", out int btm) ? btm : 0;
+            HeatPerTick = tag.TrySafeGet("ThermalData_HeatPerTick", out float hpt) ? hpt : 0f;
+            FuelItem = tag.TrySafeGet("ThermalData_FuelItem", out Item fi) ? fi : new Item();
         }
     }
 }

@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 onikiri.TryCallThunder(target, in profile,
                     ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 5),
                     Projectile.knockBack, Projectile);
-                if (!target.active || target.life <= 0) {
+                if (OniMeiDeedEvents.StruckDead(target)) {
                     onikiri.TryPetalPruneOnKill(target,
                         ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 5),
                         Projectile.knockBack, Projectile, in profile);

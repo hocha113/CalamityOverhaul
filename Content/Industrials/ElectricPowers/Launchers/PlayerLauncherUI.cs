@@ -250,10 +250,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Launchers
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("PlayerLauncherUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("PlayerLauncherUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
-            if (tag.TryGet("PlayerLauncherUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("PlayerLauncherUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
         }

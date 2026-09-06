@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
         public override void LoadData(Item item, TagCompound tag) {
             base.LoadData(item, tag);
             //旧档遗产：只读进收编暂存，修订号供多把伞取舍
-            LegacyEditRevision = tag.TryGet("Kikasa:EditRevision", out long revision)
+            LegacyEditRevision = tag.TrySafeGet("Kikasa:EditRevision", out long revision)
                 && revision >= 0 && revision <= uint.MaxValue
                 ? (uint)revision : 0u;
             if (tag.ContainsKey("KikasaFu:Slots")) {

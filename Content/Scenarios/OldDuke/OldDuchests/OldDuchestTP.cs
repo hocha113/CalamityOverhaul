@@ -73,10 +73,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 List<TagCompound> itemTags = [];
                 foreach (var item in storedItems) {
                     if (item == null) {
-                        itemTags.Add(ItemIO.Save(new Item()));
+                        itemTags.Add(CWRSaveData.SaveItemTag(new Item()));
                     }
                     else {
-                        itemTags.Add(ItemIO.Save(item));
+                        itemTags.Add(CWRSaveData.SaveItemTag(item));
                     }
                 }
                 tag["itemTags"] = itemTags;
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
 
         public override void LoadData(TagCompound tag) {
             try {
-                if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
+                if (!tag.TrySafeGet("itemTags", out List<TagCompound> itemTags)) {
                     return;
                 }
 

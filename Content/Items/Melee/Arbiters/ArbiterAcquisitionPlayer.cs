@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -33,8 +34,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
         }
 
         public override void LoadData(TagCompound tag) {
-            bool claimed = false;
-            bool hasClaimedKey = tag != null && tag.TryGet(ClaimedSaveKey, out claimed);
+            bool hasClaimedKey = tag.TrySafeGet(ClaimedSaveKey, out bool claimed, nameof(ArbiterAcquisitionPlayer));
             Claimed = hasClaimedKey && claimed;
             //旧存档无键:曾经从肉山掉落里拿过斧子的老玩家直接记已认领
             legacyMigrationPending = !hasClaimedKey;

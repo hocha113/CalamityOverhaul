@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CalamityOverhaul.Common;
+using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -56,9 +57,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Biomass
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            BurnTimeRemaining = tag.TryGet("BiomassData_BurnTimeRemaining", out int btr) ? btr : 0;
-            BurnTimeMax = tag.TryGet("BiomassData_BurnTimeMax", out int btm) ? btm : 0;
-            FuelItem = tag.TryGet("BiomassData_FuelItem", out Item fi) ? fi : new Item();
+            BurnTimeRemaining = tag.TrySafeGet("BiomassData_BurnTimeRemaining", out int btr) ? btr : 0;
+            BurnTimeMax = tag.TrySafeGet("BiomassData_BurnTimeMax", out int btm) ? btm : 0;
+            FuelItem = tag.TrySafeGet("BiomassData_FuelItem", out Item fi) ? fi : new Item();
         }
     }
 }

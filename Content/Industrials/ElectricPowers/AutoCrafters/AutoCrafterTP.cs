@@ -67,22 +67,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoCrafters
             tag["AutoCrafter_PinnedResultStack"] = PinnedResultStack;
             tag["AutoCrafter_PinnedHash"] = PinnedHash;
             if (SampleItem != null && !SampleItem.IsAir) {
-                tag["AutoCrafter_SampleItem"] = ItemIO.Save(SampleItem);
+                tag["AutoCrafter_SampleItem"] = CWRSaveData.SaveItemTag(SampleItem);
             }
             if (OutputItem != null && !OutputItem.IsAir) {
-                tag["AutoCrafter_OutputItem"] = ItemIO.Save(OutputItem);
+                tag["AutoCrafter_OutputItem"] = CWRSaveData.SaveItemTag(OutputItem);
             }
         }
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (!tag.TryGet("AutoCrafter_PinnedResultType", out PinnedResultType)) {
+            if (!tag.TrySafeGet("AutoCrafter_PinnedResultType", out PinnedResultType)) {
                 PinnedResultType = 0;
             }
-            if (!tag.TryGet("AutoCrafter_PinnedResultStack", out PinnedResultStack)) {
+            if (!tag.TrySafeGet("AutoCrafter_PinnedResultStack", out PinnedResultStack)) {
                 PinnedResultStack = 0;
             }
-            if (!tag.TryGet("AutoCrafter_PinnedHash", out PinnedHash)) {
+            if (!tag.TrySafeGet("AutoCrafter_PinnedHash", out PinnedHash)) {
                 PinnedHash = 0;
             }
             CraftProgress = 0;

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -62,7 +63,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Core
         }
 
         public override void LoadData(Item item, TagCompound tag) {
-            EndowKey = tag.TryGet("EndowKey", out string key) && !string.IsNullOrEmpty(key) ? key : null;
+            //GlobalItem 读档在 tML 侧无兜底，一抛整档不可读，走安全读取
+            EndowKey = tag.TrySafeGet("EndowKey", out string key, nameof(GodSmithItem)) && !string.IsNullOrEmpty(key) ? key : null;
         }
 
         public override void NetSend(Item item, BinaryWriter writer) {

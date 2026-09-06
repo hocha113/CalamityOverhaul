@@ -1,6 +1,5 @@
 using System;
 using Terraria;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
 {
@@ -31,8 +30,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
         internal int AirborneHits { get; private set; }
 
         //====雨中樱流（雨樋）====
-        /// <summary>雨天樱流巡航连续帧</summary>
-        internal int SakuraRainTicks { get; private set; }
+        /// <summary>雨天樱流巡航累计帧，跨航程累计，满一秒归零并脉冲一次</summary>
+        private int sakuraRainCarry;
+        /// <summary>本帧恰好累满一整秒雨程（单帧脉冲，雨樋据此按秒推进）</summary>
+        internal bool SakuraRainSecondTick { get; private set; }
 
         //====立定苦战（枯山水）====
         /// <summary>钉在原地且未受伤的交战连续帧</summary>
@@ -94,17 +95,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
             TickDisengage(player);
         }
 
-        /// <summary>樱流巡航帧（由樱流经济层调用）</summary>
+        /// <summary>
+        /// 樱流巡航帧（由樱流经济层调用）。单次航程被 <c>OniSakuraFlight.MaxFlightFrames</c> 钳在 3 秒内，
+        /// 雨程只能跨航程分段累计；不下雨的帧不计也不清
+        /// </summary>
         internal void TickSakuraFlight(bool raining) {
-            if (raining) {
-                SakuraRainTicks++;
+            SakuraRainSecondTick = false;
+            if (!raining) {
                 return;
             }
-            SakuraRainTicks = 0;
+            if (++sakuraRainCarry >= 60) {
+                sakuraRainCarry = 0;
+                SakuraRainSecondTick = true;
+            }
         }
-
-        /// <summary>樱流结束：雨程作废，只认一次连续飞行</summary>
-        internal void EndSakuraFlight() => SakuraRainTicks = 0;
 
         /// <summary>受伤：断掉静止与立定两条连续条件，但静止段本身记一笔"挨过打"</summary>
         internal void NotifyHurt() {
@@ -181,7 +185,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
             HurtWhileStill = false;
             AirborneTicks = 0;
             AirborneHits = 0;
-            SakuraRainTicks = 0;
+            sakuraRainCarry = 0;
+            SakuraRainSecondTick = false;
             PlantedFightTicks = 0;
             plantedAnchored = false;
         }
@@ -199,28 +204,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
     /// <summary>刀縁用得上的环境判据；鬼切本体此前不读任何天候/时刻，集中在此以免散落</summary>
     internal static class OniMeiDeedEnvironment
     {
-        /// <summary>向上探顶的最大格数，够区分"露天"与"洞里"即可</summary>
-        private const int SkyProbeTiles = 96;
+        /// <summary>雷暴：与斩雷多道同一判据，刀縁解锁时的天和解锁后能落多道雷的天是同一个天</summary>
+        internal static bool IsStorming => OniMeiCombat.IsStorming;
 
-        /// <summary>雷暴：下雨且风紧</summary>
-        internal static bool IsStorming
-            => Main.raining && Math.Abs(Main.windSpeedCurrent) >= 0.4f;
-
-        /// <summary>头顶通天：地表线以上且探顶无实心砖与墙</summary>
+        /// <summary>
+        /// 头顶通天：地表线以上，且探顶口径与雷柱落雷（<c>OniMeiThunderColumn.TryProbeSky</c>）一致，
+        /// 只有实心非平台砖算遮挡，背景墙不算。雷能落下来的地方就是雷切认的露天
+        /// </summary>
         internal static bool HasOpenSky(Player player) {
             if (player == null || player.position.Y >= Main.worldSurface * 16.0) {
                 return false;
             }
             Point tile = player.Top.ToTileCoordinates();
-            int limit = Math.Max(0, tile.Y - SkyProbeTiles);
+            int limit = Math.Max(0, tile.Y - OniMeiCombat.ThunderSkyProbeTiles);
             for (int y = tile.Y - 1; y >= limit; y--) {
                 if (!WorldGen.InWorld(tile.X, y, 1)) {
                     break;
                 }
                 Tile probe = Framing.GetTileSafely(tile.X, y);
-                if (probe.WallType != WallID.None) {
-                    return false;
-                }
                 if (probe.HasTile && Main.tileSolid[probe.TileType] && !Main.tileSolidTop[probe.TileType]) {
                     return false;
                 }

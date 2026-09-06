@@ -350,23 +350,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         public override void SaveData(TagCompound tag) {
-            OniMeiOwned.EnsureSeed(this);
-            List<string> keys = OwnedMeiKeys.Where(k => !string.IsNullOrEmpty(k)).Distinct().OrderBy(k => k).ToList();
-            tag["OniMeiOwned"] = keys;
-            Deeds.Save(tag);
+            try {
+                OniMeiOwned.EnsureSeed(this);
+                List<string> keys = OwnedMeiKeys.Where(k => !string.IsNullOrEmpty(k)).Distinct().OrderBy(k => k).ToList();
+                tag["OniMeiOwned"] = keys;
+                Deeds.Save(tag);
+            } catch (Exception ex) {
+                CWRSaveData.LogSaveError(nameof(OnikiriPlayer), ex);
+            }
         }
 
         public override void LoadData(TagCompound tag) {
             OwnedMeiKeys = [];
-            if (tag.TryGet("OniMeiOwned", out List<string> keys) && keys != null) {
-                foreach (string key in keys) {
-                    if (!string.IsNullOrEmpty(key)) {
-                        OwnedMeiKeys.Add(key);
+            try {
+                if (tag.TrySafeGet("OniMeiOwned", out List<string> keys, nameof(OnikiriPlayer)) && keys != null) {
+                    foreach (string key in keys) {
+                        if (!string.IsNullOrEmpty(key)) {
+                            OwnedMeiKeys.Add(key);
+                        }
                     }
                 }
+                OniMeiOwned.EnsureSeed(this);
+                Deeds.Load(tag);
+            } catch (Exception ex) {
+                CWRSaveData.LogLoadError(nameof(OnikiriPlayer), ex);
             }
-            OniMeiOwned.EnsureSeed(this);
-            Deeds.Load(tag);
         }
 
         public override void OnRespawn() {
@@ -1277,8 +1285,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// </summary>
         private void ManageSakuraFlight(bool advanceTime) {
             if (!OniSakuraFlight.IsTraveling(Player.whoAmI)) {
-                //任何收尾（松手/气尽/离表/自然到程）都在此断掉雨程连续计数
-                DeedTracker.EndSakuraFlight();
                 return;
             }
             vigorRegenDelay = Math.Max(vigorRegenDelay, VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks);
@@ -3019,7 +3025,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
             thunderCooldown = OniMeiCombat.ThunderCooldownTicks;
-            bool storming = Main.raining && Math.Abs(Main.windSpeedCurrent) >= 0.4f;
+            bool storming = OniMeiCombat.IsStorming;
             int bolts = storming ? OniMeiCombat.ThunderStormBolts : 1;
             int damage = Math.Max(1, (int)(baseWeaponDamage * OniMeiCombat.ThunderDamageMul));
             IEntitySource source = sourceProjectile?.GetSource_FromAI()

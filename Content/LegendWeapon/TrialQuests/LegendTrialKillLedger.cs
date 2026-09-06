@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
 using CalamityOverhaul.Content.Narrative.Common;
 using System.Collections.Generic;
@@ -76,14 +77,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
 
         public override void LoadData(TagCompound tag) {
             Initialize();
-            if (tag.TryGet("LegendTrialKills", out List<int> vanilla)) {
+            if (tag.TrySafeGet("LegendTrialKills", out List<int> vanilla, nameof(LegendTrialKillLedgerPlayer)) && vanilla != null) {
                 foreach (int type in vanilla) {
                     if (type > NPCID.None && type < NPCID.Count) {
                         vanillaKills.Add(type);
                     }
                 }
             }
-            if (tag.TryGet("LegendTrialKillNames", out List<string> names)) {
+            if (tag.TrySafeGet("LegendTrialKillNames", out List<string> names, nameof(LegendTrialKillLedgerPlayer)) && names != null) {
                 foreach (string name in names) {
                     if (!string.IsNullOrEmpty(name)) {
                         moddedKills.Add(name);

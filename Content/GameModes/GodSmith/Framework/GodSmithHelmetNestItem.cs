@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Core;
 using CalamityOverhaul.Content.GameModes.UI;
 using Microsoft.Xna.Framework.Graphics;
@@ -103,25 +104,31 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
 
         //==================== 数据往返（存物品名防 ID 漂移；网络走 int） ====================
 
+        //GlobalItem 的读写在 tML 侧没有兜底：这里一抛，整个玩家档/世界档的物品序列化就中止。
+        //链上的 ID 可能来自网络包或已卸载模组，查名一律用 TryGetName，查不到的项直接丢
         public override void SaveData(Item item, TagCompound tag) {
             if (Chain.Length == 0) {
                 return;
             }
             List<string> names = new(Chain.Length);
             for (int i = 0; i < Chain.Length; i++) {
-                names.Add(ItemID.Search.GetName(Chain[i]));
+                if (Chain[i] > ItemID.None && ItemID.Search.TryGetName(Chain[i], out string name)) {
+                    names.Add(name);
+                }
             }
-            tag["GsNest"] = names;
+            if (names.Count > 0) {
+                tag["GsNest"] = names;
+            }
         }
 
         public override void LoadData(Item item, TagCompound tag) {
             Chain = [];
-            if (!tag.ContainsKey("GsNest")) {
+            if (!tag.TrySafeGet("GsNest", out List<string> names, nameof(GodSmithHelmetNestItem)) || names == null) {
                 return;
             }
             List<int> types = [];
-            foreach (string name in tag.GetList<string>("GsNest")) {
-                if (ItemID.Search.TryGetId(name, out int type)) {
+            foreach (string name in names) {
+                if (!string.IsNullOrEmpty(name) && ItemID.Search.TryGetId(name, out int type)) {
                     types.Add(type);
                 }
             }

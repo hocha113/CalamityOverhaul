@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
 
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
-            tag["_FuelGel"] = ItemIO.Save(FuelGel ?? new Item());
+            tag["_FuelGel"] = CWRSaveData.SaveItemTag(FuelGel ?? new Item());
         }
 
         public override void LoadData(TagCompound tag) {

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.MainMenus.Characters;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
@@ -389,7 +390,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 loadout.Clear();
                 FishSkill = null;
 
-                if (tag.TryGet<IList<TagCompound>>("UnlockedSkills", out var unlockedList)) {
+                if (tag.TrySafeGet<IList<TagCompound>>("UnlockedSkills", out var unlockedList)) {
                     //新版格式
                     foreach (var skillTag in unlockedList) {
                         if (!skillTag.TryGet<string>("Name", out var name) ||
@@ -401,7 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                             unlocked.Add(fishSkill);
                         }
                     }
-                    if (tag.TryGet<List<string>>("Loadout", out var loadoutNames)) {
+                    if (tag.TrySafeGet<List<string>>("Loadout", out var loadoutNames)) {
                         foreach (var name in loadoutNames) {
                             if (FishSkill.NameToInstance.TryGetValue(name, out var fishSkill)
                                 && unlocked.Contains(fishSkill) && !loadout.Contains(fishSkill)
@@ -413,7 +414,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
                 else {
                     //旧版迁移、FishSkills主列表/SkillLibrary仅名
-                    if (tag.TryGet<IList<TagCompound>>("FishSkills", out var legacyMain)) {
+                    if (tag.TrySafeGet<IList<TagCompound>>("FishSkills", out var legacyMain)) {
                         foreach (var skillTag in legacyMain) {
                             if (!skillTag.TryGet<string>("Name", out var name) ||
                                 !FishSkill.NameToInstance.TryGetValue(name, out var fishSkill)) {
@@ -428,7 +429,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                             }
                         }
                     }
-                    if (tag.TryGet<IList<TagCompound>>("SkillLibrary", out var legacyLibrary)) {
+                    if (tag.TrySafeGet<IList<TagCompound>>("SkillLibrary", out var legacyLibrary)) {
                         foreach (var skillTag in legacyLibrary) {
                             if (!skillTag.TryGet<string>("Name", out var name) ||
                                 !FishSkill.NameToInstance.TryGetValue(name, out var fishSkill)) {
@@ -441,30 +442,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     }
                 }
 
-                if (tag.TryGet<string>("HalibutTargetSkillName", out var skillName)) {
+                if (tag.TrySafeGet<string>("HalibutTargetSkillName", out var skillName)) {
                     FishSkill = FishSkill.NameToInstance.GetValueOrDefault(skillName);
                 }
 
-                if (tag.TryGet<List<int>>("ActiveEyeIndices", out var activeIndices)) {
+                if (tag.TrySafeGet<List<int>>("ActiveEyeIndices", out var activeIndices)) {
                     InitializeEyes(activeIndices);
                 }
-                if (tag.TryGet("ExtraEyeActive", out bool extraEye)) {
+                if (tag.TrySafeGet("ExtraEyeActive", out bool extraEye)) {
                     ExtraEyeActive = extraEye;
                 }
 
                 if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                    if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
+                    if (tag.TrySafeGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
                         halibutPlayer.ResurrectionSystem.LoadData(resurrectionTag);
                     }
                     //兼容、内嵌v0 ADCSave迁到StoryPlayer
-                    if (tag.TryGet<TagCompound>("ADCSave", out TagCompound adcTag)) {
+                    if (tag.TrySafeGet<TagCompound>("ADCSave", out TagCompound adcTag)) {
                         StoryPlayer storyPlayer = Player.GetModPlayer<StoryPlayer>();
                         LegacyStorySaveImporter.TryImport(adcTag, storyPlayer.StoryData);
                         if (storyPlayer.Get<SupCalStoryData>().EternalBlazingNow) {
                             MenuSave.UnlockEternalBlazingNowPortrait(Player);
                         }
                     }
-                    if (tag.TryGet("IsInteractionLockedTime", out int isInteractionLockedTime)) {
+                    if (tag.TrySafeGet("IsInteractionLockedTime", out int isInteractionLockedTime)) {
                         halibutPlayer.IsInteractionLockedTime = isInteractionLockedTime;
                     }
                 }

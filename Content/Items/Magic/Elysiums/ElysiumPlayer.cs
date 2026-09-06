@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic.Elysiums.Disciples;
 using CalamityOverhaul.Content.Items.Magic.Elysiums.Revelations;
 using CalamityOverhaul.Content.PRTTypes;
@@ -605,12 +606,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         }
 
         public override void LoadData(TagCompound tag) {
-            if (tag.TryGet("elysiumSeats", out byte[] converted)) {
+            if (tag.TrySafeGet("elysiumSeats", out byte[] converted, nameof(ElysiumPlayer)) && converted != null) {
                 for (int i = 0; i < SeatCount && i < converted.Length; i++) {
                     SeatConverted[i] = converted[i] != 0;
                 }
             }
-            if (tag.TryGet("elysiumMartyrs", out byte[] martyred)) {
+            if (tag.TrySafeGet("elysiumMartyrs", out byte[] martyred, nameof(ElysiumPlayer)) && martyred != null) {
                 for (int i = 0; i < SeatCount && i < martyred.Length; i++) {
                     Martyred[i] = martyred[i] != 0;
                 }

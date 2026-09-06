@@ -17,9 +17,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HerbFarmers
         internal static readonly Color Tint = new(230, 220, 130);
 
         public static LocalizedText NoEnergyText { get; private set; }
+        public static LocalizedText FullText { get; private set; }
 
         public override void SetStaticDefaults() {
             NoEnergyText = this.GetLocalization(nameof(NoEnergyText), () => "能量不足!");
+            FullText = this.GetLocalization(nameof(FullText), () => "产出仓已满!");
         }
 
         public override void SetDefaults() {

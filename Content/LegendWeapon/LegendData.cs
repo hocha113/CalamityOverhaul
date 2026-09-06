@@ -181,34 +181,34 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         public virtual void LoadData(Item item, TagCompound tag) {
             try {
-                if (!tag.TryGet("LegendData:Level", out Level)) {
+                if (!tag.TrySafeGet("LegendData:Level", out Level)) {
                     Level = 0;
                 }
-                if (!tag.TryGet("LegendData:UpgradeWorldName", out UpgradeWorldName)) {
+                if (!tag.TrySafeGet("LegendData:UpgradeWorldName", out UpgradeWorldName)) {
                     UpgradeWorldName = "";
                 }
                 //旧档兼容，UpgradeWorldName 顶替 FullName
-                if (!tag.TryGet("LegendData:UpgradeWorldFullName", out UpgradeWorldFullName)) {
+                if (!tag.TrySafeGet("LegendData:UpgradeWorldFullName", out UpgradeWorldFullName)) {
                     UpgradeWorldFullName = UpgradeWorldName;
                 }
                 //会话级跳过标记不持久化
                 SkipUpgradeWorldFullName = string.Empty;
                 TrustedWorldFullNames = new List<string>();
-                if (tag.TryGet("LegendData:TrustedWorlds", out List<string> trusted) && trusted != null) {
+                if (tag.TrySafeGet("LegendData:TrustedWorlds", out List<string> trusted) && trusted != null) {
                     foreach (var w in trusted) {
                         if (!string.IsNullOrEmpty(w) && !TrustedWorldFullNames.Contains(w)) {
                             TrustedWorldFullNames.Add(w);
                         }
                     }
                 }
-                if (!tag.TryGet("LegendData:TrialSchemaVersion", out TrialSchemaVersion)) {
+                if (!tag.TrySafeGet("LegendData:TrialSchemaVersion", out TrialSchemaVersion)) {
                     TrialSchemaVersion = 0;
                 }
-                if (!tag.TryGet("LegendData:TrialRouteSignature", out TrialRouteSignature)) {
+                if (!tag.TrySafeGet("LegendData:TrialRouteSignature", out TrialRouteSignature)) {
                     TrialRouteSignature = string.Empty;
                 }
                 CompletedTrialKeys = new List<string>();
-                if (tag.TryGet("LegendData:CompletedTrialKeys", out List<string> completed) && completed != null) {
+                if (tag.TrySafeGet("LegendData:CompletedTrialKeys", out List<string> completed) && completed != null) {
                     foreach (string key in completed) {
                         if (!string.IsNullOrEmpty(key) && !CompletedTrialKeys.Contains(key)) {
                             CompletedTrialKeys.Add(key);

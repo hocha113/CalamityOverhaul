@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.HackTimes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.UIs.StorageUIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -487,7 +488,7 @@ namespace CalamityOverhaul.Content.EntrustManager
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet(Name + ":widgetYOffset", out float y))
+            if (tag.TrySafeGet(Name + ":widgetYOffset", out float y))
                 widgetYOffset = y;
         }
 

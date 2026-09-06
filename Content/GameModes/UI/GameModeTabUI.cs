@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Common;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -93,7 +94,7 @@ namespace CalamityOverhaul.Content.GameModes.UI
         public override void SaveUIData(TagCompound tag) => tag[Name + ":discovered"] = discovered;
 
         public override void LoadUIData(TagCompound tag)
-            => discovered = tag.TryGet(Name + ":discovered", out bool value) && value;
+            => discovered = tag.TrySafeGet(Name + ":discovered", out bool value) && value;
 
         public override void Update() {
             GameModeCeremony.UpdateLine();

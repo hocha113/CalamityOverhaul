@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.ControlVisuals;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.GridSwitches;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
@@ -75,10 +76,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.WireInterfaces
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (tag.TryGet("_OutputMode", out byte mode)) {
+            if (tag.TrySafeGet("_OutputMode", out byte mode)) {
                 OutputMode = mode <= 2 ? mode : (byte)0;
             }
-            if (tag.TryGet("_Armed", out bool armedValue)) {
+            if (tag.TrySafeGet("_Armed", out bool armedValue)) {
                 armed = armedValue;
             }
         }

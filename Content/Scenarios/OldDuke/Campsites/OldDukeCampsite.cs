@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
@@ -63,10 +64,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             IsGenerated = false;
             CampsitePosition = Vector2.Zero;
             try {
-                if (tag != null && tag.TryGet(nameof(IsGenerated), out bool value)) {
+                if (tag != null && tag.TrySafeGet(nameof(IsGenerated), out bool value)) {
                     IsGenerated = value;
                 }
-                if (tag != null && tag.TryGet(nameof(CampsitePosition), out Vector2 pos)) {
+                if (tag != null && tag.TrySafeGet(nameof(CampsitePosition), out Vector2 pos)) {
                     CampsitePosition = pos;
                 }
             } catch (Exception ex) {

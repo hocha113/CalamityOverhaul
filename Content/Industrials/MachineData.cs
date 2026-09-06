@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CalamityOverhaul.Common;
+using System.IO;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -21,7 +22,7 @@ namespace CalamityOverhaul.Content.Industrials
         }
 
         public virtual void LoadData(TagCompound tag) {
-            if (!tag.TryGet($"{Name}_UEvalue", out UEvalue)) {
+            if (!tag.TrySafeGet($"{Name}_UEvalue", out UEvalue)) {
                 UEvalue = 0;
             }
         }

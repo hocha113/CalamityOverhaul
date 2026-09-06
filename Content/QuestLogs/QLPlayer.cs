@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.QuestLogs.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.QLNodes;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.GameSystem;
@@ -50,7 +51,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             try {
                 QuestProgress ??= [];
                 QuestProgress.Clear();
-                if (tag.TryGet("QuestProgress", out TagCompound questsTag)) {
+                if (tag.TrySafeGet("QuestProgress", out TagCompound questsTag)) {
                     foreach (var kvp in questsTag) {
                         if (kvp.Value is TagCompound questDataTag) {
                             QuestProgress[kvp.Key] = QuestSaveData.Deserialize(questDataTag);
@@ -59,13 +60,13 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
 
                 LastWorldFullName = string.Empty;
-                if (tag.TryGet("QL_LastWorldFullName", out string lastWorld)) {
+                if (tag.TrySafeGet("QL_LastWorldFullName", out string lastWorld)) {
                     LastWorldFullName = lastWorld;
                 }
                 //跳过仅本会话
                 DontCheckQuestInWorld = string.Empty;
                 TrustedQuestWorldFullNames = new List<string>();
-                if (tag.TryGet("QL_TrustedQuestWorlds", out List<string> trusted) && trusted != null) {
+                if (tag.TrySafeGet("QL_TrustedQuestWorlds", out List<string> trusted) && trusted != null) {
                     foreach (var w in trusted) {
                         if (!string.IsNullOrEmpty(w) && !TrustedQuestWorldFullNames.Contains(w)) {
                             TrustedQuestWorldFullNames.Add(w);

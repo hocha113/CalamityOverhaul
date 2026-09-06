@@ -59,14 +59,18 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             };
         }
 
+        //SaveMod 的 DoSave/DoLoad 在 InnoVault 侧不兜底，这里跑在模组加载期：
+        //密度存档坏了不该让模组加载失败，出错保留上面填好的默认密度
         public override void SetStaticDefaults() {
             foreach (string name in StructureNames) {
                 DensityByName.TryAdd(name, GetDefaultDensity(name));
             }
-            if (!HasSave) {
-                DoSave<WorldGenDensitySave>();
-            }
-            DoLoad<WorldGenDensitySave>();
+            CWRSaveData.Guard(nameof(WorldGenDensitySave) + ".SetStaticDefaults", () => {
+                if (!HasSave) {
+                    DoSave<WorldGenDensitySave>();
+                }
+                DoLoad<WorldGenDensitySave>();
+            });
             SyncFromConfig();
         }
 
@@ -78,7 +82,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
         public override void LoadData(TagCompound tag) {
             foreach (string name in StructureNames) {
-                if (tag.TryGet($"Density_{name}", out int level)) {
+                if (tag.TryGetAsInt($"Density_{name}", out int level)) {
                     DensityByName[name] = (StructureDensity)Math.Clamp(level, 0, 5);
                 }
                 else {
@@ -87,7 +91,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
         }
 
-        public static void Save() => DoSave<WorldGenDensitySave>();
+        public static void Save() => CWRSaveData.Guard(nameof(WorldGenDensitySave) + ".Save", () => DoSave<WorldGenDensitySave>());
 
         public static StructureDensity GetDensity(string name) {
             return DensityByName.TryGetValue(name, out var d) ? d : StructureDensity.Normal;

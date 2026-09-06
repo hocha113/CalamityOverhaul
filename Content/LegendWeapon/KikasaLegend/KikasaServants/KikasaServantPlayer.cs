@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaArms;
@@ -584,19 +585,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             Array.Clear(slotHeld, 0, SlotCount);
 
             //最近记忆：武器与生物互斥，读到即定（写侧保证最多一个存在）
-            if (tag.TryGet("KikasaArmsMemoryName", out string armsName)
+            if (tag.TrySafeGet("KikasaArmsMemoryName", out string armsName)
                 && ModContent.TryFind(armsName, out ModItem modItem)) {
                 LastDrownedItemType = modItem.Type;
             }
-            else if (tag.TryGet("KikasaArmsMemory", out int vanillaItem)
+            else if (tag.TrySafeGet("KikasaArmsMemory", out int vanillaItem)
                 && vanillaItem > ItemID.None && vanillaItem < ItemID.Count) {
                 LastDrownedItemType = vanillaItem;
             }
-            if (tag.TryGet("KikasaServantMemoryName", out string fullName)
+            if (tag.TrySafeGet("KikasaServantMemoryName", out string fullName)
                 && ModContent.TryFind(fullName, out ModNPC modNPC)) {
                 LastDrownedType = modNPC.Type;
             }
-            else if (tag.TryGet("KikasaServantMemory", out int vanillaType)
+            else if (tag.TrySafeGet("KikasaServantMemory", out int vanillaType)
                 && vanillaType > NPCID.None && vanillaType < NPCID.Count) {
                 LastDrownedType = vanillaType;
             }
@@ -606,7 +607,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 || tag.ContainsKey("KikasaServantCodexNames")
                 || tag.ContainsKey("KikasaArmsCodex") || tag.ContainsKey("KikasaArmsCodexNames")
                 || tag.ContainsKey("KikasaLakeSlots");
-            if (tag.TryGet("KikasaServantCodex", out List<int> codex)) {
+            if (tag.TrySafeGet("KikasaServantCodex", out List<int> codex)) {
                 foreach (int type in codex) {
                     //int 表只认原版段：模组类型号跨会话不稳定，可能误指到别的 NPC
                     if (type >= NPCID.Count) {
@@ -619,7 +620,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 }
             }
             //模组鬼奴按全名找回当前会话的类型号，找不到（卸了模组/退役）静默丢弃
-            if (tag.TryGet("KikasaServantCodexNames", out List<string> servantNames)) {
+            if (tag.TrySafeGet("KikasaServantCodexNames", out List<string> servantNames)) {
                 foreach (string servantName in servantNames) {
                     if (ModContent.TryFind(servantName, out ModNPC modServant)) {
                         int canonical = KikasaServantIndex.CanonicalOf(modServant.Type);
@@ -629,7 +630,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                     }
                 }
             }
-            if (tag.TryGet("KikasaArmsCodex", out List<int> armsCodex)) {
+            if (tag.TrySafeGet("KikasaArmsCodex", out List<int> armsCodex)) {
                 foreach (int type in armsCodex) {
                     if (KikasaArmsIndex.TryGet(type, out _)) {
                         collectedArms.Add(type);
@@ -637,7 +638,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 }
             }
             //模组械奴按全名找回当前会话的类型号，找不到（卸了模组）静默丢弃
-            if (tag.TryGet("KikasaArmsCodexNames", out List<string> armsNames)) {
+            if (tag.TrySafeGet("KikasaArmsCodexNames", out List<string> armsNames)) {
                 foreach (string armName in armsNames) {
                     if (ModContent.TryFind(armName, out ModItem modArm)
                         && KikasaArmsIndex.TryGet(modArm.Type, out _)) {
@@ -645,7 +646,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                     }
                 }
             }
-            if (tag.TryGet("KikasaLakeSlots", out List<int> slots)) {
+            if (tag.TrySafeGet("KikasaLakeSlots", out List<int> slots)) {
                 for (int i = 0; i < SlotCount && i < slots.Count; i++) {
                     int key = slots[i];
                     //正键模组段跳过：那是上一会话的失效类型号，由席位全名表恢复
@@ -658,7 +659,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 }
             }
             //模组械奴席位按全名覆写恢复（int 表里存的是上一会话的失效类型号）
-            if (tag.TryGet("KikasaLakeSlotNames", out List<string> slotArmNames)) {
+            if (tag.TrySafeGet("KikasaLakeSlotNames", out List<string> slotArmNames)) {
                 for (int i = 0; i < SlotCount && i < slotArmNames.Count; i++) {
                     string armName = slotArmNames[i];
                     if (string.IsNullOrEmpty(armName)
@@ -672,7 +673,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 }
             }
             //模组鬼奴席位同理按 NPC 全名恢复，过规范归并校验
-            if (tag.TryGet("KikasaLakeSlotNpcNames", out List<string> slotNpcNamesIn)) {
+            if (tag.TrySafeGet("KikasaLakeSlotNpcNames", out List<string> slotNpcNamesIn)) {
                 for (int i = 0; i < SlotCount && i < slotNpcNamesIn.Count; i++) {
                     string npcName = slotNpcNamesIn[i];
                     if (string.IsNullOrEmpty(npcName)
@@ -685,13 +686,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                     }
                 }
             }
-            if (tag.TryGet("KikasaSlotHeld", out List<bool> held)) {
+            if (tag.TrySafeGet("KikasaSlotHeld", out List<bool> held)) {
                 for (int i = 0; i < SlotCount && i < held.Count; i++) {
                     //收起标记只对实际驻着影的席有意义
                     slotHeld[i] = held[i] && lakeSlots[i] != 0;
                 }
             }
-            if (tag.TryGet("KikasaSeatOrder", out List<int> order)) {
+            if (tag.TrySafeGet("KikasaSeatOrder", out List<int> order)) {
                 for (int i = 0; i < SlotCount && i < order.Count; i++) {
                     seatOrder[i] = order[i];
                     seatOrderStamp = Math.Max(seatOrderStamp, order[i]);

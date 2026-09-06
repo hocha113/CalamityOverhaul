@@ -220,14 +220,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         public override void LoadWorldData(TagCompound tag) {
             ClearWorld();
-            if (tag.TryGet("KikasaBossLedger", out List<int> vanilla)) {
+            if (tag.TrySafeGet("KikasaBossLedger", out List<int> vanilla, nameof(KikasaBossLedger)) && vanilla != null) {
                 foreach (int type in vanilla) {
                     if (type > NPCID.None && type < NPCID.Count) {
                         vanillaKilled.Add(type);
                     }
                 }
             }
-            if (tag.TryGet("KikasaBossLedgerNames", out List<string> names)) {
+            if (tag.TrySafeGet("KikasaBossLedgerNames", out List<string> names, nameof(KikasaBossLedger)) && names != null) {
                 foreach (string name in names) {
                     if (!string.IsNullOrEmpty(name)) {
                         moddedKilled.Add(name);

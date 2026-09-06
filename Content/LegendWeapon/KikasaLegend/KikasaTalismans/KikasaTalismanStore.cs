@@ -127,11 +127,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
         }
 
         public void LoadData(TagCompound tag) {
-            if (!tag.TryGet("KikasaFu:Slots", out List<TagCompound> list) || list == null) {
+            if (!tag.TrySafeGet("KikasaFu:Slots", out List<TagCompound> list, nameof(KikasaTalismanStore)) || list == null) {
                 ReplaceWithSanitized([]);
                 return;
             }
-            tag.TryGet("KikasaFu:Version", out int _);
             ReplaceWithSanitized(ReadTagEntries(list));
         }
 
@@ -174,16 +173,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
             }
         }
 
+        //Slot 历史上有 byte 与 int 两种存法；TryGet<byte> 碰到 int 会直接抛而不是落到下一分支，
+        //必须用宽容整数读取，否则一条旧格式条目就让整个 ModPlayer 读档失败
         private static IEnumerable<(int RawSlot, string Key)> ReadTagEntries(List<TagCompound> list) {
             foreach (TagCompound entry in list) {
-                if (!entry.TryGet("Key", out string key)) {
+                if (entry == null || !entry.TrySafeGet("Key", out string key, nameof(KikasaTalismanStore))) {
                     continue;
                 }
-                if (entry.TryGet("Slot", out byte byteSlot)) {
-                    yield return (byteSlot, key);
-                }
-                else if (entry.TryGet("Slot", out int intSlot)) {
-                    yield return (intSlot, key);
+                if (entry.TryGetAsInt("Slot", out int slot)) {
+                    yield return (slot, key);
                 }
             }
         }

@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 onikiri.OnPrimaryBladeHit(target, in profile);
                 OniMeiCombat.OnExecuteStrikeHit(owner, target, brandAngle, ref executeRefunded,
                     in profile, ActionContext?.ActionSerial ?? 0);
-                if (!target.active || target.life <= 0) {
+                if (OniMeiDeedEvents.StruckDead(target)) {
                     onikiri.TryPetalPruneOnKill(target,
                         ActionContext?.BaseWeaponDamage ?? Projectile.damage,
                         Projectile.knockBack, Projectile, in profile);

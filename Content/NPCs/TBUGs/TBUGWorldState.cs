@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
@@ -40,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
         }
 
         public override void LoadWorldData(TagCompound tag)
-            => HasArrived = tag.TryGet(nameof(HasArrived), out bool arrived) && arrived;
+            => HasArrived = tag.TrySafeGet(nameof(HasArrived), out bool arrived, nameof(TBUGWorldState)) && arrived;
 
         public override void NetSend(BinaryWriter writer) => writer.Write(HasArrived);
 

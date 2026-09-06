@@ -233,10 +233,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("GeneratorReadoutUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("GeneratorReadoutUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
-            if (tag.TryGet("GeneratorReadoutUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("GeneratorReadoutUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
         }

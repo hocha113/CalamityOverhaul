@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         }
 
         public override void LoadData(TagCompound tag) {
-            if (tag.TryGet<string>("CWR_Cyberware_CurrentSkillId", out var skillId)) {
+            if (tag.TrySafeGet("CWR_Cyberware_CurrentSkillId", out string skillId, nameof(CyberwareSkillRadialController))) {
                 CurrentSkillId = skillId ?? string.Empty;
             }
         }

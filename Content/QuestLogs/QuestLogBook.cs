@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
         public override void LoadData(TagCompound tag) {
             Change = false;
-            if (tag.TryGet(nameof(Change), out bool change)) {
+            if (tag.TrySafeGet(nameof(Change), out bool change, nameof(QuestLogBookPlayer))) {
                 Change = change;
             }
         }

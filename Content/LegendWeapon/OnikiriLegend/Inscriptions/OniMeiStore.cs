@@ -89,12 +89,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         public void LoadData(TagCompound tag) {
-            if (!tag.TryGet("OniMei:Slots", out List<TagCompound> list) || list == null) {
+            if (!tag.TrySafeGet("OniMei:Slots", out List<TagCompound> list, nameof(OniMeiStore)) || list == null) {
                 ReplaceWithSanitized([]);
                 return;
             }
-            // Version 1 used the same entry shape, so valid old data migrates directly.
-            tag.TryGet("OniMei:Version", out int _);
+            //v1 与 v2 条目形状相同，旧数据直接迁入
             ReplaceWithSanitized(ReadTagEntries(list));
         }
 
@@ -137,16 +136,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
         }
 
+        //Slot 历史上有 byte 与 int 两种存法；TryGet<byte> 碰到 int 会直接抛而不是落到下一分支，
+        //必须用宽容整数读取，否则一条旧格式条目就让整个 ModPlayer 读档失败
         private static IEnumerable<(int RawSlot, string Key)> ReadTagEntries(List<TagCompound> list) {
             foreach (TagCompound entry in list) {
-                if (!entry.TryGet("Key", out string key)) {
+                if (entry == null || !entry.TrySafeGet("Key", out string key, nameof(OniMeiStore))) {
                     continue;
                 }
-                if (entry.TryGet("Slot", out byte byteSlot)) {
-                    yield return (byteSlot, key);
-                }
-                else if (entry.TryGet("Slot", out int intSlot)) {
-                    yield return (intSlot, key);
+                if (entry.TryGetAsInt("Slot", out int slot)) {
+                    yield return (slot, key);
                 }
             }
         }

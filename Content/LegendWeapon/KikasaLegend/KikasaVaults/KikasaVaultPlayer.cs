@@ -184,15 +184,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 
         public override void SaveData(TagCompound tag) {
             List<TagCompound> list = [];
-            foreach (Item item in Stored) {
+            //自动存档跑在线程池线程上，主线程同时可能沉入新物品：先 ToArray 取快照（数组拷贝不做版本检查，
+            //不会抛"集合已修改"），再逐件序列化；单件失败（他模组物品的 SaveData 抛出）只丢那一件，别让整湖跟着没存上
+            foreach (Item item in Stored.ToArray()) {
                 if (item != null && !item.IsAir) {
-                    list.Add(ItemIO.Save(item));
+                    list.Add(CWRSaveData.SaveItemTag(item, nameof(KikasaVaultPlayer)));
                 }
             }
             //在途折返：提取演出没走完就存档，物品回湖而不是消失
-            foreach (Item item in inFlight) {
+            foreach (Item item in inFlight.ToArray()) {
                 if (item != null && !item.IsAir) {
-                    list.Add(ItemIO.Save(item));
+                    list.Add(CWRSaveData.SaveItemTag(item, nameof(KikasaVaultPlayer)));
                 }
             }
             if (list.Count > 0) {
@@ -203,17 +205,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
         public override void LoadData(TagCompound tag) {
             Stored.Clear();
             inFlight.Clear();
-            if (!tag.TryGet("KikasaVault", out List<TagCompound> list)) {
+            if (!tag.TrySafeGet("KikasaVault", out List<TagCompound> list, nameof(KikasaVaultPlayer)) || list == null) {
                 return;
             }
             foreach (TagCompound itemTag in list) {
-                try {
-                    Item item = ItemIO.Load(itemTag);
-                    if (item != null && !item.IsAir) {
-                        Stored.Add(item);
-                    }
-                } catch {
-                    //单件读损跳过，别拖垮整湖
+                //单件读损跳过，别拖垮整湖
+                Item item = CWRSaveData.LoadItemTag(itemTag, nameof(KikasaVaultPlayer));
+                if (item != null && !item.IsAir) {
+                    Stored.Add(item);
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Industrials.MachineModules;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.Storages;
 using InnoVault.TileProcessors;
@@ -237,7 +238,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             base.LoadData(tag);
             ModuleRack.Load(tag, ModuleSlotCount, GetType().Name);
             smeltBuffer.Clear();
-            if (tag.TryGet("_SmeltBuffer", out List<int> smeltData)) {
+            if (tag.TrySafeGet("_SmeltBuffer", out List<int> smeltData)) {
                 for (int i = 0; i + 1 < smeltData.Count; i += 2) {
                     if (smeltData[i + 1] > 0) {
                         smeltBuffer[smeltData[i]] = smeltData[i + 1];

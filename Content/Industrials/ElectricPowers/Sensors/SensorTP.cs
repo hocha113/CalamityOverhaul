@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.ControlVisuals;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.GridSwitches;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.WireInterfaces;
@@ -117,19 +118,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Sensors
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (tag.TryGet("_Mode", out byte mode) && mode <= (byte)SensorMode.Invasion) {
+            if (tag.TrySafeGet("_Mode", out byte mode) && mode <= (byte)SensorMode.Invasion) {
                 Mode = (SensorMode)mode;
             }
-            if (tag.TryGet("_ThresholdPct", out byte pct)) {
+            if (tag.TrySafeGet("_ThresholdPct", out byte pct)) {
                 ThresholdPct = Math.Clamp(pct, (byte)5, (byte)95);
             }
-            if (tag.TryGet("_EnemyRange", out short range)) {
+            if (tag.TrySafeGet("_EnemyRange", out short range)) {
                 EnemyRange = range;
             }
-            if (tag.TryGet("_LevelOutput", out bool level)) {
+            if (tag.TrySafeGet("_LevelOutput", out bool level)) {
                 LevelOutput = level;
             }
-            if (tag.TryGet("_ConditionActive", out bool active)) {
+            if (tag.TrySafeGet("_ConditionActive", out bool active)) {
                 ConditionActive = active;
             }
         }

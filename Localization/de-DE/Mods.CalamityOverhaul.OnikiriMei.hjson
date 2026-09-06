@@ -260,7 +260,7 @@ OniMeiRubbingAmahi: {
 		Beim Aufprall breiten sich die Tropfen zu Tintenlachen aus; Feinde, die hineintreten, werden für 0,5 Sekunden gebannt und verlangsamt
 		'''
 	Burden: Die Ausdauerverlustrate während des Sakuraflugs erhöht sich um 15%
-	DeedHint: Fliege bei Regenwetter 10 Sekunden lang ununterbrochen im Sakuraflug
+	DeedHint: Fliege bei Regenwetter insgesamt 10 Sekunden im Sakuraflug; es muss kein durchgehender Flug sein
 }
 
 OniMeiRubbingTsuzurihi: {

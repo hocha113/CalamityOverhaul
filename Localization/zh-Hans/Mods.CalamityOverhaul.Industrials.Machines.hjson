@@ -487,6 +487,7 @@ PotionBeacon: {
 
 HerbFarmer: {
 	NoEnergyText: 能量不足!
+	FullText: 产出仓已满!
 	DisplayName: 草药农场机
 	Tooltip:
 		'''

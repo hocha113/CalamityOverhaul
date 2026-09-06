@@ -54,16 +54,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Recyclers
             base.SaveData(tag);
             tag["Recycler_RecycleProgress"] = RecycleProgress;
             if (InputItem != null && !InputItem.IsAir) {
-                tag["Recycler_InputItem"] = ItemIO.Save(InputItem);
+                tag["Recycler_InputItem"] = CWRSaveData.SaveItemTag(InputItem);
             }
             if (OutputItem != null && !OutputItem.IsAir) {
-                tag["Recycler_OutputItem"] = ItemIO.Save(OutputItem);
+                tag["Recycler_OutputItem"] = CWRSaveData.SaveItemTag(OutputItem);
             }
         }
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (!tag.TryGet("Recycler_RecycleProgress", out RecycleProgress)) {
+            if (!tag.TrySafeGet("Recycler_RecycleProgress", out RecycleProgress)) {
                 RecycleProgress = 0;
             }
             InputItem = CWRSaveData.LoadItemFromTag(tag, "Recycler_InputItem", nameof(RecyclerData));

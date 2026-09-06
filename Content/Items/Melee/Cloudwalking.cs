@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -440,7 +441,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void OnWorldUnload() => injected = false;
 
         public override void LoadWorldData(TagCompound tag) {
-            injected = tag != null && tag.TryGet(SaveKey, out bool v) && v;
+            injected = tag.TrySafeGet(SaveKey, out bool v, nameof(Cloudwalking)) && v;
         }
 
         public override void SaveWorldData(TagCompound tag) {

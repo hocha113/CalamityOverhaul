@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes.Protocols;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.OldNet;
@@ -189,13 +190,13 @@ namespace CalamityOverhaul.Content.HackTimes.CircuitNodes
             bannedTowerX.Clear();
             bannedTurretX.Clear();
             bannedLabX.Clear();
-            if (tag.TryGet("CircuitBanTowerX", out List<int> towers)) {
+            if (tag.TrySafeGet("CircuitBanTowerX", out List<int> towers, nameof(CircuitNodeSpawner)) && towers != null) {
                 bannedTowerX.AddRange(towers);
             }
-            if (tag.TryGet("CircuitBanTurretX", out List<int> turrets)) {
+            if (tag.TrySafeGet("CircuitBanTurretX", out List<int> turrets, nameof(CircuitNodeSpawner)) && turrets != null) {
                 bannedTurretX.AddRange(turrets);
             }
-            if (tag.TryGet("CircuitBanLabX", out List<int> labs)) {
+            if (tag.TrySafeGet("CircuitBanLabX", out List<int> labs, nameof(CircuitNodeSpawner)) && labs != null) {
                 bannedLabX.AddRange(labs);
             }
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CalamityOverhaul.Common;
+using System;
 using System.Reflection;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
@@ -179,10 +180,10 @@ namespace CalamityOverhaul.Content.GameModes.UI
             if (data == null || !data.TryGetHeaderData<GameModeSystem>(out TagCompound tag)) {
                 return;
             }
-            if (!(tag.TryGet(nameof(GameModeSystem.BrutalActive), out bool brutal) && brutal)) {
+            if (!(tag.TrySafeGet(nameof(GameModeSystem.BrutalActive), out bool brutal) && brutal)) {
                 return;
             }
-            bool asura = tag.TryGet(nameof(GameModeSystem.AsuraActive), out bool value) && value;
+            bool asura = tag.TrySafeGet(nameof(GameModeSystem.AsuraActive), out bool value) && value;
             //菜单阶段没有 Main.getGoodWorld，换脸判定读世界档案的种子旗标
             GameModeFace face = !asura ? GameModeFace.Brutal
                 : data.ForTheWorthy || data.ZenithWorld ? GameModeFace.Annihilation

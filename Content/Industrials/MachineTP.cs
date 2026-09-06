@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
@@ -140,7 +141,7 @@ namespace CalamityOverhaul.Content.Industrials
 
         public override void LoadData(TagCompound tag) {
             MachineData?.LoadData(tag);
-            Disabled = tag.TryGet("MachineDisabled", out bool disabled) && disabled;
+            Disabled = tag.TrySafeGet("MachineDisabled", out bool disabled) && disabled;
         }
 
         public void DropItem(int id) => DropItem(new Item(id));

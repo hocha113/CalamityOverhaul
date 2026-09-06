@@ -203,12 +203,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Apiaries
                 tag["_BrewProgress"] = BrewProgress;
                 List<TagCompound> bottleTags = [];
                 for (int i = 0; i < BottleSlotCount; i++) {
-                    bottleTags.Add(ItemIO.Save(Bottles[i] ?? new Item()));
+                    bottleTags.Add(CWRSaveData.SaveItemTag(Bottles[i] ?? new Item()));
                 }
                 tag["_Bottles"] = bottleTags;
                 List<TagCompound> produceTags = [];
                 for (int i = 0; i < ProduceSlotCount; i++) {
-                    produceTags.Add(ItemIO.Save(Produce[i] ?? new Item()));
+                    produceTags.Add(CWRSaveData.SaveItemTag(Produce[i] ?? new Item()));
                 }
                 tag["_Produce"] = produceTags;
             } catch (Exception ex) {
@@ -220,18 +220,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Apiaries
             base.LoadData(tag);
             try {
                 EnsureSlots();
-                if (tag.TryGet("_Enabled", out bool enabled)) {
+                if (tag.TrySafeGet("_Enabled", out bool enabled)) {
                     Enabled = enabled;
                 }
-                if (tag.TryGet("_BrewProgress", out float progress)) {
+                if (tag.TrySafeGet("_BrewProgress", out float progress)) {
                     BrewProgress = Math.Clamp(progress, 0f, CycleTicks);
                 }
-                if (tag.TryGet("_Bottles", out List<TagCompound> bottleTags)) {
+                if (tag.TrySafeGet("_Bottles", out List<TagCompound> bottleTags)) {
                     for (int i = 0; i < BottleSlotCount && i < bottleTags.Count; i++) {
                         Bottles[i] = CWRSaveData.LoadItemTag(bottleTags[i], $"{nameof(ApiaryTP)}:_Bottles");
                     }
                 }
-                if (tag.TryGet("_Produce", out List<TagCompound> produceTags)) {
+                if (tag.TrySafeGet("_Produce", out List<TagCompound> produceTags)) {
                     for (int i = 0; i < ProduceSlotCount && i < produceTags.Count; i++) {
                         Produce[i] = CWRSaveData.LoadItemTag(produceTags[i], $"{nameof(ApiaryTP)}:_Produce");
                     }

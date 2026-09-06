@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.NPCs.Victors;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.Victors;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -345,7 +346,7 @@ namespace CalamityOverhaul.Content.Cyberwares
                 for (int i = 0; i < SlotCount; i++) {
                     Item item = EquippedCyberwares[i];
                     if (item != null && !item.IsAir) {
-                        tag[$"Cyber_{i}"] = ItemIO.Save(item);
+                        tag[$"Cyber_{i}"] = CWRSaveData.SaveItemTag(item);
                     }
                 }
             } catch (Exception ex) {
@@ -358,7 +359,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             try {
                 int used = 0;
                 for (int i = 0; i < SlotCount; i++) {
-                    if (!tag.TryGet($"Cyber_{i}", out TagCompound itemTag)) {
+                    if (!tag.TrySafeGet($"Cyber_{i}", out TagCompound itemTag)) {
                         continue;
                     }
 

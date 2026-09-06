@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Players;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Deaths;
@@ -544,25 +545,25 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         public override void LoadData(TagCompound tag) {
             ResetState();
-            if (!tag.TryGet(SaveKey, out TagCompound stateTag) || stateTag == null) {
+            if (!tag.TrySafeGet(SaveKey, out TagCompound stateTag, nameof(WraithPlayer)) || stateTag == null) {
                 return;
             }
-            int version = stateTag.GetInt("Version");
-            if (version != SchemaVersion && version != 2 && version != 1) {
+            if (!stateTag.TryGetAsInt("Version", out int version)
+                || (version != SchemaVersion && version != 2 && version != 1)) {
                 return;
             }
 
             if (version >= SchemaVersion
-                && stateTag.TryGet("EquippedSlots", out List<string> slots) && slots != null) {
+                && stateTag.TrySafeGet("EquippedSlots", out List<string> slots, nameof(WraithPlayer)) && slots != null) {
                 for (int i = 0; i < SlotCount && i < slots.Count; i++) {
                     TryOccupySlot(i, slots[i]);
                 }
             }
             else {
                 //v1/v2 迁移：唯一役鬼落到第一格，其余两格空着
-                string legacy = stateTag.GetString("EquippedWraithKey");
+                string legacy = stateTag.SafeGet("EquippedWraithKey", string.Empty, nameof(WraithPlayer));
                 if (string.IsNullOrEmpty(legacy)) {
-                    legacy = stateTag.GetString("Equipped");
+                    legacy = stateTag.SafeGet("Equipped", string.Empty, nameof(WraithPlayer));
                 }
                 TryOccupySlot(0, legacy);
             }
@@ -571,19 +572,21 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 //v1 迁移：驾驭度/休眠废弃，六鬼复苏从零开始；旧共享复苏归入替死鬼
                 revival[ScapeGhostKey].Value = ReadUnitFloat(stateTag, "Revival");
             }
-            else if (stateTag.TryGet("Records", out List<TagCompound> records) && records != null) {
+            else if (stateTag.TrySafeGet("Records", out List<TagCompound> records, nameof(WraithPlayer)) && records != null) {
                 HashSet<string> seen = [];
                 foreach (TagCompound record in records) {
-                    string key = record.GetString("Key");
-                    if (!seen.Add(key) || !revival.TryGetValue(key, out RevivalState entry)) {
+                    if (record == null) {
                         continue;
                     }
-                    entry.Value = record.TryGet("Revival", out float stored) && float.IsFinite(stored)
-                        ? MathHelper.Clamp(stored, 0f, 1f) : 0f;
+                    string key = record.SafeGet("Key", string.Empty, nameof(WraithPlayer));
+                    if (string.IsNullOrEmpty(key) || !seen.Add(key) || !revival.TryGetValue(key, out RevivalState entry)) {
+                        continue;
+                    }
+                    entry.Value = ReadUnitFloat(record, "Revival");
                 }
             }
             erosion = ReadUnitFloat(stateTag, "Erosion");
-            scapeMultiplier = SanitizeScapeMultiplier(stateTag.GetInt("ScapeMultiplier"));
+            scapeMultiplier = SanitizeScapeMultiplier(stateTag.TryGetAsInt("ScapeMultiplier", out int multiplier) ? multiplier : 0);
             lastCueTier = ErosionTier;
             SyncAllCueTiers();
         }
@@ -604,7 +607,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         private static float ReadUnitFloat(TagCompound tag, string key)
-            => tag.TryGet(key, out float value) && float.IsFinite(value)
+            => tag.TrySafeGet(key, out float value, nameof(WraithPlayer)) && float.IsFinite(value)
                 ? MathHelper.Clamp(value, 0f, 1f) : 0f;
 
         internal WraithResourceSnapshot ExportResourceSnapshot() {

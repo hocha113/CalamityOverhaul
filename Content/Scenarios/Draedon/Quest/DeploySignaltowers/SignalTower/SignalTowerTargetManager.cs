@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CalamityOverhaul.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -340,7 +341,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             }
 
             try {
-                if (!tag.TryGet("IsGenerated", out bool generated) || !generated) {
+                if (!tag.TrySafeGet("IsGenerated", out bool generated) || !generated) {
                     return;
                 }
 
@@ -363,7 +364,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
 
         /// <summary>V2每点TagCompound</summary>
         private static bool TryLoadFromV2(TagCompound tag) {
-            if (!tag.TryGet("TargetPointsV2", out List<TagCompound> pointTags)
+            if (!tag.TrySafeGet("TargetPointsV2", out List<TagCompound> pointTags)
                 || pointTags == null || pointTags.Count == 0) {
                 return false;
             }
@@ -400,8 +401,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
 
         /// <summary>legacy双列表</summary>
         private static bool TryLoadFromLegacy(TagCompound tag) {
-            if (!tag.TryGet("TargetPositions", out List<Point> positions)
-                || !tag.TryGet("TargetCompletions", out List<bool> completions)) {
+            if (!tag.TrySafeGet("TargetPositions", out List<Point> positions)
+                || !tag.TrySafeGet("TargetCompletions", out List<bool> completions)) {
                 return false;
             }
 

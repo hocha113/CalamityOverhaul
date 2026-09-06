@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -35,13 +36,14 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         public override void LoadData(TagCompound tag) {
             ClipboardPrefix = 0;
-            if (tag.TryGet(VanillaTag, out int vanillaId)
+            if (tag.TrySafeGet(VanillaTag, out int vanillaId, nameof(DataBrandPlayer))
                 && vanillaId > 0 && vanillaId < PrefixID.Count) {
                 ClipboardPrefix = vanillaId;
                 return;
             }
             //前缀所属模组被卸了就静默丢弃，别留一个指向空气的剪贴板
-            if (tag.TryGet(ModdedTag, out string fullName)
+            if (tag.TrySafeGet(ModdedTag, out string fullName, nameof(DataBrandPlayer))
+                && !string.IsNullOrEmpty(fullName)
                 && ModContent.TryFind(fullName, out ModPrefix prefix)) {
                 ClipboardPrefix = prefix.Type;
             }

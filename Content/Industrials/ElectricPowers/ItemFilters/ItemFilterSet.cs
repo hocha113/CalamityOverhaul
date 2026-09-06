@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -158,14 +159,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             tag[key + "Items"] = ordered.ToArray();
         }
 
-        /// <summary>读新格式存档，有键返回true</summary>
+        /// <summary>读新格式存档，有键返回true。宿主之一是 ModItem（tML 对其读档无兜底），故全部走安全读取</summary>
         public bool TryLoad(TagCompound tag, string key) {
-            if (tag == null || !tag.TryGet(key + "Items", out int[] items)) {
+            if (tag == null || !tag.TrySafeGet(key + "Items", out int[] items, nameof(ItemFilterSet)) || items == null) {
                 return false;
             }
             ItemFilterMode mode = ItemFilterMode.Whitelist;
-            if (tag.TryGet(key + "Mode", out byte modeByte) && modeByte <= (byte)ItemFilterMode.Blacklist) {
-                mode = (ItemFilterMode)modeByte;
+            if (tag.TryGetAsInt(key + "Mode", out int modeRaw)
+                && modeRaw >= 0 && modeRaw <= (int)ItemFilterMode.Blacklist) {
+                mode = (ItemFilterMode)modeRaw;
             }
             CopyFrom(items, mode);
             return true;

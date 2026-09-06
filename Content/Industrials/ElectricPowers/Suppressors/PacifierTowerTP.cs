@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -53,7 +54,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Suppressors
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (tag.TryGet("_Enabled", out bool enabled)) {
+            if (tag.TrySafeGet("_Enabled", out bool enabled)) {
                 Enabled = enabled;
             }
         }

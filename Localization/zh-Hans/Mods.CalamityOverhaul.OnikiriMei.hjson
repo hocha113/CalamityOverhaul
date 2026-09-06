@@ -260,7 +260,7 @@ OniMeiRubbingAmahi: {
 		墨滴触地扩散为墨洼，进入墨洼的敌人受到持续 0.5 秒的定身减速
 		'''
 	Burden: 樱流巡航的气力流失速度增加 15%
-	DeedHint: 在雨天使用樱流巡航持续飞行满 10 秒
+	DeedHint: 在雨天使用樱流巡航累计飞行满 10 秒，不要求一次飞完
 }
 
 OniMeiRubbingTsuzurihi: {

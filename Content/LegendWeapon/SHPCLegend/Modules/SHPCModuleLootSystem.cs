@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CalamityOverhaul.Common;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -15,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
         public override void OnWorldUnload() => injected = false;
 
         public override void LoadWorldData(TagCompound tag) {
-            injected = tag != null && tag.TryGet(SaveKeyInjected, out bool value) && value;
+            injected = tag.TrySafeGet(SaveKeyInjected, out bool value, nameof(SHPCModuleLootSystem)) && value;
         }
 
         public override void SaveWorldData(TagCompound tag) {

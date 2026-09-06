@@ -269,14 +269,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("ThermalGeneratorUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("ThermalGeneratorUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
             else {
                 DrawPosition.X = Main.screenWidth / 2;
             }
 
-            if (tag.TryGet("ThermalGeneratorUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("ThermalGeneratorUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
             else {

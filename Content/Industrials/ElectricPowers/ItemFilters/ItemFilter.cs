@@ -242,8 +242,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             if (item.ModItem is not ItemFilter card) {
                 return;
             }
-            //仅新格式缺席时回填
-            if (card.Filter.IsEmpty && tag.TryGet("_Items", out int[] legacyItems)) {
+            //仅新格式缺席时回填；GlobalItem 读档 tML 无兜底，走安全读取
+            if (card.Filter.IsEmpty && tag.TrySafeGet("_Items", out int[] legacyItems, nameof(ItemFilterData)) && legacyItems != null) {
                 card.Filter.CopyFrom(legacyItems, ItemFilterMode.Whitelist);
             }
         }

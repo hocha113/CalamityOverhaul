@@ -260,7 +260,7 @@ OniMeiRubbingAmahi: {
 		As gotas espalham-se em poças de tinta ao tocar o solo, paralisando e reduzindo a velocidade dos inimigos que pisarem nelas por 0,5s
 		'''
 	Burden: Taxa de drenagem de vigor do Voo Sakura aumentada em 15%
-	DeedHint: Voe continuamente no Voo Sakura durante a chuva por 10 segundos
+	DeedHint: Acumule 10 segundos de Voo Sakura durante a chuva; não precisa ser em um único voo
 }
 
 OniMeiRubbingTsuzurihi: {

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Actors;
@@ -60,10 +61,10 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
             IsGenerated = false;
             UmbrellaPosition = Vector2.Zero;
             try {
-                if (tag != null && tag.TryGet(nameof(IsGenerated), out bool generated)) {
+                if (tag != null && tag.TrySafeGet(nameof(IsGenerated), out bool generated)) {
                     IsGenerated = generated;
                 }
-                if (tag != null && tag.TryGet(nameof(UmbrellaPosition), out Vector2 pos)) {
+                if (tag != null && tag.TrySafeGet(nameof(UmbrellaPosition), out Vector2 pos)) {
                     UmbrellaPosition = pos;
                 }
             } catch (Exception ex) {

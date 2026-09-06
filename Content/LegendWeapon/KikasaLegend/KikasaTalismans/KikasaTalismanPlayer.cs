@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,26 +60,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaTalismans
         }
 
         public override void SaveData(TagCompound tag) {
-            KikasaTalismanOwned.EnsureInit(this);
-            List<string> keys = OwnedTalismanKeys
-                .Where(key => KikasaTalismanRegistry.TryGet(key, out _)).ToList();
-            if (keys.Count > 0) {
-                tag["KikasaTalismanOwned"] = keys;
+            try {
+                KikasaTalismanOwned.EnsureInit(this);
+                List<string> keys = OwnedTalismanKeys
+                    .Where(key => KikasaTalismanRegistry.TryGet(key, out _)).ToList();
+                if (keys.Count > 0) {
+                    tag["KikasaTalismanOwned"] = keys;
+                }
+                //符位表沿用 KikasaFu 前缀键（存入本 ModPlayer 的 tag，与旧物品 tag 互不相干）
+                Talismans.SaveData(tag);
+            } catch (System.Exception ex) {
+                CWRSaveData.LogSaveError(nameof(KikasaTalismanPlayer), ex);
             }
-            //符位表沿用 KikasaFu 前缀键（存入本 ModPlayer 的 tag，与旧物品 tag 互不相干）
-            Talismans.SaveData(tag);
         }
 
         public override void LoadData(TagCompound tag) {
             OwnedTalismanKeys = [];
-            if (tag.TryGet("KikasaTalismanOwned", out List<string> keys) && keys != null) {
-                foreach (string key in keys) {
-                    if (!string.IsNullOrEmpty(key)) {
-                        OwnedTalismanKeys.Add(key);
+            try {
+                if (tag.TrySafeGet("KikasaTalismanOwned", out List<string> keys, nameof(KikasaTalismanPlayer)) && keys != null) {
+                    foreach (string key in keys) {
+                        if (!string.IsNullOrEmpty(key)) {
+                            OwnedTalismanKeys.Add(key);
+                        }
                     }
                 }
+                Talismans.LoadData(tag);
+            } catch (System.Exception ex) {
+                CWRSaveData.LogLoadError(nameof(KikasaTalismanPlayer), ex);
             }
-            Talismans.LoadData(tag);
         }
 
         public override void OnEnterWorld() {

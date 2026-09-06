@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
                 tag["_Enabled"] = Enabled;
                 List<TagCompound> produceTags = [];
                 for (int i = 0; i < ProduceSlotCount; i++) {
-                    produceTags.Add(ItemIO.Save(Produce[i] ?? new Item()));
+                    produceTags.Add(CWRSaveData.SaveItemTag(Produce[i] ?? new Item()));
                 }
                 tag["_Produce"] = produceTags;
             } catch (Exception ex) {
@@ -163,10 +163,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
             base.LoadData(tag);
             try {
                 EnsureSlots();
-                if (tag.TryGet("_Enabled", out bool enabled)) {
+                if (tag.TrySafeGet("_Enabled", out bool enabled)) {
                     Enabled = enabled;
                 }
-                if (tag.TryGet("_Produce", out List<TagCompound> produceTags)) {
+                if (tag.TrySafeGet("_Produce", out List<TagCompound> produceTags)) {
                     for (int i = 0; i < ProduceSlotCount && i < produceTags.Count; i++) {
                         Produce[i] = CWRSaveData.LoadItemTag(produceTags[i], $"{nameof(MushroomFarmerTP)}:_Produce");
                     }

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -102,8 +103,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
 
         internal void Load(TagCompound tag) {
             Clear();
-            if (tag.TryGet(CountTag, out List<string> keys) && keys != null
-                && tag.TryGet(ValueTag, out List<int> values) && values != null) {
+            if (tag.TrySafeGet(CountTag, out List<string> keys, nameof(OniMeiDeedProgress)) && keys != null
+                && tag.TrySafeGet(ValueTag, out List<int> values, nameof(OniMeiDeedProgress)) && values != null) {
                 int n = Math.Min(keys.Count, values.Count);
                 for (int i = 0; i < n; i++) {
                     if (!string.IsNullOrEmpty(keys[i]) && values[i] > 0) {
@@ -111,9 +112,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
                     }
                 }
             }
-            if (!tag.TryGet(MarkKeyTag, out List<string> markKeys) || markKeys == null
-                || !tag.TryGet(MarkCountTag, out List<int> markCounts) || markCounts == null
-                || !tag.TryGet(MarkValueTag, out List<int> markValues) || markValues == null) {
+            if (!tag.TrySafeGet(MarkKeyTag, out List<string> markKeys, nameof(OniMeiDeedProgress)) || markKeys == null
+                || !tag.TrySafeGet(MarkCountTag, out List<int> markCounts, nameof(OniMeiDeedProgress)) || markCounts == null
+                || !tag.TrySafeGet(MarkValueTag, out List<int> markValues, nameof(OniMeiDeedProgress)) || markValues == null) {
                 return;
             }
             int cursor = 0;

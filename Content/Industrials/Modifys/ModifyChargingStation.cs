@@ -81,9 +81,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
             Item ??= new();
-            tag["_Item"] = ItemIO.Save(Item);
+            tag["_Item"] = CWRSaveData.SaveItemTag(Item);
             Empty ??= new();
-            tag["_Empty"] = ItemIO.Save(Empty);
+            tag["_Empty"] = CWRSaveData.SaveItemTag(Empty);
         }
 
         public override void LoadData(TagCompound tag) {

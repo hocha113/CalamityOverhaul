@@ -78,13 +78,13 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
         public static LocalizedText EnchantTitle;
 
         public override void LoadUIData(TagCompound tag) {
-            tag.TryGet(Name + ":" + nameof(DrawPosition), out DrawPosition);
-            if (DrawPosition == Vector2.Zero || DrawPosition == default) {
+            tag.TrySafeGet(Name + ":" + nameof(DrawPosition), out DrawPosition);
+            if (DrawPosition == Vector2.Zero || !float.IsFinite(DrawPosition.X) || !float.IsFinite(DrawPosition.Y)) {
                 DrawPosition = new Vector2(168f, 320f);
             }
 
-            tag.TryGet(Name + ":" + nameof(IsCollapsed), out IsCollapsed);
-            if (tag.TryGet(Name + ":" + "CurrentlyHeldItem", out TagCompound itemTag)) {
+            tag.TrySafeGet(Name + ":" + nameof(IsCollapsed), out IsCollapsed);
+            if (tag.TrySafeGet(Name + ":" + "CurrentlyHeldItem", out TagCompound itemTag)) {
                 EnchantmentHandler.CurrentItem = CWRSaveData.LoadItemTag(itemTag, $"{nameof(EnchantUI)}:CurrentlyHeldItem");
             }
             else {
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             tag[Name + ":" + nameof(DrawPosition)] = DrawPosition;
             tag[Name + ":" + nameof(IsCollapsed)] = IsCollapsed;
             EnchantmentHandler.CurrentItem ??= new Item();
-            tag[Name + ":" + "CurrentlyHeldItem"] = ItemIO.Save(EnchantmentHandler.CurrentItem);
+            tag[Name + ":" + "CurrentlyHeldItem"] = CWRSaveData.SaveItemTag(EnchantmentHandler.CurrentItem);
         }
 
         public override void SetStaticDefaults() {

@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.Industrials.MachineModules
         public void Save(TagCompound tag, int count) {
             EnsureSlots(count);
             for (int i = 0; i < slots.Length; i++) {
-                tag[$"_Module{i}"] = ItemIO.Save(slots[i] ?? new Item());
+                tag[$"_Module{i}"] = CWRSaveData.SaveItemTag(slots[i] ?? new Item());
             }
         }
 

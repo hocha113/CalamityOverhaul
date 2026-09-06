@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.Generator;
 using CalamityOverhaul.Content.Items.Modifys;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
@@ -236,25 +237,28 @@ namespace CalamityOverhaul.Content
             return true;
         }
 
-        //死亡时也会调一次 SaveData
+        //死亡时也会调一次 SaveData。
+        //GlobalItem 的读写在 tML 侧没有任何 try/catch：这里一抛，整个玩家档/世界档的物品序列化直接中止，
+        //所以本类的每一步都必须自己兜住
         public override void SaveData(Item item, TagCompound tag) {
             if (DyeItemID > ItemID.None) {
-                tag.Add("_DyeItemID", DyeItemID);
+                //索引器覆盖写，Add 遇到同键会抛
+                tag["_DyeItemID"] = DyeItemID;
             }
 
             try {
                 LegendData?.SaveData(item, tag);
             } catch (Exception ex) {
-                CWRMod.Instance.Logger.Error($"[LegendData:SaveData] an error has occurred:{ex.Message}");
+                CWRSaveData.LogSaveError("LegendData", ex);
             }
 
-            if (StorageUE) {
+            if (StorageUE && float.IsFinite(UEValue)) {
                 tag["UEValue"] = UEValue;
             }
         }
 
         public override void LoadData(Item item, TagCompound tag) {
-            if (!tag.TryGet("_DyeItemID", out DyeItemID)) {
+            if (!tag.TrySafeGet("_DyeItemID", out DyeItemID, nameof(CWRItem)) || DyeItemID < ItemID.None) {
                 DyeItemID = 0;
             }
 
@@ -263,11 +267,11 @@ namespace CalamityOverhaul.Content
                 //StorageOperation，静默不弹窗
                 LegendData?.DoUpdate(item, LegendUpdateContext.StorageOperation);
             } catch (Exception ex) {
-                CWRMod.Instance.Logger.Error($"[LegendData:LoadData] an error has occurred:{ex.Message}");
+                CWRSaveData.LogLoadError("LegendData", ex);
             }
 
             if (StorageUE) {
-                if (!tag.TryGet("UEValue", out UEValue)) {
+                if (!tag.TrySafeGet("UEValue", out UEValue, nameof(CWRItem)) || !float.IsFinite(UEValue)) {
                     UEValue = 0;
                 }
             }

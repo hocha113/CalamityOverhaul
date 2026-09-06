@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps;
 using System;
 using System.Collections.Generic;
@@ -200,7 +201,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (!HasSnapshot || !IsSecondary || target == null || UsesOwnHitLedger(projectile)) {
+            if (!HasSnapshot || target == null) {
+                return;
+            }
+            //刀縁兜底：环斩/刀痕/铭刻附属这类没自行接线的鬼切弹幕，落下致命一击也要入账；
+            //招式本体已报过的同一主体由 TryClaimKill 去重
+            OniMeiDeedEvents.NotifyContextStrike(projectile, target, ActionKind);
+            if (!IsSecondary || UsesOwnHitLedger(projectile)) {
                 return;
             }
             int root = OniMeiCombat.ResolveEffectRoot(target).whoAmI;

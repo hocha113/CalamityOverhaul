@@ -109,7 +109,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             }
         }
 
-        /// <summary>二阶段混合谱：尖刺涟漪 + 侧翼火焰喷口 + 顶部射线口</summary>
+        /// <summary>二阶段混合谱：刺矛涟漪 + 侧翼火焰喷口 + 顶部射线口 + 吊顶尖刺球机关。
+        /// 时序分三拍：涟漪扫过→左焰；射线+右焰；落球接管地面，与追猎矛同台。任一时刻叠层不超过三种</summary>
         private void PlantMixedScore(GolemStateContext context) {
             NPC npc = context.Npc;
             Player target = context.Target;
@@ -124,8 +125,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
             //顶部射线口：周期横扫射线（短促可读）
             int rayDamage = ScaleDamage(context, GolemDirector.EyeRayDamage);
-            GolemTrapUnit.PlantOnCeiling(npc, target, GolemTrapUnit.TrapKind.RayPort,
+            GolemTrapUnit.PlantOnCeiling(npc, target.Center.X, target.Center.Y, GolemTrapUnit.TrapKind.RayPort,
                 GolemDirector.TrapTelegraph + 60, rayDamage);
+
+            //吊顶尖刺球机关：射线口两侧各一门，涟漪扫完才落球（缺口：落道仅机关正下方 48px，
+            //球落地后缓速弹跳可跳越；球寿命 170 帧，在本状态内滚完）
+            int ballDamage = ScaleDamage(context, GolemDirector.SpikyBallDamage);
+            for (int side = -1; side <= 1; side += 2) {
+                GolemTrapUnit.PlantOnCeiling(npc, target.Center.X + side * 220f, target.Center.Y,
+                    GolemTrapUnit.TrapKind.SpikyBall, GolemDirector.TrapTelegraph + 70, ballDamage);
+            }
         }
     }
 }

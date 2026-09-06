@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -103,12 +104,12 @@ namespace CalamityOverhaul.Content.GameModes.Blessings
         public override void LoadData(TagCompound tag) {
             Kindled.Clear();
             Witnessed.Clear();
-            if (tag.TryGet("BlessingKindled", out List<string> kindled) && kindled != null) {
+            if (tag.TrySafeGet("BlessingKindled", out List<string> kindled, nameof(BlessingPlayer)) && kindled != null) {
                 foreach (string id in kindled) {
                     Kindled.Add(id);
                 }
             }
-            if (tag.TryGet("BlessingWitnessed", out List<string> witnessed) && witnessed != null) {
+            if (tag.TrySafeGet("BlessingWitnessed", out List<string> witnessed, nameof(BlessingPlayer)) && witnessed != null) {
                 foreach (string id in witnessed) {
                     Witnessed.Add(id);
                 }

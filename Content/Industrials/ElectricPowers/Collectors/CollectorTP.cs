@@ -156,9 +156,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             Filter.Save(tag, "_Filter");
 
+            //模组物品存全名；类型号越界或所属模组已卸载时 GetItem 为 null，按无标记落盘而不是抛掉整台机器的数据
             string result = TagItemSign < ItemID.Count
                 ? TagItemSign.ToString()
-                : ItemLoader.GetItem(TagItemSign).FullName;
+                : ItemLoader.GetItem(TagItemSign)?.FullName ?? ItemID.None.ToString();
             tag["_TagItemFullName"] = result;
 
             tag["_StorageMode"] = (byte)StorageMode;
@@ -182,14 +183,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 }
             }
 
-            if (tag.TryGet("_TagItemFullName", out string fullName)) {
+            if (tag.TrySafeGet("_TagItemFullName", out string fullName)) {
                 TagItemSign = VaultUtils.GetItemTypeFromFullName(fullName);
             }
             else {
                 TagItemSign = ItemID.None;
             }
 
-            if (tag.TryGet("_StorageMode", out byte mode) && mode <= (byte)CollectorStorageMode.BoundOnly) {
+            if (tag.TrySafeGet("_StorageMode", out byte mode) && mode <= (byte)CollectorStorageMode.BoundOnly) {
                 StorageMode = (CollectorStorageMode)mode;
             }
             else {
@@ -197,7 +198,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
 
             BoundStorages.Clear();
-            if (tag.TryGet("_BoundStorages", out List<int> boundData)) {
+            if (tag.TrySafeGet("_BoundStorages", out List<int> boundData)) {
                 for (int i = 0; i + 1 < boundData.Count; i += 2) {
                     Point16 pos = new Point16(boundData[i], boundData[i + 1]);
                     if (BoundStorages.Count < MaxBindings && !BoundStorages.Contains(pos)) {

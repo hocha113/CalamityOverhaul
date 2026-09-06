@@ -247,10 +247,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MushroomFarmers
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("MushroomFarmerUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("MushroomFarmerUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
-            if (tag.TryGet("MushroomFarmerUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("MushroomFarmerUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
         }

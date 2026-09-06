@@ -80,6 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public const int EmberDamage = 22;
         public const int SpikeDamage = 33;
         public const int FlameJetDamage = 30;
+        public const int SpikyBallDamage = 28;
         public const int ShockwaveDamage = 30;
         public const int ShrapnelDamage = 24;
         public const int MeteorDamage = 34;

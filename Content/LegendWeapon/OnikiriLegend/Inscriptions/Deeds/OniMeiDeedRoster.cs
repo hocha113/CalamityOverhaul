@@ -103,18 +103,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
             && OniMeiDeedTargets.IsCounterfeit(context.Npc) ? 1 : 0;
     }
 
-    /// <summary>雨樋：雨里连着飞满十秒，樱瓣沾透了才留得住水</summary>
+    /// <summary>
+    /// 雨樋：雨里樱流累计飞满十秒，樱瓣沾透了才留得住水。
+    /// 单次航程有 3 秒硬上限（<c>OniSakuraFlight.MaxFlightFrames</c>），所以按整秒分段累计而不要求连续
+    /// </summary>
     internal sealed class DeedAmahi : OniMeiDeed
     {
-        /// <summary>十秒</summary>
-        private const int RainFlightNeed = 600;
+        /// <summary>十秒，按整秒计</summary>
+        private const int RainFlightSecondsNeed = 10;
 
         public override string MeiKey => nameof(MeiAmahi);
         public override OniMeiDeedChannel Channel => OniMeiDeedChannel.SakuraTick;
+        public override OniMeiDeedProgressKind ProgressKind => OniMeiDeedProgressKind.Count;
+        public override int NeedCount => RainFlightSecondsNeed;
         public override int SortOrder => 66;
 
         public override int Test(in OniMeiDeedContext context)
-            => context.Tracker.SakuraRainTicks >= RainFlightNeed ? 1 : 0;
+            => context.Tracker.SakuraRainSecondTick ? 1 : 0;
     }
 
     /// <summary>綴樋：一次疾走串起六个不同主体</summary>
@@ -219,10 +224,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
             _ => false,
         };
 
-        /// <summary>首领级：蠕虫归主体后判定</summary>
+        /// <summary>
+        /// 首领级：蠕虫归主体后判定。了结那一帧主体多半已 inactive（checkDead 先于 OnHitNPC），
+        /// 所以走死后版判定；活体版 <see cref="NpcGroupHelper.IsBossTier"/> 在这里恒假，别换回去
+        /// </summary>
         internal static bool IsBossTier(NPC npc) {
-            NPC root = OniMeiCombat.ResolveEffectRoot(npc);
-            return root != null && NpcGroupHelper.IsBossTier(root);
+            NPC root = OniMeiCombat.ResolveEffectRoot(npc) ?? npc;
+            return NpcGroupHelper.IsBossTierEvenIfDead(root);
         }
     }
 }

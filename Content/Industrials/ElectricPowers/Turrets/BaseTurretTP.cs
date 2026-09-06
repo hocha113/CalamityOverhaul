@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
@@ -91,7 +92,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (tag.TryGet("AttackPattern", out bool mode)) {
+            if (tag.TrySafeGet("AttackPattern", out bool mode)) {
                 AttackPattern = mode;
             }
             else {

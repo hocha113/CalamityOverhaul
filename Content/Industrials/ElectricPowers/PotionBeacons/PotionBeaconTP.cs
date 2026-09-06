@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.PotionBeacons
                 tag["_SupplyTotal"] = SupplyTotal;
                 List<TagCompound> itemTags = [];
                 for (int i = 0; i < SlotCount; i++) {
-                    itemTags.Add(ItemIO.Save(Potions[i] ?? new Item()));
+                    itemTags.Add(CWRSaveData.SaveItemTag(Potions[i] ?? new Item()));
                 }
                 tag["_Potions"] = itemTags;
             } catch (Exception ex) {
@@ -135,19 +135,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.PotionBeacons
             base.LoadData(tag);
             try {
                 EnsureSlots();
-                if (tag.TryGet("_Enabled", out bool enabled)) {
+                if (tag.TrySafeGet("_Enabled", out bool enabled)) {
                     Enabled = enabled;
                 }
-                if (tag.TryGet("_SupplyLeft", out int[] left) && left.Length == SlotCount) {
+                if (tag.TrySafeGet("_SupplyLeft", out int[] left) && left.Length == SlotCount) {
                     SupplyLeft = left;
                 }
-                if (tag.TryGet("_SupplyBuff", out int[] buff) && buff.Length == SlotCount) {
+                if (tag.TrySafeGet("_SupplyBuff", out int[] buff) && buff.Length == SlotCount) {
                     SupplyBuff = buff;
                 }
-                if (tag.TryGet("_SupplyTotal", out int[] total) && total.Length == SlotCount) {
+                if (tag.TrySafeGet("_SupplyTotal", out int[] total) && total.Length == SlotCount) {
                     SupplyTotal = total;
                 }
-                if (tag.TryGet("_Potions", out List<TagCompound> itemTags)) {
+                if (tag.TrySafeGet("_Potions", out List<TagCompound> itemTags)) {
                     for (int i = 0; i < SlotCount && i < itemTags.Count; i++) {
                         Potions[i] = CWRSaveData.LoadItemTag(itemTags[i], $"{nameof(PotionBeaconTP)}:_Potions");
                     }

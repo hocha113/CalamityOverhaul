@@ -235,33 +235,34 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             tag["i"] = DyeItemID;
             //同名认领有局限
             tag["j"] = Owner.Alives() ? Owner.name : string.Empty;
-            tag["k"] = ItemIO.Save(SaddleItem);
+            tag["k"] = CWRSaveData.SaveItemTag(SaddleItem ?? new Item());
         }
 
         public override void LoadData(TagCompound tag) {
-            if (tag.ContainsKey("c")) {
-                npc.lifeMax = tag.GetInt("c");
+            //生命上限只认正值：0 或负数会让它读档即死
+            if (tag.TrySafeGet("c", out int lifeMax, nameof(ModifyCrabulon)) && lifeMax > 0) {
+                npc.lifeMax = lifeMax;
             }
-            if (tag.ContainsKey("d")) {
-                FeedValue = tag.GetFloat("d");
+            if (tag.TrySafeGet("d", out float feed, nameof(ModifyCrabulon)) && float.IsFinite(feed)) {
+                FeedValue = System.Math.Max(0f, feed);
             }
-            if (tag.ContainsKey("e")) {
-                Crouch = tag.GetBool("e");
+            if (tag.TrySafeGet("e", out bool crouch, nameof(ModifyCrabulon))) {
+                Crouch = crouch;
             }
-            if (tag.ContainsKey("f")) {
-                Mount = tag.GetBool("f");
+            if (tag.TrySafeGet("f", out bool mount, nameof(ModifyCrabulon))) {
+                Mount = mount;
             }
-            if (tag.ContainsKey("g")) {
-                MountACrabulon = tag.GetBool("g");
+            if (tag.TrySafeGet("g", out bool mountACrabulon, nameof(ModifyCrabulon))) {
+                MountACrabulon = mountACrabulon;
             }
-            if (tag.ContainsKey("h")) {
-                DontMount = tag.GetInt("h");
+            if (tag.TrySafeGet("h", out int dontMount, nameof(ModifyCrabulon))) {
+                DontMount = dontMount;
             }
-            if (tag.ContainsKey("i")) {
-                DyeItemID = tag.GetInt("i");
+            if (tag.TrySafeGet("i", out int dyeItemID, nameof(ModifyCrabulon)) && dyeItemID >= ItemID.None) {
+                DyeItemID = dyeItemID;
             }
-            if (tag.ContainsKey("j")) {
-                pendingOwnerName = tag.GetString("j");
+            if (tag.TrySafeGet("j", out string ownerName, nameof(ModifyCrabulon))) {
+                pendingOwnerName = ownerName;
                 TryResolvePendingOwner();
             }
             SaddleItem = CWRSaveData.LoadItemFromTag(tag, "k", nameof(ModifyCrabulon));

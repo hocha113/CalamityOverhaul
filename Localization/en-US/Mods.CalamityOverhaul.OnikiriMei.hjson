@@ -260,7 +260,7 @@ OniMeiRubbingAmahi: {
 		Ink beads spread into puddles upon landing, immobilizing enemies entering the mire for 0.5s
 		'''
 	Burden: Sakura Flight vigor drain rate increased by 15%
-	DeedHint: Cruise continuously in Sakura Flight during rain for 10s
+	DeedHint: Cruise in Sakura Flight during rain for a cumulative 10s; it does not have to be one continuous flight
 }
 
 OniMeiRubbingTsuzurihi: {

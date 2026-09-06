@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
@@ -92,9 +93,13 @@ namespace CalamityOverhaul.Content.GameModes
         }
 
         public override void LoadWorldData(TagCompound tag) {
-            BrutalActive = tag.TryGet(nameof(BrutalActive), out bool brutal) && brutal;
-            AsuraActive = tag.TryGet(nameof(AsuraActive), out bool asura) && asura;
-            GodSmithActive = tag.TryGet(nameof(GodSmithActive), out bool godSmith) && godSmith;
+            BrutalActive = tag.TrySafeGet(nameof(BrutalActive), out bool brutal, nameof(GameModeSystem)) && brutal;
+            AsuraActive = tag.TrySafeGet(nameof(AsuraActive), out bool asura, nameof(GameModeSystem)) && asura;
+            GodSmithActive = tag.TrySafeGet(nameof(GodSmithActive), out bool godSmith, nameof(GameModeSystem)) && godSmith;
+            //修罗依赖残酷：档里若只剩修罗真值（手改/半写档），按残酷关闭时的规则强制随关
+            if (!BrutalActive) {
+                AsuraActive = false;
+            }
         }
 
         /// <summary>

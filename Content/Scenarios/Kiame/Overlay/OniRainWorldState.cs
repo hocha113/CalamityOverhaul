@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Shenyo;
 using InnoVault.Cinematics;
 using InnoVault.PRT;
@@ -46,7 +47,7 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame.Overlay
 
         public override void LoadData(TagCompound tag) {
             //旧档只有 bool 键，视作第一层
-            int depth = tag.TryGet("oniRainDepth", out int saved) ? saved
+            int depth = tag.TryGetAsInt("oniRainDepth", out int saved) ? saved
                 : tag.ContainsKey("inOniRainWorld") ? 1 : 0;
             Depth = Math.Clamp(depth, 0, OniRainWorldState.MaxDepth);
         }

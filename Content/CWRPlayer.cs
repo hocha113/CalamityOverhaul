@@ -155,10 +155,10 @@ namespace CalamityOverhaul.Content
 
         public override void LoadData(TagCompound tag) {
             try {
-                if (!tag.TryGet("UnderstandWindGriven", out UnderstandWindGriven)) {
+                if (!tag.TrySafeGet("UnderstandWindGriven", out UnderstandWindGriven)) {
                     UnderstandWindGriven = false;
                 }
-                if (!tag.TryGet("UnderstandWindGrivenMK2", out UnderstandWindGrivenMK2)) {
+                if (!tag.TrySafeGet("UnderstandWindGrivenMK2", out UnderstandWindGrivenMK2)) {
                     UnderstandWindGrivenMK2 = false;
                 }
             } catch (Exception ex) { CWRMod.Instance.Logger.Error($"CWRPlayer.LoadData An Error Has Cccurred: {ex.Message}"); }

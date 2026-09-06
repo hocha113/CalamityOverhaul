@@ -61,6 +61,28 @@ namespace CalamityOverhaul.Common
             return FindSegmentList(npc.type) != null;
         }
 
+        /// <summary>
+        /// <see cref="IsBossTier"/> 的死后版：击杀结算那一帧主体多半已 <c>active=false</c>
+        /// （StrikeNPC 内 checkDead 先于 OnHitNPC），但槽位上的 boss 旗、体节表归属与 realLife 头都还在，
+        /// 这里只看这些不看 active。活体判定请仍用 <see cref="IsBossTier"/>
+        /// </summary>
+        public static bool IsBossTierEvenIfDead(NPC npc) {
+            if (npc == null) {
+                return false;
+            }
+            if (npc.boss || NPCID.Sets.ShouldBeCountedAsBoss[npc.type]) {
+                return true;
+            }
+            int rl = npc.realLife;
+            if (rl >= 0 && rl < Main.maxNPCs && rl != npc.whoAmI) {
+                NPC head = Main.npc[rl];
+                if (head.boss || NPCID.Sets.ShouldBeCountedAsBoss[head.type]) {
+                    return true;
+                }
+            }
+            return FindSegmentList(npc.type) != null;
+        }
+
         /// <summary>同组判定，共享锚点或同体节表</summary>
         public static bool IsSameGroup(NPC a, NPC b) {
             if (a == null || b == null || !a.active || !b.active) {

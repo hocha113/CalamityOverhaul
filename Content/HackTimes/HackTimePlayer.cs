@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -84,7 +85,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         public override void LoadData(TagCompound tag) {
             OwnedProtocols = [];
-            if (tag.TryGet(OwnedTag, out List<string> keys) && keys != null) {
+            if (tag.TrySafeGet(OwnedTag, out List<string> keys, nameof(HackTimePlayer)) && keys != null) {
                 foreach (string key in keys) {
                     //协议被删或改名的旧档条目直接丢弃，别留一条点不出东西的幽灵持有
                     if (QuickHackDef.GetByFullName(key) != null) {

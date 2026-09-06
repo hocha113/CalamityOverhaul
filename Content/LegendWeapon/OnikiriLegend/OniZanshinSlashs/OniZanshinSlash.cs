@@ -501,7 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 okp.TryCallThunder(target, in profile,
                     ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 2),
                     Projectile.knockBack, Projectile);
-                if (!target.active || target.life <= 0) {
+                if (OniMeiDeedEvents.StruckDead(target)) {
                     okp.TryPetalPruneOnKill(target,
                         ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 2),
                         Projectile.knockBack, Projectile, in profile);

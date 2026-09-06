@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using System;
@@ -62,9 +63,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override void LoadData(Item item, TagCompound tag) {
             base.LoadData(item, tag);
-            InstanceId = tag.TryGet(InstanceIdTag, out long instanceId) && instanceId != 0
+            InstanceId = tag.TrySafeGet(InstanceIdTag, out long instanceId) && instanceId != 0
                 ? instanceId : CreateInstanceId();
-            EditRevision = tag.TryGet(EditRevisionTag, out long revision)
+            EditRevision = tag.TrySafeGet(EditRevisionTag, out long revision)
                 && revision >= 0 && revision <= uint.MaxValue
                 ? (uint)revision : 0u;
             if (tag.ContainsKey(MeiInitTag)) {

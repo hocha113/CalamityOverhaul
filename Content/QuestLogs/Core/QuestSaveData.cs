@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CalamityOverhaul.Common;
+using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.QuestLogs.Core
@@ -29,19 +30,19 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public static QuestSaveData Deserialize(TagCompound tag) {
             var data = new QuestSaveData();
             data.IsUnlocked = false;
-            if (tag.TryGet("IsUnlocked", out bool isUnlocked)) {
+            if (tag.TrySafeGet("IsUnlocked", out bool isUnlocked)) {
                 data.IsUnlocked = isUnlocked;
             }
             data.IsCompleted = false;
-            if (tag.TryGet("IsCompleted", out bool isCompleted)) {
+            if (tag.TrySafeGet("IsCompleted", out bool isCompleted)) {
                 data.IsCompleted = isCompleted;
             }
             data.ObjectiveProgress = [];
-            if (tag.TryGet("ObjectiveProgress", out List<int> objectiveProgress)) {
+            if (tag.TrySafeGet("ObjectiveProgress", out List<int> objectiveProgress)) {
                 data.ObjectiveProgress = objectiveProgress;
             }
             data.RewardsClaimed = [];
-            if (tag.TryGet("RewardsClaimed", out List<bool> rewardsClaimed)) {
+            if (tag.TrySafeGet("RewardsClaimed", out List<bool> rewardsClaimed)) {
                 data.RewardsClaimed = rewardsClaimed;
             }
             return data;

@@ -260,7 +260,7 @@ OniMeiRubbingAmahi: {
 		Les gouttes touchant le sol s'étalent en flaques d'encre, infligeant une immobilisation et un ralentissement de 0,5 seconde aux ennemis qui y pénètrent
 		'''
 	Burden: La vitesse de consommation de vigueur du vol des cerisiers augmente de 15%
-	DeedHint: Maintenir le vol des cerisiers sans interruption pendant 10 secondes sous la pluie
+	DeedHint: Cumuler 10 secondes de vol des cerisiers sous la pluie ; il n'est pas nécessaire de le faire d'une seule traite
 }
 
 OniMeiRubbingTsuzurihi: {

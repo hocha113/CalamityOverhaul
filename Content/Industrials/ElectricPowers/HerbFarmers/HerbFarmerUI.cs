@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HerbFarmers
         private static Color TextMain => IndustrialTerminalRenderer.TextMain;
         private static Color TextDim => IndustrialTerminalRenderer.TextDim;
         private static Color WarnRed => IndustrialTerminalRenderer.WarnRed;
+        private static Color Amber => IndustrialTerminalRenderer.Amber;
         private static Color Accent => HerbFarmer.Tint;
 
         private static float UIScreenW => PlayerInput.RealScreenWidth / Main.UIScale;
@@ -77,6 +78,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HerbFarmers
         protected static LocalizedText StatusIdle;
         protected static LocalizedText StatusNoPower;
         protected static LocalizedText StatusOff;
+        protected static LocalizedText StatusWaitingBloom;
+        protected static LocalizedText StatusGrowing;
+        protected static LocalizedText StatusFull;
+        protected static LocalizedText StatusNoSeeds;
+        protected static LocalizedText StatusNoSoil;
         protected static LocalizedText EnergyLabel;
         protected static LocalizedText SeedHint;
         protected static LocalizedText TakeHint;
@@ -94,6 +100,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HerbFarmers
             StatusIdle = this.GetLocalization(nameof(StatusIdle), () => "待机");
             StatusNoPower = this.GetLocalization(nameof(StatusNoPower), () => "缺电");
             StatusOff = this.GetLocalization(nameof(StatusOff), () => "已停用");
+            StatusWaitingBloom = this.GetLocalization(nameof(StatusWaitingBloom), () => "等待开花");
+            StatusGrowing = this.GetLocalization(nameof(StatusGrowing), () => "生长中");
+            StatusFull = this.GetLocalization(nameof(StatusFull), () => "产出仓已满");
+            StatusNoSeeds = this.GetLocalization(nameof(StatusNoSeeds), () => "缺种子");
+            StatusNoSoil = this.GetLocalization(nameof(StatusNoSoil), () => "无合法土壤");
             EnergyLabel = this.GetLocalization(nameof(EnergyLabel), () => "电力");
             SeedHint = this.GetLocalization(nameof(SeedHint), () => "放入草药种子");
             TakeHint = this.GetLocalization(nameof(TakeHint), () => "点击取出");
@@ -313,10 +324,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HerbFarmers
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("HerbFarmerUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("HerbFarmerUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
-            if (tag.TryGet("HerbFarmerUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("HerbFarmerUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
         }
@@ -397,30 +408,59 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HerbFarmers
             IndustrialTerminalRenderer.DrawButton(sb, toggleBtn, alpha, hoveringToggle ? 1f : 0f,
                 hoveringToggle && keyLeftPressState == KeyPressState.Held, toggleLabel);
 
-            //状态灯
+            //状态灯:文案与灯色都由权威端同步下来的作业状态决定,阻塞原因走琥珀,等待原因走系列色常亮
             Vector2 lampPos = new(panelRect.X + 310, panelRect.Y + 132);
+            HerbFarmState farmState = Station.Disabled || !Station.Enabled ? HerbFarmState.Off : Station.State;
+            float blockedBlink = MathF.Sin(animTimer * 4f) * 0.25f + 0.6f;
             string state;
             Color lampColor;
             float lampBright;
-            if (!Station.Enabled) {
-                state = StatusOff.Value;
-                lampColor = TextDim;
-                lampBright = 0.2f;
-            }
-            else if (Station.MachineData.UEvalue < HerbFarmerTP.PlantCost) {
-                state = StatusNoPower.Value;
-                lampColor = WarnRed;
-                lampBright = MathF.Sin(animTimer * 5f) * 0.35f + 0.55f;
-            }
-            else if (Station.IsWorking) {
-                state = StatusWorking.Value;
-                lampColor = Accent;
-                lampBright = MathF.Sin(animTimer * 2.6f) * 0.2f + 0.72f;
-            }
-            else {
-                state = StatusIdle.Value;
-                lampColor = TextDim;
-                lampBright = 0.3f;
+            switch (farmState) {
+                case HerbFarmState.Off:
+                    state = StatusOff.Value;
+                    lampColor = TextDim;
+                    lampBright = 0.2f;
+                    break;
+                case HerbFarmState.NoPower:
+                    state = StatusNoPower.Value;
+                    lampColor = WarnRed;
+                    lampBright = MathF.Sin(animTimer * 5f) * 0.35f + 0.55f;
+                    break;
+                case HerbFarmState.Working:
+                    state = StatusWorking.Value;
+                    lampColor = Accent;
+                    lampBright = MathF.Sin(animTimer * 2.6f) * 0.2f + 0.72f;
+                    break;
+                case HerbFarmState.WaitingBloom:
+                    state = StatusWaitingBloom.Value;
+                    lampColor = Accent;
+                    lampBright = 0.45f;
+                    break;
+                case HerbFarmState.Growing:
+                    state = StatusGrowing.Value;
+                    lampColor = Accent;
+                    lampBright = 0.45f;
+                    break;
+                case HerbFarmState.ProduceFull:
+                    state = StatusFull.Value;
+                    lampColor = Amber;
+                    lampBright = blockedBlink;
+                    break;
+                case HerbFarmState.NoSeeds:
+                    state = StatusNoSeeds.Value;
+                    lampColor = Amber;
+                    lampBright = blockedBlink;
+                    break;
+                case HerbFarmState.NoSoil:
+                    state = StatusNoSoil.Value;
+                    lampColor = Amber;
+                    lampBright = blockedBlink;
+                    break;
+                default:
+                    state = StatusIdle.Value;
+                    lampColor = TextDim;
+                    lampBright = 0.3f;
+                    break;
             }
             IndustrialTerminalRenderer.DrawLamp(sb, lampPos, lampColor, alpha, lampBright);
             Utils.DrawBorderString(sb, state, lampPos + new Vector2(14, -8),

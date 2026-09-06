@@ -230,12 +230,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
                 tag["_FishInterval"] = FishInterval;
                 List<TagCompound> baitTags = [];
                 for (int i = 0; i < BaitSlotCount; i++) {
-                    baitTags.Add(ItemIO.Save(Baits[i] ?? new Item()));
+                    baitTags.Add(CWRSaveData.SaveItemTag(Baits[i] ?? new Item()));
                 }
                 tag["_Baits"] = baitTags;
                 List<TagCompound> catchTags = [];
                 for (int i = 0; i < CatchSlotCount; i++) {
-                    catchTags.Add(ItemIO.Save(Catches[i] ?? new Item()));
+                    catchTags.Add(CWRSaveData.SaveItemTag(Catches[i] ?? new Item()));
                 }
                 tag["_Catches"] = catchTags;
             } catch (Exception ex) {
@@ -247,18 +247,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.AutoFishers
             base.LoadData(tag);
             try {
                 EnsureSlots();
-                if (tag.TryGet("_Enabled", out bool enabled)) {
+                if (tag.TrySafeGet("_Enabled", out bool enabled)) {
                     Enabled = enabled;
                 }
-                if (tag.TryGet("_FishInterval", out int interval)) {
+                if (tag.TrySafeGet("_FishInterval", out int interval)) {
                     FishInterval = Math.Clamp(interval, 300, 1200);
                 }
-                if (tag.TryGet("_Baits", out List<TagCompound> baitTags)) {
+                if (tag.TrySafeGet("_Baits", out List<TagCompound> baitTags)) {
                     for (int i = 0; i < BaitSlotCount && i < baitTags.Count; i++) {
                         Baits[i] = CWRSaveData.LoadItemTag(baitTags[i], $"{nameof(AutoFisherTP)}:_Baits");
                     }
                 }
-                if (tag.TryGet("_Catches", out List<TagCompound> catchTags)) {
+                if (tag.TrySafeGet("_Catches", out List<TagCompound> catchTags)) {
                     for (int i = 0; i < CatchSlotCount && i < catchTags.Count; i++) {
                         Catches[i] = CWRSaveData.LoadItemTag(catchTags[i], $"{nameof(AutoFisherTP)}:_Catches");
                     }

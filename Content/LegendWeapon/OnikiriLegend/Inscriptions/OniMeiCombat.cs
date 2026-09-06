@@ -316,6 +316,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public const int ThunderCooldownTicks = 24;
         /// <summary>斩雷：向上探顶的最大格数，探得到天才落</summary>
         public const int ThunderSkyProbeTiles = 64;
+        /// <summary>斩雷：瞬时风速阈（与原版雷暴态的起始阈同值）</summary>
+        public const float ThunderStormWindSpeed = 0.4f;
+
+        /// <summary>
+        /// 雷暴：下雨且风紧。原版雷暴态 <see cref="Main.IsItStorming"/> 带滞回（雷暴音乐与之同步），
+        /// 与瞬时风速阈取并：玩家听着雷暴音乐时风速回落到阈下也仍算雷暴，斩雷多道与雷切刀縁共用此判据
+        /// </summary>
+        public static bool IsStorming
+            => Main.raining && (Main.IsItStorming
+                || Math.Abs(Main.windSpeedCurrent) >= ThunderStormWindSpeed);
 
         //====鵺切 落鵺====
         /// <summary>落鵺：起跳门槛，离地不足此高度(px)照常走第五拍</summary>

@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Common;
+using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using WeaverGrievancesItem = CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses.WeaverGrievances;
@@ -33,8 +34,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         }
 
         public override void LoadData(TagCompound tag) {
-            bool claimed = false;
-            bool hasClaimedKey = tag != null && tag.TryGet(ClaimedSaveKey, out claimed);
+            bool hasClaimedKey = tag.TrySafeGet(ClaimedSaveKey, out bool claimed, nameof(WGAcquisitionPlayer));
             Claimed = hasClaimedKey && claimed;
             legacyMigrationPending = !hasClaimedKey;
             ClearPendingClaim();

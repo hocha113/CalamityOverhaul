@@ -430,17 +430,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.BottlingMachines
             tag["FluidType"] = FluidType;
             tag["FluidAmount"] = FluidAmount;
             if (InputItem != null && !InputItem.IsAir) {
-                tag["Bottling_InputItem"] = ItemIO.Save(InputItem);
+                tag["Bottling_InputItem"] = CWRSaveData.SaveItemTag(InputItem);
             }
             if (OutputItem != null && !OutputItem.IsAir) {
-                tag["Bottling_OutputItem"] = ItemIO.Save(OutputItem);
+                tag["Bottling_OutputItem"] = CWRSaveData.SaveItemTag(OutputItem);
             }
         }
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            FluidType = tag.TryGet("FluidType", out int type) ? type : LiquidID.Water;
-            FluidAmount = tag.TryGet("FluidAmount", out int amount) ? amount : 0;
+            FluidType = tag.TrySafeGet("FluidType", out int type) ? type : LiquidID.Water;
+            FluidAmount = tag.TrySafeGet("FluidAmount", out int amount) ? amount : 0;
             InputItem = CWRSaveData.LoadItemFromTag(tag, "Bottling_InputItem", nameof(BottlingMachineTP));
             OutputItem = CWRSaveData.LoadItemFromTag(tag, "Bottling_OutputItem", nameof(BottlingMachineTP));
         }

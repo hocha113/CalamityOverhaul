@@ -119,10 +119,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 List<TagCompound> itemTags = new();
                 foreach (var item in storedItems) {
                     if (item == null) {
-                        itemTags.Add(ItemIO.Save(new Item()));
+                        itemTags.Add(CWRSaveData.SaveItemTag(new Item()));
                     }
                     else {
-                        itemTags.Add(ItemIO.Save(item));
+                        itemTags.Add(CWRSaveData.SaveItemTag(item));
                     }
                 }
                 tag["itemTags"] = itemTags;
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                     }
                 }
 
-                if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
+                if (!tag.TrySafeGet("itemTags", out List<TagCompound> itemTags)) {
                     return;
                 }
 

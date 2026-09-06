@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
@@ -161,8 +162,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            FluidType = tag.TryGet("FluidType", out int type) ? type : LiquidID.Water;
-            FluidAmount = tag.TryGet("FluidAmount", out int amount) ? amount : 0;
+            FluidType = tag.TrySafeGet("FluidType", out int type) ? type : LiquidID.Water;
+            FluidAmount = tag.TrySafeGet("FluidAmount", out int amount) ? amount : 0;
         }
         #endregion
 

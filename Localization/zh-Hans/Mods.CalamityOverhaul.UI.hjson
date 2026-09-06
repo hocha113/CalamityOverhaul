@@ -383,6 +383,11 @@ HerbFarmer: {
 		StatusIdle: 待机
 		StatusNoPower: 缺电
 		StatusOff: 已停用
+		StatusWaitingBloom: 等待开花
+		StatusGrowing: 生长中
+		StatusFull: 产出仓已满
+		StatusNoSeeds: 缺种子
+		StatusNoSoil: 无合法土壤
 		EnergyLabel: 电力
 		SeedHint: 放入草药种子
 		TakeHint: 点击取出

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using InnoVault.GameSystem;
@@ -116,14 +117,16 @@ internal class FisherEventSystem : ModSystem
         HasCaughtHalibut = false;
     }
 
+    //静态旗标随世界走：没有本模组数据的世界不会触发 LoadWorldData，
+    //不在这里清零就会把上一个世界的值写进下一个世界的存档
+    public override void ClearWorld() => HasCaughtHalibut = false;
+
     public override void SaveWorldData(TagCompound tag) {
         tag[nameof(HasCaughtHalibut)] = HasCaughtHalibut;
     }
 
     public override void LoadWorldData(TagCompound tag) {
-        HasCaughtHalibut = false;
-        if (tag.TryGet(nameof(HasCaughtHalibut), out bool hasCaughtHalibut)) {
-            HasCaughtHalibut = hasCaughtHalibut;
-        }
+        HasCaughtHalibut = tag.TrySafeGet(nameof(HasCaughtHalibut), out bool hasCaughtHalibut, nameof(FisherEventSystem))
+            && hasCaughtHalibut;
     }
 }

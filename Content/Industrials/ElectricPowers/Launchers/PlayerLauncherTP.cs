@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -81,13 +82,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Launchers
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (tag.TryGet("_Enabled", out bool enabled)) {
+            if (tag.TrySafeGet("_Enabled", out bool enabled)) {
                 Enabled = enabled;
             }
-            if (tag.TryGet("_LaunchDirection", out float direction)) {
+            if (tag.TrySafeGet("_LaunchDirection", out float direction)) {
                 LaunchDirection = direction;
             }
-            if (tag.TryGet("_LaunchPower", out float power)) {
+            if (tag.TrySafeGet("_LaunchPower", out float power)) {
                 LaunchPower = power;
             }
         }

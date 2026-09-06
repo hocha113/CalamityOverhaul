@@ -51,16 +51,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Crushers
             base.SaveData(tag);
             tag["Crusher_CrushProgress"] = CrushProgress;
             if (InputItem != null && !InputItem.IsAir) {
-                tag["Crusher_InputItem"] = ItemIO.Save(InputItem);
+                tag["Crusher_InputItem"] = CWRSaveData.SaveItemTag(InputItem);
             }
             if (OutputItem != null && !OutputItem.IsAir) {
-                tag["Crusher_OutputItem"] = ItemIO.Save(OutputItem);
+                tag["Crusher_OutputItem"] = CWRSaveData.SaveItemTag(OutputItem);
             }
         }
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (!tag.TryGet("Crusher_CrushProgress", out CrushProgress)) {
+            if (!tag.TrySafeGet("Crusher_CrushProgress", out CrushProgress)) {
                 CrushProgress = 0;
             }
             InputItem = CWRSaveData.LoadItemFromTag(tag, "Crusher_InputItem", nameof(CrusherData));

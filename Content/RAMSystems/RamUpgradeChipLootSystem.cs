@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Common;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.RAMSystems
         public override void OnWorldUnload() => injected = false;
 
         public override void LoadWorldData(TagCompound tag) {
-            injected = tag != null && tag.TryGet(SaveKeyInjected, out bool value) && value;
+            injected = tag.TrySafeGet(SaveKeyInjected, out bool value, nameof(RamUpgradeChipLootSystem)) && value;
         }
 
         public override void SaveWorldData(TagCompound tag) {

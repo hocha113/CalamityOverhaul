@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.MainMenus.Characters;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.MainMenus.Characters;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using InnoVault.DataModules;
 using System;
@@ -55,7 +56,7 @@ namespace CalamityOverhaul.Content.Narrative.Data
             ShenyoGiftDelayTicks = 0;
             try {
                 //只读新格式；旧档走 ADVSavePlayer / HalibutSave
-                if (tag.TryGet<TagCompound>("StoryData", out TagCompound storyTag)) {
+                if (tag.TrySafeGet<TagCompound>("StoryData", out TagCompound storyTag)) {
                     StoryData.LoadData(storyTag);
                     HasNewFormatData = true;
                 }

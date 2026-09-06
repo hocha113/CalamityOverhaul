@@ -274,8 +274,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Fluids
         }
 
         public override void LoadData(TagCompound tag) {
-            FluidType = tag.TryGet("FluidType", out int type) ? type : LiquidID.Water;
-            FluidAmount = tag.TryGet("FluidAmount", out int amount) ? amount : 0;
+            FluidType = tag.TrySafeGet("FluidType", out int type) ? type : LiquidID.Water;
+            FluidAmount = tag.TrySafeGet("FluidAmount", out int amount) ? amount : 0;
         }
         #endregion
 

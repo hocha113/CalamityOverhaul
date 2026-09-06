@@ -271,10 +271,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.PotionBeacons
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("PotionBeaconUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("PotionBeaconUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
-            if (tag.TryGet("PotionBeaconUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("PotionBeaconUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
         }

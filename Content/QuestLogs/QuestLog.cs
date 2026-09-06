@@ -285,26 +285,26 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         public override void LoadUIData(TagCompound tag) {
-            tag.TryGet(Name + ":" + nameof(zoom), out zoom);
+            tag.TrySafeGet(Name + ":" + nameof(zoom), out zoom);
             zoom = MathHelper.Clamp(zoom, 0.4f, 2.0f);
-            tag.TryGet(Name + ":" + nameof(panOffset), out panOffset);
-            tag.TryGet(Name + ":" + nameof(dragStartMousePos), out dragStartMousePos);
-            tag.TryGet(Name + ":" + nameof(dragStartPanOffset), out dragStartPanOffset);
-            tag.TryGet(Name + ":" + nameof(currentStyleIndex), out currentStyleIndex);
+            tag.TrySafeGet(Name + ":" + nameof(panOffset), out panOffset);
+            tag.TrySafeGet(Name + ":" + nameof(dragStartMousePos), out dragStartMousePos);
+            tag.TrySafeGet(Name + ":" + nameof(dragStartPanOffset), out dragStartPanOffset);
+            tag.TrySafeGet(Name + ":" + nameof(currentStyleIndex), out currentStyleIndex);
             currentStyleIndex = (int)MathHelper.Clamp(currentStyleIndex, 0, availableStyles.Count - 1);
             //新样式上线前的存档只存过 0~2，读回来会把玩家钉在旧皮肤上。
             //一次性把它顶到「远征纪要」，此后尊重玩家自己的选择
-            tag.TryGet(Name + ":" + nameof(chronicleMigrated), out chronicleMigrated);
+            tag.TrySafeGet(Name + ":" + nameof(chronicleMigrated), out chronicleMigrated);
             if (!chronicleMigrated) {
                 currentStyleIndex = ChronicleStyleIndex;
                 chronicleMigrated = true;
             }
             SetStyleByIndex(currentStyleIndex, false);
-            tag.TryGet(Name + ":" + nameof(LauncherPosition), out LauncherPosition);
+            tag.TrySafeGet(Name + ":" + nameof(LauncherPosition), out LauncherPosition);
             if (LauncherPosition == Vector2.Zero) {
                 LauncherPosition = new Vector2(572, 108);
             }
-            if (tag.TryGet(Name + ":" + nameof(View), out byte savedView)
+            if (tag.TrySafeGet(Name + ":" + nameof(View), out byte savedView)
                 && savedView == (byte)QuestLogView.Entrust) {
                 View = QuestLogView.Entrust;
             }

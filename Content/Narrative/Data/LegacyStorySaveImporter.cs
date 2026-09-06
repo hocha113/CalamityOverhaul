@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using InnoVault.DataModules;
 using System;
@@ -51,10 +52,10 @@ namespace CalamityOverhaul.Content.Narrative.Data
 
         /// <summary>解包到模块根；无外层包装则原样返回</summary>
         private static TagCompound ResolveRoot(TagCompound tag) {
-            if (tag.TryGet<TagCompound>("ADVSave", out TagCompound advTag)) {
+            if (tag.TrySafeGet<TagCompound>("ADVSave", out TagCompound advTag)) {
                 return advTag;
             }
-            if (tag.TryGet<TagCompound>("ADCSave", out TagCompound adcTag)) {
+            if (tag.TrySafeGet<TagCompound>("ADCSave", out TagCompound adcTag)) {
                 return adcTag;
             }
             //已是模块根（v0 解包后或 v1 扁平）

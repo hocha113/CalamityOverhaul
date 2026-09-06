@@ -183,10 +183,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (!tag.TryGet("targetMachine_LoadenName", out string tpName)) {
+            if (!tag.TrySafeGet("targetMachine_LoadenName", out string tpName)) {
                 tpName = "";
             }
-            if (!tag.TryGet("targetMachine_Position", out Point16 tpPos)) {
+            if (!tag.TrySafeGet("targetMachine_Position", out Point16 tpPos)) {
                 tpPos = new Point16(0, 0);
             }
 

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Narrative.Common;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Actors;
@@ -65,9 +66,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
             ResetTransientState();
 
             try {
-                bool valid = tag != null && tag.TryGet(SaveVersionKey, out int version)
+                bool valid = tag != null && tag.TrySafeGet(SaveVersionKey, out int version)
                     && version >= SaveVersion;
-                Unlocked = valid && tag.TryGet(UnlockedKey, out bool unlocked) && unlocked;
+                Unlocked = valid && tag.TrySafeGet(UnlockedKey, out bool unlocked) && unlocked;
                 if (Unlocked) {
                     LoadPersistentState(tag);
                 }
@@ -326,14 +327,14 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
         }
 
         private static void LoadPersistentState(TagCompound tag) {
-            ManifestOrigin = tag.TryGet(ManifestOriginKey, out Vector2 manifestOrigin)
+            ManifestOrigin = tag.TrySafeGet(ManifestOriginKey, out Vector2 manifestOrigin)
                 ? manifestOrigin : Vector2.Zero;
-            PlantedAnchor = tag.TryGet(PlantedAnchorKey, out Vector2 plantedAnchor)
+            PlantedAnchor = tag.TrySafeGet(PlantedAnchorKey, out Vector2 plantedAnchor)
                 ? plantedAnchor : Vector2.Zero;
-            ManifestationCompleted = tag.TryGet(CompletedKey, out bool completed)
+            ManifestationCompleted = tag.TrySafeGet(CompletedKey, out bool completed)
                 && completed;
             hasResumeState = !ManifestationCompleted
-                && tag.TryGet(HasResumeStateKey, out bool hasResume)
+                && tag.TrySafeGet(HasResumeStateKey, out bool hasResume)
                 && hasResume
                 && TryReadResumeState(tag, out resumeState);
             if (!ManifestationCompleted && !hasResumeState
@@ -348,10 +349,10 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
         private static bool TryReadResumeState(TagCompound tag,
             out ArbiterManifestationResumeState state) {
             state = default;
-            if (!tag.TryGet(ResumePositionKey, out Vector2 position)
-                || !tag.TryGet(ResumeVelocityKey, out Vector2 velocity)
-                || !tag.TryGet(ResumePhaseKey, out int phaseRaw)
-                || !tag.TryGet(ResumeTimerKey, out int phaseTimer)
+            if (!tag.TrySafeGet(ResumePositionKey, out Vector2 position)
+                || !tag.TrySafeGet(ResumeVelocityKey, out Vector2 velocity)
+                || !tag.TrySafeGet(ResumePhaseKey, out int phaseRaw)
+                || !tag.TrySafeGet(ResumeTimerKey, out int phaseTimer)
                 || phaseRaw < (int)ArbiterManifestationPhase.Forging
                 || phaseRaw >= (int)ArbiterManifestationPhase.Planted) {
                 return false;

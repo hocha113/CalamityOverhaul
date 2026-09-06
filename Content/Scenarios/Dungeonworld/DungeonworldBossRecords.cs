@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Scenarios.Dungeonworld.NPCs;
 using System.IO;
 using Terraria;
@@ -49,9 +50,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld
         }
 
         public override void LoadData(TagCompound tag) {
-            undrownedKills = tag.TryGet(nameof(undrownedKills), out int a) ? a : 0;
-            overseerKills = tag.TryGet(nameof(overseerKills), out int b) ? b : 0;
-            wraithKills = tag.TryGet(nameof(wraithKills), out int c) ? c : 0;
+            undrownedKills = tag.TrySafeGet(nameof(undrownedKills), out int a, nameof(DungeonworldBossRecords)) ? System.Math.Max(0, a) : 0;
+            overseerKills = tag.TrySafeGet(nameof(overseerKills), out int b, nameof(DungeonworldBossRecords)) ? System.Math.Max(0, b) : 0;
+            wraithKills = tag.TrySafeGet(nameof(wraithKills), out int c, nameof(DungeonworldBossRecords)) ? System.Math.Max(0, c) : 0;
         }
 
         //==================== 服务器镜像（会话态，per-player 按 whoAmI 键控，非 static 单值）====================

@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public override void LoadUIData(TagCompound tag) {
             //按枚举范围校验，别写成"认得一个值、其余全当默认"，加第三个工位时那种写法会静默读错
-            rememberedLedger = tag.TryGet(Name + ":rememberedLedger", out int value)
+            rememberedLedger = tag.TrySafeGet(Name + ":rememberedLedger", out int value)
                 && Enum.IsDefined(typeof(OniLedgerView), value)
                 ? (OniLedgerView)value
                 : OniLedgerView.Mei;

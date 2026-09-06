@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Actors;
 using InnoVault.Cinematics;
@@ -64,10 +65,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             IsGenerated = false;
             ShrinePosition = Vector2.Zero;
             try {
-                if (tag != null && tag.TryGet(nameof(IsGenerated), out bool generated)) {
+                if (tag != null && tag.TrySafeGet(nameof(IsGenerated), out bool generated)) {
                     IsGenerated = generated;
                 }
-                if (tag != null && tag.TryGet(nameof(ShrinePosition), out Vector2 pos)) {
+                if (tag != null && tag.TrySafeGet(nameof(ShrinePosition), out Vector2 pos)) {
                     ShrinePosition = pos;
                 }
             } catch (Exception ex) {

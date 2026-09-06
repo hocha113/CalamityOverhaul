@@ -19,11 +19,11 @@ namespace CalamityOverhaul.Content.Industrials
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
             DyeSlotItem ??= new();
-            tag["DyeSlotItem"] = ItemIO.Save(DyeSlotItem);
+            tag["DyeSlotItem"] = CWRSaveData.SaveItemTag(DyeSlotItem);
             BeDyedItem ??= new();
-            tag["BeDyedItem"] = ItemIO.Save(BeDyedItem);
+            tag["BeDyedItem"] = CWRSaveData.SaveItemTag(BeDyedItem);
             ResultDyedItem ??= new();
-            tag["ResultDyedItem"] = ItemIO.Save(ResultDyedItem);
+            tag["ResultDyedItem"] = CWRSaveData.SaveItemTag(ResultDyedItem);
         }
 
         public override void LoadData(TagCompound tag) {

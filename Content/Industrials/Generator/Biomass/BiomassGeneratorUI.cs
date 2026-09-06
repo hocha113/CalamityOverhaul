@@ -189,10 +189,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Biomass
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet("BiomassGeneratorUI_DrawPos_X", out float x)) {
+            if (tag.TrySafeGet("BiomassGeneratorUI_DrawPos_X", out float x) && float.IsFinite(x)) {
                 DrawPosition.X = x;
             }
-            if (tag.TryGet("BiomassGeneratorUI_DrawPos_Y", out float y)) {
+            if (tag.TrySafeGet("BiomassGeneratorUI_DrawPos_Y", out float y) && float.IsFinite(y)) {
                 DrawPosition.Y = y;
             }
         }

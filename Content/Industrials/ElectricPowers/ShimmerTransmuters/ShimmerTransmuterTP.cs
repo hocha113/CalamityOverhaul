@@ -679,19 +679,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShimmerTransmuters
             tag["FluidType"] = FluidType;
             tag["FluidAmount"] = FluidAmount;
             if (InputItem != null && !InputItem.IsAir) {
-                tag["Transmuter_InputItem"] = ItemIO.Save(InputItem);
+                tag["Transmuter_InputItem"] = CWRSaveData.SaveItemTag(InputItem);
             }
             for (int i = 0; i < OutputSlotCount; i++) {
                 if (OutputItems[i] != null && !OutputItems[i].IsAir) {
-                    tag[$"Transmuter_OutputItem{i}"] = ItemIO.Save(OutputItems[i]);
+                    tag[$"Transmuter_OutputItem{i}"] = CWRSaveData.SaveItemTag(OutputItems[i]);
                 }
             }
         }
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            FluidType = tag.TryGet("FluidType", out int type) ? type : LiquidID.Shimmer;
-            FluidAmount = tag.TryGet("FluidAmount", out int amount) ? amount : 0;
+            FluidType = tag.TrySafeGet("FluidType", out int type) ? type : LiquidID.Shimmer;
+            FluidAmount = tag.TrySafeGet("FluidAmount", out int amount) ? amount : 0;
             InputItem = CWRSaveData.LoadItemFromTag(tag, "Transmuter_InputItem", nameof(ShimmerTransmuterTP));
             for (int i = 0; i < OutputSlotCount; i++) {
                 OutputItems[i] = CWRSaveData.LoadItemFromTag(tag, $"Transmuter_OutputItem{i}", nameof(ShimmerTransmuterTP));

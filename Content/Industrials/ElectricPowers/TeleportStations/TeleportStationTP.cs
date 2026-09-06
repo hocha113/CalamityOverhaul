@@ -70,24 +70,33 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TeleportStations
 
         public override void SendData(ModPacket data) {
             base.SendData(data);
-            data.Write(StationName ?? "");
+            data.Write(ClampName(StationName));
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             base.ReceiveData(reader, whoAmI);
-            StationName = reader.ReadString();
+            //网络来的站名不可信：NBT 字符串长度是 short，超长串落盘会把整个世界档写坏，收包端就截断
+            StationName = ClampName(reader.ReadString());
         }
 
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
-            tag["_StationName"] = StationName ?? "";
+            tag["_StationName"] = ClampName(StationName);
         }
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (tag.TryGet("_StationName", out string name)) {
-                StationName = name;
+            if (tag.TrySafeGet("_StationName", out string name)) {
+                StationName = ClampName(name);
             }
+        }
+
+        /// <summary>站名统一截到 <see cref="MaxNameLength"/>，null 归空串</summary>
+        internal static string ClampName(string name) {
+            if (string.IsNullOrEmpty(name)) {
+                return "";
+            }
+            return name.Length > MaxNameLength ? name[..MaxNameLength] : name;
         }
 
         #endregion

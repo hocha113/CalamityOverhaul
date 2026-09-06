@@ -1229,11 +1229,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     Tutorial.OnikiriTutorialEvents.FireComboBeatHit(a.Beat, target);
                 }
                 if (a != null && a.Beat == BeatCount - 1 && profile.ThunderCall
-                    && Main.raining && MathF.Abs(Main.windSpeedCurrent) >= 0.4f) {
+                    && OniMeiCombat.IsStorming) {
                     okp.TryCallThunder(target, in profile, a.BaseWeaponDamage,
                         Projectile.knockBack, Projectile);
                 }
-                if (!target.active || target.life <= 0) {
+                if (OniMeiDeedEvents.StruckDead(target)) {
                     okp.TryPetalPruneOnKill(target,
                         a?.BaseWeaponDamage ?? Projectile.damage, Projectile.knockBack,
                         Projectile, in profile);
