@@ -1,6 +1,6 @@
-using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
-using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
+﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Bows.Projectiles;
+using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit;
 using System;
 using Terraria;
 using Terraria.Audio;

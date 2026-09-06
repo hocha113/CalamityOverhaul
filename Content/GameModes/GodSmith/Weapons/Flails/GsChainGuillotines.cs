@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria;
@@ -26,7 +28,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
         protected override float LaunchAi2(Player player, int index) => index;
 
         protected override string GsDescFallback =>
-            "Reforged: hurls both guillotines at once, fanning apart mid-flight\nWhen the two blades cross paths they shear, bursting cross-cut slashes between them";
+            "Reforged: hurls both guillotines at once, fanning apart mid-flight" +
+            "\nWhen the two blades cross paths they shear, bursting cross-cut slashes between them";
+
+        //双头吞吐量高（两颗锤头+交剪 70% AOE），底伤只补 2%
         public override void GsModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
             => damage *= 1.02f;
     }
@@ -37,9 +42,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
     /// </summary>
     internal class GsChainGuillotinesHead : GsFlailHeadProj
     {
+        /// <summary>腐绿褐</summary>
+        internal static readonly Color CorruptGreen = new(122, 148, 70);
+        /// <summary>铁锈</summary>
+        internal static readonly Color RustBrown = new(142, 92, 56);
+        /// <summary>剪切锐光</summary>
+        internal static readonly Color ShearLight = new(214, 236, 150);
+
         public override int SourceItemID => ItemID.ChainGuillotines;
         public override int VanillaProjID => ProjectileID.ChainGuillotine;
         public override Asset<Texture2D> ChainTexture => TextureAssets.Chain40;
+        public override Color GlowColor => CorruptGreen;
 
         //铡刀参数：出手利落、链短、蓄压稍长
         public override float LaunchSpeed => 17f;
@@ -107,19 +120,35 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
                 break;
             }
         }
+
+        protected override void SpawnHitBurst(NPC target, NPC.HitInfo hit, float charge) {
+            base.SpawnHitBurst(target, hit, charge);
+            //腐化铁锈补层：绿褐碎屑
+            for (int i = 0; i < 4; i++) {
+                Color c = Main.rand.NextBool() ? CorruptGreen : RustBrown;
+                PRTLoader.NewParticle<PRT_Spark>(target.Center,
+                    Main.rand.NextVector2Circular(3.5f, 3.5f), c, Main.rand.NextFloat(0.3f, 0.5f))
+                    ?.Configure(true, Main.rand.Next(10, 16));
+            }
+        }
+
+        public override Color ChainLinkColor(int linkIndex, float t, Color light)
+            //近头链节染一层腐绿，读得出哪头是铡
+            => Color.Lerp(light, CorruptGreen, 0.22f * t);
     }
 
     /// <summary>
-    /// 十字剪切爆：圆域外扩的早窗结伤（70% 小 AOE）；
-    /// 用原版咒焰贴图按当前半径画一笔作范围提示
+    /// 十字剪切爆：两道交叉锐光扩张收拢+腐绿溅射，早窗结伤（70% 小 AOE）；
+    /// 自绘，交叉角与相位用 identity 播种
     /// </summary>
     internal class GsChainGuillotinesShearProj : ModProjectile
     {
-        public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.CursedFlameFriendly;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int LifeFrames = 20;
         private const int DamageWindow = 8;
 
+        private float Seed => Projectile.identity * 0.917f;
         private float LifeT => 1f - Projectile.timeLeft / (float)LifeFrames;
         /// <summary>剪切判定半径：先猛后缓外扩</summary>
         private float ShearRadius => MathHelper.Lerp(16f, 58f, 1f - (1f - LifeT) * (1f - LifeT));
@@ -136,17 +165,51 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Flails
             Projectile.timeLeft = LifeFrames;
         }
 
+        public override void AI()
+            => Lighting.AddLight(Projectile.Center, GsChainGuillotinesHead.CorruptGreen.ToVector3() * (0.4f * (1f - LifeT)));
+
         public override bool? CanDamage() => Projectile.timeLeft > LifeFrames - DamageWindow ? null : false;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
             => targetHitbox.Distance(Projectile.Center) <= ShearRadius;
 
-        /// <summary>范围提示：原版咒焰贴图按当前半径缩放画一笔，随寿命淡出</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Type].Value;
-            float scale = ShearRadius * 2f / MathF.Max(tex.Width, 1);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor * (1f - LifeT),
-                0f, tex.Size() / 2f, scale, SpriteEffects.None, 0);
+            Texture2D blade = CWRAsset.LightShot?.Value;
+            Texture2D splash = CWRAsset.TearSpread01?.Value;
+            Texture2D star = CWRAsset.StarTexture?.Value;
+            if (blade == null || splash == null || star == null) {
+                return false;
+            }
+            Vector2 pos = Projectile.Center - Main.screenPosition;
+            float fade = 1f - LifeT;
+            //刃长先展开后收拢
+            float reach = MathHelper.Lerp(0.35f, 0.75f, MathF.Sin(MathHelper.Clamp(LifeT * 1.6f, 0f, 1f) * MathHelper.Pi));
+            float crossAngle = Seed % MathHelper.Pi;
+
+            //两道交叉锐光（加色 A=0），各沿正反方向画满一条
+            for (int i = 0; i < 2; i++) {
+                float ang = crossAngle + (i == 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+                Color edge = GsChainGuillotinesHead.ShearLight * (0.8f * fade);
+                edge.A = 0;
+                foreach (float sign in new float[] { 1f, -1f }) {
+                    Vector2 dir = ang.ToRotationVector2() * sign;
+                    Main.EntitySpriteDraw(blade, pos + dir * (18f * reach / 0.75f), null, edge,
+                        dir.ToRotation(), blade.Size() / 2f, new Vector2(reach, 0.16f), SpriteEffects.None, 0);
+                }
+            }
+            //腐绿溅射（TearSpread01 真 alpha）
+            Main.EntitySpriteDraw(splash, pos, null, GsChainGuillotinesHead.CorruptGreen * (0.65f * fade),
+                Seed, splash.Size() / 2f, 0.16f + LifeT * 0.10f, SpriteEffects.None, 0);
+            //铁锈暗屑第二层，转 90 度错开
+            Main.EntitySpriteDraw(splash, pos, null, GsChainGuillotinesHead.RustBrown * (0.4f * fade),
+                Seed + MathHelper.PiOver2, splash.Size() / 2f, 0.11f + LifeT * 0.08f, SpriteEffects.None, 0);
+            //交点四芒闪（前段）
+            if (LifeT < 0.4f) {
+                Color flash = Color.Lerp(GsChainGuillotinesHead.ShearLight, Color.White, 0.5f)
+                    * (0.7f * (1f - LifeT / 0.4f));
+                flash.A = 0;
+                Main.EntitySpriteDraw(star, pos, null, flash, -Seed, star.Size() / 2f, 0.20f, SpriteEffects.None, 0);
+            }
             return false;
         }
     }

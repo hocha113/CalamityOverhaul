@@ -1,4 +1,6 @@
-using CalamityOverhaul.Content.TimeFreezes;
+﻿using CalamityOverhaul.Content.TimeFreezes;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -8,7 +10,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
 {
     /// <summary>
     /// 单个被鞭目标的标记状态。owner 本地量（命中判定与收益全在攻击方端），
-    /// 键控 <see cref="NetworkNPCIdentity"/> 防槽位复用继承脏层数
+    /// 键控 <see cref="NetworkNPCIdentity"/> 防槽位复用继承脏层数；
+    /// 跨端可见性由 <see cref="GsWhipSealPulseProj"/> 脉冲真弹幕承载
     /// </summary>
     internal sealed class WhipMarkState
     {
@@ -33,6 +36,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
         internal uint LeatherBoostUntil;
         /// <summary>万花筒棱彩暴露截止帧：期间自家召唤物 10% 概率强制暴击</summary>
         internal uint PrismExposeUntil;
+        /// <summary>标记归属鞭的物品 ID（决定印记配色与层数上限口径）</summary>
+        internal int SourceItemType;
 
         /// <summary>惰性衰减：读取前调用，超时的层与印就地清空</summary>
         internal void Refresh(uint now) {
@@ -82,6 +87,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
         /// <summary>鞭痕/处决印登记表，键 = 网络身份防槽位复用</summary>
         internal readonly Dictionary<NetworkNPCIdentity, WhipMarkState> Marks = [];
 
+        private uint nextPulseTick;
         private uint nextSweepTick;
         private static readonly List<NetworkNPCIdentity> sweepBuffer = [];
 
@@ -137,6 +143,19 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
                 nextSweepTick = now + 120;
                 SweepDead(now);
             }
+            //处决印脉冲：每秒一发全端可见的印记微光真弹幕（队友借此看见处决就绪）
+            if (now >= nextPulseTick) {
+                nextPulseTick = now + 60;
+                foreach (KeyValuePair<NetworkNPCIdentity, WhipMarkState> kv in Marks) {
+                    kv.Value.Refresh(now);
+                    if (!kv.Value.ExecuteReady || !kv.Key.TryResolve(out NPC npc)) {
+                        continue;
+                    }
+                    Projectile.NewProjectile(Player.GetSource_Misc("GsWhipSealPulse"),
+                        npc.Center, Vector2.Zero, ModContent.ProjectileType<GsWhipSealPulseProj>(),
+                        0, 0f, Player.whoAmI, npc.whoAmI, kv.Value.SourceItemType);
+                }
+            }
         }
 
         private void SweepDead(uint now) {
@@ -155,7 +174,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
     }
 
     /// <summary>
-    /// 鞭痕的收益出口。加成结算发生在弹幕命中结算端
+    /// 鞭痕的收益出口与印记可视化。加成结算发生在弹幕命中结算端
     /// （= 召唤物 owner 端），读的是该端本地玩家自己的鞭痕字典，
     /// 天然只有「自家召唤物」吃到加成，各端结论确定
     /// </summary>
@@ -192,6 +211,51 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips
             //棱彩暴露：+10% 暴击的真实实现（结算端只跑一次，掷点安全）
             if (now < st.PrismExposeUntil && Main.rand.NextBool(10)) {
                 modifiers.SetCrit();
+            }
+        }
+
+        public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            //印记常显是标记归属者的个人读数（队友看真弹幕脉冲），读本地玩家字典
+            if (!GameModeSystem.GodSmithActive || Main.dedServ) {
+                return;
+            }
+            GsWhipPlayer mp = Main.LocalPlayer?.GetModPlayer<GsWhipPlayer>();
+            if (mp == null || mp.Marks.Count == 0 || !mp.TryGetMark(npc, out WhipMarkState st)) {
+                return;
+            }
+            if (!st.ExecuteReady && st.Stacks <= 0) {
+                return;
+            }
+            Texture2D star = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture")?.Value;
+            Texture2D cross = CWRUtils.GetT2DAsset(CWRConstant.Masking + "RayCross01")?.Value;
+            Texture2D dot = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture_White")?.Value;
+            if (star == null || cross == null || dot == null) {
+                return;
+            }
+            GsWhipScheme scheme = GsWhipScheme.SchemeOfItem(st.SourceItemType);
+            float phase = npc.whoAmI * 0.77f;   //去同相：多目标印记不许齐闪
+            Vector2 anchor = npc.Top + new Vector2(0f, -20f) - screenPos;
+
+            if (st.ExecuteReady) {
+                //处决印：金红星章缓旋 + 金色十字反旋，呼吸按 identity 相位错开
+                float pulse = 0.82f + 0.18f * MathF.Sin(Main.GlobalTimeWrappedHourly * 4.2f + phase);
+                float rot = Main.GlobalTimeWrappedHourly * 1.15f + phase;
+                Color sealRed = new Color(255, 92, 46) { A = 0 };
+                Color sealGold = new Color(255, 206, 96) { A = 0 };
+                spriteBatch.Draw(star, anchor, null, sealRed * (0.85f * pulse), rot,
+                    star.Size() * 0.5f, 0.26f * pulse, SpriteEffects.None, 0f);
+                spriteBatch.Draw(cross, anchor, null, sealGold * (0.68f * pulse), -rot * 0.6f,
+                    cross.Size() * 0.5f, 0.15f, SpriteEffects.None, 0f);
+                return;
+            }
+            //鞭痕层：头顶一排微光点，配色随归属鞭（万花筒逐层点亮五色）
+            for (int i = 0; i < st.Stacks; i++) {
+                Color c = scheme?.MarkLayerColor(i) ?? new Color(255, 200, 120);
+                c.A = 0;
+                Vector2 pos = anchor + new Vector2((i - (st.Stacks - 1) * 0.5f) * 11f, 0f);
+                float flick = 0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6f + phase + i * 1.3f);
+                spriteBatch.Draw(dot, pos, null, c * (0.75f * flick), 0f,
+                    dot.Size() * 0.5f, 0.085f, SpriteEffects.None, 0f);
             }
         }
     }

@@ -27,11 +27,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Scheme
 
         public override float DamageTweak => 1.05f;
 
+        /// <summary>爆竹橙红</summary>
+        public override Color MarkColor => new(255, 110, 40);
+
         /// <summary>引信由原版爆炸引爆，鞭击只叠层不引爆</summary>
         protected override bool ExecuteByWhipHit => false;
 
         protected override string GsDescFallback =>
-            "Reforged: keeps the classic minion-detonated blast; on-beat lashes load fuses into the target, and at 3 fuses the next blast chains into 3 extra staggered explosions";
+            "Reforged: keeps the classic minion-detonated blast; " +
+            "on-beat lashes load fuses into the target, and at 3 fuses " +
+            "the next blast chains into 3 extra staggered explosions";
+
         public override void GsSetStaticDefaults()
             //原版爆炸弹幕走类型通道：由仆从命中触发生成，无打标源可用
             => GsRegisterProjChannel(ProjectileID.FireWhipProj);

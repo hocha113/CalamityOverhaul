@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -48,21 +48,27 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
         //三层处决音：低频体感层是抽吸风压，与其余五只互不相同
         private static readonly SeizureCue GrabCue = new(
             SeizureCue.Custom("RainGrab", SoundID.DD2_BetsyWindAttack with {
-                Pitch = -0.55f, Volume = 0.7f, MaxInstances = 3,
+                Pitch = -0.55f,
+                Volume = 0.7f,
+                MaxInstances = 3,
             }),
             SoundID.SplashWeak with { Pitch = -0.25f, Volume = 0.5f, MaxInstances = 3 },
             SoundID.DD2_DrakinBreathIn with { Pitch = -0.3f, Volume = 0.35f, MaxInstances = 3 });
 
         private static readonly SeizureCue GulpCue = new(
             SeizureCue.Custom("RainGulp", SoundID.DD2_BetsyWindAttack with {
-                Pitch = -0.95f, Volume = 0.9f, MaxInstances = 3,
+                Pitch = -0.95f,
+                Volume = 0.9f,
+                MaxInstances = 3,
             }),
             SoundID.DD2_DrakinBreathIn with { Pitch = -0.7f, Volume = 0.6f, MaxInstances = 3 },
             SoundID.SplashWeak with { Pitch = 0.15f, Volume = 0.4f, MaxInstances = 3 });
 
         private static readonly SeizureCue LandCue = new(
             SeizureCue.Custom("RainLand", SoundID.DD2_BetsyWindAttack with {
-                Pitch = -1f, Volume = 0.55f, MaxInstances = 3,
+                Pitch = -1f,
+                Volume = 0.55f,
+                MaxInstances = 3,
             }),
             SoundID.SplashWeak with { Pitch = -0.45f, Volume = 0.95f, MaxInstances = 3 });
 
@@ -81,7 +87,9 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
             ResolveAnchors();
             //远处一声闷雷，不带闪电
             SoundEngine.PlaySound(SoundID.Thunder with {
-                Pitch = -0.85f, Volume = 0.4f, MaxInstances = 3,
+                Pitch = -0.85f,
+                Volume = 0.4f,
+                MaxInstances = 3,
             }, groundAnchor);
         }
 
@@ -90,13 +98,17 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
             beats.Add(30, () => {
                 SpawnFaceStreak();
                 SoundEngine.PlaySound(SoundID.DD2_BetsyWindAttack with {
-                    Pitch = -0.85f, Volume = 0.4f, MaxInstances = 3,
+                    Pitch = -0.85f,
+                    Volume = 0.4f,
+                    MaxInstances = 3,
                 }, MouthPoint);
             });
             //喉体自喉口垂下
             beats.Add(ThroatDropFrame, () => {
                 SoundEngine.PlaySound(SoundID.DD2_DrakinBreathIn with {
-                    Pitch = -0.55f, Volume = 0.5f, MaxInstances = 3,
+                    Pitch = -0.55f,
+                    Volume = 0.5f,
+                    MaxInstances = 3,
                 }, MouthPoint);
                 YankBurst(groundAnchor);
             });
@@ -109,7 +121,9 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
             //吞：颈缩自下而上跑
             beats.Add(SwallowFrame, () => {
                 SoundEngine.PlaySound(SoundID.DD2_DrakinBreathIn with {
-                    Pitch = -0.2f, Volume = 0.55f, MaxInstances = 3,
+                    Pitch = -0.2f,
+                    Volume = 0.55f,
+                    MaxInstances = 3,
                 }, MouthPoint);
             });
             //喉口一合
@@ -121,7 +135,9 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
             //吐回：尸身自喉口下端掉出来
             beats.Add(EjectFrame, () => {
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
-                    Pitch = -0.6f, Volume = 0.6f, MaxInstances = 3,
+                    Pitch = -0.6f,
+                    Volume = 0.6f,
+                    MaxInstances = 3,
                 }, ThroatEnd);
             });
         }

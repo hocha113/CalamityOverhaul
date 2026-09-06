@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Projectiles;
 using InnoVault.PRT;
@@ -42,20 +42,26 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
         //三层处决音：低频体感层是巨物砸地，与其余五只互不相同
         private static readonly SeizureCue BreachCue = new(
             SeizureCue.Custom("HandBreach", SoundID.DD2_OgreGroundPound with {
-                Pitch = -0.75f, Volume = 0.55f, MaxInstances = 2,
+                Pitch = -0.75f,
+                Volume = 0.55f,
+                MaxInstances = 2,
             }),
             SoundID.NPCDeath14 with { Pitch = -0.85f, Volume = 0.35f, MaxInstances = 2 });
 
         private static readonly SeizureCue RiseCue = new(
             SeizureCue.Custom("HandRise", SoundID.DD2_OgreGroundPound with {
-                Pitch = -0.45f, Volume = 0.9f, MaxInstances = 2,
+                Pitch = -0.45f,
+                Volume = 0.9f,
+                MaxInstances = 2,
             }),
             SoundID.NPCDeath14 with { Pitch = -0.6f, Volume = 0.5f, MaxInstances = 2 },
             SoundID.DD2_KoboldExplosion with { Pitch = 0.4f, Volume = 0.22f, MaxInstances = 2 });
 
         private static readonly SeizureCue FistCue = new(
             SeizureCue.Custom("HandFist", SoundID.DD2_OgreGroundPound with {
-                Pitch = -0.2f, Volume = 1f, MaxInstances = 2,
+                Pitch = -0.2f,
+                Volume = 1f,
+                MaxInstances = 2,
             }),
             SoundID.NPCDeath14 with { Pitch = -0.35f, Volume = 0.85f, MaxInstances = 2 },
             SoundID.DD2_KoboldExplosion with { Pitch = 0.15f, Volume = 0.4f, MaxInstances = 2 });
@@ -100,7 +106,9 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
             //土层合拢
             beats.Add(ExecuteFrame + 44, () => {
                 SoundEngine.PlaySound(SoundID.DD2_OgreGroundPound with {
-                    Pitch = -0.9f, Volume = 0.4f, MaxInstances = 2,
+                    Pitch = -0.9f,
+                    Volume = 0.4f,
+                    MaxInstances = 2,
                 }, breachPoint);
                 SpawnCharSmoke(breachPoint, 6);
             });
@@ -325,8 +333,7 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
                             finger, 0, finger.Length - 2);
                     }
                 }
-            }
-            finally {
+            } finally {
                 device.BlendState = prevBlend;
                 device.RasterizerState = prevRaster;
                 device.DepthStencilState = prevDepth;

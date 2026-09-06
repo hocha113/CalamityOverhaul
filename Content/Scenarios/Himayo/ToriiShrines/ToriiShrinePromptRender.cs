@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using InnoVault.RenderHandles;
+﻿using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -23,8 +22,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             try {
                 DrawPrompt(spriteBatch);
-            }
-            finally {
+            } finally {
                 spriteBatch.End();
             }
         }

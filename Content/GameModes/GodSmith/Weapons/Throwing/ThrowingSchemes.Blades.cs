@@ -1,8 +1,12 @@
 ﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing.Projectiles;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -14,6 +18,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.Shuriken;
         protected override string GsDescFallback =>
             "Reforged: 15% chance not to consume; crits refund one; misses stuck in walls can be picked back up\nAt 5 combo stacks every throw splits off a free twin star";
+
         protected override float NoConsumeChance => 0.15f;
         protected override float RecoverOnTileChance => 0.35f;
         protected override float RecoverOnFadeChance => 0.15f;
@@ -38,17 +43,22 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
 
         protected override void GsThrowOnSpawn(Projectile proj, GodSmithProjRouter router, GsThrowProjState st) {
             if (pendingEcho) {
-                //副星不参与任何回收通道,远端按 MarkData2 呈现半透明
+                //副星不参与任何回收通道,远端按 MarkData2 画半透明
                 st.IsPrimary = false;
                 router.MarkData2 = 1f;
             }
         }
 
-        public override void GsProjPostAI(Projectile proj, GodSmithProjRouter router) {
-            //副星:原版绘制走 alpha 变六成透明(各端按随包的 MarkData2 一致呈现)
-            if (router.MarkData2 == 1f) {
-                proj.alpha = 102;
+        public override bool? GsProjPreDraw(Projectile proj, ref Color lightColor, GodSmithProjRouter router) {
+            if (router.MarkData2 != 1f) {
+                return null;
             }
+            //副星:六成透明的星影
+            Main.instance.LoadProjectile(proj.type);
+            Texture2D tex = TextureAssets.Projectile[proj.type].Value;
+            Main.EntitySpriteDraw(tex, proj.Center - Main.screenPosition, null, lightColor * 0.6f,
+                proj.rotation, tex.Size() / 2f, proj.scale, SpriteEffects.None, 0);
+            return false;
         }
     }
 
@@ -58,6 +68,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.ThrowingKnife;
         protected override string GsDescFallback =>
             "Reforged: crits refund one; knives stuck in walls often survive to be reclaimed\nEach hit sharpens the next knife within 0.8s, +12% up to 3 stacks";
+
         protected override float NoConsumeChance => 0.10f;
         protected override float RecoverOnTileChance => 0.40f;
         protected override float RecoverOnFadeChance => 0.15f;
@@ -91,6 +102,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.PoisonedKnife;
         protected override string GsDescFallback =>
             "Reforged: crits refund one; wall-stuck knives can be reclaimed\nHits stack venom, extending poison; at 6 stacks the target corrodes, taking your knives 5 armor deeper for 8s";
+
         protected override float NoConsumeChance => 0.10f;
         protected override float RecoverOnTileChance => 0.40f;
         protected override float RecoverOnFadeChance => 0.15f;
@@ -123,6 +135,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
                 gn.CorrodeUntil = Main.GameUpdateCount + 480;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.NPCHit1 with { Volume = 0.5f, Pitch = 0.6f }, target.Center);
+                    for (int i = 0; i < 6; i++) {
+                        PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(10f, 10f),
+                            Main.rand.NextVector2Circular(1.6f, 1.6f) - Vector2.UnitY,
+                            new Color(150, 220, 60), Main.rand.NextFloat(0.25f, 0.42f))?.Configure(false, 18);
+                    }
                 }
             }
         }
@@ -134,6 +151,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.BoneDagger;
         protected override string GsDescFallback =>
             "Reforged: crits refund one; strays can be reclaimed\nEmbed 4 daggers in the same foe and they all shatter for 60% each, always dropping one recovery pickup";
+
         protected override float NoConsumeChance => 0.10f;
         protected override float RecoverOnTileChance => 0.30f;
         protected override float RecoverOnFadeChance => 0.25f;
@@ -171,6 +189,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             SpawnRecoveryAt(proj.GetSource_FromThis(), target.Center, proj.owner);
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item51 with { Volume = 0.8f, Pitch = -0.2f }, target.Center);
+                for (int i = 0; i < 8; i++) {
+                    //骨屑迸散
+                    PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(12f, 12f),
+                        Main.rand.NextVector2Circular(3.5f, 3.5f),
+                        new Color(236, 230, 210), Main.rand.NextFloat(0.28f, 0.46f))?.Configure(true, 20);
+                }
             }
             proj.Kill();
         }
@@ -182,6 +206,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
         public override int TargetItemID => ItemID.StarAnise;
         protected override string GsDescFallback =>
             "Reforged: crits always refund one; strays can be reclaimed\nRicochets to a nearby foe up to twice, losing 15% per hop";
+
         protected override float NoConsumeChance => 0.15f;
         protected override float RecoverOnTileChance => 0.35f;
         protected override float RecoverOnFadeChance => 0.15f;
@@ -221,6 +246,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
             proj.velocity = (next.Center - proj.Center).SafeNormalize(Vector2.UnitX) * proj.velocity.Length();
             proj.damage = (int)(proj.damage * 0.85f);
             proj.netUpdate = true;
+            if (!VaultUtils.isServer) {
+                PRTLoader.NewParticle<PRT_Sparkle>(proj.Center, Vector2.Zero,
+                    new Color(255, 200, 90), 0.4f)?.Configure(new Color(255, 200, 90), 12, 0.06f, 0.6f);
+            }
         }
     }
 }

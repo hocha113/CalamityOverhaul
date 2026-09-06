@@ -1,5 +1,4 @@
-using Terraria;
-using Terraria.Audio;
+﻿using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Wraiths.Deaths
 {
