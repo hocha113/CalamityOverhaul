@@ -35,6 +35,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         private int modeTimer;
         private float spinPhase;
         private bool lashing;
+        /// <summary>客户端位置纠偏(触手可被命中，快照按命中率来，原版平滑会把每包差值叠成环抖)</summary>
+        private PlanteraNetSmoother netSmoother = new();
 
         public override bool? CanBrutalOverride() {
             return null;
@@ -45,6 +47,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             modeTimer = 0;
             spinPhase = 0f;
             lashing = false;
+            netSmoother = new PlanteraNetSmoother();
+        }
+
+        public override void NetReceive(System.IO.BinaryReader reader) {
+            base.NetReceive(reader);
+            netSmoother.OnSnapshot(npc, 0);
         }
 
         #region 命令接口(服务端调用)
@@ -96,6 +104,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         #endregion
 
         public override bool AI() {
+            if (VaultUtils.isClient) {
+                netSmoother.BeginFrame(npc);
+            }
+            bool result = UpdateTentacle();
+            if (VaultUtils.isClient) {
+                netSmoother.EndFrame(npc);
+            }
+            return result;
+        }
+
+        private bool UpdateTentacle() {
             NPC boss = PlanteraAI.FindBoss();
 
             npc.aiStyle = -1;

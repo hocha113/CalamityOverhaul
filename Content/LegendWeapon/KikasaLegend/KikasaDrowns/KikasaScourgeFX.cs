@@ -262,6 +262,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         //==================== 推进 ====================
 
         public static void Update() {
+            //全局时停里整场停格：与 KikasaScourge.UpdateAuthority 同旗同帧挂起，命中帧才仍落在鞭中那一帧
+            if (WorldFreezeSystem.IsActive) {
+                return;
+            }
             for (int i = shows.Count - 1; i >= 0; i--) {
                 ScourgeShow show = shows[i];
                 UpdateShow(show);

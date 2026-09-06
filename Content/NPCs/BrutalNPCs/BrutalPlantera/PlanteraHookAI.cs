@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         /// <summary>飞行状态锁存，0未达 1已嵌入(各端本地)</summary>
         private bool embedded;
         private float glowFlash;
+        /// <summary>客户端位置纠偏(飞行 38～46 px/f，原版平滑会把换锚那一包的一帧位移拖成半秒滑行)</summary>
+        private PlanteraNetSmoother netSmoother = new();
 
         public override bool? CanBrutalOverride() {
             return null;
@@ -44,6 +46,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         public override void SetProperty() {
             embedded = false;
             glowFlash = 0f;
+            netSmoother = new PlanteraNetSmoother();
+        }
+
+        public override void NetReceive(System.IO.BinaryReader reader) {
+            base.NetReceive(reader);
+            netSmoother.OnSnapshot(npc, 0);
         }
 
         #region 命令接口(服务端调用)
@@ -108,6 +116,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         #endregion
 
         public override bool AI() {
+            if (VaultUtils.isClient) {
+                netSmoother.BeginFrame(npc);
+            }
+            bool result = UpdateHook();
+            if (VaultUtils.isClient) {
+                netSmoother.EndFrame(npc);
+            }
+            return result;
+        }
+
+        private bool UpdateHook() {
             NPC boss = PlanteraAI.FindBoss();
 
             //禁用原版aiStyle画藤，藤由本类自绘

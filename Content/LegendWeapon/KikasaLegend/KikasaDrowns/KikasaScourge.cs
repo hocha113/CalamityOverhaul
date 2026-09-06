@@ -159,7 +159,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 ambientLocalTimer = AmbientIntervalFrames;
                 return;
             }
-            if (HackTime.Active) {
+            //全局时停（骇入/转盘/翻转专场等一切 WorldFreezeSystem 来源）里节拍挂起，手不出水
+            if (HackTime.Active || WorldFreezeSystem.IsActive) {
                 return;
             }
             if (!player.GetModPlayer<KikasaVaultPlayer>().LakeReady) {
@@ -307,6 +308,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 if (ambientGaps[i] > 0) {
                     ambientGaps[i]--;
                 }
+            }
+
+            //全局时停里节拍挂起：ModSystem 钩子不在冻结路径上，不自查就会在停格里把打击拍打出去。
+            //演出层 KikasaScourgeFX 同帧同旗挂起，两层 Timer 保持对齐；冻结旗在服务器恒假，联机权威不受影响
+            if (WorldFreezeSystem.IsActive) {
+                return;
             }
 
             for (int i = activations.Count - 1; i >= 0; i--) {

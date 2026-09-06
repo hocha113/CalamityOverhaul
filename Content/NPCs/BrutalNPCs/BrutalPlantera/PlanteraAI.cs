@@ -42,6 +42,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         private bool hotDirty;
         /// <summary>权威端：上次同步出去的目标，换目标即发包</summary>
         private int lastSyncedTarget = -1;
+        /// <summary>
+        /// 客户端位置纠偏，接管原版 netOffset 平滑。扑速 46～108 px/f 配上命中驱动的高频快照，
+        /// 原版平滑会把每包的一帧位移差叠成锯齿(原版对自家高速 Boss 一律禁用它)
+        /// </summary>
+        private PlanteraNetSmoother netSmoother = new();
 
         /// <summary>供部件/弹幕读主控状态索引</summary>
         internal static PlanteraStateIndex GetStateIndex(NPC plantera) => (PlanteraStateIndex)(int)plantera.ai[2];
@@ -67,6 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
         void ICWRLoader.UnLoadData() => PlanteraScreenFX.Clear();
 
         public override void SetProperty() {
+            netSmoother = new PlanteraNetSmoother();
             InitializeStateContext();
         }
 
@@ -104,10 +110,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             }
         }
 
-        /// <summary>快照到达(随原版 SyncNPC 的 ExtraAI)：标脏，下一帧 AI 开头收养</summary>
+        /// <summary>
+        /// 快照到达(随原版 SyncNPC 的 ExtraAI，位置/速度/npc.ai 已被服务端值覆盖)：标脏热槽待收养，
+        /// 并用热槽里的状态计时器算出这一包相对本地时钟的帧差，交给纠偏器抵消帧相位抖动
+        /// </summary>
         public override void NetReceive(System.IO.BinaryReader reader) {
             base.NetReceive(reader);
             hotDirty = true;
+
+            //同一状态下两端计时器应相等，差值就是这一包的帧相位偏差；换了状态或差太多则不投影
+            int frameDelta = 0;
+            if (stateMachine?.CurrentState is PlanteraStateBase state && state.StateId == (int)npc.ai[2]) {
+                int delta = state.Timer - (int)ai[PlanteraHotSlot.Timer];
+                if (Math.Abs(delta) <= 2) {
+                    frameDelta = delta;
+                }
+            }
+            netSmoother.OnSnapshot(npc, frameDelta);
         }
         #endregion
 
@@ -119,6 +138,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
 
             //部件与原版画藤都依赖这个静态索引
             NPC.plantBoss = npc.whoAmI;
+
+            //客户端：清原版平滑偏移、消化一份待纠偏，之后的所有读位置都基于纠偏后的坐标
+            if (VaultUtils.isClient) {
+                netSmoother.BeginFrame(npc);
+            }
 
             FindTarget();
             UpdateStateContext();
@@ -159,6 +183,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                 if (Main.GameUpdateCount % HeartbeatFrames == 0) {
                     npc.netUpdate = true;
                 }
+            }
+            else {
+                netSmoother.EndFrame(npc);
             }
 
             return false;
