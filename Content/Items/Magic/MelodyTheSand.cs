@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.width = 32;
             Item.height = 32;
-            Item.damage = 32;
+            Item.damage = 16;
             Item.useTime = 22;
             Item.useAnimation = 22;
             Item.mana = 7;
