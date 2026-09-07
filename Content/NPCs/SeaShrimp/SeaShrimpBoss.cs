@@ -8,6 +8,7 @@ using InnoVault.PRT;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -39,6 +40,8 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
         /// <summary>残影位姿环（纯本地表现）</summary>
         internal ShrimpPoseTrail PoseTrail { get; } = new();
         private Player targetPlayer;
+        /// <summary>联机运动：客户端位置纠偏 + 状态计时收养</summary>
+        private readonly BossNetMotion netMotion = new();
 
         /// <summary>连续量抖动的确定性相位，各端一致（不掷 Main.rand）</summary>
         internal float Seed => NPC.whoAmI * 0.7391f;
@@ -131,6 +134,15 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
                 Owner = this,
             };
             stateMachine = new NpcStateMachine<SeaShrimpStateContext>(Context);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => {
+                if (VaultUtils.isClient && next is SeaShrimpStateBase entered
+                    && netMotion.TryTakeTiming(entered.StateId, out int timer, out int counter)) {
+                    entered.AdoptNetTiming(timer, counter);
+                }
+            };
+
             Skeleton.BindSeed(Seed);
             Locomotion.Bind(NPC);
             Locomotion.SnapHeading(NPC.Center.X < Main.maxTilesX * 8f ? 0f : MathHelper.Pi);
@@ -157,7 +169,18 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
                 InitializeStateMachine();
             }
 
-            NPC.netOffset = Vector2.Zero;
+            bool client = VaultUtils.isClient;
+            if (client) {
+                //自接位置纠偏：清 netOffset 之外还要把快照差摊到几帧里消化，
+                //不然尾弹/犁浪那种爆发段每包一脚（命中驱动约 12 Hz），整套骨架跟着甩
+                netMotion.BeginFrame(NPC);
+                //同态收包：让本帧的拍点从权威端的计时起算
+                if (stateMachine?.CurrentState is SeaShrimpStateBase adopting
+                    && netMotion.TryTakeTiming(adopting.StateId, out int timer, out int counter)) {
+                    adopting.AdoptNetTiming(timer, counter);
+                }
+            }
+
             NPC.dontTakeDamage = false;
             //接触伤默认关，仅状态举旗的冲撞窗开（伤害窗=视觉窗）
             NPC.damage = 0;
@@ -201,6 +224,38 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp
                         Main.rand.NextFloat(0.14f, 0.32f));
                 }
             }
+
+            if (client) {
+                netMotion.EndFrame(NPC);
+            }
+            else if (Main.GameUpdateCount % BossNetMotion.HeartbeatFrames == 0) {
+                //决策点（换态由 AiSlotNetSync 盖章、命中由服务端盖章），这里只补慢频兜底心跳
+                NPC.netUpdate = true;
+            }
+        }
+
+        /// <summary>权威端：把当前状态计时写进快照，与位置/速度原子过线</summary>
+        public override void SendExtraAI(BinaryWriter writer) {
+            int stateId = -1;
+            int timer = 0;
+            int counter = 0;
+            if (stateMachine?.CurrentState is SeaShrimpStateBase state) {
+                stateId = state.StateId;
+                timer = state.Timer;
+                counter = state.Counter;
+            }
+            BossNetMotion.WriteTiming(writer, stateId, timer, counter);
+        }
+
+        /// <summary>客户端收包：position/velocity/ai 已是服务端值，据计时差纠偏，计时留给收养</summary>
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            int localStateId = -1;
+            int localTimer = 0;
+            if (stateMachine?.CurrentState is SeaShrimpStateBase state) {
+                localStateId = state.StateId;
+                localTimer = state.Timer;
+            }
+            netMotion.ReceiveTiming(reader, NPC, localStateId, localTimer);
         }
 
         /// <summary>入 P2 的各端本地演出（蜕壳入 P3 的演出由蜕壳态自持）</summary>

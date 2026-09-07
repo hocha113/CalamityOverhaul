@@ -108,9 +108,8 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.States
             //举杵末段亮肿 + 绷紧颤抖（重砸的预告比普通夯地更沉）
             if (t > FssClawSlamState.ImpactAt - 12 && t < FssClawSlamState.ImpactAt) {
                 ctx.CystGlow = Math.Max(ctx.CystGlow, 0.85f);
-                if (!Main.dedServ) {
-                    npc.position += Main.rand.NextVector2Circular(1.3f, 1.3f);
-                }
+                //绘制层抖动通道，位置不动
+                ctx.ShakeStrength = Math.Max(ctx.ShakeStrength, 0.28f);
             }
 
             //砸落帧：夯点同源，布下双向泉列

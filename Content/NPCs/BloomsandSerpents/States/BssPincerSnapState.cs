@@ -118,9 +118,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 SoundEngine.PlaySound(SoundID.Item102 with { Volume = 0.7f, Pitch = -0.2f, MaxInstances = 2 }, npc.Center);
                 BssVfx.Roar(npc.Center, 0.15f, 0.5f);
             }
-            //末段绷紧颤抖
-            if (!Main.dedServ && progress > 0.65f) {
-                npc.position += Main.rand.NextVector2Circular(1.2f, 1.2f);
+            //末段绷紧颤抖（绘制层抖动通道，位置不动）
+            if (progress > 0.65f) {
+                ctx.ShakeStrength = Math.Max(ctx.ShakeStrength, 0.26f);
             }
 
             Timer++;

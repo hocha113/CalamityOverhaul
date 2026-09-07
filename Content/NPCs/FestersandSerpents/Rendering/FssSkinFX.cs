@@ -153,13 +153,20 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Rendering
             return offset;
         }
 
-        /// <summary>头部绘制偏移：落步下沉 + 出手帧反冲（释放波最初几帧向速度反向缩一记）</summary>
+        /// <summary>头部绘制偏移：落步下沉 + 出手帧反冲（释放波最初几帧向速度反向缩一记）+ 全身抖动</summary>
         private static Vector2 HeadDrawOffset(FssStateContext ctx) {
             NPC npc = ctx.Npc;
             Vector2 offset = new(0f, ctx.SampleStationBob(0f) * FssLegRig.StationDipPx);
             if (ctx.GapWaveKind == SerpentChainMath.WaveRelease && ctx.GapWaveAge < 4f
                 && npc.velocity.LengthSquared() > 1f) {
                 offset -= npc.velocity.SafeNormalize(Vector2.Zero) * ((4f - ctx.GapWaveAge) * 1.4f);
+            }
+            //与体节读同一抖动通道（位置不动，纯绘制偏移；腿保持踩定）
+            if (ctx.ShakeStrength > 0.02f) {
+                offset += new Vector2(
+                    MathF.Sin(Main.GlobalTimeWrappedHourly * 61f + npc.whoAmI),
+                    MathF.Cos(Main.GlobalTimeWrappedHourly * 47f + npc.whoAmI * 1.7f))
+                    * (4f * ctx.ShakeStrength);
             }
             return offset;
         }

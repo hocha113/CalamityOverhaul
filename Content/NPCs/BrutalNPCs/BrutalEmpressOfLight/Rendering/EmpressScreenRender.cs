@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Rendering
 {
-    /// <summary>光之女皇全屏棱彩后效：色散脉冲+昼形态环境描边，screenTarget ping-pong</summary>
+    /// <summary>光之女皇全屏后效：色散脉冲/环境描边/命中链/竞技场压暗/终章停顿提示，screenTarget ping-pong</summary>
     internal class EmpressScreenRender : RenderHandle
     {
         /// <summary>权重 1.088，避开 Prime(1.08) 与并行Boss扎堆的 1.09</summary>
@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
         public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {
             EmpressScreenFX.Update();
 
-            if (!EmpressScreenFX.HasAny) {
+            bool arena = EmpressArena.TryGet(out _, out Vector2 arenaCenter, out float arenaRadius);
+            if (!EmpressScreenFX.HasAny && !arena) {
                 return;
             }
             if (screenSwap == null || Main.screenTarget == null) {
@@ -32,21 +33,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             float pulseI = EmpressScreenFX.PulseActive ? EmpressScreenFX.PulseIntensity : 0f;
 
             Vector2 centerUV = WorldToScreenUV(EmpressScreenFX.PulseWorldCenter);
-            //脉冲中心离屏过远则只保留环境档
+            //脉冲中心离屏过远则只保留其余通道
             if (centerUV.X < -0.6f || centerUV.X > 1.6f || centerUV.Y < -0.6f || centerUV.Y > 1.6f) {
                 pulseI = 0f;
             }
 
-            if (pulseI <= 0.01f && EmpressScreenFX.AmbientGrade <= 0.012f) {
-                return;
-            }
+            float aspect = Main.screenWidth / (float)Main.screenHeight;
+            //竞技场：半径换成宽高比修正后的 uv 单位（以屏高为 1）
+            float zoom = Main.GameViewMatrix.Zoom.Y <= 0f ? 1f : Main.GameViewMatrix.Zoom.Y;
+            float arenaUV = arena ? arenaRadius * zoom / Main.screenHeight : 0f;
+            Vector2 arenaCenterUV = arena ? WorldToScreenUV(arenaCenter) : Vector2.Zero;
 
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             shader.Parameters["uProgress"]?.SetValue(pulseP);
             shader.Parameters["uIntensity"]?.SetValue(pulseI);
             shader.Parameters["uAmbient"]?.SetValue(EmpressScreenFX.AmbientGrade);
             shader.Parameters["uCenter"]?.SetValue(centerUV);
-            shader.Parameters["uAspect"]?.SetValue(Main.screenWidth / (float)Main.screenHeight);
+            shader.Parameters["uAspect"]?.SetValue(aspect);
+            shader.Parameters["uHitDark"]?.SetValue(EmpressScreenFX.HitDark);
+            shader.Parameters["uFlashDir"]?.SetValue(EmpressScreenFX.FlashDir);
+            shader.Parameters["uArenaCenter"]?.SetValue(arenaCenterUV);
+            shader.Parameters["uArenaRadius"]?.SetValue(arenaUV);
+            shader.Parameters["uArenaSoft"]?.SetValue(0.35f);
+            shader.Parameters["uArenaPull"]?.SetValue(EmpressScreenFX.ArenaPull);
+            shader.Parameters["uArenaFlash"]?.SetValue(EmpressScreenFX.ArenaFlash);
+            shader.Parameters["uPhaseGlow"]?.SetValue(EmpressScreenFX.PhaseGlow);
+            shader.Parameters["uPhaseFlash"]?.SetValue(EmpressScreenFX.PhaseFlash);
 
             PingPong(sb, gd, screenSwap, shader);
         }
@@ -68,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
         }
 
         /// <summary>世界→归一化uv(含Zoom)</summary>
-        private static Vector2 WorldToScreenUV(Vector2 worldPos) {
+        internal static Vector2 WorldToScreenUV(Vector2 worldPos) {
             float screenW = Main.screenWidth;
             float screenH = Main.screenHeight;
             Vector2 zoom = Main.GameViewMatrix.Zoom;

@@ -67,6 +67,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> EmpressSunbeam { get; set; }
         public static Asset<Effect> EmpressAurora { get; set; }
         public static Asset<Effect> EmpressScreenPrism { get; set; }
+        public static Asset<Effect> EmpressBeamMarker { get; set; }
         public static Asset<Effect> BRelicAuroraWing { get; set; }
         public static Asset<Effect> QueenPrismBeam { get; set; }
         public static Asset<Effect> QueenPrismCrystal { get; set; }
@@ -80,8 +81,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> EocBloodTrail { get; set; }
         public static Asset<Effect> EocTelegraph { get; set; }
         public static Asset<Effect> BRelicIrisMark { get; set; }
-        public static Asset<Effect> BRelicIrisTrail { get; set; }
-        public static Asset<Effect> BRelicIrisShield { get; set; }
+        public static Asset<Effect> BRelicIrisBlob { get; set; }
+        public static Asset<Effect> BRelicIrisSheet { get; set; }
         public static Asset<Effect> DeerBlizzardVeil { get; set; }
         public static Asset<Effect> DeerFrostFissure { get; set; }
         public static Asset<Effect> BRelicWhiteoutVeil { get; set; }

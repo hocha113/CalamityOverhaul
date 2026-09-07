@@ -14,24 +14,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
     {
         public static Color Tint(Color rgb, float envelope)
             => rgb with { A = (byte)(255f * MathHelper.Clamp(envelope, 0f, 1f)) };
+
+        /// <summary>形态取色：昼归金白族，夜走光谱（dayBlend 由生成方传入，各端本地）</summary>
+        public static Color FormHue(float hue, float dayBlend, float lum = 0.62f) {
+            Color night = Main.hslToRgb(hue % 1f, 1f, lum);
+            Color day = Color.Lerp(new Color(255, 212, 150), new Color(255, 246, 224), MathHelper.Clamp((lum - 0.4f) * 2f, 0f, 1f));
+            return Color.Lerp(night, day, MathHelper.Clamp(dayBlend, 0f, 1f));
+        }
     }
 
-    /// <summary>棱彩闪尘：速度拉伸的四芒光点，色相沿寿命缓移</summary>
+    /// <summary>棱彩闪尘：速度拉伸的四芒光点，夜色相沿寿命缓移，昼锁金白</summary>
     internal class PRT_EmpressSpark : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "StarTexture_White";
         private float hue;
         private float baseScale;
+        private float dayBlend;
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             ShouldKillWhenOffScreen = true;
         }
 
-        public PRT_EmpressSpark Configure(int lifeTime, float hueSeed) {
+        public PRT_EmpressSpark Configure(int lifeTime, float hueSeed, float dayBlend = 0f) {
             Lifetime = lifeTime;
             hue = hueSeed;
             baseScale = Scale;
+            this.dayBlend = dayBlend;
             return this;
         }
 
@@ -39,14 +48,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             base.Reset();
             hue = 0f;
             baseScale = 0f;
+            dayBlend = 0f;
         }
 
         public override void AI() {
             Velocity *= 0.93f;
             float fade = 1f - LifetimeCompletion;
             Opacity = fade * fade;
-            //色相随寿命缓移，闪尘像折出的光斑在换色
-            Color drift = Main.hslToRgb((hue + LifetimeCompletion * 0.22f) % 1f, 1f, 0.62f);
+            //夜：色相随寿命缓移，闪尘像折出的光斑在换色；昼：金白族内随寿命降温
+            Color drift = EmpressPRTDraw.FormHue(hue + LifetimeCompletion * 0.22f, dayBlend, 0.62f - LifetimeCompletion * 0.1f * dayBlend);
             Color = Color.Lerp(Color, drift, 0.2f);
             Scale = baseScale * (0.5f + fade * 0.5f);
             Rotation = Velocity.X * 0.04f;
@@ -74,17 +84,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
         private float hue;
         private float swayPhase;
         private float baseScale;
+        private float dayBlend;
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             ShouldKillWhenOffScreen = true;
         }
 
-        public PRT_EmpressPetalDust Configure(int lifeTime, float hueSeed) {
+        public PRT_EmpressPetalDust Configure(int lifeTime, float hueSeed, float dayBlend = 0f) {
             Lifetime = lifeTime;
             hue = hueSeed;
             swayPhase = hueSeed * MathHelper.TwoPi;
             baseScale = Scale;
+            this.dayBlend = dayBlend;
             return this;
         }
 
@@ -93,6 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             hue = 0f;
             swayPhase = 0f;
             baseScale = 0f;
+            dayBlend = 0f;
         }
 
         public override void AI() {
@@ -101,7 +114,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             Velocity *= 0.985f;
             float rise = (float)Math.Sin(LifetimeCompletion * MathHelper.Pi);
             Opacity = rise * 0.9f;
-            Color = Main.hslToRgb((hue + LifetimeCompletion * 0.12f) % 1f, 0.92f, 0.66f);
+            Color = EmpressPRTDraw.FormHue(hue + LifetimeCompletion * 0.12f, dayBlend, 0.66f);
             Scale = baseScale * (0.7f + rise * 0.4f);
         }
 
@@ -128,16 +141,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
         internal static Asset<Texture2D> RimRing = null;
         private float hue;
         private float baseScale;
+        private float dayBlend;
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             ShouldKillWhenOffScreen = true;
         }
 
-        public PRT_EmpressRipple Configure(int lifeTime, float hueSeed) {
+        public PRT_EmpressRipple Configure(int lifeTime, float hueSeed, float dayBlend = 0f) {
             Lifetime = lifeTime;
             hue = hueSeed;
             baseScale = Scale;
+            this.dayBlend = dayBlend;
             //环体贴图不对称，随机朝向防连环盖同章
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             return this;
@@ -147,13 +162,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             base.Reset();
             hue = 0f;
             baseScale = 0f;
+            dayBlend = 0f;
         }
 
         public override void AI() {
             float p = LifetimeCompletion;
             Scale = baseScale * (0.15f + VaultUtils.EaseOutCubic(p) * 0.85f);
             Opacity = (1f - p) * (1f - p);
-            Color prism = Main.hslToRgb(hue, 0.85f, 0.7f);
+            Color prism = EmpressPRTDraw.FormHue(hue, dayBlend, 0.7f);
             Color = Color.Lerp(Color.White, prism, p);
             Velocity *= 0.9f;
         }
@@ -168,8 +184,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             //薄锐缘双层色散镶边：外暖内冷，棱彩折射的材质签名
             if (RimRing?.Value is Texture2D rim) {
                 float rimScale = Scale * 0.72f;
-                Color outerC = Main.hslToRgb((hue + 0.06f) % 1f, 0.85f, 0.66f);
-                Color innerC = Main.hslToRgb((hue + 0.94f) % 1f, 0.85f, 0.66f);
+                Color outerC = EmpressPRTDraw.FormHue(hue + 0.06f, dayBlend, 0.66f);
+                Color innerC = EmpressPRTDraw.FormHue(hue + 0.94f, dayBlend, 0.58f);
                 spriteBatch.Draw(rim, drawPos, null, EmpressPRTDraw.Tint(outerC, Opacity * 0.55f), 0f,
                     rim.Size() / 2f, rimScale * 1.07f, SpriteEffects.None, 0);
                 spriteBatch.Draw(rim, drawPos, null, EmpressPRTDraw.Tint(innerC, Opacity * 0.55f), 0f,
@@ -186,17 +202,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
         private float hue;
         private float flapPhase;
         private float baseScale;
+        private float dayBlend;
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             ShouldKillWhenOffScreen = false;//死亡演出镜头可能拉远，不许中途消失
         }
 
-        public PRT_EmpressButterfly Configure(int lifeTime, float hueSeed) {
+        public PRT_EmpressButterfly Configure(int lifeTime, float hueSeed, float dayBlend = 0f) {
             Lifetime = lifeTime;
             hue = hueSeed;
             flapPhase = hueSeed * MathHelper.TwoPi;
             baseScale = Scale;
+            this.dayBlend = dayBlend;
             return this;
         }
 
@@ -205,6 +223,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             hue = 0f;
             flapPhase = 0f;
             baseScale = 0f;
+            dayBlend = 0f;
         }
 
         public override void AI() {
@@ -215,7 +234,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             Velocity *= 0.96f;
             float p = LifetimeCompletion;
             Opacity = MathHelper.Clamp(Time / 12f, 0f, 1f) * (1f - p * p);
-            Color = Main.hslToRgb((hue + p * 0.3f) % 1f, 1f, 0.68f);
+            Color = EmpressPRTDraw.FormHue(hue + p * 0.3f, dayBlend, 0.68f);
             Lighting.AddLight(Position, Color.ToVector3() * 0.22f * Opacity);
         }
 

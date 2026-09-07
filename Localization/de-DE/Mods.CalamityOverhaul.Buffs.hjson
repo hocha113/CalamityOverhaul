@@ -252,3 +252,8 @@ BlessErosionBuff: {
 	DisplayName: Erosion
 	Description: Der Fäulnisring nagt an der Rüstung, Verteidigung −10
 }
+
+EmpressScorchBuff: {
+	// DisplayName: Empress Scorch Buff
+	// Description: Mods.CalamityOverhaul.Buffs.EmpressScorchBuff.Description
+}

@@ -252,3 +252,8 @@ BlessErosionBuff: {
 	DisplayName: Erosión
 	Description: El Anillo de podredumbre roe la armadura; la defensa se reduce en 10
 }
+
+EmpressScorchBuff: {
+	// DisplayName: Empress Scorch Buff
+	// Description: Mods.CalamityOverhaul.Buffs.EmpressScorchBuff.Description
+}

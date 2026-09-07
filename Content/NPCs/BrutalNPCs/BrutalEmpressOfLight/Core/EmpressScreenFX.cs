@@ -1,6 +1,8 @@
+using Terraria;
+
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
 {
-    /// <summary>全屏棱彩FX状态，客户端，Push*写入，渲染句柄调 Update</summary>
+    /// <summary>全屏后效状态，客户端，Push*/Declare* 写入，渲染句柄每帧 Update 推进</summary>
     internal static class EmpressScreenFX
     {
         //棱彩脉冲（色散冲击帧）：转阶段/大招终唱/死亡绽散
@@ -14,14 +16,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         internal static float AmbientGrade { get; private set; }
         private static float ambientTarget;
 
-        public static bool HasAny => PulseActive || AmbientGrade > 0.012f;
+        //命中链：整屏压黑一拍再回亮（×0.93 消退）
+        internal static float HitDark { get; private set; }
 
-        /// <summary>棱彩脉冲：radial 色散+白闪，一次演出一记</summary>
+        //定向闪光：光束擦身/被击方向的运动模糊，向量编码方向与强度
+        internal static Vector2 FlashDir { get; private set; }
+        private static Vector2 flashRaw;
+
+        //竞技场：越界深度（本帧声明）与被捕闪光
+        internal static float ArenaPull { get; private set; }
+        private static float arenaPullTarget;
+        internal static float ArenaFlash { get; private set; }
+
+        //终章停顿倒计时提示：-90f 光、-30f 闪
+        internal static float PhaseGlow { get; private set; }
+        internal static float PhaseFlash { get; private set; }
+
+        public static bool HasAny => PulseActive || AmbientGrade > 0.012f || HitDark > 0.01f
+            || FlashDir.LengthSquared() > 0.0001f || ArenaPull > 0.01f || ArenaFlash > 0.01f
+            || PhaseGlow > 0.01f || PhaseFlash > 0.01f;
+
+        /// <summary>棱彩脉冲：radial 色散+白闪，一次演出一记；弱脉冲不顶替进行中的强脉冲</summary>
         public static void PushPrismPulse(Vector2 worldCenter, float intensity = 1f, int lifeFrames = 34) {
             if (VaultUtils.isServer) {
                 return;
             }
-            //强者优先，弱脉冲不顶替进行中的强脉冲
             float remain = PulseActive ? PulseIntensity * (1f - PulseAge / (float)PulseLife) : 0f;
             if (intensity < remain) {
                 return;
@@ -40,6 +59,51 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             ambientTarget = MathHelper.Clamp(grade, 0f, 1f);
         }
 
+        /// <summary>命中压黑：先暗一下，闪光才亮得起来</summary>
+        public static void PushHitDark(float amount) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            HitDark = MathHelper.Clamp(HitDark + amount, 0f, 0.8f);
+        }
+
+        /// <summary>定向闪光累加（方向×强度）</summary>
+        public static void PushFlash(Vector2 dir, float strength) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            flashRaw += dir.SafeNormalize(Vector2.Zero) * strength;
+            if (flashRaw.Length() > 1.2f) {
+                flashRaw = flashRaw.SafeNormalize(Vector2.Zero) * 1.2f;
+            }
+        }
+
+        public static void DeclareArenaPull(float depth) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            arenaPullTarget = MathHelper.Clamp(depth, 0f, 1f);
+        }
+
+        public static void PushArenaFlash() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            ArenaFlash = 0.8f;
+        }
+
+        public static void PushPhaseGlow() {
+            if (!VaultUtils.isServer) {
+                PhaseGlow = 1f;
+            }
+        }
+
+        public static void PushPhaseFlash(float amount = 0.4f) {
+            if (!VaultUtils.isServer) {
+                PhaseFlash = System.Math.Max(PhaseFlash, amount);
+            }
+        }
+
         /// <summary>每帧推进（渲染句柄驱动，仅客户端）</summary>
         public static void Update() {
             if (PulseAge < PulseLife) {
@@ -49,8 +113,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             if (AmbientGrade < 0.01f && ambientTarget <= 0f) {
                 AmbientGrade = 0f;
             }
-            //环境档每帧衰减声明，主控活跃时会重新声明
             ambientTarget *= 0.92f;
+
+            HitDark = HitDark < 0.005f ? 0f : HitDark * 0.93f;
+
+            flashRaw = flashRaw.LengthSquared() < 0.0001f ? Vector2.Zero : flashRaw * 0.75f;
+            FlashDir = Vector2.Distance(FlashDir, flashRaw) < 0.005f ? flashRaw : FlashDir + (flashRaw - FlashDir) * 0.35f;
+
+            ArenaPull = MathHelper.Lerp(ArenaPull, arenaPullTarget, 0.15f);
+            if (ArenaPull < 0.01f && arenaPullTarget <= 0f) {
+                ArenaPull = 0f;
+            }
+            arenaPullTarget = 0f;
+            ArenaFlash = ArenaFlash < 0.01f ? 0f : ArenaFlash * 0.94f;
+
+            PhaseGlow = PhaseGlow < 0.01f ? 0f : PhaseGlow * 0.96f;
+            PhaseFlash = PhaseFlash < 0.01f ? 0f : PhaseFlash * 0.85f;
         }
 
         /// <summary>卸载/换世界清空</summary>
@@ -59,6 +137,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             PulseAge = PulseLife = 0;
             AmbientGrade = 0f;
             ambientTarget = 0f;
+            HitDark = 0f;
+            FlashDir = flashRaw = Vector2.Zero;
+            ArenaPull = arenaPullTarget = 0f;
+            ArenaFlash = 0f;
+            PhaseGlow = PhaseFlash = 0f;
         }
     }
 }

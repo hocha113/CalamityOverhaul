@@ -11,21 +11,31 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 {
     /// <summary>
-    /// 光之女皇主控：InnoVault状态机全接管，棱彩弹幕艺术；
-    /// npc.ai[0]/ai[1]=姿态通道（原版绘制语义） npc.ai[2]=状态机 npc.ai[3]=形态位（原版语义）
+    /// 光之女皇主控：InnoVault状态机全接管。
+    /// npc.ai[0]/ai[1]=姿态通道（原版绘制语义） npc.ai[2]=状态机 npc.ai[3]=形态位（1 二阶段 2 真昼 4 三阶段）；
+    /// NPCOverride.ai[0..2]=竞技场半径/圆心 ai[3]=终章可击杀
     /// </summary>
-    internal class EmpressOfLightAI : BrutalNPCOverride
+    internal class EmpressOfLightAI : BrutalNPCOverride, ILocalizedModType
     {
         #region 数据
         public override int TargetID => NPCID.HallowBoss;
+        public string LocalizationCategory => "BrutalNPCs";
 
         /// <summary>life低于此值进死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 10;
+        /// <summary>终章缩圈未满时的血量地板（占最大生命）</summary>
+        internal const float FinaleLifeFloor = 0.02f;
+        private const int SlotKillable = 3;
+
+        internal static readonly Color BossTextColor = new(255, 231, 160);
+        private static LocalizedText[] phase3Lines;
+        private static LocalizedText[] concedeLines;
 
         private VaultStateMachine<EmpressStateContext> stateMachine;
         private EmpressStateContext stateContext;
@@ -35,16 +45,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
         #endregion
 
         #region 加载与初始化
+        public override void SetStaticDefaults() {
+            phase3Lines = new LocalizedText[7];
+            string[] phase3Defaults = [
+                "……哈？", "这怎么可能？", "我已将我的力量迫至极限，你又是怎么活下来的？", "……不。",
+                "我不会就这样向你低头。", "你想赢下这一场，就要接住我的每一分光。", "现在，到你了。",
+            ];
+            for (int i = 0; i < phase3Lines.Length; i++) {
+                int idx = i;
+                phase3Lines[i] = this.GetLocalization($"Phase3_{i}", () => phase3Defaults[idx]);
+            }
+            concedeLines = new LocalizedText[4];
+            string[] concedeDefaults = [
+                "……够了。", "你远比看上去更强。", "那些蝴蝶对我意义非凡，别去惊扰它们，这片天空就还是我们共有的。", "光会记得你。",
+            ];
+            for (int i = 0; i < concedeLines.Length; i++) {
+                int idx = i;
+                concedeLines[i] = this.GetLocalization($"Concede_{i}", () => concedeDefaults[idx]);
+            }
+        }
+
+        /// <summary>三阶段台词（权威端广播，客户端忽略）</summary>
+        internal static void SayPhase3(int index) => Say(phase3Lines, index);
+        /// <summary>认输独白</summary>
+        internal static void SayConcede(int index) => Say(concedeLines, index);
+
+        private static void Say(LocalizedText[] lines, int index) {
+            if (VaultUtils.isClient || lines == null || index < 0 || index >= lines.Length || lines[index] == null) {
+                return;
+            }
+            VaultUtils.Text(lines[index].Value, BossTextColor);
+        }
+
         public override void SetProperty() {
             //oldPos 供原版冲刺彩虹残影使用
             NPCID.Sets.TrailingMode[npc.type] = 1;
             NPCID.Sets.TrailCacheLength[npc.type] = 24;
             InitializeStateContext();
-        }
-
-        public override bool? CanBrutalOverride() {
-            //重制未完成：由 DisabledReworkTypes 拒绝接管
-            return null;
         }
 
         private void InitializeStateContext() {
@@ -54,13 +91,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             };
             stateMachine = new NpcStateMachine<EmpressStateContext>(stateContext, aiSlot: 2);
 
-            //客户端从ai[2]恢复状态
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[2];
                 IVaultState<EmpressStateContext> syncedState = VaultStateRegistry<EmpressStateContext>.Create(serverStateIndex);
                 stateMachine.SetInitialState(syncedState ?? new EmpressIntroState());
-                //中途加入的端上 SetDefaults 留下 Opacity=0/dontTakeDamage=true（原版靠case0自愈，
-                //接管后的战斗状态没人清）：恢复到非入场态时补回战斗常态，防隐形且本地打不动
+                //中途加入的端上 SetDefaults 留下 Opacity=0/dontTakeDamage=true，恢复到非入场态时补回战斗常态
                 if (syncedState is not null and not EmpressIntroState) {
                     npc.Opacity = 1f;
                     npc.dontTakeDamage = false;
@@ -75,7 +110,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 
         #region 主AI
         public override bool AI() {
-            //延迟初始化（联机中途加入）
             if (stateContext == null || stateMachine == null) {
                 InitializeStateContext();
             }
@@ -84,7 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             UpdateStateContext();
             CheckDeathPerformanceTrigger();
 
-            //原版契约：满血白昼升格真昼形态（ai[3]|2），Terraprisma掉落条件依赖此位；升格后不清除、不再触发离场
+            //原版契约：满血白昼升格真昼形态（ai[3]|2），Terraprisma掉落条件依赖此位
             if (!VaultUtils.isClient && npc.life == npc.lifeMax
                 && NPC.ShouldEmpressBeEnraged() && ((int)npc.ai[3] & 2) == 0) {
                 npc.ai[3] = (int)npc.ai[3] | 2;
@@ -96,43 +130,63 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             //姿态/蓄力每帧重声明，未声明回落
             stateContext.Pose = EmpressPose.Idle;
             stateContext.PoseTimer = 0f;
+            //竞技场默认请求：昼且在战斗态时按阶段给半径，状态可覆盖（终章缩圈）
+            stateContext.ArenaRadiusRequest = DefaultArenaRadius();
+            stateContext.ArenaFollowSpeed = 12f;
 
-            //接触伤默认归零，冲刺态自行开窗
             npc.damage = 0;
 
-            //状态机
             stateMachine?.Update();
 
-            //姿态通道写入原版槽位（各端本地写，值确定一致；服务端负责同步）
             npc.ai[0] = (float)stateContext.Pose;
             npc.ai[1] = stateContext.PoseTimer;
 
-            //体态细节：随横速轻微倾身（原版不设spriteDirection，保持不动）
             npc.rotation = npc.velocity.X * 0.005f;
-
-            //翅膀扑动帧（原版绘制消费localAI[0]）
             if ((npc.localAI[0] += 1f) >= 44f) {
                 npc.localAI[0] = 0f;
             }
 
-            //二阶段防御补正（原版规约）
-            npc.defense = stateContext.IsSecondPhase ? (int)(npc.defDefense * 1.2f) : npc.defDefense;
+            npc.defense = stateContext.IsThirdPhase ? (int)(npc.defDefense * 1.35f)
+                : (stateContext.IsSecondPhase ? (int)(npc.defDefense * 1.2f) : npc.defDefense);
 
-            //照明与环境
+            //终章缩圈未满：血量地板，剧本一定被看到
+            if (stateContext.IsThirdPhase && !stateContext.FinaleKillable && stateMachine.CurrentState is EmpressFinaleState) {
+                int floor = Math.Max((int)(npc.lifeMax * FinaleLifeFloor), DeathPerformanceTriggerLife + 1);
+                if (npc.life < floor) {
+                    npc.life = floor;
+                }
+            }
+
             Lighting.AddLight(npc.Center, Vector3.One * npc.Opacity * (0.9f + stateContext.DayFormBlend * 0.4f));
             UpdateAmbientVisuals();
 
-            //投技冷却递减（服务端权威）
-            if (!VaultUtils.isClient && stateContext.GrabCooldown > 0) {
-                stateContext.GrabCooldown--;
+            if (!VaultUtils.isClient) {
+                if (stateContext.GrabCooldown > 0) {
+                    stateContext.GrabCooldown--;
+                }
+                EmpressArena.ServerUpdate(this, stateContext);
+                ai[SlotKillable] = stateContext.FinaleKillable ? 1f : 0f;
+                if (Main.GameUpdateCount % 10 == 0) {
+                    npc.netUpdate = true;
+                }
             }
-
-            //周期强制同步（服务端节流）
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
+            else {
+                stateContext.FinaleKillable = ai[SlotKillable] > 0.5f;
             }
 
             return false;
+        }
+
+        /// <summary>昼形态各阶段的竞技场半径；夜与非战斗态关闭</summary>
+        private float DefaultArenaRadius() {
+            if (!stateContext.DayEmpowered) {
+                return 0f;
+            }
+            if (stateMachine?.CurrentState is EmpressIntroState or EmpressDeathState or EmpressDespawnState
+                or EmpressPhaseTransitionState or EmpressPhase3TransformState or EmpressLightBindWaltzState) {
+                return 0f;
+            }
+            return stateContext.IsSecondPhase ? 2600f : 2400f;
         }
 
         private void FindTarget() {
@@ -151,12 +205,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
-            //二阶段从ai[3]位读出（服务端写入，客户端经同步获得，外部模组兼容原版语义）
-            stateContext.IsSecondPhase = ((int)npc.ai[3] & 1) != 0;
+            int form = (int)npc.ai[3];
+            stateContext.IsSecondPhase = (form & 1) != 0;
+            stateContext.IsThirdPhase = (form & 4) != 0;
             stateContext.IsAsuraMode = CWRWorld.Asura;
-            //昼形态：全局昼夜标志各端一致
             stateContext.DayEmpowered = NPC.ShouldEmpressBeEnraged();
-            //形态视觉过渡：跨昼夜战斗平滑换形
             float blendTarget = stateContext.DayEmpowered ? 1f : 0f;
             stateContext.DayFormBlend = MathHelper.Lerp(stateContext.DayFormBlend, blendTarget, 0.012f);
             if (Math.Abs(stateContext.DayFormBlend - blendTarget) < 0.004f) {
@@ -164,7 +217,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             }
         }
 
-        /// <summary>昼夜换形瞬间：纯音画传达，破晓棱彩强拍，入夜柔光敛息</summary>
+        /// <summary>昼夜换形瞬间：破晓辐光强拍，入夜柔光敛息</summary>
         private void UpdateDayNightForm() {
             bool now = stateContext.DayEmpowered;
             if (now == lastDayEmpowered) {
@@ -172,43 +225,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             }
             lastDayEmpowered = now;
 
-            //服务端写形态位（原版ai[3]语义：+2=真昼位），契约：只有满血白昼才升格，
-            //残血拖到破晓不白给Terraprisma判定；升格后永不清除
             if (!VaultUtils.isClient && now && npc.life == npc.lifeMax && ((int)npc.ai[3] & 2) == 0) {
                 npc.ai[3] = (int)npc.ai[3] | 2;
                 npc.netUpdate = true;
             }
 
-            //死亡/离场演出中不叠加换形演出
             if (stateMachine?.CurrentState is EmpressDeathState or EmpressDespawnState) {
                 return;
             }
 
             if (!VaultUtils.isServer) {
                 if (now) {
-                    //破晓升格：全屏棱彩强拍+双音高叠+身周迸光
                     EmpressScreenFX.PushPrismPulse(npc.Center, 0.85f, 40);
+                    EmpressScreenFX.PushHitDark(0.4f);
                     SoundEngine.PlaySound(SoundID.Item161 with { Volume = 0.9f, Pitch = 0.25f }, npc.Center);
                     SoundEngine.PlaySound(SoundID.Item163 with { Volume = 0.7f, Pitch = 0.4f }, npc.Center);
-                    for (int i = 0; i < 14; i++) {
-                        float hue = i / 14f;
-                        PRTLoader.NewParticle<PRT_EmpressSpark>(npc.Center,
-                            VaultUtils.RandVr(3f, 10f), EmpressMotion.Prism(hue, 0.72f),
-                            Main.rand.NextFloat(0.8f, 1.3f))?.Configure(20, hue);
-                    }
+                    EmpressMotion.SparkBurst(npc.Center, Vector2.UnitY, 20, 3f, 10f, 1f, MathHelper.Pi);
                 }
                 else {
-                    //入夜敛锋：柔和的低音与一圈冷色涟漪
                     EmpressScreenFX.PushPrismPulse(npc.Center, 0.35f, 30);
                     SoundEngine.PlaySound(SoundID.Item165 with { Volume = 0.75f, Pitch = -0.3f }, npc.Center);
-                    PRTLoader.NewParticle<PRT_EmpressRipple>(npc.Center, Vector2.Zero,
-                        new Color(190, 160, 255), 0.7f)?.Configure(16, 0.72f);
+                    PRTLoader.NewParticle<PRT_EmpressRipple>(npc.Center, Vector2.Zero, new Color(190, 160, 255), 0.7f)?.Configure(16, 0.72f);
                 }
                 EmpressMotion.Shake(npc.Center, 4f, 20);
             }
         }
 
-        /// <summary>life≤阈值切死亡演出，服务端驱动</summary>
+        /// <summary>life≤阈值切死亡演出，服务端驱动；终章缩圈未满不放行</summary>
         private void CheckDeathPerformanceTrigger() {
             if (VaultUtils.isClient || stateContext == null || stateMachine == null) {
                 return;
@@ -219,33 +262,53 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             if (stateMachine.CurrentState is EmpressDeathState or EmpressDespawnState) {
                 return;
             }
+            if (stateContext.IsThirdPhase && !stateContext.FinaleKillable && stateMachine.CurrentState is EmpressFinaleState) {
+                return;
+            }
             if (npc.life <= DeathPerformanceTriggerLife) {
                 stateMachine.ChangeState(new EmpressDeathState());
             }
         }
 
-        /// <summary>环境层：昼形态屏幕棱彩描边+周身光羽（客户端）</summary>
+        /// <summary>环境层：昼形态世界压暗续租 + 屏幕描边（客户端）</summary>
         private void UpdateAmbientVisuals() {
             if (VaultUtils.isServer) {
                 return;
             }
-            if (stateContext.DayFormBlend > 0.05f) {
-                EmpressScreenFX.DeclareAmbient(stateContext.DayFormBlend * 0.42f);
+            float blend = stateContext.DayFormBlend;
+            if (blend <= 0.02f) {
+                return;
             }
+            EmpressScreenFX.DeclareAmbient(blend * 0.3f);
+
+            float drive = blend;
+            float flicker = blend;
+            if (stateMachine?.CurrentState is EmpressIntroState intro) {
+                float p = MathHelper.Clamp(intro.Timer / 192f, 0f, 1f);
+                drive = blend * p;
+                //她来之前灯先疯
+                flicker = blend * MathF.Sqrt(p) * 3.5f;
+            }
+            else if (stateMachine?.CurrentState is EmpressDeathState death) {
+                drive = blend * MathHelper.Clamp(1f - death.Timer / (float)EmpressDeathState.TotalTime, 0f, 1f);
+            }
+            EmpressDayDrive.Report(drive, flicker);
         }
         #endregion
 
         #region 绘制
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            //底层：身后辉光与手部蓄力（画在原版本体之下）
             EmpressRenderHelper.DrawUnderGlow(spriteBatch, npc, stateContext);
-            //返回null让原版多层绘制（翅膀/双臂/裙裾/二形态辉光）继续
             return null;
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            //顶层：手部蓄力星芒+昼形态过驱层；返回true不拦其他PostDraw
             EmpressRenderHelper.DrawOverGlow(spriteBatch, npc, stateContext);
+            //竞技场边界环（实体批，世界坐标）
+            if (ai[EmpressArena.SlotRadius] > 1f) {
+                Vector2 center = new(ai[EmpressArena.SlotCenterX], ai[EmpressArena.SlotCenterY]);
+                EmpressArena.DrawBoundary(spriteBatch, center, ai[EmpressArena.SlotRadius], npc.Opacity);
+            }
             return true;
         }
         #endregion
@@ -259,15 +322,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 
         public override bool CheckActive() => false;
 
-        /// <summary>残酷遗物掉落：AI重制虽在禁用名单，loot注册不经CanOverride，条件类只看世界旗标</summary>
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             npcLoot.Add(ItemDropRule.ByCondition(new DropInBrutalWorld(), ModContent.ItemType<WingsOfInterference>()));
         }
 
-        /// <summary>演出中锁血，完后放行；秒杀也先切演出</summary>
+        /// <summary>演出中锁血，完后放行；终章缩圈未满也锁</summary>
         public override bool? CheckDead() {
             if (stateContext == null || stateContext.DeathPerformanceFinished) {
                 return true;
+            }
+
+            if (stateContext.IsThirdPhase && !stateContext.FinaleKillable && stateMachine?.CurrentState is EmpressFinaleState) {
+                npc.life = Math.Max((int)(npc.lifeMax * FinaleLifeFloor), DeathPerformanceTriggerLife + 1);
+                return false;
             }
 
             npc.life = 1;

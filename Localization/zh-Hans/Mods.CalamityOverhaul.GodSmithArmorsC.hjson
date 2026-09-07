@@ -1,8 +1,40 @@
-GsMonkArmor.EndowLine: 入定雷禅：站进自己的闪电光环即入定，入定中每四次近战或召唤命中，打出一道贯穿的禅雷掌波
-GsMonkShinobiArmor.EndowLine: 入定雷禅·忍：入定中每三次命中即可出掌，掌波首次命中后还会分出两道侧掌
-GsSquireArmor.EndowLine: 誓约壁垒：受击后竖起誓约之盾五秒，期间近战命中会从肩后掷出一柄鎏金誓约骑枪
-GsSquireValhallaArmor.EndowLine: 誓约壁垒·瓦尔哈拉：誓约之盾持续六秒，期间每次近战命中掷出双枪
-GsHuntressArmor.EndowLine: 布网狩猎：被你的爆炸陷阱炸中的敌人带上猎印，远程命中带印目标时，两支荆棘猎矢自侧翼合围而来
-GsHuntressRedRidingArmor.EndowLine: 布网狩猎·红裳：合围的猎矢增至三支，且淬上剧毒
-GsApprenticeArmor.EndowLine: 引焰术：火焰爆哨兵的命中为你积攒引焰，满六层后下一次魔法命中在目标上方展开焰文，倾泻三枚烬弹
-GsApprenticeDarkArtistArmor.EndowLine: 引焰术·暗艺：五层引焰即可引爆，焰文化作影焰文，倾泻四枚影烬并点燃暗影焰
+GsMonkArmor.EndowLine:
+	'''
+	入定雷禅：站进自己的闪电光环即入定
+	入定中每四次近战或召唤命中，打出一道贯穿的禅雷掌波
+	'''
+GsMonkShinobiArmor.EndowLine:
+	'''
+	入定雷禅·忍：入定中每三次命中即可出掌
+	掌波首次命中后还会分出两道侧掌
+	'''
+GsSquireArmor.EndowLine:
+	'''
+	誓约壁垒：受击后竖起誓约之盾五秒
+	期间近战命中会从肩后掷出一柄鎏金誓约骑枪
+	'''
+GsSquireValhallaArmor.EndowLine:
+	'''
+	誓约壁垒·瓦尔哈拉：誓约之盾持续六秒
+	期间每次近战命中掷出双枪
+	'''
+GsHuntressArmor.EndowLine:
+	'''
+	布网狩猎：被你的爆炸陷阱炸中的敌人带上猎印
+	远程命中带印目标时，两支荆棘猎矢自侧翼合围而来
+	'''
+GsHuntressRedRidingArmor.EndowLine:
+	'''
+	布网狩猎·红裳：被爆炸陷阱炸中的敌人带上猎印
+	合围的猎矢增至三支，且淬上剧毒
+	'''
+GsApprenticeArmor.EndowLine:
+	'''
+	引焰术：火焰爆哨兵的命中为你积攒引焰
+	满六层后下一次魔法命中在目标上方展开焰文，倾泻三枚烬弹
+	'''
+GsApprenticeDarkArtistArmor.EndowLine:
+	'''
+	引焰术·暗艺：火焰爆哨兵命中积攒引焰，五层即可引爆
+	焰文化作影焰文，倾泻四枚影烬并点燃暗影焰
+	'''

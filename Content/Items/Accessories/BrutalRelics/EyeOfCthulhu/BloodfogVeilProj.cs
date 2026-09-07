@@ -14,12 +14,14 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
 {
     /// <summary>
-    /// 血雾之瞳随身演出锚点：本身无伤害，承载跨端可见的血带/血盾/血茧/血流鞭。<br/>
-    /// owner 端生成后经原生弹幕同步；时间轴按本端 AI 帧数推进，各端自演。<br/>
-    /// ai[0]=模式：0 突进（蓄力起手即生成）/ 1 消隐点血爆+血流鞭 / 2 重凝落点血茧；ai[1]=总寿命(帧)；
-    /// velocity=冲刺方向（ShouldUpdatePosition=false，只当同步载体）
+    /// 血雾之瞳随身演出锚点：本身无伤害，承载跨端可见的液态血演出。<br/>
+    /// 视觉母题：本体就是血。突进时本体隐去、位置上是一团顺速度拉长的血核，背风端不断拉丝断珠，
+    /// 迎风面甩出溅片；急刹时血核前段带惯性溅向前方、本体重新凝形。免死重凝走同一套语言。<br/>
+    /// owner 端生成后经原生弹幕同步；时间轴按本端 AI 帧数推进，拉丝/溅片/血块都是本端局部列表。<br/>
+    /// ai[0]=模式：0 突进（蓄力起手即生成）/ 1 消隐点炸开 + 血核飞向新位置 / 2 重凝落点；ai[1]=总寿命(帧)；
+    /// velocity=方向（ShouldUpdatePosition=false，只当同步载体）
     /// </summary>
-    internal class BloodfogVeilProj : ModProjectile, IPrimitiveDrawable
+    internal class BloodfogVeilProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -29,41 +31,93 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         private int Frame => (int)Projectile.localAI[1] - 1;
         private Vector2 DashDir => Projectile.velocity.SafeNormalize(Vector2.UnitX * Main.player[Projectile.owner].direction);
 
-        #region 突进盾时间轴（帧，与 BloodfogIrisPlayer 的突进相位对齐）
-        /// <summary>0..2 蓄力成形（弧顶先出）</summary>
-        private const int FormFrames = BloodfogIrisPlayer.DashWindupFrames;
-        /// <summary>起步帧：满形 + 过曝 + 血爆</summary>
+        #region 突进时间轴（帧，与 BloodfogIrisPlayer 的突进相位对齐）
+        /// <summary>0..2 反向预备：血丝被向后拽出</summary>
+        private const int WindupFrames = BloodfogIrisPlayer.DashWindupFrames;
+        /// <summary>起步帧：本体隐去、血核出现、冠状溅射</summary>
         private const int LaunchFrame = BloodfogIrisPlayer.DashWindupFrames;
-        /// <summary>急刹首帧：盾碎</summary>
-        private const int BreakFrame = BloodfogIrisPlayer.DashWindupFrames + BloodfogIrisPlayer.DashTravelFrames;
-        private const int BreakFrames = BloodfogIrisPlayer.DashBrakeFrames + 1;
-        private const int ShieldEndFrame = BreakFrame + BreakFrames;
-        private const float ShieldRadius = 30f;
-        /// <summary>弧张角 ≈146°</summary>
-        private const float ShieldSpan = 2.55f;
-        private const float ShieldThick = 15f;
+        /// <summary>急刹首帧：血核前段溅出、本体凝形</summary>
+        private const int BrakeFrame = BloodfogIrisPlayer.DashWindupFrames + BloodfogIrisPlayer.DashTravelFrames;
+        /// <summary>凝形收缩团持续帧</summary>
+        private const int ReformFrames = 4;
+        private const int DashQuietFrame = BrakeFrame + ReformFrames;
         #endregion
 
         #region 重凝时间轴（帧）
-        /// <summary>血流鞭头到位帧数</summary>
-        private const int StreamHeadFrames = 7;
-        /// <summary>此后尾端开始龄蚀</summary>
-        private const int StreamHoldFrame = 9;
-        private const int StreamErodeFrames = 26;
-        /// <summary>血茧起形帧（等血流到位）</summary>
-        private const int CocoonFormFrame = 5;
-        private const int CocoonFormFrames = 4;
-        private const int CocoonBreakFrame = 13;
-        private const int CocoonBreakFrames = 6;
-        private const int CocoonEndFrame = CocoonBreakFrame + CocoonBreakFrames;
-        private const float CocoonRadius = 24f;
-        private const float CocoonThick = 9f;
-        /// <summary>冲击环帧数</summary>
-        private const int RingFrames = 8;
+        /// <summary>血核从消隐点飞到新位置的帧数</summary>
+        private const int CometFrames = 6;
+        /// <summary>落点：到位帧本体显形 + 前向溅射</summary>
+        private const int LandFrame = CometFrames;
+        private const int LandQuietFrame = LandFrame + ReformFrames;
         #endregion
 
-        /// <summary>起步过曝，逐帧 ×0.5</summary>
-        private float flash;
+        #region 元素模型（本端局部，随弹幕生灭）
+        /// <summary>拉丝：根跟着血核背风端走、尾留在世界里；拉到极限或到龄就断成一串血珠</summary>
+        private sealed class Ligament
+        {
+            public Vector2 Root;
+            public Vector2 Tail;
+            /// <summary>根相对血核中心的横向偏移 px</summary>
+            public float PerpOffset;
+            /// <summary>根落在血核中心后方多少 px</summary>
+            public float BackOffset;
+            /// <summary>根部宽 px</summary>
+            public float Width;
+            public float MaxLen;
+            public float Phase;
+            public float Amp;
+            public float Freq;
+            public int Age;
+            /// <summary>附着最大帧数，超过即断</summary>
+            public int MaxAge;
+            public int Beads;
+            public float Seed;
+            /// <summary>悬丝：根固定、尾受重力下垂（雾态滴血 / 消隐点残丝）</summary>
+            public bool Hanging;
+            /// <summary>预备丝：尾被向后拽，起步帧甩回</summary>
+            public bool Windup;
+        }
+
+        /// <summary>溅片：自源点扇开的一片薄血，展开→变薄→撕洞→只剩液舌，撕到一半沿舌尖放血珠</summary>
+        private sealed class Sheet
+        {
+            public Vector2 Pos;
+            public Vector2 Vel;
+            public Vector2 Dir;
+            public float Size;
+            public float Seed;
+            public int Age;
+            public int Life;
+            public float Decel;
+            /// <summary>true 宽扇(起步/炸开) false 窄扇(途中迎风/落地)</summary>
+            public bool Wide;
+            public bool DropsDone;
+        }
+
+        /// <summary>血块：炸开时甩出的大团，带重力，寿尽碎成血珠</summary>
+        private sealed class Chunk
+        {
+            public Vector2 Pos;
+            public Vector2 Vel;
+            public float Len;
+            public float Wid;
+            public float Seed;
+            public int Age;
+            public int Life;
+        }
+
+        private readonly List<Ligament> ligaments = new(24);
+        private readonly List<Sheet> sheets = new(16);
+        private readonly List<Chunk> chunks = new(8);
+
+        /// <summary>血核本帧中心/朝向/速度（模式 0 跟玩家，模式 1 沿飞行路径），供拉丝根与绘制共用</summary>
+        private Vector2 massCenter;
+        private Vector2 massDir = Vector2.UnitX;
+        private Vector2 massVel;
+        private bool massActive;
+        /// <summary>起步过冲：血核前伸量，逐帧 ×0.5</summary>
+        private float overshoot;
+        #endregion
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 64;
@@ -86,14 +140,15 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
                 Projectile.timeLeft = (int)TotalLife;
             }
             Projectile.localAI[1]++;
-            flash *= 0.5f;
+            overshoot *= 0.5f;
 
+            Player owner = Main.player[Projectile.owner];
             if (Mode == 1) {
-                UpdateBurst(frame);
+                UpdateBurst(owner, frame);
+                SimulateElements();
                 return;
             }
 
-            Player owner = Main.player[Projectile.owner];
             if (!owner.active || owner.dead) {
                 Projectile.Kill();
                 return;
@@ -102,163 +157,637 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
 
             //雾态视觉计时：各端(含服务端)每帧点亮，
             //服务端由 PostUpdateEquips 读它压仇恨，客户端驱动本体褪色
-            owner.GetModPlayer<BloodfogIrisPlayer>().VeilVisualTimer = 2;
+            BloodfogIrisPlayer mp = owner.GetModPlayer<BloodfogIrisPlayer>();
+            mp.VeilVisualTimer = 2;
 
             if (Mode == 0) {
-                UpdateDash(owner, frame);
+                UpdateDash(owner, mp, frame);
             }
             else {
-                UpdateRebirth(frame);
+                UpdateLanding(owner, mp, frame);
             }
-            UpdateAmbient(owner, frame);
+            SimulateElements();
         }
 
-        #region 逐模式演出拍
-        private void UpdateDash(Player owner, int frame) {
+        #region 突进：预备拽丝 → 起步冠溅 → 途中血核拉丝 → 急刹前溅凝形 → 雾态滴血
+        private void UpdateDash(Player owner, BloodfogIrisPlayer mp, int frame) {
             Vector2 dir = DashDir;
-            if (frame == 0) {
-                //蓄力吸气：血珠 4 帧内向前方盾位汇聚，起步帧刚好收完
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item103 with { Volume = 0.5f, Pitch = -0.5f }, Projectile.Center);
-                    BloodfogIrisFX.Converge(Projectile.Center + dir * 24f, 64f, 8, FormFrames + 1);
+            Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
+            bool client = !VaultUtils.isServer;
+
+            if (frame < LaunchFrame) {
+                //反向预备：本体仍在，背风侧血丝被向后拽出、越拽越长（拉弓）
+                massActive = false;
+                massDir = dir;
+                massCenter = owner.Center;
+                if (!client) {
+                    return;
                 }
-            }
-            else if (frame == LaunchFrame) {
-                flash = 1f;
-                BloodfogIrisFX.LaunchBurst(Projectile.Center, dir, 0.95f);
-            }
-            else if (frame > LaunchFrame && frame < BreakFrame) {
-                if (frame % 2 == 0) {
-                    BloodfogIrisFX.TipShed(Projectile.Center + dir * 10f, dir, ShieldRadius * (1f + BloodShieldMesh.TipFlare), ShieldSpan);
+                if (frame == 0) {
+                    SoundEngine.PlaySound(SoundID.Item103 with { Volume = 0.5f, Pitch = -0.5f }, owner.Center);
+                    BloodfogIrisFX.FineMist(owner.Center - dir * 10f, -dir, 6, 2.5f, 0.8f);
                 }
+                for (int i = 0; i < 2; i++) {
+                    Vector2 root = owner.Center - dir * Main.rand.NextFloat(4f, 10f) + perp * Main.rand.NextFloat(-14f, 14f);
+                    ligaments.Add(new Ligament {
+                        Root = root,
+                        Tail = root - dir * Main.rand.NextFloat(6f, 16f),
+                        Width = Main.rand.NextFloat(2.2f, 3.6f),
+                        MaxLen = 200f,
+                        Phase = Main.rand.NextFloat(MathHelper.TwoPi),
+                        Amp = Main.rand.NextFloat(1f, 2.5f),
+                        Freq = Main.rand.NextFloat(1f, 2f),
+                        MaxAge = 60,
+                        Beads = Main.rand.Next(5, 8),
+                        Seed = Main.rand.NextFloat(),
+                        Windup = true
+                    });
+                }
+                return;
             }
-            else if (frame == BreakFrame) {
-                BloodfogIrisFX.ShieldShatter(Projectile.Center + dir * 10f, dir, ShieldRadius, ShieldSpan);
+
+            massVel = owner.velocity;
+            massDir = dir;
+            massCenter = owner.Center;
+            massActive = frame < BrakeFrame;
+
+            if (frame == LaunchFrame) {
+                //起步：本体隐去、血核过冲、预备丝整批甩回成顺冲刺飞的血珠、迎风冠状溅射
+                mp.HideBodyTimer = 2;
+                overshoot = 12f;
+                SnapAll(dir * 9f);
+                LaunchSplash(owner.Center, dir);
+                return;
+            }
+
+            if (frame < BrakeFrame) {
+                mp.HideBodyTimer = 2;
+                if (!client) {
+                    return;
+                }
+                //背风端拉丝：每帧一根，偶数帧两根
+                int pulls = frame % 2 == 0 ? 2 : 1;
+                for (int i = 0; i < pulls; i++) {
+                    SpawnPulledLigament();
+                }
+                //背风甩珠 + 细血雾 + 速度线
+                BloodfogIrisFX.Spray(massCenter - dir * 24f, -dir, 2, 0.7f, 2f, 6f, 0.7f, 1.3f, 16, 26, 0.3f, 0.98f, 10f);
+                BloodfogIrisFX.FineMist(massCenter - dir * 30f, -dir, 2, 2f, 0.9f);
+                BloodfogIrisFX.SpeedStreaks(massCenter - dir * 20f, dir, 1, 26f);
+                //迎风小溅片，左右交替
+                if (frame % 2 == 1) {
+                    float side = (frame / 2) % 2 == 0 ? 1f : -1f;
+                    SpawnSheet(massCenter + dir * 26f, dir.RotatedBy(side * Main.rand.NextFloat(0.9f, 1.3f)),
+                        Main.rand.NextFloat(7f, 10f), 0.78f, Main.rand.NextFloat(42f, 56f), Main.rand.Next(7, 10), wide: false);
+                }
+                return;
+            }
+
+            if (frame == BrakeFrame) {
+                //急刹：本体当帧显形，血核前段带惯性溅向前方，所有拉丝断
+                mp.HideBodyTimer = 0;
+                SnapAll(dir * 6f);
+                BrakeSplash(owner.Center, dir, 1f);
+                return;
+            }
+
+            //雾态：偶尔滴血、偶尔一根悬丝
+            if (client && EocMotion.OnScreen(owner.Center, 400f)) {
+                if (frame % 7 == 0) {
+                    BloodfogIrisFX.Drip(owner);
+                }
+                if (frame % 31 == 5) {
+                    SpawnHangingLigament(owner.Center + new Vector2(Main.rand.NextFloat(-8f, 8f), Main.rand.NextFloat(0f, 16f)), 28f, 44f);
+                }
             }
         }
 
-        private void UpdateRebirth(int frame) {
-            if (frame < CocoonFormFrame) {
-                //血流未到，外圈血珠先汇，8 帧到位正落在血茧成形期
-                BloodfogIrisFX.Converge(Projectile.Center, 110f, 2, 8);
+        /// <summary>起步冠状溅射：5 片宽扇从迎风端甩向前侧方 + 反冲血雾锥 + 速度线 + 湿吼 + 方向震屏</summary>
+        private void LaunchSplash(Vector2 center, Vector2 dir) {
+            EocMotion.Shake(center, 4.2f, 9, dir);
+            if (VaultUtils.isServer) {
+                return;
             }
-            else if (frame == CocoonFormFrame) {
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item103 with { Volume = 0.7f, Pitch = -0.25f }, Projectile.Center);
-                    SoundEngine.PlaySound(SoundID.Zombie2 with { Volume = 0.55f, Pitch = -0.6f }, Projectile.Center);
-                }
+            Vector2 front = center + dir * 14f;
+            for (int i = 0; i < 4; i++) {
+                float side = i % 2 == 0 ? 1f : -1f;
+                float ang = side * Main.rand.NextFloat(0.55f, 1.25f);
+                SpawnSheet(front, dir.RotatedBy(ang), Main.rand.NextFloat(10f, 16f), 0.8f, Main.rand.NextFloat(90f, 130f), Main.rand.Next(10, 14), wide: true);
             }
-            else if (frame == CocoonBreakFrame) {
-                BloodfogIrisFX.BloodBurst(Projectile.Center, 0.8f, playSound: false);
-                EocMotion.Shake(Projectile.Center, 3.5f, 8);
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.7f, Pitch = -0.1f }, Projectile.Center);
-                }
-            }
+            SpawnSheet(front, dir.RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f)), Main.rand.NextFloat(12f, 15f), 0.8f, Main.rand.NextFloat(60f, 80f), Main.rand.Next(8, 11), wide: false);
+            BloodfogIrisFX.Spray(center - dir * 10f, -dir, 18, 0.85f, 4f, 12f, 1f, 1.9f, 22, 38, 0.3f, 0.985f, 16f);
+            BloodfogIrisFX.FineMist(center - dir * 16f, -dir, 12, 5f, 0.9f);
+            BloodfogIrisFX.SpeedStreaks(center, dir, 3, 22f);
+            BloodfogIrisFX.WetBurstSound(center, 0.95f, heavy: false);
         }
 
-        /// <summary>消隐点：躯体炸成血 + 表皮碎屑；血流鞭尾端蚀退时前沿掉血珠</summary>
-        private void UpdateBurst(int frame) {
-            if (frame == 0) {
-                BloodfogIrisFX.BloodBurst(Projectile.Center, 1.5f);
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Zombie3 with { Volume = 0.75f, Pitch = -0.45f }, Projectile.Center);
-                    for (int i = 0; i < 7; i++) {
-                        Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 7f);
-                        vel.Y -= 2.2f;
-                        PRTLoader.NewParticle<PRT_EocSkinShred>(
-                            Projectile.Center + Main.rand.NextVector2Circular(16f, 24f), vel,
-                            Color.Lerp(EocMotion.Arterial, EocMotion.VenousDark, Main.rand.NextFloat()),
-                            Main.rand.NextFloat(0.8f, 1.4f))?.Configure(Main.rand.Next(26, 44));
-                    }
-                }
+        /// <summary>急刹/落地前溅：3 片窄扇顺方向溅出 + 前向血珠锥 + 湿裂响 + 短震</summary>
+        private void BrakeSplash(Vector2 center, Vector2 dir, float strength) {
+            EocMotion.Shake(center, 3f * strength, 7, dir);
+            if (VaultUtils.isServer) {
                 return;
             }
-            if (VaultUtils.isServer || frame <= StreamHoldFrame || frame % 2 != 0) {
-                return;
+            Vector2 front = center + dir * 16f;
+            for (int i = 0; i < 3; i++) {
+                float ang = (i - 1) * 0.42f + Main.rand.NextFloat(-0.12f, 0.12f);
+                SpawnSheet(front, dir.RotatedBy(ang), Main.rand.NextFloat(9f, 13f) * strength, 0.8f,
+                    Main.rand.NextFloat(70f, 100f) * strength, Main.rand.Next(9, 13), wide: false);
             }
-            Player owner = Main.player[Projectile.owner];
-            if (!owner.active || !EocMotion.OnScreen(Projectile.Center, 520f)) {
-                return;
-            }
-            float erode = MathHelper.Clamp((frame - StreamHoldFrame) / (float)StreamErodeFrames, 0f, 1f);
-            if (erode >= 1f) {
-                return;
-            }
-            Vector2 front = Vector2.Lerp(Projectile.Center, owner.Center, erode * 0.85f) + Main.rand.NextVector2Circular(10f, 10f);
-            PRTLoader.NewParticle<PRT_HeartcarverDroplet>(front, new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(0.5f, 2f)),
-                Color.Lerp(EocMotion.VenousDark, EocMotion.Arterial, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.3f))?
-                .Configure(Main.rand.Next(18, 30), 0.3f, 0.99f);
-        }
-
-        /// <summary>常驻：高速甩血、雾态滴血、心跳微光，纯客户端</summary>
-        private void UpdateAmbient(Player owner, int frame) {
-            if (VaultUtils.isServer || !EocMotion.OnScreen(Projectile.Center, 520f)) {
-                return;
-            }
-
-            float speed = owner.velocity.Length();
-            if (speed > 16f && Main.GameUpdateCount % 2 == 0) {
-                Vector2 back = -owner.velocity.SafeNormalize(Vector2.Zero);
-                Vector2 vel = back.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(2f, 6f);
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
-                    owner.Center + Main.rand.NextVector2Circular(18f, 22f), vel,
-                    Color.Lerp(EocMotion.Arterial, EocMotion.BrightBlood, Main.rand.NextFloat()),
-                    Main.rand.NextFloat(0.8f, 1.4f))?.Configure(Main.rand.Next(16, 26), 0.3f, 0.98f);
-            }
-
-            int quietFrom = Mode == 0 ? ShieldEndFrame : CocoonEndFrame;
-            if (frame >= quietFrom && frame % 7 == 0) {
-                BloodfogIrisFX.Drip(owner);
-            }
-
-            float pulse = 0.55f + 0.25f * MathF.Sin((float)Main.timeForVisualEffects * 0.19f);
-            float fade = MathHelper.Clamp(Projectile.timeLeft / 24f, 0f, 1f);
-            Lighting.AddLight(Projectile.Center, EocMotion.MistWine.ToVector3() * pulse * 0.6f * fade);
+            BloodfogIrisFX.Spray(front, dir, (int)(14 * strength), 0.55f, 6f, 14f, 0.9f, 1.7f, 20, 34, 0.32f, 0.98f, 12f);
+            BloodfogIrisFX.FineMist(front + dir * 4f, dir, 8, 4f, 0.7f);
+            SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.8f * strength, Pitch = -0.2f }, center);
+            SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.4f * strength, Pitch = 0.25f }, center);
         }
         #endregion
 
-        #region 本体下层：血带 / 血流鞭 / 冲击环 / 瞳光
+        #region 重凝：消隐点炸开 → 血核飞向新位置 → 落地前溅凝形
+        /// <summary>消隐点弹幕：首帧躯体炸成血，随后血核沿路径飞向玩家现位，沿途拉丝落珠</summary>
+        private void UpdateBurst(Player owner, int frame) {
+            Vector2 from = Projectile.Center;
+            Vector2 to = owner.active ? owner.Center : from;
+            Vector2 path = to - from;
+            float len = path.Length();
+            Vector2 dir = len > 1f ? path / len : Vector2.UnitX;
+
+            if (frame == 0) {
+                massDir = dir;
+                massCenter = from;
+                BodyBurst(from);
+            }
+
+            if (frame <= CometFrames && len > 12f) {
+                //血核：快出慢到（先甩出去再在落点前减速）
+                float t = MathHelper.Clamp((frame + 1f) / (CometFrames + 1f), 0f, 1f);
+                float p = 1f - MathF.Pow(1f - t, 2.2f);
+                Vector2 prev = frame == 0 ? from : massCenter;
+                massCenter = from + path * p;
+                massDir = dir;
+                massVel = massCenter - prev;
+                massActive = frame < CometFrames;
+                if (!VaultUtils.isServer && frame < CometFrames) {
+                    SpawnPulledLigament();
+                    SpawnPulledLigament();
+                    BloodfogIrisFX.Spray(massCenter - dir * 20f, -dir, 3, 0.8f, 1.5f, 5f, 0.7f, 1.3f, 16, 26, 0.3f, 0.98f, 10f);
+                    BloodfogIrisFX.FineMist(massCenter - dir * 26f, -dir, 2, 2f, 0.9f);
+                    BloodfogIrisFX.SpeedStreaks(massCenter - dir * 16f, dir, 1, 20f);
+                }
+                return;
+            }
+            massActive = false;
+        }
+
+        /// <summary>躯体炸开：6 片宽扇全向 + 全向血珠 + 4 大血块 + 4 根悬丝 + 表皮碎屑 + 湿爆音</summary>
+        private void BodyBurst(Vector2 pos) {
+            Lighting.AddLight(pos, EocMotion.Arterial.ToVector3() * 1.4f);
+            if (VaultUtils.isServer) {
+                return;
+            }
+            for (int i = 0; i < 6; i++) {
+                Vector2 dir = (MathHelper.TwoPi * i / 6f + Main.rand.NextFloat(-0.3f, 0.3f)).ToRotationVector2();
+                SpawnSheet(pos + dir * 8f, dir, Main.rand.NextFloat(8f, 13f), 0.82f, Main.rand.NextFloat(80f, 110f), Main.rand.Next(10, 15), wide: true);
+            }
+            BloodfogIrisFX.Spray(pos, Vector2.UnitX, 24, MathHelper.Pi, 3f, 12f, 1f, 2.1f, 24, 44, 0.34f, 0.985f, 8f);
+            BloodfogIrisFX.FineMist(pos, Vector2.UnitX, 10, 4f, MathHelper.Pi, 14f);
+            for (int i = 0; i < 4; i++) {
+                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 7f);
+                vel.Y -= 2f;
+                chunks.Add(new Chunk {
+                    Pos = pos + Main.rand.NextVector2Circular(10f, 14f),
+                    Vel = vel,
+                    Len = Main.rand.NextFloat(18f, 26f),
+                    Wid = Main.rand.NextFloat(11f, 16f),
+                    Seed = Main.rand.NextFloat(),
+                    Life = Main.rand.Next(26, 40)
+                });
+            }
+            for (int i = 0; i < 4; i++) {
+                SpawnHangingLigament(pos + new Vector2(Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(-14f, 14f)), 30f, 50f);
+            }
+            for (int i = 0; i < 7; i++) {
+                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 7f);
+                vel.Y -= 2.2f;
+                PRTLoader.NewParticle<PRT_EocSkinShred>(pos + Main.rand.NextVector2Circular(16f, 24f), vel,
+                    Color.Lerp(EocMotion.Arterial, EocMotion.VenousDark, Main.rand.NextFloat()),
+                    Main.rand.NextFloat(0.8f, 1.4f))?.Configure(Main.rand.Next(26, 44));
+            }
+            SoundEngine.PlaySound(SoundID.Zombie3 with { Volume = 0.75f, Pitch = -0.45f }, pos);
+            BloodfogIrisFX.WetBurstSound(pos, 1.3f, heavy: true);
+        }
+
+        /// <summary>落点弹幕：血核到位前本体隐去、外圈血珠汇入；到位帧显形 + 前溅；之后雾态滴血</summary>
+        private void UpdateLanding(Player owner, BloodfogIrisPlayer mp, int frame) {
+            Vector2 dir = DashDir;
+            massActive = false;
+            massDir = dir;
+            massCenter = owner.Center;
+            bool client = !VaultUtils.isServer;
+
+            if (frame < LandFrame) {
+                mp.HideBodyTimer = 2;
+                if (client && frame % 2 == 0) {
+                    BloodfogIrisFX.Converge(owner.Center, 90f, 2, 6);
+                }
+                return;
+            }
+            if (frame == LandFrame) {
+                mp.HideBodyTimer = 0;
+                BrakeSplash(owner.Center, dir, 0.85f);
+                if (client) {
+                    SoundEngine.PlaySound(SoundID.Item103 with { Volume = 0.7f, Pitch = -0.25f }, owner.Center);
+                    SoundEngine.PlaySound(SoundID.Zombie2 with { Volume = 0.55f, Pitch = -0.6f }, owner.Center);
+                }
+                return;
+            }
+            if (client && EocMotion.OnScreen(owner.Center, 400f)) {
+                if (frame % 7 == 3) {
+                    BloodfogIrisFX.Drip(owner);
+                }
+                if (frame % 29 == 11) {
+                    SpawnHangingLigament(owner.Center + new Vector2(Main.rand.NextFloat(-8f, 8f), Main.rand.NextFloat(0f, 16f)), 28f, 44f);
+                }
+            }
+        }
+        #endregion
+
+        #region 元素生成 / 模拟 / 断裂
+        /// <summary>从血核背风端拉一根丝：根随血核走，尾留在原地，被拉到极限就断</summary>
+        private void SpawnPulledLigament() {
+            if (VaultUtils.isServer || ligaments.Count >= 22) {
+                return;
+            }
+            float perpOff = Main.rand.NextFloat(-9f, 9f);
+            float back = Main.rand.NextFloat(18f, 30f);
+            Vector2 perp = massDir.RotatedBy(MathHelper.PiOver2);
+            Vector2 root = massCenter - massDir * back + perp * perpOff;
+            ligaments.Add(new Ligament {
+                Root = root,
+                Tail = root - massDir * Main.rand.NextFloat(2f, 8f),
+                PerpOffset = perpOff,
+                BackOffset = back,
+                Width = Main.rand.NextFloat(2.4f, 5f),
+                MaxLen = Main.rand.NextFloat(70f, 120f),
+                Phase = Main.rand.NextFloat(MathHelper.TwoPi),
+                Amp = Main.rand.NextFloat(3f, 7f),
+                Freq = Main.rand.NextFloat(1.5f, 3f),
+                MaxAge = Main.rand.Next(6, 10),
+                Beads = Main.rand.Next(7, 10),
+                Seed = Main.rand.NextFloat()
+            });
+        }
+
+        /// <summary>悬丝：根固定在 pos，尾受重力下垂，拉到 minLen~maxLen 之间某个长度就断成血珠落下</summary>
+        private void SpawnHangingLigament(Vector2 pos, float minLen, float maxLen) {
+            if (VaultUtils.isServer || ligaments.Count >= 22) {
+                return;
+            }
+            ligaments.Add(new Ligament {
+                Root = pos,
+                Tail = pos + new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(3f, 8f)),
+                Width = Main.rand.NextFloat(1.8f, 3.2f),
+                MaxLen = Main.rand.NextFloat(minLen, maxLen),
+                Phase = Main.rand.NextFloat(MathHelper.TwoPi),
+                Amp = Main.rand.NextFloat(0.4f, 1.2f),
+                Freq = Main.rand.NextFloat(0.6f, 1.2f),
+                MaxAge = 90,
+                Beads = Main.rand.Next(5, 8),
+                Seed = Main.rand.NextFloat(),
+                Hanging = true
+            });
+        }
+
+        private void SpawnSheet(Vector2 source, Vector2 dir, float speed, float decel, float size, int life, bool wide) {
+            if (VaultUtils.isServer || sheets.Count >= 16) {
+                return;
+            }
+            sheets.Add(new Sheet {
+                Pos = source,
+                Vel = dir * speed,
+                Dir = dir,
+                Size = size,
+                Seed = Main.rand.NextFloat(),
+                Life = life,
+                Decel = decel,
+                Wide = wide
+            });
+        }
+
+        /// <summary>丝上某点位置：t=0 尾（自由端）→ 1 根；自由端横向摆动大、根端小</summary>
+        private Vector2 BeadPos(Ligament l, float t, out Vector2 axis) {
+            Vector2 span = l.Root - l.Tail;
+            float len = span.Length();
+            axis = len > 0.01f ? span / len : massDir;
+            Vector2 n = axis.RotatedBy(MathHelper.PiOver2);
+            float wave = MathF.Sin(l.Phase + t * l.Freq * MathHelper.TwoPi + l.Age * 0.55f) * l.Amp * (1f - t) * MathF.Min(1f, len / 40f);
+            return Vector2.Lerp(l.Tail, l.Root, t) + n * wave;
+        }
+
+        private static float BeadWidth(Ligament l, float t) => l.Width * MathHelper.Lerp(0.3f, 1f, t);
+
+        /// <summary>断丝：每颗珠段变成一颗带重力的血珠，根侧带上血核速度的一部分</summary>
+        private void SnapLigament(Ligament l, Vector2 rootVel) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            int n = Math.Max(l.Beads, 2);
+            for (int k = 0; k < n; k++) {
+                float t = k / (float)(n - 1);
+                Vector2 pos = BeadPos(l, t, out Vector2 axis);
+                Vector2 side = axis.RotatedBy(MathHelper.PiOver2) * MathF.Sin(l.Phase + t * l.Freq * MathHelper.TwoPi) * l.Amp * 0.12f;
+                Vector2 vel = rootVel * t + side + Main.rand.NextVector2Circular(0.7f, 0.7f);
+                float scale = MathHelper.Clamp(BeadWidth(l, t) / 3.2f, 0.45f, 1.5f);
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel,
+                    Color.Lerp(EocMotion.VenousDark, EocMotion.Arterial, Main.rand.NextFloat(0.3f, 1f)), scale)?
+                    .Configure(Main.rand.Next(16, 28), 0.3f, 0.985f);
+            }
+        }
+
+        private void SnapAll(Vector2 rootVel) {
+            for (int i = ligaments.Count - 1; i >= 0; i--) {
+                SnapLigament(ligaments[i], rootVel);
+            }
+            ligaments.Clear();
+        }
+
+        /// <summary>血块碎成几颗血珠</summary>
+        private static void BurstChunk(Chunk c) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            int n = Main.rand.Next(3, 6);
+            for (int i = 0; i < n; i++) {
+                Vector2 vel = c.Vel * 0.4f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 4f);
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(c.Pos + Main.rand.NextVector2Circular(c.Wid * 0.4f, c.Wid * 0.4f), vel,
+                    Color.Lerp(EocMotion.VenousDark, EocMotion.Arterial, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.5f))?
+                    .Configure(Main.rand.Next(16, 28), 0.32f, 0.985f);
+            }
+        }
+
+        /// <summary>溅片展开进度：前 45% 寿命快速扇开</summary>
+        private static float SheetSpread(Sheet s)
+            => VaultUtils.EaseOutCubic(MathHelper.Clamp((s.Age + 1f) / (s.Life * 0.45f), 0f, 1f));
+
+        /// <summary>溅片撕裂进度：30% 寿命起撕，寿尽撕净</summary>
+        private static float SheetTear(Sheet s)
+            => MathF.Pow(MathHelper.Clamp((s.Age - s.Life * 0.3f) / (s.Life * 0.7f), 0f, 1f), 1.3f);
+
+        /// <summary>每帧推进全部局部元素；服务端不留任何元素</summary>
+        private void SimulateElements() {
+            if (Main.dedServ) {
+                ligaments.Clear();
+                sheets.Clear();
+                chunks.Clear();
+                return;
+            }
+            Vector2 perp = massDir.RotatedBy(MathHelper.PiOver2);
+
+            for (int i = ligaments.Count - 1; i >= 0; i--) {
+                Ligament l = ligaments[i];
+                l.Age++;
+                if (l.Hanging) {
+                    l.Tail.Y += 0.9f + l.Age * 0.08f;
+                }
+                else if (l.Windup) {
+                    l.Tail -= massDir * 2.6f;
+                }
+                else if (massActive) {
+                    l.Root = massCenter - massDir * l.BackOffset + perp * l.PerpOffset;
+                }
+                else {
+                    SnapLigament(l, massVel * 0.3f);
+                    ligaments.RemoveAt(i);
+                    continue;
+                }
+                float len = Vector2.Distance(l.Root, l.Tail);
+                if (len > l.MaxLen || l.Age > l.MaxAge) {
+                    SnapLigament(l, l.Hanging || l.Windup ? Vector2.Zero : massVel * 0.3f);
+                    ligaments.RemoveAt(i);
+                }
+            }
+
+            for (int i = sheets.Count - 1; i >= 0; i--) {
+                Sheet s = sheets[i];
+                s.Age++;
+                s.Pos += s.Vel;
+                s.Vel *= s.Decel;
+                //撕到一半：舌尖甩珠
+                if (!s.DropsDone && SheetTear(s) > 0.45f) {
+                    s.DropsDone = true;
+                    int n = Main.rand.Next(3, 6);
+                    float halfSpan = (s.Wide ? WideSpan : NarrowSpan) * 0.5f;
+                    for (int k = 0; k < n; k++) {
+                        Vector2 tipDir = s.Dir.RotatedBy(Main.rand.NextFloat(-halfSpan, halfSpan) * 0.8f);
+                        Vector2 tip = s.Pos + tipDir * (s.Size * 0.5f * Main.rand.NextFloat(0.5f, 0.78f)) + s.Dir * s.Size * 0.16f;
+                        PRTLoader.NewParticle<PRT_HeartcarverDroplet>(tip, s.Vel * 0.6f + tipDir * Main.rand.NextFloat(1f, 3f),
+                            Color.Lerp(EocMotion.Arterial, EocMotion.BrightBlood, Main.rand.NextFloat()), Main.rand.NextFloat(0.7f, 1.3f))?
+                            .Configure(Main.rand.Next(16, 28), 0.3f, 0.985f);
+                    }
+                }
+                if (s.Age >= s.Life) {
+                    sheets.RemoveAt(i);
+                }
+            }
+
+            for (int i = chunks.Count - 1; i >= 0; i--) {
+                Chunk c = chunks[i];
+                c.Age++;
+                c.Vel.Y += 0.3f;
+                c.Vel.X *= 0.985f;
+                c.Pos += c.Vel;
+                bool hit = Collision.SolidCollision(c.Pos - new Vector2(c.Wid * 0.5f), (int)c.Wid, (int)c.Wid);
+                if (c.Age >= c.Life || hit) {
+                    BurstChunk(c);
+                    chunks.RemoveAt(i);
+                }
+            }
+        }
+        #endregion
+
+        #region 绘制：一次 Immediate 批画完全部液态血 quad（丝 → 血块 → 血核 → 溅片 → 凝形团）
+        /// <summary>宽扇角(起步/炸开)与窄扇角(途中迎风/落地)，与 .fx 的 ≤2.6 上限相容</summary>
+        private const float WideSpan = 1.7f;
+        private const float NarrowSpan = 1.15f;
+
+        /// <summary>血核团簇（血核坐标系：x 迎风、y 横向）：核 / 钝前帽 / 三颗背风卫星；wob=紊乱抖幅 px</summary>
+        private static readonly (Vector2 off, float len, float wid, float wob)[] ClumpCore = [
+            (new Vector2(4f, 0f), 62f, 24f, 2f),
+            (new Vector2(28f, 0f), 24f, 16f, 1.5f),
+        ];
+        private static readonly (Vector2 off, float len, float wid, float wob)[] ClumpSatellites = [
+            (new Vector2(-18f, -8f), 28f, 11f, 4f),
+            (new Vector2(-24f, 9f), 22f, 9f, 4f),
+            (new Vector2(-34f, -1f), 18f, 7f, 5f),
+        ];
+
+        private float SeedBase => Projectile.whoAmI * 0.37f;
+
+        /// <summary>凝形收缩团：急刹/落地那一拍血收回身体，1.3 倍身形缩到 0.85 并淡出</summary>
+        private float ReformAlpha(int frame, out float scale) {
+            int start = Mode == 0 ? BrakeFrame : Mode == 2 ? LandFrame : int.MaxValue;
+            int k = frame - start;
+            scale = 1f;
+            if (k < 0 || k >= ReformFrames) {
+                return 0f;
+            }
+            float p = (k + 0.5f) / ReformFrames;
+            scale = MathHelper.Lerp(1.3f, 0.85f, p);
+            return 0.9f * (1f - p);
+        }
+
         public override bool PreDraw(ref Color lightColor) {
+            int f = Frame;
+            if (f < 0) {
+                return false;
+            }
             Player owner = Main.player[Projectile.owner];
-            if (!owner.active) {
-                return false;
+            SpriteBatch sb = Main.spriteBatch;
+            float reformAlpha = ReformAlpha(f, out float reformScale);
+            bool anyQuads = massActive || sheets.Count > 0 || ligaments.Count > 0 || chunks.Count > 0 || reformAlpha > 0f;
+
+            if (anyQuads) {
+                if (BloodQuadBatch.Begin(sb, out Effect blob, out Effect sheetFx)) {
+                    DrawLigaments(sb, blob);
+                    DrawChunks(sb, blob);
+                    if (massActive) {
+                        DrawMass(sb, blob, f);
+                    }
+                    DrawSheets(sb, sheetFx);
+                    if (reformAlpha > 0f && owner.active) {
+                        BloodQuadBatch.BlobGroup(blob, 0.6f, 0.25f, 0.8f, 0.6f);
+                        BloodQuadBatch.DrawBlob(sb, owner.Center + new Vector2(0f, 2f), -Vector2.UnitY, 46f * reformScale, 26f * reformScale, SeedBase + 0.5f, reformAlpha);
+                    }
+                    BloodQuadBatch.End(sb);
+                }
+                else {
+                    DrawFallback(sb);
+                }
             }
-            if (Mode == 1) {
-                DrawStream(owner);
-                return false;
-            }
-            if (owner.dead) {
-                return false;
-            }
-            if (owner.TryGetModPlayer(out BloodfogIrisPlayer mp)) {
-                DrawPlayerTrail(owner, mp);
-                DrawImpactRing();
-                DrawPupilGlint(owner, mp);
+
+            if (Mode != 1 && owner.active && !owner.dead
+                && owner.TryGetModPlayer(out BloodfogIrisPlayer mp) && mp.HideBodyTimer <= 0) {
+                DrawPupilGlint(owner, mp, f);
             }
             return false;
         }
 
-        /// <summary>盾碎 / 茧裂的冲击环，共享 ShockRing 血色板</summary>
-        private void DrawImpactRing() {
-            int start = Mode == 0 ? BreakFrame : CocoonBreakFrame;
-            int k = Frame - start;
-            if (k < 0 || k >= RingFrames) {
-                return;
+        /// <summary>血核：核与钝帽一组（热、亮），三颗卫星一组（暗、小）；起步过冲前伸并顺速度拉长</summary>
+        private void DrawMass(SpriteBatch sb, Effect blob, int frame) {
+            Vector2 perp = massDir.RotatedBy(MathHelper.PiOver2);
+            float stretch = 1f + overshoot / 12f * 0.35f;
+            float speedStretch = MathHelper.Clamp(massVel.Length() / 26f, 0.6f, 1.15f);
+            stretch *= speedStretch;
+
+            BloodQuadBatch.BlobGroup(blob, 0.85f, 1f, 1.05f, 1f);
+            for (int k = 0; k < ClumpCore.Length; k++) {
+                (Vector2 off, float len, float wid, float wob) = ClumpCore[k];
+                Vector2 jitter = new Vector2(MathF.Sin(frame * 1.9f + k * 2.1f), MathF.Cos(frame * 2.3f + k * 1.3f)) * wob;
+                Vector2 local = off + jitter;
+                local.X = local.X * stretch + overshoot * (k == 1 ? 1f : 0.4f);
+                Vector2 pos = massCenter + massDir * local.X + perp * local.Y;
+                BloodQuadBatch.DrawBlob(sb, pos, massDir, len * stretch, wid, SeedBase + k * 0.173f, 1f);
             }
-            float p = (k + 0.5f) / RingFrames;
-            float baseR = Mode == 0 ? 28f : 22f;
-            float radius = baseR + VaultUtils.EaseOutCubic(p) * 56f;
-            float alpha = (1f - p) * (1f - p) * 0.9f;
-            Vector2 center = Mode == 0 ? Projectile.Center + DashDir * 10f : Projectile.Center;
-            ShockRingDraw.Draw(Main.spriteBatch, center, radius, 5f,
-                EocMotion.BrightBlood, EocMotion.Arterial, EocMotion.VenousDark, alpha,
-                tearPx: 6f, squish: 1f, innerGlow: 0.15f, timeSeed: Projectile.whoAmI * 0.37f);
+
+            BloodQuadBatch.BlobGroup(blob, 1f, 0.8f, 0.45f, 1.2f);
+            for (int k = 0; k < ClumpSatellites.Length; k++) {
+                (Vector2 off, float len, float wid, float wob) = ClumpSatellites[k];
+                Vector2 jitter = new Vector2(MathF.Sin(frame * 1.7f + k * 2.9f + 1f), MathF.Cos(frame * 2.6f + k * 1.7f)) * wob;
+                Vector2 local = off + jitter;
+                local.X *= stretch;
+                Vector2 pos = massCenter + massDir * local.X + perp * local.Y;
+                BloodQuadBatch.DrawBlob(sb, pos, massDir, len * stretch, wid, SeedBase + 0.31f + k * 0.173f, 0.95f);
+            }
         }
 
-        /// <summary>雾中瞳光：常亮微光(位置的公平线索) + 间歇一闪；突进冷却期微暗</summary>
-        private void DrawPupilGlint(Player owner, BloodfogIrisPlayer mp) {
-            float bloom = VaultUtils.EaseOutCubic(MathHelper.Clamp((Frame + 1) / 10f, 0f, 1f));
+        /// <summary>拉丝：每根是一串重叠的小血团，根粗尾细、自由端摆动；断裂后由 SnapLigament 变成血珠</summary>
+        private void DrawLigaments(SpriteBatch sb, Effect blob) {
+            if (ligaments.Count == 0) {
+                return;
+            }
+            BloodQuadBatch.BlobGroup(blob, 0.7f, 0.6f, 0.35f, 1f);
+            foreach (Ligament l in ligaments) {
+                int n = Math.Max(l.Beads, 2);
+                float len = Vector2.Distance(l.Root, l.Tail);
+                if (len < 2f) {
+                    continue;
+                }
+                float spacing = len / (n - 1);
+                for (int k = 0; k < n; k++) {
+                    float t = k / (float)(n - 1);
+                    Vector2 pos = BeadPos(l, t, out Vector2 axis);
+                    Vector2 next = BeadPos(l, MathF.Min(t + 1f / (n - 1), 1f), out _);
+                    Vector2 tangent = k == n - 1 ? axis : (next - pos).SafeNormalize(axis);
+                    float wid = BeadWidth(l, t);
+                    float beadLen = MathF.Max(spacing * 1.35f, wid * 1.2f);
+                    BloodQuadBatch.DrawBlob(sb, pos, tangent, beadLen, wid, l.Seed + k * 0.07f, 0.95f);
+                }
+            }
+        }
+
+        /// <summary>溅片按宽/窄扇分两组，减少 Apply</summary>
+        private void DrawSheets(SpriteBatch sb, Effect sheetFx) {
+            if (sheets.Count == 0) {
+                return;
+            }
+            for (int pass = 0; pass < 2; pass++) {
+                bool wide = pass == 0;
+                bool any = false;
+                foreach (Sheet s in sheets) {
+                    if (s.Wide != wide) {
+                        continue;
+                    }
+                    if (!any) {
+                        BloodQuadBatch.SheetGroup(sheetFx, wide ? WideSpan : NarrowSpan);
+                        any = true;
+                    }
+                    float life = s.Age / (float)s.Life;
+                    float alpha = 1f - MathF.Pow(life, 3f) * 0.5f;
+                    BloodQuadBatch.DrawSheet(sb, s.Pos, s.Dir, s.Size, s.Seed, SheetSpread(s), SheetTear(s), alpha);
+                }
+            }
+        }
+
+        /// <summary>血块：顺速度拉长的中团，寿末淡出</summary>
+        private void DrawChunks(SpriteBatch sb, Effect blob) {
+            if (chunks.Count == 0) {
+                return;
+            }
+            BloodQuadBatch.BlobGroup(blob, 0.9f, 0.5f, 0.7f, 1f);
+            foreach (Chunk c in chunks) {
+                float speed = c.Vel.Length();
+                Vector2 dir = speed > 0.1f ? c.Vel / speed : Vector2.UnitX;
+                float alpha = 1f - MathF.Pow(c.Age / (float)c.Life, 3f);
+                BloodQuadBatch.DrawBlob(sb, c.Pos, dir, c.Len * (1f + MathF.Min(speed, 10f) * 0.05f), c.Wid, c.Seed, alpha);
+            }
+        }
+
+        /// <summary>缺 fxc 简笔：血核与拉丝都用 Extra_98 真 alpha 梭形盖章，杜绝无形演出</summary>
+        private void DrawFallback(SpriteBatch sb) {
+            Texture2D bead = CWRAsset.Extra_98.Value;
+            Vector2 origin = bead.Size() * 0.5f;
+            if (massActive) {
+                float rot = massDir.ToRotation() + MathHelper.PiOver2;
+                for (int k = 0; k < 3; k++) {
+                    Vector2 pos = massCenter - massDir * (k * 14f);
+                    float s = 1.1f - k * 0.25f;
+                    sb.Draw(bead, pos - Main.screenPosition, null, EocMotion.Arterial * 0.9f, rot, origin, new Vector2(0.5f * s, 1.3f * s), SpriteEffects.None, 0f);
+                }
+            }
+            foreach (Ligament l in ligaments) {
+                int n = Math.Max(l.Beads, 2);
+                for (int k = 0; k < n; k++) {
+                    float t = k / (float)(n - 1);
+                    Vector2 pos = BeadPos(l, t, out Vector2 axis);
+                    float w = BeadWidth(l, t) / 12f;
+                    sb.Draw(bead, pos - Main.screenPosition, null, EocMotion.VenousDark * 0.9f, axis.ToRotation() + MathHelper.PiOver2, origin, new Vector2(w, w * 1.8f), SpriteEffects.None, 0f);
+                }
+            }
+            foreach (Chunk c in chunks) {
+                sb.Draw(bead, c.Pos - Main.screenPosition, null, EocMotion.Arterial * 0.9f, c.Vel.ToRotation() + MathHelper.PiOver2, origin, new Vector2(c.Wid / 12f, c.Len / 42f), SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>雾中瞳光：小、常亮微光 + 间歇一闪；突进冷却期微暗；本体隐身时不画</summary>
+        private void DrawPupilGlint(Player owner, BloodfogIrisPlayer mp, int frame) {
+            float bloom = VaultUtils.EaseOutCubic(MathHelper.Clamp((frame + 1) / 10f, 0f, 1f));
             float fade = MathHelper.Clamp(Projectile.timeLeft / 24f, 0f, 1f);
             float blink = MathF.Pow(MathF.Max(MathF.Sin(
                 (float)Main.timeForVisualEffects * 0.11f + Projectile.whoAmI * 1.7f), 0f), 7f);
@@ -280,166 +809,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
                 soft.Size() / 2f, 0.4f * glow + 0.15f, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(flare, pos, null, glintColor * (glow * 0.65f),
                 Main.GlobalTimeWrappedHourly * 1.4f, flare.Size() / 2f, 0.11f * glow + 0.03f, SpriteEffects.None, 0f);
-        }
-
-        private static readonly List<Vector2> trailPos = new(64);
-        private static readonly List<float> trailAge = new(64);
-
-        /// <summary>突进血带三股：主带 + 两侧细股（不同淌速做视差，头端汇入本体）</summary>
-        private static readonly BloodRibbonRenderer.StrandDef[] DashStrands = [
-            new() { HalfWidth = 14f, PerpOffset = 0f, Seed = 0.13f, FlowMul = 1f, TearPx = 9f, OpacityMul = 1f, TailKeep = 1f },
-            new() { HalfWidth = 7f, PerpOffset = 10f, Seed = 0.57f, FlowMul = 1.45f, TearPx = 7f, OpacityMul = 0.9f, TailKeep = 0.35f },
-            new() { HalfWidth = 5f, PerpOffset = -11f, Seed = 0.91f, FlowMul = 0.8f, TearPx = 6f, OpacityMul = 0.85f, TailKeep = 0.35f },
-        ];
-
-        /// <summary>血流鞭三股：偏移为零，靠贝塞尔弯度各异编成绞股</summary>
-        private static readonly BloodRibbonRenderer.StrandDef[] StreamStrands = [
-            new() { HalfWidth = 9f, PerpOffset = 0f, Seed = 0.21f, FlowMul = 1.2f, TearPx = 7f, OpacityMul = 1f, TailKeep = 1f },
-            new() { HalfWidth = 6f, PerpOffset = 0f, Seed = 0.66f, FlowMul = 1.6f, TearPx = 6f, OpacityMul = 0.9f, TailKeep = 1f },
-            new() { HalfWidth = 5f, PerpOffset = 0f, Seed = 0.83f, FlowMul = 0.9f, TearPx = 6f, OpacityMul = 0.85f, TailKeep = 1f },
-        ];
-        private static readonly float[] StreamBends = [0.16f, -0.11f, 0.07f];
-        private static readonly List<Vector2> streamPos = new(24);
-        private static readonly List<float> streamAge = new(24);
-
-        /// <summary>玩家血带：位移采样点 + 点龄，龄蚀成珠链由着色器完成；传送级断口只保留连着头的一段</summary>
-        private static void DrawPlayerTrail(Player owner, BloodfogIrisPlayer mp) {
-            float heat = mp.TrailHeat;
-            if (heat <= 0.06f || mp.TrailPoints.Count < 2) {
-                return;
-            }
-
-            trailPos.Clear();
-            trailAge.Clear();
-            long now = Main.GameUpdateCount;
-            foreach (BloodfogIrisPlayer.TrailPoint p in mp.TrailPoints) {
-                if (trailPos.Count > 0 && Vector2.DistanceSquared(p.Pos, trailPos[^1]) > 380f * 380f) {
-                    trailPos.Clear();
-                    trailAge.Clear();
-                }
-                trailPos.Add(p.Pos);
-                trailAge.Add(1f - MathHelper.Clamp((p.DeathAt - now) / (float)BloodfogIrisPlayer.TrailPointLife, 0f, 1f));
-            }
-            if (Vector2.DistanceSquared(owner.Center, trailPos[^1]) > 380f * 380f) {
-                return;
-            }
-            trailPos.Add(owner.Center);
-            trailAge.Add(0f);
-            if (trailPos.Count < 3) {
-                return;
-            }
-
-            GraphicsDevice gd = Main.graphics.GraphicsDevice;
-            if (!BloodRibbonRenderer.Begin(gd, out Effect fx, out BlendState pb, out RasterizerState pr, out DepthStencilState pd)) {
-                DrawTrailFallback(heat);
-                return;
-            }
-            foreach (BloodRibbonRenderer.StrandDef def in DashStrands) {
-                BloodRibbonRenderer.DrawStrand(gd, fx, trailPos, trailAge, def, heat, 1f);
-            }
-            BloodRibbonRenderer.End(gd, pb, pr, pd);
-        }
-
-        /// <summary>缺 fxc 简笔：沿采样点画一串血珠（Extra_98 真 alpha），杜绝无形演出</summary>
-        private static void DrawTrailFallback(float heat) {
-            Texture2D bead = CWRAsset.Extra_98.Value;
-            int n = trailPos.Count;
-            for (int i = 0; i < n; i++) {
-                float u = i / (float)(n - 1);
-                float alive = 1f - trailAge[i];
-                float scale = (0.25f + 0.35f * u) * heat * alive;
-                if (scale < 0.04f) {
-                    continue;
-                }
-                Color col = Color.Lerp(EocMotion.VenousDark, EocMotion.Arterial, u) * (0.85f * alive);
-                Main.spriteBatch.Draw(bead, trailPos[i] - Main.screenPosition, null, col, u * 3f,
-                    bead.Size() * 0.5f, scale, SpriteEffects.None, 0f);
-            }
-        }
-
-        /// <summary>血流鞭：消隐点 → 玩家现位，7 帧鞭到、9 帧后尾端龄蚀，三股不同弯度</summary>
-        private void DrawStream(Player owner) {
-            int f = Frame;
-            if (f < 0) {
-                return;
-            }
-            Vector2 from = Projectile.Center;
-            Vector2 to = owner.Center;
-            float len = Vector2.Distance(from, to);
-            if (len < 24f) {
-                return;
-            }
-            float headReveal = VaultUtils.EaseOutCubic(MathHelper.Clamp((f + 1) / (float)StreamHeadFrames, 0f, 1f));
-            float erode = MathHelper.Clamp((f - StreamHoldFrame) / (float)StreamErodeFrames, 0f, 1f);
-            if (erode >= 1f) {
-                return;
-            }
-            Vector2 dir = (to - from) / len;
-            Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
-
-            GraphicsDevice gd = Main.graphics.GraphicsDevice;
-            if (!BloodRibbonRenderer.Begin(gd, out Effect fx, out BlendState pb, out RasterizerState pr, out DepthStencilState pd)) {
-                return;
-            }
-            const int Samples = 22;
-            for (int s = 0; s < StreamStrands.Length; s++) {
-                Vector2 ctrl = (from + to) * 0.5f + perp * (StreamBends[s] * len);
-                streamPos.Clear();
-                streamAge.Clear();
-                for (int i = 0; i < Samples; i++) {
-                    float t = i / (float)(Samples - 1);
-                    Vector2 p = Vector2.Lerp(Vector2.Lerp(from, ctrl, t), Vector2.Lerp(ctrl, to, t), t);
-                    streamPos.Add(p);
-                    streamAge.Add(MathHelper.Clamp(erode * 1.5f - t * 0.5f, 0f, 1f));
-                }
-                BloodRibbonRenderer.DrawStrand(gd, fx, streamPos, streamAge, StreamStrands[s], 1f, 1f, headReveal);
-            }
-            BloodRibbonRenderer.End(gd, pb, pr, pd);
-        }
-        #endregion
-
-        #region 本体上层：冲击血盾 / 血茧
-        void IPrimitiveDrawable.DrawPrimitives() {
-            Player owner = Main.player[Projectile.owner];
-            if (!owner.active || owner.dead || Mode == 1) {
-                return;
-            }
-            int f = Frame;
-            GraphicsDevice gd = Main.graphics.GraphicsDevice;
-            float seed = Projectile.whoAmI * 0.37f;
-
-            if (Mode == 0) {
-                if (f < 0 || f >= ShieldEndFrame) {
-                    return;
-                }
-                float form = MathHelper.Clamp((f + 1) / (float)(FormFrames + 1), 0f, 1f);
-                float brk = f >= BreakFrame
-                    ? VaultUtils.EaseInQuad(MathHelper.Clamp((f - BreakFrame + 1) / (float)BreakFrames, 0f, 1f))
-                    : 0f;
-                if (!BloodShieldMesh.Begin(gd, out Effect fx, out BlendState pb, out RasterizerState pr, out DepthStencilState pd)) {
-                    return;
-                }
-                //盾心随成形从体心向前推：血被挤到迎风面
-                Vector2 center = owner.Center + DashDir * (4f + 6f * form);
-                BloodShieldMesh.Draw(gd, fx, center, DashDir, ShieldRadius, ShieldSpan, ShieldThick, 1f,
-                    form, brk, flash, 1f, seed, 1f);
-                BloodShieldMesh.End(gd, pb, pr, pd);
-                return;
-            }
-
-            if (f < CocoonFormFrame || f >= CocoonEndFrame) {
-                return;
-            }
-            float cForm = MathHelper.Clamp((f - CocoonFormFrame + 1) / (float)CocoonFormFrames, 0f, 1f);
-            float cBrk = f >= CocoonBreakFrame
-                ? MathHelper.Clamp((f - CocoonBreakFrame + 1) / (float)CocoonBreakFrames, 0f, 1f)
-                : 0f;
-            if (!BloodShieldMesh.Begin(gd, out Effect cfx, out BlendState cpb, out RasterizerState cpr, out DepthStencilState cpd)) {
-                return;
-            }
-            BloodShieldMesh.Draw(gd, cfx, owner.Center, Vector2.UnitX, CocoonRadius, MathHelper.TwoPi, CocoonThick, 0f,
-                cForm, cBrk, 0f, 0.8f, seed, 0.95f);
-            BloodShieldMesh.End(gd, cpb, cpr, cpd);
         }
         #endregion
     }
@@ -473,23 +842,18 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             Lighting.AddLight(Projectile.Center, EocMotion.IrisRed.ToVector3() * 0.8f * (1f - Progress));
         }
 
-        /// <summary>命中拍：血爆 + 放射血滴 + 瞳色电花 + 湿裂响 + 血闪</summary>
+        /// <summary>命中拍：全向血珠 + 瞳色电花 + 湿裂响 + 血闪 + 震屏</summary>
         private void PlayBurst() {
-            BloodfogIrisFX.BloodBurst(Projectile.Center, 1.2f, playSound: false);
             EocMotion.Shake(Projectile.Center, 5f, 10);
             if (VaultUtils.isServer) {
                 return;
             }
+            Lighting.AddLight(Projectile.Center, EocMotion.Arterial.ToVector3() * 1.2f);
             SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.9f, Pitch = 0.22f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item103 with { Volume = 0.75f, Pitch = -0.12f }, Projectile.Center);
 
-            for (int i = 0; i < 10; i++) {
-                float angle = MathHelper.TwoPi * i / 10f + Main.rand.NextFloat(0.3f);
-                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 11f);
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Projectile.Center, vel,
-                    Color.Lerp(EocMotion.Arterial, EocMotion.BrightBlood, Main.rand.NextFloat()),
-                    Main.rand.NextFloat(1f, 1.8f))?.Configure(Main.rand.Next(20, 34), 0.32f, 0.984f);
-            }
+            BloodfogIrisFX.Spray(Projectile.Center, Vector2.UnitX, 22, MathHelper.Pi, 4f, 12f, 1f, 1.9f, 20, 36, 0.32f, 0.984f, 6f);
+            BloodfogIrisFX.FineMist(Projectile.Center, Vector2.UnitX, 8, 3f, MathHelper.Pi, 8f);
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 8f);
                 PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, vel,

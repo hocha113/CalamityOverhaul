@@ -169,10 +169,11 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                         110, default, Main.rand.NextFloat(0.9f, 1.3f) * (0.6f + 0.6f * progress));
                     d.noGravity = Main.rand.NextBool();
                 }
-                //末段绷紧颤抖
-                if (progress > 0.7f) {
-                    npc.position += Main.rand.NextVector2Circular(1.5f, 1.5f);
-                }
+            }
+
+            //末段绷紧颤抖（绘制层抖动通道，位置不动）
+            if (progress > 0.7f) {
+                ctx.ShakeStrength = Math.Max(ctx.ShakeStrength, 0.32f);
             }
 
             Timer++;

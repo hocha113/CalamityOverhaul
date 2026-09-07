@@ -142,14 +142,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 : (ctx.Target.Center - npc.Center).ToRotation();
             DeclareJaw(ctx, BssJawCommand.Inhale, progress);
 
-            //末段绷紧颤抖 + 脚下渗沙（各端本地）
-            if (!Main.dedServ) {
-                if (progress > 0.6f) {
-                    npc.position += Main.rand.NextVector2Circular(1.2f, 1.2f);
-                }
-                if (Main.rand.NextBool(2)) {
-                    BssVfx.SandTrickle(npc.Bottom + new Vector2(Main.rand.NextFloat(-60f, 60f), 0f), 0.6f + progress);
-                }
+            //末段绷紧颤抖（绘制层抖动通道，位置不动）
+            if (progress > 0.6f) {
+                ctx.ShakeStrength = Math.Max(ctx.ShakeStrength, 0.26f);
+            }
+            //脚下渗沙（各端本地）
+            if (!Main.dedServ && Main.rand.NextBool(2)) {
+                BssVfx.SandTrickle(npc.Bottom + new Vector2(Main.rand.NextFloat(-60f, 60f), 0f), 0.6f + progress);
             }
 
             Timer++;

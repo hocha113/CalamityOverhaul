@@ -95,6 +95,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
 
         #region 主 AI
         public override void AI() {
+            //体节位置每帧由前邻确定性重算，快照差折进 netOffset 纯属噪声；
+            //整链又由头集中绘制、读的是原始坐标，留着平滑偏移只会让接缝随每包错开
+            BossNetMotion.ClearSmoothing(NPC);
             NPC.timeLeft = 1800;
             NPC head = ResolveHead();
             if (head == null) {

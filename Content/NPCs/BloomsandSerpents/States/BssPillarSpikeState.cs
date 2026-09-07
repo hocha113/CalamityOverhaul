@@ -90,9 +90,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             //末段绷紧亮花（点名将至）
             if (t > BssDirector.SpikeStompFrames - 8) {
                 ctx.BloomGlow = Math.Max(ctx.BloomGlow, 0.8f);
-                if (!Main.dedServ) {
-                    npc.position += Main.rand.NextVector2Circular(1.2f, 1.2f);
-                }
+                //绘制层抖动通道，位置不动
+                ctx.ShakeStrength = Math.Max(ctx.ShakeStrength, 0.26f);
             }
 
             Timer++;

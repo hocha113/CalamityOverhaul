@@ -135,9 +135,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
             float toward = FacingToTarget(ctx, 0f);
             ctx.AimAngle = new Vector2(toward * 0.35f, -1f).ToRotation();
 
-            //末段绷紧
-            if (raise > 0.7f && !Main.dedServ) {
-                npc.position += Main.rand.NextVector2Circular(1.5f, 1.5f);
+            //末段绷紧（绘制层抖动通道，位置不动）
+            if (raise > 0.7f) {
+                ctx.ShakeStrength = Math.Max(ctx.ShakeStrength, 0.32f);
             }
 
             if (t == RoarBeat) {

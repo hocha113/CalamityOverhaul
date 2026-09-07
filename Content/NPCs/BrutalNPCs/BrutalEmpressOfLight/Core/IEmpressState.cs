@@ -7,33 +7,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
     internal enum EmpressStateIndex : int
     {
         Intro = 0,
-        /// <summary>衔接：归位滑翔+攻击选择</summary>
+        /// <summary>衔接：贴身追击+攻击选择</summary>
         Connector = 1,
-        /// <summary>旋转棱彩环，缺口进动</summary>
-        PrismRings = 2,
-        /// <summary>以太枪骑网格，错拍执行</summary>
-        LanceGrid = 3,
-        /// <summary>剑雨阵，编队悬停瞄准齐射</summary>
-        SwordRain = 4,
-        /// <summary>日舞，径向光束旋扇</summary>
-        RadiantDance = 5,
-        /// <summary>收缩笼，旋转缺口</summary>
-        ConvergingCage = 6,
-        /// <summary>干涉织网，双手反向双螺旋</summary>
-        InterferenceWeave = 7,
-        /// <summary>弦月突进，冲刺+垂直弹幕尾迹</summary>
-        CrescentDash = 8,
-        /// <summary>永恒绽放(P2)，虹瓣螺旋+绽放核心</summary>
-        EverlastingBloom = 9,
-        /// <summary>半血变身，全屏棱彩爆发</summary>
+        /// <summary>光球螺旋：就位→冲击波推开→八臂加速光球</summary>
+        LightSpiral = 2,
+        /// <summary>冲刺抓取：预测转向追击，命中且冷却到则接投技</summary>
+        DashGrab = 3,
+        /// <summary>日舞：按偏角表逐发追踪光束</summary>
+        SunDance = 4,
+        /// <summary>长枪墙：出生点偏移+跳索引缝隙+衰减追踪</summary>
+        LanceWall = 5,
+        /// <summary>瞬现枪：读玩家速度从身后顺向打的 hitscan 线</summary>
+        HitscanVolley = 6,
+        /// <summary>熔光扇：多组交错充能的七射线扇</summary>
+        MeltingLight = 7,
+        /// <summary>半血变身</summary>
         PhaseTransition = 10,
-        /// <summary>低血大招，棱彩过驱三重奏</summary>
-        PrismOverdrive = 11,
         Despawn = 12,
-        /// <summary>死亡演出，光之消散</summary>
+        /// <summary>死亡演出，光之消散+认输独白</summary>
         Death = 13,
-        /// <summary>光绫缚舞投技：缚定悬空→三段交叉剑舞→辐光爆绽掷出</summary>
+        /// <summary>光绫缚舞投技</summary>
         LightBindWaltz = 14,
+        /// <summary>三阶段变身：台词+回血+相位姿势</summary>
+        Phase3Transform = 15,
+        /// <summary>终章步进剧本：加速墙→智能枪→反向日舞→缩圈</summary>
+        Finale = 16,
     }
 
     /// <summary>状态接口</summary>
@@ -92,6 +90,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             if (!VaultUtils.isServer) {
                 Terraria.Audio.SoundEngine.PlaySound(style, pos);
             }
+        }
+
+        /// <summary>停顿末尾一跃入招（停顿不是站着等计时器）</summary>
+        protected static void HopOut(NPC npc) {
+            npc.velocity.Y = -15f;
+            npc.velocity.X *= 0.3f;
         }
 
         #endregion

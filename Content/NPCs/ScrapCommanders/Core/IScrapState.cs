@@ -84,6 +84,15 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders.Core
             OnExit(ctx);
         }
 
+        /// <summary>
+        /// 收养权威端随快照过线的状态计时（客户端）。容差内不动本地值：
+        /// 只差一两帧是网络抖动的常态，硬对齐会让 Timer == X 型一次性拍被跳过或重放
+        /// </summary>
+        internal void AdoptNetTiming(int timer, int counter) {
+            Timer = BossNetMotion.AdoptTimer(Timer, timer);
+            Counter = counter;
+        }
+
         #region 公共小件
 
         /// <summary>朝锚点滑行：比例趋近 + 限速 + 惯性混合，指数衰减不匀速</summary>

@@ -14,14 +14,19 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
     /// <summary>
     /// 废钢仆从：统帅从废钢堆里拼出来的巡逻兵（原版探测怪贴图 + 锈化）。
     /// 出土上升 → 绕统帅巡逻 → 周期性朝目标点射锈脉冲。
-    /// ai[0]=统帅 whoAmI，ai[1]=编队槽位
+    /// ai[0]=统帅 whoAmI，ai[1]=编队槽位，ai[2]=编队相位（各端同速推进，随快照纠偏）
     /// </summary>
     internal class ScrapLegionProbe : ScrapModNPC
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
+        /// <summary>编队相位推进速率（弧度/帧）</summary>
+        private const float OrbitRate = 0.8f / 60f;
+
         private NPC Boss => Main.npc[(int)NPC.ai[0]];
         private int Slot => (int)NPC.ai[1];
+        /// <summary>编队相位：走同步槽而非本机墙钟，否则各端的巡逻位常年错开</summary>
+        private ref float OrbitPhase => ref NPC.ai[2];
         /// <summary>出土计时（本地表现量）</summary>
         private ref float RiseTimer => ref NPC.localAI[0];
         /// <summary>开火节拍器</summary>
@@ -50,6 +55,8 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
         }
 
         public override void AI() {
+            //位置由确定性重算（编队锚点 + 阻尼趋近），快照差折进 netOffset 纯属噪声
+            BossNetMotion.ClearSmoothing(NPC);
             NPC boss = Boss;
             bool bossAlive = boss != null && boss.active
                 && boss.type == ModContent.NPCType<ScrapCommander>();
@@ -84,8 +91,12 @@ namespace CalamityOverhaul.Content.NPCs.ScrapCommanders
                 return;
             }
 
-            //绕统帅巡逻：编队相位随时间缓转
-            float ang = Main.GlobalTimeWrappedHourly * 0.8f + Slot * MathHelper.TwoPi / 3f;
+            //绕统帅巡逻：编队相位各端同速推进（同步槽随快照纠偏，不读本机墙钟）
+            OrbitPhase += OrbitRate;
+            if (OrbitPhase > MathHelper.TwoPi) {
+                OrbitPhase -= MathHelper.TwoPi;
+            }
+            float ang = OrbitPhase + Slot * MathHelper.TwoPi / 3f;
             Vector2 anchor = boss.Center + ang.ToRotationVector2() * 190f;
             Vector2 to = anchor - NPC.Center;
             NPC.velocity = Vector2.Lerp(NPC.velocity, to * 0.06f, 0.12f);

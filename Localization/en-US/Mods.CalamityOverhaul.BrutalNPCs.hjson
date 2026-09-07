@@ -4,3 +4,19 @@ WallOfFleshAI: {
 	CurtainDeathReason: "{0} was swallowed by the blood tide"
 	NetDeathReason: "{0} was shredded by the net of the Hungry"
 }
+
+EmpressOfLightAI: {
+	# Phase 3 transformation lines, spoken at fixed ticks; the seventh plays when the closing ring finishes and she can be killed again
+	Phase3_0: ...Hm?
+	Phase3_1: How can this be?
+	Phase3_2: I have pushed my light to its limit. How are you still standing?
+	Phase3_3: ...No.
+	Phase3_4: I will not bow to you like this.
+	Phase3_5: If you want this fight, you will take every last ray of me.
+	Phase3_6: Now. Your turn.
+	# Concession monologue, one line per beat of the death performance
+	Concede_0: ...Enough.
+	Concede_1: You are far stronger than you look.
+	Concede_2: Those butterflies mean everything to me. Leave them be, and this sky stays ours to share.
+	Concede_3: The light will remember you.
+}

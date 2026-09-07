@@ -84,6 +84,15 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents.Core
             OnExit(ctx);
         }
 
+        /// <summary>
+        /// 收养权威端随快照过线的状态计时（客户端）。容差内不动本地值：
+        /// 只差一两帧是网络抖动的常态，硬对齐会让 Timer == X 型一次性拍被跳过或重放
+        /// </summary>
+        internal void AdoptNetTiming(int timer, int counter) {
+            Timer = BossNetMotion.AdoptTimer(Timer, timer);
+            Counter = counter;
+        }
+
         #region 公共小件
 
         /// <summary>结束攻击：有连击队列直接接招，否则回 hub 挂冷却</summary>

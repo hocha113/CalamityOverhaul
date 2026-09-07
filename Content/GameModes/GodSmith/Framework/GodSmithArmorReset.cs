@@ -135,14 +135,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
                 }
             }
             if (setBonusLine != null) {
-                //穿着中：原版套装奖励行原样落在段内（含镶嵌链继承行），只换成段内正文色
-                setBonusLine.OverrideColor = GodSmithTooltip.BodyGold;
-                tooltips.Add(setBonusLine);
+                //穿着中：原版套装奖励行按 \n 拆开依次加入，段内正文色（支持多行排版）
+                GodSmithTooltip.AddBodyLines(tooltips, "CWR_GodSmithSetBonus", setBonusLine.Text, GodSmithTooltip.BodyGold);
                 return;
             }
             //没穿在身上（未穿满，或背包里的同款）：预告套装奖励
-            GodSmithTooltip.AddBodyLines(tooltips, "CWR_GodSmithSetPreview",
-                GameModeText.GodSmithSetPreview.Format(scheme.SetBonusLine.Value), GodSmithTooltip.BodyGold);
+            //原版 Format 会把单行整体嵌进占位符；多行时首行带前缀，后续行顶格排入
+            string previewText = scheme.SetBonusLine.Value;
+            if (!string.IsNullOrEmpty(previewText)) {
+                string[] lines = previewText.Split('\n');
+                lines[0] = GameModeText.GodSmithSetPreview.Format(lines[0]);
+                GodSmithTooltip.AddBodyLines(tooltips, "CWR_GodSmithSetPreview", string.Join("\n", lines), GodSmithTooltip.BodyGold);
+            }
         }
     }
 

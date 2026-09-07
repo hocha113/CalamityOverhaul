@@ -119,11 +119,13 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
             }
 
             if (ActiveScheme.OverridesVanilla) {
-                //接管形态：套装奖励文本由方案定义，继承项逐行追加
+                //接管形态：套装奖励文本由方案定义，继承项追加在后；多行排版时继承项前留空行分隔
                 StringBuilder text = new(ActiveScheme.SetBonusLine.Value);
                 for (int i = 1; i < activeBonuses.Count; i++) {
-                    text.Append('\n').Append(GameModeText.GodSmithInheritLine.Format(
-                        Lang.GetItemNameValue(bonusSourceHeads[i]), activeBonuses[i].SetBonusLine.Value));
+                    string inheritBody = activeBonuses[i].SetBonusLine.Value;
+                    string[] lines = inheritBody.Split('\n');
+                    lines[0] = GameModeText.GodSmithInheritLine.Format(Lang.GetItemNameValue(bonusSourceHeads[i]), lines[0]);
+                    text.Append("\n\n").Append(string.Join("\n", lines));
                 }
                 Player.setBonus = text.ToString();
                 return;
@@ -133,7 +135,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
             string endow = GameModeText.GodSmithEndowPrefix.Value + ActiveScheme.EndowLine.Value;
             Player.setBonus = string.IsNullOrEmpty(Player.setBonus)
                 ? endow
-                : Player.setBonus + "\n" + endow;
+                : Player.setBonus + "\n\n" + endow;
         }
 
         private GodSmithArmorScheme ResolveScheme() {

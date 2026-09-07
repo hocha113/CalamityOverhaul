@@ -1,8 +1,12 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
+using InnoVault.GameSystem;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -68,9 +72,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         public const int AmbushWindowFrames = 90;
         /// <summary>常驻暴击率加成(%)</summary>
         public const int CritChanceBonus = 8;
-        /// <summary>拖尾采样点寿命(帧)，着色器按点龄把老段蚀成珠链</summary>
-        public const int TrailPointLife = 30;
-        private const int MaxTrailPoints = 48;
         #endregion
 
         #region 状态
@@ -84,23 +85,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         public int AmbushWindow;
         /// <summary>雾体虚弱剩余(仅 owner 端置位)，期间受到的伤害提高15%</summary>
         public int MistWeaknessTimer;
-        /// <summary>雾态视觉计时，由随身雾裹弹幕在各端每帧点亮</summary>
+        /// <summary>雾态视觉计时，由随身演出弹幕在各端每帧点亮</summary>
         public int VeilVisualTimer;
+        /// <summary>本体隐身计时：突进途中/重凝到位前本体就是那团血，由演出弹幕在各端每帧点亮</summary>
+        public int HideBodyTimer;
         /// <summary>突进剩余帧，>0 为突进中(仅 owner 有效)</summary>
         private int dashTimer;
         private Vector2 dashDir;
-        /// <summary>拖尾热度 0~1，由位移速度推导，各端一致</summary>
-        public float TrailHeat;
-
-        public struct TrailPoint
-        {
-            public Vector2 Pos;
-            /// <summary>过期时刻(GameUpdateCount)</summary>
-            public long DeathAt;
-        }
-
-        /// <summary>血带拖尾采样，旧点在前；各客户端本地自采</summary>
-        public readonly System.Collections.Generic.List<TrailPoint> TrailPoints = new(MaxTrailPoints + 4);
         #endregion
 
         #region 计时
@@ -115,8 +106,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             TickTimers();
             dashTimer = 0;
             AmbushWindow = 0;
-            TrailPoints.Clear();
-            TrailHeat = 0f;
+            HideBodyTimer = 0;
         }
 
         private void TickTimers() {
@@ -137,6 +127,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             }
             if (VeilVisualTimer > 0) {
                 VeilVisualTimer--;
+            }
+            if (HideBodyTimer > 0) {
+                HideBodyTimer--;
             }
         }
 
@@ -292,9 +285,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             Player.GivePlayerImmuneState(DodgeImmuneFrames, false);
             AmbushWindow = AmbushWindowFrames;
             MistWeaknessTimer = MistWeaknessFrames;   //雾体虚弱：免死的代价
-            TrailPoints.Clear();   //传送切断血带
 
-            //消隐点雾爆(弹幕承载，各端可见)
+            //消隐点：躯体炸成血 + 一团血核飞向新位置(弹幕承载，各端可见)
             SpawnBurstVeil(oldCenter);
 
             if (found) {
@@ -385,45 +377,19 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             }
         }
 
-        //拖尾各端本地自采：位移推导热度，无需网络包
-        public override void PostUpdate() {
-            if (Main.dedServ) {
-                return;
-            }
-
-            long now = Main.GameUpdateCount;
-            while (TrailPoints.Count > 0 && TrailPoints[0].DeathAt <= now) {
-                TrailPoints.RemoveAt(0);
-            }
-
-            if (TrailPoints.Count > 0) {
-                float move = Vector2.Distance(TrailPoints[^1].Pos, Player.Center);
-                //传送级位移直接斩断
-                if (move > 210f) {
-                    TrailPoints.Clear();
-                    TrailHeat = 0f;
-                }
-                else {
-                    //突进满速 26px/帧 → 满热；常速奔跑(≤7px)不起带
-                    TrailHeat = Math.Max(TrailHeat * 0.93f, MathHelper.Clamp((move - 8f) / 16f, 0f, 1f));
-                }
-            }
-            else {
-                TrailHeat *= 0.93f;
-            }
-
-            if (VeilVisualTimer <= 0 && TrailHeat < 0.05f) {
-                return;
-            }
-
-            if (TrailPoints.Count == 0
-                || Vector2.DistanceSquared(TrailPoints[^1].Pos, Player.Center) > 36f) {
-                TrailPoints.Add(new TrailPoint { Pos = Player.Center, DeathAt = now + TrailPointLife });
-                if (TrailPoints.Count > MaxTrailPoints) {
-                    TrailPoints.RemoveAt(0);
-                }
-            }
-        }
         #endregion
+    }
+
+    /// <summary>
+    /// 本体隐身：突进途中/重凝到位前玩家本体就是那团血核，不画本体。<br/>
+    /// 钩子只在本地玩家的 override 上触发，但拿到的是全体待绘玩家，按各玩家自己的 HideBodyTimer 过滤，
+    /// 该计时由演出弹幕在各端本地点亮，多人各端一致
+    /// </summary>
+    internal class BloodfogHideOverride : PlayerOverride
+    {
+        public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
+            players = players.Where(p => !(p.TryGetModPlayer(out BloodfogIrisPlayer mp) && mp.HideBodyTimer > 0));
+            return true;
+        }
     }
 }

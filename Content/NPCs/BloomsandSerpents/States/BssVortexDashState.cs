@@ -205,9 +205,9 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents.States
                 DeclareJaw(ctx, BssJawCommand.Inhale, progress);
             }
 
-            //末段绷紧颤抖
-            if (progress > 0.5f && !Main.dedServ) {
-                npc.position += Main.rand.NextVector2Circular(1.5f, 1.5f);
+            //末段绷紧颤抖（绘制层抖动通道，位置不动）
+            if (progress > 0.5f) {
+                ctx.ShakeStrength = Math.Max(ctx.ShakeStrength, 0.32f);
             }
 
             Timer++;

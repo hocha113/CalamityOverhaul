@@ -252,3 +252,8 @@ BlessErosionBuff: {
 	// DisplayName: Erosion
 	// Description: The Ring of Rot gnaws the armor, reducing defense by 10
 }
+
+EmpressScorchBuff: {
+	// DisplayName: Empress Scorch Buff
+	// Description: Mods.CalamityOverhaul.Buffs.EmpressScorchBuff.Description
+}

@@ -73,6 +73,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         internal const int SlotGrabPhase = 6;
         /// <summary>投技挤压拍计数</summary>
         internal const int SlotGrabBeat = 7;
+        /// <summary>当前状态计时(权威端随快照过线，客户端收养)</summary>
+        internal const int SlotStateTimer = 8;
+        /// <summary>当前状态子计数(同上)</summary>
+        internal const int SlotStateCounter = 9;
 
         /// <summary>绿雾滤镜注册名</summary>
         internal const string MiasmaFilterName = "CalamityOverhaul:EowMiasma";
@@ -90,6 +94,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         private int lastRawDamage = -1;
         /// <summary>乘算记忆：上帧放大后的输出值</summary>
         private int lastEnragedOutput = -1;
+        /// <summary>联机运动：客户端位置纠偏 + 状态计时收养</summary>
+        private readonly BossNetMotion netMotion = new();
 
         /// <summary>状态上下文(体节绘制读取脉冲通道)</summary>
         internal EowStateContext Context => stateContext;
@@ -126,6 +132,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             };
             stateMachine = new NpcStateMachine<EowStateContext>(stateContext, aiSlot: 2);
 
+            //换态包带的是新态的计时：客户端在框架换态(新实例 OnEnter 刚清零)之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => {
+                if (VaultUtils.isClient && next is EowStateBase entered
+                    && netMotion.TryTakeTiming(entered.StateId, out int timer, out int counter)) {
+                    entered.AdoptNetTiming(timer, counter);
+                }
+            };
+
             //客户端从 ai[2] 恢复状态
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[2];
@@ -142,6 +156,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         public override bool AI() {
             if (stateContext == null || stateMachine == null) {
                 InitializeStateContext();
+            }
+
+            bool client = VaultUtils.isClient;
+            if (client) {
+                //自接位置纠偏：头速 20～46 px/f，命中驱动的高频快照下原版平滑只会锯齿
+                netMotion.BeginFrame(npc);
+                //同态收包：让本帧的拍点从权威端的计时起算
+                if (stateMachine?.CurrentState is EowStateBase adopting
+                    && netMotion.TryTakeTiming(adopting.StateId, out int timer, out int counter)) {
+                    adopting.AdoptNetTiming(timer, counter);
+                }
             }
 
             FindTarget();
@@ -184,11 +209,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             EnforceUnifiedLife();
             UpdateVisuals();
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
+            if (client) {
+                netMotion.EndFrame(npc);
+            }
+            else if (Main.GameUpdateCount % BossNetMotion.HeartbeatFrames == 0) {
+                //决策点(换态/回归瞬移/命中)各自 netUpdate，这里只留慢频兜底心跳
                 npc.netUpdate = true;
             }
 
             return false;
+        }
+
+        /// <summary>权威端：把当前状态计时塞进热槽，随快照与位置/速度原子过线</summary>
+        public override void NetSend(System.IO.BinaryWriter writer) {
+            if (stateMachine?.CurrentState is EowStateBase state) {
+                ai[SlotStateTimer] = state.Timer;
+                ai[SlotStateCounter] = state.Counter;
+            }
+            base.NetSend(writer);
+        }
+
+        /// <summary>客户端收包：ai 槽已刷新，据此算帧差纠偏，计时留给下一帧(或换态时)收养</summary>
+        public override void NetReceive(System.IO.BinaryReader reader) {
+            base.NetReceive(reader);
+            int localStateId = -1;
+            int localTimer = 0;
+            if (stateMachine?.CurrentState is EowStateBase state) {
+                localStateId = state.StateId;
+                localTimer = state.Timer;
+            }
+            netMotion.ReceiveTiming((int)npc.ai[2], (int)ai[SlotStateTimer], (int)ai[SlotStateCounter],
+                npc, localStateId, localTimer);
         }
         #endregion
 
@@ -440,8 +491,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
                         stateContext.GroupTurns[g], 0.085f, 0.45f, ref phase);
                 }
 
-                //分组首节周期强制同步
-                if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
+                //分组首节的运动各端同算，只留慢频兜底心跳
+                if (!VaultUtils.isClient && Main.GameUpdateCount % BossNetMotion.HeartbeatFrames == 0) {
                     leader.netUpdate = true;
                 }
             }
@@ -504,6 +555,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             npc.Center = ground + new Vector2(side * 680f, 520f);
             npc.velocity = new Vector2(-side * 8f, -22f);
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+            //瞬移后旧预测作废，别让下一包按位移差当失步处理
+            netMotion.ForgetPrediction();
             npc.netUpdate = true;
             EowMotionFX.SpawnDirtBurst(ground + new Vector2(side * 680f, 0f), 1.2f);
         }

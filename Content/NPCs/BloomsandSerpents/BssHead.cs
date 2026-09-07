@@ -13,6 +13,7 @@ using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -132,6 +133,8 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         private float jawSmooth = 0.42f;
         /// <summary>远距滞留帧</summary>
         private int farTimer;
+        /// <summary>联机运动：客户端位置纠偏 + 状态计时收养</summary>
+        private readonly BossNetMotion netMotion = new();
 #if DEBUG
         /// <summary>上一帧速度（航向突变探针用）</summary>
         private Vector2 probeVelocity;
@@ -245,6 +248,14 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             };
             stateMachine = new NpcStateMachine<BssStateContext>(Context);
 
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => {
+                if (VaultUtils.isClient && next is BssStateBase entered
+                    && netMotion.TryTakeTiming(entered.StateId, out int timer, out int counter)) {
+                    entered.AdoptNetTiming(timer, counter);
+                }
+            };
+
             //中途加入的客户端从 ai[3] 恢复状态
             if (VaultUtils.isClient) {
                 int syncedIndex = (int)NPC.ai[3];
@@ -261,6 +272,18 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
         public override void AI() {
             if (stateMachine == null || Context == null) {
                 InitializeStateMachine();
+            }
+
+            bool client = VaultUtils.isClient;
+            if (client) {
+                //自接位置纠偏：冲刺 30~50 px/f，命中驱动的高频快照下原版 netOffset 平滑只会锯齿，
+                //而且整链由头集中绘制、体节读的是原始坐标，头带着平滑偏移就会与颈段错开
+                netMotion.BeginFrame(NPC);
+                //同态收包：让本帧的拍点从权威端的计时起算
+                if (stateMachine?.CurrentState is BssStateBase adopting
+                    && netMotion.TryTakeTiming(adopting.StateId, out int timer, out int counter)) {
+                    adopting.AdoptNetTiming(timer, counter);
+                }
             }
 
             NPC.dontTakeDamage = false;
@@ -336,9 +359,37 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
                 NPC.alpha = Math.Max(NPC.alpha - 42, 0);
             }
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
+            if (client) {
+                netMotion.EndFrame(NPC);
+            }
+            else if (Main.GameUpdateCount % BossNetMotion.HeartbeatFrames == 0) {
+                //决策点（换态/回归瞬移/出手锁向/命中）各自 netUpdate，这里只留慢频兜底心跳
                 NPC.netUpdate = true;
             }
+        }
+
+        /// <summary>权威端：把当前状态计时写进快照，与位置/速度原子过线</summary>
+        public override void SendExtraAI(BinaryWriter writer) {
+            int stateId = -1;
+            int timer = 0;
+            int counter = 0;
+            if (stateMachine?.CurrentState is BssStateBase state) {
+                stateId = state.StateId;
+                timer = state.Timer;
+                counter = state.Counter;
+            }
+            BossNetMotion.WriteTiming(writer, stateId, timer, counter);
+        }
+
+        /// <summary>客户端收包：position/velocity/ai 已是服务端值，据计时差纠偏，计时留给收养</summary>
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            int localStateId = -1;
+            int localTimer = 0;
+            if (stateMachine?.CurrentState is BssStateBase state) {
+                localStateId = state.StateId;
+                localTimer = state.Timer;
+            }
+            netMotion.ReceiveTiming(reader, NPC, localStateId, localTimer);
         }
 
         private void FindTarget() {
@@ -794,6 +845,13 @@ namespace CalamityOverhaul.Content.NPCs.BloomsandSerpents
             if (Context.GapWaveKind == SerpentChainMath.WaveRelease && Context.GapWaveAge < 4f
                 && NPC.velocity.LengthSquared() > 1f) {
                 mainPos -= NPC.velocity.SafeNormalize(Vector2.Zero) * ((4f - Context.GapWaveAge) * 1.4f);
+            }
+            //全身抖动：与体节读同一通道（位置不动，纯绘制偏移；腿保持踩定）
+            if (Context.ShakeStrength > 0.02f) {
+                mainPos += new Vector2(
+                    MathF.Sin(Main.GlobalTimeWrappedHourly * 61f + NPC.whoAmI),
+                    MathF.Cos(Main.GlobalTimeWrappedHourly * 47f + NPC.whoAmI * 1.7f))
+                    * (4f * Context.ShakeStrength);
             }
             float fade = 1f - NPC.alpha / 255f;
 

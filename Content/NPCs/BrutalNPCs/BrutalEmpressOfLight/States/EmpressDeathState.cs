@@ -51,6 +51,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 npc.life = 1;
             }
 
+            //认输独白：四拍各一句（权威端广播）
+            if (Timer == 12) {
+                EmpressOfLightAI.SayConcede(0);
+            }
+            else if (Timer == StaggerEnd + 10) {
+                EmpressOfLightAI.SayConcede(1);
+            }
+            else if (Timer == AscendEnd + 6) {
+                EmpressOfLightAI.SayConcede(2);
+            }
+            else if (Timer == GatherEnd + 30) {
+                EmpressOfLightAI.SayConcede(3);
+            }
+
             if (Timer < StaggerEnd) {
                 StaggerUpdate(context, npc);
             }
@@ -98,11 +112,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     float hue = Main.rand.NextFloat();
                     Vector2 crack = npc.Center + Main.rand.NextVector2Circular(46f, 66f);
                     PRTLoader.NewParticle<PRT_EmpressSpark>(crack, Main.rand.NextVector2Circular(2.5f, 2.5f),
-                        EmpressMotion.Prism(hue, 0.72f), Main.rand.NextFloat(0.8f, 1.4f))?.Configure(20, hue);
+                        EmpressMotion.FormColor(hue, context.DayFormBlend, 0.72f), Main.rand.NextFloat(0.8f, 1.4f))?.Configure(20, hue, context.DayFormBlend);
                 }
                 if (Timer % 16 == 0) {
                     PRTLoader.NewParticle<PRT_EmpressRipple>(npc.Center, Vector2.Zero, Color.White, 0.5f)?
-                        .Configure(16, Main.rand.NextFloat());
+                        .Configure(16, Main.rand.NextFloat(), context.DayFormBlend);
                     EmpressMotion.CinematicShake(npc.Center, 2f, 8);
                 }
             }
@@ -135,7 +149,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     float hue = Main.rand.NextFloat();
                     Vector2 spawn = npc.Center + new Vector2(Main.rand.NextFloat(-260f, 260f), Main.rand.NextFloat(120f, 300f));
                     PRTLoader.NewParticle<PRT_EmpressSpark>(spawn, (npc.Center - spawn) * 0.03f,
-                        EmpressMotion.Prism(hue, 0.66f), Main.rand.NextFloat(0.6f, 1.1f))?.Configure(30, hue);
+                        EmpressMotion.FormColor(hue, context.DayFormBlend, 0.66f), Main.rand.NextFloat(0.6f, 1.1f))?.Configure(30, hue, context.DayFormBlend);
                 }
             }
         }
@@ -154,7 +168,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             //屏息始点：一圈白色收束涟漪标记"万光归一"完成
             if (!VaultUtils.isServer && Timer == GatherEnd - 12) {
                 PRTLoader.NewParticle<PRT_EmpressRipple>(npc.Center, Vector2.Zero, Color.White, 0.8f)?
-                    .Configure(12, 0.6f);
+                    .Configure(12, 0.6f, context.DayFormBlend);
             }
             if (!VaultUtils.isServer && !silence) {
                 EmpressScreenFX.DeclareAmbient(0.6f + t * 0.3f);
@@ -162,7 +176,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     float hue = Main.rand.NextFloat();
                     Vector2 spawn = npc.Center + Main.rand.NextVector2CircularEdge(420f, 440f) * (1f - t * 0.55f);
                     PRTLoader.NewParticle<PRT_EmpressSpark>(spawn, (npc.Center - spawn) * (0.05f + t * 0.07f),
-                        EmpressMotion.Prism(hue, 0.74f), Main.rand.NextFloat(0.8f, 1.3f))?.Configure(14, hue);
+                        EmpressMotion.FormColor(hue, context.DayFormBlend, 0.74f), Main.rand.NextFloat(0.8f, 1.3f))?.Configure(14, hue, context.DayFormBlend);
                 }
             }
             if (Timer == AscendEnd + 8) {
@@ -193,8 +207,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                         float hue = i / 56f;
                         Vector2 vel = Main.rand.NextVector2Circular(6f, 5f) + new Vector2(0f, -1.5f);
                         PRTLoader.NewParticle<PRT_EmpressButterfly>(npc.Center + Main.rand.NextVector2Circular(50f, 70f),
-                            vel, EmpressMotion.Prism(hue, 0.68f), Main.rand.NextFloat(0.8f, 1.5f))?
-                            .Configure(Main.rand.Next(70, 120), hue);
+                            vel, EmpressMotion.FormColor(hue, context.DayFormBlend, 0.68f), Main.rand.NextFloat(0.8f, 1.5f))?
+                            .Configure(Main.rand.Next(70, 120), hue, context.DayFormBlend);
                     }
                 }
                 PlayLocal(SoundID.Item162 with { Volume = 1f, Pitch = 0.15f }, npc.Center);
@@ -212,8 +226,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     float hue = Main.rand.NextFloat();
                     PRTLoader.NewParticle<PRT_EmpressButterfly>(npc.Center + Main.rand.NextVector2Circular(140f, 120f),
                         new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-3.5f, -1.2f)),
-                        EmpressMotion.Prism(hue, 0.66f), Main.rand.NextFloat(0.6f, 1.1f))?
-                        .Configure(Main.rand.Next(80, 130), hue);
+                        EmpressMotion.FormColor(hue, context.DayFormBlend, 0.66f), Main.rand.NextFloat(0.6f, 1.1f))?
+                        .Configure(Main.rand.Next(80, 130), hue, context.DayFormBlend);
                 }
             }
 
@@ -225,7 +239,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     float hue = Main.rand.NextFloat();
                     PRTLoader.NewParticle<PRT_EmpressPetalDust>(npc.Center + Main.rand.NextVector2Circular(90f, 110f),
                         new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1.8f, -0.4f)),
-                        EmpressMotion.Prism(hue, 0.64f), Main.rand.NextFloat(0.5f, 1f))?.Configure(50, hue);
+                        EmpressMotion.FormColor(hue, context.DayFormBlend, 0.64f), Main.rand.NextFloat(0.5f, 1f))?.Configure(50, hue, context.DayFormBlend);
                 }
             }
         }

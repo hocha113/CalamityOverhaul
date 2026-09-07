@@ -3,40 +3,51 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
-    /// <summary>衔接拍：优雅归位滑翔+攻击选择（手写循环表，强度交替）</summary>
+    /// <summary>
+    /// 衔接拍：贴身追击（连接段本身有压迫）+ 刹车 + 攻击选择（手写循环表，冲刺当连接符、重招隔开）。
+    /// 阶段门槛与终章入口都在这里裁决，攻击态永不自选后继
+    /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.Connector, typeof(EmpressStateContext))]
     internal class EmpressConnectorState : EmpressStateBase
     {
         public override string StateName => "EmpressConnector";
         public override EmpressStateIndex StateIndex => EmpressStateIndex.Connector;
 
-        /// <summary>一阶段攻击循环：压制→机动→爆发→控场交替</summary>
+        /// <summary>一阶段：光球螺旋, 冲刺, 日舞, 冲刺, 瞬现枪, 光球螺旋, 冲刺, 长枪墙, 冲刺, 日舞</summary>
         private static readonly EmpressStateIndex[] Phase1Cycle = [
-            EmpressStateIndex.PrismRings,
-            EmpressStateIndex.CrescentDash,
-            EmpressStateIndex.SwordRain,
-            EmpressStateIndex.LanceGrid,
-            EmpressStateIndex.InterferenceWeave,
-            EmpressStateIndex.CrescentDash,
-            EmpressStateIndex.ConvergingCage,
-            EmpressStateIndex.RadiantDance,
+            EmpressStateIndex.LightSpiral,
+            EmpressStateIndex.DashGrab,
+            EmpressStateIndex.SunDance,
+            EmpressStateIndex.DashGrab,
+            EmpressStateIndex.HitscanVolley,
+            EmpressStateIndex.LightSpiral,
+            EmpressStateIndex.DashGrab,
+            EmpressStateIndex.LanceWall,
+            EmpressStateIndex.DashGrab,
+            EmpressStateIndex.SunDance,
         ];
 
-        /// <summary>二阶段攻击循环</summary>
+        /// <summary>二阶段：长枪墙, 光球螺旋, 冲刺, 瞬现枪, 熔光扇, 日舞, 冲刺, 长枪墙, 熔光扇, 冲刺</summary>
         private static readonly EmpressStateIndex[] Phase2Cycle = [
-            EmpressStateIndex.LanceGrid,
-            EmpressStateIndex.PrismRings,
-            EmpressStateIndex.CrescentDash,
-            EmpressStateIndex.EverlastingBloom,
-            EmpressStateIndex.SwordRain,
-            EmpressStateIndex.InterferenceWeave,
-            EmpressStateIndex.CrescentDash,
-            EmpressStateIndex.ConvergingCage,
-            EmpressStateIndex.RadiantDance,
-            EmpressStateIndex.SwordRain,
+            EmpressStateIndex.LanceWall,
+            EmpressStateIndex.LightSpiral,
+            EmpressStateIndex.DashGrab,
+            EmpressStateIndex.HitscanVolley,
+            EmpressStateIndex.MeltingLight,
+            EmpressStateIndex.SunDance,
+            EmpressStateIndex.DashGrab,
+            EmpressStateIndex.LanceWall,
+            EmpressStateIndex.MeltingLight,
+            EmpressStateIndex.DashGrab,
         ];
 
-        private int Duration => Context.Scaled(30);
+        /// <summary>二阶段门槛</summary>
+        internal const float Phase2LifeFraction = 0.6f;
+        /// <summary>三阶段（终章）门槛</summary>
+        internal const float Phase3LifeFraction = 0.15f;
+
+        private int ChaseFrames => Context.IsSecondPhase ? 20 : 15;
+        private int Duration => ChaseFrames + Context.Scaled(14);
         private EmpressStateContext Context;
 
         public override void OnEnter(EmpressStateContext context) {
@@ -53,17 +64,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             context.Pose = EmpressPose.Idle;
             context.PoseTimer = 0f;
 
-            //归位滑翔：目标上方，带远距减速的原版DashTo形状
             if (target.Alives()) {
-                Vector2 dest = target.Center + new Vector2(0f, -380f);
-                if (npc.Distance(dest) > 200f) {
-                    dest -= npc.DirectionTo(dest) * 100f;
+                if (Timer <= ChaseFrames) {
+                    //贴身追击：追不是飘
+                    EmpressMotion.DashTo(npc, target.Center, target.velocity, Timer, context.DayEmpowered || context.IsSecondPhase);
                 }
-                Vector2 toDest = dest - npc.Center;
-                float lerpValue = Utils.GetLerpValue(100f, 600f, toDest.Length(), clamped: true);
-                float speed = System.Math.Min(toDest.Length(), context.IsAsuraMode ? 24f : 21f);
-                Vector2 desired = Vector2.Lerp(toDest.SafeNormalize(Vector2.Zero) * speed, toDest / 6f, lerpValue);
-                npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.2f);
+                else {
+                    npc.velocity *= 0.9f;
+                }
             }
             else {
                 npc.velocity *= 0.92f;
@@ -75,41 +83,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 return null;
             }
 
-            //客户端不选招：等ai[2]同步跟随，防计数器与侧滑冲量在本地空转
+            //客户端不选招：等ai[2]同步跟随，防计数器在本地空转
             if (VaultUtils.isClient) {
                 return null;
             }
-
-            //到点选择下一动作（权威端）
             return PickNext(context, npc, target);
         }
 
-        /// <summary>攻击选择：特判优先，其余走循环表</summary>
+        /// <summary>攻击选择：离场/阶段门槛特判优先，其余走循环表</summary>
         private IEmpressState PickNext(EmpressStateContext context, NPC npc, Player target) {
-            //唯一离场条件：目标失效/过远。有目标就战斗到底
-            //入夜自动回落标准形态（DayEmpowered随全局昼夜标志），破晓自动升格，不离场
             if (!target.Alives() || npc.Distance(target.Center) > 6400f) {
                 return new EmpressDespawnState();
             }
 
-            //半血转阶段
-            if (!context.IsSecondPhase && npc.life <= npc.lifeMax * 0.5f) {
+            if (!context.IsSecondPhase && npc.life <= npc.lifeMax * Phase2LifeFraction) {
                 return new EmpressPhaseTransitionState();
             }
 
-            //低血大招，一场一次
-            float overdriveGate = context.IsAsuraMode ? 0.3f : 0.25f;
-            if (context.IsSecondPhase && !context.OverdriveUsed && npc.life <= npc.lifeMax * overdriveGate) {
-                return new EmpressPrismOverdriveState();
+            if (context.IsSecondPhase && !context.IsThirdPhase && npc.life <= npc.lifeMax * Phase3LifeFraction) {
+                return new EmpressPhase3TransformState();
             }
 
-            //循环表取招
+            if (context.IsThirdPhase) {
+                return new EmpressFinaleState();
+            }
+
             EmpressStateIndex[] cycle = context.IsSecondPhase ? Phase2Cycle : Phase1Cycle;
             EmpressStateIndex pick = cycle[context.AttackCounter % cycle.Length];
             context.AttackCounter++;
 
-            //起手侧滑：非静场攻击前给一记优雅的横向摆动（原版规约）
-            if (pick != EmpressStateIndex.RadiantDance && pick != EmpressStateIndex.EverlastingBloom && target.Alives()) {
+            //起手侧滑：非静场攻击前一记横向摆动（原版规约），静场招（日舞/熔光扇）不侧滑
+            if (pick != EmpressStateIndex.SunDance && pick != EmpressStateIndex.MeltingLight && target.Alives()) {
                 int side = target.Center.X > npc.Center.X ? 1 : -1;
                 npc.velocity = npc.DirectionFrom(target.Center).SafeNormalize(Vector2.Zero)
                     .RotatedBy(MathHelper.PiOver2 * side) * 19f;
@@ -120,15 +124,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 
         internal static IEmpressState CreateState(EmpressStateIndex index) {
             return index switch {
-                EmpressStateIndex.PrismRings => new EmpressPrismRingsState(),
-                EmpressStateIndex.LanceGrid => new EmpressLanceGridState(),
-                EmpressStateIndex.SwordRain => new EmpressSwordRainState(),
-                EmpressStateIndex.RadiantDance => new EmpressRadiantDanceState(),
-                EmpressStateIndex.ConvergingCage => new EmpressConvergingCageState(),
-                EmpressStateIndex.InterferenceWeave => new EmpressInterferenceWeaveState(),
-                EmpressStateIndex.CrescentDash => new EmpressCrescentDashState(),
-                EmpressStateIndex.EverlastingBloom => new EmpressEverlastingBloomState(),
-                EmpressStateIndex.PrismOverdrive => new EmpressPrismOverdriveState(),
+                EmpressStateIndex.LightSpiral => new EmpressLightSpiralState(),
+                EmpressStateIndex.DashGrab => new EmpressDashGrabState(),
+                EmpressStateIndex.SunDance => new EmpressSunDanceState(),
+                EmpressStateIndex.LanceWall => new EmpressLanceWallState(),
+                EmpressStateIndex.HitscanVolley => new EmpressHitscanVolleyState(),
+                EmpressStateIndex.MeltingLight => new EmpressMeltingLightState(),
                 _ => new EmpressConnectorState(),
             };
         }

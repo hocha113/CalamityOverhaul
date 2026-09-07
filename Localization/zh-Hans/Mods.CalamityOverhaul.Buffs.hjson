@@ -252,3 +252,8 @@ BlessErosionBuff: {
 	DisplayName: 侵蚀
 	Description: 腐环啃咬着护甲，防御减少10点
 }
+
+EmpressScorchBuff: {
+	// DisplayName: Empress Scorch Buff
+	// Description: Mods.CalamityOverhaul.Buffs.EmpressScorchBuff.Description
+}

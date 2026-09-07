@@ -95,7 +95,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
 
         #region 主AI
         public override bool AI() {
+            //交出 aiStyle 的代价：原版靠 NoMultiplayerSmoothingByAI[6] 给蠕虫免掉联机平滑，
+            //改成 -1 就把平滑放回来了。体节位置每帧由前邻确定性重算，快照差折进 netOffset 纯属噪声，
+            //而且头(仍是 aiStyle 6)不吃平滑，颈接缝会随每包错开
             npc.aiStyle = -1;
+            BossNetMotion.ClearSmoothing(npc);
             NPC head = ResolveHead();
 
             //无头：立即溃散

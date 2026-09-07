@@ -1,6 +1,26 @@
 // P10b armor endowments (17 hardmode sets + 5 pre-HM sets handed over from P10a); the four Ancient Hallowed combos share one line
-GsForbiddenArmor.EndowLine: Sandbound Shades: strikes build sand-soul; at 6 stacks a sand shade rises (up to 2) to haunt your side and spit whirling sand bolts
-GsSpookyWoodArmor.EndowLine: Hallow's Patrol: strikes build soulfire; at 6 stacks a jack-o'-lantern rises (up to 2) to patrol around you and spit triple ghostflame at the nearest foe
-GsChlorophyteArmor.EndowLine: Symbiotic Vine: strikes build spores; at 8 stacks the next strike plants a parasite vine, and every strike on the host lashes a vine-blade at a second foe; the vine bursts into a spore cloud when it withers
-GsPumpkinArmor.EndowLine: Gourd Harvest: strikes build vines; at 6 stacks the next strike plants a blast gourd that ripens in 3s (strike the victim again to force it), bursting into three spinning slices
-GsGladiatorArmor.EndowLine: Triumph Volley: strikes build acclaim; at 6 stacks the next strike hurls three bronze javelins over your shoulder in arcing volleys at the foe
+GsForbiddenArmor.EndowLine:
+	'''
+	Sandbound Shades: strikes build sand-soul; at 6 stacks a sand shade rises (up to 2) to haunt your side
+	The shade spits whirling sand bolts at the nearest enemy
+	'''
+GsSpookyWoodArmor.EndowLine:
+	'''
+	Hallow's Patrol: strikes build soulfire; at 6 stacks a jack-o'-lantern rises (up to 2) to patrol around you
+	The lantern spits triple ghostflame at the nearest foe
+	'''
+GsChlorophyteArmor.EndowLine:
+	'''
+	Symbiotic Vine: strikes build spores; at 8 stacks the next strike plants a parasite vine into the target
+	Every strike on the host lashes a vine-blade at a second foe, and the vine bursts into spores when it withers
+	'''
+GsPumpkinArmor.EndowLine:
+	'''
+	Gourd Harvest: strikes build vines; at 6 stacks the next strike plants a blast gourd under the target
+	The gourd ripens in 3s (strike the victim again to force it), bursting into three spinning slices
+	'''
+GsGladiatorArmor.EndowLine:
+	'''
+	Triumph Volley: strikes build acclaim; at 6 stacks the next strike hurls three bronze javelins from your shoulder
+	The javelins pin the foe in arcing volleys
+	'''

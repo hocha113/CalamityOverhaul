@@ -1,8 +1,40 @@
-GsMonkArmor.EndowLine: Zen Thunder: standing within your own Lightning Aura enters zen; every fourth melee or summon strike in zen unleashes a piercing thunder-palm wave
-GsMonkShinobiArmor.EndowLine: Zen Thunder, Shinobi: zen palms come every third strike, and each wave splits two side palms on its first hit
-GsSquireArmor.EndowLine: Oath Bulwark: taking a hit raises the oath shield for five seconds; melee strikes during it hurl a gilded oath lance from your shoulder
-GsSquireValhallaArmor.EndowLine: Oath Bulwark, Valhalla: the shield holds six seconds and every strike hurls twin oath lances
-GsHuntressArmor.EndowLine: Snare the Prey: enemies caught in your explosive traps are marked; ranged hits on marked prey call two thorn bolts from the flanks
-GsHuntressRedRidingArmor.EndowLine: Snare the Prey, Red Riding: marked prey draws three venom-tipped thorn bolts instead
-GsApprenticeArmor.EndowLine: Kindlecraft: your Flameburst tower's hits build kindling; at six stacks the next magic hit unfolds a fire glyph over the target, raining three ember bolts
-GsApprenticeDarkArtistArmor.EndowLine: Kindlecraft, Dark Artist: five stacks suffice, and the glyph turns to shadowflame, raining four shadow embers
+GsMonkArmor.EndowLine:
+	'''
+	Zen Thunder: standing within your own Lightning Aura enters zen
+	Every fourth melee or summon strike in zen unleashes a piercing thunder-palm wave
+	'''
+GsMonkShinobiArmor.EndowLine:
+	'''
+	Zen Thunder, Shinobi: zen palms trigger every third strike
+	Each wave splits into two side palms on its first hit
+	'''
+GsSquireArmor.EndowLine:
+	'''
+	Oath Bulwark: taking a hit raises the oath shield for 5 seconds
+	Melee strikes during it hurl a gilded oath lance from your shoulder
+	'''
+GsSquireValhallaArmor.EndowLine:
+	'''
+	Oath Bulwark, Valhalla: the shield holds for 6 seconds
+	Every melee strike during it hurls twin oath lances
+	'''
+GsHuntressArmor.EndowLine:
+	'''
+	Snare the Prey: enemies caught in your explosive traps are marked
+	Ranged hits on marked prey call two thorn bolts from the flanks
+	'''
+GsHuntressRedRidingArmor.EndowLine:
+	'''
+	Snare the Prey, Red Riding: explosive traps mark enemies
+	Ranged hits call three venom-tipped thorn bolts from the flanks
+	'''
+GsApprenticeArmor.EndowLine:
+	'''
+	Kindlecraft: your Flameburst tower's hits build kindling
+	At 6 stacks the next magic hit unfolds a fire glyph over the target, raining three ember bolts
+	'''
+GsApprenticeDarkArtistArmor.EndowLine:
+	'''
+	Kindlecraft, Dark Artist: 5 stacks of kindling trigger the glyph
+	The glyph turns to shadowflame, raining four shadow embers that ignite foes
+	'''

@@ -1,6 +1,26 @@
 // P10b armor endowments (17 hardmode sets + 5 pre-HM sets handed over from P10a); the four Ancient Hallowed combos share one line
-GsForbiddenArmor.EndowLine: 沙魂仆影：命中积攒沙魂，满六层唤出一具沙灵仆影随行，至多两具；仆影锁定最近敌周期吐出沙旋弹
-GsSpookyWoodArmor.EndowLine: 万圣巡灯：命中积攒魂火，满六层点起一盏南瓜巡灯，至多两盏；巡灯绕你巡游，向最近敌喷出三连鬼火
-GsChlorophyteArmor.EndowLine: 共生寄藤：命中积攒孢子，满八层后下一击把寄生藤种进目标；此后每次击打宿主，藤便鞭抽近旁第二个敌人，藤谢时炸成孢子云
-GsPumpkinArmor.EndowLine: 爆瓜农事：命中积攒瓜藤，满六层后下一击在目标脚下种一颗爆瓜；爆瓜三秒熟透自爆，期间再打目标可催熟，炸开三瓣飞旋瓜瓣
-GsGladiatorArmor.EndowLine: 凯旋标枪：命中积攒喝彩，满六层后下一击自肩上依次掷出三支青铜标枪，走抛物弧线钉向目标
+GsForbiddenArmor.EndowLine:
+	'''
+	沙魂仆影：命中积攒沙魂，满六层唤出一具沙灵仆影随行，至多两具
+	仆影锁定最近敌周期吐出沙旋弹
+	'''
+GsSpookyWoodArmor.EndowLine:
+	'''
+	万圣巡灯：命中积攒魂火，满六层点起一盏南瓜巡灯，至多两盏
+	巡灯绕你巡游，向最近敌喷出三连鬼火
+	'''
+GsChlorophyteArmor.EndowLine:
+	'''
+	共生寄藤：命中积攒孢子，满八层后下一击把寄生藤种进目标
+	此后每次击打宿主，藤便鞭抽近旁第二个敌人，藤谢时炸成孢子云
+	'''
+GsPumpkinArmor.EndowLine:
+	'''
+	爆瓜农事：命中积攒瓜藤，满六层后下一击在目标脚下种一颗爆瓜
+	爆瓜三秒熟透自爆，期间再打目标可催熟，炸开三瓣飞旋瓜瓣
+	'''
+GsGladiatorArmor.EndowLine:
+	'''
+	凯旋标枪：命中积攒喝彩，满六层后下一击自肩上依次掷出三支青铜标枪
+	标枪走抛物弧线钉向目标
+	'''

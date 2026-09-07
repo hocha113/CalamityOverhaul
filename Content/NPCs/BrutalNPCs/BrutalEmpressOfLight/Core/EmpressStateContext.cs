@@ -29,6 +29,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         Transform = 10,
     }
 
+    /// <summary>灼痕分量档，决定命中后灼痕秒数（昼）</summary>
+    internal enum EmpressScorchTier : byte
+    {
+        /// <summary>8 秒：普通接触、余韵类</summary>
+        Light = 0,
+        /// <summary>16 秒：长枪、瞬现枪、光球</summary>
+        Medium = 1,
+        /// <summary>22 秒：熔光扇</summary>
+        Heavy = 2,
+        /// <summary>25 秒：冲刺接触、投技</summary>
+        Grab = 3,
+        /// <summary>30 秒：追踪光束（绝对禁区）</summary>
+        Beam = 4,
+    }
+
     /// <summary>状态机共享上下文</summary>
     internal class EmpressStateContext : INpcStateContext
     {
@@ -40,26 +55,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         #region 阶段与形态
         /// <summary>二阶段，主控从 npc.ai[3] 位读出，全端一致</summary>
         public bool IsSecondPhase { get; set; }
-        /// <summary>白天处刑形态（伤害9999+节奏加速），各端由全局昼夜标志本地判定</summary>
+        /// <summary>三阶段（终章），主控从 npc.ai[3] 位读出</summary>
+        public bool IsThirdPhase { get; set; }
+        /// <summary>昼形态，各端由全局昼夜标志本地判定</summary>
         public bool DayEmpowered { get; set; }
         /// <summary>昼形态视觉过渡 0~1，各端本地缓动</summary>
         public float DayFormBlend { get; set; }
         /// <summary>修罗模式/BossRush 增压</summary>
         public bool IsAsuraMode { get; set; }
-        /// <summary>低血大招已经放过一次</summary>
-        public bool OverdriveUsed { get; set; }
         /// <summary>死亡演出结束，CheckDead 放行</summary>
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>攻击循环计数，服务端权威</summary>
         public int AttackCounter { get; set; }
-        /// <summary>光绫缚舞冷却tick，服务端权威递减，客户端不参与判定</summary>
+        /// <summary>光绫缚舞冷却tick，服务端权威递减</summary>
         public int GrabCooldown { get; set; }
+        /// <summary>终章缩圈完成，血量地板解除（NPCOverride.ai 同步）</summary>
+        public bool FinaleKillable { get; set; }
         #endregion
 
         #region 姿态通道（写入 npc.ai[0]/ai[1] 供原版绘制消费）
-        /// <summary>本帧姿态，状态每帧声明，未声明回落 Idle</summary>
         public EmpressPose Pose { get; set; } = EmpressPose.Idle;
-        /// <summary>姿态计时，映射原版 ai[1] 的臂帧窗口</summary>
         public float PoseTimer { get; set; }
         #endregion
 
@@ -71,11 +86,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         public int ChargeHand { get; set; }
         #endregion
 
+        #region 竞技场（昼）
+        /// <summary>本帧期望半径，0=关闭；主控写入 NPCOverride.ai[0] 同步</summary>
+        public float ArenaRadiusRequest { get; set; }
+        /// <summary>竞技场圆心跟随速度上限</summary>
+        public float ArenaFollowSpeed { get; set; } = 12f;
+        #endregion
+
         #region 手部锚点
-        /// <summary>左手世界坐标（面向由绘制处理，锚点固定偏移与原版一致）</summary>
         public Vector2 LeftHand => Npc.Center + new Vector2(-55f, -30f);
-        /// <summary>右手世界坐标</summary>
         public Vector2 RightHand => Npc.Center + new Vector2(55f, -30f);
+        /// <summary>施法手（原版右手偏移，光球/冲击波出生点）</summary>
+        public Vector2 CastHand => Npc.Center + new Vector2(60f, -45f);
         #endregion
 
         #region 节奏与伤害
@@ -84,10 +106,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             get {
                 float scale = 1f;
                 if (DayEmpowered) {
-                    scale *= 0.8f;
+                    scale *= 0.85f;
                 }
                 if (IsAsuraMode) {
-                    scale *= 0.88f;
+                    scale *= 0.9f;
                 }
                 return scale;
             }
@@ -96,24 +118,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         /// <summary>按节奏缩放帧数，下限8帧防止过窄预警</summary>
         public int Scaled(int frames) => System.Math.Max(8, (int)(frames * TempoScale));
 
-        /// <summary>棱彩弹伤害</summary>
-        public int BoltDamage => ScaleDamage(IsSecondPhase ? 50 : 45, IsSecondPhase ? 35 : 30);
-        /// <summary>以太枪骑伤害</summary>
-        public int LanceDamage => ScaleDamage(IsSecondPhase ? 60 : 50, IsSecondPhase ? 35 : 30);
-        /// <summary>光剑伤害</summary>
-        public int BladeDamage => ScaleDamage(IsSecondPhase ? 58 : 50, IsSecondPhase ? 38 : 32);
-        /// <summary>日舞光束伤害</summary>
-        public int SunrayDamage => ScaleDamage(IsSecondPhase ? 60 : 50, IsSecondPhase ? 40 : 35);
-        /// <summary>虹瓣伤害</summary>
-        public int PetalDamage => ScaleDamage(50, 35);
-        /// <summary>极光帘幕伤害</summary>
-        public int AuroraDamage => ScaleDamage(60, 40);
+        /// <summary>光球伤害</summary>
+        public int BoltDamage => ScaleDamage(IsSecondPhase ? 52 : 46, IsSecondPhase ? 36 : 30);
+        /// <summary>长枪伤害（墙/智能枪）</summary>
+        public int LanceDamage => ScaleDamage(IsSecondPhase ? 60 : 52, IsSecondPhase ? 38 : 32);
+        /// <summary>瞬现枪伤害</summary>
+        public int HitscanDamage => ScaleDamage(IsSecondPhase ? 60 : 52, IsSecondPhase ? 38 : 32);
+        /// <summary>追踪光束伤害（绝对禁区，最高档）</summary>
+        public int BeamDamage => ScaleDamage(IsSecondPhase ? 78 : 70, IsSecondPhase ? 50 : 44);
+        /// <summary>熔光扇伤害</summary>
+        public int FanDamage => ScaleDamage(IsSecondPhase ? 70 : 62, IsSecondPhase ? 46 : 40);
 
+        /// <summary>昼形态 ×1.25，不再 9999（灼痕系统接管威慑）</summary>
         private int ScaleDamage(int normal, int expert) {
+            int value = Npc.GetAttackDamage_ForProjectiles(normal, expert);
             if (DayEmpowered) {
-                return 9999;//白天处刑：与原版一致的即死威慑
+                value = (int)(value * 1.25f);
             }
-            return Npc.GetAttackDamage_ForProjectiles(normal, expert);
+            return value;
         }
         #endregion
 
