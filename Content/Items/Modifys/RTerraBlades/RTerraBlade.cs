@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Items.Modifys.RTerraBlades
         public static Texture2D StarWhite => CWRAsset.StarTexture_White?.Value;
         public static Texture2D StarBlack => CWRAsset.StarTexture?.Value;
         public static Texture2D LightShot => CWRAsset.LightShot?.Value;
-        public static Texture2D WaveFallback => CWRAsset.SemiCircularSmear?.Value;
+        public static Texture2D WaveFallback => CWRAsset.ArcSmear01?.Value;
 
         /// <summary>原版物品贴图懒加载取用</summary>
         public static Texture2D ItemTex(int itemID) {

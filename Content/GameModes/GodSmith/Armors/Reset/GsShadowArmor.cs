@@ -1,13 +1,13 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
 {
     /// <summary>
-    /// 暗影套（含远古暗影，三件可混搭）：头盔暴击 +15%，鳞甲移速 +5%，护胫移速 +10%；
-    /// 套装奖励为所有武器攻速 +15%、召唤栏 +1
+    /// 暗影套 · 暗影焰（通用，含远古暗影三件可混搭）。单件沿用原版（三件各 +5% 暴击）。<br/>
+    /// 原版旗标清点：暗影疾行（shadowArmor：跑速 ×1.15、加速 ×1.75）→ 原样补回；无删除项。<br/>
+    /// 签名：暴击使敌人附带暗影焰 2 秒（魔矿与腐化同源的紫焰）
     /// </summary>
     internal class GsShadowArmor : GsResetArmorScheme
     {
@@ -16,21 +16,29 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
         public override int LegsID => ItemID.ShadowGreaves;
         public override int[] BodyIDs => [ItemID.ShadowScalemail, ItemID.AncientShadowScalemail];
         public override int[] LegsIDs => [ItemID.ShadowGreaves, ItemID.AncientShadowGreaves];
+        public override bool OverridesPieceStats => false;
 
-        protected override string HeadLineFallback => "15% increased critical strike chance";
-        protected override string BodyLineFallback => "5% increased movement speed";
-        protected override string LegsLineFallback => "10% increased movement speed";
-        protected override string SetBonusLineFallback => "15% increased attack speed for all weapons; +1 minion slot";
-
-        public override void UpdateHead(Player player, Item item) => player.GetCritChance(DamageClass.Generic) += 15f;
-
-        public override void UpdateBody(Player player, Item item) => player.moveSpeed += 0.05f;
-
-        public override void UpdateLegs(Player player, Item item) => player.moveSpeed += 0.10f;
+        protected override string SetBonusLineFallback =>
+            "Greatly increased running speed and acceleration; critical strikes inflict Shadowflame for 2 seconds";
 
         public override void UpdateSetBonus(Player player, GodSmithArmorPlayer state) {
-            player.GetAttackSpeed(DamageClass.Generic) += 0.15f;
-            player.maxMinions += 1;
+            player.shadowArmor = true;
+        }
+
+        public override void OnEndowHitNPC(Player player, GodSmithArmorPlayer state, NPC target,
+            in NPC.HitInfo hit, int damageDone, Projectile sourceProj) {
+            if (!hit.Crit) {
+                return;
+            }
+            target.AddBuff(BuffID.ShadowFlame, 120);
+            if (Main.dedServ) {
+                return;
+            }
+            for (int i = 0; i < 5; i++) {
+                Dust dust = Dust.NewDustDirect(target.position, target.width, target.height, DustID.Shadowflame,
+                    Main.rand.NextFloat(-1.5f, 1.5f), Main.rand.NextFloat(-2f, 0f), 100, default, 1.2f);
+                dust.noGravity = true;
+            }
         }
     }
 }

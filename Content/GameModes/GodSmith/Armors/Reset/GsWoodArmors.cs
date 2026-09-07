@@ -8,14 +8,21 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
 {
     /// <summary>
-    /// 八套木甲的公共层：单件属性沿用原版（本就没有），套装奖励统一为砍树多掉木材
-    /// （落地逻辑见 <see cref="GsWoodLumberDrop"/>）
+    /// 八套木甲的公共层：单件属性沿用原版（本就没有），套装奖励 = 原版 +1 防（穿着时）+ 砍树多掉木材
+    /// （落地逻辑见 <see cref="GsWoodLumberDrop"/>）。<br/>
+    /// 原版旗标清点：+1 防 → 原样补回；灰木 ashWoodBonus（岩浆伤害减半）→ 在 <see cref="GsAshWoodArmor"/> 补回；无删除项
     /// </summary>
     internal abstract class GsWoodArmorScheme : GsResetArmorScheme
     {
         public sealed override bool OverridesPieceStats => false;
 
-        protected override string SetBonusLineFallback => "Chopping trees has a chance to drop extra lumber";
+        protected override string SetBonusLineFallback => "1 more defense; chopping trees has a chance to drop extra lumber";
+
+        public override void UpdateSetBonus(Player player, GodSmithArmorPlayer state) {
+            if (IsWorn(state)) {
+                player.statDefense += 1;
+            }
+        }
     }
 
     /// <summary>木套</summary>
@@ -66,12 +73,19 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
         public override int LegsID => ItemID.ShadewoodGreaves;
     }
 
-    /// <summary>灰木套</summary>
+    /// <summary>灰木套：另保留原版的岩浆伤害减半</summary>
     internal class GsAshWoodArmor : GsWoodArmorScheme
     {
         public override int[] HeadIDs => [ItemID.AshWoodHelmet];
         public override int BodyID => ItemID.AshWoodBreastplate;
         public override int LegsID => ItemID.AshWoodGreaves;
+
+        protected override string SetBonusLineFallback => "1 more defense and halved lava damage; chopping trees has a chance to drop extra lumber";
+
+        public override void UpdateSetBonus(Player player, GodSmithArmorPlayer state) {
+            base.UpdateSetBonus(player, state);
+            player.ashWoodBonus = true;
+        }
     }
 
     /// <summary>珍珠木套</summary>

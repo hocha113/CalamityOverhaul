@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 {
     /// <summary>
     /// 仆从血枪列：仆从在主眼身后列成纵队→逐发点射→主眼以一记不变轨的坦率冲刺收尾<br/>
-    /// 枪列后的直冲永远诚实，与变轨冲刺形成教学对照
+    /// 枪列后的直冲永远诚实，与变轨冲刺形成教学对照：它也画车道、也冻结、也沿冻结线直飞
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EocStateIndex.ServantLance, typeof(EocStateContext))]
     internal class EocServantLanceState : EocStateBase
@@ -29,6 +29,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int PunctuateReel = 16;
         private const int PunctuateFlight = 26;
         private const int PunctuateBrake = 12;
+        /// <summary>收尾直冲蓄力末段车道冻结帧数</summary>
+        private const int PunctuateLockFrames = 8;
+        private const float PunctuateSpeed = 41f;
 
         private int ServantCount => Context.IsAsuraMode ? 5 : 4;
         private float LanceSpeed => Context.IsAsuraMode ? 33f : 29f;
@@ -37,6 +40,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private LancePhase phase;
         private int fireTimer;
         private bool dashLaunched;
+        private Vector2 lockedDir;
+        private bool aimLocked;
 
         public override void OnEnter(EocStateContext context) {
             base.OnEnter(context);
@@ -44,6 +49,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             phase = LancePhase.Rear;
             fireTimer = 0;
             dashLaunched = false;
+            aimLocked = false;
+            lockedDir = Vector2.UnitY;
         }
 
         public override IEocState OnUpdate(EocStateContext context) {
@@ -157,33 +164,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             bool anyLeft = FindFrontServant(npc) != null;
             if ((!anyLeft && fireTimer > 8) || Timer >= FireInterval * (ServantCount + 2)) {
                 dashLaunched = false;
+                aimLocked = false;
                 SwitchPhase(LancePhase.Punctuate);
             }
         }
 
         private IEocState UpdatePunctuate(NPC npc, Player player, EocStateContext context) {
-            Timer++;
-
-            if (Timer <= PunctuateReel) {
-                //快速小后撤
+            if (Timer < PunctuateReel) {
+                //快速小后撤，车道随蓄力显形并在末段冻结
                 float progress = Timer / (float)PunctuateReel;
                 Vector2 awayDir = (npc.Center - player.Center).SafeNormalize(Vector2.UnitY);
                 EocMotion.ReelBack(npc, awayDir, progress, 4f);
-                FaceTarget(npc, player.Center, 0.6f);
+                Vector2 liveDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
+                if (UpdateAimLock(ref lockedDir, ref aimLocked, liveDir, Timer, PunctuateReel, PunctuateLockFrames)) {
+                    EocMotion.AimLockCue(npc, context, lockedDir);
+                }
+                FaceTarget(npc, npc.Center + lockedDir, 0.6f);
+                WriteLane(context, npc.Center, lockedDir, PunctuateFlight * PunctuateSpeed, progress, aimLocked);
                 context.SetChargeState(1, progress);
                 if (Timer == 1 && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item103 with { Volume = 0.8f, Pitch = -0.45f }, npc.Center);
                 }
+                Timer++;
                 return null;
             }
+            Timer++;
 
             if (!dashLaunched) {
                 dashLaunched = true;
                 context.ResetChargeState();
-                Vector2 dir = (EocMotion.PredictTarget(player, npc.Center, 41f, 0.5f) - npc.Center)
-                    .SafeNormalize(Vector2.UnitY);
-                //坦率直冲：不变轨，教学对照
-                EocMotion.DashLaunch(npc, context, dir, 41f);
+                //坦率直冲：沿冻结车道，不变轨不预判，教学对照
+                EocMotion.DashLaunch(npc, context, lockedDir, PunctuateSpeed);
                 if (!VaultUtils.isClient) {
                     npc.netUpdate = true;
                 }

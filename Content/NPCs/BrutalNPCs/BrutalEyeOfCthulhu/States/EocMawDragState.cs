@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
     /// 撕咬拖曳投技（二阶段）：佯攻假冲刺故意擦身而过→急停回首裂口大张（专属前摇+咬程车道）→<br/>
     /// 第二段真冲刺以口器判定咬人（咬中即投技，体撞算普通擦伤，高速碾过不白穿）；咬中后贴地高速拖行横穿战场，<br/>
     /// 沿途血雾迸溅，终以甩头把玩家砸进地面，力竭长喘收场。落空则长收招惩罚窗<br/>
+    /// 公平契约：佯攻车道与咬程车道都在前摇末段冻结（预告即承诺），两段冲刺都沿冻结线直飞，不带预判<br/>
     /// 网络：抓取目标经 ai[3]=±(whoAmI+1) 同步，符号即拖行方向；被抓者位移/锁控/运镜/分段结算
     /// 全部由 <see cref="EocGrabPerformancePlayer"/> 在其本机由同步态推导，本状态只管 NPC 权威与全端演出
     /// </summary>
@@ -55,6 +56,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const float MawRadius = 62f;
         /// <summary>眼体中心贴地悬高</summary>
         private const float DragHoverHeight = 66f;
+        /// <summary>佯攻擦身线离玩家的侧偏距离：车道冻结后玩家还会再走一截，留足不被"假动作"蹭到的余量</summary>
+        private const float FeintPassOffset = 200f;
+        /// <summary>蓄力末段车道冻结帧数</summary>
+        private const int ReelLockFrames = 8;
+        /// <summary>回首末段车道冻结帧数：真冲刺从 ~470px 外 8 帧即到，冻结窗补足读秒</summary>
+        private const int PivotLockFrames = 12;
 
         private float FeintSpeed => Context.IsAsuraMode ? 46f : 42f;
         private float RealDashSpeed => Context.IsAsuraMode ? 62f : 58f;
@@ -64,6 +71,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private DragPhase phase;
         /// <summary>佯攻擦身的侧偏符号，权威端掷骰，客户端本地演出自定</summary>
         private float passSide;
+        /// <summary>当前前摇段冻结的冲刺方向</summary>
+        private Vector2 lockedDir;
+        private bool aimLocked;
         /// <summary>真冲刺累计行程，超咬程即落空</summary>
         private float dashTraveled;
         /// <summary>被抓玩家下标，各端由 ai[3] 推导</summary>
@@ -85,10 +95,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             dragSign = 1f;
             totalTicks = 0;
             impactPlayed = false;
+            aimLocked = false;
+            lockedDir = Vector2.UnitY;
             context.FrameRate = 3;
-            //清上一状态残留的 ai[3]（变轨帧/环半径等），防被误读成抓取目标
+            //清上一状态残留的 ai[3]（变轨帧/环半径等），防被误读成抓取目标；
+            //佯攻侧偏由权威端掷骰写 ai[1]（ai[3] 被抓取协议独占），与状态切换同包下发，客户端画的佯攻车道才和实际擦身线同侧
             if (!VaultUtils.isClient) {
                 context.Npc.ai[3] = 0f;
+                context.Npc.ai[1] = Main.rand.NextBool() ? 1f : -1f;
                 context.Npc.netUpdate = true;
             }
         }
@@ -195,7 +209,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             float progress = Timer / (float)ReelTime;
             Vector2 awayDir = (npc.Center - player.Center).SafeNormalize(Vector2.UnitY);
             EocMotion.ReelBack(npc, awayDir, progress, 5f);
-            FaceTarget(npc, player.Center, 0.5f);
             context.SetChargeState(1, progress);
             context.PushIris(progress, EocMotion.IrisRed);
 
@@ -203,13 +216,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             if (progress > 0.72f && !VaultUtils.isServer) {
                 npc.position += Main.rand.NextVector2Circular(1.7f, 1.7f);
             }
-            Vector2 aimDir = (EocMotion.PredictTarget(player, npc.Center, FeintSpeed, 0.55f) - npc.Center)
-                .SafeNormalize(Vector2.UnitY);
-            context.LaneIntensity = 0.4f + progress * 0.6f;
-            context.LaneStart = npc.Center;
-            context.LaneDir = aimDir;
-            context.LaneLength = 1350f;
-            context.LaneProgress = progress;
+
+            //佯攻车道：瞄向玩家侧方的擦身线，末段冻结；车道诚实画出"会擦过去"，骗的是"这只是普通冲刺"
+            passSide = npc.ai[1] < 0f ? -1f : 1f;
+            Vector2 toPlayer = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
+            Vector2 perp = toPlayer.RotatedBy(MathHelper.PiOver2) * passSide;
+            Vector2 liveDir = (player.Center + perp * FeintPassOffset - npc.Center).SafeNormalize(Vector2.UnitY);
+            if (UpdateAimLock(ref lockedDir, ref aimLocked, liveDir, Timer, ReelTime, ReelLockFrames)) {
+                EocMotion.AimLockCue(npc, context, lockedDir);
+            }
+            //与变轨冲刺同一套眼神：锁定前盯人，锁定后看向承诺线
+            FaceTarget(npc, aimLocked ? npc.Center + lockedDir : player.Center, 0.5f);
+            WriteLane(context, npc.Center, lockedDir, 1350f, progress, aimLocked);
+
             if (Timer % 2 == 0) {
                 EocMotion.ConvergeStreaks(npc.Center, progress, 130f);
             }
@@ -219,21 +238,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             Timer++;
             if (Timer >= ReelTime) {
-                //佯攻起跑：权威端掷侧偏，瞄向擦身线而非玩家
+                //佯攻起跑：沿冻结的擦身线直飞
+                EocMotion.DashLaunch(npc, context, lockedDir, FeintSpeed);
                 if (!VaultUtils.isClient) {
-                    passSide = Main.rand.NextBool() ? 1f : -1f;
-                    Vector2 predicted = EocMotion.PredictTarget(player, npc.Center, FeintSpeed, 0.5f);
-                    Vector2 toPlayer = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
-                    Vector2 perp = toPlayer.RotatedBy(MathHelper.PiOver2) * passSide;
-                    Vector2 dir = (predicted + perp * 180f - npc.Center).SafeNormalize(Vector2.UnitY);
-                    EocMotion.DashLaunch(npc, context, dir, FeintSpeed);
                     npc.netUpdate = true;
                 }
-                else {
-                    EocMotion.DashLaunch(npc, context,
-                        (player.Center - npc.Center).SafeNormalize(Vector2.UnitY), FeintSpeed);
-                }
                 context.ResetChargeState();
+                aimLocked = false;
                 FaceVelocity(npc);
                 SwitchPhase(DragPhase.FeintPass);
             }
@@ -255,19 +266,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             float progress = Timer / (float)PivotTime;
             //急刹+回首死盯，口器越张越大，这是投技的专属语言
             npc.velocity *= 0.8f;
-            FaceTarget(npc, player.Center, 0.35f);
             context.FrameRate = 2;
             context.ScalePulse = 1f + 0.12f * progress;
             context.SetChargeState(3, progress);
             context.PushIris(0.5f + progress * 0.5f, EocMotion.BrightBlood);
 
-            //咬程车道：真冲刺打多远，车道就画多远
-            Vector2 aimDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
-            context.LaneIntensity = 0.5f + progress * 0.5f;
-            context.LaneStart = npc.Center;
-            context.LaneDir = aimDir;
-            context.LaneLength = GrabReach;
-            context.LaneProgress = progress;
+            //咬程车道：真冲刺打多远，车道就画多远；末段冻结后瞳孔也不再跟人转，死盯的是那条线
+            Vector2 liveDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
+            if (UpdateAimLock(ref lockedDir, ref aimLocked, liveDir, Timer, PivotTime, PivotLockFrames)) {
+                EocMotion.AimLockCue(npc, context, lockedDir);
+            }
+            Vector2 aimDir = lockedDir;
+            FaceTarget(npc, npc.Center + aimDir, 0.35f);
+            WriteLane(context, npc.Center, aimDir, GrabReach, progress, aimLocked, 0.5f);
 
             //口器内聚血丝，末 1/4 自动静默（尖叫前的吸气）
             if (Timer % 2 == 0) {
@@ -291,17 +302,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             Timer++;
             if (Timer >= PivotTime) {
-                //真冲刺起跑
+                //真冲刺起跑：沿冻结的咬程车道直飞，不预判
                 dashTraveled = 0f;
+                EocMotion.DashLaunch(npc, context, lockedDir, RealDashSpeed, 1.25f);
                 if (!VaultUtils.isClient) {
-                    Vector2 predicted = EocMotion.PredictTarget(player, npc.Center, RealDashSpeed, 0.6f);
-                    Vector2 dir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
-                    EocMotion.DashLaunch(npc, context, dir, RealDashSpeed, 1.25f);
                     npc.netUpdate = true;
-                }
-                else {
-                    EocMotion.DashLaunch(npc, context,
-                        (player.Center - npc.Center).SafeNormalize(Vector2.UnitY), RealDashSpeed, 1.25f);
                 }
                 context.ResetChargeState();
                 FaceVelocity(npc);
@@ -681,9 +686,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             base.OnExit(context);
             context.FrameRate = context.IsSecondPhase ? 4 : 6;
             context.ScalePulse = 1f;
-            //异常出口（死亡演出/撤离强切）兜底：抓取旗必须清干净
-            if (!VaultUtils.isClient && (int)context.Npc.ai[3] != 0) {
+            //异常出口（死亡演出/撤离强切）兜底：抓取旗必须清干净，佯攻侧偏槽一并归零
+            if (!VaultUtils.isClient && ((int)context.Npc.ai[3] != 0 || context.Npc.ai[1] != 0f)) {
                 context.Npc.ai[3] = 0f;
+                context.Npc.ai[1] = 0f;
                 context.Npc.netUpdate = true;
             }
         }

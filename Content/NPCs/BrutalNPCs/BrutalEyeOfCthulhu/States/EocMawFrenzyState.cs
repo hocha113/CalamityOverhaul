@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Projectiles;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -9,7 +10,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 {
     /// <summary>
     /// 口器狂化锯齿撕咬（二阶段核心）：绕直线交替左右偏角的短促连冲，缝合线式逼近，<br/>
-    /// 每跳收口一记撕咬；跳间微歇与收尾长喘是公平阀
+    /// 每跳收口一记撕咬；跳间微歇与收尾长喘是公平阀。<br/>
+    /// 缝合线的公平几何：每跳都从玩家侧方掠过，掠过线离玩家的垂距不低于 <see cref="MinPassDistance"/>，
+    /// 玩家站在缝合线中央不动就不会被跳到，威胁来自乱跑撞线与隔跳侧啐的血弹
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EocStateIndex.MawFrenzy, typeof(EocStateContext))]
     internal class EocMawFrenzyState : EocStateBase
@@ -27,13 +30,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         }
 
         private const int ApproachTime = 30;
-        private const int PreSnapTime = 8;
+        /// <summary>张口预备：每跳前的读秒，锯齿节拍由它定</summary>
+        private const int PreSnapTime = 11;
         private const int HopFlight = 10;
-        private const int GapTime = 6;
+        private const int GapTime = 8;
         private const int RecoverTime = 44;
+        /// <summary>锯齿掠过线离玩家中心的最小垂距：体宽半径 50 + 玩家半宽 10 + 约 13 帧奔跑余量</summary>
+        private const float MinPassDistance = 140f;
+        /// <summary>锯齿基础偏角范围</summary>
+        private const float SawAngleMin = 30f;
+        private const float SawAngleJitter = 9f;
 
         private int MaxHops => Context.IsAsuraMode ? 7 : 6;
-        private float HopSpeed => Context.IsAsuraMode ? 56f : 52f;
+        private float HopSpeed => Context.IsAsuraMode ? 52f : 48f;
 
         private EocStateContext Context;
         private FrenzyPhase phase;
@@ -112,12 +121,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             Timer++;
             if (Timer >= PreSnapTime) {
-                //起跳：锯齿偏角，左右交替
+                //起跳：锯齿偏角，左右交替；偏角下限保证掠过线离玩家不少于 MinPassDistance（声明的逃逸缺口）
                 if (!VaultUtils.isClient) {
                     float sawSign = hopIndex % 2 == 0 ? 1f : -1f;
-                    float sawAngle = MathHelper.ToRadians(30f + Main.rand.NextFloat(0f, 9f)) * sawSign;
-                    Vector2 predicted = EocMotion.PredictTarget(player, npc.Center, HopSpeed, 0.3f);
-                    Vector2 dir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY).RotatedBy(sawAngle);
+                    Vector2 toPlayer = player.Center - npc.Center;
+                    float dist = Math.Max(toPlayer.Length(), 1f);
+                    float sawAngle = MathHelper.ToRadians(SawAngleMin + Main.rand.NextFloat(0f, SawAngleJitter));
+                    float minAngle = MathF.Asin(Math.Min(MinPassDistance / dist, 1f));
+                    sawAngle = Math.Max(sawAngle, minAngle) * sawSign;
+                    Vector2 dir = toPlayer.SafeNormalize(Vector2.UnitY).RotatedBy(sawAngle);
                     EocMotion.DashLaunch(npc, context, dir, HopSpeed, 0.9f);
                     npc.netUpdate = true;
                 }

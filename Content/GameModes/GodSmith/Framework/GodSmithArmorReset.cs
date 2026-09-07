@@ -9,8 +9,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
 {
     /// <summary>
     /// 接管重置的原版压制层：钩住 Player.GrantArmorBenefits（原版单件属性）与
-    /// Player.UpdateArmorSets（原版套装奖励），神匠模式开启且命中接管方案时直接跳过原版结算，
+    /// Player.UpdateArmorSets（原版套装奖励），神匠模式开启且命中接管方案时压掉原版结算，
     /// 让 <see cref="GodSmithArmorScheme.UpdateHead"/> 等钩子成为唯一定义。
+    /// 压制的是原版逐物品特判，与物品 ID 无关的通用结算照常补发（见
+    /// <see cref="GrantPieceBenefitsWithoutVanillaStats"/>）。
     /// 模式关闭时两处钩子原样放行，零 footprint
     /// </summary>
     internal class GodSmithArmorReset : ModSystem
@@ -24,9 +26,28 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Framework
 
         private static void SkipVanillaPieceStats(On_Player.orig_GrantArmorBenefits orig, Player self, Item armorPiece) {
             if (GameModeSystem.GodSmithActive && armorPiece != null && GodSmithArmorScheme.OverridesPiece(armorPiece.type)) {
+                GrantPieceBenefitsWithoutVanillaStats(self, armorPiece);
                 return;
             }
             orig(self, armorPiece);
+        }
+
+        /// <summary>
+        /// 压掉原版逐物品特判后仍要补发的通用部分，逐条对应原版 GrantArmorBenefits 里与物品 ID 无关的几行：
+        /// 护甲值（前缀加成也记在 item.defense 上，一并回来）、生命回复、举盾位、信息饰品刷新。<br/>
+        /// 末行的 ItemLoader.UpdateEquip 尤其不能漏：模组 UpdateEquip 钩子全靠那一个派发点，
+        /// 整段 return 会连方案自己的 UpdateHead/Body/Legs 一起吞掉，
+        /// 结果是穿上后既没有原版防御也没有重铸属性
+        /// </summary>
+        private static void GrantPieceBenefitsWithoutVanillaStats(Player player, Item armorPiece) {
+            player.RefreshInfoAccsFromItemType(armorPiece);
+            player.RefreshMechanicalAccsFromItemType(armorPiece.type);
+            player.statDefense += armorPiece.defense;
+            player.lifeRegen += armorPiece.lifeRegen;
+            if (armorPiece.shieldSlot > 0) {
+                player.hasRaisableShield = true;
+            }
+            ItemLoader.UpdateEquip(armorPiece, player);
         }
 
         private static void SkipVanillaSetBonus(On_Player.orig_UpdateArmorSets orig, Player self, int i) {

@@ -32,6 +32,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
             return (WallFaceX(wall) - x) * wall.direction > 0f;
         }
 
+        /// <summary>该世界坐标是否处于走廊空气中(非实体物块、无液体)</summary>
+        public static bool IsOpenAir(float worldX, float worldY) {
+            int tileX = (int)(worldX / 16f);
+            int tileY = (int)(worldY / 16f);
+            if (!WorldGen.InWorld(tileX, tileY, 2)) {
+                return false;
+            }
+            return !WorldGen.SolidTile(tileX, tileY) && Main.tile[tileX, tileY].LiquidAmount == 0;
+        }
+
+        /// <summary>
+        /// 屏幕可见高度内随机取一个走廊空气中的世界Y。
+        /// 沿墙面/血幕撒粒子的地方用它替代 Top..Bottom：覆膜与血幕已铺满屏幕由地形遮挡，
+        /// 粒子也该覆盖整段可见走廊，而不是在扫描值被截短时只撒在中段。几次都落进岩石/岩浆则返回 null
+        /// </summary>
+        public static float? RandomOpenAirY(float worldX, int attempts = 4) {
+            float top = Main.screenPosition.Y;
+            float bottom = Main.screenPosition.Y + Main.screenHeight;
+            for (int i = 0; i < attempts; i++) {
+                float y = Main.rand.NextFloat(top, bottom);
+                if (IsOpenAir(worldX, y)) {
+                    return y;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// 每帧维护原版契约：wofNPCIndex、墙域上下缘扫描(1px/帧渐变)、上下缘160px最小间距。
         /// 移植自 NPC.cs aiStyle27，行为一致以保证原版绘制/舌头/音乐正常工作

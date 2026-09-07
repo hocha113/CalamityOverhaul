@@ -92,6 +92,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
         public float LaneLength { get; set; } = 1500f;
         /// <summary>车道充能进度 0~1，1=起跑</summary>
         public float LaneProgress { get; set; }
+        /// <summary>车道已锁定：方向不再跟踪目标，画出来的线就是要飞的线</summary>
+        public bool LaneLocked { get; set; }
+
+        /// <summary>附加车道段：变轨后的贯穿段/回钩段，与主车道同批绘制、同步衰减</summary>
+        public struct LaneSegment
+        {
+            public Vector2 Start;
+            public Vector2 Dir;
+            public float Length;
+        }
+
+        public const int MaxLaneExtra = 2;
+        public LaneSegment[] LaneExtra { get; } = new LaneSegment[MaxLaneExtra];
+        public int LaneExtraCount { get; set; }
+
+        public void ClearLaneExtra() {
+            LaneExtraCount = 0;
+        }
+
+        public void AddLaneSegment(Vector2 start, Vector2 dir, float length) {
+            if (LaneExtraCount >= MaxLaneExtra) {
+                return;
+            }
+            LaneExtra[LaneExtraCount++] = new LaneSegment { Start = start, Dir = dir, Length = length };
+        }
 
         /// <summary>推高冲刺视觉</summary>
         public void PushDashVisuals(float trail, float afterimage) {
@@ -131,6 +156,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
             }
             if (LaneIntensity < 0.01f) {
                 LaneIntensity = 0f;
+                LaneLocked = false;
+                LaneExtraCount = 0;
             }
         }
         #endregion

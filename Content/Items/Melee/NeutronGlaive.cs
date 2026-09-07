@@ -629,7 +629,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void DrawArcFallback(SpriteBatch sb) {
-            Texture2D wave = CWRAsset.SemiCircularSmear?.Value;
+            Texture2D wave = CWRAsset.ArcSmear01?.Value;
             if (wave == null) {
                 return;
             }

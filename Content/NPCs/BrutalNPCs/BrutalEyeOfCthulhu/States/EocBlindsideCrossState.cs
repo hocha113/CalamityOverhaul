@@ -7,7 +7,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 {
     /// <summary>
     /// 盲侧横贯（二阶段）：摆出原版经典的高位俯冲姿态骗预读→化雾消隐→自屏侧平线暴冲；<br/>
-    /// 修罗模式第二轮把骗局再反转一次，真从头顶砸下。车道预警+入场雾是公平前摇
+    /// 修罗模式第二轮把骗局再反转一次，真从头顶砸下。车道预警+入场雾是公平前摇；<br/>
+    /// 车道在预警末段冻结（预告即承诺），横贯沿冻结方向直飞，不带预判也不带随机偏角
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EocStateIndex.BlindsideCross, typeof(EocStateContext))]
     internal class EocBlindsideCrossState : EocStateBase
@@ -29,6 +30,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int WarnTime = 32;
         private const int CrossFlight = 27;
         private const int CrossBrake = 13;
+        /// <summary>预警末段车道冻结帧数：780px 外 57px/f 的横贯本身只有 14 帧飞行，冻结窗补足读秒</summary>
+        private const int AimLockFrames = 10;
 
         private int MaxReps => 2;
         private float CrossSpeed => Context.IsAsuraMode ? 63f : 57f;
@@ -40,6 +43,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private int repIndex;
         private bool launched;
         private bool repositioned;
+        private Vector2 lockedDir;
+        private bool aimLocked;
 
         public override void OnEnter(EocStateContext context) {
             base.OnEnter(context);
@@ -48,6 +53,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             repIndex = 0;
             launched = false;
             repositioned = false;
+            aimLocked = false;
+            lockedDir = Vector2.UnitX;
         }
 
         public override IEocState OnUpdate(EocStateContext context) {
@@ -142,6 +149,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             Timer++;
             if (Timer >= VanishTime) {
+                aimLocked = false;
                 SwitchPhase(CrossPhase.LaneWarn);
             }
         }
@@ -151,15 +159,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             //缓慢显形是最后一重读法
             context.FogHideGoal = MathHelper.Clamp(0.85f - progress, 0.15f, 1f);
             npc.velocity *= 0.85f;
-            FaceTarget(npc, player.Center, 0.6f);
 
-            //车道预警：横贯线（或俯冲线）
-            Vector2 aimDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitX);
-            context.LaneIntensity = 0.5f + progress * 0.5f;
-            context.LaneStart = npc.Center;
-            context.LaneDir = aimDir;
-            context.LaneLength = 1750f;
-            context.LaneProgress = progress;
+            //车道预警：横贯线（或俯冲线），末段冻结，冻结后的线就是要飞的线
+            Vector2 liveDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitX);
+            if (UpdateAimLock(ref lockedDir, ref aimLocked, liveDir, Timer, WarnTime, AimLockFrames)) {
+                EocMotion.AimLockCue(npc, context, lockedDir);
+            }
+            FaceTarget(npc, npc.Center + lockedDir, 0.6f);
+            WriteLane(context, npc.Center, lockedDir, 1750f, progress, aimLocked, 0.5f);
             context.SetChargeState(1, progress);
             context.PushIris(progress, EocMotion.IrisRed);
 
@@ -183,14 +190,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 launched = true;
                 context.FogHideGoal = 0f;
                 context.FogHide = 0.2f;
-                Vector2 dir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitX)
-                    .RotatedBy(Main.rand.NextFloat(-0.06f, 0.06f));
+                //沿冻结车道直飞：不重瞄、不抖动，画的线就是飞的线
+                Vector2 dir = lockedDir;
+                EocMotion.DashLaunch(npc, context, dir, CrossSpeed, 1.3f);
                 if (!VaultUtils.isClient) {
-                    EocMotion.DashLaunch(npc, context, dir, CrossSpeed, 1.3f);
                     npc.netUpdate = true;
-                }
-                else {
-                    EocMotion.DashLaunch(npc, context, dir, CrossSpeed, 1.3f);
                 }
                 EocMotion.Shake(npc.Center, 6.5f, 12, dir);
             }

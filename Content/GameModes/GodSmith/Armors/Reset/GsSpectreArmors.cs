@@ -16,19 +16,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
     }
 
     /// <summary>
-    /// 幽魂兜帽：魔法命中的治疗灵球照旧，魔法伤害 -20%（原版 -40%），最大魔力 +100、魔力再生提升；
-    /// 受到伤害时 40% 概率立即回复 10% 最大生命，每 8 秒一次
+    /// 幽魂兜帽（治疗）：魔法命中的治疗灵球照旧，魔法伤害 −40%（原版取舍原样），最大魔力 +100、魔力再生提升；
+    /// 受到伤害时 40% 概率立即回复 10% 最大生命，每 8 秒一次。<br/>
+    /// 原版旗标清点：ghostHeal / −40% 魔伤 → 原样补回；无删除项
     /// </summary>
     internal class GsSpectreHoodArmor : GsSpectreArmorScheme
     {
         public override int[] HeadIDs => [ItemID.SpectreHood];
 
         protected override string SetBonusLineFallback =>
-            "Magic hits release healing orbs, but magic damage is reduced by 20%; 100 more maximum mana and faster mana regeneration; taking damage has a 40% chance to instantly heal 10% of your maximum life, once every 8 seconds";
+            "Magic hits release healing orbs, but magic damage is reduced by 40%; 100 more maximum mana and faster mana regeneration; taking damage has a 40% chance to instantly heal 10% of your maximum life, once every 8 seconds";
 
         public override void UpdateSetBonus(Player player, GodSmithArmorPlayer state) {
             player.ghostHeal = true;
-            player.GetDamage(DamageClass.Magic) -= 0.20f;
+            player.GetDamage(DamageClass.Magic) -= 0.40f;
             player.statManaMax2 += 100;
             player.manaRegenBonus += 30;
         }
@@ -45,18 +46,16 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
     }
 
     /// <summary>
-    /// 幽魂面具：魔法命中的迷失之魂照旧，魔法伤害 +10%、魔法暴击 +10%、魔耗 -15%；
-    /// 魔法暴击时 30% 概率再射出一枚幽魂之火追向目标，造成 80 点伤害
+    /// 幽魂面具（输出）：魔法命中的迷失之魂照旧，魔法伤害 +10%、魔法暴击 +10%、魔耗 −15%；
+    /// 魔法暴击时 30% 概率再射出一枚幽魂之火追向目标（魔法伤害，= 本次命中 60%）。<br/>
+    /// 原版旗标清点：ghostHurt → 原样补回；无删除项
     /// </summary>
     internal class GsSpectreMaskArmor : GsSpectreArmorScheme
     {
         public override int[] HeadIDs => [ItemID.SpectreMask];
 
         protected override string SetBonusLineFallback =>
-            "Magic hits release lost souls; 10% increased magic damage and critical strike chance, 15% reduced mana usage; magic critical strikes have a 30% chance to loose an extra spectral flame that homes in for 80 damage";
-
-        /// <summary>幽魂之火伤害</summary>
-        private const int FlameDamage = 80;
+            "Magic hits release lost souls; 10% increased magic damage and critical strike chance, 15% reduced mana usage; magic critical strikes have a 30% chance to loose an extra spectral flame that homes in for 60% of the hit";
 
         public override void UpdateSetBonus(Player player, GodSmithArmorPlayer state) {
             player.ghostHurt = true;
@@ -65,22 +64,20 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
             player.manaCost -= 0.15f;
         }
 
-        public override bool IsOwnEndowProj(Projectile proj) => proj.type == ModContent.ProjectileType<GsSpectreSoulProj>();
-
         public override void OnEndowHitNPC(Player player, GodSmithArmorPlayer state, NPC target,
             in NPC.HitInfo hit, int damageDone, Projectile sourceProj) {
             if (player.whoAmI != Main.myPlayer || !hit.Crit || !hit.DamageType.CountsAsClass(DamageClass.Magic)
-                || Main.rand.Next(100) >= 30) {
+                || target.life <= 0 || Main.rand.Next(100) >= 30) {
                 return;
             }
             Vector2 velocity = Main.rand.NextVector2Unit() * 6f;
-            Projectile.NewProjectile(player.GetSource_Misc("GodSmithSpectreEndow"), player.Center, velocity,
-                ModContent.ProjectileType<GsSpectreSoulProj>(), FlameDamage, 1f, player.whoAmI, target.whoAmI);
+            SpawnProc(player, "GodSmithSpectreEndow", player.Center, velocity,
+                ModContent.ProjectileType<GsSpectreSoulProj>(), ProcDamage(damageDone, 0.6f, 20, 120), 1f, target.whoAmI);
         }
     }
 
     /// <summary>幽魂之火：借原版迷失之魂贴图，散开后追向锁定目标（ai[0]）；轨迹撒幽魂法杖粒子</summary>
-    internal class GsSpectreSoulProj : ModProjectile
+    internal class GsSpectreSoulProj : ModProjectile, IGsArmorProc
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.SpectreWrath;
 
@@ -96,7 +93,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
             Projectile.width = 20;
             Projectile.height = 20;
             Projectile.friendly = true;
-            Projectile.DamageType = DamageClass.Generic;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 150;
             Projectile.tileCollide = false;

@@ -2,6 +2,9 @@
 //WofFleshWall.fx 血肉墙体覆膜
 //世界锚定quad：墙条带蠕动血肉+面缘渗血热线+身后拖曳肉髓
 //坐标全笛卡尔无极角；预乘输出 AlphaBlend
+//纵向不按墙域扫描值裁切：quad 由 C# 铺满屏幕高度，口器 behindTiles 与原版墙体贴图同层，
+//顶底交接交给实体物块/岩浆遮挡(原版墙体本就顶天立地，覆膜跟它一样)。
+//唯一的纵向包络是 uRevealTop：入场升起/死亡塌缩演出把它当作显露上缘推着走
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -10,8 +13,7 @@ sampler uImage1 : register(s1); //PerlinNoise 512
 float4 uWorldRect;   //quad世界矩形 x,y,w,h
 float uFaceX;        //墙面前缘世界X
 float uDir;          //推进方向 ±1
-float uTop;          //墙域上缘世界Y
-float uBottom;       //墙域下缘世界Y
+float uRevealTop;    //显露上缘世界Y：其上归零(演出用)，常态由 C# 推到屏外
 float uTime;
 float uFlush;        //全墙潮红 0~1(心跳/蓄力)
 float uCharge;       //蓄力进度 0~1(突进前缘白热)
@@ -22,11 +24,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 worldPos = uWorldRect.xy + coords * uWorldRect.zw;
     //面后深度 px：0=墙面前缘，正值向墙体内
     float behind = (uFaceX - worldPos.x) * uDir;
-    float ySpan = max(uBottom - uTop, 1.0);
-    float yNorm = saturate((worldPos.y - uTop) / ySpan);
 
-    //上下缘渐隐(与地形交接)
-    float edgeFade = smoothstep(0.0, 0.055, yNorm) * smoothstep(1.0, 0.945, yNorm);
+    //显露包络：上缘 48px 软边，其余方向不包络
+    float reveal = smoothstep(uRevealTop - 24.0, uRevealTop + 24.0, worldPos.y);
 
     //=== 蠕动场：双八度噪声，整体向上+向前爬行 ===
     float2 crawl1 = worldPos * 0.0042 + float2(uDir * uTime * 0.02, -uTime * 0.055);
@@ -39,8 +39,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float vein = 1.0 - smoothstep(0.0, 0.11, abs(n1 - 0.5));
     float veinSlow = 1.0 - smoothstep(0.0, 0.16, abs(n2 - 0.52));
 
-    //=== 心跳波：亮带自下而上爬过墙面，随潮红增强 ===
-    float beatPhase = frac(yNorm * 1.6 + uTime * 0.42);
+    //=== 心跳波：亮带自下而上爬过墙面，随潮红增强；固定波长 440px(约一个走廊高度 1.6 个周期) ===
+    float beatPhase = frac(worldPos.y / 440.0 + uTime * 0.42);
     float beat = exp(-pow((beatPhase - 0.5) * 5.2, 2.0)) * uFlush;
 
     //=== 分区包络 ===
@@ -84,8 +84,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //=== 合成(预乘) ===
     float3 color = wallCol * wallAlpha + trailCol * trailAlpha + rimCol * rimAlpha;
     float alpha = saturate(wallAlpha + trailAlpha + rimAlpha);
-    color *= edgeFade * uOpacity;
-    alpha *= edgeFade * uOpacity;
+    color *= reveal * uOpacity;
+    alpha *= reveal * uOpacity;
     return float4(color, alpha) * vertexColor;
 }
 

@@ -8,8 +8,9 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
 {
     /// <summary>
-    /// 渔夫套：单件沿用原版（各 +5% 渔力）；套装奖励为每次抛竿多甩三根鱼线，
-    /// 并有机会钓出不属于当前环境的鱼，或一次钓上 3 到 7 瓶增益药水
+    /// 渔夫套：单件沿用原版（各 +5 渔力）；套装奖励为每次抛竿多甩三根鱼线，
+    /// 并有机会钓出不属于当前环境的鱼，或一次钓上 3 到 7 瓶增益药水。<br/>
+    /// 原版旗标清点：钓鱼时压低刷怪（anglerSetSpawnReduction）→ 原样补回；无删除项
     /// </summary>
     internal class GsAnglerArmor : GsResetArmorScheme
     {
@@ -19,7 +20,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
         public override bool OverridesPieceStats => false;
 
         protected override string SetBonusLineFallback =>
-            "Casts 3 extra fishing lines; chance to catch fish from other biomes or a bundle of 3 to 7 buff potions";
+            "Fewer enemies spawn while fishing; casts 3 extra fishing lines; chance to catch fish from other biomes or a bundle of 3 to 7 buff potions";
+
+        public override void UpdateSetBonus(Player player, GodSmithArmorPlayer state) {
+            player.anglerSetSpawnReduction = true;
+        }
 
         /// <summary>额外鱼线数</summary>
         private const int ExtraLines = 3;

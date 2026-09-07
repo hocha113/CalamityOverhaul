@@ -101,6 +101,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
             Shake(pos, 4.2f * strength, 9, direction);
         }
 
+        /// <summary>
+        /// 瞄准锁定提示：车道冻结那一帧的虹膜定睛+湿脆咬合声+沿承诺方向甩出的一撮血珠。<br/>
+        /// 从此刻起画的线就是飞的线，这是所有冲刺共用的"承诺"语言
+        /// </summary>
+        public static void AimLockCue(NPC npc, EocStateContext context, Vector2 dir) {
+            context.PushIris(1f, BrightBlood);
+            if (VaultUtils.isServer) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.55f, Pitch = 0.8f }, npc.Center);
+            Vector2 aim = dir.SafeNormalize(Vector2.UnitY);
+            for (int i = 0; i < 5; i++) {
+                Vector2 vel = aim.RotatedBy(Main.rand.NextFloat(-0.16f, 0.16f)) * Main.rand.NextFloat(7f, 13f);
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(npc.Center + aim * 30f, vel,
+                    BrightBlood, Main.rand.NextFloat(0.8f, 1.3f))?.Configure(Main.rand.Next(14, 22), 0.2f, 0.985f);
+            }
+        }
+
         /// <summary>变轨预告：苍白瞬闪+裂响，谎言前的公平语言</summary>
         public static void FeintBlink(NPC npc, EocStateContext context) {
             context.PushIris(1f, FeintPale);

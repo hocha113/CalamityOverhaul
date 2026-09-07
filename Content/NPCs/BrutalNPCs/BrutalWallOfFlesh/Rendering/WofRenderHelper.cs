@@ -6,7 +6,12 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
 {
-    /// <summary>着色器面片绘制：墙体覆膜/口部漩涡/后方血幕，全部世界锚定</summary>
+    /// <summary>
+    /// 着色器面片绘制：墙体覆膜/口部漩涡/后方血幕，全部世界锚定。
+    /// 口器(113)原版即 behindTiles，这些面片在 Draw 内绘制 = 与原版墙体贴图同在实体物块之后；
+    /// 原版 DrawWOFBody 从屏顶铺到屏底不看墙域扫描值，覆膜与血幕同样纵向铺满屏幕，
+    /// 顶底交接交给物块/岩浆遮挡，不再夹在 wofDrawArea 上下缘之间(扫描被岩浆坑/悬岩截短时曾在半空断裂)
+    /// </summary>
     internal static class WofRenderHelper
     {
         /// <summary>墙条带深度 px(与 WofFleshWall.fx 的分区一致)</summary>
@@ -15,6 +20,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
         private const float TrailLength = 1150f;
         /// <summary>面缘前伸 px</summary>
         private const float FaceBleed = 70f;
+        /// <summary>纵向铺满屏幕时上下各多给的余量 px(吃掉震屏/相机修正带来的错位)</summary>
+        private const float ScreenBleed = 240f;
+
+        /// <summary>纵向铺满可见屏幕的世界Y区间</summary>
+        private static void ScreenSpanY(out float top, out float bottom) {
+            top = Main.screenPosition.Y - ScreenBleed;
+            bottom = Main.screenPosition.Y + Main.screenHeight + ScreenBleed;
+        }
 
         /// <summary>切到 Immediate+LinearWrap 画一片世界矩形，再还原NPC批</summary>
         private static void DrawWorldQuad(SpriteBatch sb, Effect effect, BlendState blend, Rectangle worldRect) {
@@ -46,20 +59,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
 
         #region 墙体覆膜
 
-        /// <summary>血肉覆膜：墙条带蠕动+面缘热线+拖尾肉髓。在口器 Draw 内调用</summary>
-        public static void DrawWallOverlay(SpriteBatch sb, NPC wall, WofStateContext ctx) {
+        /// <summary>
+        /// 血肉覆膜：墙条带蠕动+面缘热线+拖尾肉髓。在口器 Draw 内调用。
+        /// revealTop 为显露上缘世界Y(其上不画)：入场升起/死亡塌缩演出用它推着覆膜走，常态推到屏外即整屏铺满
+        /// </summary>
+        public static void DrawWallOverlay(SpriteBatch sb, NPC wall, WofStateContext ctx, float revealTop) {
             Effect effect = EffectLoader.WofFleshWall?.Value;
             if (effect == null || CWRAsset.PerlinNoise?.Value == null) {
                 return;
             }
-
-            float faceX = WofWallField.WallFaceX(wall);
-            float top = WofWallField.Top - 70f;
-            float bottom = WofWallField.Bottom + 70f;
-            if (bottom - top < 80f) {
+            //墙域尚未初始化(-1/-1)时口器位置还不可信，先不画
+            if (WofWallField.Height < 80f) {
                 return;
             }
 
+            float faceX = WofWallField.WallFaceX(wall);
+            ScreenSpanY(out float top, out float bottom);
             float xMin = wall.direction > 0 ? faceX - WallDepth - TrailLength : faceX - FaceBleed;
             float xMax = wall.direction > 0 ? faceX + FaceBleed : faceX + WallDepth + TrailLength;
             Rectangle worldRect = new Rectangle((int)xMin, (int)top, (int)(xMax - xMin), (int)(bottom - top));
@@ -70,8 +85,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
             effect.Parameters["uWorldRect"]?.SetValue(new Vector4(worldRect.X, worldRect.Y, worldRect.Width, worldRect.Height));
             effect.Parameters["uFaceX"]?.SetValue(faceX);
             effect.Parameters["uDir"]?.SetValue((float)wall.direction);
-            effect.Parameters["uTop"]?.SetValue(WofWallField.Top);
-            effect.Parameters["uBottom"]?.SetValue(WofWallField.Bottom);
+            effect.Parameters["uRevealTop"]?.SetValue(revealTop);
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             effect.Parameters["uFlush"]?.SetValue(MathHelper.Clamp(ctx.WallFlush, 0f, 1f));
             effect.Parameters["uCharge"]?.SetValue(ctx.ChargeType == 1 ? ctx.ChargeProgress : 0f);
@@ -110,7 +124,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
 
         #region 后方血幕
 
-        /// <summary>大迁徙后方血幕，edgeX=前缘世界X，facingDir=前缘朝向口袋方向</summary>
+        /// <summary>
+        /// 大迁徙后方血幕，edgeX=前缘世界X，facingDir=前缘朝向口袋方向。
+        /// 纵向铺满屏幕：第二道死线与墙体一样顶天立地，顶底由物块/岩浆遮挡，shader 内无纵向包络
+        /// </summary>
         public static void DrawBloodCurtain(SpriteBatch sb, float edgeX, int facingDir, float intensity) {
             Effect effect = EffectLoader.WofBloodCurtain?.Value;
             if (effect == null || CWRAsset.PerlinNoise?.Value == null || intensity <= 0.01f) {
@@ -119,8 +136,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
 
             //深侧退场包络在 560px 归零，噪声撕裂最深 -37px，quad 多给 90px 让包络先于边界闭合
             const float CurtainDepth = 650f;
-            float top = WofWallField.Top - 320f;
-            float bottom = WofWallField.Bottom + 320f;
+            ScreenSpanY(out float top, out float bottom);
             float xMin = facingDir > 0 ? edgeX - CurtainDepth : edgeX - 90f;
             float xMax = facingDir > 0 ? edgeX + 90f : edgeX + CurtainDepth;
             Rectangle worldRect = new Rectangle((int)xMin, (int)top, (int)(xMax - xMin), (int)(bottom - top));

@@ -10,8 +10,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
 {
     /// <summary>
     /// 血雾之瞳：克苏鲁之眼残酷遗物。把克眼的血雾伏击反转成玩家能力：<br/>
-    /// 致命伤化雾免死并向光标重凝(重凝后短暂虚弱)、双击方向键血雾突进、
-    /// 突进/重凝后短窗口伏击必暴
+    /// 致命伤化血免死并向光标重凝(重凝后短暂虚弱)、双击方向键血盾突进、
+    /// 突进/重凝后短窗口伏击必暴。<br/>
+    /// 视觉全为液态血（血带/血盾/血茧/血珠），不再有体积雾团
     /// </summary>
     internal class BloodfogIris : BaseBrutalRelic, ICWRLoader
     {
@@ -26,14 +27,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         }
 
         void ICWRLoader.UnLoadData() {
-            BloodfogVeilProj.UnloadTrailResources();
             BloodfogScreenFX.Clear();
         }
     }
 
     /// <summary>
     /// 血雾之瞳逐玩家状态：免死冷却、突进状态机、伏击窗口全在实例字段。<br/>
-    /// 免死与突进只在本机(owner)触发；跨端演出全部由随身雾裹弹幕承载，
+    /// 免死与突进只在本机(owner)触发；跨端演出全部由随身演出弹幕承载，
     /// 拖尾采样与雾态视觉计时由各客户端本地推进，保持多人一致
     /// </summary>
     internal class BloodfogIrisPlayer : ModPlayer
@@ -68,9 +68,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         public const int AmbushWindowFrames = 90;
         /// <summary>常驻暴击率加成(%)</summary>
         public const int CritChanceBonus = 8;
-        /// <summary>拖尾采样点寿命(帧)</summary>
-        public const int TrailPointLife = 22;
-        private const int MaxTrailPoints = 40;
+        /// <summary>拖尾采样点寿命(帧)，着色器按点龄把老段蚀成珠链</summary>
+        public const int TrailPointLife = 30;
+        private const int MaxTrailPoints = 48;
         #endregion
 
         #region 状态
@@ -140,13 +140,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             }
         }
 
-        /// <summary>免死就绪提示：瞳孔微光一闪，仅本机</summary>
+        /// <summary>免死就绪提示：血珠向心一收 + 低鸣，仅本机</summary>
         private void PlayReadyCue() {
             if (Player.whoAmI != Main.myPlayer || VaultUtils.isServer || !Equipped) {
                 return;
             }
             SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.4f, Volume = 0.55f }, Player.Center);
-            EocMotion.MistPuff(Player.Center, 2, 0.9f, 0.35f);
+            BloodfogIrisFX.Converge(Player.Center, 70f, 6);
         }
         #endregion
 
@@ -154,11 +154,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             if (Equipped) {
                 Player.GetCritChance(DamageClass.Generic) += CritChanceBonus;
             }
-            //帧戳：装备或雾态存续时盖戳，全屏合成层凭此免于空扫弹幕表
-            if (Equipped || VeilVisualTimer > 0) {
-                BloodfogIrisRender.ActiveStamp.Stamp();
-            }
-            //雾态仇恨压制：VeilVisualTimer 由雾裹弹幕在各端(含服务端)点亮，
+            //雾态仇恨压制：VeilVisualTimer 由演出弹幕在各端(含服务端)点亮，
             //写在玩家更新阶段，NPC 索敌同帧读到
             if (VeilVisualTimer > 0) {
                 Player.aggro -= 400;
@@ -187,10 +183,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
                 Player.velocity = -dashDir * 4.6f * MathF.Pow(tw, 8f);
             }
             else if (elapsed == DashWindupFrames) {
-                //一帧满速，起手演出交给随身雾裹弹幕首帧(各端可见)；无敌只够穿模
+                //一帧满速；起步演出由蓄力起手就生成的随身弹幕按帧号自演(各端可见)；无敌只够穿模
                 Player.velocity = dashDir * DashSpeed;
                 Player.GivePlayerImmuneState(DashImmuneFrames, false);
-                SpawnShroudVeil(0, DashTravelFrames + DashBrakeFrames + AmbushWindowFrames + 26);
             }
             else if (elapsed < DashWindupFrames + DashTravelFrames) {
                 //满速保持，微衰减避免匀速僵直
@@ -250,12 +245,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
             //压制原版克苏鲁护盾类冲刺在本窗口内起步
             Player.dashDelay = Math.Max(Player.dashDelay, DashTotalFrames + 4);
 
-            //预备吸气：雾丝向身体收拢，仅本机小演出
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item103 with { Volume = 0.5f, Pitch = -0.5f }, Player.Center);
-                EocMotion.ConvergeStreaks(Player.Center, 0.3f, 90f);
-                EocMotion.MistPuff(Player.Center - dir * 26f, 2, 0.8f, 0.35f);
-            }
+            //蓄力起手就生成随身演出弹幕：血盾要在 3 帧反向预备里长出来，起步/急刹按帧号自演
+            SpawnShroudVeil(0, DashTotalFrames + AmbushWindowFrames + 26, dir);
         }
         #endregion
 
@@ -317,8 +308,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
                 Player.velocity = dir * 5f;
             }
 
-            //重凝落点随身雾裹
-            SpawnShroudVeil(2, DodgeImmuneFrames + AmbushWindowFrames + 20);
+            //重凝落点随身演出：等血流鞭到位后收成血茧再裂开
+            SpawnShroudVeil(2, DodgeImmuneFrames + AmbushWindowFrames + 20, dir);
 
             BloodfogScreenFX.PushFlash(0.5f);
             EocMotion.Shake(Player.Center, 6f, 12, dir);
@@ -354,9 +345,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
         }
         #endregion
 
-        #region 雾裹弹幕生成(仅 owner 调用)
-        /// <summary>随身雾裹：mode 0=突进 2=重凝；已有随身雾裹先杀旧再生新，保持同步干净</summary>
-        private void SpawnShroudVeil(int mode, int life) {
+        #region 演出弹幕生成(仅 owner 调用)
+        /// <summary>随身演出：mode 0=突进 2=重凝；dir 走 velocity 同步；已有随身弹幕先杀旧再生新，保持同步干净</summary>
+        private void SpawnShroudVeil(int mode, int life, Vector2 dir) {
             int veilType = ModContent.ProjectileType<BloodfogVeilProj>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.type == veilType && proj.owner == Player.whoAmI && proj.ai[0] != 1f) {
@@ -364,10 +355,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
                 }
             }
             Projectile.NewProjectile(Player.GetSource_Misc("BloodfogIris"), Player.Center,
-                Vector2.Zero, veilType, 0, 0f, Player.whoAmI, mode, life);
+                dir, veilType, 0, 0f, Player.whoAmI, mode, life);
         }
 
-        /// <summary>消隐点原地雾爆</summary>
+        /// <summary>消隐点血爆 + 血流鞭起点</summary>
         private void SpawnBurstVeil(Vector2 pos) {
             Projectile.NewProjectile(Player.GetSource_Misc("BloodfogIris"), pos,
                 Vector2.Zero, ModContent.ProjectileType<BloodfogVeilProj>(), 0, 0f, Player.whoAmI, 1f, 46f);
@@ -413,7 +404,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EyeOfCthulhu
                     TrailHeat = 0f;
                 }
                 else {
-                    TrailHeat = Math.Max(TrailHeat * 0.93f, MathHelper.Clamp((move - 13f) / 20f, 0f, 1f));
+                    //突进满速 26px/帧 → 满热；常速奔跑(≤7px)不起带
+                    TrailHeat = Math.Max(TrailHeat * 0.93f, MathHelper.Clamp((move - 8f) / 16f, 0f, 1f));
                 }
             }
             else {

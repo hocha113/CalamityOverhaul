@@ -80,6 +80,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> EocBloodTrail { get; set; }
         public static Asset<Effect> EocTelegraph { get; set; }
         public static Asset<Effect> BRelicIrisMark { get; set; }
+        public static Asset<Effect> BRelicIrisTrail { get; set; }
+        public static Asset<Effect> BRelicIrisShield { get; set; }
         public static Asset<Effect> DeerBlizzardVeil { get; set; }
         public static Asset<Effect> DeerFrostFissure { get; set; }
         public static Asset<Effect> BRelicWhiteoutVeil { get; set; }

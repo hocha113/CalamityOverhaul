@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -7,8 +6,9 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 {
     /// <summary>
-    /// 变轨假动作冲刺：后撤蓄力→直线暴冲→中途苍白瞬闪预告→猛拐变轨，谎言残影沿旧轨道续飞<br/>
-    /// 变轨帧由权威端掷骰写入 npc.ai[3] 同步，瞬闪是全端一致的公平前摇
+    /// 变轨假动作冲刺：后撤蓄力→擦向玩家侧方直线暴冲→中途苍白瞬闪→猛拐贯穿，谎言残影沿旧轨道续飞<br/>
+    /// 公平契约（预告即承诺）：蓄力末段车道冻结，折线整条画出，起跑后按锁定路径飞，不再按玩家实时位置重瞄；
+    /// 变轨帧与拐点侧由权威端打包写 npc.ai[3] 同步
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EocStateIndex.FeintDash, typeof(EocStateContext))]
     internal class EocFeintDashState : EocStateBase
@@ -29,6 +29,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int BrakeTime = 13;
         /// <summary>瞬闪提前量：变轨前几帧发出苍白闪</summary>
         private const int BlinkLead = 5;
+        /// <summary>蓄力末段车道冻结帧数：锁定后至少这么多帧+起跑段飞行时间可供玩家离线</summary>
+        private const int AimLockFrames = 9;
+        /// <summary>拐点在玩家正侧方的距离：贯穿段长度，决定变轨后留给玩家的读秒</summary>
+        private const float KinkLateral = 300f;
+        /// <summary>变轨后提速倍率</summary>
+        private const float KinkSpeedMul = 1.14f;
 
         private int ReelTime => Context.IsAsuraMode ? 22 : 27;
         private int MaxDashes => Context.IsAsuraMode ? 4 : 3;
@@ -39,6 +45,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private DashPhase phase;
         private int dashCount;
         private Vector2 flankPoint;
+        private EocDashPlan plan;
+        /// <summary>本段拐点侧，各端在蓄力起始帧由 ai[3] 同构推导</summary>
+        private float repSide = 1f;
+        private bool aimLocked;
+        private bool blinked;
         private bool kinked;
         private bool kinked2;
 
@@ -47,7 +58,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             Context = context;
             phase = DashPhase.Track;
             dashCount = 0;
-            kinked = kinked2 = false;
+            aimLocked = false;
+            blinked = kinked = kinked2 = false;
+            plan = default;
+            //首段拐点侧由权威端掷骰，以 ±100 占位写 ai[3]；与状态切换同包下发，客户端入态即知
+            if (!VaultUtils.isClient) {
+                context.Npc.ai[3] = Main.rand.NextBool() ? 100f : -100f;
+                context.Npc.netUpdate = true;
+            }
         }
 
         public override IEocState OnUpdate(EocStateContext context) {
@@ -63,7 +81,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                     UpdateReel(npc, player, context);
                     break;
                 case DashPhase.Flight:
-                    UpdateFlight(npc, player, context);
+                    UpdateFlight(npc, context);
                     break;
                 case DashPhase.Brake:
                     UpdateBrake(npc, context);
@@ -102,10 +120,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         }
 
         private void UpdateReel(NPC npc, Player player, EocStateContext context) {
+            //拐点侧逐段交替：首段读入态时下发的占位符号，之后各端都从上一段的同步值取反，无需等包
+            if (Timer == 0) {
+                aimLocked = false;
+                repSide = dashCount == 0 ? EocDashPlan.SideFromPacked(npc.ai[3]) : -EocDashPlan.SideFromPacked(npc.ai[3]);
+                if (!VaultUtils.isClient) {
+                    npc.ai[3] = repSide * 100f;
+                    npc.netUpdate = true;
+                }
+            }
+
             float progress = Timer / (float)ReelTime;
             Vector2 awayDir = (npc.Center - player.Center).SafeNormalize(Vector2.UnitY);
             EocMotion.ReelBack(npc, awayDir, progress, 5f);
-            FaceTarget(npc, player.Center, 0.5f);
+            //锁定前盯人，锁定后瞳孔转向承诺的起跑段：眼神也是预告的一部分
+            FaceTarget(npc, aimLocked ? npc.Center + plan.Dir1 : player.Center, 0.5f);
             context.SetChargeState(1, progress);
             context.PushIris(progress, EocMotion.IrisRed);
 
@@ -114,14 +143,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 npc.position += Main.rand.NextVector2Circular(1.7f, 1.7f);
             }
 
-            //车道预警随蓄力显形
-            Vector2 aimDir = (EocMotion.PredictTarget(player, npc.Center, DashSpeed, 0.55f) - npc.Center)
-                .SafeNormalize(Vector2.UnitY);
-            context.LaneIntensity = 0.4f + progress * 0.6f;
-            context.LaneStart = npc.Center;
-            context.LaneDir = aimDir;
-            context.LaneLength = 1350f;
-            context.LaneProgress = progress;
+            //承诺路径：未锁定时每帧按当前位置重建，锁定后冻结，只让起点跟着眼体走
+            if (!aimLocked) {
+                plan = EocDashPlan.Build(npc.Center, player.Center, repSide,
+                    DashSpeed, KinkSpeedMul, KinkLateral, FlightTime, context.IsAsuraMode, MathHelper.ToRadians(40f));
+                if (Timer >= ReelTime - AimLockFrames) {
+                    aimLocked = true;
+                    if (!VaultUtils.isClient) {
+                        npc.ai[3] = plan.Pack();
+                        npc.netUpdate = true;
+                    }
+                    EocMotion.AimLockCue(npc, context, plan.Dir1);
+                }
+            }
+            plan.WriteLane(context, npc.Center, progress, aimLocked);
 
             //内聚血丝
             if (Timer % 2 == 0) {
@@ -134,60 +169,49 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             Timer++;
             if (Timer >= ReelTime) {
-                //起跑：权威端掷变轨帧写 ai[3]，随 netUpdate 下发
+                //起跑沿锁定的起跑段；客户端用本地同构路径即时演出，轨迹以服务器包为准
+                EocMotion.DashLaunch(npc, context, plan.Dir1, DashSpeed);
                 if (!VaultUtils.isClient) {
-                    npc.ai[3] = Main.rand.Next(8, 14);
-                    Vector2 predicted = EocMotion.PredictTarget(player, npc.Center, DashSpeed, 0.55f);
-                    Vector2 dir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
-                    EocMotion.DashLaunch(npc, context, dir, DashSpeed);
                     npc.netUpdate = true;
                 }
-                else {
-                    //客户端本地演出即时反馈，轨迹以服务器包为准
-                    EocMotion.DashLaunch(npc, context, (player.Center - npc.Center).SafeNormalize(Vector2.UnitY), DashSpeed);
-                }
                 context.ResetChargeState();
-                kinked = kinked2 = false;
+                blinked = kinked = kinked2 = false;
                 FaceVelocity(npc);
                 SwitchPhase(DashPhase.Flight);
             }
         }
 
-        private void UpdateFlight(NPC npc, Player player, EocStateContext context) {
+        private void UpdateFlight(NPC npc, EocStateContext context) {
             context.PushDashVisuals(1f, 1f);
             FaceVelocity(npc);
             EnableContactDamageIfFast(npc, 26f, ContactMult);
 
-            int kinkFrame = Math.Max((int)npc.ai[3], 6);
+            //变轨帧优先取同步值，包未到则用本地几何值；用 >= 判定，同步值晚到也不会漏掉拐弯
+            int kinkFrame = plan.ResolveKinkFrame(npc.ai[3], FlightTime);
 
-            //苍白瞬闪：变轨的公平预告，全端按同一 ai[3] 帧触发
-            if (Timer == kinkFrame - BlinkLead) {
+            //苍白瞬闪：拐弯前最后一重提醒
+            if (!blinked && Timer >= kinkFrame - BlinkLead) {
+                blinked = true;
                 EocMotion.FeintBlink(npc, context);
             }
 
-            //变轨
-            if (Timer == kinkFrame && !kinked) {
+            //变轨：沿锁定的贯穿段，不看玩家现在在哪
+            if (!kinked && Timer >= kinkFrame) {
                 kinked = true;
                 Vector2 oldVel = npc.velocity;
+                npc.velocity = plan.Dir2 * npc.velocity.Length() * KinkSpeedMul;
                 if (!VaultUtils.isClient) {
-                    float currentHeading = npc.velocity.ToRotation();
-                    float desired = (player.Center - npc.Center).ToRotation();
-                    float newHeading = currentHeading.AngleTowards(desired, MathHelper.ToRadians(75f));
-                    npc.velocity = newHeading.ToRotationVector2() * npc.velocity.Length() * 1.14f;
                     npc.netUpdate = true;
                 }
                 EocMotion.KinkBurst(npc, context, oldVel, context.IsSecondPhase);
             }
 
-            //修罗模式二次小变轨
-            if (context.IsAsuraMode && kinked && !kinked2 && Timer == kinkFrame + 9) {
+            //修罗模式回钩：穿过玩家后再拐一次，同样画在车道里
+            if (plan.Kink2Frame >= 0 && kinked && !kinked2 && Timer >= plan.Kink2Frame) {
                 kinked2 = true;
                 Vector2 oldVel = npc.velocity;
+                npc.velocity = plan.Dir3 * npc.velocity.Length() * 1.07f;
                 if (!VaultUtils.isClient) {
-                    float currentHeading = npc.velocity.ToRotation();
-                    float desired = (player.Center - npc.Center).ToRotation();
-                    float newHeading = currentHeading.AngleTowards(desired, MathHelper.ToRadians(40f));
-                    npc.velocity = newHeading.ToRotationVector2() * npc.velocity.Length() * 1.07f;
                     npc.netUpdate = true;
                 }
                 EocMotion.KinkBurst(npc, context, oldVel, context.IsSecondPhase);

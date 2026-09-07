@@ -239,25 +239,10 @@ namespace CalamityOverhaul.Content.Industrials
 
             Vector2 drawPos = CenterInWorld + new Vector2(0, Height / 2 + 20) - Main.screenPosition;
 
-            if (CWRRef.Has) {
-                int uiBarByWidthSengs = (int)(CWRAsset.BarFull.Value.Width * (MachineData.UEvalue / MaxUEValue));
-                //Calamity UE 条
-                Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, CWRAsset.BarFull.Value.Height);
-                Main.spriteBatch.Draw(CWRAsset.BarTop.Value, drawPos, null, Color.White, 0, CWRAsset.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
-                Main.spriteBatch.Draw(CWRAsset.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, CWRAsset.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
-            }
-            else {
-                //无 Calamity 降级条
-                Texture2D value = VaultAsset.placeholder2.Value;
-                int width = 60;
-                int height = 12;
-                float ratio = MachineData.UEvalue / MaxUEValue;
-                ratio = MathHelper.Clamp(ratio, 0f, 1f);
-
-                Main.spriteBatch.Draw(value, drawPos, new Rectangle(0, 0, width + 4, height + 4), Color.Black, 0, new Vector2((width + 4) / 2, (height + 4) / 2), 1f, SpriteEffects.None, 0f);
-                Main.spriteBatch.Draw(value, drawPos, new Rectangle(0, 0, width, height), new Color(50, 50, 50), 0, new Vector2(width / 2, height / 2), 1f, SpriteEffects.None, 0f);
-                Main.spriteBatch.Draw(value, drawPos - new Vector2(width / 2, height / 2), new Rectangle(0, 0, (int)(width * ratio), height), Color.Lerp(Color.Red, Color.Lime, ratio), 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            }
+            float ratio = MathHelper.Clamp(MachineData.UEvalue / MaxUEValue, 0f, 1f);
+            Rectangle fullRec = new Rectangle(0, 0, (int)(CWRAsset.BarFull.Value.Width * ratio), CWRAsset.BarFull.Value.Height);
+            Main.spriteBatch.Draw(CWRAsset.BarTop.Value, drawPos, null, Color.White, 0, CWRAsset.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(CWRAsset.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, CWRAsset.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
 
             if (Main.keyState.PressingShift()) {
                 string textContent = (((int)MachineData.UEvalue) + "/" + ((int)MaxUEValue) + "UE").ToString();

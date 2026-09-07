@@ -34,6 +34,10 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> SoftGlow = null;//64 圆点灰度，Additive 光晕，染色常 A=0
         [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> BloomSoft01 = null;//200 黑底宽台阶光晕盘，粒子底层泛光（原借灾厄 BloomCircle，同尺寸同缩放）
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> ArcSmear01 = null;//156 黑底左侧半环涂抹弧，刀光弧涂抹/着色器缺失回退（原借灾厄 SemiCircularSmear，同尺寸）
+        [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Fire = null;//512 火焰帧序列，Additive 粒子
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Fog = null;//256 单帧烟羽，白RGB+真alpha，AlphaBlend 可直接染色；烟团统一用它
@@ -120,16 +124,17 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> AegisBlade_Bar = null;
         [VaultLoaden(CWRConstant.ColorBar)]
         public static Asset<Texture2D> Flawless_Bar = null;//青→墨青，化境刀光渐变
-        [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeterBorder")]
+        //工业 UE 电量条：60x22 钢板外框 + 40x22 琥珀填充，填充绘制时相对外框右移 10px 落进凹槽
+        [VaultLoaden(CWRConstant.UI + "UEBarFrame")]
         internal static Asset<Texture2D> BarTop { get; private set; }
-        [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeter")]
+        [VaultLoaden(CWRConstant.UI + "UEBarFill")]
         internal static Asset<Texture2D> BarFull { get; private set; }
-        [VaultLoaden("@CalamityMod/Particles/SemiCircularSmear")]
-        public static Asset<Texture2D> SemiCircularSmear = null;
-        [VaultLoaden("@CalamityMod/UI/MiscTextures/GenericBarBack")]
+        //36x12 灰度胶囊条，调用端自行染色
+        [VaultLoaden(CWRConstant.UI + "GenericBarBack")]
         public static Asset<Texture2D> GenericBarBack = null;
-        [VaultLoaden("@CalamityMod/UI/MiscTextures/GenericBarFront")]
+        [VaultLoaden(CWRConstant.UI + "GenericBarFront")]
         public static Asset<Texture2D> GenericBarFront = null;
+        //仅在灾厄自己的 CalamityCharge 提示行上绘制，无灾厄时该行不存在，占位兜底不会上屏
         [VaultLoaden("@CalamityMod/UI/DraedonSummoning/DraedonContactPanel")]
         public static Asset<Texture2D> DraedonContactPanel = null;
     }

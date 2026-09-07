@@ -751,7 +751,7 @@ namespace CalamityOverhaul.Content.Items.Modifys
 
         /// <summary>着色器缺失时的血弧回退</summary>
         private void DrawArcFallback(SpriteBatch sb) {
-            Texture2D wave = CWRAsset.SemiCircularSmear?.Value;
+            Texture2D wave = CWRAsset.ArcSmear01?.Value;
             if (wave == null) {
                 return;
             }

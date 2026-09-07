@@ -41,6 +41,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         //旧 shader 沿用原噪声链路，TechArc 在调用点显式绑 s1=PerlinNoise
         public static Texture2D Noise => CWRAsset.Fog?.Value ?? CWRAsset.PerlinNoise?.Value;
         public static Texture2D PerlinNoise => CWRAsset.PerlinNoise?.Value;
-        public static Texture2D WaveFallback => CWRAsset.SemiCircularSmear?.Value;
+        public static Texture2D WaveFallback => CWRAsset.ArcSmear01?.Value;
     }
 }

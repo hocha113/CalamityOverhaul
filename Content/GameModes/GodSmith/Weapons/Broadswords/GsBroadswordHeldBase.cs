@@ -654,7 +654,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             if (slashProgress <= 0.02f || fanFade <= 0.02f) {
                 return;
             }
-            Texture2D wave = CWRAsset.SemiCircularSmear?.Value;
+            Texture2D wave = CWRAsset.ArcSmear01?.Value;
             if (wave == null) {
                 return;
             }

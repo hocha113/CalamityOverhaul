@@ -8,33 +8,30 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
 {
     /// <summary>
-    /// 蜜蜂套：头饰魔耗 -30%，胸甲暴击 +15%，护胫移速 +15%；
-    /// 套装奖励为三只大蜜蜂环绕守护，扑咬靠近的敌人后飞回
+    /// 蜜蜂套 · 蜂后近卫（召唤）。单件沿用原版（头 +1 栏 +4%、胸 +1 栏 +4%、腿 +5% 召唤伤害）。<br/>
+    /// 原版旗标清点：套装 +10% 召唤伤害 → 原样补回；无删除项。<br/>
+    /// 签名：三只护卫蜂环绕（召唤伤害、吃召唤加成、不占栏位），敌人靠近即扑咬；
+    /// 穿戴者受击时全体护卫蜂立刻扑向攻击者
     /// </summary>
     internal class GsBeeArmor : GsResetArmorScheme
     {
         public override int[] HeadIDs => [ItemID.BeeHeadgear];
         public override int BodyID => ItemID.BeeBreastplate;
         public override int LegsID => ItemID.BeeGreaves;
+        public override bool OverridesPieceStats => false;
 
-        protected override string HeadLineFallback => "30% reduced mana usage";
-        protected override string BodyLineFallback => "15% increased critical strike chance";
-        protected override string LegsLineFallback => "15% increased movement speed";
-        protected override string SetBonusLineFallback => "Three giant bees circle you and sting any enemy that comes close";
+        protected override string SetBonusLineFallback =>
+            "10% increased summon damage; three giant bees circle you and sting any enemy that comes close, and they all swarm whoever hurts you";
 
         /// <summary>护卫蜂数量</summary>
         internal const int GuardCount = 3;
 
-        /// <summary>护卫蜂伤害</summary>
-        private const int GuardDamage = 14;
+        /// <summary>护卫蜂基础伤害（随召唤加成实时缩放）</summary>
+        private const int GuardDamage = 8;
 
-        public override void UpdateHead(Player player, Item item) => player.manaCost -= 0.30f;
-
-        public override void UpdateBody(Player player, Item item) => player.GetCritChance(DamageClass.Generic) += 15f;
-
-        public override void UpdateLegs(Player player, Item item) => player.moveSpeed += 0.15f;
-
-        public override bool IsOwnEndowProj(Projectile proj) => proj.type == ModContent.ProjectileType<GsBeeGuardProj>();
+        public override void UpdateSetBonus(Player player, GodSmithArmorPlayer state) {
+            player.GetDamage(DamageClass.Summon) += 0.10f;
+        }
 
         public override void UpdateEndowment(Player player, GodSmithArmorPlayer state) {
             //护卫蜂只由穿戴者本端补员，各蜂按 ai[0] 序号分相位
@@ -58,9 +55,27 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
                 if (taken[i]) {
                     continue;
                 }
-                Projectile.NewProjectile(player.GetSource_Misc("GodSmithBeeEndow"), player.Center, Vector2.Zero,
-                    type, GuardDamage, 1f, player.whoAmI, i);
+                SpawnProc(player, "GodSmithBeeEndow", player.Center, Vector2.Zero, type, GuardDamage, 1f, i);
                 break;
+            }
+        }
+
+        public override void OnEndowHurt(Player player, GodSmithArmorPlayer state, in Player.HurtInfo info) {
+            //蜂群反击：受击者本端裁定，攻击者写进每只蜂的追击位随同步过线
+            if (player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            NPC attacker = HurtSourceNPC(info);
+            if (attacker == null || attacker.friendly) {
+                return;
+            }
+            int type = ModContent.ProjectileType<GsBeeGuardProj>();
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.owner == player.whoAmI && proj.type == type) {
+                    proj.ai[1] = attacker.whoAmI + 1;
+                    proj.localAI[0] = 0f;
+                    proj.netUpdate = true;
+                }
             }
         }
     }
@@ -70,7 +85,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
     /// 敌人进入警戒圈即扑咬（ai[1] = 追击目标 + 1，0 = 环飞），咬到或追久了就飞回；
     /// 套装失效后不再续命，一秒内自行消散
     /// </summary>
-    internal class GsBeeGuardProj : ModProjectile
+    internal class GsBeeGuardProj : ModProjectile, IGsArmorProc
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.GiantBee;
 
@@ -93,7 +108,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
             Projectile.width = 18;
             Projectile.height = 18;
             Projectile.friendly = true;
-            Projectile.DamageType = DamageClass.Generic;
+            Projectile.DamageType = DamageClass.Summon;
+            Projectile.ContinuouslyUpdateDamageStats = true;
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 40;

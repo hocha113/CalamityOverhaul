@@ -2,6 +2,8 @@
 //WofBloodCurtain.fx 后方血幕(绯红大迁徙)
 //世界锚定quad：垂落血帘+前缘噪声撕裂热线+深处压黑
 //坐标全笛卡尔；预乘输出 AlphaBlend
+//纵向不做任何包络：quad 由 C# 铺满屏幕高度，口器 behindTiles 与原版墙体贴图同层，
+//顶底交接交给实体物块/岩浆遮挡(墙体顶天立地，血幕也顶天立地)
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -56,13 +58,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float alpha = saturate(rim * 0.7 + body * (0.72 + strands * 0.2) + deep * 0.2);
     alpha = min(alpha, 0.96);
 
-    //纵向端点包络：quad上下边前被血丝噪声撕散归零，不暴露水平切边
-    float vNorm = coords.y;
-    float vTear = strand2 * 0.05;
-    float vFade = smoothstep(0.0, 0.075 + vTear, vNorm) * smoothstep(1.0, 0.925 - vTear, vNorm);
     //深侧退场：背缘(560px)前雾化归零，不暴露垂直切边
     float backFade = smoothstep(560.0, 410.0, depth);
-    alpha *= vFade * backFade;
+    alpha *= backFade;
 
     color *= uIntensity;
     alpha *= uIntensity;

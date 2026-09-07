@@ -71,22 +71,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
             Lighting.AddLight(pos, BloodHot.ToVector3() * 0.8f * power);
         }
 
-        /// <summary>墙面渗血：沿墙面随机高度甩落血珠与血雾(推进的死线在滴血)</summary>
+        /// <summary>
+        /// 墙面渗血：沿墙面随机高度甩落血珠与血雾(推进的死线在滴血)。
+        /// 高度取屏幕可见走廊的空气段，与铺满屏幕的面缘热线对齐
+        /// </summary>
         public static void SpawnWallSeep(NPC wall, float density) {
             if (VaultUtils.isServer) {
                 return;
             }
             float faceX = Core.WofWallField.WallFaceX(wall);
-            float top = Core.WofWallField.Top;
-            float bottom = Core.WofWallField.Bottom;
-            if (bottom - top < 32f) {
+            if (Core.WofWallField.Height < 32f) {
                 return;
             }
 
             int count = (int)(2 * density) + (Main.rand.NextFloat() < density % 1f ? 1 : 0);
             for (int i = 0; i < count; i++) {
-                Vector2 pos = new Vector2(faceX + Main.rand.NextFloat(-26f, 10f) * wall.direction,
-                    Main.rand.NextFloat(top, bottom));
+                float? y = Core.WofWallField.RandomOpenAirY(faceX);
+                if (y == null) {
+                    continue;
+                }
+                Vector2 pos = new Vector2(faceX + Main.rand.NextFloat(-26f, 10f) * wall.direction, y.Value);
                 if (!OnScreen(pos, 80f)) {
                     continue;
                 }

@@ -66,6 +66,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
         public virtual void OnExit(EocStateContext context) {
             context.ResetChargeState();
             context.LaneIntensity = 0f;
+            context.LaneLocked = false;
+            context.ClearLaneExtra();
         }
 
         public override void OnEnter(VaultStateMachine<EocStateContext> machine, EocStateContext ctx) {
@@ -106,6 +108,35 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
 
         protected static void DisableContactDamage(NPC npc) {
             npc.damage = 0;
+        }
+
+        /// <summary>
+        /// 预告即承诺：前摇最后 lockFrames 帧冻结瞄准，之后车道与起跑共用同一方向，起跑后不再重瞄。<br/>
+        /// 未锁定时每帧跟踪 liveDir；到点锁定并返回 true（当帧播锁定音画）
+        /// </summary>
+        protected static bool UpdateAimLock(ref Vector2 lockedDir, ref bool locked, Vector2 liveDir,
+            int timer, int telegraphTime, int lockFrames) {
+            if (locked) {
+                return false;
+            }
+            lockedDir = liveDir;
+            if (timer >= telegraphTime - lockFrames) {
+                locked = true;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>写主车道：锁定后满亮定格，未锁定随进度渐显</summary>
+        protected static void WriteLane(EocStateContext context, Vector2 start, Vector2 dir, float length,
+            float progress, bool locked, float baseIntensity = 0.4f) {
+            context.LaneStart = start;
+            context.LaneDir = dir;
+            context.LaneLength = length;
+            context.LaneProgress = progress;
+            context.LaneLocked = locked;
+            context.LaneIntensity = locked ? 1f : baseIntensity + (1f - baseIntensity) * progress;
+            context.ClearLaneExtra();
         }
 
         #endregion

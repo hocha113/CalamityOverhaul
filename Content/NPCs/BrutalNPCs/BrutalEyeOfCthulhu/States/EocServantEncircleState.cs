@@ -7,7 +7,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 {
     /// <summary>
     /// 仆从血环合围（二阶段）：血肉之环绕玩家缓缓收拢→全员同时向心扑杀+主眼自上贯穿<br/>
-    /// 环半径经主眼 ai[3] 同步驱动仆从槽位，缺口清晰可读，玩家须预判选缝穿出
+    /// 环半径经主眼 ai[3] 同步驱动仆从槽位，缺口清晰可读，玩家须预判选缝穿出；<br/>
+    /// 主眼贯穿线在合围信号那一帧就冻结并画出车道，穿缝而出的人不会再被"预判俯冲"堵在缝口
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EocStateIndex.ServantEncircle, typeof(EocStateContext))]
     internal class EocServantEncircleState : EocStateBase
@@ -29,14 +30,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int RecoverTime = 36;
         private const float RingStartRadius = 640f;
         private const float RingEndRadius = 470f;
+        /// <summary>合围信号到主眼起跳的延迟，也是贯穿车道的冻结展示时长</summary>
+        private const int DiveDelay = 14;
+        private const int DiveFlight = 24;
 
         private int ServantCount => Context.IsAsuraMode ? 8 : 7;
         private float ConvergeSpeed => Context.IsAsuraMode ? 27f : 23f;
+        private float DiveSpeed => Context.IsAsuraMode ? 50f : 45f;
 
         private EocStateContext Context;
         private EncirclePhase phase;
         private bool converged;
         private bool diveLaunched;
+        private Vector2 diveDir;
 
         public override void OnEnter(EocStateContext context) {
             base.OnEnter(context);
@@ -44,6 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             phase = EncirclePhase.Summon;
             converged = false;
             diveLaunched = false;
+            diveDir = Vector2.UnitY;
         }
 
         public override IEocState OnUpdate(EocStateContext context) {
@@ -167,13 +174,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                     SoundEngine.PlaySound(SoundID.Roar with { Volume = 1.1f, Pitch = 0.05f }, npc.Center);
                 }
                 EocMotion.Shake(player.Center, 5f, 12);
+                //贯穿线在信号帧即冻结：与仆从合围叠层的攻击，必须让玩家在选缝时就看见它
+                diveDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
+                EocMotion.AimLockCue(npc, context, diveDir);
             }
 
-            //主眼延迟半拍自上贯穿，跟合围错开一层压力
-            if (Timer == 14 && !diveLaunched) {
+            //主眼延迟半拍自上贯穿，跟合围错开一层压力；延迟期间车道定格展示
+            if (!diveLaunched) {
+                WriteLane(context, npc.Center, diveDir, DiveFlight * DiveSpeed, Timer / (float)DiveDelay, true);
+                FaceTarget(npc, npc.Center + diveDir, 0.5f);
+            }
+            if (Timer == DiveDelay && !diveLaunched) {
                 diveLaunched = true;
-                Vector2 diveDir = (player.Center + player.velocity * 8f - npc.Center).SafeNormalize(Vector2.UnitY);
-                EocMotion.DashLaunch(npc, context, diveDir, Context.IsAsuraMode ? 50f : 45f, 1.15f);
+                EocMotion.DashLaunch(npc, context, diveDir, DiveSpeed, 1.15f);
                 if (!VaultUtils.isClient) {
                     npc.netUpdate = true;
                 }
@@ -183,13 +196,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 FaceVelocity(npc);
                 EnableContactDamageIfFast(npc, 26f, 1.3f);
                 context.PushDashVisuals(1f, 1f);
-                if (Timer > 38) {
+                if (Timer > DiveDelay + DiveFlight) {
                     npc.velocity *= 0.75f;
                     EocMotion.BrakeDroplets(npc);
                 }
-            }
-            else {
-                FaceTarget(npc, player.Center, 0.5f);
             }
 
             Timer++;

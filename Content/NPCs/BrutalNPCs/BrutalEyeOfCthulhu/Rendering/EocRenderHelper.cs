@@ -302,21 +302,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
         #endregion
 
         #region 预警车道
-        /// <summary>冲刺车道预警，本体 Draw 内调用（Deferred 批下用 Immediate 短开）</summary>
+        /// <summary>
+        /// 冲刺车道预警，本体 Draw 内调用（Deferred 批下用 Immediate 短开）。<br/>
+        /// 主车道之后按序画附加段（变轨贯穿段/回钩段），同一强度同一进度，读作一条折线
+        /// </summary>
         public static void DrawTelegraphLane(SpriteBatch sb, EocStateContext ctx) {
             if (ctx.LaneIntensity <= 0.03f) {
                 return;
             }
             Effect effect = EffectLoader.EocTelegraph?.Value;
-            Vector2 start = ctx.LaneStart - Main.screenPosition;
-            float rot = ctx.LaneDir.ToRotation();
 
             if (effect == null) {
                 //缺 fxc 回退：细车道线
-                Texture2D line = CWRAsset.Line.Value;
-                Vector2 lscale = new(ctx.LaneLength / line.Width, 3f / line.Height);
-                sb.Draw(line, start, null, (EocMotion.Arterial with { A = 0 }) * (ctx.LaneIntensity * 0.6f),
-                    rot, new Vector2(0, line.Height / 2f), lscale, SpriteEffects.None, 0f);
+                DrawLaneFallback(sb, ctx.LaneStart, ctx.LaneDir, ctx.LaneLength, ctx.LaneIntensity);
+                for (int i = 0; i < ctx.LaneExtraCount; i++) {
+                    EocStateContext.LaneSegment seg = ctx.LaneExtra[i];
+                    DrawLaneFallback(sb, seg.Start, seg.Dir, seg.Length, ctx.LaneIntensity);
+                }
                 return;
             }
 
@@ -330,13 +332,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
             effect.Parameters["uIntensity"]?.SetValue(ctx.LaneIntensity);
             effect.CurrentTechnique.Passes[0].Apply();
 
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Vector2 pScale = new(ctx.LaneLength / pixel.Width, 130f / pixel.Height);
-            sb.Draw(pixel, start, null, Color.White, rot, new Vector2(0, pixel.Height / 2f), pScale, SpriteEffects.None, 0f);
+            DrawLaneQuad(sb, ctx.LaneStart, ctx.LaneDir, ctx.LaneLength);
+            for (int i = 0; i < ctx.LaneExtraCount; i++) {
+                EocStateContext.LaneSegment seg = ctx.LaneExtra[i];
+                DrawLaneQuad(sb, seg.Start, seg.Dir, seg.Length);
+            }
 
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>shader 车道画布：左端中点为原点，宽 130px</summary>
+        private static void DrawLaneQuad(SpriteBatch sb, Vector2 worldStart, Vector2 dir, float length) {
+            if (length <= 1f) {
+                return;
+            }
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Vector2 pScale = new(length / pixel.Width, 130f / pixel.Height);
+            sb.Draw(pixel, worldStart - Main.screenPosition, null, Color.White, dir.ToRotation(),
+                new Vector2(0, pixel.Height / 2f), pScale, SpriteEffects.None, 0f);
+        }
+
+        private static void DrawLaneFallback(SpriteBatch sb, Vector2 worldStart, Vector2 dir, float length, float intensity) {
+            if (length <= 1f) {
+                return;
+            }
+            Texture2D line = CWRAsset.Line.Value;
+            Vector2 lscale = new(length / line.Width, 3f / line.Height);
+            sb.Draw(line, worldStart - Main.screenPosition, null, (EocMotion.Arterial with { A = 0 }) * (intensity * 0.6f),
+                dir.ToRotation(), new Vector2(0, line.Height / 2f), lscale, SpriteEffects.None, 0f);
         }
 
         /// <summary>预警环，雾团出击/合围标记用；世界坐标，radius 像素</summary>

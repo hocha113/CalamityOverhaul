@@ -43,6 +43,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         private float chewCounter;
         /// <summary>尸山血海强度(本地渐变：入场后涨起，死亡/撤离随墙退场)</summary>
         private float seaIntensity;
+        /// <summary>
+        /// 覆膜显露上缘世界Y(本地渐变)：演出接管墙域(入场升起/死亡塌缩)时跟随 wofDrawAreaTop，
+        /// 常态推到屏外让覆膜与原版墙体一样顶天立地。NaN=尚未初始化，首帧直接对齐目标
+        /// </summary>
+        private float overlayRevealTop = float.NaN;
+        /// <summary>显露上缘常态停靠位：屏顶之上多少 px(须盖过 WofRenderHelper 的屏幕余量)</summary>
+        private const float OverlayRevealOffscreen = 600f;
+        /// <summary>显露上缘每帧最大位移 px：盖得住入场升起峰速(约 16px/f)，又不让两种模式切换时上缘跳变</summary>
+        private const float OverlayRevealStep = 32f;
         /// <summary>环境低吼计时(本地)</summary>
         private int roarTimer;
         /// <summary>滤镜当前强度(本地渐变)</summary>
@@ -495,8 +504,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             seaIntensity = MathHelper.Lerp(seaIntensity, seaTarget, 0.02f);
             WofRenderHelper.DrawBloodSea(spriteBatch, npc, seaIntensity);
 
-            //血肉覆膜(墙条带+面缘+拖尾肉髓)
-            WofRenderHelper.DrawWallOverlay(spriteBatch, npc, stateContext);
+            //血肉覆膜(墙条带+面缘+拖尾肉髓)：纵向铺满屏幕，只在演出接管墙域时用显露上缘跟着 wofDrawAreaTop 升/沉；
+            //限速逼近，避免演出与常态切换时上缘跳变(扫描被截短时 wofDrawAreaTop 可能就在半空)
+            float revealGoal = WofWallField.CinematicAreaLock > 0
+                ? WofWallField.Top
+                : Main.screenPosition.Y - OverlayRevealOffscreen;
+            overlayRevealTop = float.IsNaN(overlayRevealTop)
+                ? revealGoal
+                : overlayRevealTop + MathHelper.Clamp(revealGoal - overlayRevealTop, -OverlayRevealStep, OverlayRevealStep);
+            WofRenderHelper.DrawWallOverlay(spriteBatch, npc, stateContext, overlayRevealTop);
 
             //口部漩涡(漩涡态由状态推进度)
             if (stateContext.ChargeType == 2 && stateContext.ChargeProgress > 0.01f) {

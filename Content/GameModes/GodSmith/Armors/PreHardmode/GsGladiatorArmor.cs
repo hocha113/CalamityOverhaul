@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
     /// 【角斗士套·凯旋标枪】（P10a 移交，键族归 ArmorsB）竞技场的喝彩化为投械：
     /// ①命中积攒喝彩，满六层后下一击自肩上依次掷出三支青铜标枪
     /// ②标枪走抛物弧线钉向目标。
-    /// 原版无套装奖励，神赋即是它的第一件套装奖励
+    /// 原版套装奖励（免疫击退）保留，神赋叠加
     /// </summary>
     internal class GsGladiatorArmor : GsArmorsBChargeScheme
     {

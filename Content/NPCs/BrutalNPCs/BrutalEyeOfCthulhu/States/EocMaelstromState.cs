@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 {
     /// <summary>
     /// 猩红血漩涡（低血大招）：吞尽战场血雾→自旋喷吐旋臂血棘弹幕+仆从环卫，<br/>
-    /// 中场喘息换旋向，终幕长吸气三连变轨暴冲，力竭长喘收场
+    /// 中场喘息换旋向，终幕长吸气三连变轨暴冲，力竭长喘收场<br/>
+    /// 三连冲每段都有自己的瞄准拍：车道在拍首冻结并整条画出折线，起跑与变轨都沿它飞，不再中途追人
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EocStateIndex.Maelstrom, typeof(EocStateContext))]
     internal class EocMaelstromState : EocStateBase
@@ -24,8 +25,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int LullTime = 40;
         private const int SpiralBTime = 150;
         private const int FinaleReelTime = 20;
-        private const int DashCycle = 28;
+        /// <summary>每段冲刺前的瞄准拍：刹车余速里回首锁线、车道定格</summary>
+        private const int DashAimBeat = 12;
+        /// <summary>起跑到刹车前的满速帧数</summary>
+        private const int DashFlight = 20;
+        private const int DashBrake = 8;
+        private const int DashCycle = DashAimBeat + DashFlight + DashBrake;
         private const int DashCount = 3;
+        private const int BlinkLead = 5;
+        private const float KinkLateral = 300f;
+        private const float KinkSpeedMul = 1.1f;
         private const int ExhaustTime = 62;
 
         private int SpiralAEnd => GatherTime + SpiralATime;
@@ -37,19 +46,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
         private int SpikeInterval => Context.IsAsuraMode ? 7 : 9;
         private float SpikeCurl => 0.0069f;
+        private float FinaleDashSpeed => Context.IsAsuraMode ? 62f : 58f;
 
         private EocStateContext Context;
         private float volleyAngle;
         private int dashIndex;
+        private bool dashBlinked;
         private bool dashKinked;
+        private EocDashPlan dashPlan;
 
         public override void OnEnter(EocStateContext context) {
             base.OnEnter(context);
             Context = context;
             volleyAngle = 0f;
             dashIndex = -1;
+            dashBlinked = false;
             dashKinked = false;
+            dashPlan = default;
         }
+
+        /// <summary>三连冲拐点侧固定左右交替，各端无需同步即可同构建路</summary>
+        private static float DashSide(int index) => index % 2 == 0 ? 1f : -1f;
 
         public override IEocState OnUpdate(EocStateContext context) {
             NPC npc = context.Npc;
@@ -200,26 +217,49 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             if (Timer % 2 == 0) {
                 EocMotion.ConvergeStreaks(npc.Center, progress, 200f);
             }
+            //长吸气期间第一段折线随人游走显形，进瞄准拍才冻结
+            EocDashPlan preview = EocDashPlan.Build(npc.Center, player.Center, DashSide(0), FinaleDashSpeed,
+                KinkSpeedMul, KinkLateral, DashFlight, false, 0f);
+            preview.WriteLane(context, npc.Center, progress * 0.5f, false);
         }
 
         private void UpdateTripleDash(NPC npc, Player player, EocStateContext context) {
             int dashTimer = (Timer - ReelEnd) % DashCycle;
             int currentDash = Math.Min((Timer - ReelEnd) / DashCycle, DashCount - 1);
 
+            //瞄准拍首帧：锁线建路，变轨帧写 ai[3] 同步
             if (currentDash != dashIndex) {
                 dashIndex = currentDash;
+                dashBlinked = false;
                 dashKinked = false;
-                //起跑
+                dashPlan = EocDashPlan.Build(npc.Center, player.Center, DashSide(currentDash), FinaleDashSpeed,
+                    KinkSpeedMul, KinkLateral, DashFlight, false, 0f);
                 if (!VaultUtils.isClient) {
-                    npc.ai[3] = 11f;
-                    Vector2 dir = (EocMotion.PredictTarget(player, npc.Center, 58f, 0.5f) - npc.Center)
-                        .SafeNormalize(Vector2.UnitY);
-                    EocMotion.DashLaunch(npc, context, dir, Context.IsAsuraMode ? 62f : 58f, 1.3f);
+                    npc.ai[3] = dashPlan.Pack();
                     npc.netUpdate = true;
                 }
-                else {
-                    EocMotion.DashLaunch(npc, context,
-                        (player.Center - npc.Center).SafeNormalize(Vector2.UnitY), 58f, 1.3f);
+                EocMotion.AimLockCue(npc, context, dashPlan.Dir1);
+            }
+
+            //瞄准拍：刹车余速里回首盯线，车道定格
+            if (dashTimer < DashAimBeat) {
+                npc.velocity *= 0.8f;
+                FaceTarget(npc, npc.Center + dashPlan.Dir1, 0.45f);
+                dashPlan.WriteLane(context, npc.Center, dashTimer / (float)DashAimBeat, true);
+                context.SetChargeState(1, dashTimer / (float)DashAimBeat);
+                context.PushIris(1f, EocMotion.IrisRed);
+                if (dashTimer == 2 && !VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Zombie2 with { Volume = 0.5f, Pitch = 0.1f }, npc.Center);
+                }
+                return;
+            }
+
+            //起跑：沿锁定的起跑段
+            if (dashTimer == DashAimBeat) {
+                context.ResetChargeState();
+                EocMotion.DashLaunch(npc, context, dashPlan.Dir1, FinaleDashSpeed, 1.3f);
+                if (!VaultUtils.isClient) {
+                    npc.netUpdate = true;
                 }
                 EocMotion.Shake(npc.Center, 7f, 12);
             }
@@ -228,24 +268,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             EnableContactDamageIfFast(npc, 28f, 1.35f);
             context.PushDashVisuals(1f, 1f);
 
-            int kinkFrame = Math.Max((int)npc.ai[3], 6);
-            if (dashTimer == kinkFrame - 5) {
+            int flightTimer = dashTimer - DashAimBeat;
+            int kinkFrame = dashPlan.ResolveKinkFrame(npc.ai[3], DashFlight);
+            if (!dashBlinked && flightTimer >= kinkFrame - BlinkLead) {
+                dashBlinked = true;
                 EocMotion.FeintBlink(npc, context);
             }
-            if (dashTimer == kinkFrame && !dashKinked) {
+            //变轨：沿锁定的贯穿段，不看玩家现在在哪
+            if (!dashKinked && flightTimer >= kinkFrame) {
                 dashKinked = true;
                 Vector2 oldVel = npc.velocity;
+                npc.velocity = dashPlan.Dir2 * npc.velocity.Length() * KinkSpeedMul;
                 if (!VaultUtils.isClient) {
-                    float heading = npc.velocity.ToRotation();
-                    float desired = (player.Center - npc.Center).ToRotation();
-                    float next = heading.AngleTowards(desired, MathHelper.ToRadians(70f));
-                    npc.velocity = next.ToRotationVector2() * npc.velocity.Length() * 1.1f;
                     npc.netUpdate = true;
                 }
                 EocMotion.KinkBurst(npc, context, oldVel, context.IsSecondPhase);
             }
             //冲末减速
-            if (dashTimer > DashCycle - 8) {
+            if (flightTimer >= DashFlight) {
                 npc.velocity *= 0.8f;
                 EocMotion.BrakeDroplets(npc);
             }

@@ -1,6 +1,5 @@
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 
@@ -10,9 +9,6 @@ namespace CalamityOverhaul.Content.PRTTypes
     internal class PRT_ToxicMist : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Smoke";
-
-        [VaultLoaden("@CalamityMod/Particles/BloomCircle")]
-        internal static Asset<Texture2D> BloomTex = null;
 
         private float rotationSpeed;
         private float hueShift;
@@ -88,12 +84,8 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            if (BloomTex == null || BloomTex.IsDisposed) {
-                return false;
-            }
-
             Texture2D smokeTexture = PRTLoader.PRT_IDToTexture[ID];
-            Texture2D bloomTexture = BloomTex.Value;
+            Texture2D bloomTexture = CWRAsset.BloomSoft01.Value;
 
             Vector2 drawPos = Position - Main.screenPosition;
 

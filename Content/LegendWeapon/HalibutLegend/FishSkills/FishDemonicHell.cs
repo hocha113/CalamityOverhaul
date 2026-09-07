@@ -554,7 +554,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //第2层
-            Texture2D smear = CWRAsset.SemiCircularSmear?.Value;
+            Texture2D smear = CWRAsset.ArcSmear01?.Value;
             if (smear != null) {
                 float sc = 110f * scale / smear.Width;
                 sb.Draw(smear, center, null, new Color(255, 105, 38, 0) * 0.42f,

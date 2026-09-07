@@ -105,15 +105,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                 WofMotionFX.CameraPunch(npc.Center, 2f + p * 2f, 8, "WofExodusHeart");
             }
 
-            //血雾在玩家前方汇聚成幕的前兆
+            //血雾在玩家前方汇聚成幕的前兆(高度取可见走廊空气段，血幕本身顶天立地)
             if (!silence && Timer % 3 == 0 && context.Target.Alives()) {
                 float foreX = npc.Center.X + npc.direction * WofDirector.CurtainStartGap;
-                Vector2 pos = new Vector2(foreX + Main.rand.NextFloat(-160f, 160f),
-                    Main.rand.NextFloat(WofWallField.Top, WofWallField.Bottom));
-                if (WofMotionFX.OnScreen(pos)) {
-                    PRTLoader.NewParticle<PRT_WofBloodMist>(pos,
-                        new Vector2(-npc.direction * Main.rand.NextFloat(0.4f, 1.2f), Main.rand.NextFloat(-0.5f, 0.5f)),
-                        WofMotionFX.BloodDark, Main.rand.NextFloat(1f, 1.8f))?.Configure(Main.rand.Next(40, 70), 0.5f);
+                float? y = WofWallField.RandomOpenAirY(foreX);
+                if (y != null) {
+                    Vector2 pos = new Vector2(foreX + Main.rand.NextFloat(-160f, 160f), y.Value);
+                    if (WofMotionFX.OnScreen(pos)) {
+                        PRTLoader.NewParticle<PRT_WofBloodMist>(pos,
+                            new Vector2(-npc.direction * Main.rand.NextFloat(0.4f, 1.2f), Main.rand.NextFloat(-0.5f, 0.5f)),
+                            WofMotionFX.BloodDark, Main.rand.NextFloat(1f, 1.8f))?.Configure(Main.rand.Next(40, 70), 0.5f);
+                    }
                 }
             }
         }
@@ -153,10 +155,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                 return;
             }
 
-            //血幕前缘的喷沫与幕内暗流
-            if (surgeT % 2 == 0) {
-                Vector2 pos = new Vector2(curtainX + Main.rand.NextFloat(-30f, 30f) * npc.direction,
-                    Main.rand.NextFloat(WofWallField.Top - 100f, WofWallField.Bottom + 100f));
+            //血幕前缘的喷沫与幕内暗流(沿整段可见走廊撒，与顶天立地的幕体对齐)
+            if (surgeT % 2 == 0 && WofWallField.RandomOpenAirY(curtainX) is float frothY) {
+                Vector2 pos = new Vector2(curtainX + Main.rand.NextFloat(-30f, 30f) * npc.direction, frothY);
                 if (WofMotionFX.OnScreen(pos, 120f)) {
                     PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos,
                         new Vector2(-npc.direction * Main.rand.NextFloat(1f, 4f), Main.rand.NextFloat(-2f, 2f)),
@@ -184,13 +185,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
             context.RearCurtainOpacity = MathHelper.Clamp(1f - restT / 40f, 0f, 1f);
 
             if (restT == 1 && !VaultUtils.isServer) {
-                //幕体崩解成漫天血雾
+                //幕体崩解成漫天血雾：沿整段可见走廊等距撒，落进岩石/岩浆的槛位跳过
                 SoundEngine.PlaySound(SoundID.Zombie104 with { Pitch = -0.9f, Volume = 1f }, npc.Center);
                 float curtainX = context.RearCurtainX;
                 if (curtainX != 0f) {
+                    float screenTop = Main.screenPosition.Y;
+                    float screenBottom = Main.screenPosition.Y + Main.screenHeight;
                     for (int i = 0; i < 22; i++) {
-                        Vector2 pos = new Vector2(curtainX + Main.rand.NextFloat(-60f, 60f),
-                            MathHelper.Lerp(WofWallField.Top, WofWallField.Bottom, (i + 0.5f) / 22f));
+                        float y = MathHelper.Lerp(screenTop, screenBottom, (i + 0.5f) / 22f);
+                        if (!WofWallField.IsOpenAir(curtainX, y)) {
+                            continue;
+                        }
+                        Vector2 pos = new Vector2(curtainX + Main.rand.NextFloat(-60f, 60f), y);
                         PRTLoader.NewParticle<PRT_WofBloodMist>(pos, Main.rand.NextVector2Circular(2.5f, 1.5f),
                             WofMotionFX.BloodDark, Main.rand.NextFloat(1.4f, 2.2f))?.Configure(Main.rand.Next(60, 100), 0.6f);
                     }

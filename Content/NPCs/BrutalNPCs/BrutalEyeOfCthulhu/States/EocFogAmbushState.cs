@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 {
     /// <summary>
     /// 血雾伏击：绕玩家播撒遮蔽雾团→潜入→雾间隐行→择雾红脉冲预警→破雾扑杀<br/>
-    /// 出击雾团由权威端掷骰，其弹幕索引写入 npc.ai[3]，脉冲预警走雾团弹幕自身 ai[1] 同步
+    /// 出击雾团由权威端掷骰，其弹幕索引写入 npc.ai[3]，脉冲预警走雾团弹幕自身 ai[1] 同步；<br/>
+    /// 脉冲末段从雾中伸出冻结车道（预告即承诺），破雾沿车道直飞不带预判
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EocStateIndex.FogAmbush, typeof(EocStateContext))]
     internal class EocFogAmbushState : EocStateBase
@@ -35,6 +36,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private const int PulseTime = 42;
         private const int EmergeFlight = 30;
         private const int EmergeBrake = 14;
+        /// <summary>脉冲末段车道冻结帧数：红脉冲告知从哪来，车道告知往哪去</summary>
+        private const int AimLockFrames = 12;
 
         private float EmergeSpeed => Context.IsAsuraMode ? 52f : 47f;
         private int MaxAmbushes => Context.IsSecondPhase ? 2 : 1;
@@ -44,6 +47,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private int ambushCount;
         private bool launched;
         private bool finished;
+        private Vector2 lockedDir;
+        private bool aimLocked;
 
         public override void OnEnter(EocStateContext context) {
             base.OnEnter(context);
@@ -52,6 +57,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             ambushCount = 0;
             launched = false;
             finished = false;
+            aimLocked = false;
+            lockedDir = Vector2.UnitY;
         }
 
         public override IEocState OnUpdate(EocStateContext context) {
@@ -88,6 +95,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
         private void SwitchPhase(AmbushPhase next) {
             phase = next;
             Timer = 0;
+            //每轮重新锁线（二阶段会再潜一轮），雾被清空直跳破雾时也不能沿用旧线
+            if (next == AmbushPhase.DiveIn || next == AmbushPhase.PulseWait) {
+                aimLocked = false;
+            }
         }
 
         #region 播雾
@@ -243,9 +254,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             else {
                 npc.velocity *= 0.9f;
             }
-            FaceTarget(npc, player.Center, 0.35f);
-            context.SetChargeState(2, Timer / (float)PulseTime);
-            context.PushIris(Timer / (float)PulseTime, EocMotion.IrisRed);
+            float progress = Timer / (float)PulseTime;
+            context.SetChargeState(2, progress);
+            context.PushIris(progress, EocMotion.IrisRed);
+
+            //末段：红脉冲收束成一条从雾中伸出的车道并冻结，破雾就沿它飞
+            Vector2 liveDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
+            if (UpdateAimLock(ref lockedDir, ref aimLocked, liveDir, Timer, PulseTime, AimLockFrames)) {
+                EocMotion.AimLockCue(npc, context, lockedDir);
+            }
+            FaceTarget(npc, npc.Center + lockedDir, 0.35f);
+            if (aimLocked) {
+                WriteLane(context, npc.Center, lockedDir, EmergeFlight * EmergeSpeed, progress, true);
+            }
 
             Timer++;
             if (Timer >= PulseTime) {
@@ -261,10 +282,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 launched = true;
                 context.FogHideGoal = 0f;
                 context.FogHide = 0.25f;   //破雾瞬间快速显形
-                Vector2 predicted = EocMotion.PredictTarget(player, npc.Center, EmergeSpeed, 0.6f);
-                Vector2 dir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
+                //雾团被清导致脉冲段被跳过时，车道没锁过，就地按当前方向起跑
+                Vector2 dir = aimLocked ? lockedDir : (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
+                EocMotion.DashLaunch(npc, context, dir, EmergeSpeed, 1.25f);
                 if (!VaultUtils.isClient) {
-                    EocMotion.DashLaunch(npc, context, dir, EmergeSpeed, 1.25f);
                     //清出击旗，雾团转入快速消散
                     Projectile cloud = GetCloudByIndex((int)npc.ai[3]);
                     if (cloud != null) {
@@ -273,9 +294,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                         cloud.netUpdate = true;
                     }
                     npc.netUpdate = true;
-                }
-                else {
-                    EocMotion.DashLaunch(npc, context, dir, EmergeSpeed, 1.25f);
                 }
                 EocMotion.BloodBurst(npc.Center, 1.35f);
                 EocMotion.Shake(npc.Center, 6f, 12, dir);
