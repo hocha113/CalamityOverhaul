@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             //完全复刻普通冲刺的蓄力语言，这是骗局的上半场
             if (progress > 0.72f && !VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(1.7f, 1.7f);
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.7f, 1.7f));
             }
 
             //佯攻车道：瞄向玩家侧方的擦身线，末段冻结；车道诚实画出"会擦过去"，骗的是"这只是普通冲刺"
@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                     SoundEngine.PlaySound(SoundID.Zombie2 with { Volume = 0.4f, Pitch = -0.5f + progress * 0.9f }, npc.Center);
                 }
                 if (progress > 0.7f) {
-                    npc.position += Main.rand.NextVector2Circular(1.9f, 1.9f);
+                    BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.9f, 1.9f));
                 }
             }
 
@@ -416,7 +416,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             context.FrameRate = 2;
             //僵持震颤，咬紧的张力
             if (!VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(1.3f, 1.3f);
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.3f, 1.3f));
                 if (Timer % 5 == 0) {
                     EocMotion.BloodSpray(MawWorldPos(npc), Main.rand.NextVector2Unit(), 2, 5f, 0.9f);
                 }

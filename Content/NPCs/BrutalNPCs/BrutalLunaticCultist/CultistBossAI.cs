@@ -33,6 +33,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
         private VaultStateMachine<CultistStateContext> stateMachine;
         private CultistStateContext stateContext;
         private Player targetPlayer;
+
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
         #endregion
 
         #region 加载与初始化
@@ -65,6 +68,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             };
             stateMachine = new NpcStateMachine<CultistStateContext>(stateContext, aiSlot: 2);
 
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
+
             //客户端从 ai[2] 恢复状态
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[2];
@@ -84,6 +90,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 InitializeStateContext();
             }
 
+            //自接位置纠偏 + 收养计时（瞬移与星轨走位都是位置驱动，快照差不该留在贴图上）
+            BeginNetFrame();
+
             FindTarget();
             UpdateStateContext();
             CheckPhaseTransition();
@@ -98,9 +107,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             UpdateAmbientVisuals();
             ForcedNetUpdating(npc);
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/瞬移/结界点火/命中）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

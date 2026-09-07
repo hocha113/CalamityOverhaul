@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
                 //末段绷紧颤抖
                 if (progress > 0.75f && !VaultUtils.isServer) {
-                    npc.position += Main.rand.NextVector2Circular(1.8f, 1.8f);
+                    BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.8f, 1.8f));
                 }
 
                 //警告线特效

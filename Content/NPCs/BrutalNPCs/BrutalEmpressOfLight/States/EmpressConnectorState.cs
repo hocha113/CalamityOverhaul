@@ -13,32 +13,34 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         public override string StateName => "EmpressConnector";
         public override EmpressStateIndex StateIndex => EmpressStateIndex.Connector;
 
-        /// <summary>一阶段：光球螺旋, 冲刺, 日舞, 冲刺, 瞬现枪, 光球螺旋, 冲刺, 长枪墙, 冲刺, 日舞</summary>
+        /// <summary>一阶段：光球螺旋, 冲刺, 日舞, 冲刺, 万华镜, 光痕, 冲刺, 长枪墙, 冲刺, 蝶群</summary>
         private static readonly EmpressStateIndex[] Phase1Cycle = [
             EmpressStateIndex.LightSpiral,
             EmpressStateIndex.DashGrab,
             EmpressStateIndex.SunDance,
             EmpressStateIndex.DashGrab,
-            EmpressStateIndex.HitscanVolley,
-            EmpressStateIndex.LightSpiral,
+            EmpressStateIndex.Kaleidoscope,
+            EmpressStateIndex.Echo,
             EmpressStateIndex.DashGrab,
             EmpressStateIndex.LanceWall,
             EmpressStateIndex.DashGrab,
-            EmpressStateIndex.SunDance,
+            EmpressStateIndex.Lacewing,
         ];
 
-        /// <summary>二阶段：长枪墙, 光球螺旋, 冲刺, 瞬现枪, 熔光扇, 日舞, 冲刺, 长枪墙, 熔光扇, 冲刺</summary>
+        /// <summary>二阶段：长枪墙, 光球螺旋, 冲刺, 万华镜, 月影, 日舞, 冲刺, 光痕, 蝶群, 冲刺, 长枪墙, 月影（夜里月影退成蝶群）</summary>
         private static readonly EmpressStateIndex[] Phase2Cycle = [
             EmpressStateIndex.LanceWall,
             EmpressStateIndex.LightSpiral,
             EmpressStateIndex.DashGrab,
-            EmpressStateIndex.HitscanVolley,
-            EmpressStateIndex.MeltingLight,
+            EmpressStateIndex.Kaleidoscope,
+            EmpressStateIndex.MoonShadow,
             EmpressStateIndex.SunDance,
             EmpressStateIndex.DashGrab,
-            EmpressStateIndex.LanceWall,
-            EmpressStateIndex.MeltingLight,
+            EmpressStateIndex.Echo,
+            EmpressStateIndex.Lacewing,
             EmpressStateIndex.DashGrab,
+            EmpressStateIndex.LanceWall,
+            EmpressStateIndex.MoonShadow,
         ];
 
         /// <summary>二阶段门槛</summary>
@@ -83,6 +85,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 return null;
             }
 
+            //只在第一拍起手：连接段是圆舞的换气，招在拍上落
+            if (!context.Downbeat) {
+                return null;
+            }
+
             //客户端不选招：等ai[2]同步跟随，防计数器在本地空转
             if (VaultUtils.isClient) {
                 return null;
@@ -112,8 +119,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             EmpressStateIndex pick = cycle[context.AttackCounter % cycle.Length];
             context.AttackCounter++;
 
-            //起手侧滑：非静场攻击前一记横向摆动（原版规约），静场招（日舞/熔光扇）不侧滑
-            if (pick != EmpressStateIndex.SunDance && pick != EmpressStateIndex.MeltingLight && target.Alives()) {
+            //月影只在昼；夜里这一格退成蝶群
+            if (pick == EmpressStateIndex.MoonShadow && !context.DayEmpowered) {
+                pick = EmpressStateIndex.Lacewing;
+            }
+
+            //起手侧滑：非静场攻击前一记横向摆动（原版规约），静场招（日舞/月影/光痕）不侧滑
+            if (pick != EmpressStateIndex.SunDance && pick != EmpressStateIndex.MoonShadow && pick != EmpressStateIndex.Echo && target.Alives()) {
                 int side = target.Center.X > npc.Center.X ? 1 : -1;
                 npc.velocity = npc.DirectionFrom(target.Center).SafeNormalize(Vector2.Zero)
                     .RotatedBy(MathHelper.PiOver2 * side) * 19f;
@@ -128,8 +140,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 EmpressStateIndex.DashGrab => new EmpressDashGrabState(),
                 EmpressStateIndex.SunDance => new EmpressSunDanceState(),
                 EmpressStateIndex.LanceWall => new EmpressLanceWallState(),
-                EmpressStateIndex.HitscanVolley => new EmpressHitscanVolleyState(),
-                EmpressStateIndex.MeltingLight => new EmpressMeltingLightState(),
+                EmpressStateIndex.Kaleidoscope => new EmpressKaleidoscopeState(),
+                EmpressStateIndex.Echo => new EmpressEchoState(),
+                EmpressStateIndex.Lacewing => new EmpressLacewingState(),
+                EmpressStateIndex.MoonShadow => new EmpressMoonShadowState(),
                 _ => new EmpressConnectorState(),
             };
         }

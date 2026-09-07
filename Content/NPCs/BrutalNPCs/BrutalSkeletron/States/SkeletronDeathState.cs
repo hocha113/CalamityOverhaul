@@ -206,8 +206,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             if (t > 0f) {
                 npc.Center = new Vector2(npc.Center.X, landY - 44f - t * 46f);
                 npc.rotation = npc.rotation.AngleLerp(0f, 0.05f);
-                //颤抖
-                npc.position += Main.rand.NextVector2Circular(1.1f, 1.1f) * t;
+                //颤抖只走绘制层，位置不动
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.1f, 1.1f) * t);
             }
         }
 
@@ -215,7 +215,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
         private void UpdateStrip(SkeletronStateContext context, NPC npc) {
             float t = (Timer - CradleEnd) / (float)(StripEnd - CradleEnd);
             npc.velocity = Vector2.Zero;
-            npc.position += Main.rand.NextVector2Circular(1.6f, 1.6f) * (0.4f + t);
+            //颤抖只走绘制层，位置不动
+            BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.6f, 1.6f) * (0.4f + t));
 
             //剥离的诅咒：头顶向心涡流增强（绘制层消费）
             context.SpinVortex = t;

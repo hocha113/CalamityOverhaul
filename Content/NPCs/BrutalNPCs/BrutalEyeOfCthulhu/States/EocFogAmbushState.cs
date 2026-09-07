@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 //贴附雾团中心微颤
                 npc.velocity = (cloud.Center - npc.Center) * 0.15f;
                 if (!VaultUtils.isServer) {
-                    npc.position += Main.rand.NextVector2Circular(1.2f, 1.2f);
+                    BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.2f, 1.2f));
                 }
             }
             else {

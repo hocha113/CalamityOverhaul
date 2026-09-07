@@ -75,6 +75,73 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             DrawStrip(effect, start, dir, length, halfStart, tint, halfEnd);
         }
 
+        /// <summary>沿折线画标记带（鞭线预告）</summary>
+        public static void DrawCurveMarker(Vector2[] points, float halfStart, float halfEnd, Color color,
+            float opacity, float focus, float glow, float breath, float hitFrac) {
+            Effect effect = EffectLoader.EmpressBeamMarker?.Value;
+            if (effect == null || opacity <= 0.005f || points.Length < 2) {
+                return;
+            }
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uOpacity"]?.SetValue(opacity);
+            effect.Parameters["uFocus"]?.SetValue(MathHelper.Clamp(focus, 0f, 1f));
+            effect.Parameters["uGlow"]?.SetValue(glow);
+            effect.Parameters["uBreath"]?.SetValue(MathHelper.Clamp(breath, 0f, 1f));
+            effect.Parameters["uColor"]?.SetValue(color.ToVector3());
+            effect.Parameters["uHitFrac"]?.SetValue(MathHelper.Clamp(hitFrac, 0.02f, 1f));
+            DrawCurveStrip(effect, points, halfStart, halfEnd, Color.White);
+        }
+
+        /// <summary>沿折线画束体（鞭身抽下的一瞬）</summary>
+        public static void DrawCurveSunbeam(Vector2[] points, float halfStart, float halfEnd, float hue, float widthRatio, Color tint) {
+            Effect effect = EffectLoader.EmpressSunbeam?.Value;
+            if (effect == null || points.Length < 2) {
+                return;
+            }
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uHue"]?.SetValue(hue);
+            effect.Parameters["uTelegraph"]?.SetValue(0f);
+            effect.Parameters["uWidthRatio"]?.SetValue(MathHelper.Clamp(widthRatio, 0.03f, 1f));
+            DrawCurveStrip(effect, points, halfStart, halfEnd, tint);
+        }
+
+        /// <summary>折线三角带：UV.x 按累计长度归一，着色器的 along 语义跨整条曲线成立</summary>
+        private static void DrawCurveStrip(Effect effect, Vector2[] points, float halfStart, float halfEnd, Color tint) {
+            int n = points.Length;
+            float total = 0f;
+            float[] cum = new float[n];
+            for (int i = 1; i < n; i++) {
+                total += Vector2.Distance(points[i - 1], points[i]);
+                cum[i] = total;
+            }
+            if (total < 1f) {
+                return;
+            }
+            VertexPositionColorTexture[] verts = new VertexPositionColorTexture[n * 2];
+            for (int i = 0; i < n; i++) {
+                Vector2 tangent = i == 0 ? points[1] - points[0] : (i == n - 1 ? points[i] - points[i - 1] : points[i + 1] - points[i - 1]);
+                Vector2 perp = tangent.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
+                float u = cum[i] / total;
+                float half = MathHelper.Lerp(halfStart, halfEnd, u);
+                verts[i * 2] = new VertexPositionColorTexture((points[i] + perp * half).ToVector3(), tint, new Vector2(u, 0f));
+                verts[i * 2 + 1] = new VertexPositionColorTexture((points[i] - perp * half).ToVector3(), tint, new Vector2(u, 1f));
+            }
+
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.Additive;
+            device.RasterizerState = RasterizerState.CullNone;
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, verts.Length - 2);
+            }
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
+        }
+
         private static void DrawStrip(Effect effect, Vector2 start, Vector2 dir, float length, float halfWidth, Color? tint = null, float? halfEnd = null) {
             GraphicsDevice device = Main.graphics.GraphicsDevice;
             BlendState origBlend = device.BlendState;

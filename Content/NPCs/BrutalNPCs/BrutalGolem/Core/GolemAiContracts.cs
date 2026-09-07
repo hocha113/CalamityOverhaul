@@ -53,6 +53,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public const int FistCmdX = 2;
         /// <summary>拳 Override ai[3] 指令目标 Y</summary>
         public const int FistCmdY = 3;
+        /// <summary>
+        /// 飞头 Override ai[0] 巡游相位。持久累加量，两端逐帧同算、随快照纠偏：
+        /// 留作本地字段则两端的 560px 巡游轨道会长期错开（相位误差不会自愈）
+        /// </summary>
+        public const int FreeHeadOrbitClock = 0;
+
         /// <summary>拳 Override ai[4] 反弹预算</summary>
         public const int FistBounce = 4;
         /// <summary>拳 Override ai[5] 蓄力帧数</summary>

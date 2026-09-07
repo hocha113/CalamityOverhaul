@@ -43,6 +43,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
         /// <summary>上帧中心，用于瞬步检测与FX</summary>
         private Vector2 prevCenter;
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         internal DeerclopsStateContext StateContext => stateContext;
         internal IVaultState<DeerclopsStateContext> CurrentState => stateMachine?.CurrentState;
         #endregion
@@ -66,6 +69,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
             };
             stateMachine = new NpcStateMachine<DeerclopsStateContext>(stateContext, aiSlot: 2);
 
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
+
             //客户端从ai[2]恢复状态
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[2];
@@ -84,6 +90,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
             if (stateContext == null || stateMachine == null) {
                 InitializeStateContext();
             }
+
+            //自接位置纠偏 + 收养计时（瞬步与横扫的位移都超出原版平滑的消化速率）
+            BeginNetFrame();
 
             //保持原版全局标记(音乐/血条等系统消费)
             NPC.deerclopsBoss = npc.whoAmI;
@@ -113,9 +122,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
             DetectStepFlashFx();
             UpdateVisuals();
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/瞬步/命中）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             prevCenter = npc.Center;
             return false;

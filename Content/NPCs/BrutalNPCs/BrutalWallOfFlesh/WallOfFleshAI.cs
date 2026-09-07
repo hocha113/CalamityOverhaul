@@ -102,12 +102,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             InitializeStateContext();
         }
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         private void InitializeStateContext() {
             stateContext = new WofStateContext {
                 Npc = npc,
                 IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<WofStateContext>(stateContext, aiSlot: 2);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //客户端从ai[2]恢复状态(中途加入)
             if (VaultUtils.isClient) {
@@ -149,7 +155,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             //每帧重声明，状态内覆盖
             npc.damage = npc.defDamage;
             npc.dontTakeDamage = false;
-            npc.netOffset = Vector2.Zero;
+            //Y 每帧被墙域硬锚（velocity.Y=0），X 走推进速度，预测式 position+velocity 两轴都成立
+            BeginNetFrame();
             stateContext.AdvanceFactor = 1f;
             stateContext.SpeedOverride = -1f;
             stateContext.SuppressYAnchor = false;
@@ -187,10 +194,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
                 stateContext.GrabCooldown--;
             }
 
-            //周期性同步
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/舌头抓取/推进提速）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

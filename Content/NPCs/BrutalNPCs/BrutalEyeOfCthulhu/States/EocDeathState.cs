@@ -120,7 +120,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             //痉挛
             if (!VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(1.6f, 1.6f) * (0.4f + progress * 1.4f);
+                BossNetMotion.DrawShake(npc,
+                    Main.rand.NextVector2Circular(1.6f, 1.6f) * (0.4f + progress * 1.4f));
                 //渗血渐密
                 if (Timer % Math.Max(7 - (int)(progress * 5f), 2) == 0) {
                     Vector2 seep = Main.rand.NextVector2Unit();

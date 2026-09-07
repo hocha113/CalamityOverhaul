@@ -60,6 +60,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             shader.Parameters["uPhaseGlow"]?.SetValue(EmpressScreenFX.PhaseGlow);
             shader.Parameters["uPhaseFlash"]?.SetValue(EmpressScreenFX.PhaseFlash);
 
+            //月影：白光中心与最多三枚月屑；同屏单位与竞技场一致（以屏高为 1）
+            shader.Parameters["uWhiteout"]?.SetValue(EmpressScreenFX.Whiteout);
+            shader.Parameters["uSunPos"]?.SetValue(WorldToScreenUV(EmpressScreenFX.SunWorld));
+            Vector2[] shardUV = new Vector2[3];
+            Vector3 shardRadius = Vector3.Zero;
+            int filled = 0;
+            foreach (Terraria.Projectile shard in Projectiles.EmpressMoonShard.Active) {
+                if (filled >= 3 || !shard.active) {
+                    continue;
+                }
+                shardUV[filled] = WorldToScreenUV(shard.Center);
+                float r = Projectiles.EmpressMoonShard.Radius * shard.scale * zoom / Main.screenHeight;
+                if (filled == 0) shardRadius.X = r;
+                else if (filled == 1) shardRadius.Y = r;
+                else shardRadius.Z = r;
+                filled++;
+            }
+            shader.Parameters["uShard0"]?.SetValue(shardUV[0]);
+            shader.Parameters["uShard1"]?.SetValue(shardUV[1]);
+            shader.Parameters["uShard2"]?.SetValue(shardUV[2]);
+            shader.Parameters["uShardRadius"]?.SetValue(shardRadius);
+            shader.Parameters["uShadowLength"]?.SetValue(Projectiles.EmpressMoonShadow.Length * zoom / Main.screenHeight);
+
             PingPong(sb, gd, screenSwap, shader);
         }
 

@@ -128,6 +128,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool? CanBrutalOverride() {
             return null;
         }
+
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
         #endregion
 
         #region 初始化
@@ -150,6 +153,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Owner = this
             };
             stateMachine = new NpcStateMachine<PrimeStateContext>(stateContext, aiSlot: PrimeAiSlots.HeadStateSlot);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //中途加入从ai[2]恢复状态
             if (VaultUtils.isClient) {
@@ -179,8 +185,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //状态/阶段占npc.ai[0..2]，交出aiStyle
             npc.aiStyle = -1;
             npc.knockBackResist = 0;
-            //清零netOffset，防客户端平滑叠偏
-            npc.netOffset = Vector2.Zero;
+            //清平滑并自接纠偏 + 收养计时。光清 netOffset 只是把锯齿换成硬跳：
+            //闪现冲撞与投技的位移一包一脚，得让客户端跑同一套积分再对账
+            BeginNetFrame();
             npc.defense = npc.defDefense;
             npc.reflectsProjectiles = false;
             npc.dontTakeDamage = false;
@@ -198,13 +205,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             UpdateMechThermalVisualState();
 
-            //编队旋转时钟
+            //编队旋转时钟（两端逐帧同算，四臂共读；快照负责纠偏）
             ai[PrimeAiSlots.OverrideOrbitClock]++;
 
             //投技冷却
             if (viceExecutionCooldown > 0) {
                 viceExecutionCooldown--;
             }
+
+            //决策点（换态/闪现锁向/抓取）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

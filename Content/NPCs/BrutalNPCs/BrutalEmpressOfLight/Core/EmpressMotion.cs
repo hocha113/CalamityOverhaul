@@ -9,25 +9,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
     /// <summary>光之女皇运动库与调色，状态共用</summary>
     internal static class EmpressMotion
     {
-        #region 调色
-        /// <summary>棱彩取色，hue 0~1 全饱和光谱（夜）</summary>
+        #region 调色（色散母题：阳光是白的，边缘才见彩虹）
+        /// <summary>棱彩取色，hue 0~1 全饱和光谱（夜本体 / 昼镶边）</summary>
         public static Color Prism(float hue, float lum = 0.62f) => Main.hslToRgb(hue % 1f, 1f, lum);
 
-        /// <summary>辐光金白族（昼）：t 0 深金→1 近白</summary>
+        /// <summary>白金核心（昼本体）：t 0 暖白金→1 近纯白</summary>
         public static Color Sun(float t) {
             t = MathHelper.Clamp(t, 0f, 1f);
-            return Color.Lerp(new Color(255, 212, 150), new Color(255, 246, 224), t);
+            return Color.Lerp(new Color(255, 236, 200), new Color(255, 252, 244), t);
         }
 
-        /// <summary>辐光暗部（昼弹幕暗边/夜束芯，真 alpha 层用）</summary>
-        public static readonly Color SunDark = new(120, 60, 20);
+        /// <summary>暗部（真 alpha 层用）：昼暗琥珀，夜暗紫</summary>
+        public static readonly Color SunDark = new(96, 52, 24);
+        public static readonly Color PrismDark = new(56, 22, 84);
 
-        /// <summary>按形态取色：昼归金白族，夜走光谱；hue 只在夜用</summary>
+        /// <summary>本体色：昼白金核心，夜光谱；hue 只在夜用</summary>
         public static Color FormColor(float hue, float dayBlend, float lum = 0.62f) {
             Color night = Prism(hue, lum);
             Color day = Sun(MathHelper.Clamp((lum - 0.4f) * 2f, 0f, 1f));
             return Color.Lerp(night, day, MathHelper.Clamp(dayBlend, 0f, 1f));
         }
+
+        /// <summary>镶边色：昼是饱和光谱（白光被折出的彩虹边），夜是对补色的暗光谱</summary>
+        public static Color FormRim(float hue, float dayBlend, float lum = 0.55f) {
+            Color night = Prism(hue + 0.5f, lum * 0.7f);
+            Color day = Prism(hue, lum);
+            return Color.Lerp(night, day, MathHelper.Clamp(dayBlend, 0f, 1f));
+        }
+
+        /// <summary>暗部色按形态</summary>
+        public static Color FormDark(float dayBlend) => Color.Lerp(PrismDark, SunDark, MathHelper.Clamp(dayBlend, 0f, 1f));
 
         /// <summary>兼容旧调用名</summary>
         public static Color FormPrism(float hue, float dayBlend, float lum = 0.62f) => FormColor(hue, dayBlend, lum);

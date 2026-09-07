@@ -7,7 +7,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
-    /// 冲刺抓取：入位→迟滞回吸→屏息→一帧点火，冲刺期按"玩家速度+朝向×50"转向追击；
+    /// 冲刺抓取：入位→迟滞回吸→屏息（至少 9f，等到第一拍）→一帧点火，冲刺期按"玩家速度+朝向×50"转向追击；
     /// 接触窗 |v|≥20，命中且投技冷却到则接光绫缚舞。冲刺尾迹垂直抛洒双列光球
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.DashGrab, typeof(EmpressStateContext))]
@@ -16,24 +16,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         public override string StateName => "EmpressDashGrab";
         public override EmpressStateIndex StateIndex => EmpressStateIndex.DashGrab;
 
+        private enum Phase { Position, Freeze, Dash, Recover, Tail }
+
         private int DashCount => Context.IsSecondPhase ? 3 : 2;
         private int PositionTime => Context.Scaled(34);
-        private const int FreezeTime = 9;
+        private const int FreezeMin = 9;
         private const int DashTime = 40;
         private int RecoverTime => Context.Scaled(18);
-        private int CycleTime => PositionTime + FreezeTime + DashTime + RecoverTime;
-        private int TotalTime => DashCount * CycleTime + Context.Scaled(20);
+        private int TailTime => Context.Scaled(20);
 
         private const float StandoffDistance = 700f;
         private const float LaunchSpeed = 40f;
         private const float MaxSpeed = 50f;
 
         private EmpressStateContext Context;
+        private Phase phase;
+        private int phaseTimer;
+        private int cycleIdx;
         private int dashDir = 1;
 
         public override void OnEnter(EmpressStateContext context) {
             base.OnEnter(context);
             Context = context;
+            phase = Phase.Position;
+            phaseTimer = 0;
+            cycleIdx = 0;
+        }
+
+        private void Next(Phase p) {
+            phase = p;
+            phaseTimer = 0;
         }
 
         public override IEmpressState OnUpdate(EmpressStateContext context) {
@@ -41,79 +53,101 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             NPC npc = context.Npc;
             Player target = context.Target;
             Timer++;
+            phaseTimer++;
 
-            int cycleIdx = Timer / CycleTime;
-            int beat = Timer % CycleTime;
-
-            if (cycleIdx >= DashCount) {
+            if (phase == Phase.Tail) {
                 npc.damage = 0;
                 npc.velocity *= 0.93f;
                 context.Pose = EmpressPose.Idle;
                 context.PoseTimer = 0f;
-                return Timer >= TotalTime ? new EmpressConnectorState() : null;
+                return phaseTimer >= TailTime ? new EmpressConnectorState() : null;
             }
 
             //冲刺姿态：原版绘制附带彩虹环绕残影，PoseTimer 映射原版 0..90 窗口
             context.Pose = dashDir < 0 ? EmpressPose.DashLeft : EmpressPose.DashRight;
-            context.PoseTimer = MathHelper.Clamp(beat / (float)CycleTime * 90f, 0f, 90f);
+            context.PoseTimer = phase == Phase.Dash ? 41f + Math.Min(phaseTimer, 49) : 20f;
 
-            if (beat < PositionTime) {
-                npc.damage = 0;
-                if (target.Alives()) {
-                    dashDir = target.Center.X > npc.Center.X ? 1 : -1;
-                    Vector2 dest = target.Center + new Vector2(-dashDir * StandoffDistance, -40f);
-                    if (beat == 2 && npc.Distance(dest) > 1500f) {
-                        EmpressMotion.PrismStep(npc, dest + new Vector2(0f, -60f), context.DayFormBlend);
-                        if (!VaultUtils.isClient) {
-                            npc.netUpdate = true;
-                        }
+            switch (phase) {
+                case Phase.Position:
+                    PositionUpdate(context, npc, target);
+                    if (phaseTimer >= PositionTime) {
+                        Next(Phase.Freeze);
                     }
-                    GlideTo(npc, dest, 0.03f, 0.11f, 30f);
-                    //末几帧迟滞回吸：pow(t,8) 反向蓄势
-                    float t = beat / (float)PositionTime;
-                    npc.Center += EmpressMotion.ReelBack(new Vector2(-dashDir, 0f), t, 4.6f);
+                    break;
+                case Phase.Freeze:
+                    //屏息：动作全停，辉光拉满；至少 9f，然后等第一拍点火
+                    npc.damage = 0;
+                    npc.velocity *= 0.55f;
+                    context.SetChargeState(3, MathHelper.Clamp(phaseTimer / (float)FreezeMin, 0f, 1f));
+                    if (phaseTimer == 1) {
+                        PlayLocal(SoundID.Item160 with { Volume = 1f }, npc.Center);
+                    }
+                    if (phaseTimer >= FreezeMin && context.Downbeat) {
+                        Next(Phase.Dash);
+                        Launch(context, npc, target);
+                    }
+                    break;
+                case Phase.Dash: {
+                    IEmpressState grab = DashUpdate(context, npc, target);
+                    if (grab != null) {
+                        return grab;
+                    }
+                    if (phaseTimer >= DashTime) {
+                        Next(Phase.Recover);
+                    }
+                    break;
                 }
-            }
-            else if (beat < PositionTime + FreezeTime) {
-                //屏息：动作全停，辉光拉满
-                npc.damage = 0;
-                npc.velocity *= 0.55f;
-                context.SetChargeState(3, (beat - PositionTime) / (float)FreezeTime);
-                if (beat == PositionTime + 1) {
-                    PlayLocal(SoundID.Item160 with { Volume = 1f }, npc.Center);
-                }
-            }
-            else if (beat < PositionTime + FreezeTime + DashTime) {
-                int dashBeat = beat - PositionTime - FreezeTime;
-                IEmpressState grab = DashUpdate(context, npc, target, dashBeat, cycleIdx);
-                if (grab != null) {
-                    return grab;
-                }
-            }
-            else {
-                npc.damage = 0;
-                npc.velocity *= 0.9f;
-                context.ResetChargeState();
+                case Phase.Recover:
+                    npc.damage = 0;
+                    npc.velocity *= 0.9f;
+                    context.ResetChargeState();
+                    if (phaseTimer >= RecoverTime) {
+                        cycleIdx++;
+                        Next(cycleIdx >= DashCount ? Phase.Tail : Phase.Position);
+                    }
+                    break;
             }
 
             EmpressMotion.AmbientGlow(npc, context.DayFormBlend);
             return null;
         }
 
-        private IEmpressState DashUpdate(EmpressStateContext context, NPC npc, Player target, int dashBeat, int cycleIdx) {
-            bool day = context.DayEmpowered;
-            if (dashBeat == 0) {
-                //一帧点火：朝 33f 预测点
-                Vector2 aim = target.Alives() ? target.Center + target.velocity * 33f : npc.Center + new Vector2(dashDir, 0f);
-                dashDir = aim.X > npc.Center.X ? 1 : -1;
-                npc.velocity = npc.DirectionTo(aim).SafeNormalize(new Vector2(dashDir, 0f)) * LaunchSpeed;
-                EmpressMotion.ShakeAlong(npc.Center, npc.velocity, 6f, 12);
-                PlayLocal(SoundID.Item160 with { Volume = 0.9f, Pitch = 0.3f }, npc.Center);
-                if (!VaultUtils.isServer) {
-                    EmpressScreenFX.PushPrismPulse(npc.Center, 0.28f, 16);
+        private void PositionUpdate(EmpressStateContext context, NPC npc, Player target) {
+            npc.damage = 0;
+            if (!target.Alives()) {
+                npc.velocity *= 0.9f;
+                return;
+            }
+            dashDir = target.Center.X > npc.Center.X ? 1 : -1;
+            Vector2 dest = target.Center + new Vector2(-dashDir * StandoffDistance, -40f);
+            if (phaseTimer == 2 && npc.Distance(dest) > 1500f) {
+                EmpressMotion.PrismStep(npc, dest + new Vector2(0f, -60f), context.DayFormBlend);
+                if (!VaultUtils.isClient) {
+                    npc.netUpdate = true;
                 }
             }
-            else if (target.Alives() && npc.Distance(target.Center) > 80f && dashBeat < DashTime - 10) {
+            GlideTo(npc, dest, 0.03f, 0.11f, 30f);
+            //末几帧迟滞回吸：pow(t,8) 反向蓄势
+            float t = phaseTimer / (float)PositionTime;
+            npc.Center += EmpressMotion.ReelBack(new Vector2(-dashDir, 0f), t, 4.6f);
+        }
+
+        /// <summary>一帧点火：朝 33f 预测点</summary>
+        private void Launch(EmpressStateContext context, NPC npc, Player target) {
+            Vector2 aim = target.Alives() ? target.Center + target.velocity * 33f : npc.Center + new Vector2(dashDir, 0f);
+            dashDir = aim.X > npc.Center.X ? 1 : -1;
+            npc.velocity = npc.DirectionTo(aim).SafeNormalize(new Vector2(dashDir, 0f)) * LaunchSpeed;
+            EmpressMotion.ShakeAlong(npc.Center, npc.velocity, 6f, 12);
+            PlayLocal(SoundID.Item160 with { Volume = 0.9f, Pitch = 0.3f }, npc.Center);
+            if (!VaultUtils.isServer) {
+                EmpressScreenFX.PushPrismPulse(npc.Center, 0.28f, 16);
+            }
+        }
+
+        private IEmpressState DashUpdate(EmpressStateContext context, NPC npc, Player target) {
+            bool day = context.DayEmpowered;
+            int dashBeat = phaseTimer;
+            if (target.Alives() && npc.Distance(target.Center) > 80f && dashBeat < DashTime - 10) {
                 //转向追击：加速度 2.75（昼二阶段 3.75）
                 float accel = day ? (context.IsSecondPhase ? 3.75f : 3f) : 2.5f;
                 EmpressMotion.Pursue(npc, target, accel);

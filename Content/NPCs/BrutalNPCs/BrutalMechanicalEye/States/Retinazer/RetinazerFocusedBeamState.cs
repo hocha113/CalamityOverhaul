@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             TwinsMotion.SpringHover(npc, anchorPos, 0.045f, 0.2f);
             if (progress > 0.55f && !VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(2f, 2f) * progress;
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(2f, 2f) * progress);
             }
 
             //持续瞄准玩家

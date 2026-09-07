@@ -99,7 +99,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         public override bool AI() {
             npc.aiStyle = -1;
-            npc.netOffset = Vector2.Zero;
+            //编队相位读核心的同步时钟(OvFormationClock)，弹簧运动各端同跑：
+            //清平滑 + 慢频兜底心跳，不做速度预测（是向锚点收敛而非匀速直行）
+            RunNetFrameForAnchoredPart();
             npc.dontTakeDamage = true;
 
             NPC core = MLordFacts.GetCore(npc);
@@ -564,7 +566,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 npc.velocity *= 0.9f;
                 if (strikePhase > ramStart - RamTelegraph) {
                     ramDir = (targetPlayer.Center + targetPlayer.velocity * 10f - npc.Center).SafeNormalize(Vector2.UnitY);
-                    npc.position += Main.rand.NextVector2Circular(1.6f, 1.6f);
+                    //预警颤抖只走绘制层，位置不动
+                    BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.6f, 1.6f));
                     pose.PupilAngle = ramDir.ToRotation();
                     pose.PupilOut = 1f;
                     pose.Glow = 1f;
@@ -594,7 +597,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         /// <summary>出生：残口升起 + 甩落星屑</summary>
         private void UpdateBirth(float clock) {
             npc.velocity = Vector2.Lerp(npc.velocity, new Vector2(0f, -3.2f), 0.1f);
-            npc.position += Main.rand.NextVector2Circular(1.2f, 1.2f);
+            //出生颤抖只走绘制层，位置不动
+            BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.2f, 1.2f));
             scalePulse = MathHelper.Lerp(scalePulse, 1.15f, 0.1f);
             if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                 MLordScreenFX.StarBurst(npc.Center + Main.rand.NextVector2Circular(30f, 30f), 0.3f, 2);

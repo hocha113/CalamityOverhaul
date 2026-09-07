@@ -31,7 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         public override bool AI() {
             npc.aiStyle = -1;
-            npc.netOffset = Vector2.Zero;
+            //行程由同步槽 ai[2] 的插值定位：清平滑 + 慢频兜底心跳，不做速度预测
+            RunNetFrameForAnchoredPart();
 
             int headIndex = (int)Math.Abs(npc.ai[0]) - 1;
             if (headIndex < 0 || headIndex >= Main.maxNPCs

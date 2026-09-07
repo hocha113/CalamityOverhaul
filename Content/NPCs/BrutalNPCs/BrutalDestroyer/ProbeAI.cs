@@ -28,6 +28,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             NPCID.Sets.TrailCacheLength[npc.type] = 16;
         }
         public override bool AI() {
+            //探针位置由编队/寻的确定性重算，快照差折进 netOffset 纯属噪声
+            BossNetMotion.ClearSmoothing(npc);
+
             //阵列态，ProbeMatrix接管
             if (npc.ai[3] == -1f) {
                 npc.timeLeft = 600;
@@ -114,12 +117,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     attackTimer++;
 
                     if (attackTimer > ReelBackTime * 0.5f) {
-                        npc.Center += Main.rand.NextVector2Circular(2f, 2f);
+                        //蓄力颤抖只走绘制层，位置不动
+                        BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(2f, 2f));
                     }
 
                     if (attackTimer == (int)(ReelBackTime * 0.7f) && !VaultUtils.isClient) {
                         SpawnPinkLaser();
                         npc.velocity -= npc.rotation.ToRotationVector2() * 6f;
+                        //后坐是决策点：探针是普通 NPC，不盖章就要等三十帧的节流包，客户端会硬跳一下
+                        npc.netUpdate = true;
                     }
 
                     //被打打断蓄力

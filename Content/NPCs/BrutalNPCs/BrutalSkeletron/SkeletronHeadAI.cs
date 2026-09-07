@@ -58,6 +58,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
         #endregion
 
         #region 初始化
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         public override void SetProperty() {
             npc.aiStyle = -1;
             npc.knockBackResist = 0;
@@ -73,6 +76,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 Owner = this
             };
             stateMachine = new NpcStateMachine<SkeletronStateContext>(stateContext, aiSlot: SkeletronAiSlots.HeadStateSlot);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //中途加入从 ai[2] 恢复状态
             if (VaultUtils.isClient) {
@@ -95,7 +101,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 
             npc.aiStyle = -1;
             npc.knockBackResist = 0;
-            npc.netOffset = Vector2.Zero;
+            //清平滑并自接纠偏 + 收养计时（光清 netOffset 只是把锯齿换成硬跳）
+            BeginNetFrame();
             npc.dontTakeDamage = false;
             npc.chaseable = true;
 
@@ -121,10 +128,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             //编队旋转时钟，各端确定性自增
             ai[SkeletronAiSlots.OverrideOrbitClock]++;
 
-            //服务器周期广播，10帧节流
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/瞬移/抓取）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

@@ -60,6 +60,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         protected TwinsStateContext stateContext;
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         protected Player player;
 
         public static Color TextColor1 => new(155, 215, 215);
@@ -142,6 +145,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             };
 
             stateMachine = new NpcStateMachine<TwinsStateContext>(stateContext, aiSlot: 1);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
         }
 
         #endregion
@@ -259,10 +265,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region AI核心
 
         public override bool AI() {
-            // 天顶世界 Mechdusa 模式：交还原版 AI 以维持三王合体行为
+            // 天顶世界 Mechdusa 模式：交还原版 AI 以维持三王合体行为（连带交还原版平滑）
             if (NPC.IsMechQueenUp) {
                 return true;
             }
+
+            //自接位置纠偏 + 收养计时：交叉冲刺与钳夹的位移远超原版平滑的消化速率
+            BeginNetFrame();
 
             UpdateAnimation();
 
@@ -283,7 +292,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
             CheckDeathPerformanceTrigger();
 
-            return ProtogenesisAI();
+            bool result = ProtogenesisAI();
+
+            //决策点（换态/冲刺锁向/钳夹节拍/命中）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
+            return result;
         }
 
         private void UpdateAnimation() {

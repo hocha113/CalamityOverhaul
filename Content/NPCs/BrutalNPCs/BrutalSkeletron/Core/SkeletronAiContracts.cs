@@ -32,6 +32,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
 
         /// <summary>头 Override ai[0] 编队旋转时钟，各端确定性自增</summary>
         public const int OverrideOrbitClock = 0;
+        /// <summary>
+        /// 头 Override ai[1]/ai[2] 合掌拍捉锁定锚点 X/Y（0,0=未锁定）。
+        /// 锁定在权威端裁决，但<b>手部伺服在各端都要读到同一个点</b>：
+        /// 客户端读不到就会退化成追玩家实时位（预告即承诺被破坏，掌在客户端一路跟手）
+        /// </summary>
+        public const int OverrideSnatchAnchorX = 1;
+        public const int OverrideSnatchAnchorY = 2;
 
         /// <summary>手 ai[0] 侧 -1/1（原版骨臂绘制依赖，禁改语义）</summary>
         public const int HandSide = 0;

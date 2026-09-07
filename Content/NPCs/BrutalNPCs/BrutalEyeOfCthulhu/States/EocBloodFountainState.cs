@@ -64,7 +64,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 //悬停微沉，喷泉的后坐
                 Vector2 anchor = player.Center + new Vector2(0f, -350f);
                 EocMotion.SpringHover(npc, anchor, 0.012f, 0.12f, 14f);
-                npc.position += Main.rand.NextVector2Circular(1.4f, 1.4f) * MathHelper.Clamp(progress * 2f, 0f, 1f);
+                BossNetMotion.DrawShake(npc,
+                    Main.rand.NextVector2Circular(1.4f, 1.4f) * MathHelper.Clamp(progress * 2f, 0f, 1f));
 
                 if (sprayTimer % SprayInterval == 0) {
                     if (!VaultUtils.isClient) {

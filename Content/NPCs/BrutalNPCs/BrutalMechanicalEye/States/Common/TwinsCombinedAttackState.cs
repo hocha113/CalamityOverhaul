@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             //锁定位置，末段绷紧颤抖
             npc.velocity = Vector2.Zero;
             if (progress > 0.6f && !VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(2f, 2f) * progress;
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(2f, 2f) * progress);
             }
             FaceTarget(npc, collisionPoint);
 

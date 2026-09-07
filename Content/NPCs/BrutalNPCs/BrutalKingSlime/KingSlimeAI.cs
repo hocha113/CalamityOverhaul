@@ -46,6 +46,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             return null;
         }
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         private void InitializeStateContext() {
             stateContext = new KingSlimeStateContext {
                 Npc = npc,
@@ -53,6 +56,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
                 IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<KingSlimeStateContext>(stateContext, aiSlot: 2);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //客户端从ai[2]恢复状态；镜像旗须先于初始OnEnter恢复，
             //防中途加入时状态以默认旗定格(travelMode/passesLeft在OnEnter一次性读取)
@@ -79,6 +85,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
 
             //完全接管重力
             npc.noGravity = true;
+
+            //类型 50 本就在原版豁免表里，平滑一直是零；缺的是预测——跳跃落地与瞬移都是大位移
+            BeginNetFrame();
 
             FindTarget();
             UpdateStateContext();
@@ -133,9 +142,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
 
             Lighting.AddLight(npc.Center, KingSlimeGelFX.GelMid.ToVector3() * 0.5f * npc.scale);
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/起跳/瞬移/吞人）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

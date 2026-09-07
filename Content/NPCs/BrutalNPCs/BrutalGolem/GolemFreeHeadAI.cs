@@ -19,7 +19,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         private NPC body;
         private Player player;
         //服务端运动/火控计时（客户端仅表现）
-        private float orbitAngle;
+        /// <summary>巡游相位走同步槽（见 <see cref="GolemAiSlots.FreeHeadOrbitClock"/>）</summary>
+        private ref float orbitAngle => ref ai[GolemAiSlots.FreeHeadOrbitClock];
         private int fireTimer;
         //编织散布换边符号（服务端）
         private int weaveSign = -1;
@@ -39,9 +40,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         }
 
         public override bool AI() {
+            //贴锚点部件：清平滑 + 慢频兜底心跳（本类无状态机，不参与计时过线）
+            RunNetFrameForAnchoredPart();
+
             body = Main.npc[(int)npc.ai[GolemAiSlots.PartBodyIndex]];
             npc.aiStyle = -1;
-            npc.netOffset = Vector2.Zero;
             npc.damage = 0;
 
             if (!GolemFacts.BodyValid(body)) {
@@ -76,10 +79,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             bool enraged = GolemBodyAI.SharedEnrage(body, player);
             npc.defense = enraged ? npc.defDefense * 2 : npc.defDefense;
 
-            //服务端广播位置，客户端傀儡
+            //运动各端同跑（锚点全在同步槽里，巡游相位也走同步槽），火控只在权威端
+            UpdateMovement(bodyState);
             if (!VaultUtils.isClient) {
-                npc.netUpdate = true;
-                UpdateMovementServer(bodyState);
                 UpdateFireControl(bodyState, enraged);
             }
 
@@ -93,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         }
 
         #region 服务端运动
-        private void UpdateMovementServer(GolemStateIndex bodyState) {
+        private void UpdateMovement(GolemStateIndex bodyState) {
             if (!player.Alives()) {
                 npc.velocity *= 0.96f;
                 return;
@@ -117,7 +119,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                         LazyOrbit();
                         break;
                     }
-                    orbitAngle += 0.012f;
+                    AdvanceOrbit(0.012f);
                     Vector2 core = new(ultOverride.ai[GolemAiSlots.OverrideLockX],
                         ultOverride.ai[GolemAiSlots.OverrideLockY]);
                     Vector2 slot = core + orbitAngle.ToRotationVector2() * 560f;
@@ -174,8 +176,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         }
 
         /// <summary>常态绕玩家高位巡游</summary>
+        /// <summary>推进巡游相位并取模：同步槽里的值要有界，sin/cos 周期性下行为不变</summary>
+        private void AdvanceOrbit(float rate) {
+            orbitAngle += rate;
+            if (orbitAngle > MathHelper.TwoPi) {
+                orbitAngle -= MathHelper.TwoPi;
+            }
+        }
+
         private void LazyOrbit() {
-            orbitAngle += 0.0085f;
+            AdvanceOrbit(0.0085f);
             float wobble = MathF.Sin(orbitAngle * 3f) * 60f;
             Vector2 slot = player.Center + new Vector2(MathF.Cos(orbitAngle) * (430f + wobble), -270f + MathF.Sin(orbitAngle * 2f) * 50f);
             ApproachPoint(slot, 12f, 0.07f);

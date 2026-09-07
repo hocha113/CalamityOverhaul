@@ -43,6 +43,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             //==== 收-爆-停时间轴(GatherFrames>0 启用,轻拍收势零揭开重拍缓推) ====
             public int GatherFrames;     //收势帧数,爆发帧数=SweepFrames-GatherFrames
             public float CreepAmt;       //收势期揭开上限(0=全藏,重拍~0.3 缓推telegraph)
+            //==== 加速揭开落刀(BurstTaut>0 启用;0=沿用旧曲线,其他消费者不受影响) ====
+            public float BurstTaut;      //爆发首帧揭开量(拉直的开刃细线),之后一口气砸满,揭开只加速不减速
+            public float LandPop;        //落刀帧尺寸过冲(如 0.04),次帧回 1 后几何冻结,只剩材质消散
             //==== 伪 z 通道(椭圆=倾斜圆,z 幅度由长短轴差导出) ====
             public float DepthSign;      //0=平面 ±1=启用,符号选哪半侧沉入身后
             //==== 水墨旋钮(0=原光润能量) ====
@@ -105,7 +108,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         //==== 生命周期采样 ====
 
-        /// <summary>收-爆-停揭开,收势期缓推至 CreepAmt,爆发段 1~3 帧内砸满,无减速尾巴</summary>
+        /// <summary>爆发段进度 0..1(首爆发帧 0,落刀帧 1),GatherFrames=0 时退化为整段进度</summary>
+        public static float BurstFrac(in SlashDef d, int lt) {
+            float t = lt / (float)d.SweepFrames;
+            float g = d.GatherFrames > 0 ? d.GatherFrames / (float)d.SweepFrames : 0f;
+            return g >= 1f ? 1f : MathHelper.Clamp((t - g) / (1f - g), 0f, 1f);
+        }
+
+        /// <summary>收-爆-停揭开,收势期缓推至 CreepAmt,爆发段 1~3 帧内砸满,无减速尾巴<br/>
+        /// BurstTaut>0:首爆发帧只拉一条开刃细线,之后按 s² 加速砸满,最大速度落在落刀帧</summary>
         public static float Sweep(in SlashDef d, int lt) {
             float t = lt / (float)d.SweepFrames;
             if (d.GatherFrames > 0) {
@@ -113,7 +124,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 if (t < g) {
                     return d.CreepAmt * EaseOutCubic(t / g);
                 }
-                return d.CreepAmt + (1f - d.CreepAmt) * EaseOutQuad((t - g) / (1f - g));
+                float s = MathHelper.Clamp((t - g) / (1f - g), 0f, 1f);
+                if (d.BurstTaut > 0f) {
+                    return MathHelper.Lerp(MathF.Max(d.CreepAmt, d.BurstTaut), 1f, s * s);
+                }
+                return d.CreepAmt + (1f - d.CreepAmt) * EaseOutQuad(s);
             }
             return EaseOutCubic(t);
         }
@@ -140,35 +155,67 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         public static float Opacity(in SlashDef d, int lt) => d.Opacity * (1f - MathHelper.Clamp((lt - (d.Life - 6)) / 6f, 0f, 1f));
 
-        public static float FrontGlow(in SlashDef d, int lt) => lt <= d.SweepFrames + 1
-            ? d.FrontGlow
-            : d.FrontGlow * MathF.Max(0f, 1f - (lt - d.SweepFrames - 1) / 5f);
+        public static float FrontGlow(in SlashDef d, int lt) {
+            if (d.BurstTaut > 0f && lt >= d.GatherFrames && lt < d.SweepFrames) {
+                //开刃线帧前缘加热,线头读作起刃的火点
+                return d.FrontGlow * 1.5f;
+            }
+            return lt <= d.SweepFrames + 1
+                ? d.FrontGlow
+                : d.FrontGlow * MathF.Max(0f, 1f - (lt - d.SweepFrames - 1) / 5f);
+        }
 
         /// <summary>几何动画包,形变随生命期演进</summary>
         public static SlashAnim GetAnim(in SlashDef d, int lt) {
             float lifeT = MathHelper.Clamp(lt / (float)d.Life, 0f, 1f);
+            //消散期变薄属材质,两条路径共用
+            float thinOut = 1f - 0.42f * SmoothStep01((lifeT - 0.45f) / 0.55f);
+            float scale;
+            float rotOff;
+            float thickMul;
 
-            //出生爆发,收势期蜷在小尺寸,爆发段 easeOutBack 砸到全尺寸后冻结
-            float burstT;
-            float preScale = 0.62f;
-            if (d.GatherFrames > 0) {
-                float gT = MathHelper.Clamp(lt / (float)d.GatherFrames, 0f, 1f);
-                preScale = MathHelper.Lerp(0.62f, 0.80f, gT);
-                burstT = MathHelper.Clamp((lt - d.GatherFrames) / (d.SweepFrames - d.GatherFrames + 2f), 0f, 1f);
+            if (d.BurstTaut > 0f) {
+                //加速揭开:开刃线帧小而薄→落刀帧砸到全尺寸并过冲→次帧起几何冻结
+                //旧路径的尺寸/厚度在揭开完成后仍爬 2~3 帧、整弧再滚 0.04rad,这些"落刀后还在动"的尾巴正是绵软的来源
+                float s = BurstFrac(in d, lt);
+                if (lt < d.GatherFrames) {
+                    float gT = MathHelper.Clamp(lt / (float)d.GatherFrames, 0f, 1f);
+                    scale = MathHelper.Lerp(0.62f, 0.80f, gT);
+                    thickMul = 0.68f;
+                }
+                else if (lt >= d.SweepFrames) {
+                    scale = 1f + (lt == d.SweepFrames ? d.LandPop : 0f);
+                    thickMul = 1.12f;
+                }
+                else {
+                    scale = MathHelper.Lerp(0.86f, 1f, s);
+                    thickMul = MathHelper.Lerp(0.65f, 1.12f, s);
+                }
+                thickMul *= thinOut;
+                rotOff = 0f;
             }
             else {
-                burstT = MathHelper.Clamp(lt / (d.SweepFrames + 2f), 0f, 1f);
+                //出生爆发,收势期蜷在小尺寸,爆发段 easeOutBack 砸到全尺寸后冻结
+                float burstT;
+                float preScale = 0.62f;
+                if (d.GatherFrames > 0) {
+                    float gT = MathHelper.Clamp(lt / (float)d.GatherFrames, 0f, 1f);
+                    preScale = MathHelper.Lerp(0.62f, 0.80f, gT);
+                    burstT = MathHelper.Clamp((lt - d.GatherFrames) / (d.SweepFrames - d.GatherFrames + 2f), 0f, 1f);
+                }
+                else {
+                    burstT = MathHelper.Clamp(lt / (d.SweepFrames + 2f), 0f, 1f);
+                }
+                scale = MathHelper.Lerp(preScale, 1f, EaseOutBack(burstT))
+                    + 0.02f * SmoothStep01(lifeT / 0.35f);
+
+                //停帧回坐,3 帧小过冲落定后冻结(旧 14 帧惯性漂移=软的来源)
+                rotOff = d.Flip * 0.04f * EaseOutCubic((lt - d.SweepFrames) / 3f);
+
+                //厚度呼吸,薄入→冲击最厚→消散变薄
+                float thickIn = EaseOutCubic((lt - d.GatherFrames) / (d.SweepFrames - d.GatherFrames + 2f));
+                thickMul = MathHelper.Lerp(0.68f, 1.12f, thickIn) * thinOut;
             }
-            float scale = MathHelper.Lerp(preScale, 1f, EaseOutBack(burstT))
-                + 0.02f * SmoothStep01(lifeT / 0.35f);
-
-            //停帧回坐,3 帧小过冲落定后冻结(旧 14 帧惯性漂移=软的来源)
-            float rotOff = d.Flip * 0.04f * EaseOutCubic((lt - d.SweepFrames) / 3f);
-
-            //厚度呼吸,薄入→冲击最厚→消散变薄
-            float thickIn = EaseOutCubic((lt - d.GatherFrames) / (d.SweepFrames - d.GatherFrames + 2f));
-            float thickMul = MathHelper.Lerp(0.68f, 1.12f, thickIn)
-                * (1f - 0.42f * SmoothStep01((lifeT - 0.45f) / 0.55f));
 
             //彗星尾,扫掠完成起笔端向前蒸发
             float tail = d.TailErode * SmoothStep01((lt - d.SweepFrames) / (d.Life * 0.72f));

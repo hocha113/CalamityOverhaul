@@ -47,6 +47,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         /// <summary>远距滞留帧，达上限触发回归瞬移</summary>
         private int farTimer;
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
         #endregion
 
         #region 加载与初始化
@@ -77,6 +79,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             };
             stateMachine = new NpcStateMachine<DestroyerStateContext>(stateContext, aiSlot: 2);
 
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
+
             //客户端从ai[2]恢复状态
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[2];
@@ -95,6 +100,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (stateContext == null || stateMachine == null) {
                 InitializeStateContext();
             }
+
+            //自接位置纠偏 + 收养计时：钻地俯冲的速度远超原版平滑能消化的量
+            BeginNetFrame();
 
             FindTarget();
             UpdateStateContext();
@@ -118,9 +126,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             HandleMouth();
             UpdateVisuals();
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/俯冲锁线/回归瞬移/命中）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

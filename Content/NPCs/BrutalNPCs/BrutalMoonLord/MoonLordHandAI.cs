@@ -60,7 +60,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         public override bool AI() {
             npc.aiStyle = -1;
-            npc.netOffset = Vector2.Zero;
+            //爬行/抓握都由核心的 MLordLocomotion 按同步锚点驱动：清平滑 + 慢频兜底心跳，不做速度预测
+            RunNetFrameForAnchoredPart();
             npc.knockBackResist = 0f;
 
             NPC core = MLordFacts.GetCore(npc);

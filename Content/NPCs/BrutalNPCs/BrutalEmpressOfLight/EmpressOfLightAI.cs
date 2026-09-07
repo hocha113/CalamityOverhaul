@@ -36,10 +36,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
         internal static readonly Color BossTextColor = new(255, 231, 160);
         private static LocalizedText[] phase3Lines;
         private static LocalizedText[] concedeLines;
+        private static LocalizedText radianceDeath;
 
         private VaultStateMachine<EmpressStateContext> stateMachine;
         private EmpressStateContext stateContext;
         private Player targetPlayer;
+
+        /// <summary>弹幕侧读节拍/形态用（各端本地）</summary>
+        internal EmpressStateContext Context => stateContext;
         /// <summary>上一帧昼形态标志，检测破晓/入夜的换形瞬间</summary>
         private bool lastDayEmpowered;
         #endregion
@@ -63,7 +67,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
                 int idx = i;
                 concedeLines[i] = this.GetLocalization($"Concede_{i}", () => concedeDefaults[idx]);
             }
+            radianceDeath = this.GetLocalization("RadianceDeath", () => "{0}在她的光里蒸发了");
         }
+
+        /// <summary>月影蒸发的死亡原因文本</summary>
+        internal static string RadianceDeathText(string playerName) => radianceDeath?.Format(playerName) ?? playerName;
 
         /// <summary>三阶段台词（权威端广播，客户端忽略）</summary>
         internal static void SayPhase3(int index) => Say(phase3Lines, index);
@@ -84,12 +92,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             InitializeStateContext();
         }
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         private void InitializeStateContext() {
             stateContext = new EmpressStateContext {
                 Npc = npc,
                 IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<EmpressStateContext>(stateContext, aiSlot: 2);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[2];
@@ -114,6 +128,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
                 InitializeStateContext();
             }
 
+            //全舰队唯一一只从来没做过平滑决策的：HallowBoss 不在原版豁免表里，
+            //而她的滑翔/贴身追击速度上限 26 px/f 起，命中驱动的高频快照下原版平滑必然锯齿
+            BeginNetFrame();
+
             FindTarget();
             UpdateStateContext();
             CheckDeathPerformanceTrigger();
@@ -133,6 +151,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             //竞技场默认请求：昼且在战斗态时按阶段给半径，状态可覆盖（终章缩圈）
             stateContext.ArenaRadiusRequest = DefaultArenaRadius();
             stateContext.ArenaFollowSpeed = 12f;
+
+            //节拍先走一步，让状态读到本帧的拍位；演出态不放拍点提示
+            EmpressTempo.Update(this, stateContext);
+            stateContext.TempoCueEnabled = stateMachine?.CurrentState is not (EmpressIntroState or EmpressDeathState or EmpressDespawnState);
+            EmpressTempo.DownbeatCue(stateContext);
+            EmpressTempo.WeakbeatCue(stateContext);
 
             npc.damage = 0;
 
@@ -166,13 +190,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
                 }
                 EmpressArena.ServerUpdate(this, stateContext);
                 ai[SlotKillable] = stateContext.FinaleKillable ? 1f : 0f;
-                if (Main.GameUpdateCount % 10 == 0) {
-                    npc.netUpdate = true;
-                }
             }
             else {
                 stateContext.FinaleKillable = ai[SlotKillable] > 0.5f;
             }
+
+            //决策点（换态/棱彩闪现/竞技场缩圈/命中）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

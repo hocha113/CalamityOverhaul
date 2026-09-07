@@ -32,6 +32,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             if (!IsMarked) {
                 return true;
             }
+
+            //编队蜂：位置向同步编队时钟给出的槽位收敛，本身自愈。蜂后(222)在原版豁免表里而
+            //工蜂(NPCID.Bee)不在，不清就是本体稳、蜂群跳
+            RunNetFrameForAnchoredPart();
             return FormationBeeAI(npc);
         }
 

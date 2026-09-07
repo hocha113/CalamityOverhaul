@@ -103,6 +103,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool AI() {
+            //交出 aiStyle 的代价：原版靠 NoMultiplayerSmoothingByAI[37] 给毁灭者免掉联机平滑，
+            //改成 -1 就把平滑放回来了。体节位置每帧由前邻确定性重算，快照差折进 netOffset 纯属噪声
+            BossNetMotion.ClearSmoothing(npc);
+
             //死亡演出保活+冻姿态，跳跟随
             if (HeadInDeathPerformance()) {
                 HandleDeathPerformanceSegment();

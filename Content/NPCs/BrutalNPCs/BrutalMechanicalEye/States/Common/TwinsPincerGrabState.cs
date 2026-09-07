@@ -318,7 +318,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
             else if (!VaultUtils.isServer) {
                 //锁定后绷紧颤抖(纯本地表现)
-                npc.position += Main.rand.NextVector2Circular(1.6f, 1.6f);
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.6f, 1.6f));
             }
 
             //把自己弹簧修正到轴线端点上，保证两颚共线
@@ -622,7 +622,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                         : clampLocal + lineDir * (ClampOffset + 76f - squeeze);
                     TwinsMotion.SpringHover(npc, squeezePos, 0.25f, 0.4f);
                     if (!VaultUtils.isServer) {
-                        npc.position += Main.rand.NextVector2Circular(1.4f, 1.4f);
+                        BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.4f, 1.4f));
                     }
                     FaceTarget(npc, clampLocal);
                     break;

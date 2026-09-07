@@ -79,6 +79,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
                 return true;
             }
 
+            //编队仆从的位置由主眼锚点确定性重算，快照差折进 netOffset 纯属噪声；
+            //本体已清平滑，跟着一起清才不会在阵位上错开（部件与本体同一平滑档）
+            BossNetMotion.ClearSmoothing(npc);
+
             NPC director = Director;
             //主眼失效→回归原版
             if (director == null && Mode != ModeLaunched) {

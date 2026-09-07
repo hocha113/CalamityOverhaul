@@ -15,10 +15,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
         public static Color Tint(Color rgb, float envelope)
             => rgb with { A = (byte)(255f * MathHelper.Clamp(envelope, 0f, 1f)) };
 
-        /// <summary>形态取色：昼归金白族，夜走光谱（dayBlend 由生成方传入，各端本地）</summary>
+        /// <summary>形态取色：昼是白金核心带三成光谱（白光碎成彩），夜走光谱（dayBlend 由生成方传入，各端本地）</summary>
         public static Color FormHue(float hue, float dayBlend, float lum = 0.62f) {
             Color night = Main.hslToRgb(hue % 1f, 1f, lum);
-            Color day = Color.Lerp(new Color(255, 212, 150), new Color(255, 246, 224), MathHelper.Clamp((lum - 0.4f) * 2f, 0f, 1f));
+            Color core = Color.Lerp(new Color(255, 236, 200), new Color(255, 252, 244), MathHelper.Clamp((lum - 0.4f) * 2f, 0f, 1f));
+            Color day = Color.Lerp(core, Main.hslToRgb(hue % 1f, 1f, 0.7f), 0.35f);
             return Color.Lerp(night, day, MathHelper.Clamp(dayBlend, 0f, 1f));
         }
     }

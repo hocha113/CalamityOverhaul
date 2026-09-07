@@ -238,6 +238,10 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
                 //自接位置纠偏：冲刺速度远超原版平滑能消化的量，而且整链由头集中绘制、
                 //体节读的是原始坐标，头带着 netOffset 偏移就会与颈段错开
                 netMotion.BeginFrame(NPC);
+                //蛇行相位是持久累加量，必须在消费它的 SteerMovement 之前收养
+                if (netMotion.TakeSway(out float sway)) {
+                    Context.SlitherPhase = sway;
+                }
                 //同态收包：让本帧的拍点从权威端的计时起算
                 if (stateMachine?.CurrentState is FssStateBase adopting
                     && netMotion.TryTakeTiming(adopting.StateId, out int timer, out int counter)) {
@@ -332,7 +336,7 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
                 timer = state.Timer;
                 counter = state.Counter;
             }
-            BossNetMotion.WriteTiming(writer, stateId, timer, counter);
+            BossNetMotion.WriteTiming(writer, stateId, timer, counter, Context?.SlitherPhase ?? 0f);
         }
 
         /// <summary>客户端收包：position/velocity/ai 已是服务端值，据计时差纠偏，计时留给收养</summary>
@@ -555,8 +559,12 @@ namespace CalamityOverhaul.Content.NPCs.FestersandSerpents
 
             currentSpeed = MathHelper.Lerp(currentSpeed, targetSpeed, accel);
 
+            //相位取模保住浮点精度，也让它在快照里是个有界值（sin 周期性，行为不变）
             if (slither > 0.01f) {
                 slitherPhase += 0.075f + currentSpeed * 0.0016f;
+                if (slitherPhase > MathHelper.TwoPi) {
+                    slitherPhase -= MathHelper.TwoPi;
+                }
                 float wave = MathF.Sin(slitherPhase);
                 newHeading += wave * 0.3f * slither * MathHelper.Lerp(0.5f, 1f, speedFactor);
             }

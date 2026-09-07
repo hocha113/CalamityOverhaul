@@ -93,6 +93,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         public float ArenaFollowSpeed { get; set; } = 12f;
         #endregion
 
+        #region 节拍
+        /// <summary>小节内帧 0~59，三拍各 20f</summary>
+        public int BarFrame { get; set; }
+        /// <summary>小节序号，第一拍递增（合掌类招式按奇偶小节切换）</summary>
+        public int BarIndex { get; set; }
+        /// <summary>客户端上次看到的同步值，变化时对表</summary>
+        public int LastSyncedBarFrame { get; set; } = -1;
+        public int LastSyncedBarIndex { get; set; } = -1;
+        /// <summary>当前拍 0/1/2</summary>
+        public int Beat => BarFrame / EmpressTempo.BeatFrames;
+        /// <summary>本帧是第一拍</summary>
+        public bool Downbeat => BarFrame == 0;
+        /// <summary>本帧是任一拍点</summary>
+        public bool OnBeat => BarFrame % EmpressTempo.BeatFrames == 0;
+        /// <summary>到下一个第一拍还有几帧（本帧是第一拍则为 0）</summary>
+        public int FramesToDownbeat => BarFrame == 0 ? 0 : EmpressTempo.BarFrames - BarFrame;
+        /// <summary>拍点提示开关（演出期关掉）</summary>
+        public bool TempoCueEnabled { get; set; } = true;
+        #endregion
+
         #region 手部锚点
         public Vector2 LeftHand => Npc.Center + new Vector2(-55f, -30f);
         public Vector2 RightHand => Npc.Center + new Vector2(55f, -30f);
@@ -122,12 +142,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         public int BoltDamage => ScaleDamage(IsSecondPhase ? 52 : 46, IsSecondPhase ? 36 : 30);
         /// <summary>长枪伤害（墙/智能枪）</summary>
         public int LanceDamage => ScaleDamage(IsSecondPhase ? 60 : 52, IsSecondPhase ? 38 : 32);
-        /// <summary>瞬现枪伤害</summary>
-        public int HitscanDamage => ScaleDamage(IsSecondPhase ? 60 : 52, IsSecondPhase ? 38 : 32);
+        /// <summary>万华镜鞭击伤害</summary>
+        public int WhipDamage => ScaleDamage(IsSecondPhase ? 60 : 52, IsSecondPhase ? 38 : 32);
         /// <summary>追踪光束伤害（绝对禁区，最高档）</summary>
         public int BeamDamage => ScaleDamage(IsSecondPhase ? 78 : 70, IsSecondPhase ? 50 : 44);
-        /// <summary>熔光扇伤害</summary>
-        public int FanDamage => ScaleDamage(IsSecondPhase ? 70 : 62, IsSecondPhase ? 46 : 40);
+        /// <summary>光痕琉璃剑接触伤害</summary>
+        public int EchoDamage => ScaleDamage(IsSecondPhase ? 56 : 48, IsSecondPhase ? 36 : 30);
+        /// <summary>琉璃蝶接触伤害</summary>
+        public int LacewingDamage => ScaleDamage(IsSecondPhase ? 50 : 44, IsSecondPhase ? 34 : 28);
+        /// <summary>月影每拍蒸发：占最大生命比例（不走灼痕）</summary>
+        public float RadianceTickFraction => IsSecondPhase ? 0.07f : 0.055f;
 
         /// <summary>昼形态 ×1.25，不再 9999（灼痕系统接管威慑）</summary>
         private int ScaleDamage(int normal, int expert) {

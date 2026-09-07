@@ -113,32 +113,34 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
                 npc.damage = (int)(npc.defDamage * GolemDirector.GrabGrindDamageMul);
             }
 
-            //相位运动只在权威端解算（研磨行程仅服务端知晓），客户端全程跟同步位置
-            if (!VaultUtils.isClient) {
-                if (Timer < HitStopEnd) {
-                    npc.Center = connectPoint;
-                }
-                else if (Timer < DragEnd) {
-                    float t = (Timer - HitStopEnd) / (float)(DragEnd - HitStopEnd);
-                    //二次缓入：加速撞进墙里
-                    npc.Center = Vector2.Lerp(connectPoint, holdPos, t * t);
-                }
-                else if (Timer < PinEnd) {
-                    npc.Center = holdPos;
-                }
-                else if (Timer < GrindEnd) {
-                    if (Timer == PinEnd) {
-                        grindLen = ComputeGrindLen(pin, kind);
+            //相位运动各端同跑：钉面/钉点/目标全在同步槽里，研磨行程由同步值确定性推导，
+            //只有"掷出"这个转移留给权威端裁决
+            if (Timer < HitStopEnd) {
+                npc.Center = connectPoint;
+            }
+            else if (Timer < DragEnd) {
+                float t = (Timer - HitStopEnd) / (float)(DragEnd - HitStopEnd);
+                //二次缓入：加速撞进墙里
+                npc.Center = Vector2.Lerp(connectPoint, holdPos, t * t);
+            }
+            else if (Timer < PinEnd) {
+                npc.Center = holdPos;
+            }
+            else if (Timer < GrindEnd) {
+                //懒算而非钉在 Timer == PinEnd 这一帧：计时收养有 ±2 帧容差，可能正好跳过那一帧
+                if (grindLen == 0f) {
+                    grindLen = ComputeGrindLen(pin, kind);
+                    if (!VaultUtils.isClient) {
                         npc.netUpdate = true;
                     }
-                    float t = (Timer - PinEnd) / (float)(GrindEnd - PinEnd);
-                    //二次缓入研磨：越磨越快，末段最重
-                    npc.Center = holdPos + GolemFacts.GrindTangent(kind) * (t * t) * grindLen;
                 }
-                else {
-                    //终结掷出
-                    return Release(ctx, thrown: true);
-                }
+                float t = (Timer - PinEnd) / (float)(GrindEnd - PinEnd);
+                //二次缓入研磨：越磨越快，末段最重
+                npc.Center = holdPos + GolemFacts.GrindTangent(kind) * (t * t) * grindLen;
+            }
+            else if (!VaultUtils.isClient) {
+                //终结掷出（权威端裁决）
+                return Release(ctx, thrown: true);
             }
 
             UpdateFx(ctx, kind, pin, normal);

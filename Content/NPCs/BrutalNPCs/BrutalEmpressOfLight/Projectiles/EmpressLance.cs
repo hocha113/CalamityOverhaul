@@ -221,18 +221,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             Vector2 origin = tex.Size() / 2f;
             float day = DayBlend;
             Color body = EmpressMotion.FormColor(Hue, day, 0.66f) * Projectile.Opacity;
-            Color rim = Color.Lerp(new Color(60, 20, 90), EmpressMotion.SunDark, day) * Projectile.Opacity;
+            Color dark = EmpressMotion.FormDark(day) * Projectile.Opacity;
+            Color rim = EmpressMotion.FormRim(Hue, day, 0.55f) * Projectile.Opacity;
             float scale = Launched ? 1f : 0.7f + 0.3f * MathHelper.Clamp(Timer / AimTime, 0f, 1f);
 
             if (Launched) {
+                //沿杆三道残影，越远越偏向光谱边（色散在拖尾里最显）
                 for (int i = 1; i <= 3; i++) {
                     Vector2 ghost = drawPos - dir * (i * 26f);
-                    Main.spriteBatch.Draw(tex, ghost, null, body * (0.35f * (1f - i / 4f)), Angle, origin, scale * (1f - i * 0.1f), SpriteEffects.None, 0f);
+                    Main.spriteBatch.Draw(tex, ghost, null, Color.Lerp(body, rim, i / 3f) * (0.35f * (1f - i / 4f)), Angle, origin, scale * (1f - i * 0.1f), SpriteEffects.None, 0f);
                 }
-                Main.spriteBatch.Draw(glow, drawPos, null, (body with { A = 0 }) * 0.6f, 0f, glow.Size() / 2f, 1.3f, SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(glow, drawPos, null, (rim with { A = 0 }) * 0.55f, 0f, glow.Size() / 2f, 1.3f, SpriteEffects.None, 0f);
             }
-            //暗边：同贴图放大 1.15 倍染暗色垫底（真 alpha，能遮挡）
-            Main.spriteBatch.Draw(tex, drawPos, null, rim, Angle, origin, scale * 1.15f, SpriteEffects.None, 0f);
+            //暗边（真 alpha 垫底）→ 光谱边 → 白金本体
+            Main.spriteBatch.Draw(tex, drawPos, null, dark, Angle, origin, scale * 1.22f, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, drawPos, null, rim, Angle, origin, scale * 1.1f, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(tex, drawPos, null, body, Angle, origin, scale, SpriteEffects.None, 0f);
             if (Launched) {
                 Main.spriteBatch.Draw(tex, drawPos, null, (Color.White with { A = 0 }) * (0.45f * Projectile.Opacity), Angle, origin, scale * 0.7f, SpriteEffects.None, 0f);

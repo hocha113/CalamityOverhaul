@@ -19,4 +19,6 @@ EmpressOfLightAI: {
 	Concede_1: 你远比看上去更强。
 	Concede_2: 那些蝴蝶对我意义非凡，别去惊扰它们，这片天空就还是我们共有的。
 	Concede_3: 光会记得你。
+	# 月影：白光里没躲进阴影的玩家的死亡原因
+	RadianceDeath: "{0}在她的光里蒸发了"
 }

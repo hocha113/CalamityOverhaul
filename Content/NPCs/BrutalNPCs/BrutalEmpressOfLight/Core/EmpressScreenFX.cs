@@ -32,9 +32,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         internal static float PhaseGlow { get; private set; }
         internal static float PhaseFlash { get; private set; }
 
+        //月影：世界照白（每帧声明，缓动），白光中心=她的世界坐标
+        internal static float Whiteout { get; private set; }
+        private static float whiteoutTarget;
+        internal static Vector2 SunWorld { get; private set; }
+
         public static bool HasAny => PulseActive || AmbientGrade > 0.012f || HitDark > 0.01f
             || FlashDir.LengthSquared() > 0.0001f || ArenaPull > 0.01f || ArenaFlash > 0.01f
-            || PhaseGlow > 0.01f || PhaseFlash > 0.01f;
+            || PhaseGlow > 0.01f || PhaseFlash > 0.01f || Whiteout > 0.005f;
+
+        /// <summary>月影每帧声明白光强度与中心；未声明自动退潮</summary>
+        public static void DeclareWhiteout(float amount, Vector2 sunWorld) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            whiteoutTarget = MathHelper.Clamp(amount, 0f, 1f);
+            SunWorld = sunWorld;
+        }
 
         /// <summary>棱彩脉冲：radial 色散+白闪，一次演出一记；弱脉冲不顶替进行中的强脉冲</summary>
         public static void PushPrismPulse(Vector2 worldCenter, float intensity = 1f, int lifeFrames = 34) {
@@ -129,6 +143,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
 
             PhaseGlow = PhaseGlow < 0.01f ? 0f : PhaseGlow * 0.96f;
             PhaseFlash = PhaseFlash < 0.01f ? 0f : PhaseFlash * 0.85f;
+
+            //白光：起得慢（每帧 0.06）、退得快（0.12），都按声明值追
+            Whiteout = MathHelper.Lerp(Whiteout, whiteoutTarget, Whiteout < whiteoutTarget ? 0.06f : 0.12f);
+            if (Whiteout < 0.004f && whiteoutTarget <= 0f) {
+                Whiteout = 0f;
+            }
+            whiteoutTarget = 0f;
         }
 
         /// <summary>卸载/换世界清空</summary>
@@ -142,6 +163,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             ArenaPull = arenaPullTarget = 0f;
             ArenaFlash = 0f;
             PhaseGlow = PhaseFlash = 0f;
+            Whiteout = whiteoutTarget = 0f;
         }
     }
 }

@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
                 if (progress > 0.4f) {
                     float shakeMagnitude = (progress - 0.4f) * 5f;
-                    npc.position += Main.rand.NextVector2Circular(shakeMagnitude, shakeMagnitude);
+                    BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(shakeMagnitude, shakeMagnitude));
                 }
             }
 

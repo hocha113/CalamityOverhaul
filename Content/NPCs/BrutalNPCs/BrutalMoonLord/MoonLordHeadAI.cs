@@ -35,7 +35,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         public override bool AI() {
             npc.aiStyle = -1;
-            npc.netOffset = Vector2.Zero;
+            //焊在核心锚点上的部件：清平滑 + 慢频兜底心跳，不做速度预测
+            RunNetFrameForAnchoredPart();
             npc.knockBackResist = 0f;
             npc.damage = 0;
 

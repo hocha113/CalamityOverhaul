@@ -198,13 +198,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
             return center + new Vector2(ctx.Side * halfGap, 0f);
         }
 
-        /// <summary>读头侧锁定锚点；未锁定/取不到时回退玩家当前位</summary>
+        /// <summary>
+        /// 读锁定锚点：走头部的同步槽，各端同一个点（锁定由权威端裁决，值随快照过线）。
+        /// 未锁定时回退玩家当前位——手在各端都跑同一套伺服，这个回退不再是"反正会被丢弃"的本地值
+        /// </summary>
         private static Vector2 ReadAnchor(SkeletronHandContext ctx, out bool lockedAnchor) {
-            //服务端读头部上下文的权威锚点；客户端是位置傀儡，回退值只影响被丢弃的本地模拟
-            if (ctx.Head.TryGetOverride(out SkeletronHeadAI headOverride)
-                && headOverride?.Context != null && headOverride.Context.SnatchAnchorLocked) {
-                lockedAnchor = true;
-                return headOverride.Context.SnatchAnchor;
+            if (ctx.Head.TryGetOverride(out SkeletronHeadAI headOverride) && headOverride != null) {
+                Vector2 synced = new(headOverride.ai[SkeletronAiSlots.OverrideSnatchAnchorX],
+                    headOverride.ai[SkeletronAiSlots.OverrideSnatchAnchorY]);
+                if (synced != Vector2.Zero) {
+                    lockedAnchor = true;
+                    return synced;
+                }
             }
             lockedAnchor = false;
             return ctx.Target.Center;

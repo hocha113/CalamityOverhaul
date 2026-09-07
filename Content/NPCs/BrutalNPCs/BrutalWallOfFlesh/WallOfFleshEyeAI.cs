@@ -28,6 +28,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         }
 
         public override bool AI() {
+            //眼贴在墙域锚点上，与墙同一平滑档（原版只豁免 113/114，眼不在表里）
+            RunNetFrameForAnchoredPart();
+
             if (!WallOfFleshAI.TryGetWall(out NPC wall)) {
                 npc.active = false;
                 return false;

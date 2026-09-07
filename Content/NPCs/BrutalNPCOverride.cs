@@ -2,6 +2,7 @@ using CalamityOverhaul.Content.GameModes;
 using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 
@@ -35,6 +36,108 @@ namespace CalamityOverhaul.Content.NPCs
         public virtual bool? CanBrutalOverride() {
             return null;
         }
+
+        #region 联机运动（契约见 tml-mp-motion-sync 与 Doc BOSS-REWORK Contract 1b）
+        /// <summary>客户端位置纠偏 + 状态计时收养的共用件</summary>
+        protected readonly BossNetMotion NetMotion = new();
+
+        /// <summary>
+        /// 本覆盖是否把状态计时挂上快照。<b>必须是编译期常量</b>：
+        /// 收发两端据它决定流里有没有这一段，运行期判断会让两端读写不对称
+        /// </summary>
+        protected virtual bool CarryStateTiming => false;
+
+        /// <summary>当前状态（供计时过线用）；返回 null 表示状态机尚未装配</summary>
+        protected virtual IBossNetTiming TimedState => null;
+
+        /// <summary>
+        /// 持久累加型的摆动相位（蛇行/摆尾），随计时同包过线。<br/>
+        /// 有这种量的 Boss 代理到自己的上下文字段上；没有的不必理
+        /// </summary>
+        protected virtual float NetSwayPhase {
+            get => 0f;
+            set { }
+        }
+
+        /// <summary>
+        /// 客户端 AI 开头：清原版平滑并分摊纠偏，然后收养同态快照里的计时。
+        /// 权威端与单机为空操作
+        /// </summary>
+        protected void BeginNetFrame() {
+            if (!VaultUtils.isClient) {
+                return;
+            }
+            NetMotion.BeginFrame(npc);
+            //相位要在消费它的运动函数之前收养
+            if (NetMotion.TakeSway(out float sway)) {
+                NetSwayPhase = sway;
+            }
+            IBossNetTiming state = TimedState;
+            if (state != null && NetMotion.TryTakeTiming(state.StateId, out int timer, out int counter)) {
+                state.AdoptNetTiming(timer, counter);
+            }
+        }
+
+        /// <summary>AI 末尾：客户端记下预测位置，权威端只留慢频兜底心跳（决策点各自 netUpdate）</summary>
+        protected void EndNetFrame() {
+            if (VaultUtils.isClient) {
+                NetMotion.EndFrame(npc);
+            }
+            else if (Main.GameUpdateCount % BossNetMotion.HeartbeatFrames == 0) {
+                npc.netUpdate = true;
+            }
+        }
+
+        /// <summary>
+        /// 贴锚点部件（手/臂/拳）的整帧联机处理，放在 AI 开头一次即可，覆盖所有提前返回的分支。
+        /// <para>
+        /// 与本体的两段式区别在于<b>不做速度预测</b>：这类部件每帧向锚点收敛
+        /// （<c>Center = Lerp(Center, 锚点, k)</c> 或阻尼弹簧），下一帧位置不是
+        /// <c>position + velocity</c>，硬套预测只会跟收敛打架。收敛本身即自愈——
+        /// 偏了会按比例收回去，所以清掉平滑 + 收养计时 + 慢频心跳就够
+        /// </para>
+        /// </summary>
+        protected void RunNetFrameForAnchoredPart() {
+            BeginNetFrame();
+            if (!VaultUtils.isClient && Main.GameUpdateCount % BossNetMotion.HeartbeatFrames == 0) {
+                npc.netUpdate = true;
+            }
+        }
+
+        /// <summary>
+        /// 挂到状态机 <c>OnStateChanged</c>：换态包带的是新态的计时，
+        /// 而新实例的 OnEnter 刚把计时清零，必须在这里补收养
+        /// </summary>
+        protected void AdoptTimingOnSwap(object entered) {
+            if (VaultUtils.isClient && entered is IBossNetTiming state
+                && NetMotion.TryTakeTiming(state.StateId, out int timer, out int counter)) {
+                state.AdoptNetTiming(timer, counter);
+            }
+        }
+
+        /// <summary>
+        /// 计时块追加在 <see cref="NPCOverride.ai"/> 掩码之后。走追加流而非 ai 槽：
+        /// InnoVault 给每个覆盖的负载带长度前缀，多写这几字节既安全又不跟各 Boss 的槽位预算打架
+        /// </summary>
+        public override void NetSend(BinaryWriter writer) {
+            base.NetSend(writer);
+            if (!CarryStateTiming) {
+                return;
+            }
+            IBossNetTiming state = TimedState;
+            BossNetMotion.WriteTiming(writer, state?.StateId ?? -1, state?.Timer ?? 0, state?.Counter ?? 0, NetSwayPhase);
+        }
+
+        /// <summary>客户端收包：ai 槽已刷新、position/velocity 已是服务端值，据计时差纠偏</summary>
+        public override void NetReceive(BinaryReader reader) {
+            base.NetReceive(reader);
+            if (!CarryStateTiming) {
+                return;
+            }
+            IBossNetTiming state = TimedState;
+            NetMotion.ReceiveTiming(reader, npc, state?.StateId ?? -1, state?.Timer ?? 0);
+        }
+        #endregion
     }
 
     /// <summary>

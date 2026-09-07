@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
                 npc.velocity = npc.velocity.RotatedBy(hookTurnRate);
             }
 
-            //傀儡端包间隙速度为零：保持上帧朝向，防拳与喷焰单帧横甩归零
+            //零速时保持上帧朝向，防拳与喷焰单帧横甩归零
             if (npc.velocity.LengthSquared() > 0.01f) {
                 npc.rotation = ctx.Side < 0
                     ? (-npc.velocity).ToRotation()

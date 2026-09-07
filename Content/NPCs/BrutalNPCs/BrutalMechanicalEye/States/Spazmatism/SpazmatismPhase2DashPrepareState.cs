@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             else {
                 npc.velocity *= 0.68f;
                 if (!VaultUtils.isServer) {
-                    npc.position += Main.rand.NextVector2Circular(2.2f, 2.2f);
+                    BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(2.2f, 2.2f));
                 }
             }
             FaceTarget(npc, player.Center);

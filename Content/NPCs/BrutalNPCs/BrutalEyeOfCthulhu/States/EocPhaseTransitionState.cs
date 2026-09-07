@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             //痉挛渐强
             if (!VaultUtils.isServer && progress > 0.4f) {
-                npc.position += Main.rand.NextVector2Circular(1.5f, 1.5f) * progress;
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.5f, 1.5f) * progress);
             }
         }
 
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             EocMotion.Shake(npc.Center, 1.5f + progress * 3f, 6);
 
             if (!VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(2.4f, 2.4f) * (0.5f + progress);
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(2.4f, 2.4f) * (0.5f + progress));
 
                 //缝口渗血
                 if (Timer % 4 == 0) {

@@ -22,6 +22,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         }
 
         public override bool AI() {
+            //原版只把 113/114 列进平滑豁免，饿鬼(115/116)不在表里：墙已清平滑而饿鬼没清时，
+            //原版画在墙与饿鬼之间的锁链会一端稳一端跳。位置是向墙上锚点收敛，本身自愈
+            RunNetFrameForAnchoredPart();
+
             if (!WallOfFleshAI.TryGetWall(out NPC wall)) {
                 npc.active = false;
                 return false;

@@ -17,10 +17,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         SunDance = 4,
         /// <summary>长枪墙：出生点偏移+跳索引缝隙+衰减追踪</summary>
         LanceWall = 5,
-        /// <summary>瞬现枪：读玩家速度从身后顺向打的 hitscan 线</summary>
-        HitscanVolley = 6,
-        /// <summary>熔光扇：多组交错充能的七射线扇</summary>
-        MeltingLight = 7,
+        /// <summary>万华镜：第一拍标落点、下一小节第一拍整条鞭线抽下，强弱弱三连</summary>
+        Kaleidoscope = 6,
+        /// <summary>光痕：每拍留下玩家残像，两小节后凝成琉璃剑，一小节后碎</summary>
+        Echo = 7,
+        /// <summary>蝶群：光蝶飘向玩家的平均位置，合掌时冻成琉璃</summary>
+        Lacewing = 8,
+        /// <summary>月影（昼）：世界照白，唯一安全处是月屑投下的阴影锥</summary>
+        MoonShadow = 9,
         /// <summary>半血变身</summary>
         PhaseTransition = 10,
         Despawn = 12,
@@ -44,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
     }
 
     /// <summary>状态基类</summary>
-    internal abstract class EmpressStateBase : VaultState<EmpressStateContext>, IEmpressState
+    internal abstract class EmpressStateBase : VaultState<EmpressStateContext>, IEmpressState, IBossNetTiming
     {
         public override int StateId => (int)StateIndex;
         public abstract override string StateName { get; }
@@ -71,6 +75,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
 
         public override void OnExit(VaultStateMachine<EmpressStateContext> machine, EmpressStateContext ctx) {
             OnExit(ctx);
+        }
+
+        /// <summary>
+        /// 收养权威端随快照过线的状态计时（客户端）。容差内不动本地值：
+        /// 只差一两帧是网络抖动的常态，硬对齐会让 Timer == X 型一次性拍被跳过或重放
+        /// </summary>
+        public void AdoptNetTiming(int timer, int counter) {
+            Timer = BossNetMotion.AdoptTimer(Timer, timer);
+            Counter = counter;
         }
 
         #region 工具方法

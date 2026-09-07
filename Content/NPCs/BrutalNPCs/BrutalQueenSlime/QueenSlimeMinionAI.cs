@@ -64,12 +64,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
                 return false;
             }
 
+            //编队小怪：位置向同步槽 ai[3] 相位给出的轨位收敛，本身自愈；
+            //女王(657)在原版豁免表里而小怪不在，不清就是本体稳、随从跳。
+            //放在原版回退分支之后：交还原版 AI 的个体连平滑一起交还
+            RunNetFrameForAnchoredPart();
+
             npc.timeLeft = 120;
             MinionAI();
-
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 20 == 0) {
-                npc.netUpdate = true;
-            }
             return false;
         }
 

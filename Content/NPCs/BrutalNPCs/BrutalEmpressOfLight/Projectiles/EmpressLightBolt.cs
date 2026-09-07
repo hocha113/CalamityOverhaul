@@ -209,11 +209,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             Texture2D glow = CWRAsset.SoftGlow.Value;
             float day = DayBlend;
             Color main = EmpressMotion.FormColor(Hue, day, 0.64f);
-            Color rim = Color.Lerp(new Color(60, 20, 90), EmpressMotion.SunDark, day);
+            Color dark = EmpressMotion.FormDark(day);
+            //色散镶边：昼白光本体外一圈饱和光谱，夜对补暗光谱
+            Color rim = EmpressMotion.FormRim(Hue, day, 0.55f);
             Vector2 origin = body.Size() / 2f;
             float scale = Projectile.scale;
 
-            //拖尾：同材质本体按 0.55× 与 0.35α 重画（不是另一张更细的东西）
+            //拖尾：同材质本体按 0.35~0.75× 重画（不是另一张更细的东西），拖尾里色散更明显
             Vector2[] old = Projectile.oldPos;
             for (int i = old.Length - 1; i >= 1; i--) {
                 if (old[i] == Vector2.Zero) {
@@ -222,18 +224,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 float t = 1f - i / (float)old.Length;
                 Vector2 pos = old[i] + Projectile.Size / 2f - Main.screenPosition;
                 float s = scale * MathHelper.Lerp(0.35f, 0.75f, t);
-                Main.spriteBatch.Draw(star, pos, null, rim * (0.35f * t), Projectile.oldRot[i], star.Size() / 2f, s * 0.13f, SpriteEffects.None, 0f);
-                Main.spriteBatch.Draw(body, pos, null, main * (0.35f * t), Projectile.oldRot[i], origin, s, SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(star, pos, null, dark * (0.3f * t), Projectile.oldRot[i], star.Size() / 2f, s * 0.14f, SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(body, pos, null, Color.Lerp(main, rim, 0.6f) * (0.35f * t), Projectile.oldRot[i], origin, s, SpriteEffects.None, 0f);
             }
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            //底层金晕（加色，≤30% 视觉体量）
-            Main.spriteBatch.Draw(glow, drawPos, null, (main with { A = 0 }) * 0.5f, 0f, glow.Size() / 2f, scale * 1.4f, SpriteEffects.None, 0f);
-            //暗边（真 alpha，A=255，速度拉伸）
+            //底层晕（加色，≤30% 视觉体量），颜色取镶边色让晕带彩
+            Main.spriteBatch.Draw(glow, drawPos, null, (rim with { A = 0 }) * 0.45f, 0f, glow.Size() / 2f, scale * 1.4f, SpriteEffects.None, 0f);
+            //暗边（真 alpha，A=255，速度拉伸）再叠一层光谱边
             float speed = Projectile.velocity.Length();
-            Vector2 stretch = new(scale * 0.15f * (1f + speed * 0.02f), scale * 0.13f);
-            Main.spriteBatch.Draw(star, drawPos, null, rim, Projectile.rotation - MathHelper.PiOver2, star.Size() / 2f, stretch, SpriteEffects.None, 0f);
-            //本体：原版贴图，形态染色，饱和实体
+            Vector2 stretch = new(scale * 0.16f * (1f + speed * 0.02f), scale * 0.14f);
+            Main.spriteBatch.Draw(star, drawPos, null, dark, Projectile.rotation - MathHelper.PiOver2, star.Size() / 2f, stretch, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(body, drawPos, null, rim, Projectile.rotation, origin, scale * 1.18f, SpriteEffects.None, 0f);
+            //本体：原版贴图，白金核心
             Main.spriteBatch.Draw(body, drawPos, null, main, Projectile.rotation, origin, scale, SpriteEffects.None, 0f);
             //热芯：小、短命感靠闪烁
             float flicker = 0.75f + 0.25f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 30f + Projectile.identity);
@@ -295,12 +298,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             }
         }
 
+        public override void PreUpdateProjectiles() {
+            if (!VaultUtils.isServer) {
+                EmpressMoonShard.Active.Clear();
+            }
+        }
+
         public override void PostUpdateProjectiles() {
             EmpressLightBolt.RepelChasers();
+            EmpressLacewing.Separate();
             if (VaultUtils.isServer) {
                 return;
             }
-            EmpressMeltingFan.ResolveAttention();
             if (closestShot.HasValue) {
                 Terraria.Audio.SoundEngine.PlaySound(shotStyle, closestShot.Value);
                 closestShot = null;

@@ -22,6 +22,27 @@ float uArenaPull;     //本人越界深度 0~1
 float uArenaFlash;    //被捕闪光 0~0.8
 float uPhaseGlow;     //终章停顿预光 0~1
 float uPhaseFlash;    //终章停顿闪 0~1
+float uWhiteout;      //月影：世界照白 0~1
+float2 uSunPos;       //月影：她的位置UV（白光的中心）
+float2 uShard0;       //月屑 0 位置UV
+float2 uShard1;       //月屑 1
+float2 uShard2;       //月屑 2
+float3 uShardRadius;  //三枚月屑半径（宽高比修正后UV单位），0=无
+float uShadowLength;  //阴影锥长度（同单位）
+
+//单枚月屑背着她投下的阴影锥：t 沿锥轴，perp 横向，半宽随距离线性张开（本影几何）
+float ShadowCone(float2 p, float2 shard, float2 sun, float radius, float len)
+{
+    float2 axis = shard - sun;
+    float dist = length(axis) + 1e-4;
+    axis /= dist;
+    float2 d = p - shard;
+    float t = dot(d, axis);
+    float perp = abs(d.x * axis.y - d.y * axis.x);
+    float halfW = radius + max(t, 0.0) * (radius / dist);
+    float inside = step(0.0, t) * (1.0 - smoothstep(halfW * 0.82, halfW, perp)) * (1.0 - smoothstep(len * 0.75, len, t));
+    return inside * step(0.0001, radius);
+}
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -95,6 +116,26 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     color += float3(1.0, 0.9, 0.7) * uPhaseGlow * 0.12 * (0.55 + 0.45 * sin(uTime * 6.0));
     color += float3(1.0, 1.0, 1.0) * uPhaseFlash * 0.6;
     color += float3(1.0, 0.85, 0.6) * uArenaFlash * 0.5;
+
+    //月影：世界照白，唯一不白的地方是月屑背着她投下的阴影锥；锥缘留一线光谱（白光在阴影边被折出彩）
+    float2 sp = coords;
+    sp.x *= uAspect;
+    float2 sunP = uSunPos;
+    sunP.x *= uAspect;
+    float2 s0 = uShard0; s0.x *= uAspect;
+    float2 s1 = uShard1; s1.x *= uAspect;
+    float2 s2 = uShard2; s2.x *= uAspect;
+    float shadow = max(max(ShadowCone(sp, s0, sunP, uShardRadius.x, uShadowLength),
+                           ShadowCone(sp, s1, sunP, uShardRadius.y, uShadowLength)),
+                       ShadowCone(sp, s2, sunP, uShardRadius.z, uShadowLength));
+    float sunDist = length(sp - sunP);
+    float bloom = exp(-sunDist * 1.8);
+    float white = uWhiteout * (0.6 + 0.4 * bloom) * (1.0 - shadow);
+    float3 warmWhite = float3(1.0, 0.985, 0.94);
+    color = lerp(color, warmWhite, white);
+    float umbraEdge = shadow * (1.0 - shadow) * 4.0 * uWhiteout;
+    float3 spectral = float3(0.5 + 0.5 * sin(sunDist * 30.0), 0.5 + 0.5 * sin(sunDist * 30.0 + 2.1), 0.5 + 0.5 * sin(sunDist * 30.0 + 4.2));
+    color += spectral * umbraEdge * 0.25;
 
     return float4(color, src.a) * vertexColor;
 }

@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
             if (progress > 0.7f) {
                 npc.velocity.Y += 0.6f;
                 if (!VaultUtils.isServer) {
-                    npc.position += Main.rand.NextVector2Circular(1.4f, 1.4f);
+                    BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.4f, 1.4f));
                 }
             }
             if (Timer == 1 && !VaultUtils.isServer) {

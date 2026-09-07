@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core
     }
 
     /// <summary>状态基类</summary>
-    internal abstract class DeerclopsStateBase : VaultState<DeerclopsStateContext>, IDeerclopsState
+    internal abstract class DeerclopsStateBase : VaultState<DeerclopsStateContext>, IDeerclopsState, IBossNetTiming
     {
         public override int StateId => (int)StateIndex;
         public abstract override string StateName { get; }
@@ -90,6 +90,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core
 
         public override void OnExit(VaultStateMachine<DeerclopsStateContext> machine, DeerclopsStateContext ctx) {
             OnExit(ctx);
+        }
+
+        /// <summary>
+        /// 收养权威端随快照过线的状态计时（客户端）。容差内不动本地值：
+        /// 只差一两帧是网络抖动的常态，硬对齐会让 Timer == X 型一次性拍被跳过或重放
+        /// </summary>
+        public void AdoptNetTiming(int timer, int counter) {
+            Timer = BossNetMotion.AdoptTimer(Timer, timer);
+            Counter = counter;
         }
 
         #region 工具方法

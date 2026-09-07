@@ -71,6 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             if (!VaultUtils.isClient) {
                 context.Npc.ai[SkeletronAiSlots.HeadParamA] = 0f;
                 context.Npc.ai[SkeletronAiSlots.HeadParamB] = SubFlank;
+                ClearSyncedAnchor(context);
                 //进场即压冷却，拍空离场时再改短
                 context.SnatchCooldown = SkeletronDirector.SnatchCooldownTicks;
                 context.Npc.netUpdate = true;
@@ -85,8 +86,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
             if (!VaultUtils.isClient) {
                 context.Npc.ai[SkeletronAiSlots.HeadParamA] = 0f;
                 context.Npc.ai[SkeletronAiSlots.HeadParamB] = SubWhiff;
+                ClearSyncedAnchor(context);
                 context.Npc.netUpdate = true;
             }
+        }
+
+        /// <summary>
+        /// 清同步锚点（仅权威端调用）。掩码同步只发非零槽，客户端那侧会被自动清零；
+        /// 不该在客户端本地清——收包与换态同帧时会把刚到的锚点抹掉
+        /// </summary>
+        private static void ClearSyncedAnchor(SkeletronStateContext context) {
+            if (context.Owner == null) {
+                return;
+            }
+            context.Owner.ai[SkeletronAiSlots.OverrideSnatchAnchorX] = 0f;
+            context.Owner.ai[SkeletronAiSlots.OverrideSnatchAnchorY] = 0f;
         }
 
         public override ISkeletronState OnUpdate(SkeletronStateContext context) {
@@ -158,6 +172,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                     if (subTimer == lockFrame) {
                         context.SnatchAnchor = context.Target.Center;
                         context.SnatchAnchorLocked = true;
+                        //锚点随快照过线：手部伺服在各端读同一个点，否则客户端的掌会一路追着玩家走
+                        if (context.Owner != null) {
+                            context.Owner.ai[SkeletronAiSlots.OverrideSnatchAnchorX] = context.SnatchAnchor.X;
+                            context.Owner.ai[SkeletronAiSlots.OverrideSnatchAnchorY] = context.SnatchAnchor.Y;
+                        }
                         npc.netUpdate = true;
                     }
                     if (subTimer >= telegraph) {

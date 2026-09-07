@@ -30,6 +30,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             return null;
         }
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => handStateMachine?.CurrentState as IBossNetTiming;
+
         public override void SetProperty() {
             handContext = null;
             handStateMachine = null;
@@ -38,6 +41,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
         }
 
         public override bool AI() {
+            //贴锚点部件：清平滑 + 收养计时 + 慢频兜底心跳，覆盖下面所有提前返回的分支。
+            //头已清平滑而手没清时，链条一端稳一端跳，每包错一次
+            RunNetFrameForAnchoredPart();
+
             int headIndex = (int)npc.ai[SkeletronAiSlots.HandHeadIndex];
             if (headIndex < 0 || headIndex >= Main.maxNPCs) {
                 KillSelfOnServer();
@@ -98,20 +105,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 npc.alpha = Math.Max(npc.alpha - 12, 0);
             }
 
-            //服务端每帧广播位置，客户端傀儡呈现
-            if (!VaultUtils.isClient) {
-                npc.netUpdate = true;
-            }
-
-            bool clientShadow = VaultUtils.isClient;
-            Vector2 savedPos = npc.position;
-
+            //运动在各端同跑。原先是"服务端每帧广播 + 客户端跑完状态机再还原位置/速度"的傀儡写法，
+            //正是 tml-mp-motion-sync 点名的反面模式：客户端两包之间被冻在原地(velocity=0)，
+            //节流后的包又是连发几帧再断一截，手就一顿一顿地跳。手的运动是向头部锚点收敛的
+            //弹簧/插值，本身自愈，也没有运动级随机——客户端照跑即可
             handStateMachine.Update();
-
-            if (clientShadow) {
-                npc.position = savedPos;
-                npc.velocity = Vector2.Zero;
-            }
 
             //张紧度自然回落，状态内主动抬升
             handContext.ChainTension = MathHelper.Clamp(handContext.ChainTension - 0.02f, 0f, 1f);
@@ -138,6 +136,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             }
 
             handStateMachine = new NpcStateMachine<SkeletronHandContext>(handContext, aiSlot: SkeletronAiSlots.HandStateSlot);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            handStateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //中途加入从同步槽恢复
             IVaultState<SkeletronHandContext> syncedState = null;

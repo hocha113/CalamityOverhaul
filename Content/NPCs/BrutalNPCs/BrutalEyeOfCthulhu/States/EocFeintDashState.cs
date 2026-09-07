@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
 
             //末段绷紧颤抖
             if (progress > 0.72f && !VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(1.7f, 1.7f);
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.7f, 1.7f));
             }
 
             //承诺路径：未锁定时每帧按当前位置重建，锁定后冻结，只让起点跟着眼体走

@@ -42,6 +42,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
         internal const int FlagUltimateDone = 2;
 
         //override.ai 投技槽位
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         internal const int AiSlotMarkTarget = 5;
         internal const int AiSlotGrabCooldown = 6;
         internal const int AiSlotMarkProgress = 7;
@@ -96,6 +99,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             };
             stateMachine = new NpcStateMachine<QueenBeeStateContext>(stateContext, aiSlot: 2);
 
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
+
             //客户端从 ai[2] 恢复状态
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[2];
@@ -114,6 +120,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             if (stateContext == null || stateMachine == null || swarm == null) {
                 InitializeStateContext();
             }
+
+            //类型 222 本就在原版豁免表里，平滑一直是零；缺的是预测（俯冲往返速度不低）
+            BeginNetFrame();
 
             FindTarget();
             SyncSwarmClock();
@@ -138,9 +147,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             UpdateMarkVisuals();
             UpdateDeathCutscene();
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/俯冲锁向/标记锁定/投技）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

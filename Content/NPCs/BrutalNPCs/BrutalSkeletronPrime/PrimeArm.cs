@@ -36,16 +36,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return null;
         }
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => armStateMachine?.CurrentState as IBossNetTiming;
+
         public sealed override void SetProperty() {
             armContext = null;
             armStateMachine = null;
         }
 
         public override bool AI() {
-            //Mechdusa交还原版AI
+            //Mechdusa交还原版AI（连带交还原版平滑）
             if (NPC.IsMechQueenUp) {
                 return true;
             }
+
+            //贴锚点部件：清平滑 + 收养计时 + 慢频兜底心跳，覆盖下面所有提前返回的分支。
+            //头已清平滑而臂没清时，头臂之间的电弧(PrimeArcChainProj)一端稳一端跳，每包错一次
+            RunNetFrameForAnchoredPart();
 
             bossRush = CWRRef.GetBossRushActive();
             masterMode = Main.masterMode || bossRush;
@@ -75,11 +82,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             EnsureStateMachine();
             UpdateContext();
-
-            //服务端广播位置，客户端傀儡
-            if (!VaultUtils.isClient) {
-                npc.netUpdate = true;
-            }
 
             PrimeStateIndex headState = HeadPrimeAI.GetStateIndex(head);
             int headPhase = (int)head.ai[PrimeAiSlots.HeadPhase];
@@ -122,16 +124,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             UpdateVisualDecay();
             ArmPreUpdate();
 
-            //客户端只呈现同步位置
-            bool clientShadow = VaultUtils.isClient;
-            Vector2 savedPos = npc.position;
-
+            //运动在各端同跑。这里原先是"服务端每帧广播 + 客户端跑完状态机再把位置/速度还原"的傀儡写法，
+            //正是 tml-mp-motion-sync 点名的反面模式：客户端两包之间被冻在原地(velocity=0)，
+            //而节流后的包是"连发几帧再断二十多帧"，臂就一顿一顿地跳。臂的运动是向头部锚点收敛的
+            //弹簧/插值，本身自愈，也没有任何运动级随机——客户端照跑即可
             armStateMachine.Update();
-
-            if (clientShadow) {
-                npc.position = savedPos;
-                npc.velocity = Vector2.Zero;
-            }
 
             ArmPostUpdate();
             return false;
@@ -156,6 +153,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             armStateMachine = new NpcStateMachine<PrimeArmStateContext>(armContext, aiSlot: PrimeAiSlots.ArmStateSlot);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            armStateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //中途加入从同步槽恢复
             IVaultState<PrimeArmStateContext> syncedState = null;

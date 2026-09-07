@@ -38,6 +38,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         private int heartFrame;
         /// <summary>逐部件破坏入账（服务端事件检测与归因基线）：槽0~3四手，槽4头</summary>
         private readonly bool[] countedBroken = new bool[MLordPartsStatus.HandSlots + 1];
+
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
         #endregion
 
         #region 加载与初始化
@@ -74,6 +77,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             };
             stateMachine = new NpcStateMachine<MLordContext>(stateContext, aiSlot: MLordAiSlots.CoreStateSlot);
 
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
+
             //客户端从 ai[2] 恢复状态
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[MLordAiSlots.CoreStateSlot];
@@ -94,7 +100,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
             npc.aiStyle = -1;
             npc.knockBackResist = 0f;
-            npc.netOffset = Vector2.Zero;
+            //攻击锚点/骰点本就在同步槽里（OvAnchor*/OvAttackSeed），客户端能跑同一套爬行位移，
+            //缺的只是预测与对账；类型 398~401 也在原版豁免表里，平滑一直是零
+            BeginNetFrame();
             npc.damage = 0;
             npc.defense = npc.defDefense;
 
@@ -129,12 +137,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             UpdateHeartFrames();
             PushAmbience();
 
-            //编队时钟
+            //编队时钟（两端逐帧同算，部件共读；快照负责纠偏）
             ai[MLordAiSlots.OvFormationClock]++;
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/锚点锁定/日蚀搬迁/命中）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
             return false;
         }
 

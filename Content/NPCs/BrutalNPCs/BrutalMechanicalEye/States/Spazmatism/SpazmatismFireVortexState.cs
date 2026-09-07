@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 }
                 //末段绷紧颤抖
                 if (progress > 0.8f && !VaultUtils.isServer) {
-                    npc.position += Main.rand.NextVector2Circular(1.4f, 1.4f);
+                    BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.4f, 1.4f));
                 }
             }
             else if (Timer == ChargeTime) {

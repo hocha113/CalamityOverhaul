@@ -43,12 +43,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
             return null;
         }
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         private void InitializeStateContext() {
             stateContext = new QueenSlimeStateContext {
                 Npc = npc,
                 IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<QueenSlimeStateContext>(stateContext, aiSlot: 2);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //客户端从ai[2]恢复状态
             if (VaultUtils.isClient) {
@@ -69,6 +75,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
                 InitializeStateContext();
             }
 
+            //类型 657 本就在原版豁免表里，平滑一直是零；缺的是预测（滞空冲刺与砸地都是大位移）
+            BeginNetFrame();
+
             FindTarget();
             UpdateStateContext();
             CheckPhaseTransitionTrigger();
@@ -86,9 +95,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
 
             Lighting.AddLight(npc.Center, 0.9f, 0.55f, 0.85f);
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/起跳/大招点火）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
             ForcedNetUpdating(npc);
 
             return false;

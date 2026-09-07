@@ -97,12 +97,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             return null;
         }
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         private void InitializeStateContext() {
             stateContext = new FishronStateContext {
                 Npc = npc,
                 IsAsuraMode = CWRWorld.Asura
             };
             stateMachine = new NpcStateMachine<FishronStateContext>(stateContext, aiSlot: 2);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //客户端从 ai[2] 恢复状态
             if (VaultUtils.isClient) {
@@ -125,7 +131,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
             npc.aiStyle = -1;
             npc.knockBackResist = 0f;
-            npc.netOffset = Vector2.Zero;
+            //类型本就在原版豁免表里(370)，平滑一直是零；缺的是预测，冲刺才不会一包一跳
+            BeginNetFrame();
             npc.dontTakeDamage = false;
             npc.chaseable = true;
 
@@ -159,9 +166,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             FishronStormSky.Report(npc,
                 MathHelper.Clamp(CurrentStormGrade(), 0f, 1f));
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/环位重现/冲刺锁向/命中）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

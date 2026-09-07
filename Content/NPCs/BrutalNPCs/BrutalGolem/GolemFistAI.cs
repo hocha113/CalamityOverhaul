@@ -21,6 +21,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         /// <summary>拳侧 -1左 / 1右</summary>
         protected abstract int Side { get; }
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => fistStateMachine?.CurrentState as IBossNetTiming;
+
         public sealed override bool? CanBrutalOverride() {
             return null;
         }
@@ -37,10 +40,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         }
 
         public override bool AI() {
+            //贴锚点部件：清平滑 + 收养计时 + 慢频兜底心跳，覆盖下面所有提前返回的分支
+            RunNetFrameForAnchoredPart();
+
             body = Main.npc[(int)npc.ai[GolemAiSlots.PartBodyIndex]];
             player = Main.player[npc.target];
             npc.aiStyle = -1;
-            npc.netOffset = Vector2.Zero;
             npc.damage = 0;
             npc.dontTakeDamage = false;
             npc.noTileCollide = true;
@@ -73,11 +78,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             //激怒惩罚与躯干同拍：防御翻倍(拳是独立子目标)
             npc.defense = fistContext.Enraged ? npc.defDefense * 2 : npc.defDefense;
 
-            //服务端广播位置，客户端傀儡
-            if (!VaultUtils.isClient) {
-                npc.netUpdate = true;
-            }
-
             GolemStateIndex bodyState = GolemFacts.GetStateIndex(body);
             int bodyPhase = (int)body.ai[GolemAiSlots.BodyPhase];
 
@@ -104,23 +104,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 
             //蓄力表现衰减
             fistContext.WindupGlow = MathHelper.Clamp(fistContext.WindupGlow - 0.05f, 0f, 1f);
-            //残影门控速度：客户端清零速度前缓存
             fistContext.VisualSpeed = npc.velocity.Length();
 
-            //客户端只呈现同步位置；坠地崩解走本地物理模拟（服务器广播仍会纠偏）
-            bool clientShadow = VaultUtils.isClient
-                && (GolemFistStateIndex)(int)npc.ai[GolemAiSlots.PartStateSlot] != GolemFistStateIndex.DeathFall;
-            Vector2 savedPos = npc.position;
-
+            //运动在各端同跑。原先是"服务端每帧广播 + 客户端跑完状态机再还原位置/速度"的傀儡写法，
+            //正是 tml-mp-motion-sync 点名的反面模式：客户端两包之间被冻在原地(velocity=0)，
+            //拳的出手就一顿一顿的，还得靠 puppetGap 之类的补丁保住喷焰朝向。
+            //拳的运动是向躯干锚点收敛 + 同步槽给定的钉点，本身自愈，客户端照跑即可
             fistStateMachine.Update();
 
-            //推进器视觉：傀儡清零前缓存速度向量 + 反弹侧喷检测 + 尾迹余烬
+            //推进器视觉：速度向量缓存 + 反弹侧喷检测 + 尾迹余烬
             UpdateThrusterVisual();
-
-            if (clientShadow) {
-                npc.position = savedPos;
-                npc.velocity = Vector2.Zero;
-            }
 
             return false;
         }
@@ -143,10 +136,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                     }
                 }
             }
-            //傀儡端包间隙读到零速时保留上帧向量（Punch/Return 语义上无合法零速），防喷向单帧塌零
-            bool puppetGap = VaultUtils.isClient && newVel.LengthSquared() < 0.01f
+            //Punch/Return 语义上无合法零速：读到零速就保留上帧向量，防喷向单帧塌零
+            //（傀儡写法去掉后这已是极少数情况，留着当收包空窗的兜底）
+            bool velocityGap = newVel.LengthSquared() < 0.01f
                 && st is GolemFistStateIndex.Punch or GolemFistStateIndex.Return;
-            if (!puppetGap) {
+            if (!velocityGap) {
                 fistContext.ThrustVel = newVel;
             }
             if (fistContext.BounceBurst > 0) {
@@ -189,6 +183,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             }
 
             fistStateMachine = new NpcStateMachine<GolemFistStateContext>(fistContext, aiSlot: GolemAiSlots.PartStateSlot);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            fistStateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //中途加入从同步槽恢复
             IVaultState<GolemFistStateContext> syncedState = null;

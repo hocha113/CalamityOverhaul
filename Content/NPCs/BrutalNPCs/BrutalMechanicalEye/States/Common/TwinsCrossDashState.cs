@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
             npc.velocity *= 0.85f;
             if (progress > 0.75f && !VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(1.8f, 1.8f);
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(1.8f, 1.8f));
             }
 
             //持续修正瞄准，末1/4锁定

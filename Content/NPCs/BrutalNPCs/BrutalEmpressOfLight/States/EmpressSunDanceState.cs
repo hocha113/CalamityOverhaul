@@ -34,15 +34,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         ];
 
         private int WindupTime => Context.IsSecondPhase ? 45 : 20;
-        private int Interval => Context.DayEmpowered ? (Context.IsSecondPhase ? 40 : 45) : 50;
         private float[][] Table => Context.DayEmpowered ? (Context.IsSecondPhase ? DayPhase2Table : DayTable) : NightTable;
-        private int TotalTime => WindupTime + Table.Length * Interval + EmpressTrackBeam.MarkerTime + EmpressTrackBeam.BeamTime + 20;
+        /// <summary>一小节一发：60f 标记恰好一小节，束体永远在第一拍落下</summary>
+        private const int Interval = EmpressTempo.BarFrames;
+        private int Tail => EmpressTrackBeam.MarkerTime + EmpressTrackBeam.BeamTime + 20;
 
         private EmpressStateContext Context;
+        /// <summary>首发起始后的帧计数，-1=还在起手等第一拍</summary>
+        private int castTick = -1;
 
         public override void OnEnter(EmpressStateContext context) {
             base.OnEnter(context);
             Context = context;
+            castTick = -1;
         }
 
         public override IEmpressState OnUpdate(EmpressStateContext context) {
@@ -54,9 +58,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             context.Pose = EmpressPose.Dance;
             context.PoseTimer = MathHelper.Clamp(Timer, 10f, 170f);
 
-            if (Timer <= WindupTime) {
-                //起手上浮 (1-t)²，双臂由 Floating 切到日舞姿势
-                float t = Timer / (float)WindupTime;
+            if (castTick < 0) {
+                //起手上浮 (1-t)²，双臂由 Floating 切到日舞姿势；到位后等第一拍才起第一发
+                float t = MathHelper.Clamp(Timer / (float)WindupTime, 0f, 1f);
                 npc.velocity.Y -= (1f - t) * (1f - t) * (context.IsSecondPhase ? 0.09f : 0.05f);
                 npc.velocity.X *= 0.9f;
                 context.SetChargeState(3, t * 0.6f);
@@ -66,7 +70,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 if (Timer == 1) {
                     PlayLocal(SoundID.Item159 with { Volume = 0.8f, Pitch = -0.1f }, npc.Center);
                 }
-                return null;
+                if (Timer >= WindupTime && context.Downbeat) {
+                    castTick = 0;
+                }
+                else {
+                    return null;
+                }
+            }
+            else {
+                castTick++;
             }
 
             //几乎静场：只随呼吸微沉，光束的转动是唯一的动
@@ -78,17 +90,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 EmpressScreenFX.DeclareAmbient(0.5f);
             }
 
-            int castTick = Timer - WindupTime;
+            float[][] table = Table;
             if (castTick % Interval == 0 && target.Alives()) {
                 int volley = castTick / Interval;
-                float[][] table = Table;
                 if (volley < table.Length) {
                     CastVolley(context, npc, target, table[volley], volley);
                 }
             }
 
             EmpressMotion.AmbientGlow(npc, context.DayFormBlend);
-            if (Timer >= TotalTime) {
+            if (castTick >= (table.Length - 1) * Interval + Tail) {
                 return new EmpressConnectorState();
             }
             return null;

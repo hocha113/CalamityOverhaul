@@ -17,16 +17,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         public override string StateName => "EmpressLightSpiral";
         public override EmpressStateIndex StateIndex => EmpressStateIndex.LightSpiral;
 
-        private const int ChargeTime = 60;
-        private const int FireTime = 120;
+        /// <summary>充能至少一小节，在第一拍释放；开火两小节；收势 40f</summary>
+        private const int ChargeTime = EmpressTempo.BarFrames;
+        private const int FireTime = EmpressTempo.BarFrames * 2;
         private const int RecoverTime = 40;
-        private const int TotalTime = ChargeTime + FireTime + RecoverTime;
 
         private EmpressStateContext Context;
+        /// <summary>释放后的帧计数，-1=还在充能等第一拍</summary>
+        private int fireTick = -1;
 
         public override void OnEnter(EmpressStateContext context) {
             base.OnEnter(context);
             Context = context;
+            fireTick = -1;
         }
 
         public override IEmpressState OnUpdate(EmpressStateContext context) {
@@ -35,27 +38,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             Player target = context.Target;
             Timer++;
 
-            if (Timer <= ChargeTime) {
+            if (fireTick < 0) {
                 ChargeUpdate(context, npc, target);
+                if (Timer >= ChargeTime && context.Downbeat) {
+                    Release(context, npc);
+                    fireTick = 0;
+                }
             }
-            else if (Timer <= ChargeTime + FireTime) {
-                FireUpdate(context, npc);
+            else if (fireTick < FireTime) {
+                fireTick++;
+                FireUpdate(context, npc, fireTick);
             }
             else {
+                fireTick++;
                 context.Pose = EmpressPose.Idle;
                 context.PoseTimer = 0f;
                 npc.velocity *= 0.92f;
             }
 
             EmpressMotion.AmbientGlow(npc, context.DayFormBlend);
-            if (Timer >= TotalTime) {
+            if (fireTick >= FireTime + RecoverTime) {
                 return new EmpressConnectorState();
             }
             return null;
         }
 
         private void ChargeUpdate(EmpressStateContext context, NPC npc, Player target) {
-            float t = Timer / (float)ChargeTime;
+            float t = MathHelper.Clamp(Timer / (float)ChargeTime, 0f, 1f);
             context.Pose = EmpressPose.CastBoth;
             context.PoseTimer = MathHelper.Clamp(Timer * 1.5f, 0f, 60f);
             context.SetChargeState(3, t);
@@ -81,10 +90,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     EmpressMotion.Shake(npc.Center, t * 1.2f, 6);
                 }
             }
-
-            if (Timer == ChargeTime) {
-                Release(context, npc);
-            }
         }
 
         /// <summary>释放帧：冲击波推开、震屏、双音，之后才开火</summary>
@@ -100,8 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
         }
 
-        private void FireUpdate(EmpressStateContext context, NPC npc) {
-            int fireTick = Timer - ChargeTime;
+        private void FireUpdate(EmpressStateContext context, NPC npc, int fireTick) {
             context.Pose = EmpressPose.CastRight;
             context.PoseTimer = 30f + (fireTick % 20);
             npc.velocity *= 0.9f;

@@ -39,22 +39,40 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
                 ModContent.ProjectileType<EmpressLance>(), damage, 0f, Main.myPlayer, angle, (int)mode, npc.whoAmI);
         }
 
-        /// <summary>瞬现长枪：pos 线心，angle 线向，fireDelay 帧后整线致命 6f</summary>
-        public static void Hitscan(NPC npc, Vector2 pos, float angle, int damage, int fireDelay) {
+        /// <summary>万华镜鞭击：tip 落点，fireDelay 帧后抽下，strong 强击</summary>
+        public static void Whip(NPC npc, Vector2 tip, int damage, int fireDelay, bool strong) {
             if (!Authority) {
                 return;
             }
-            Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
-                ModContent.ProjectileType<EmpressHitscanLance>(), damage, 0f, Main.myPlayer, angle, fireDelay, npc.whoAmI);
+            Projectile.NewProjectile(npc.GetSource_FromAI(), tip, Vector2.Zero, ModContent.ProjectileType<EmpressWhipCrack>(),
+                damage, 0f, Main.myPlayer, tip.X, tip.Y, EmpressWhipCrack.PackAi2(npc.whoAmI, fireDelay, strong));
         }
 
-        /// <summary>熔光扇：startAngle 起始角，sweep 充能期扫过弧度（带符号）</summary>
-        public static void Fan(NPC npc, float startAngle, float sweep, int damage) {
+        /// <summary>光痕：在玩家脚下留一道</summary>
+        public static void Echo(NPC npc, Player victim, int damage) {
             if (!Authority) {
                 return;
             }
-            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
-                ModContent.ProjectileType<EmpressMeltingFan>(), damage, 0f, Main.myPlayer, startAngle, sweep, npc.whoAmI);
+            Projectile.NewProjectile(npc.GetSource_FromAI(), victim.Center, Vector2.Zero, ModContent.ProjectileType<EmpressEcho>(),
+                damage, 0f, Main.myPlayer, victim.whoAmI, npc.whoAmI);
+        }
+
+        /// <summary>光蝶：spawnBar 出生小节序号（合掌奇偶由它推）</summary>
+        public static void Lacewing(NPC npc, Vector2 pos, Vector2 vel, int damage, int targetIndex, int spawnBar) {
+            if (!Authority) {
+                return;
+            }
+            Projectile.NewProjectile(npc.GetSource_FromAI(), pos, vel, ModContent.ProjectileType<EmpressLacewing>(),
+                damage, 0f, Main.myPlayer, targetIndex, npc.whoAmI, spawnBar);
+        }
+
+        /// <summary>月屑：零伤害暗盘，life 寿命帧</summary>
+        public static void MoonShard(NPC npc, Vector2 pos, Vector2 vel, int life) {
+            if (!Authority) {
+                return;
+            }
+            Projectile.NewProjectile(npc.GetSource_FromAI(), pos, vel, ModContent.ProjectileType<EmpressMoonShard>(),
+                0, 0f, Main.myPlayer, npc.whoAmI, life);
         }
 
         /// <summary>冲击波：零伤害推开</summary>
@@ -107,37 +125,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
                 ModContent.ProjectileType<EmpressRadiance>(), 0, 0f, Main.myPlayer, radius, life, hue % 1f);
         }
 
-        /// <summary>是否本 Boss 的敌对弹幕类型</summary>
+        /// <summary>是否本 Boss 的敌对弹幕类型（月屑零伤害，但清场时一并处理）</summary>
         public static bool IsHostileType(int type) {
             return type == ModContent.ProjectileType<EmpressLightBolt>()
                 || type == ModContent.ProjectileType<EmpressTrackBeam>()
                 || type == ModContent.ProjectileType<EmpressLance>()
-                || type == ModContent.ProjectileType<EmpressHitscanLance>()
-                || type == ModContent.ProjectileType<EmpressMeltingFan>();
+                || type == ModContent.ProjectileType<EmpressWhipCrack>()
+                || type == ModContent.ProjectileType<EmpressEcho>()
+                || type == ModContent.ProjectileType<EmpressLacewing>()
+                || type == ModContent.ProjectileType<EmpressMoonShard>();
         }
 
         /// <summary>
-        /// 退潮式清场（转阶段/投技/死亡的公平阀）：不瞬灭，寿命压到 fadeFrames 内让弹幕几帧内老化消失，
-        /// 光束与扇直接结束（它们的伤害窗靳在寿命尾端，不能留）
+        /// 退潮式清场（转阶段/投技/死亡的公平阀）：光球与长枪压寿命几帧内老化消失；
+        /// 伤害窗靳在寿命尾端的（光束、鞭、光痕）直接结束，光痕不许在清场时碎出光球；光蝶与月屑立即收
         /// </summary>
         public static void ClearHostileProjectiles(NPC npc, int fadeFrames = 8) {
             if (!Authority) {
                 return;
             }
-            int beam = ModContent.ProjectileType<EmpressTrackBeam>();
-            int fan = ModContent.ProjectileType<EmpressMeltingFan>();
-            int hitscan = ModContent.ProjectileType<EmpressHitscanLance>();
+            int bolt = ModContent.ProjectileType<EmpressLightBolt>();
+            int lance = ModContent.ProjectileType<EmpressLance>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile p = Main.projectile[i];
                 if (!p.active || !IsHostileType(p.type)) {
                     continue;
                 }
-                if (p.type == beam || p.type == fan || p.type == hitscan) {
-                    p.Kill();
+                if (p.type == bolt || p.type == lance) {
+                    p.timeLeft = System.Math.Min(p.timeLeft, fadeFrames);
+                    p.netUpdate = true;
                     continue;
                 }
-                p.timeLeft = System.Math.Min(p.timeLeft, fadeFrames);
-                p.netUpdate = true;
+                p.Kill();
             }
         }
     }

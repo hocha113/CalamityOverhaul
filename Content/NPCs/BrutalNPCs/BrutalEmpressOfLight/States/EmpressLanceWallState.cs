@@ -29,15 +29,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         ];
 
         private int WallCount => Context.DayEmpowered ? 6 : 4;
-        private int Interval => Context.DayEmpowered ? 40 : 50;
         private int LancesPerWall => Context.DayEmpowered ? (Context.IsSecondPhase ? 14 : 12) : 8;
-        private int TotalTime => WallCount * Interval + 60 + 86 + 20;
+        /// <summary>最后一墙落下后的收尾：瞄准 60 + 飞行 86 + 余量</summary>
+        private const int Tail = 60 + 86 + 20;
 
         private EmpressStateContext Context;
+        private int wallsCast;
+        private int tailTimer = -1;
 
         public override void OnEnter(EmpressStateContext context) {
             base.OnEnter(context);
             Context = context;
+            wallsCast = 0;
+            tailTimer = -1;
             PlayLocal(SoundID.Item164 with { Volume = 0.8f, Pitch = -0.2f }, context.Npc.Center);
         }
 
@@ -59,14 +63,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 npc.velocity *= 0.9f;
             }
 
-            int wallIdx = (Timer - 10) / Interval;
-            if ((Timer - 10) % Interval == 0 && wallIdx >= 0 && wallIdx < WallCount && target.Alives()) {
+            //墙落在每小节第一拍与第三拍（强-弱-弱里的"强"与"弱"），六墙三小节
+            bool wallBeat = context.BarFrame == 0 || context.BarFrame == EmpressTempo.BeatFrames * 2;
+            if (Timer > 10 && wallsCast < WallCount && wallBeat && target.Alives()) {
                 context.SetChargeState(3, 1f);
-                CastWall(context, npc, target, wallIdx);
+                CastWall(context, npc, target, wallsCast);
+                wallsCast++;
+                if (wallsCast >= WallCount) {
+                    tailTimer = 0;
+                }
+            }
+            if (tailTimer >= 0) {
+                tailTimer++;
             }
 
             EmpressMotion.AmbientGlow(npc, context.DayFormBlend);
-            if (Timer >= TotalTime) {
+            if (tailTimer >= Tail) {
                 return new EmpressConnectorState();
             }
             return null;

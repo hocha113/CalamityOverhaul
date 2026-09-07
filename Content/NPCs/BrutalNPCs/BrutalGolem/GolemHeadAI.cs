@@ -36,9 +36,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         }
 
         public override bool AI() {
+            //贴锚点部件：清平滑 + 慢频兜底心跳（焊在躯干锚点上，无状态机）
+            RunNetFrameForAnchoredPart();
+
             body = Main.npc[(int)npc.ai[GolemAiSlots.PartBodyIndex]];
             npc.aiStyle = -1;
-            npc.netOffset = Vector2.Zero;
             npc.damage = 0;
             npc.noGravity = true;
             npc.noTileCollide = true;

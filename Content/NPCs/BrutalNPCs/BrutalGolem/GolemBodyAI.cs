@@ -58,6 +58,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             InitializeStateContext();
         }
 
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
+
         private void InitializeStateContext() {
             stateContext = new GolemStateContext {
                 Npc = npc,
@@ -66,6 +69,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 Target = Main.player[npc.target >= 0 && npc.target < Main.maxPlayers ? npc.target : 0]
             };
             stateMachine = new NpcStateMachine<GolemStateContext>(stateContext, aiSlot: GolemAiSlots.BodyStateSlot);
+
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
 
             //中途加入从 ai[2] 恢复状态
             if (VaultUtils.isClient) {
@@ -91,7 +97,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 
             npc.aiStyle = -1;
             npc.knockBackResist = 0;
-            npc.netOffset = Vector2.Zero;
+            //清平滑并自接纠偏 + 收养计时（光清 netOffset 只是把锯齿换成硬跳）
+            BeginNetFrame();
             npc.dontTakeDamage = false;
             //默认无接触伤害，仅冲撞状态开启（防站桩贴脸白吃伤害）
             npc.damage = 0;
@@ -123,9 +130,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             //演出通用时钟（仅表现，本地推进）
             ai[GolemAiSlots.OverrideShowClock]++;
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/跳跃起势/仪式节点）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

@@ -30,6 +30,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         private int farTimer;
         /// <summary>残影缓存已预填（首个 AI 帧一次性）</summary>
         private bool trailPrimed;
+
+        protected override bool CarryStateTiming => true;
+        protected override IBossNetTiming TimedState => stateMachine?.CurrentState as IBossNetTiming;
         #endregion
 
         #region 加载与初始化
@@ -62,6 +65,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
             };
             stateMachine = new NpcStateMachine<EocStateContext>(stateContext, aiSlot: 2);
 
+            //换态包带的是新态的计时：客户端在框架换态（新实例 OnEnter 刚清零）之后立刻收养
+            stateMachine.OnStateChanged += (_, next, _) => AdoptTimingOnSwap(next);
+
             //客户端从 ai[2] 恢复状态
             if (VaultUtils.isClient) {
                 int serverStateIndex = (int)npc.ai[2];
@@ -83,6 +89,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 
             //首个 AI 帧把残影缓存预填到当前位:槽位复用的旧轨迹或未填的零点
             //都会在开场画出一串克眼(反馈十一·#98);预填后残影从本体处自然生长
+            //自接位置纠偏 + 收养计时：冲刺 44～63 px/f，命中驱动的高频快照下原版平滑只会锯齿
+            BeginNetFrame();
+
             if (!trailPrimed) {
                 trailPrimed = true;
                 for (int i = 0; i < npc.oldPos.Length; i++) {
@@ -115,9 +124,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 
             Lighting.AddLight(npc.Center, EocMotion.Arterial.ToVector3() * (0.6f + stateContext.EnrageRamp * 0.8f));
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
-                npc.netUpdate = true;
-            }
+            //决策点（换态/冲刺锁向/雾步/命中）各自 netUpdate，兜底心跳与客户端预测都在基类
+            EndNetFrame();
 
             return false;
         }

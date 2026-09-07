@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
             TwinsMotion.SpringHover(npc, anchorPos, 0.05f, 0.2f);
             if (progress > 0.5f && !VaultUtils.isServer) {
-                npc.position += Main.rand.NextVector2Circular(2.2f, 2.2f) * progress;
+                BossNetMotion.DrawShake(npc, Main.rand.NextVector2Circular(2.2f, 2.2f) * progress);
             }
 
             //电弧铰链，魔焰侧，纯演出

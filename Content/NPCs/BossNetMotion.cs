@@ -5,6 +5,19 @@ using Terraria;
 namespace CalamityOverhaul.Content.NPCs
 {
     /// <summary>
+    /// 能随快照过线的状态：各 Boss 的状态基类实现它，控制器便无需知道具体状态类型。
+    /// <c>StateId</c>/<c>Timer</c>/<c>Counter</c> 由 <c>VaultState</c> 自带，只需补收养方法
+    /// </summary>
+    internal interface IBossNetTiming
+    {
+        int StateId { get; }
+        int Timer { get; }
+        int Counter { get; }
+        /// <summary>客户端：收养权威端的计时（带容差，见 <see cref="BossNetMotion.AdoptTimer"/>）</summary>
+        void AdoptNetTiming(int timer, int counter);
+    }
+
+    /// <summary>
     /// Boss 联机运动共用件：客户端位置纠偏 + 状态机计时随快照过线。
     /// <para>
     /// 原版 <see cref="NPC.netOffset"/> 平滑把每次快照的位置差累进偏移量，每帧只放掉 2～4 px、上限 300。
@@ -47,6 +60,8 @@ namespace CalamityOverhaul.Content.NPCs
         private int packetStateId = -1;
         private int packetTimer;
         private int packetCounter;
+        private bool swayPending;
+        private float packetSway;
 
         /// <summary>客户端 AI 开头：清原版平滑偏移，分摊一份待消化纠偏</summary>
         public void BeginFrame(NPC npc) {
@@ -95,11 +110,16 @@ namespace CalamityOverhaul.Content.NPCs
             pending = error;
         }
 
-        /// <summary>权威端：把当前状态的计时写进快照流（<c>SendExtraAI</c> 内调用）</summary>
-        public static void WriteTiming(BinaryWriter writer, int stateId, int timer, int counter) {
+        /// <summary>
+        /// 权威端：把当前状态的计时与摆动相位写进快照流（<c>SendExtraAI</c> / <c>NetSend</c> 内调用）。
+        /// <paramref name="sway"/> 是持久累加型的相位（蛇行/摆尾），没有的传 0；
+        /// 格式固定在这一处，两端才不会读写错位
+        /// </summary>
+        public static void WriteTiming(BinaryWriter writer, int stateId, int timer, int counter, float sway = 0f) {
             writer.Write(stateId);
             writer.Write(timer);
             writer.Write(counter);
+            writer.Write(sway);
         }
 
         /// <summary>
@@ -109,7 +129,10 @@ namespace CalamityOverhaul.Content.NPCs
             int stateId = reader.ReadInt32();
             int timer = reader.ReadInt32();
             int counter = reader.ReadInt32();
+            float sway = reader.ReadSingle();
             ReceiveTiming(stateId, timer, counter, npc, localStateId, localTimer);
+            packetSway = sway;
+            swayPending = true;
         }
 
         /// <summary>计时走同步槽（<c>NPCOverride.ai</c>）而非自带流时的入口</summary>
@@ -146,6 +169,19 @@ namespace CalamityOverhaul.Content.NPCs
             return true;
         }
 
+        /// <summary>
+        /// 客户端：取出快照里的摆动相位（读后即清）。<br/>
+        /// 相位是<b>持久累加量</b>，不像 Timer 那样每帧由状态重新声明，两端一旦分家就再也回不来：
+        /// 它扰动的是航向，位置误差是相位误差的二重积分，会持续张开而不是抖一下。
+        /// 收养点必须在消费它的运动函数之前（AI 开头）
+        /// </summary>
+        public bool TakeSway(out float sway) {
+            sway = packetSway;
+            bool had = swayPending;
+            swayPending = false;
+            return had;
+        }
+
         /// <summary>只差一两帧是网络抖动的常态，硬对齐会让 Timer == X 型一次性拍被跳过或重放</summary>
         public static int AdoptTimer(int local, int synced, int tolerance = TimerTolerance) {
             return Math.Abs(synced - local) > tolerance ? synced : local;
@@ -157,6 +193,16 @@ namespace CalamityOverhaul.Content.NPCs
         /// </summary>
         public static void ClearSmoothing(NPC npc) {
             npc.netOffset = Vector2.Zero;
+        }
+
+        /// <summary>
+        /// 蓄势颤抖等抖动只走绘制层：原版把 NPC 画在 <c>position + netOffset</c>，
+        /// 而本件每帧开头已把 netOffset 清零，所以 AI 期写进去的量只影响本帧贴图，位置与判定分毫不动。<br/>
+        /// <b>不要写 <c>npc.position +=</c></b>：那是各端各滚的随机游走，写在 <c>!dedServ</c> 里更糟——
+        /// 只有客户端在飘，而且恰好飘在纠偏器要对账的预警帧上
+        /// </summary>
+        public static void DrawShake(NPC npc, Vector2 offset) {
+            npc.netOffset = offset;
         }
     }
 }
