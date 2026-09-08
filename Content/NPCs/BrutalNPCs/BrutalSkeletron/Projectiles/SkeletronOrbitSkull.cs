@@ -78,7 +78,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
                 float radius = OrbitRadius - Age * 0.5f;
                 Vector2 want = cage + angle.ToRotationVector2() * radius;
                 Projectile.velocity = (want - Projectile.Center) * 0.35f;
-                Projectile.rotation = (cage - Projectile.Center).ToRotation() + MathHelper.PiOver2;
+                //环行期脸朝囚笼中心，朝向折算统一交给 helper
+                SkeletronRenderHelper.OrientSkull(Projectile, cage - Projectile.Center);
 
                 //俯冲前一瞬向心俯冲发射
                 if (Age + 1f >= DiveDelay) {
@@ -90,7 +91,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             }
             else {
                 //俯冲：直线咬合，穿过囚笼后限时消散
-                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+                SkeletronRenderHelper.OrientSkull(Projectile, Projectile.velocity);
                 if (Age > DiveDelay + 55f || Projectile.Center.Distance(cage) > 1700f) {
                     Projectile.Kill();
                     return;
@@ -165,17 +166,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
                 Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 Main.EntitySpriteDraw(tex, pos, rect,
                     SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.CurseViolet) * fade,
-                    Projectile.oldRot[i], orig, Projectile.scale * (1f - i * 0.05f), SpriteEffects.None, 0);
+                    Projectile.oldRot[i], orig, Projectile.scale * (1f - i * 0.05f),
+                    SkeletronRenderHelper.SkullEffects(Projectile.oldSpriteDirection[i]), 0);
             }
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            SpriteEffects effects = SkeletronRenderHelper.SkullEffects(Projectile.spriteDirection);
             //三层幽灵体：外层带诅咒紫（与普通颅火区别的环轰身份色）
             Main.EntitySpriteDraw(tex, drawPos, rect, SkeletronRenderHelper.CurseViolet * (0.8f * opacity),
-                Projectile.rotation, orig, Projectile.scale * 1.18f, SpriteEffects.None, 0);
+                Projectile.rotation, orig, Projectile.scale * 1.18f, effects, 0);
             Main.EntitySpriteDraw(tex, drawPos, rect, SkeletronRenderHelper.GhostCyan * (0.85f * opacity),
-                Projectile.rotation, orig, Projectile.scale, SpriteEffects.None, 0);
+                Projectile.rotation, orig, Projectile.scale, effects, 0);
             Main.EntitySpriteDraw(tex, drawPos, rect, new Color(230, 255, 250, 0) * (0.6f * opacity),
-                Projectile.rotation, orig, Projectile.scale * 0.82f, SpriteEffects.None, 0);
+                Projectile.rotation, orig, Projectile.scale * 0.82f, effects, 0);
             return false;
         }
     }

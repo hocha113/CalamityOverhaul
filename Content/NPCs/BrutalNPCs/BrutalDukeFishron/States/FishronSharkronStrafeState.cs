@@ -206,9 +206,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             shark.ai[0] = 1f;
             shark.ai[1] = 1f;
             shark.velocity = dir * speed;
-            shark.rotation = shark.velocity.ToRotation();
             shark.direction = Math.Sign(dir.X) >= 0 ? 1 : -1;
             shark.spriteDirection = shark.direction;
+            //贴图头朝左，向左飞的旋转要补 Pi，统一走 FaceVelocity
+            FishronSharkronGlow.FaceVelocity(shark);
             shark.netUpdate = true;
         }
 

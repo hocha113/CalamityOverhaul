@@ -1,10 +1,16 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
-	Tooltip: Fügt schwer verletzten Zielen gewaltigen Bonusschaden zu, direkte Exekutionen erstatten Haltung; Waffenschaden -2%
-	Origin: In der Nacht des Minamoto-Probehiebs trennte dieser Schwertstreich den Kopf des Frevlers mitsamt dem Kinnbart in einem einzigen Zug ab. Jene Nacht begründete den Namen Higekiri
+	Tooltip: Klingentreffer fügen geschwächten Zielen gewaltigen Bonusschaden zu; direkte Hinrichtungen erstatten Haltung; Waffenschaden -2%
+	Origin:
+		'''
+		Die Henker der alten Richtstätte vererbten von Geschlecht zu Geschlecht ein unheilvolles Richtbeil, das ungeachtet der zahllosen Verurteilten niemals schartig wurde.
+		Man erzählt sich, als der letzte Scharfrichter einem plötzlichen Herzschlag erlag, stürzte die Klinge von selbst vom Schafott herab.
+		Noch ehe der Stahl den Nacken berührte, glitt der dichte Bart, der über die Brust des Delinquenten herabhing, mitsamt dem Haupt glatt ab — als hätte ein unsichtbarer Rachen zugebissen.
+		Der alte Totengräber im Siechenhaus erkannte, dass diese Klinge den genauen Augenblick des erlöschenden Lebens spürt: Steht jemand am Rande des Grabes, trennt ein einziger Hauch seines Windes den Kopf vom Rumpf.
+		'''
 	Power:
 		'''
-		„Bartschnitt“: Direkte Klingentreffer gegen Ziele unter 35% Leben verursachen zusätzlichen Schaden, der mit sinkender Lebenskraft des Ziels skaliert
+		„Bartschnitt“: direkte Klingentreffer gegen Ziele unter 35% Leben verursachen zusätzlichen Schaden, der mit sinkender Lebenskraft des Ziels skaliert
 		Gegen gewöhnliche Gegner bis zu +60% Schaden, gegen Bosse bis zu +45% Schaden
 		Tötet dieser Hieb das Ziel unmittelbar, werden 8 Haltungspunkte erstattet (höchstens einmal pro Aktion)
 		'''
@@ -13,410 +19,588 @@ OniMeiRubbingHigekiri: {
 
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
-	Tooltip: Ursprüngliche Inschrift; bewahrt Onikiris grundlegende Eigenschaften ohne Bonus oder Malus
-	Origin: Watanabe no Tsuna schwang dieses Schwert an der Brücke Ichijo-Modoribashi und schlug einem bösen Oni den Arm ab, woraufhin dieser unter Qualen floh. Die Dämonenschneide erhielt seither die Inschrift Onikiri, tief in die Angel gemeißelt und von den Zeiten unverändert bewahrt
+	Tooltip: Der ursprüngliche Name von Onikiri; bewahrt alle ursprünglichen Eigenschaften ohne Boni oder Strafen
+	Origin:
+		'''
+		Eine vergilbte Akte aus den Archiven der alten Konzessionspolizei: In regnerischen Nächten wandelte eine Dame im Qipao mit rotem Ölpapierschirm auf der steinernen Flussbrücke und rief Wanderer an.
+		Wer ihr antwortete, lag am nächsten Morgen mit grausam abgezogener Gesichtshaut tot am Brückenkopf.
+		Einst überquerte ein blinder Schwertkämpfer den Nebel; unter dem Schirm schoss ein bleicher, knochiger Arm hervor, um seine Kehle zu packen. Am Klang des schneidenden Windes zog der Blinde blitzschnell nach oben.
+		Der Geisterarm und der Schirm stürzten in den Fluss und lösten sich in fauligem Schlamm auf. Nur das Schwert blieb zurück, getränkt von jener uralten Bosheit, als Fundament von zehntausend unheilvollen Siegeln.
+		'''
 	Power: Bewahrt alle ursprünglichen Eigenschaften von Onikiri ohne zusätzliche Boni oder Effekte
 	Burden: Keine
 }
 
 OniMeiRubbingShishinoko: {
 	DisplayName: Shishi-no-ko
-	Tooltip: Der Abschluss einer vollen Fünferkombo entfesselt kreuzende Klingenwellen; Komboangriffsintervall +2%
-	Origin: Der Legende nach ruhte dieses Schwert einst am Kissen des Lehnsherrn und brüllte mitten in der Nacht wie ein Löwe, dass das ganze Anwesen erbebte. Der Herr staunte über diese Kraft und ließ die Inschrift von Meistern in Gold auf die Angel tauschen: Shishi-no-ko, das Löwenkind
+	Tooltip: Der Abschluss einer vollen Fünferkombo entfesselt zwei kreuzende Klingenwellen; Komboangriffsintervall +2%
+	Origin:
+		'''
+		Im Hinterzimmer eines jahrhundertealten Pfandleihhauses im Westviertel steht eine schwere Kiste aus rotem Sandelholz, versiegelt mit Zinnobertalismanen.
+		Jedes Mal, wenn um Mitternacht Gewitter toben, grollt markerschütterndes Brüllen aus der Kiste wie eine Bestie, die an Knochen nagt, und lässt alles Eisen im Speicher erzittern.
+		Man sagt, diese Klinge sei mit dem Mark eines uralten Ungeheuers gehärtet worden, das ganze Bergdörfer verschlang; seine Wildheit wurde nie gebändigt.
+		Nur wer fünf Schläge ohne Zögern aneinanderreiht, entfesselt im letzten Hieb diese aufgestaute Wut — zwei kreuzende Klingenwellen schnappen vorwärts wie zuschlagende Kiefer.
+		'''
 	Power:
 		'''
-		„Löwenmacht“: Wird die reguläre Fünferkombo vollständig ausgeführt, ohne durch Kamui-Blitzschritt oder Spezialkünste unterbrochen zu werden
+		„Löwenmacht“: wird die reguläre Fünferkombo vollständig ausgeführt, ohne durch Kamui-Blitzschritt oder Spezialkünste unterbrochen zu werden
 		Der fünfte Schlag entfesselt zusätzlich zwei sich kreuzende Klingenwellen, die jeweils Schaden in Höhe von 22% des Waffenbasisschadens verursachen
 		'''
-	Burden: Das Angriffsintervall der regulären Kombo verlängert sich um 2%
+	Burden: Angriffsintervall der regulären Kombo um 2% verlängert
 }
 
 OniMeiRubbingTomokiri: {
 	DisplayName: Tomokiri
-	Tooltip: Das Abbrechen einer Kombo per Blitzschritt hinterlässt einen verzögerten Phantomschnitt; erlittener Schaden beim Führen +6% und stapelt Schritt-Ausdauerkosten
-	Origin: Zwei Meisterschwerter der Minamoto wurden Schneide an Schneide erprobt; die Schärfe dieser Klinge war so maßlos, dass sie die neben ihr ruhende Gefährtin glatt entzweihieb. Wegen des Frevels an der Gefährtin in Tomokiri umbenannt, wurde ihr Wesen nur umso wilder und finsterer
+	Tooltip: Das Abbrechen einer Kombo mit Blitzschritt hinterlässt einen verzögerten Echoschlag; erlittener Schaden +6%, Ausdauerkosten steigen; durch Zanshin-Hiebe geläutert
+	Origin:
+		'''
+		Zwei Blutsbrüder, die verfluchte Klingen führten, suchten einst während einer Sintflut Zuflucht in einem verlassenen Schrein und legten ihre Waffen nebeneinander ab.
+		Als um Mitternacht das Feuer erlosch, kippte eine der Klingen ohne jede Berührung um und spaltete das Schwert des Gefährten samt dem schlafenden Meister zwei Zoll tief durch die Lende.
+		Getränkt mit dem Blut des Waffenbruders verabscheut diese Klinge halbherzige Schläge.
+		Bricht der Träger einen Hieb ab, um wegzuschnellen, bleibt der unterbrochene Streich als blutroter Schatten zurück und schlägt vollends zu; ein Augenblick der Unachtsamkeit wendet den Zorn gegen den Meister selbst.
+		'''
 	Power:
 		'''
-		„Schuldschatten“: Wird die laufende Kombo durch einen Kamui-Blitzschritt abgebrochen, bleibt der unterbrochene Streich als Trugbild an Ort und Stelle zurück
-		Nach kurzer Verzögerung saust er herab und verursacht Schaden in Höhe von 35% des Waffenbasisschadens
+		„Schuldschatten“: bricht Kamui-Blitzschritt die aktuelle Kombo ab, verbleibt der unterbrochene Hieb als Echoschatten an Ort und Stelle
+		Nach kurzer Verzögerung schlägt er an Ort und Stelle zu und verursacht 35% des Waffenbasisschadens
 		'''
 	Burden:
 		'''
-		Solange diese Klinge geführt wird, erhöht sich der erlittene Schaden um 6%
-		Jedes Erzeugen eines Schuldschattens baut 1 Stapel „Schuld“ auf (bis zu 3), wobei jeder Stapel die Ausdauerkosten des nächsten Kamui-Blitzschritts um 4 erhöht
-		Trifft der an den Blitzschritt anschließende Zanshin-Nachschlag ein Ziel, werden alle Schulden getilgt
+		Erlittener Schaden beim Führen dieser Klinge um 6% erhöht
+		Jeder Schuldschatten stapelt 1 Stufe „Schuld“ (bis zu 3), jede Stufe erhöht die Ausdauerkosten des nächsten Kamui-Blitzschritts um 4
+		Trifft ein nachfolgender Zanshin-Hieb nach einem Blitzschritt, werden alle Schuld-Stufen getilgt
 		'''
 }
 
 OniMeiRubbingKazehi: {
 	DisplayName: Kaze-hi
-	Tooltip: Senkt die Ausdauerkosten von Kamui-Blitzschritt und Sakuraflug erheblich; Explosionsschaden der Tintenmale -20%
-	Origin: Der Schmied zog eine schmale, gerade Hohlkehle entlang der Klinge, um den Wind in den Stahl zu leiten. Beim Schwingen eilt der Wind voraus und legt sich erst, wenn die Schneide bereits in die Scheide zurückgekehrt ist
-	Power: „Gegenwind“: Ausdauerkosten des Kamui-Blitzschritts um 15% verringert, Ausdauerverlustrate während des Sakuraflugs um 20% gesenkt
-	Burden: Der Explosionsschaden der vom Kamui-Blitzschritt hinterlassenen Tintenmale ist um 20% verringert
+	Tooltip: Senkt die Ausdauerkosten von Kamui-Blitzschritt und Sakura-Flug drastisch; Explosionsschaden von Tuschmarken -20%
+	Origin:
+		'''
+		Eine alte Schattenspieler-Gilde hütete ein Geheimnis: Schabte man eine schmale Windrille in den Bambusstab, schwebte die Puppe federleicht über die Seidenleinwand.
+		Der Schmied fräste gerade, enge Luftrillen an beiden Seiten des Klingenrückens ein. Beim Führen eilt das Zischen der zerschnittenen Luft voraus, und der Schritt wird schwerelos, als trügen ihn Geisterwinde.
+		Schritte und Flüge kosten kaum Atem, doch mit der dünneren Klinge verlieren die zurückbleibenden Tuschmarken etwas von ihrer erschütternden Detonationskraft.
+		'''
+	Power: „Rückenwind“: Ausdauerkosten von Kamui-Blitzschritt um 15% verringert, Ausdauerverlust beim Sakura-Flug um 20% verlangsamt
+	Burden: Explosionsschaden der durch Kamui-Blitzschritt hinterlassenen Tuschmarken um 20% verringert
 }
 
 OniMeiRubbingChihi: {
 	DisplayName: Chi-hi
-	Tooltip: Klingentreffer stellen zusätzliche Ausdauer wieder her; natürliche Regeneration stark verlangsamt mit längerer Verzögerung
-	Origin: Die in den Stahl geschlagene Blutrinne ist tief und unerbittlich. Der Schmied verkündete nach vollendetem Werk, diese Rinne diene einzig dem heißen Blut: Je durstiger die Klinge nach Blut lechzt, desto unerschöpflicher erstarkt der Atem des Trägers
+	Tooltip: Klingentreffer stellen Ausdauer wieder her; natürliche Ausdauerregeneration stark verlangsamt mit erhöhter Verzögerung
+	Origin:
+		'''
+		Alte Bergkräuterfrauen fanden an feuchten Felswänden eine finstere Karminranke, die sich ausschließlich von Aas nährte.
+		Die tiefe, breite Hohlkehle entlang der Klinge wurde den Adern jener Blutsauger-Ranke nachempfunden.
+		Sobald Stahl in Fleisch schneidet, strömt kochendes Blut durch die Rinne in die Hand des Kämpfers und facht dessen inneren Atem zu lodernder Glut an.
+		Bleibt die Klinge jedoch lange ohne frisches Blut, stockt der Fluss der Lebenskraft wie in einem versiegten Brunnen, und jeder Atemzug wird zur Qual.
+		'''
 	Power:
 		'''
-		„Rückstrom“: Der erste Treffer jedes Hiebs einer regulären Kombo stellt 1 zusätzliche Ausdauer wieder her
-		Trifft der Zanshin-Nachschlag nach einem Kamui-Blitzschritt, stellt er 4 zusätzliche Ausdauer wieder her
+		„Blutstrom“: der erste Treffer jedes Schlags der Basiskombo stellt zusätzlich 1 Ausdauer her
+		Zanshin-Hiebe nach einem Kamui-Blitzschritt stellen bei Treffern zusätzlich 4 Ausdauer her
 		'''
-	Burden: Natürliche Ausdauerregeneration um 35% verlangsamt; nach Ausdauer verbrauchenden Aktionen vergehen zusätzliche 0,3 Sekunden, ehe die Erholung einsetzt
+	Burden: Natürliche Ausdauerregeneration um 35% verlangsamt; nach Fertigkeiten ist eine zusätzliche Verzögerung von 0.3s nötig, bevor die Regeneration beginnt
 }
 
 OniMeiRubbingFudo: {
 	DisplayName: Fudo
-	Tooltip: Erlittener Schaden während ununterbrechbarer Kunst-Animationen verbraucht Haltung zur massiven Schadensminderung; Haltungsgewinn -15%
-	Origin: Der Ziseleur meißelte das Siddham-Zeichen „Hām“ in den Stahl und bannte ehrfürchtig die flammengeschmückte Gestalt von Fudo Myoo auf die Klinge. Gemäß dem Gelübde des Unbeweglichen: Mag Sturm und Unwetter toben, er verharrt fest wie ein Berg
+	Tooltip: Schaden während ununterbrechbarer Animationen zehrt an der Haltung, um Schaden und Rückstoß gewaltig zu mindern; Haltungsgewinn -15%
+	Origin:
+		'''
+		In den Ruinen eines verlassenen Heiligtums stand ein gusseisernes Standbild von Fudo Myoo, grimmig das Schwert haltend vor einer Wand ewiger Flammen.
+		Als ein Erdrutsch die Berghänge herabriss und die Haupthalle zermalmte, stand dieser eiserne Buddha unversehrt und ohne einen Kratzer zwischen den Trümmern.
+		Die Klinge trägt jene unerschütterliche Haltung in sich: Selbst in der Verwundbarkeit eines vollen Hiebes kann Haltung geopfert werden, um dem Sturm zu trotzen, fest wie uralter Granit.
+		'''
 	Power:
 		'''
-		„Unbewegte Hut“: Erleidet man während der festgelegten Animationen von Zanshin-Nachschlag, Weltvernichtendem Blitz oder Abschlusswirbel Schaden
-		Verbraucht 20 Haltungspunkte, um den erlittenen Schaden auf 65% und den Rückstoß auf 25% zu senken (2,5 Sekunden Abklingzeit nach Auslösung)
+		„Unbewegliche Wacht“: erleidet der Träger Schaden während fester Animationen von Zanshin-Hieb, Vernichtendem Blitz oder Finalem Tanz
+		Werden 20 Haltungspunkte verbraucht, um den erlittenen Schaden auf 65% und den Rückstoß auf 25% zu senken (2.5 Sekunden Abklingzeit)
 		'''
-	Burden: Reguläre Haltungsaufbaurate um 15% verringert; schützt nicht vor Selbstschaden durch Zerstückelungsrückstöße
+	Burden: Standard-Haltungsgewinn um 15% verringert, schützt nicht vor Selbstschaden durch Zerstückelungsrückstoß
 }
 
 OniMeiRubbingKurikara: {
 	DisplayName: Kurikara
-	Tooltip: Exekutionen gewähren drei Stapel Drachenfeuer, Fünferkombo-Finisher verbraucht Drachenfeuer für einen Wirbelschnitt; maximale Ausdauer -10%
-	Origin: In die Klinge ist die Gestalt des Drachenkönigs Kurikara eingemeißelt: Ein schwarzer Drache umschlingt das heilige Schwert, den Rachen weit aufgerissen, um die Spitze zu verschlingen. Goldene Fäden zieren die Schuppen und künden von buddhistischer Würde und Dämonenzorn
+	Tooltip: Hinrichtungen gewähren drei Stapel Drachenfeuer; der Komboabschluss verzehrt Drachenfeuer für einen Wirbelhieb; maximale Ausdauer -10%
+	Origin:
+		'''
+		Auf dem Grund einer alten Gruft fand man eine Bronzeklinge, umschlungen von einem vergoldeten schwarzen Drachen, dessen Rachen die Klingenspitze umfasste; alle Berührenden verbrannten zu Asche.
+		Ein Meisterhandwerker band die Gestalt des Drachen durch Goldeinlegearbeiten in den Stahl ein.
+		Wann immer eine Hinrichtung einen mächtigen Feind enthauptet, weckt der Geruch des Todes die schlummernde Bestie und entfesselt am Ende der Serie drei verzehrende Feuerwirbel.
+		'''
 	Power:
 		'''
-		„Drachenfeuer-Wirbel“: Nach einer erfolgreichen Exekution erhält man für 10 Sekunden 3 Stapel Drachenfeuer
-		Wird währenddessen eine volle reguläre Fünferkombo ausgeführt, verbraucht der fünfte Schlag 1 Stapel Drachenfeuer und entfesselt einen wirbelnden Rundumschlag nach vorn, der Schaden in Höhe von 50% des Waffenbasisschadens verursacht
+		„Drachenfeuerkreis“: erfolgreiche Hinrichtungen gewähren 3 Stapel Drachenfeuer für 10s
+		In dieser Zeit verbraucht das Abschließen einer vollen Fünferkombo 1 Stapel, um einen kreisenden Vorwärtshieb für 50% des Waffenbasisschadens zu entfesseln
 		'''
 	Burden: Maximale Ausdauer um 10% verringert
 }
 
 OniMeiRubbingTessetsu: {
 	DisplayName: Tessetsu
-	Tooltip: Erster Treffer jedes Kombohiebs fügt mechanischen und metallenen Gegnern +25% Schaden zu; regulärer Waffenschaden -10%
-	Origin: Einst spottete ein Schwertprüfer über diese Klinge, sie trage ihren Ruhm zu Unrecht und sei stumpf wie rohes Eisen. Der Schmied geriet nicht in Zorn, sondern meißelte die Spottworte geradewegs in die Angel: Roheisen beweist seine wahre Schärfe erst, wenn es harten Stahl zerschmettert
-	Power: „Eisenschnitt“: Der erste Treffer jeder Phase der regulären Kombo gegen Gegner, die bei Treffern Funken sprühen (Mechanik, Metall etc.), verursacht 25% mehr Schaden
+	Tooltip: Der erste Treffer jedes Komboschlags fügt mechanischen und metallenen Feinden +25% Schaden zu; Waffenbasisschaden -10%
+	Origin:
+		'''
+		Eine verlassene Waffenwerkstatt wurde von einer unheimlichen Seuche heimgesucht: Zahnräder und Stahlwellen trieben fleischige Wucherungen hervor, die jedes Schwert zersplitterten.
+		Ein alter Schmied trat mit einem rohen, stumpfen Barren aus Roheisen heran; Gaffer lachten über das plumpe Eisen, doch der Schmied schwang es mit beiden Armen.
+		Mit donnerndem Getöse wurde der pulsierende Kern zu Eisenschrott zerschlagen. Diese Klinge ist von jener zerschmetternden Wucht erfüllt: Sie spaltet Eisen wie morsches Holz, beißt sich jedoch träge durch weiches Fleisch.
+		'''
+	Power: „Eisenschnitt“: der erste Treffer jedes Schlags der Basiskombo fügt metallenen, mechanischen oder funkensprühenden Gegnern +25% Schaden zu
 	Burden: Waffenbasisschaden um 10% verringert
 }
 
 OniMeiRubbingKyushu: {
 	DisplayName: Kyushu
-	Tooltip: Extrem hoher Hinrichtungsschaden ausschließlich gegen Köpfe oder ungeteilte Einzelziele; regulärer Waffenschaden -3%
-	Origin: Einst pflegten viele berühmte Schwerter ihre Inschrift zu ändern, wenn sie den Kopf eines Feldherrn abtrennten. Der Schöpfer dieser Klinge folgte solchem Brauch nicht: Köpfe fallen wie zuvor, der Name bleibt wie zuvor – eine wahrhafte Schneide bedarf keines eitlen Scheins zur Schau ihrer Würde
+	Tooltip: Enormer Hinrichtungsschaden ausschließlich gegen Köpfe oder Einzelsegmente; Basisschaden -3%, unwirksam gegen Körpersegmente
+	Origin:
+		'''
+		Ein ergrauter Feldherr, der unzählige Heere zerschlug, wurde von seinen Beratern gedrängt, seinem Schwert nach jedem Sieg einen rühmlichen Namen zu geben.
+		Der General spottete nur, band eine Strähne des Gefallenen um die Scheide und knurrte: „Eine blutgierige Klinge begehrt nur das zarte Fleisch des Nackens; stolze Titel sind eitle Täuschung.“
+		Jahrzehnte vergingen und der General zerfiel zu Staub, doch das haarumwundene Schwert giert noch immer nach der Kehle: Ist die Frist eines Hauptes abgelaufen, lässt es keinen am Leben.
+		'''
 	Power:
 		'''
-		„Enthauptung“: Direkte Treffer gegen den Kopf oder gegen ungeteilte Einzelziele unter 35% Leben verursachen gewaltigen Bonusschaden, der mit dem bereits verlorenen Leben skaliert
-		Gegen gewöhnliche Gegner bis zu +85% Schaden, gegen Bosse bis zu +60% Schaden
+		„Kopfjäger“: direkte Treffer gegen den Kopf eines Gegners oder freistehende Einzeltargets verursachen gewaltigen Extraschaden bei unter 35% Leben
+		Bis zu +85% Schaden gegen normale Gegner, bis zu +60% gegen Bosse
 		'''
-	Burden: Waffenbasisschaden um 3% verringert; wirkt nicht auf Rumpf-, Schweif- oder Segmentteile von Gegnern
+	Burden: Waffenbasisschaden um 3% verringert; unwirksam gegen Rumpf, Schweif und sonstige Nicht-Kopfsegmente
 }
 
 OniMeiRubbingIkiai: {
 	DisplayName: Ikiai
-	Tooltip: Fünferkombo-Finisher schießt eine durchdringende Schwertwelle aufs Fadenkreuz ab; Komboangriffsintervall +4%
-	Origin: Schwertmeister sagen: Stehen sich Kämpfer auf Leben und Tod gegenüber, sind ihre Atemzüge eng ineinander verschlungen; wer den Atem zuerst schließt, dessen Schwertstrahl trifft zuerst. Diese Inschrift bannt genau jene Meisterschaft
-	Power: „Atemhieb“: Nach Ausführung der vollen regulären Fünferkombo feuert der fünfte Schlag eine sichelförmige Schwertwelle in Richtung des Fadenkreuzes ab, die 55% des Waffenbasisschadens verursacht und bis zu 3 Gegner durchdringt
+	Tooltip: Der Abschluss einer vollen Fünferkombo entfesselt eine durchdringende Klingenwelle; Komboangriffsintervall +4%
+	Origin:
+		'''
+		Alte Erzähler wissen von einem tödlichen Duell des angehaltenen Atems: Zwei Schwertmeister saßen einander in einer finsteren Kammer eine halbe Weihrauchstunde lang regungslos gegenüber.
+		Nur die Dochte der Öllampen flackerten; wer zuerst nach Luft schnappte, verriet sogleich Schritt und Blöße.
+		Als die vierte Nachtglocke schlug, sog einer endlich tief Luft ein — und genau in diesem Ausatmen fuhr der andere aus der Scheide.
+		Der eisige Wille, der sich in den Lungen gestaut hatte, schoss als bogenförmige Klingenwelle hervor und durchstieß die Dunkelheit.
+		'''
+	Power: „Ausatmung“: das Abschließen der vollen Fünferkombo feuert eine bogenförmige Klingenwelle in Cursorrichtung für 55% des Waffenbasisschadens ab, die bis zu 3 Gegner durchdringt
 	Burden: Angriffsintervall der regulären Kombo um 4% verlängert
 }
 
 OniMeiRubbingKyoko: {
 	DisplayName: Kyoko
-	Tooltip: Auf Distanz Kraft sammeln steigert den ersten Nahkampftreffer massiv, verlangsamt Gegner im Leerlauf; wildes Nahkampf-Dauerfeuer führt zu kurzer Unschärfe
-	Origin: Ein Schwertprüfer stieß in einer einsamen Schlucht einen langen Ruf aus, doch kein Echo antwortete. In der weiten Leere sammelte sich jene gewaltige Schärfe und barg sich ganz im Stahl
+	Tooltip: Sammelt Schwung durch Distanz zu Feinden für einen mächtigen Nahkampfhieb, verlangsamt Feinde periodisch; anhaltendes Nahkampf-Hacken führt zu Fokusverlust
+	Origin:
+		'''
+		Tief in den Bergen liegt eine einsame Schlucht, in der kein Rufen je ein Echo weckt; die lautlose Tiefe verschlingt jeden Laut mit Haut und Haaren.
+		Ein Schwertmeister meditierte auf dem felsigen Grund und sperrte jene hohle Stille in seine Scheide ein.
+		Je leerer die Umgebung, desto schwerer lastet der unsichtbare Druck in der Klinge und treibt Bestien in die Flucht; gerät man jedoch in wilde Nahkampfgetümmel, verfliegt jene gesammelte Kälte rasch.
+		'''
 	Power:
 		'''
-		„Hohlgebrüll“: Verweilt man 1,5 Sekunden lang ohne Gegner im Umkreis von 16 Blöcken, wird Kraft gebündelt
-		Trifft man nach dem Bündeln erstmals einen Gegner innerhalb von 16 Blöcken, ist der Schaden um 25% erhöht (Treffer aus größerer Distanz verbrauchen diesen Effekt nicht)
-		Befinden sich keine Gegner in der Nähe oder trifft man 1,5 Sekunden lang kein Ziel, werden Gegner im Umkreis von 20 Blöcken alle 1,5 Sekunden für 0,4 Sekunden verlangsamt
+		„Hohler Ruf“: lädt sich auf, wenn 1.5s lang keine Feinde im Umkreis von 16 Blöcken sind
+		Nach dem Laden verursacht der erste Treffer innerhalb von 16 Blöcken +25% Schaden (Treffer außerhalb verbrauchen die Ladung nicht)
+		Sind keine Feinde nah oder wird 1.5s lang kein Ziel getroffen, pulsiert alle 1.5s eine 0.4s Verlangsamung auf Feinde im Umkreis von 20 Blöcken
 		'''
-	Burden: Landet man innerhalb von 0,6 Sekunden 4 Nahkampftreffer auf engstem Raum, gerät man für 0,4 Sekunden in einen Unschärfezustand, in dem Nahkampfschaden um 5% verringert ist
+	Burden: 4 Nahkampftreffer innerhalb von 0.6s führen zu 0.4s Fokusverlust, in dieser Zeit ist der Nahkampfschaden um 5% verringert
 }
 
 OniMeiRubbingKarikiri: {
 	DisplayName: Karikiri
-	Tooltip: Der Antritt des Kamui-Blitzschritts hinterlässt ein Trugbild, das einen Treffer vollständig abwehrt; erhöhter erlittener Schaden während und nach dem Trugbild
-	Origin: Ein Schüler eignete sich die Schrittkunst seines Meisters vollkommen an, jede Bewegung glich aufs Haar. Der Meister seufzte bloß: Gestalt und Geist seien zwar täuschend ähnlich, doch fehle das Wahre. Diese Inschrift wird zum Schemen, der das Unheil eines Hiebs stellvertretend auf sich nimmt
+	Tooltip: Der Beginn eines Blitzschritts hinterlässt ein Papiertäuschbild, das einen Treffer vollständig abwehrt; erhöhter Schaden während und nach Zerstörung des Bildes
+	Origin:
+		'''
+		Meister der Papierzauberei hüteten ein finsteres Ritual: die stellvertretende Papierpuppe.
+		Im Augenblick des Vorwärtsschnellens reißt die Klinge ein feuchtes Tusche-Täuschbild aus dem Nichts und nagelt es fest, um anstelle des Meisters einen tödlichen Ausweidehieb einzustecken.
+		Doch die Puppe teilt einen Funken der Seele; wird sie durch rohe Gewalt in Fetzen gerissen, erleidet der Träger eine heftige Erschütterung, die seine Deckung entblößt.
+		'''
 	Power:
 		'''
-		„Trugleib“: Beim Antritt eines Kamui-Blitzschritts verbleibt am Ausgangspunkt ein 1,5 Sekunden währender starrer Schemen
-		Wird man während des Bestehens des Schemens von einem gegnerischen Angriff oder Projektil getroffen, fängt der Schemen den Schaden vollständig ab (4 Sekunden Abklingzeit nach Auslösung)
+		„Falscher Leib“: hinterlässt für 1.5s ein stationäres Täuschbild am Startpunkt eines Kamui-Blitzschritts
+		Solange das Täuschbild existiert, negiert es den nächsten erlittenen Treffer durch Feinde oder Projektile vollständig (4 Sekunden Abklingzeit)
 		'''
 	Burden:
 		'''
-		Solange der Schemen besteht, sind erlittener Schaden und Ausdauerkosten des Blitzschritts um 12% erhöht
-		Für 1 Sekunde nach dem Zerschlagen des Schemens ist der erlittene Schaden um 18% erhöht (natürliches Verblassen bleibt straffrei)
+		Solange das Täuschbild existiert, sind erlittener Schaden und Ausdauerkosten des Blitzschritts um 12% erhöht
+		Für 1s nach Zerstörung des Täuschbilds ist der erlittene Schaden um 18% erhöht (natürliches Verblassen zieht keine Strafe nach sich)
 		'''
 }
 
 OniMeiRubbingMokukiri: {
 	DisplayName: Mokukiri
-	Tooltip: Das reguläre Ende eines Blitzschritts verstärkt kurzzeitig den nächsten Schlag; ein Fehlschlag verbraucht die Verstärkung ebenfalls
-	Origin: Im Augenblick, da der Blitzschritt zur Ruhe kommt, scheint die ganze Welt in Stille zu versinken. Erfahrene Schwertkämpfer wissen wohl: Nur wenn der Tötungswille im Schweigen ruht, schlägt die Klinge am schwersten zu
-	Power: „Stiller Hieb“: Innerhalb von 0,75 Sekunden nach Abschluss eines regulären, ausdauerverbrauchenden Kamui-Blitzschritts verursacht der nächste reguläre Schlag oder Zanshin-Nachschlag 35% mehr Schaden
-	Burden: Geht der verstärkte Schlag ins Leere, verfällt der Zustand dennoch; ein erneuter Blitzschritt zwischendurch tilgt den Bonus; freie Blitzschritte aus Exekutionen lösen den Stillen Hieb nicht aus
+	Tooltip: Ausdauer-verbrauchende Blitzschritte stärken kurzzeitig den nächsten Angriff; Fehlschläge verbrauchen den Bonus ebenfalls
+	Origin:
+		'''
+		Erfahrene Jäger kennen das ungeschriebene Gesetz der Wildnis: Das Heulen des Sturms ist nicht halb so bedrohlich wie der Augenblick, in dem der Wind plötzlich erstirbt und alle Vögel verstummen — dann lauert die Bestie dicht heran.
+		Im Moment, da der Blitzschritt abrupt zum Stillstand kommt, scheint die Welt in Totenstille zu versinken.
+		Aus dem toten Winkel jener lautlosen Sekunde zuzuschlagen, trifft tödlicher als jeder überhastete Ausfall.
+		'''
+	Power: „Lautloser Schnitt“: für 0.75s nach Abschluss eines regulären Kamui-Blitzschritts mit Ausdauerkosten verursacht der nächste Standardangriff oder Zanshin-Hieb +35% Schaden
+	Burden: Dieser verstärkte Hieb verfällt auch bei Fehlschlägen, ein erneuter Blitzschritt tilgt den Bonus; freie Hinrichtungs-Schritte gewähren keinen Lautlosen Schnitt
 }
 
 OniMeiRubbingKumokiri: {
 	DisplayName: Kumokiri
-	Tooltip: Klingentreffer schlagen drei Seidenanker ein, die sich zu einem bindenden Netz zusammenziehen; natürliche Ausdauerregeneration während des Webens verlangsamt
-	Origin: Minamoto no Raiko lag schwer erkrankt darnieder, als eine Erdspinne in Gestalt eines Mönchs heranschlich und ihn in Seidenfäden einspann. Raiko zog das Schwert, zerhieb die Fäden und folgte tags darauf der Blutspur bis zum Nest. Seither trägt die Klinge den Namen Kumokiri
+	Tooltip: Treffer setzen drei Seidenanker, die sich zu einer Schlinge zusammenziehen; Ausdauerregeneration verlangsamt, solange Anker liegen
+	Origin:
+		'''
+		Im Dachgebälk einer verlassenen Färberei hauste eine uralte achtbeinige Bestie, die um Mitternacht giftige Netze wob, um schlafende Wanderer einzuspinnen und auszusaugen.
+		Ein wandernder Exorzist schlug die Pforten auf, zerschnitt das schwarze Gespinst mit weiten Hieben und erschlug das Ungetüm.
+		Diese Klinge nahm jenes klebrige Spinnweben-Wesen in sich auf: Jeder Hieb rammt einen Tuschseidenanker in die Luft; verbinden sich drei Punkte, schnellen sie zu einem schneidenden Fangnetz zusammen.
+		'''
 	Power:
 		'''
-		„Tintenseide“: Direkte Klingentreffer schlagen an der Einschlagstelle einen 4 Sekunden währenden Tintenseidenanker ein (derselbe Gegner kann 0,4 Sekunden lang keinen zweiten Anker erhalten, benachbarte Anker erfordern etwa 6 Blöcke Abstand)
-		Sind 3 Anker im Feld, verbinden sie sich zu einem dreieckigen Tintennetz, das sich rasch zur Mitte zusammenzieht, allen gefangenen Gegnern 90% des Waffenbasisschadens zufügt und sie für 1 Sekunde bannt
-		Nach dem Schließen des Netzes vergehen 1,5 Sekunden Abklingzeit, ehe neue Anker gesetzt werden können
+		„Tuschseide“: direkte Treffer pflanzen für 4s einen Anker am Treffpunkt (kann denselben Feind erst nach 0.4s erneut binden; benachbarte Anker erfordern ~6 Blöcke Abstand)
+		Sind 3 Anker gesetzt, verbinden sie sich zu einem Dreieck und ziehen sich rasant zur Mitte zusammen, verursachen 90% Waffenbasisschaden und binden Feinde für 1s fest
+		Das Auslösen der Falle erfordert 1.5s Abklingzeit, bevor neue Anker gesetzt werden können
 		'''
-	Burden: Solange noch ungeschlossene Seidenanker im Feld verbleiben, ist die natürliche Ausdauerregeneration um 25% verlangsamt
-	DeedHint: Erschlage mit Onikiri in der Hand insgesamt 30 Spinnen, Skorpione oder arachnoide Kreaturen
+	Burden: Solange unkontrahierte Anker auf dem Feld verbleiben, ist die natürliche Ausdauerregeneration um 25% verlangsamt
+	DeedHint: Erschlage 30 Spinnen, Skorpione oder Spinnentiere mit Onikiri, damit die Schneide sich an Spinnenblut labt
 }
 
 OniMeiRubbingOnimaru: {
 	DisplayName: Onimaru
-	Tooltip: Stillstehen lässt die Klinge selbstständig ausfliegen, um nahe Gegner zu treffen; während des Flugs keine reguläre Klingenführung möglich
-	Origin: Onimaru Kunitsuna, eines der Fünf Meister-Schwerter unter dem Himmel. Der Überlieferung nach wurde Hojo Tokimasa des Nachts von bösen Geistern gepeinigt, bis das Schwert eines Nachts von selbst auf ein Kohlebecken kippte und den eisernen Dämonenkopf abtrennte, woraufhin aller Spuk erlosch
+	Tooltip: Regungsloses Verharren lässt die Klinge selbstständig Feinde attackieren; normale Schwertführung während des Fluges gesperrt
+	Origin:
+		'''
+		Der Herr eines alten Gutshofes siechte monatelang dahin, jede Nacht im Schlafe von einem bleichen Dämon gepeinigt.
+		Eines Nachts glitt das Schwert von selbst aus der Scheide, sauste leuchtend durch das Gemach und spaltete die im Gebälk kauernde Gestalt entzwei, was den Fluch für immer brach.
+		Diese Klinge besitzt stolzen, eigensinnigen Willen: Verharre ruhig und fest, und sie fliegt von selbst aus, um Feinde zu fällen; doch solange der Stahl kreist, sind die Hände des Meisters leer und schutzlos.
+		'''
 	Power:
 		'''
-		„Eigenhieb“: Verweilt man 1 Sekunde lang mit gezogener Klinge reglos, wechselt man in Bereitschaft
-		Während der Bereitschaft verbraucht die Klinge alle 1,5 Sekunden 10 Ausdauer, fliegt selbstständig auf Gegner im Umkreis von 40 Blöcken zu, führt einen Hieb mit 140% des Waffenbasisschadens aus und kehrt zurück
+		„Selbsthieb“: 1s vollkommenes Stillstehen versetzt die Klinge in Bereitschaft
+		In Bereitschaft verbraucht sie alle 1.5s 10 Ausdauer und fliegt Feinden im Umkreis von 40 Blöcken entgegen, schlägt für 140% des Waffenbasisschadens zu und kehrt zurück
 		'''
-	Burden: Solange die Klinge im Flug ist, können reguläre Kombos, Kamui-Blitzschritt und Sakuraflug nicht genutzt werden; ohne gültiges Ziel fliegt die Klinge nicht aus
-	DeedHint: Bleibe mit Onikiri in der Hand reglos stehen, stecke einen Treffer ein und halte insgesamt 10 Sekunden lang still
+	Burden: Während die Klinge fliegt, können Basiskombos, Kamui-Blitzschritt und Sakura-Flug nicht genutzt werden; fliegt nicht aus, wenn keine Feinde in Reichweite sind
+	DeedHint: Stehe regungslos mit Onikiri und ertrage einen Treffer, halte die Stille für kumulativ 10 Sekunden aufrecht
 }
 
 OniMeiRubbingRaikiri: {
 	DisplayName: Raikiri
-	Tooltip: Unter freiem Himmel rufen der fünfte Schlag und Spezialkünste Himmelsblitze herab; Angriffsintervall +6%, unter Decken fallen keine Blitze
-	Origin: Tachibana Dosetsu suchte unter einem Baum Schutz vor dem Regen, als plötzlich ein Blitz herniederfuhr. Dosetsu zog die Klinge und hieb mitten durch den Blitzkeil, wodurch er wie durch ein Wunder überlebte. Seine Klinge wurde in Raikiri umbenannt und erlangte weithin Ruhm
+	Tooltip: Unter freiem Himmel beschwören der 5. Hieb und Künste Blitzeinschläge; Kombointervall +6%, keine Blitze unter Dach
+	Origin:
+		'''
+		Holzfäller wissen wohl: Suche im Gewitter niemals Schutz unter uralten Eichen, denn morsches Holz zieht den Zorn des Himmels an.
+		Doch ein gerüsteter Krieger blieb im Unwetter unter einer toten Eiche stehen; als ein violetter Blitz herabfuhr, brüllte er auf, schlug gen Himmel und spaltete den Donnerkeil entzwei.
+		Seither hegt die Klinge einen Pakt mit dem Gewitter: Solange sich der Himmel offen über ihr wölbt, fahren zermalmende Blitze hernieder, wohin die Spitze weist.
+		'''
 	Power:
 		'''
-		„Blitzspaltung“: Treffen der fünfte Kombohieb, Zanshin-Nachschlag, Weltvernichtender Blitz oder Abschlusswirbel einen Gegner unter freiem Himmel, fährt eine Donnersäule auf das Ziel nieder
-		Die Donnersäule verursacht Schaden in Höhe von 70% des Waffenbasisschadens; bei Gewittersturm werden bis zu 3 Donnersäulen herabgerufen
+		„Donnerschnitt“: treffen der 5. Kombohieb, Zanshin-Hieb, Vernichtender Blitz oder Finaler Tanz unter freiem Himmel, fährt ein Blitzstrahl auf das Ziel nieder
+		Der Blitz verursacht 70% des Waffenbasisschadens; bei Gewitterstürmen beschwört ein einziger Treffer bis zu 3 Blitze
 		'''
-	Burden: Das reguläre Komboangriffsintervall verlängert sich um 6% (auch bei klarem Himmel); ist der Himmel durch Blöcke verdeckt oder befindet man sich im Untergrund, fallen keine Blitze herab
-	DeedHint: Erschlage bei einem Gewittersturm unter freiem Himmel einen beliebigen Boss mit Onikiri in der Hand
+	Burden: Angriffsintervall der regulären Kombo um 6% verlängert (auch bei heiterem Wetter); unter Blöcken oder tief unter der Erde schlagen keine Blitze ein
+	DeedHint: Erschlage einen Boss mit Onikiri unter freiem Himmel während eines Gewittersturms
 }
 
 OniMeiRubbingNuekiri: {
 	DisplayName: Nuekiri
-	Tooltip: Ein Komboabschluss in der Luft verwandelt den fünften Schlag in einen bodenerschütternden Sturzflug mit Sog; kurz nach der Landung kein Blitzschritt möglich
-	Origin: Finstere Wolken hüllten den Palast ein, als das Ungeheuer Nue wehklagend schrie. Minamoto no Yorimasa spannte den Bogen und holte die Kreatur vom Himmel, zog im Fallen die Klinge und streckte das Nue mit der vollen Wucht des Sturzes nieder. Diese Inschrift verkörpert jene stürzende Urgewalt
+	Tooltip: Der Abschluss der Kombo in der Luft verwandelt den fünften Hieb in einen zerschmetternden Sturzflug; Sprintverzögerung bei der Landung
+	Origin:
+		'''
+		Als schwarze Wolken den Palast verdunkelten, schrie ein Zwitterwesen mit Affenkopf und Tigerklauen wie ein weinendes Kind von den Zinnen.
+		Ein Meisterschütze zerschmetterte seinen Flügel, und als das Ungeheuer durch den Nebel stürzte, sprang ein Schwertkämpfer von den Mauern und rammte seinen Stahl im senkrechten Sturzflug in den Stein, um die Bestie zu pfeilern.
+		Diese Inschrift bannte jenen gewaltigen Himmelsturz unlösbar in die Schneide.
+		'''
 	Power:
 		'''
-		„Nue-Sturz“: Wird die reguläre Fünferkombo mindestens 3 Blöcke über dem Boden vollendet, wird der fünfte Schlag zu einem wuchtigen Sturzflug zur Erde
-		Am Aufschlag entsteht eine Schockwelle mit ca. 12 Blöcken Radius, die 120% des Waffenbasisschadens zufügt und nahe Gegner mit Gewalt zum Aufschlagpunkt zieht
+		„Nue-Sturz“: das Abschließen der vollen Fünferkombo in der Luft (mindestens 3 Blöcke über dem Boden) verwandelt den 5. Schlag in einen wuchtigen Sturzflug gen Boden
+		Der Aufprall erzeugt eine Schockwelle von ~12 Blöcken Radius, verursacht 120% Waffenbasisschaden und zieht umstehende Feinde zum Aufschlagpunkt
 		'''
-	Burden: Nach dem Aufsetzen kann für ca. 0,7 Sekunden kein Kamui-Blitzschritt ausgeführt werden; am Boden bleibt der fünfte Schlag ein regulärer Querschnitt
-	DeedHint: Erschlage des Nachts mindestens 30 Blöcke über dem Erdboden einen fliegenden Gegner mit Onikiri in der Hand
+	Burden: Kamui-Blitzschritt ist nach der Landung für ~0.7s nicht einsetzbar; am Boden bleibt der 5. Hieb ein regulärer horizontaler Schnitt
+	DeedHint: Erschlage nachts einen fliegenden Feind mit Onikiri mindestens 30 Blöcke über dem Erdboden
 }
 
 OniMeiRubbingKamihi: {
 	DisplayName: Kami-hi
-	Tooltip: Durchschreiten von Gegnern per Blitzschritt hinterlässt Papierschemen; Hiebe auf die Schemen leiten Schaden und Verwundbarkeit weiter; Papiere im Feld verteuern den Schritt
-	Origin: Meisterhafte Papiermacher führen die Klinge mit überirdischer Präzision: Ein einziger Schnitt trennt Gestalt und Schatten sauber voneinander. Diese Hohlkehle folgt der Kunst des Schälens – beim Vorbeigleiten schneidet sie den Schatten des Feindes nach Omote, Papier zu schneiden gleich wie Fleisch
+	Tooltip: Das Durchdringen von Feinden mit Blitzschritt hinterlässt ein Papierbildnis; Angriffe darauf leiten Schaden und Verwundbarkeit weiter; Ausdauerkosten erhöht
+	Origin:
+		'''
+		In einer finsteren Gasse lebte ein blinder Papierschneider, der nur das Handgelenk eines Wanderers berühren musste, um mit der Schere ein haarfeines Schattenschnitt-Bildnis zu formen.
+		Sobald der Blitzschritt einen Feind durchschneidet, reißt die Rückenfurche ein Tuschpapier-Bildnis aus der Luft und lässt es zurück.
+		Haut man in das Papier, überträgt sich der Schmerz zersplitterter Knochen durch den Schleier hindurch auf das Fleisch des Originals.
+		'''
 	Power:
 		'''
-		„Schattenbild“: Durchdringt ein Kamui-Blitzschritt einen Gegner, hinterlässt er am Zielpunkt ein 7 Sekunden währendes Papierschemen des Ziels (bis zu 2 Schemen gleichzeitig im Feld)
-		Greift man das Schemen direkt an, verursacht dies 80% des Waffenbasisschadens, der vollständig auf den wahren Leib übertragen wird
-		Zugleich gerät der Leib für 1,5 Sekunden in einen Verwundungszustand, in dem er 12% mehr Schaden durch Onikiri erleidet
+		„Oberflächen-Bildnis“: durchstößt Kamui-Blitzschritt einen Gegner, hinterlässt er am Endpunkt ein Papierbildnis des Ziels für 7s (bis zu 2 Bildnisse aktiv)
+		Angriffe auf das Bildnis verursachen 80% des Waffenbasisschadens und leiten diesen vollständig an das Original weiter
+		Versetzt das Original zudem für 1.5s in Verwundbarkeit, wodurch es 12% mehr Schaden durch Onikiri erleidet
 		'''
-	Burden: Solange Papierschemen im Feld existieren, sind die Ausdauerkosten des Kamui-Blitzschritts um 12% erhöht
-	DeedHint: Zerschlage in Ura insgesamt 20 Antlitz-Papierschemen mit Onikiri in der Hand
+	Burden: Solange Bildnisse auf dem Feld verweilen, sind die Ausdauerkosten von Kamui-Blitzschritt um 12% erhöht
+	DeedHint: Zerschlage 20 Papierbildnisse mit Onikiri in der Unterwelt der Oni-Domäne
 }
 
 OniMeiRubbingSorahi: {
 	DisplayName: Sora-hi
-	Tooltip: In der Luft verdoppelt sich die natürliche Ausdauerregeneration und gewährt einen zusätzlichen Luft-Blitzschritt; nach der Landung stockt die Erholung kurz
-	Origin: Die Lehre des Schmieds hinter dieser Hohlkehle klang absonderlich: Kaum berührt des Menschen Fuß die schwere Erde, wird sein Atem träge. Nur wenn die Klinge federleicht in die Lüfte schnellt, vermag sie mit den Winden des Himmels zu verschmelzen und neue Lebenskraft zu schöpfen
+	Tooltip: Verdoppelt die Ausdauerregeneration in der Luft und gewährt einen zusätzlichen Luftsprint; die Landung stoppt die Regeneration kurzzeitig
+	Origin:
+		'''
+		Geisterwanderer pflegen zu sagen: „Schlamm an den Sohlen raubt die Behendigkeit; ein Schritt ins Leere macht die Knochen leicht wie Flaum.“
+		Diese tiefe Rille höhlte den Klingenrücken zu einem federleichten Profil aus. Solange die Füße den Erdboden verlassen, tragen Aufwinde den Stahl und verdoppeln die Atemregeneration.
+		Doch Sterbliche haben keine Flügel und müssen zur Erde zurückkehren; die Schwere des irdischen Lehms lässt den Atem für einen kurzen Wimpernschlag stocken.
+		'''
 	Power:
 		'''
-		„Schwebestrom“: Verlassen beide Füße den Boden, verdoppelt sich die natürliche Ausdauerregeneration und man erhält eine zusätzliche Nutzung des Luft-Blitzschritts
-		Nach Vollendung eines Luft-Blitzschritts verharrt man für 0,5 Sekunden schwebend am Zielpunkt
+		„Schwebende Haltung“: verdoppelt die natürliche Ausdauerregeneration in der Luft und gewährt 1 zusätzlichen Kamui-Blitzschritt in der Luft
+		Luft-Blitzschritte schweben am Endpunkt für 0.5s kurz auf der Stelle
 		'''
-	Burden: Für 0,75 Sekunden nach der Landung setzt die natürliche Ausdauerregeneration vollständig aus; am Boden ausgeführte Kamui-Blitzschritte kosten 10% mehr Ausdauer
-	DeedHint: Verweile 15 Sekunden lang ununterbrochen in der Luft und lande währenddessen mindestens 5 Treffer mit Onikiri
+	Burden: Die natürliche Ausdauerregeneration stoppt nach Bodenkontakt für 0.75s vollständig; Kamui-Blitzschritt am Boden verbraucht 10% mehr Ausdauer
+	DeedHint: Verharre 15 Sekunden lang ununterbrochen in der Luft mit Onikiri und lande dabei mindestens 5 Treffer
 }
 
 OniMeiRubbingKagamihi: {
 	DisplayName: Kagami-hi
-	Tooltip: Am Zielpunkt des Blitzschritts entsteht ein Papierspiegel-Trugbild, das den nächsten Streich spiegelt; Waffenbasisschaden -5%
-	Origin: Spiegelschleifer wissen wohl, dass das Bild im Spiegel zwar synchron erscheint, doch stets eine winzige Verzögerung birgt. Wer diese Hohlkehle schuf, nutzte genau diesen Lidschlag des Verzugs: Das Spiegelbild schwingt die Klinge einen Atemzug später mit
+	Tooltip: Der Endpunkt des Blitzschritts errichtet einen Papierspiegel, der den nächsten Hieb spiegelt; Waffenbasisschaden -5%
+	Origin:
+		'''
+		In der Kammer eines alten Pfandhauses stand ein Quecksilberspiegel; blickte man nachts hinein, regte sich das Spiegelbild stets einen Herzschlag später als der lebende Mensch.
+		Diese blanke, frostige Hohlkehle fing jene gespenstische Verzögerung ein.
+		Wo der Blitzschritt stoppt, erhebt sich ein trügerischer Papierspiegel, und einen Augenblick später vollzieht der Spiegelgeist exakt denselben Schnitt wie sein Meister.
+		'''
 	Power:
 		'''
-		„Spiegelzeichnung“: Am Zielpunkt des Kamui-Blitzschritts richtet sich ein 2 Sekunden währendes Papierspiegel-Trugbild auf
-		Führt man danach den nächsten Klingenhieb aus, vollzieht das Spiegelbild synchron denselben Hieb, zerbricht dabei und verursacht 45% des Waffenbasisschadens
+		„Spiegelchronik“: der Endpunkt von Kamui-Blitzschritt errichtet für 2s einen Papierspiegel
+		Führt der Träger danach den nächsten Klingenschnitt aus, repliziert der Spiegel diesen Hieb synchron und zerbricht, verursacht 45% des Waffenbasisschadens
 		'''
-	Burden: Waffenbasisschaden um 5% verringert; der gespiegelte Hieb geht von der Position des Spiegels aus, die Trefferzone hängt vom Aufstellort ab
-	DeedHint: Töte eine Schatztruhe mit dem Zanshin-Nachschlag (auch Truhennachbildungen des Calamitas-Klons zählen)
+	Burden: Waffenbasisschaden um 5% verringert; der replizierte Schnitt zielt in die Blickrichtung des Spiegels
+	DeedHint: Erledige eine Schatztruhe (Truhen-Nachbildungen des Calamitas-Klons zählen auch) mit einem Zanshin-Hieb
 }
 
 OniMeiRubbingAmahi: {
 	DisplayName: Ama-hi
-	Tooltip: Der Sakuraflug lässt Tintenregen herabtröpfeln, der zu hemmenden Lachen wird; Ausdauerverbrauch des Sakuraflugs +15%
-	Origin: Die Rinne, die unter der Traufe den Regen auffängt, heißt im Volk Amahi. Der Schmied formte die Hohlkehle nach Art einer Dachrinne: Was das Schwert durchquert, tropft wie Regen von tausend Ziegeln hernieder und ergießt sich ganz über die Feinde unter der Schneide
+	Tooltip: Sakura-Flug lässt Tuschregen herabfallen, der zu bremsenden Pfützen zerfließt; Ausdauerverbrauch des Fluges +15%
+	Origin:
+		'''
+		Auf schlammigen Feldwegen im Platzregen fürchten Wanderer nichts mehr als schwarze Wasserlachen: Alte Leute wissen, dass darin Wassergeister lauern, die nach Fersen greifen.
+		Geformt wie die bambusenen Regenrinnen alter Dächer, tropft dichte schwarze Tusche herab, während Sakura-Flug durch die Lüfte zieht, und bildet zähe Schlammpfützen, die Feinde festbinden.
+		'''
 	Power:
 		'''
-		„Niederschlag“: Während des Sakuraflugs fällt alle 0,1 Sekunden ein Tintentropfen herab, der 12% des Waffenbasisschadens zufügt
-		Beim Aufprall breiten sich die Tropfen zu Tintenlachen aus; Feinde, die hineintreten, werden für 0,5 Sekunden gebannt und verlangsamt
+		„Fallender Regen“: lässt während des Sakura-Fluges alle 0.1s einen Tuschtropfen für 12% Waffenbasisschaden herabfallen
+		Tropfen bilden am Boden Pfützen, die Feinde darin für 0.5s verlangsamen und festsetzen
 		'''
-	Burden: Die Ausdauerverlustrate während des Sakuraflugs erhöht sich um 15%
-	DeedHint: Fliege bei Regenwetter insgesamt 10 Sekunden im Sakuraflug; es muss kein durchgehender Flug sein
+	Burden: Die Ausdauer-Abflussrate von Sakura-Flug erhöht sich um 15%
+	DeedHint: Fliege kumulativ 10 Sekunden lang im Sakura-Flug bei Regen (erfordert keinen Einzelflug)
 }
 
 OniMeiRubbingTsuzurihi: {
 	DisplayName: Tsuzuri-hi
-	Tooltip: Tintenmale eines einzelnen Blitzschritts verbinden sich zu Explosionslinien; Basisschaden einzelner Tintenmale -30%
-	Origin: Buchbinder heften lose Blätter mit Nadel und Faden zusammen: Zieht man die Schnur fest an, wird aus losen Seiten ein festes Buch. Diese Hohlkehle betrachtet Tintenmale wie Nadelstiche – erst wenn sie straff verwebt werden, schließen sie das tödliche Netz
-	Power: „Heftspur“: Explodieren mehrere von einem einzigen Kamui-Blitzschritt hinterlassene Tintenmale, entstehen zwischen ihnen schneidende Schnittlinien, die jeweils 35% des Waffenbasisschadens verursachen
-	Burden: Der Basisschaden eines einzelnen Tintenmals sinkt um 30% (durchquert der Blitzschritt nur ein einziges Ziel, fällt der Gesamtschaden geringer aus)
-	DeedHint: Durchdringe in einem einzigen Kamui-Blitzschritt mindestens 6 verschiedene Gegner
+	Tooltip: Tuschmarken desselben Blitzschritts verbinden sich mit Schnittlinien; Schaden einzelner Tuschmarken -30%
+	Origin:
+		'''
+		Im Leichenhaus nähte ein alter Totengräber verstümmelte Gliedmaßen mit festem Hanffaden zusammen und riss die Naht mit einem Ruck straff, um das Fleisch fugenlos zu schließen.
+		Diese wie dichte Nahtstiche gekerbte Rinne gehorcht demselben Prinzip: Tuschmarken, die beim Durchdringen mehrerer Feinde gesetzt wurden, detonieren zeitgleich und spannen schneidende Fäden, die Feinde zerfetzen.
+		'''
+	Power: „Gewirkte Spuren“: detonieren mehrere Tuschmarken desselben Kamui-Blitzschritts, erzeugen sie schneidende Linien untereinander, die jeweils 35% des Waffenbasisschadens verursachen
+	Burden: Basisschaden einzelner Tuschmarken um 30% verringert (durchdringt der Schritt nur ein Ziel, geht Gesamtschaden verloren)
+	DeedHint: Durchdringe mindestens 6 verschiedene Gegner mit einem einzigen Kamui-Blitzschritt
 }
 
 OniMeiRubbingBonsho: {
 	DisplayName: Bonsho
-	Tooltip: Bei voller Haltung ohne Exekution ertönt automatisch ein Glockenschlag zur Säuberung; kostet die halbe Haltung und ersetzt die Ausführung
-	Origin: Eine Tempelglocke bedarf eines Klöppels, um zu ertönen, doch die in diesen Stahl gemeißelte Glocke harrt keiner fremden Kraft. Staut sich die Kraft bis zum Bersten, schlägt die Glocke von selbst und weckt die Lande ringsum
+	Tooltip: Volle Haltung ohne Finalen Tanz schlägt die Glocke automatisch an; kostet halbe Haltung und ersetzt die Tanzgelegenheit
+	Origin:
+		'''
+		In einem entlegenen Bergkloster hing eine schartige Bronzeglocke ohne Klöppel, die um Mitternacht dumpf erdröhnte, wenn Winde aufkamen, obwohl kein Holz sie schlug.
+		Die Mönche raunten, darin sei die Wut hingerichteter Märtyrer versiegelt; hielt man sie zu lange zurück, schlug sie von selbst an, um sich Luft zu machen.
+		Die in diesen Stahl geschnittene Glocke ist ebenso ungestüm: Sammelst du volle Haltung an, ohne den Tanz zu entfesseln, ertönt der Glockenschlag von selbst, betäubt alle Dämonen ringsum, zerstreut aber deinen Schwung.
+		'''
 	Power:
 		'''
-		„Glockenschlag“: Bleibt die Haltung nach Erreichen des Maximums 3 Sekunden lang voll, ohne dass der Abschlusswirbel ausgelöst wird, schlägt die Klinge von selbst die Glocke
-		Entfesselt eine Schallwelle, die allen Gegnern im Umkreis von 30 Blöcken 60% des Waffenbasisschadens zufügt, sie für 1,5 Sekunden bannt und die Haltung auf 50 zurücksetzt
+		„Einzelschlag“: wird der Finale Tanz nicht innerhalb von 3s nach Erreichen voller Haltung entfesselt, ertönt die Glocke von selbst
+		Entfesselt eine Schallwelle, die allen Feinden im Umkreis von 30 Blöcken 60% Waffenbasisschaden zufügt und sie für 1.5s fesselt; setzt Haltung auf 50 zurück
 		'''
-	Burden: Der Glockenschlag verbraucht die volle Haltung und verwirkt die Gelegenheit für den aktuellen Abschlusswirbel
-	DeedHint: Erschlage einen Boss über den gesamten Kampf hinweg, ohne ein einziges Mal Weltvernichtenden Blitz oder Abschlusswirbel zu nutzen
+	Burden: Der Glockenschlag verbraucht die volle Haltung und verwirkt die Gelegenheit zum aktuellen Finalen Tanz
+	DeedHint: Bezwinge einen beliebigen Boss, ohne während des gesamten Kampfes Vernichtenden Blitz oder Finalen Tanz einzusetzen
 }
 
 OniMeiRubbingHannya: {
 	DisplayName: Hannya
-	Tooltip: Nahe dem Tod erwacht die Dämonenmaske für erhöhten Schaden und Lebensraub; in der Maske verletzlicher, regulärer Schaden -4%
-	Origin: Die Hannya-Maske des No-Theaters fängt jenen Augenblick ein, in dem der Schmerz einer Frau sie in einen Dämon verwandelt. In die Klinge gemeißelt gemahnt sie daran: Wenn man mit dem Rücken zur Wand am Abgrund des Todes steht, kehrt sich das Wesen um und offenbart die Raserei des Asura
+	Tooltip: Nimmt bei geringem Leben die Hannya-Dämonenmaske an, steigert Schaden und Lebensraub; erhöhter erlittener Schaden in Maskenform, Basisschaden -4%
+	Origin:
+		'''
+		In der Requisitenkiste einer alten Theatertruppe lag eine mit getrocknetem Blut verkrustete Hannya-Holzmaske.
+		Die Legende besagt: Betrat ein Darsteller in verzweifelter Demütigung die Bühne mit ihr, trieben Dornen aus dem Holz und gruben sich in die Wangenknochen, was ihn in mörderischen Wahn stürzte.
+		Das Antlitz auf diesem Stahl schließt einen Blutpakt: Gerät man an den Rand des Todes, bricht die Dämonenfratze hervor und lechzt gierig nach Feindesblut, um das schwindende Leben zu fristen.
+		'''
 	Power:
 		'''
-		„Maskenwandel“: Sinkt das eigene Leben unter 35%, erwacht die wilde Dämonenmaske: Klingenschaden +20%, jeder Treffer stellt 0,5% des maximalen Lebens wieder her
-		Bei jedem dritten Treffer während der Dämonenmaske fährt ein Geistergesicht hervor und beißt das Ziel für 50% des Waffenbasisschadens
+		„Maskenwandel“: manifestiert die Dämonenmaske bei unter 35% Leben: Klingenschaden +20%, jeder Treffer regeneriert 0.5% max. Leben
+		Jeder 3. Treffer mit Maske beschwört eine spektrale Fratze, die das Ziel für 50% des Waffenbasisschadens beißt
 		'''
-	Burden: Während der Dämonenmaske ist der erlittene Schaden um 15% erhöht; oberhalb von 35% Leben ist der reguläre Waffenbasisschaden um 4% verringert
-	DeedHint: Erschlage mit Onikiri in der Hand einen beliebigen Boss, während das eigene Leben unter 10% liegt
+	Burden: Erlittener Schaden um 15% erhöht, solange die Dämonenmaske aktiv ist; Waffenbasisschaden im Normalzustand über 35% Leben um 4% verringert
+	DeedHint: Erschlage einen beliebigen Boss mit Onikiri in kritischem Zustand bei unter 10% Leben
 }
 
 OniMeiRubbingKaresansui: {
 	DisplayName: Karesansui
-	Tooltip: Stillstehen harkt einen verweilenden Steingarten aus Sandwellen, der Feinde schneidet und Haltungsgewinn steigert; Bewegung bricht das Bündeln ab
-	Origin: Der Gartenmeister bedarf keines Tropfens Wasser: Aus feinem Sand und Steinen harkt er unendliche Wogenmeere. Der Ziseleur übertrug jenen Geist auf die Klinge: Nur wer in vollkommener Ruhe verweilt, vermag mit dem Schwertwillen einen Garten der Stille zu pflügen
+	Tooltip: Regungsloses Stehen harkt einen Sandwellengarten, der Feinde stetig verletzt und Haltung beschleunigt; Bewegung bricht die Sammlung
+	Origin:
+		'''
+		Vor einem alten Bergtempel lag ein öder Steingarten ohne Baum und Wasser, dessen weißer Kies in konzentrischen Wellen geharkt war.
+		Tief in der Nacht wogte der Kies von selbst wie ein finsteres Meer; Diebe, die ihn betraten, sahen ihr Fleisch binnen Sekunden bis auf die Knochen abgeschabt.
+		Diese Gravur schöpft aus jener lautlosen Todesfalle: Verharre inmitten der Feinde, und das Klingen-Qi pflügt einen Sandwellengarten, der Feindesfleisch zerfetzt, während er den Geist stählt.
+		'''
 	Power:
 		'''
-		„Sandwellen“: Verweilt man 1,5 Sekunden lang reglos, breitet sich zu Füßen ein 5 Sekunden währender Sandgarten mit einem Radius von 20 Blöcken aus
-		Im Garten erleiden Gegner alle 0,5 Sekunden Schaden in Höhe von 18% des Waffenbasisschadens
-		Verweilt man selbst im eigenen Sandgarten, ist die Haltungsaufbaurate um 30% erhöht
+		„Sandwellen“: 1.5s vollkommenes Stillstehen entfaltet für 5s ein Sandwellenfeld von 20 Blöcken Radius
+		Fügt Feinden darin alle 0.5s 18% des Waffenbasisschadens zu
+		Der Aufenthalt im eigenen Sandwellengarten erhöht die Haltungsgewinnrate um 30%
 		'''
-	Burden: Das Entfalten erfordert unbewegtes Verweilen; jede Bewegung setzt den Bündelungsfortschritt zurück
-	DeedHint: Kämpfe 30 Sekunden lang ununterbrochen mit Onikiri in der Hand, ohne dich von der Stelle zu bewegen oder Schaden zu nehmen
+	Burden: Das Entfalten erfordert kontinuierliches regungsloses Sammeln; Bewegung bricht den Fortschritt sofort ab
+	DeedHint: Kämpfe 30 Sekunden lang ununterbrochen in der Nähe von Feinden mit Onikiri, ohne dich zu bewegen oder Schaden zu nehmen
 }
 
 OniMeiRubbingSenju: {
 	DisplayName: Senju
-	Tooltip: Im Finale des Abschlusswirbels schlagen sechs klingenbewehrte Geisterarme mit; danach Ausdauer auf null und 3 Sekunden kein Blitzschritt
-	Origin: Die Tausendarmige Kannon streckt unzählige Arme aus, um das Leid der Sterblichen zu lindern. Der Schmied bannte ihr Antlitz in Gold auf die Klinge und setzte dieses eherne Gesetz: Jeder Seele, die durch diese Kunst geleitet wird, muss eine Hand mit gezogener Klinge entgegentreten
-	Power: „Tausend Hände“: Während des Standbilds des Abschlusswirbels erwachsen hinter einem sechs klingenbewehrte Geisterhände, die mit einhauen und jeweils 30% des Waffenbasisschadens zufügen
-	Burden: Nach dem Abschlusswirbel fällt die Ausdauer auf null zurück und für 3 Sekunden kann kein Kamui-Blitzschritt genutzt werden
-	DeedHint: Erschlage mit dem Abschlusswirbel von Onikiri insgesamt 8 verschiedene Bosse
+	Tooltip: Der Standbild-Moment des Finalen Tanzes beschwört sechs Geisterarme zum gemeinsamen Streich; leert Ausdauer und sperrt Sprints für 3s
+	Origin:
+		'''
+		In einem eingestürzten Schrein hinter einem Armenfriedhof saugte ein zerbrochenes Lehmstandbild mit abgeschlagenen Armen jahrhundertelang Unheil auf und trieb nachts bleiche Leichenarme aus.
+		Der Schnitzer bannte jenen Umriss auf die Klinge und machte sie zum gnadenlosen Scharfrichter:
+		Im Standbild des Finalen Tanzes brechen sechs geisterhafte Klingenarme hinter dir aus der Leere und zerfetzen das Ziel gemeinsam mit deinem Stahl.
+		Doch die Beschwörung solch finsterer Mächte zehrt die Lebenskraft restlos auf.
+		'''
+	Power: „Tausend Hände“: während des Nahaufnahme-Standbilds des Finalen Tanzes erscheinen sechs spektrale Arme im Rücken und schlagen synchron zu, jeder verursacht 30% Waffenbasisschaden
+	Burden: Ausdauer sinkt nach dem Finalen Tanz auf 0, Kamui-Blitzschritt ist für 3s gesperrt
+	DeedHint: Töte 8 verschiedene Bossarten mit dem Finalen Tanz, während du Onikiri führst
 }
 
 OniMeiRubbingKogehi: {
 	DisplayName: Koge-hi
-	Tooltip: Der Kamui-Blitzschritt hinterlässt eine Spur aus sengendem Boden; Waffenbasisschaden -4%
-	Origin: Der Schöpfer dieser Hohlkehle lebte an glühenden Lavabänken und sah manch einen die Füße verbrennen. Er zog diese Feuerkehle, um im Vorübereilen die sengende Hitze den Verfolgern im Rücken zu hinterlassen
+	Tooltip: Kamui-Blitzschritt hinterlässt eine sengende Flammenspur; Waffenbasisschaden -4%
+	Origin:
+		'''
+		Kühlten die Krematoriumsöfen zur Reinigung ab, bargen die Schürer in den tiefsten Ziegelfugen stets violett phosphoreszierende Knochenkohlen — selbst im Winterschnee zischten und dampften sie fort.
+		Ein Schmied härtete diese Rinne in jener Gräberasche. Schneidet der Stahl im Sprint die Luft, zieht er eine feurige Schleppe hinter sich her, die Verfolger versengt.
+		'''
 	Power:
 		'''
-		„Brandspur“: Der Kamui-Blitzschritt hinterlässt entlang seines Pfades bis zu 5 Brandzonen, die 1,5 Sekunden lang bestehen
-		Gegner, die in den Brand treten, erleiden alle 0,5 Sekunden Brandschaden in Höhe von 14% des Waffenbasisschadens
-		Überlappen neue und alte Brandzonen innerhalb von 2 Blöcken, wird lediglich die Dauer erneuert
+		„Brandspur“: hinterlässt bis zu 5 brennende Zonen entlang des Pfades von Kamui-Blitzschritt für je 1.5s
+		Feinde in den Brandzonen erleiden alle 0.5s 14% des Waffenbasisschadens als Verbrennung
+		Überlappen neue Marken innerhalb von 2 Blöcken einer bestehenden, wird lediglich deren Dauer erneuert
 		'''
-	Burden: Waffenbasisschaden um 4% verringert; der Schadensverlust muss über die Brandspuren ausgeglichen werden
+	Burden: Waffenbasisschaden um 4% verringert
 }
 
 OniMeiRubbingKanhi: {
 	DisplayName: Kan-hi
-	Tooltip: Nach dem Verlassen des Kampfes regeneriert die Ausdauer massiv schneller; Ausdauerkosten für Blitzschritt und Sakuraflug +8%
-	Origin: Vor der Schwertschmiede steht eine lange Bank, auf der der Meister bei der Rast dem bunten Markttreiben lauscht. Ist der Geist leer und still, erstarkt der Atem – diese Hohlkehle bewahrt die stille Muße vor jener Bank
-	Power: „Muße-Atem“: Hat man den Kampf verlassen und 2 Sekunden lang kein Ziel mit der Klinge getroffen, steigt die natürliche Ausdauerregeneration auf das 2,25-Fache
-	Burden: Die Ausdauerkosten von Kamui-Blitzschritt und Sakuraflug erhöhen sich jeweils um 8%
+	Tooltip: Ausdauer regeneriert außerhalb des Kampfes viel schneller; Ausdauerkosten von Blitzschritt und Sakura-Flug +8%
+	Origin:
+		'''
+		Im Hinterhof eines alten Teehauses stand ein verwitterter Korbstuhl. Man erzählte sich, vor Jahrzehnten sei ein blutüberströmter Wanderer darauf zusammengesunken; nach kurzem Schlummer waren seine Wunden verkrustet und alle Erschöpfung gewichen.
+		Diese Hohlkehle birgt jene heilende Rast:
+		Sobald das Schwert in der Scheide ruht, strömt verbrauchte Ausdauer wie Regen auf dürres Land zurück; doch hastige Finten im Kampfgewühl fühlen sich etwas schwerfällig an.
+		'''
+	Power: „Stiller Atem“: die natürliche Ausdauerregeneration erhöht sich auf das 2.25-fache, wenn man den Kampf verlässt und 2s lang keine Treffer landet
+	Burden: Ausdauerkosten von Kamui-Blitzschritt und Sakura-Flug um je 8% erhöht
 }
 
 OniMeiRubbingTodohi: {
 	DisplayName: Todo-hi
-	Tooltip: Klingentreffer hemmen und bannen Gegner; der Antritt des Kamui-Blitzschritts hat eine kurze Anlaufverzögerung
-	Origin: Eine eigentümliche Härtung ließ die Schneide im Fleisch zäh haften, sodass jeder Schnitt die Schritte des Getroffenen hemmt. Der Schmied war stolz darauf: Was gebunden wird, ist der Feind – nicht die Hand, die den Stahl führt
-	Power: „Zähbann“: Direkte Klingentreffer hemmen die Bewegung von Gegnern für 0,6 Sekunden; gewöhnliche Gegner werden auf 88% verlangsamt, Bosse auf 96%
-	Burden: Der Kamui-Blitzschritt hat eine zusätzliche Anlaufverzögerung von 0,1 Sekunden; Zähbann und Taubheit stapeln sich nicht auf demselben Ziel, es gilt nur der stärkste Wert
+	Tooltip: Direkte Treffer binden und verlangsamen Feinde; der Antritt des Blitzschritts verzögert sich leicht
+	Origin:
+		'''
+		In der Truhe eines Kräuterkundigen stand ein Topf mit dunklem Pech aus uralter Waldkiefer, so klebrig, dass jeder Vogel darin unweigerlich gefangen blieb.
+		Der Stahl trank sich beim Härten an dieser schwarzen Salbe satt. Jeder Hieb schnürt unsichtbare Fesseln um die Gelenke des Feindes und lässt seine Schritte im Schlamm waten.
+		Will der Schwertkämpfer jedoch zu einem plötzlichen Sprint ansetzen, spüren die eigenen Füße dieselbe zähe Schwere.
+		'''
+	Power: „Zähe Fessel“: direkte Treffer verlangsamen Feinde für 0.6s (normale Gegner auf 88%, Bosse auf 96% Tempo)
+	Burden: Kamui-Blitzschritt hat eine Startverzögerung von 0.1s; Zähe Fessel und Erstarrung stapeln sich nicht
 }
 
 OniMeiRubbingShiorihi: {
 	DisplayName: Shiori-hi
-	Tooltip: Das eigenhändige Töten eines Ziels schleudert eine Rebschere auf nahe verwundete Gegner; natürliche Erholung -10%, leeres Zanshin kostet Ausdauer
-	Origin: Gärtner beschneiden das Geäst mit Bedacht: Wo die Schere zuschlägt, werden welke Zweige ringsum im selben Zug mitgestutzt. Der Schöpfer dieser Hohlkehle verstand sich einst auf ebenjenes Handwerk
+	Tooltip: Das eigenhändige Töten eines Ziels schleudert Klingen auf geschwächte Feinde; Ausdauerregeneration -10%, Zanshin-Fehlschläge strafen Ausdauer
+	Origin:
+		'''
+		Die Gärtner herrschaftlicher Güter schnitten dürre Äste mit unerbittlicher Kälte: Trennte man einen faulen Zweig, knipste man verwelkte Nachbarblätter ohne Zögern gleich mit ab.
+		Diese Hohlkehle verkörpert jene unbarmherzige Art, jede Schwäche auszumerzen:
+		Wird ein mächtiger Feind gefällt, schießt eine geisterhafte Schere aus der Scheide und visiert die Kehle jedes halbtoten Gezüchts in der Nähe an.
+		'''
 	Power:
 		'''
-		„Zweigschnitt“: Beim unmittelbaren Töten eines Ziels wird im Umkreis von 15 Blöcken nach einem anderen Gegner mit unter 50% Leben gesucht
-		Eine Scherenklinge schnellt hervor und verfolgt dieses Ziel, wobei sie 25% des Waffenbasisschadens verursacht (keine Abklingzeit, falls kein Ziel vorhanden; 0,75 Sekunden Abklingzeit bei Auslösung)
+		„Rückschnitt“: das direkte Töten eines Ziels sucht im Umkreis von 15 Blöcken nach einem Feind unter 50% Leben
+		Schleudert eine Scherenspitze für 25% Waffenbasisschaden auf ihn (keine Abklingzeit, falls keine Ziele da sind; 0.75s Abklingzeit nach Auslösung)
 		'''
 	Burden:
 		'''
-		Natürliche Ausdauerregeneration um 10% verringert
-		Geht der Zanshin-Nachschlag nach einem Blitzschritt ins Leere, werden zusätzlich 2 Ausdauerpunkte abgezogen
-		Tötungen durch den Zweigschnitt können keine Kettenreaktion auslösen
+		Natürliche Ausdauerregeneration um 10% verlangsamt
+		Ein verfehlter Zanshin-Hieb nach einem Blitzschritt zieht zusätzlich 2 Ausdauer ab
+		Tötungen durch den Rückschnitt können keine weiteren Rückschnitte auslösen
 		'''
 }
 
 OniMeiRubbingShiohi: {
 	DisplayName: Shio-hi
-	Tooltip: Hiebe im Rhythmus der Gezeiten stellen Ausdauer wieder her, Gezeiten-Zanshin trifft härter; Hiebe außerhalb des Takts leicht geschwächt
-	Origin: Der Schmied wuchs am Meer auf und schliff seine Klingen stets im Takt der brandenden Flut. Wie die Gezeiten ebbend und flutend steigen, so wogt auch der Atem des Menschen; trifft der Hieb im Wellenkamm, gibt die See die Kraft zurück
+	Tooltip: Schlagen im Gezeitentakt stellt Ausdauer her und stärkt Zanshin; unharmonische Hiebe verursachen leicht reduzierten Schaden
+	Origin:
+		'''
+		Unter dem Kiel einer alten Fischerbarke hing eine Knochenpfeife, die mit den Brechern wogte; der alte Schiffer sagte, jeder Wogenschlag gegen das Riff sei ein Atemzug des Meeresabgrunds.
+		Die Schwingungen entlang des Stahls schlagen im Einklang mit der Gezeitenbrandung:
+		Schlage zu, wenn der Wellenkamm seinen Scheitel erreicht, und die Ausdauer schwillt wie eine Sturmflut an; schlage ungeduldig gegen den Strom, und der Stahl beißt unwillig zu.
+		'''
 	Power:
 		'''
-		„Fluttakt“: Unter der Ausdauerleiste pulsiert eine Gezeitenanzeige im 0,8-Sekunden-Takt; die 0,2 Sekunden des Wellenkamms bilden das Flutfenster
-		Treffer einer regulären Kombo innerhalb des Flutfensters stellen beim ersten Treffer 3 zusätzliche Ausdauer her; Gezeiten-Zanshin-Nachschläge verursachen 8% mehr Schaden
+		„Gezeitentakt“: zeigt eine 0.8s Gezeitenleiste unter der Ausdaueranzeige (das Harmonie-Fenster sind die oberen 0.2s des Kamms)
+		Kombohiebe im Harmonie-Fenster stellen beim 1. Treffer zusätzlich 3 Ausdauer her; harmonische Zanshin-Hiebe verursachen +8% Schaden
 		'''
-	Burden: Reguläre Kombohiebe außerhalb des Takts verursachen 3% weniger Schaden (Entscheidend ist der Tastendruck beim Ausholen, nicht der Trefferzeitpunkt)
+	Burden: Außerhalb des Takts geführte Kombohiebe verursachen 3% weniger Schaden (wird beim Tastendruck gewertet)
 }
 
 OniMeiRubbingShibori: {
 	DisplayName: Shibori
-	Tooltip: Durchschreiten oder Getroffenwerden während Spezialanimationen betäubt und lähmt Gegner; regulärer Haltungsgewinn -15%
-	Origin: Wer den Schwertweg beginnt, muss erst das Taubheitsgefühl in Gelenken und Armen erdulden. Der Ziseleur kehrte diese Weisheit um: Erleide ich ein Maß an Erschütterung, soll der Angreifer das Zehnfache an Lähmung spüren
+	Tooltip: Das Durchdringen von Feinden oder Treffer in festen Animationen lähmen den Angreifer; Haltungsgewinn -15%
+	Origin:
+		'''
+		Auf dem Eisenstab eines alten Büttels war eine zähnefletschende Donberbestie eingraviert.
+		Fochten Halunken mit schweren Klingen gegen seinen Stab, wich der Büttel trotz blutender Hände keinen Fingerbreit — er stieß die Schockwelle als lähmenden Blitz zurück und warf Angreifer zu Boden.
+		Diese Gravur ist ebenso unnachgiebig: Ertrage einen schmerzhaften Hieb, und die Glieder des Feindes erstarren gelähmt.
+		'''
 	Power:
 		'''
-		„Schockkonter“: Das Durchdringen eines Gegners per Kamui-Blitzschritt belegt ihn direkt mit „Taubheit“
-		Erleidet man während der festgelegten Animationsphasen von Spezialkünsten Kontaktschaden, können 15 Haltungspunkte verbraucht werden, um den Schaden auf 85% zu senken und den Angreifer zu betäuben (1,5 Sekunden Abklingzeit)
-		Betäubte Gegner werden 0,75 Sekunden lang verlangsamt (gewöhnliche Gegner auf 90%, Bosse auf 98%) und ihr Kontaktschaden sinkt um 10%
+		„Donner-Gegenwehr“: durchdringen von Feinden mit Kamui-Blitzschritt belegt sie mit Erstarrung
+		Kontaktschaden während fester Hiebanimationen verbraucht 15 Haltung, senkt den erlittenen Schaden auf 85% und erstarrt den Angreifer (1.5s Abklingzeit)
+		Erstarrte Feinde sind für 0.75s verlangsamt (normale auf 90%, Bosse auf 98%), ihr Kontaktschaden sinkt um 10%
 		'''
-	Burden: Reguläre Haltungsaufbaurate um 15% verringert
+	Burden: Standard-Haltungsgewinn um 15% verringert
 }
 
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
-	Tooltip: Mindert den erlittenen Schaden und Rückstoß feindlicher Projektile drastisch; regulärer Haltungsgewinn -15%
-	Origin: Vor den Schlachtreihen regnen Pfeile und Schleudersteine herab; wer das Sausen im Ohr fürchtet, geht zugrunde. Der kriegserprobte Feldherr dieser Inschrift wusste wohl: Mag der Pfeilhagel noch so dicht sein, wer fest wie ein Fels steht, halbiert die Wunde
-	Power: „Besänftigung“: Erleidet man Schaden durch feindliche Projektile, wird dieser um 12% gemindert und der erlittene Rückstoß auf 35% gesenkt
-	Burden: Reguläre Haltungsaufbaurate um 15% verringert; im reinen Nahkampf bleibt dieser Nutzen gering
+	Tooltip: Senkt Projektilschaden und Rückstoß drastisch; Haltungsgewinn -15%
+	Origin:
+		'''
+		Ein ergrauter Hauptmann, der unzählige Salven überlebte, schnitt stets beruhigende Siegelschrift in den Rücken seines Säbels.
+		Prasselt Blei und Granatsplitter wie Hagel auf die Frontlinie, verfallen Kleinmütige angesichts des gellenden Pfeifens in Panik und gehen im Chaos unter.
+		Mit diesem Talisman hielt der Hauptmann Schritt und Stand, trotzte dem Pfeilsturm und schirmte sein Herz vor dem tödlichen Verderben ab.
+		'''
+	Power: „Klangstille“: das Erleiden von Feindprojektilen senkt den Schaden um 12% und den Rückstoß auf 35%
+	Burden: Standard-Haltungsgewinn um 15% verringert
 }
 
 OniMeiRubbingAshidome: {
 	DisplayName: Ashidome
-	Tooltip: Regungsloses Verharren bündelt Kraft und verstärkt den nächsten fünften Hieb oder die nächste Spezialkunst massiv; Bewegung löscht die Bündelung
-	Origin: Erste Unterweisung des Schwertmeisters: Steht der Stand auf wackligem Grund, taugt alle Kunst nichts. Nur wer feste Wurzeln schlägt, vermag Atem und Kraft zu sammeln; und entfesselt bricht solche Wucht durch jede Wehr
-	Power: „Fester Stand“: Verharrt man 0,75 Sekunden lang reglos mit gezogener Klinge, bündelt sich die Kraft und erhöht den Schaden des nächsten fünften Kombohiebs, Zanshin-Nachschlags, Weltvernichtenden Blitzes oder Abschlusswirbels um 25%
-	Burden: Der verstärkte Hieb wird mit dem Ausholen verbraucht, auch wenn er ins Leere geht; jede Bewegung tilgt die angesammelte Kraft augenblicklich
+	Tooltip: Stillstehen sammelt Schwung und stärkt den nächsten 5. Kombohieb oder eine Kunst gewaltig; Bewegung löscht die Ladung
+	Origin:
+		'''
+		Schulte ein alter Karawanenführer seine Lehrlinge, wiederholte er ein einziges Gebot: „Lass die Füße nicht flattern; nur wer fest steht, bleibt am Leben.“
+		Tritt dir auf finsterem Pfad eine Bestie entgegen, bohre beide Füße wie eine uralte Zeder in den Frostboden und halte den Atem in der Brust.
+		Springt das Ungetüm heran, schlägt der aus jener Verwurzelung entfesselte Ziehhieb mit gebirgsspaltender Wucht zu.
+		'''
+	Power: „Verwurzelte Haltung“: 0.75s vollkommenes Stillstehen schließt die Ladung ab und erhöht den Schaden des nächsten 5. Kombohiebs, Zanshin-Hiebs, Vernichtenden Blitzes oder Finalen Tanzes um 25%
+	Burden: Der verstärkte Hieb verfällt bei Ausführung, Fehlschläge erstatten ihn nicht; Bewegung tilgt die angesammelte Ladung sofort
 }
 
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
-	Tooltip: Exekutionen hinterlassen ein 지속 brennendes Glutfeuer am Zielort; maximale Ausdauer -5%, Blitzschritte während des Glutfeuers teurer
-	Origin: Ist das Schmiedefeuer gelöscht, wärmt die Glut im Kohlenbett noch die ganze Nacht hindurch. Der Schmied nutzte diese Eigenschaft: Die Flamme mag weichen, doch die sengende Glut verweilt
+	Tooltip: Hinrichtungen hinterlassen ein brennendes Glutbett am Zielort; maximale Ausdauer -5%, Blitzschrittkosten erhöht während des Brandes
+	Origin:
+		'''
+		Erloschen die alten Krematoriumsöfen im tiefsten Winter, glühten unter der grauen Aschedecke in den Ziegelfugen stets violette Glutnester fort.
+		Selbst mit Eiswasser begossen, zischten und dampften sie noch wochenlang.
+		Bannst du jene Gräberglut in das Schwert, lässt jeder durch Hinrichtung zerschmetterte Feind den Boden in Höllenfeuer aufflammen, das Nachzügler zu Schlacke brennt.
+		'''
 	Power:
 		'''
-		„Restglut“: Nach einer erfolgreichen Exekution entsteht am Brennpunkt für 3 Sekunden ein Glutbrand
-		Gegner im Glutbrand erleiden alle 0,75 Sekunden Brandschaden in Höhe von 16% des Waffenbasisschadens
-		Es kann nur ein Brandherd gleichzeitig existieren; eine erneute Exekution versetzt das Glutfeuer an die neue Stelle
+		„Glut“: erfolgreiche Hinrichtungen entfalten für 3s ein Glutbett am Hinrichtungsort
+		Feinde im Glutbett erleiden alle 0.75s 16% des Waffenbasisschadens als Verbrennung
+		Es kann immer nur ein Glutbett existieren; eine erneute Hinrichtung verlegt es an den neuen Ort
 		'''
-	Burden: Maximale Ausdauer um 5% verringert; während das Glutfeuer brennt, steigen die Ausdauerkosten des Kamui-Blitzschritts um 10%
+	Burden: Maximale Ausdauer um 5% verringert; solange ein Glutbett existiert, sind die Ausdauerkosten von Kamui-Blitzschritt um 10% erhöht
 }

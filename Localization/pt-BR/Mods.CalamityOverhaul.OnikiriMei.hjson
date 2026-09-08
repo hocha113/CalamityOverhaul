@@ -1,7 +1,13 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
-	Tooltip: Golpes diretos causam dano massivo a inimigos feridos e abates recuperam postura; dano da arma -2%
-	Origin: Na noite do teste de corte do clã Minamoto, esta lâmina ceifou a cabeça do criminoso e a barba sob o queixo num único golpe. O nome Higekiri nasceu naquela noite
+	Tooltip: Golpes de lâmina causam dano massivo escalonado a inimigos feridos; execuções diretas restauram postura; dano da espada -2%
+	Origin:
+		'''
+		Os carrascos do velho patíbulo transmitiam de geração em geração um cutelo sinistro que jamais perdia o fio, por mais réus que decapitasse.
+		Conta-se que quando o último algoz sucumbiu a uma parada cardíaca repentina, a lâmina tombou do cadafalso por si só.
+		Antes mesmo que o aço tocasse o pescoço, a espessa barba que caía sobre o peito do condenado deslizou cortada de raiz junto com a cabeça, como arrancada por mandíbulas invisíveis.
+		O velho legista do necrotério compreendeu que esta lâmina aprende a reconhecer o instante exato em que a vida se esvai: a quem está por um fio, o sopro de seu vento decepa a cabeça.
+		'''
 	Power:
 		'''
 		"Corta-Barba": golpes diretos de lâmina causam dano escalonado contra alvos com menos de 35% de vida, aumentando quanto menor for a vida restante
@@ -13,16 +19,28 @@ OniMeiRubbingHigekiri: {
 
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
-	Tooltip: Inscrição original, mantém o desempenho básico de Onikiri sem bônus ou penalidades
-	Origin: Watanabe no Tsuna empunhou esta lâmina na ponte Ichijo-Modoribashi e decepou o braço de um oni, fazendo-o fugir em agonia. A lâmina que fendeu o demônio recebeu a inscrição Onikiri, gravada fundo na espiga através das eras
+	Tooltip: O nome primordial de Onikiri, mantendo todas as suas propriedades originais sem bônus nem penalidades
+	Origin:
+		'''
+		Um arquivo amarelado guardado nos registros de uma antiga delegacia da concessão: em noites chuvosas, uma dama em trajes orientais com sombrinha de papel vermelho rondava a ponte de pedra do rio, chamando pelos transeuntes.
+		Quem quer que lhe respondesse era encontrado pela manhã junto à ponte com a pele do rosto arrancada a sangue-frio.
+		Certa vez, um espadachim cego cruzou a névoa; de sob a sombrinha, um braço cadavérico e pálido avançou para estrangulá-lo. Ao ouvir o sibilar do ar, o espadachim desembainhou num golpe ascendente.
+		O braço fantasmagórico e a sombrinha caíram no rio, desfazendo-se em lodo negro fétido. Apenas a espada restou, ensopada naquela mancha primordial, tornando-se o pilar de dez mil selos funestos.
+		'''
 	Power: Mantém todas as propriedades básicas de Onikiri, sem conceder bônus nem penalidades adicionais
 	Burden: Nenhum
 }
 
 OniMeiRubbingShishinoko: {
 	DisplayName: Shishi-no-ko
-	Tooltip: Concluir o combo completo de cinco golpes adiciona ondas de corte cruzadas no finalizador; intervalo do combo +2%
-	Origin: Reza a lenda que esta lâmina repousava ao lado do travesseiro do senhor quando rugiu feito leão na calada da noite, estremecendo a mansão. Maravilhado com tal poder, o mestre mandou incrustar seu nome em ouro na espiga, rebatizando-a de Shishi-no-ko
+	Tooltip: Concluir o combo de cinco golpes adiciona duas ondas de corte cruzadas no finalizador; intervalo entre ataques do combo +2%
+	Origin:
+		'''
+		Nos fundos de uma casa de penhores centenária no distrito ocidental repousa uma pesada arca de sândalo vermelho, selada com talismãs de cinábrio.
+		A cada tempestade de meia-noite, rugidos aterradores ecoam de dentro como uma fera faminta triturando ossos, fazendo vibrar todo o ferro do armazém.
+		Dizem que esta lâmina foi forjada na medula de uma besta ancestral que devorou vilarejos inteiros nas montanhas; sua ferocidade jamais foi domada.
+		Apenas desferindo uma sequência ininterrupta de cinco golpes é possível liberar essa selvageria contida, lançando no quinto golpe duas ondas cruzadas que estraçalham como presas se fechando.
+		'''
 	Power:
 		'''
 		"Rugido do Leão": ao concluir o combo básico completo de cinco golpes sem interrupção por Passo Relâmpago ou artes
@@ -33,390 +51,556 @@ OniMeiRubbingShishinoko: {
 
 OniMeiRubbingTomokiri: {
 	DisplayName: Tomokiri
-	Tooltip: Cancelar um combo com Passo Relâmpago deixa um eco de corte atrasado no local; dano recebido +6% ao empunhar e acumula custo de vigor na investida
-	Origin: Duas lâminas preciosas dos Minamoto foram testadas fio contra fio; o corte desta revelou-se afiado demais, partindo a lâmina companheira ao meio. Rebatizada de Tomokiri por ferir sua companheira, seu temperamento tornou-se ainda mais feroz e rebelde
+	Tooltip: Cancelar um combo com Passo Relâmpago deixa um corte fantasma atrasado; dano recebido +6% e acumula custo de corrida; expurgado por golpes Zanshin
+	Origin:
+		'''
+		Dois irmãos de juramento empunhando espadas amaldiçoadas abrigaram-se de um dilúvio num templo abandonado, apoiando suas armas na mesma bancada.
+		À meia-noite, com a fogueira apagada, uma das espadas tombou sem toque algum, partindo a lâmina do companheiro — e a cintura do irmão adormecido — duas polegadas adentro.
+		Encharcada no sangue de seu companheiro de armas, esta espada abomina golpes pela metade.
+		Sempre que o portador interrompe um ataque para se esquivar, o golpe cancelado permanece como um vulto carmesim que conclui o corte sozinho; a menor distração volta sua fúria contra o próprio mestre.
+		'''
 	Power:
 		'''
-		"Eco de Culpa": cancelar o combo atual com o Passo Relâmpago Kamui deixa o golpe interrompido para trás como um vulto
-		Após um breve atraso, o golpe se desfere no local original, causando dano equivalente a 35% do dano base da arma
+		"Sombra de Culpa": cancelar o combo atual com o Passo Relâmpago Kamui deixa o corte interrompido no lugar como uma sombra
+		Após um breve atraso, ela golpeia no local da interrupção, causando 35% do dano base da arma
 		'''
 	Burden:
 		'''
-		Dano recebido aumentado em 6% enquanto empunhar esta lâmina
-		Cada Eco de Culpa acumula 1 camada de "Culpa" (até 3), fazendo com que cada camada aumente em 4 o consumo de vigor do próximo Passo Relâmpago
-		Acertar um golpe de perseguição Zanshin após uma investida dissipa toda a Culpa acumulada
+		Dano recebido enquanto empunha esta espada aumentado em 6%
+		Cada sombra de culpa gera 1 acúmulo de "Culpa" (até 3), aumentando o custo de vigor do próximo Passo Relâmpago Kamui em 4 por acúmulo
+		Acertar um golpe Zanshin após um Passo Relâmpago dissipa todos os acúmulos de Culpa
 		'''
 }
 
 OniMeiRubbingKazehi: {
 	DisplayName: Kaze-hi
-	Tooltip: Reduz expressivamente o custo de vigor do Passo Relâmpago Kamui e do Voo Sakura; dano de explosão das marcas de tinta -20%
-	Origin: O cuteleiro abriu uma ranhura reta e estreita na lâmina para guiar o vento pelo aço. Ao brandir, o vento corta primeiro, cessando apenas quando o fio já regressou à bainha
-	Power: '''"Cavaleiro do Vento": custo de vigor do Passo Relâmpago Kamui reduzido em 15%, taxa de drenagem de vigor do Voo Sakura reduzida em 20%'''
+	Tooltip: Reduz drasticamente o custo de vigor do Passo Relâmpago Kamui e do Voo de Sakura; dano de explosão das marcas de tinta -20%
+	Origin:
+		'''
+		Uma antiga trupe de teatro de sombras guardava um segredo: esculpir uma fenda estreita de ar ao longo da haste de bambu fazia a marionete flutuar sobre a tela com a leveza de uma pluma.
+		O ferreiro abriu canais retos e finos em ambos os lados da lombada do sabre. Ao golpear, o silvo do ar cortado chega antes, e o movimento torna-se etéreo como impulsionado por correntes fúnebres.
+		Passadas e voos consomem pouquíssimo fôlego, mas com a lâmina afinada e leve, as marcas de tinta perdem parte de sua detonação devastadora.
+		'''
+	Power: "Vento Favorável": custo de vigor do Passo Relâmpago Kamui reduzido em 15%, dreno de vigor do Voo de Sakura reduzido em 20%
 	Burden: Dano de explosão das marcas de tinta deixadas pelo Passo Relâmpago Kamui reduzido em 20%
 }
 
 OniMeiRubbingChihi: {
 	DisplayName: Chi-hi
-	Tooltip: Golpes da lâmina concedem vigor adicional; recuperação natural muito mais lenta e atraso de recarga aumentado
-	Origin: O sulco de sangue entalhado no aço é fundo e resoluto. O ferreiro declarou ao concluir que este canal fora forjado para sangue quente: quanto mais se banha em sangue, mais depressa o fôlego do portador retorna
+	Tooltip: Golpes recuperam vigor; regeneração natural de vigor drasticamente diminuída com atraso maior
+	Origin:
+		'''
+		Antigos mateiros descobriram em penhascos úmidos uma trepadeira carmesim que se alimentava exclusivamente de carniça.
+		A canaleta profunda e larga talhada no dorso da espada foi moldada à semelhança dos canais dessa planta parasita.
+		Assim que o aço rasga a carne, o sangue fervente sobe pela fenda aquecendo a palma do espadachim e acendendo seu vigor interno em chamas.
+		Mas se a lâmina passar muito tempo sem provar sangue fresco, os meridianos estagnam como um poço seco, custando a recuperar o fôlego.
+		'''
 	Power:
 		'''
-		"Fluxo de Sangue": o primeiro acerto de cada golpe do combo básico restaura 1 ponto extra de vigor
-		Golpes de Zanshin após o Passo Relâmpago Kamui restauram 4 pontos extras de vigor ao acertar
+		"Fluxo Sanguíneo": o primeiro acerto de cada golpe do combo básico restaura 1 de vigor adicional
+		Golpes Zanshin após um Passo Relâmpago Kamui restauram 4 de vigor adicional ao acertar
 		'''
-	Burden: Velocidade de recuperação natural de vigor reduzida em 35%, e golpes que gastam vigor exigem um atraso adicional de 0,3s antes do início da recuperação natural
+	Burden: Velocidade de regeneração natural de vigor reduzida em 35%; após usar habilidades, requer um atraso adicional de 0.3s antes de começar a regenerar
 }
 
 OniMeiRubbingFudo: {
 	DisplayName: Fudo
-	Tooltip: Sofrer golpes durante animações ininterruptas consome postura para reduzir drasticamente o dano; ganho de postura -15%
-	Origin: O entalhador seguiu o traço da semente sânscrita "Kan", esculpindo com reverência a efígie de Fudo Myoo envolto em labaredas. Tomado do voto inabalável do Imóvel: mesmo sob vendavais e tempestades, permanece firme feito montanha
+	Tooltip: Sofrer dano durante animações fixas consome postura para reduzir drasticamente dano e repulsão; ganho de postura -15%
+	Origin:
+		'''
+		Entre as ruínas de um santuário ermo erguia-se uma estátua de ferro fundido de Fudo Myoo, empunhando a espada diante de uma parede de chamas imortais.
+		Quando um desmoronamento engoliu a encosta da montanha esmagando o salão principal, este buda de ferro permaneceu intacto entre os escombros, sem um único arranhão.
+		A lâmina herdou essa presença inabalável: mesmo preso na inércia vulnerável de um golpe decisivo, postura pode ser entregue para resistir à tormenta, firme como um rochedo ancestral.
+		'''
 	Power:
 		'''
-		"Guarda Imóvel": ao receber dano durante as animações travadas do golpe Zanshin, Lampejo Aniquilador ou Dança Final
-		Consome 20 pontos de postura para reduzir o dano recebido para 65% e a repulsão para 25% (recarga de 2,5 segundos)
+		"Guarda Inabalável": ao sofrer dano durante as animações travadas do golpe Zanshin, Lampejo da Aniquilação ou Dança Final
+		Consome 20 de postura para reduzir o dano sofrido a 65% e a repulsão a 25% (tempo de recarga de 2.5 segundos)
 		'''
-	Burden: Ganho padrão de postura reduzido em 15%, não bloqueia o dano autoimposto pelo ricochete do desmembramento
+	Burden: Velocidade padrão de ganho de postura reduzida em 15%, não protege contra dano de recuo de desmembramento
 }
 
 OniMeiRubbingKurikara: {
 	DisplayName: Kurikara
-	Tooltip: Execuções concedem três cargas de fogo dracônico, finalizador do combo consome fogo para um corte espiral; vigor máximo -10%
-	Origin: A lâmina ostenta a efígie de Kurikara, o Rei Dragão: um dragão negro enrolado na espada sagrada, fauces abertas para tragar a ponta. Fios de ouro incrustados nas escamas reluzem a cólera búdica contra o mal
+	Tooltip: Execuções concedem três acúmulos de fogo de dragão; o finalizador do combo gasta um para um corte circular; vigor máximo -10%
+	Origin:
+		'''
+		Do fundo de uma cripta milenar foi desenterrada uma lâmina de bronze envolvida por um dragão negro em ouro maciço, com as presas abertas ao redor da ponta; todos que a tocaram foram reduzidos a cinzas por fogo negro.
+		Um mestre artesão incrustou a silhueta da fera no aço com detalhes dourados.
+		Sempre que uma execução decapita um oponente temível, o cheiro de morte desperta o dragão adormecido, liberando ao final da sequência três anéis de chamas incineradoras.
+		'''
 	Power:
 		'''
-		"Espiral de Fogo Dracônico": executar um alvo concede 3 cargas de fogo dracônico por 10 segundos
-		Concluir o combo básico completo de cinco golpes consome 1 carga para desferir um corte espiral para a frente, causando dano equivalente a 50% do dano base da arma
+		"Círculo de Fogo do Dragão": executar um inimigo com sucesso concede 3 acúmulos de fogo de dragão por 10s
+		Durante esse tempo, concluir um combo básico completo de cinco golpes consome 1 acúmulo para desferir um corte circular frontal causando 50% do dano base da arma
 		'''
-	Burden: Limite máximo de vigor reduzido em 10%
+	Burden: Vigor máximo reduzido em 10%
 }
 
 OniMeiRubbingTessetsu: {
 	DisplayName: Tessetsu
-	Tooltip: Primeiro acerto de cada golpe do combo causa +25% de dano a inimigos metálicos e mecânicos; dano geral da arma -10%
-	Origin: Um avaliador zombou desta lâmina tempos atrás, escarnecendo de sua fama oca e do fio fosco como ferro bruto. O ferreiro não se ofendeu, gravando a própria mofa na espiga: ferro bruto só revela seu valor ao despedaçar o aço
-	Power: '''"Corte de Ferro": o primeiro acerto de cada golpe do combo básico causa +25% de dano a inimigos que soltam faíscas ao serem atingidos, como autômatos e criaturas blindadas'''
+	Tooltip: O primeiro golpe de cada tempo do combo causa +25% de dano a máquinas e metais; dano base da arma -10%
+	Origin:
+		'''
+		Uma fábrica de munições abandonada foi tomada por uma anomalia sinistra: engrenagens e eixos de aço começaram a brotar tumores carnosos, quebrando qualquer espada que tentasse atingi-los.
+		Um velho ferreiro chegou carregando uma barra tosca de ferro cru sem afiação; curiosos riram daquela peça bruta, mas o ferreiro desferiu o golpe com ambos os braços.
+		Com um estrondo colossal, o núcleo pulsante foi esmagado em sucata. Esta lâmina está imbuída dessa força avassaladora: estraçalha ferro como madeira podre, embora morda a carne mole com lentidão.
+		'''
+	Power: "Corta-Ferro": o primeiro acerto de cada golpe do combo básico causa 25% de dano adicional a inimigos metálicos, mecânicos ou que soltem faíscas ao serem atingidos
 	Burden: Dano base da arma reduzido em 10%
 }
 
 OniMeiRubbingKyushu: {
 	DisplayName: Kyushu
-	Tooltip: Dano de execução massivo exclusivamente contra cabeças ou alvos independentes; dano geral da arma -3%
-	Origin: Em eras passadas muitas lâminas afamadas mudavam de nome para vangloriar-se de degolar generais. O portador desta não seguiu tal vaidade: cabeças rolam como sempre rolaram, e o nome permanece intacto; lâminas de verdade dispensam títulos ocos para inspirar temor
+	Tooltip: Dano massivo de execução exclusivamente contra cabeças ou alvos únicos; dano da arma -3%, ineficaz em outros segmentos
+	Origin:
+		'''
+		Um general veterano que havia abatido incontáveis comandantes inimigos era instigado por seus conselheiros a renomear sua espada a cada glória para exaltar seu prestígio.
+		O general escarneceu, enrolando apenas uma mecha de cabelo do caído na bainha e sentenciando: "Uma lâmina sanguinária só cobiça a carne macia da garganta; títulos pomposos são pura vaidade."
+		As décadas se foram e o general virou poeira, mas o sabre envolto em cabelos ainda busca a garganta: quando as horas de uma cabeça se esgotam, não resta sobrevivente.
+		'''
 	Power:
 		'''
-		"Caça-Cabeças": acertos diretos na cabeça do inimigo ou em alvos independentes não segmentados abaixo de 35% de vida causam dano massivo escalonado pela vida perdida
-		Causa até +85% de dano a inimigos comuns e até +60% de dano a chefes
+		"Caçador de Cabeças": acertos diretos na cabeça ou em alvos únicos sem segmentos causam dano massivo escalonado se o alvo estiver com menos de 35% de vida
+		Causa até +85% de dano a inimigos normais e até +60% de dano a chefes
 		'''
-	Burden: Dano base da arma reduzido em 3%, ineficaz contra segmentos de corpo ou cauda de inimigos
+	Burden: Dano base da arma reduzido em 3%, ineficaz contra tronco, cauda e outros segmentos que não sejam a cabeça
 }
 
 OniMeiRubbingIkiai: {
 	DisplayName: Ikiai
-	Tooltip: O quinto golpe do combo dispara uma rajada cortante perfurante na direção do cursor; intervalo do combo +4%
-	Origin: Dizem os espadachins que nos duelos de vida ou morte a respiração dos contendores se entrelaça; aquele que sincronizar primeiro o fôlego fará sua lâmina atingir primeiro. Esta inscrição preserva essa mesmíssima disciplina
-	Power: '''"Respiração": ao concluir o combo básico de cinco golpes, o quinto golpe dispara uma rajada em arco na direção do cursor, causando dano equivalente a 55% do dano base da arma e perfurando até 3 inimigos'''
+	Tooltip: Concluir o combo de cinco tempos libera uma onda cortante penetrante; intervalo do combo +4%
+	Origin:
+		'''
+		Velhos bardos contam sobre um duelo letal de respiração contida: dois espadachins sentados frente a frente numa câmara escura durante meia hora de incenso.
+		Apenas o pavio da lamparina tremeluzia na penumbra; o primeiro a perder o fôlego revelaria sua fraqueza de imediato.
+		Ao soar a quarta badalada da noite, um deles finalmente arfou por ar — e naquele exato suspiro, o outro desembainhou num golpe certeiro.
+		A intenção gélida maturada nos pulmões explodiu da ponta como uma onda de lâmina em arco, atravessando a escuridão e o adversário.
+		'''
+	Power: "Expiração": concluir o combo completo de cinco golpes libera uma onda de espada em arco na direção do cursor, causando 55% do dano base da arma e perfurando até 3 inimigos
 	Burden: Intervalo de ataque do combo básico aumentado em 4%
 }
 
 OniMeiRubbingKyoko: {
 	DisplayName: Kyoko
-	Tooltip: Recuar acumula energia para dano corpo a corpo devastador e retarda inimigos próximos quando inerte; ataques velozes à queima-roupa desfocam o foco
-	Origin: Um mestre de armas bradou em um desfiladeiro solitário e nenhum eco retornou. Na vastidão vazia, aquele vigor impetuoso recolheu-se e concentrou-se inteiramente no aço
+	Tooltip: Acumule ímpeto mantendo distância para fortalecer o próximo golpe corpo a corpo, desacelera inimigos periodicamente; sequências contínuas à queima-roupa causam perda de foco
+	Origin:
+		'''
+		No coração da cordilheira jaz um vale esquecido onde nenhum grito devolve eco; o abismo silencioso parece devorar qualquer som por inteiro.
+		Um mestre da espada meditou no leito rochoso, selando aquela quietude oca dentro de sua bainha.
+		Quanto mais amplo o terreno ao redor, mais pesada a pressão invisível que se acumula no aço, fazendo as feras fugirem; contudo, ao cair em trocas caóticas à queima-roupa, essa compostura fria se dissipa velozmente.
+		'''
 	Power:
 		'''
-		"Rugido Oco": permanecer fora do alcance de 16 blocos de inimigos por 1,5s acumula vigor concentrado
-		Após carregar, o primeiro acerto a até 16 blocos causa +25% de dano (acertos desferidos além dessa distância não consomem o efeito)
-		Sem inimigos por perto ou após 1,5s sem desferir acertos, aplica lentidão por 0,4s a cada 1,5s a todos os inimigos num raio de 20 blocos
+		"Clamor Oco": conclui o carregamento se nenhum inimigo estiver a menos de 16 blocos por 1.5s
+		Após carregar, o primeiro acerto a menos de 16 blocos causa +25% de dano (acertos além desse alcance não consomem a carga)
+		Se não houver inimigos por perto ou se nenhum alvo for atingido por 1.5s, pulsa uma lentidão de 0.4s nos inimigos a menos de 20 blocos a cada 1.5s
 		'''
-	Burden: Desferir 4 acertos corpo a corpo em 0,6s causa 0,4s de desfoque, reduzindo o dano à queima-roupa em 5% durante o estado
+	Burden: Acertar 4 golpes à queima-roupa em 0.6s causa 0.4s de perda de foco, durante os quais o dano a curta distância é reduzido em 5%
 }
 
 OniMeiRubbingKarikiri: {
 	DisplayName: Karikiri
-	Tooltip: O Passo Relâmpago deixa uma réplica estática que anula um golpe por completo; dano recebido aumenta enquanto a réplica existir ou após ser quebrada
-	Origin: Um discípulo reproduziu o jogo de pernas de seu mestre com exímia perfeição, mas o mestre apenas suspirou: semelhante demais para ser autêntico. Esta inscrição torna-se um vulto efêmero, recebendo o golpe fatal no lugar do corpo verdadeiro
+	Tooltip: Iniciar um Passo Relâmpago deixa uma réplica de papel que anula totalmente um golpe; dano sofrido aumentado enquanto ela viver ou for destruída
+	Origin:
+		'''
+		Mestres da feitiçaria de papel guardam um ritual sombrio: o boneco espiador expiatório.
+		No milésimo de segundo em que o Passo Relâmpago arranca, a lâmina pinça do vazio uma réplica de tinta fresca e a crava no chão, absorvendo em seu lugar um golpe que estripa um homem.
+		Porém, o boneco carrega um estilhaço da alma; caso seja despedaçado por força bruta, o mestre sofre um solavanco violento que escancara suas defesas.
+		'''
 	Power:
 		'''
-		"Corpo Falso": ao iniciar o Passo Relâmpago Kamui, deixa uma réplica estática durando 1,5s no local de partida
-		Enquanto a réplica existir, receber dano de qualquer inimigo ou projétil é completamente anulado por ela (recarga de 4 segundos)
+		"Corpo Falso": deixa uma réplica estática por 1.5s na posição inicial de um Passo Relâmpago Kamui
+		Enquanto a réplica existir, anula totalmente a próxima instância de dano recebido de um inimigo ou projétil (4 segundos de recarga)
 		'''
 	Burden:
 		'''
-		Enquanto a réplica persistir, o dano recebido e o custo de vigor da investida aumentam em 12%
-		Por 1s após a réplica ser destruída, o dano recebido aumenta em 18% (dissipação natural sem dano não sofre penalidade)
+		Enquanto a réplica existir, o dano sofrido e o custo de vigor do Passo Relâmpago aumentam em 12%
+		Por 1s após a destruição da réplica, o dano sofrido aumenta em 18% (sua dissipação natural não impõe penalidade)
 		'''
 }
 
 OniMeiRubbingMokukiri: {
 	DisplayName: Mokukiri
-	Tooltip: Concluir uma investida comum fortalece brevemente o próximo golpe; golpear o vazio também consome o efeito
-	Origin: No instante em que o passo relâmpago se assenta, o céu e a terra parecem mergulhar no silêncio absoluto. Os espadachins veteranos sabem bem: quando a intenção assassina se oculta no silêncio, o golpe cai com peso devastador
-	Power: '''"Morte Silenciosa": por 0,75s após concluir um Passo Relâmpago Kamui padrão pago, o próximo golpe do combo ou Zanshin causa +35% de dano'''
-	Burden: Desferir o golpe no vazio consome o estado da mesma forma, e realizar outra investida dissipa o bônus; investidas gratuitas de execução não ativam Morte Silenciosa
+	Tooltip: Passos Relâmpago com custo de vigor fortalecem brevemente o próximo ataque; errar o golpe também consome o efeito
+	Origin:
+		'''
+		Caçadores veteranos conhecem o dogma mais temível das matas: o rugido do vendaval não assusta tanto quanto o instante em que o vento subitamente cessa e todas as aves emudecem — é o sinal de que a fera está ao alcance de um bote.
+		No momento em que o Passo Relâmpago estanca repentinamente, o mundo parece mergulhar num silêncio tumular.
+		Desferir o corte a partir do ponto cego dessa calmaria sepulcral atinge o alvo com precisão infinitamente mais letal do que qualquer investida estabanada.
+		'''
+	Power: "Abate Silencioso": por 0.75s após concluir um Passo Relâmpago Kamui comum com custo de vigor, o próximo ataque básico ou golpe Zanshin causa +35% de dano
+	Burden: Este ataque fortalecido é consumido mesmo em caso de erro, e esquivar novamente cancela o bônus; execuções gratuitas não ativam o Abate Silencioso
 }
 
 OniMeiRubbingKumokiri: {
-	DisplayName: Kumo-kiri
-	Tooltip: Golpes fixam três âncoras de seda que fecham uma teia, causando dano e aprisionando inimigos; recuperação natural mais lenta enquanto a teia é tecida
-	Origin: Minamoto no Raiko jazia enfermo no leito quando um tsuchigumo disfarçado de monge infiltrou-se para atá-lo em teias. Raiko sacou a espada, decepou os fios e seguiu o rastro de sangue até exterminar o ninho, rebatizando a lâmina como Kumokiri
+	DisplayName: Kumokiri
+	Tooltip: Golpes cravam três âncoras de seda que se contraem numa armadilha; regeneração de vigor reduzida enquanto houver âncoras no campo
+	Origin:
+		'''
+		No forro de uma tinturaria abandonada habitava uma aranha arcaica que tecia fios peçonhentos à meia-noite para casular e sugar viajantes adormecidos.
+		Um monge errante arrombou as portas, rasgando o dossel negro com golpes amplos e abatendo a aberração.
+		Este sabre absorveu essa teia sufocante: cada corte crava uma âncora de seda de tinta no ar; quando três pontos se conectam, fecham-se violentamente numa teia de lâminas cortantes.
+		'''
 	Power:
 		'''
-		"Seda de Tinta": acertos diretos de lâmina fixam uma âncora de seda de tinta com duração de 4s (o mesmo inimigo não pode receber outra âncora em 0,4s; âncoras exigem cerca de 6 blocos de distância)
-		Ao fixar 3 âncoras, forma-se uma teia triangular de tinta que se contrai rapidamente para o centro, causando dano equivalente a 90% do dano base da arma e paralisando todos os inimigos presos por 1s
-		Após fechar a teia, há uma recarga de 1,5s antes de poder fixar novas âncoras
+		"Seda de Tinta": golpes diretos cravam uma âncora de tinta por 4s no ponto de impacto (não pode reconectar ao mesmo alvo em menos de 0.4s; requer ~6 blocos de distância)
+		Ao cravar 3 âncoras, elas se conectam num triângulo que se contrai rapidamente ao centro, causando 90% do dano base da arma e imobilizando os inimigos por 1s
+		Acionar a armadilha impõe uma recarga de 1.5s antes de poder cravar novas âncoras
 		'''
-	Burden: Enquanto houver âncoras de seda ativas em campo, a taxa de recuperação natural de vigor é reduzida em 25%
-	DeedHint: Elimine 30 aranhas, escorpiões ou criaturas aracnídeas empunhando a Onikiri
+	Burden: Enquanto restarem âncoras não contraídas no campo, a regeneração natural de vigor é reduzida em 25%
+	DeedHint: Elimine 30 aranhas ou escorpiões empunhando Onikiri para saciar a lâmina com sangue de aracnídeo
 }
 
 OniMeiRubbingOnimaru: {
-	DisplayName: Oni-maru
-	Tooltip: Ficar imóvel arremessa a lâmina para cortar inimigos próximos por conta própria; manuseio comum desabilitado enquanto a lâmina estiver distante
-	Origin: Onimaru Kunitsuna, uma das Cinco Grandes Espadas sob o Céu. Conta-se que Hojo Tokimasa era atormentado toda noite por um demônio, até que a espada tombou sozinha sobre o braseiro, decepando a cabeça do demônio entalhada no ferro e banindo o mal para sempre
+	DisplayName: Onimaru
+	Tooltip: Ficar imóvel faz a lâmina voar para retalhar inimigos próximos; o manejo normal da arma é desativado durante o voo
+	Origin:
+		'''
+		O patriarca de um velho solar definhava acamado, torturado noite após noite por um duende espectral que brincava com sua alma nos sonhos.
+		Numa meia-noite, a espada saltou da bainha por vontade própria, riscando o aposento num feixe de luz e fendendo em dois o espectro agachado nas vigas, banindo a praga para sempre.
+		Esta lâmina ostenta um orgulho altivo e espectral: fique firme e sereno, e ela voará por conta própria para ceifar adversários; mas enquanto o aço corta os céus, as mãos do espadachim ficam desarmadas e indefesas.
+		'''
 	Power:
 		'''
-		"Autocorte": permanecer completamente imóvel segurando a lâmina por 1s ativa o modo de vigília
-		A cada 1,5s em vigília, consome 10 de vigor para voar contra um inimigo a até 40 blocos, desferindo um corte de 140% do dano base da arma antes de regressar à bainha
+		"Corte Autônomo": permanecer completamente imóvel por 1s ativa o estado de prontidão
+		Em prontidão, consome 10 de vigor a cada 1.5s e voa em direção a inimigos em até 40 blocos, desferindo um golpe de 140% do dano base antes de retornar
 		'''
-	Burden: Enquanto a lâmina voa, é impossível usar combos básicos, Passo Relâmpago Kamui ou Voo Sakura; a lâmina não decola caso não haja alvos válidos por perto
-	DeedHint: Empunhando a Onikiri, permaneça totalmente imóvel, receba um golpe e mantenha-se imóvel por um total de 10 segundos
+	Burden: Enquanto a lâmina estiver voando, combos básicos, Passo Relâmpago Kamui e Voo de Sakura não podem ser usados; não voará se não houver alvos válidos por perto
+	DeedHint: Permaneça imóvel com Onikiri e suporte um golpe, sustentando a quietude por 10 segundos acumulados
 }
 
 OniMeiRubbingRaikiri: {
-	DisplayName: Rai-kiri
-	Tooltip: O quinto golpe e artes invocam relâmpagos celestiais sob céu aberto; intervalo do combo +6%, ineficaz sob coberturas
-	Origin: Tachibana Dosetsu abrigava-se da chuva sob uma árvore quando um raio despencou; Dosetsu desembainhou a lâmina e partiu o raio ao meio, sobrevivendo milagrosamente. Sua espada foi rebatizada de Raikiri, famosa por todas as províncias
+	DisplayName: Raikiri
+	Tooltip: Sob céu aberto, o 5º golpe do combo e as artes invocam relâmpagos ao acertar; intervalo do combo +6%, sem raios sob teto
+	Origin:
+		'''
+		Lenhadores sabem bem que jamais se deve procurar abrigo sob velhos carvalhos na chuva, pois a madeira seca atrai a ira dos céus.
+		Porém, um guerreiro encouraçado fincou pé sob uma árvore morta em plena tempestade; quando um raio violeta despencou do firmamento, ele rugiu brandindo a espada para o alto e partiu a centelha em dois.
+		Desde então a espada guarda um pacto com a tempestade: contanto que o céu se abra límpido acima dela, raios destruidores despencam para onde sua ponta apontar.
+		'''
 	Power:
 		'''
-		"Corta-Relâmpago": quando o quinto golpe do combo, Zanshin, Lampejo Aniquilador ou Dança Final acertar um inimigo sob céu aberto, evoca uma coluna de trovão sobre o alvo
-		A coluna causa dano equivalente a 70% do dano base da arma; em tempestades com raios, até 3 relâmpagos podem desabar num único golpe
+		"Corte de Trovão": quando o 5º golpe do combo, golpe Zanshin, Lampejo da Aniquilação ou Dança Final acertam sob céu aberto, invoca um raio no alvo
+		O raio causa 70% do dano base da arma; durante tempestades elétricas, um único golpe invoca até 3 raios
 		'''
-	Burden: Intervalo de ataque do combo básico aumentado em 6% (ativo também com tempo limpo); impossível invocar relâmpagos sob blocos ou em cavernas subterrâneas
-	DeedHint: Elimine qualquer chefe empunhando a Onikiri sob céu aberto durante uma tempestade de raios
+	Burden: Intervalo de ataque do combo básico aumentado em 6% (mesmo com tempo limpo); não invoca raios sob blocos ou no subterrâneo
+	DeedHint: Elimine qualquer chefe empunhando Onikiri sob céu aberto durante uma tempestade elétrica
 }
 
 OniMeiRubbingNuekiri: {
-	DisplayName: Nue-kiri
-	Tooltip: Concluir o combo de cinco golpes no ar converte o finalizador num mergulho esmagador que arrasta inimigos; investida bloqueada brevemente após aterrissar
-	Origin: Nuvens agourentas cobriam o palácio enquanto a fera Nue uivava na noite. Minamoto no Yorimasa armou o arco para abater a ave nefasta, desferindo um golpe descendente com a lâmina durante a queda para exterminá-la; esta inscrição herda essa força de mergulho
+	DisplayName: Nuekiri
+	Tooltip: Concluir o combo no ar converte o 5º golpe num mergulho esmagador que puxa inimigos; atraso de arrancada ao aterrissar
+	Origin:
+		'''
+		Quando nuvens negras cobriram o telhado do palácio, uma fera quimérica com cabeça de símio e patas de tigre uivou feito um infante das alturas.
+		Um arqueiro de elite quebrou sua asa com uma flechada, e quando a criatura caiu em espiral através da neblina, um guerreiro saltou dos baluartes desferindo um corte vertical colossal que a pregou nas lajes de pedra.
+		Esta inscrição forjou aquele impacto avassalador que tomba dos céus no próprio fio da espada.
+		'''
 	Power:
 		'''
-		"Mergulho de Nue": ao concluir o combo básico de cinco golpes a pelo menos 3 blocos do chão, o quinto golpe converte-se num mergulho violento contra o solo
-		O impacto gera uma onda de choque de cerca de 12 blocos de raio, causando dano equivalente a 120% do dano base da arma e puxando os inimigos próximos para o ponto de impacto
+		"Mergulho de Nue": concluir o combo completo de cinco golpes no ar (ao menos 3 blocos acima do chão) converte o 5º golpe num poderoso mergulho contra o chão
+		O impacto gera uma onda de choque de ~12 blocos de raio causando 120% do dano base da arma e puxando inimigos próximos para o ponto de impacto
 		'''
-	Burden: Impossível utilizar o Passo Relâmpago Kamui por cerca de 0,7s após aterrissar; golpes desferidos junto ao chão mantêm o corte horizontal padrão
-	DeedHint: Durante a noite e a mais de 30 blocos de altura do solo, elimine um inimigo voador empunhando a Onikiri
+	Burden: O Passo Relâmpago Kamui não pode ser usado por ~0.7s após a aterrissagem; no chão, o 5º golpe continua sendo um corte horizontal padrão
+	DeedHint: Elimine um inimigo voador à noite enquanto empunha Onikiri a pelo menos 30 blocos acima do chão
 }
 
 OniMeiRubbingKamihi: {
 	DisplayName: Kami-hi
-	Tooltip: Atravessar inimigos com a investida deixa efígies de papel; golpear efígies transmite dano e vulnerabilidade; custo de investida +12% enquanto houver papéis
-	Origin: Um mestre na arte do papel corta com precisão divina, separando forma e sombra num só traço. Esta ranhura aprendeu o método de descascar a forma, tosquiando a silhueta do inimigo para Omote para cortar o papel feito carne viva
+	Tooltip: Atravessar inimigos deixa uma efígie de papel; atacá-la transfere dano e vulnerabilidade ao original; custo de vigor aumentado
+	Origin:
+		'''
+		Num beco esquecido vivia um ancião cego que precisava apenas tocar o pulso de um homem para cortar com tesouras uma silhueta de papel idêntica num instante.
+		No instante em que o Passo Relâmpago transpassa um inimigo, o sulco dorsal arranca uma sombra de tinta do ar e a deixa para trás.
+		Corte o papel, e o suplício dos ossos partidos atravessará o véu para ferir diretamente a carne do alvo original.
+		'''
 	Power:
 		'''
-		"Efígie de Papel": o Passo Relâmpago Kamui ao atravessar um inimigo deixa uma efígie durando 7s no local de aterrissagem (até 2 efígies simultâneas)
-		Atacar a efígie causa dano equivalente a 80% do dano base da arma, transmitindo o dano integral diretamente ao corpo original
-		Aplica também um estado vulnerável de 1,5s ao corpo verdadeiro, durante o qual ele recebe 12% a mais de dano da Onikiri
+		"Silhueta da Superfície": transpassar um inimigo com o Passo Relâmpago Kamui deixa uma efígie de papel no destino por 7s (até 2 no campo)
+		Atacar a efígie causa 80% do dano base da arma, transferindo todo esse dano diretamente ao inimigo original
+		Também inflige 1.5s de vulnerabilidade ao inimigo original, aumentando o dano sofrido de Onikiri em 12%
 		'''
-	Burden: Enquanto houver efígies de papel no campo, o consumo de vigor do Passo Relâmpago Kamui aumenta em 12%
-	DeedHint: Em Ura, corte 20 efígies de papel omokage empunhando a Onikiri
+	Burden: Enquanto houver efígies de papel no campo, o custo de vigor do Passo Relâmpago Kamui aumenta em 12%
+	DeedHint: Destrua 20 efígies de papel com Onikiri no Submundo do Domínio Oni
 }
 
 OniMeiRubbingSorahi: {
 	DisplayName: Sora-hi
-	Tooltip: Recuperação natural em dobro e concede uma investida aérea extra enquanto no ar; recuperação cessa brevemente após aterrissar
-	Origin: O cuteleiro mantinha uma teoria curiosa: o fôlego humano torna-se pesado assim que os pés tocam a terra firme. Apenas forjando a lâmina leve feito pena para bailar pelo ar é que se pode sintonizar com os ventos celestes e renovar a vitalidade
+	Tooltip: Dobra a regeneração de vigor no ar e concede uma corrida aérea extra; aterrissar pausa brevemente a regeneração
+	Origin:
+		'''
+		Andarilhos das trilhas sombrias costumam dizer: "Lama na sola rouba a destreza; um salto no vácuo deixa os ossos leves como penas."
+		Esta calha funda afinou o dorso do sabre até conferir-lhe um perfil etéreo. Contanto que os pés deixem a terra firme, correntes de ar levantam o aço, dobrando a recuperação do fôlego.
+		Mas os mortais não têm asas e precisam regressar ao solo; o peso da argila terrena corta a respiração por um breve instante.
+		'''
 	Power:
 		'''
-		"Corpo Flutuante": a velocidade de recuperação natural de vigor dobra enquanto ambos os pés estiverem fora do chão, concedendo uma investida aérea extra
-		Ao concluir uma investida aérea, flutua no ar por 0,5s no ponto final
+		"Porte Flutuante": dobra a velocidade de regeneração natural de vigor no ar e concede 1 uso adicional de Passo Relâmpago Kamui no ar
+		Passos Relâmpago aéreos pairam brevemente por 0.5s no seu ponto final
 		'''
-	Burden: A recuperação natural de vigor cessa totalmente por 0,75s após tocar o chão; o Passo Relâmpago no chão custa 10% a mais de vigor
-	DeedHint: Permaneça no ar sem tocar o solo por 15 segundos consecutivos, acertando ao menos 5 golpes com a Onikiri durante o voo
+	Burden: A regeneração natural de vigor é totalmente interrompida por 0.75s após tocar o chão; usar o Passo Relâmpago no chão custa 10% mais vigor
+	DeedHint: Permaneça no ar por 15 segundos consecutivos empunhando Onikiri, acertando ao menos 5 golpes no ar
 }
 
 OniMeiRubbingKagamihi: {
 	DisplayName: Kagami-hi
-	Tooltip: Ponto final da investida ergue um espelho de papel que replica seu próximo golpe; dano base da arma -5%
-	Origin: Os polidores de espelhos sabem que o reflexo parece simultâneo, mas carrega um atraso sutil. O criador desta ranhura aproveitou esse exato intervalo, fazendo o vulto do espelho acompanhar o golpe meio compasso depois
+	Tooltip: O final do Passo Relâmpago ergue um espelho de papel que replica o próximo golpe; dano base da arma -5%
+	Origin:
+		'''
+		No depósito de uma velha casa de penhores erguia-se um espelho de mercúrio; quem se olhava à noite via o reflexo mover-se meio pulsar de coração mais lento que a pessoa viva.
+		Esta canaleta polida e gélida captura esse atraso espectral.
+		Onde o Passo Relâmpago cessa, ergue-se um espelho ilusório de papel, e um instante depois, o vulto espelhado desfere com exatidão o mesmo golpe de seu portador.
+		'''
 	Power:
 		'''
-		"Eco do Espelho": o ponto de chegada do Passo Relâmpago Kamui ergue uma réplica em espelho de papel que dura 2s
-		Ao desferir seu próximo corte com a lâmina, a réplica sincroniza o mesmo golpe e se estilhaça, causando dano equivalente a 45% do dano base da arma
+		"Espelho Inscrito": o término do Passo Relâmpago Kamui ergue um espelho de papel por 2s
+		Ao desferir o próximo golpe de lâmina, o espelho reproduz esse mesmo ataque simultaneamente e se estilhaça, causando 45% do dano base da arma
 		'''
-	Burden: Dano base da arma reduzido em 5%; o corte replicado se desfere a partir da posição e orientação do espelho, dependendo de onde foi erguido
-	DeedHint: Elimine um Mímico utilizando o golpe de Zanshin (baús falsos do Clone de Calamitas também são válidos)
+	Burden: Dano base da arma reduzido em 5%; o golpe replicado é desferido na direção para onde o espelho estiver voltado
+	DeedHint: Abata um Mímico com um golpe Zanshin (baús falsos do Clone de Calamitas também contam)
 }
 
 OniMeiRubbingAmahi: {
 	DisplayName: Ama-hi
-	Tooltip: O Voo Sakura goteja chuva de tinta que forma poças paralisantes; consumo de vigor do Voo Sakura +15%
-	Origin: As calhas que recolhem a chuva sob os beirais também atendem pelo nome de ama-hi. O artífice abriu a ranhura inspirado nessas calhas: a água colhida não deve cair em vão, derramando-se sobre os inimigos que aguardam sob o fio
+	Tooltip: O Voo de Sakura goteja chuva de tinta que forma poças lamacentas; dreno de vigor do voo +15%
+	Origin:
+		'''
+		Em estradas lamacentas sob tempestades torrenciais, os caminhantes temem as poças escuras: os anciãos sabem que espíritos das águas espreitam na lama para agarrar tornozelos.
+		Talhado à feição das calhas de bambu dos telhados antigos, este canal pinga tinta densa ao planar em Voo de Sakura, criando no chão lamas viscosas que prendem os passos inimigos.
+		'''
 	Power:
 		'''
-		"Chuva Caída": ao planar no Voo Sakura, goteja uma gota de tinta a cada 0,1s, causando dano equivalente a 12% do dano base da arma
-		As gotas espalham-se em poças de tinta ao tocar o solo, paralisando e reduzindo a velocidade dos inimigos que pisarem nelas por 0,5s
+		"Chuva Cadente": durante o Voo de Sakura, derruba uma gota de tinta a cada 0.1s causando 12% do dano base da arma
+		As gotas formam poças ao tocar o chão que imobilizam e desaceleram inimigos dentro delas por 0.5s
 		'''
-	Burden: Taxa de drenagem de vigor do Voo Sakura aumentada em 15%
-	DeedHint: Acumule 10 segundos de Voo Sakura durante a chuva; não precisa ser em um único voo
+	Burden: A taxa de dreno de vigor do Voo de Sakura aumenta em 15%
+	DeedHint: Voe por um total acumulado de 10 segundos em Voo de Sakura durante a chuva (não exige um único voo ininterrupto)
 }
 
 OniMeiRubbingTsuzurihi: {
 	DisplayName: Tsuzuri-hi
-	Tooltip: Marcas de tinta de uma única investida detonam e traçam linhas cortantes entre si; dano base de marca única -30%
-	Origin: O encadernador une folhas soltas com agulha e linha; ao puxar o fio, as páginas dispersas formam um livro austero. Esta ranhura enxerga as marcas como pontos de costura, entrelaçando-as numa trama letal
-	Power: '''"Ponto de Tinta": quando várias marcas de tinta de um único Passo Relâmpago Kamui detonam, formam linhas de corte interceptoras entre si, cada uma causando dano equivalente a 35% do dano base da arma'''
-	Burden: Dano base de uma marca isolada reduzido em 30% (se a investida atravessar apenas um alvo, o dano geral será prejudicado)
-	DeedHint: Atravesse ao menos 6 inimigos distintos num único Passo Relâmpago Kamui
+	Tooltip: Marcas de tinta de um mesmo Passo Relâmpago conectam-se por linhas cortantes; dano de marcas individuais -30%
+	Origin:
+		'''
+		No necrotério, um velho embalsamador costurava membros mutilados com fio grosso de cânhamo negro, repuxando a linha num só puxão para fechar a carne sem emendas.
+		Este canal cravado de costuras age da mesma forma: marcas de tinta deixadas ao transpassar múltiplos inimigos detonam em uníssono, esticando linhas que fatiam os alvos em pedaços.
+		'''
+	Power: "Marcas Costuradas": quando múltiplas marcas de tinta de um mesmo Passo Relâmpago Kamui detonam, geram linhas cortantes entre si causando 35% do dano base cada uma
+	Burden: Dano base de cada marca individual reduzido em 30% (se a corrida transpassar apenas um alvo, há perda líquida de dano)
+	DeedHint: Perfure ao menos 6 inimigos diferentes com um único Passo Relâmpago Kamui, atando as linhas
 }
 
 OniMeiRubbingBonsho: {
 	DisplayName: Bonsho
-	Tooltip: Postura cheia sem desferir a Dança Final tange o sino automaticamente; consome metade da postura em troca da oportunidade de finalização
-	Origin: Os sinos dos templos dependem de um badalo para soar, mas o sino ancestral entalhado neste aço dispensa mãos alheias. Acumular força ao limite sem desferir faz o sino ressoar por conta própria, alertando a vastidão
+	Tooltip: Manter a postura cheia sem usar a Dança Final soa o sino; gasta metade da postura e substitui a chance da Dança
+	Origin:
+		'''
+		Num eremitério remoto nas montanhas pendia um sino de bronze lascado e sem badalo que ressoava na calada da noite ao sopro dos ventos, sem que ninguém o tocasse.
+		Os monges murmuravam que ali dentro estava aprisionado o rancor de mártires chacinados; contido por tempo demais, ele soava por si só para extravasar.
+		O sino entalhado neste aço é igualmente indomável: acumule postura cheia sem rematar com a dança, e o sino badalará sozinho, atordoando os demônios ao redor, mas dissipando seu ímpeto.
+		'''
 	Power:
 		'''
-		"Repique": manter a postura cheia por 3s sem desferir a Dança Final faz a lâmina vibrar e tanger o sino por si própria
-		Emite uma onda sonora expansiva que causa dano equivalente a 60% do dano base da arma a todos os inimigos num raio de 30 blocos e os imobiliza por 1,5s, reduzindo a postura para 50 pontos
+		"Badalada Solitária": se a Dança Final não for liberada em até 3s após encher a postura, o sino badala automaticamente
+		Libera uma onda sonora causando 60% do dano base aos inimigos em até 30 blocos e imobilizando-os por 1.5s, retornando a postura para 50
 		'''
-	Burden: O repique do sino consome a postura acumulada e perde a chance de desferir a Dança Final daquele acúmulo
-	DeedHint: Derrote qualquer chefe do início ao fim sem utilizar o Lampejo Aniquilador nem a Dança Final
+	Burden: A badalada consome a postura cheia e descarta a oportunidade de desferir a Dança Final
+	DeedHint: Derrote qualquer chefe sem usar Lampejo da Aniquilação nem Dança Final durante todo o combate
 }
 
 OniMeiRubbingHannya: {
 	DisplayName: Hannya
-	Tooltip: Vida baixa manifesta a máscara demoníaca, aumentando dano e roubo de vida; dano recebido aumenta na forma demoníaca, dano comum -4%
-	Origin: A máscara Hannya do teatro Noh retrata o ápice do rancor de uma mulher tornando-se demônio. Gravada na lâmina, simboliza que ao ser encurralado na beira da morte, o espírito inverte-se em fúria asura impiedosa
+	Tooltip: Com pouca vida assume a máscara demoníaca Hannya, ampliando dano e roubo de vida; dano sofrido aumentado na forma demônio, dano base -4%
+	Origin:
+		'''
+		No baú de figurinos de uma velha trupe repousava uma máscara de madeira de Hannya manchada de sangue coagulado.
+		A lenda conta que se um ator a vestisse no palco tomado por desespero humilhante, espinhos brotavam da madeira cravando-se nas bochechas e atirando-o num frenesi canibal.
+		A face entalhada no aço sela um pacto de sangue: ao cair na soleira da morte, a máscara demoníaca desperta, devorando o sangue inimigo para sustentar uma vida agonizante.
+		'''
 	Power:
 		'''
-		"Metamorfose da Face": cair abaixo de 35% de vida manifesta a máscara demoníaca enfurecida: dano da lâmina +20%, cada golpe restaura 0,5% da vida máxima
-		Durante a máscara demoníaca, a cada 3 acertos uma face espectral morde o alvo causando dano equivalente a 50% do dano base da arma
+		"Troca de Máscara": manifesta a fera demoníaca abaixo de 35% de vida: dano da espada +20%, cada golpe restaura 0.5% da vida máxima
+		A cada 3 acertos com a máscara, invoca uma mandíbula espectral mordendo o alvo por 50% do dano base
 		'''
-	Burden: Dano recebido aumentado em 15% enquanto a máscara demoníaca estiver ativa; acima de 35% de vida na forma padrão, o dano base da arma é reduzido em 4%
-	DeedHint: Empunhando a Onikiri, elimine qualquer chefe com a sua própria vida abaixo de 10%
+	Burden: Dano recebido aumentado em 15% enquanto a máscara demoníaca estiver ativa; dano base da arma reduzido em 4% em estado normal acima de 35% de vida
+	DeedHint: Elimine qualquer chefe empunhando Onikiri em agonia crítica abaixo de 10% de vida
 }
 
 OniMeiRubbingKaresansui: {
 	DisplayName: Karesansui
-	Tooltip: Ficar imóvel ancinha um jardim de areia estático que dilacera inimigos e acelera o ganho de postura; mover-se cancela a concentração
-	Origin: O paisagista não precisa de uma gota de água para desenhar ondas infinitas em cascalho e areia fina. O entalhador canalizou essa calma no aço: apenas quem se mantém sereno e imóvel pode arar um jardim de quietude com o corte da espada
+	Tooltip: Ficar imóvel rastela um jardim de areia ondulante que fere continuamente e acelera a postura; mover-se quebra a concentração
+	Origin:
+		'''
+		Diante de um templo montanhoso repousava um jardim de pedras desolado, sem árvore nem água, com cascalho branco rastelado em ondas concêntricas.
+		Nas profundezas da noite, a areia ondulava sozinha feito um oceano escuro; ladrões que ousavam pisá-la viam seus pés descarnados até o osso em segundos.
+		Este entalhe canaliza essa calmaria letal: plante-se no meio dos inimigos, e a aura da espada arará um jardim de ondas que retalha a carne adversária enquanto você pacifica seu espírito.
+		'''
 	Power:
 		'''
-		"Ondulações da Areia": permanecer completamente imóvel com a espada por 1,5s desdobra um campo de jardim de areia de 20 blocos de raio por 5s
-		O campo causa dano equivalente a 18% do dano base da arma a cada 0,5s aos inimigos dentro dele
-		Permanecer dentro do seu próprio jardim de areia aumenta a velocidade de ganho de postura em 30%
+		"Ondas de Areia": permanecer completamente imóvel por 1.5s expande um jardim de areia de 20 blocos de raio por 5s
+		Causa 18% do dano base da arma aos inimigos dentro dele a cada 0.5s
+		Estar dentro do seu próprio jardim de areia aumenta a velocidade de ganho de postura em 30%
 		'''
-	Burden: Abrir o domínio requer manter-se imóvel acumulando foco; mover-se cancela o progresso acumulado
-	DeedHint: Permaneça em combate contínuo por 30 segundos empunhando a Onikiri sem se mover e sem sofrer qualquer dano
+	Burden: Desdobrar o jardim exige permanecer imóvel acumulando carga; mover-se reinicia o progresso imediatamente
+	DeedHint: Lute perto de inimigos por 30 segundos contínuos com Onikiri sem se mover e sem sofrer nenhum dano
 }
 
 OniMeiRubbingSenju: {
 	DisplayName: Senju
-	Tooltip: O congelamento da Dança Final acrescenta seis braços empunhando espadas; zera o vigor e bloqueia investidas por 3s
-	Origin: A Grande Compaixão dos Mil Braços estende incontáveis mãos para acolher as aflições do mundo mortal. O entalhador embutiu essa efígie em ouro na lâmina, ditando esta regra austera: cada alma levada pela arte deve ser recebida por uma mão empunhando o aço
-	Power: '''"Mil Braços": durante o congelamento dramático da Dança Final, surgem seis braços espectrais empunhando espadas às suas costas para cortar juntos, cada um causando 30% do dano base da arma'''
-	Burden: Executar a Dança Final zera todo o vigor acumulado e impede o uso do Passo Relâmpago Kamui por 3s
-	DeedHint: Elimine 8 tipos distintos de chefes utilizando a Dança Final empunhando a Onikiri
+	Tooltip: O congelamento de câmera da Dança Final invoca seis braços espectrais para golpear em coro; zera o vigor e bloqueia corridas por 3s
+	Origin:
+		'''
+		Num santuário arruinado atrás de um ossuário, um velho ídolo de barro com braços partidos sugou o rancor local por séculos, brotando braços pálidos de cadáver à noite.
+		O escultor cravou sua silhueta no sabre, transformando-o num carrasco impiedoso:
+		No instante em que a Dança Final congela em close, seis braços espectrais emergem do nada às suas costas para estraçalhar o alvo em uníssono com sua espada.
+		Mas invocar tamanha escuridão drena por completo toda a sua energia vital.
+		'''
+	Power: "Mil Mãos": durante o close travado da Dança Final, seis braços espectrais golpeiam em uníssono às suas costas, cada um causando 30% do dano base da arma
+	Burden: O vigor cai para 0 após lançar a Dança Final, e o Passo Relâmpago Kamui é bloqueado por 3s
+	DeedHint: Elimine 8 espécies diferentes de chefes usando a Dança Final empunhando Onikiri
 }
 
 OniMeiRubbingKogehi: {
 	DisplayName: Koge-hi
-	Tooltip: O Passo Relâmpago Kamui deixa um rastro em chamas pelo caminho percorrido; dano base da arma -4%
-	Origin: O cuteleiro habitava junto às margens de lava fervente e via muitos descuidarem dos passos. Abriu este sulco de fogo para projetar-se à frente, deixando o calor ardente para trás para os perseguidores
+	Tooltip: O Passo Relâmpago Kamui deixa um rastro de solo ardente; dano base da arma -4%
+	Origin:
+		'''
+		Ao esfriar os fornos crematórios para limpeza, os faxineiros sempre encontravam pedaços de carvão de osso fosforescentes nas fendas mais fundas dos tijolos — mesmo jogados na neve, sibilavam soltando vapor.
+		Um ferreiro temperou esta ranhura nessas cinzas de tumba. Quando o aço corta o ar na corrida, deixa uma trilha flamejante para trás que queima os perseguidores.
+		'''
 	Power:
 		'''
-		"Rastro em Brasas": o Passo Relâmpago Kamui deixa até 5 zonas de solo abrasador durando 1,5s ao longo de sua trajetória
-		Inimigos que pisarem no solo em chamas sofrem dano de queimadura contínuo equivalente a 14% do dano base da arma a cada 0,5s
-		Novas marcas que se sobrepuserem a até 2 blocos de marcas antigas apenas renovam a duração
+		"Rastro Ardente": deixa até 5 zonas em chamas ao longo do caminho do Passo Relâmpago Kamui, durando 1.5s cada
+		Inimigos nas zonas em chamas sofrem 14% do dano base da arma como queimadura a cada 0.5s
+		Novas marcas que se sobreponham a menos de 2 blocos de uma existente apenas renovam sua duração
 		'''
-	Burden: Dano base da arma reduzido em 4%; o rendimento perdido deve ser compensado com o rastro ardente
+	Burden: Dano base da arma reduzido em 4%
 }
 
 OniMeiRubbingKanhi: {
 	DisplayName: Kan-hi
-	Tooltip: Romper o combate acelera imensamente a recuperação natural de vigor; custos de vigor do Passo Relâmpago e Voo Sakura +8%
-	Origin: Diante da ferraria repousa um banco de madeira onde o cuteleiro costuma descansar observando o burburinho da vila. Quando o espírito alcança a quietude, o fôlego se renova; este sulco esculpe esse sossego
-	Power: '''"Fôlego Sereno": ao romper o combate e passar 2s sem desferir acertos com a espada, a taxa de recuperação natural de vigor aumenta para 2,25x'''
-	Burden: O custo de vigor do Passo Relâmpago Kamui e a drenagem do Voo Sakura aumentam em 8%
+	Tooltip: O vigor recupera muito mais rápido fora de combate; custo de vigor de Passo Relâmpago e Voo de Sakura +8%
+	Origin:
+		'''
+		No pátio dos fundos de uma velha casa de chá havia uma poltrona de vime gasta. Contavam que décadas atrás, um forasteiro ensanguentado desabou sobre ela, e após um breve cochilo, suas feridas cicatrizaram e a estafa sumiu.
+		Este canal traduz esse descanso revigorante:
+		Assim que a espada repousa na bainha, o vigor esgotado jorra como chuva em terra seca; mas forçar fintas ágeis no meio da peleja torna-se pesado e custoso.
+		'''
+	Power: "Respiração Serena": a velocidade de regeneração natural de vigor sobe para 2.25x após sair de combate e sem acertar golpes por 2s
+	Burden: Custo de vigor de Passo Relâmpago Kamui e Voo de Sakura aumentado em 8% cada
 }
 
 OniMeiRubbingTodohi: {
 	DisplayName: Todo-hi
-	Tooltip: Golpes da lâmina retêm e reduzem a velocidade dos inimigos; o Passo Relâmpago tem um breve atraso na arrancada
-	Origin: Uma têmpera incomum tornou o fio viscoso ao atravessar a carne, emperrando o passo de tudo o que corta. O ferreiro orgulhou-se disso: quem fica amarrado é o alvo ferido, e não a mão que empunha o aço
-	Power: '''"Prisão Viscosa": acertos diretos de lâmina atrasam a movimentação do inimigo por 0,6s, reduzindo a velocidade de inimigos normais para 88% e de chefes para 96%'''
-	Burden: O Passo Relâmpago Kamui ganha um atraso inicial adicional de 0,1s; Prisão Viscosa e Adormecido não se acumulam no mesmo alvo, aplicando apenas a maior redução
+	Tooltip: Golpes diretos prendem e desaceleram inimigos; o arranque do Passo Relâmpago sofre um ligeiro atraso
+	Origin:
+		'''
+		No armário de um boticário repousava um pote com resina de pinheiro podre, tão viscosa que qualquer pássaro que a roçasse ficava preso para sempre.
+		O aço bebeu com fartura desse unguento negro na têmpera. Cada golpe envolve as articulações da vítima em amarras invisíveis que atolam seus passos no barro.
+		Porém, quando o espadachim tenta arrancar numa corrida súbita, seus próprios pés ressentem essa mesma pesadez grudenta.
+		'''
+	Power: "Amortecimento Viscoso": golpes diretos desaceleram os inimigos por 0.6s (reduzindo inimigos comuns para 88% e chefes para 96% de velocidade)
+	Burden: O Passo Relâmpago Kamui sofre um atraso de inicialização de 0.1s; Amortecimento Viscoso e Entorpecimento não se acumulam
 }
 
 OniMeiRubbingShiorihi: {
 	DisplayName: Shiori-hi
-	Tooltip: Abater um alvo arremessa uma lâmina de poda contra inimigos feridos próximos; recuperação natural -10%, errar o Zanshin penaliza o vigor
-	Origin: O jardineiro poda com método rigoroso: onde a tesoura trabalha, galhos secos e murchos ao redor são podados na mesma passagem. Aquele que forjou este sulco exercia esse exato ofício no passado
+	Tooltip: Abater um alvo arremessa tesouras de poda nos feridos próximos; regeneração de vigor -10%, errar Zanshin pune o vigor
+	Origin:
+		'''
+		Os jardineiros das grandes mansões podavam galhos mortos com frieza impiedosa: ao cortar um galho podre, beliscavam folhas murchas vizinhas sem hesitar.
+		Este canal personifica esse hábito implacável de extirpar a fraqueza:
+		Quando um inimigo formidável tomba, uma tesoura espectral salta da bainha caçando o pescoço de qualquer criatura agonizante nas redondezas.
+		'''
 	Power:
 		'''
-		"Poda de Pétalas": abater um alvo diretamente procura outro inimigo com menos de 50% de vida num raio de 15 blocos
-		Arremessa uma lâmina de poda em perseguição àquele alvo, causando dano equivalente a 25% do dano base da arma (sem recarga caso não haja alvos; recarga de 0,75s ao ativar)
+		"Poda": abater diretamente um alvo busca outro inimigo a menos de 15 blocos com menos de 50% de vida
+		Arremessa uma tesoura de poda causando 25% do dano base (sem recarga se não houver alvos válidos; 0.75s de recarga após ativação)
 		'''
 	Burden:
 		'''
-		Taxa de recuperação natural de vigor reduzida em 10%
-		Se o golpe Zanshin após a investida errar o alvo, consome 2 pontos extras de vigor
-		Abates causados pela lâmina de poda não encadeiam novas podas consecutivas
+		Velocidade de regeneração natural de vigor reduzida em 10%
+		Errar um golpe Zanshin após um Passo Relâmpago deduz 2 de vigor adicional
+		Abates causados pela tesoura de poda não podem desencadear outra poda em cadeia
 		'''
 }
 
 OniMeiRubbingShiohi: {
 	DisplayName: Shio-hi
-	Tooltip: Golpear no compasso da maré restaura vigor, e o Zanshin na maré atinge com mais força; combos fora do ritmo perdem força
-	Origin: O cuteleiro cresceu junto ao mar, afiando lâminas ao ritmo do vai e vem das ondas. A maré enche e vaza assim como a respiração dos homens; golpeando no pico da maré cheia, o oceano devolve o fôlego da vida
+	Tooltip: Golpear no ritmo da maré restaura vigor e fortalece Zanshin; golpes fora de compasso causam dano levemente reduzido
+	Origin:
+		'''
+		Sob a quilha de uma velha barcaça de pesca pendia um apito de osso que subia e descia com o marulhar; o velho barqueiro dizia que cada batida da onda no recife era um sopro do abismo marinho.
+		As ondulações ao longo da lâmina pulsam no compasso da maré:
+		Golpeie no exato instante em que a crista atinge o cume, e o vigor transbordará como maré cheia; ataque fora de hora contra a corrente, e o aço morderá sem ânimo.
+		'''
 	Power:
 		'''
-		"Compasso da Maré": surge um marcador de maré pulsando em ciclos de 0,8s abaixo da barra de vigor, com uma janela ideal de maré cheia de 0,2s no ápice
-		Golpes do combo básico desferidos dentro da janela de maré restauram 3 pontos extras de vigor no primeiro acerto; o golpe Zanshin na maré causa +8% de dano
+		"Compasso da Maré": exibe uma barra de maré de 0.8s abaixo do vigor (a janela de harmonia são os 0.2s do topo da crista)
+		Golpes do combo desferidos na janela de harmonia restauram 3 de vigor extra no primeiro acerto; golpes Zanshin harmônicos causam +8% de dano
 		'''
-	Burden: Combos desferidos fora do compasso da maré causam 3% a menos de dano (avaliado no instante do acionamento do botão, e não no momento do impacto)
+	Burden: Golpes do combo desferidos fora de compasso causam 3% a menos de dano (avaliado no momento em que a tecla é pressionada)
 }
 
 OniMeiRubbingShibori: {
 	DisplayName: Shibori
-	Tooltip: Atravessar com a investida ou sofrer dano durante artes adormece os inimigos; ganho padrão de postura -15%
-	Origin: Quem aprende a esgrima deve primeiro suportar a dormência e a dor nos pulsos. O mestre inverteu a lógica: se suporto uma medida de choque, farei o agressor que tocar a lâmina sofrer dez medidas de choque de volta
+	Tooltip: Transpassar inimigos ou sofrer golpes em animações fixas causa choque e paralisia; ganho de postura -15%
+	Origin:
+		'''
+		No bastão de ferro de um velho oficial de justiça estava esculpida uma besta do trovão com dentes à mostra.
+		Ao enfrentar bandidos, mesmo que uma lâmina pesada atingisse seu bastão esfolando suas mãos, o oficial não recuava: devolvia o choque como uma descarga paralisante que derrubava o agressor desfalecido.
+		Este entalhe é igualmente obstinado: suporte um golpe doloroso, e os membros do adversário ficarão dormentes e indefesos.
+		'''
 	Power:
 		'''
-		"Contra-Choque": atravessar inimigos com o Passo Relâmpago Kamui aplica o estado "Adormecido" diretamente
-		Receber dano de contato durante a execução travada de artes consome 15 de postura para reduzir o dano sofrido a 85% e aplicar "Adormecido" ao agressor (recarga de 1,5s)
-		Inimigos sob o efeito "Adormecido" têm a velocidade reduzida por 0,75s (inimigos normais para 90%, chefes para 98%) e seu dano de contato é reduzido em 10%
+		"Contra-Ataque Entorpecente": transpassar inimigos com o Passo Relâmpago Kamui inflige Entorpecimento
+		Receber dano de contato durante animações fixas consome 15 de postura para reduzir o dano a 85% e entorpece o agressor (recarga de 1.5s)
+		Inimigos entorpecidos ficam lentos por 0.75s (comuns em 90%, chefes em 98%) e seu dano de contato é reduzido em 10%
 		'''
-	Burden: Velocidade de ganho padrão de postura reduzida em 15%
+	Burden: Velocidade padrão de ganho de postura reduzida em 15%
 }
 
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
-	Tooltip: Reduz expressivamente o dano e a repulsão sofridos de projéteis hostis; ganho padrão de postura -15%
-	Origin: Flechas e pedras cruzam a vanguarda da batalha, e o zumbido nos ouvidos apavora os fracos. O veterano que cravou este lema sabia que, em meio à saraivada, fincar os pés firme como rocha reduz a ferida pela metade
-	Power: '''"Aquietar": ao sofrer dano de projéteis hostis, o dano recebido é reduzido em 12% e a repulsão sofrida cai para 35% do valor original'''
-	Burden: Velocidade de ganho padrão de postura reduzida em 15%; oferece utilidade limitada em combates puramente corpo a corpo
+	Tooltip: Reduz expressivamente o dano de projéteis e a repulsão; ganho de postura -15%
+	Origin:
+		'''
+		Um capitão calejado que sobreviveu a saraivadas de fogo sempre gravava selos de apaziguamento no lombo do seu sabre.
+		Sob uma chuva de chumbo grosso no front, os covardes entram em pânico com os silvos agudos e tombam na confusão.
+		Apoiado neste amuleto para acalmar a pulsação, o capitão mantinha a posição contra flechas e balas, firme para blindar seus órgãos vitais de um destino trágico.
+		'''
+	Power: "Calmaria do Clamor": sofrer dano de projéteis inimigos reduz o dano em 12% e a repulsão para 35%
+	Burden: Velocidade padrão de ganho de postura reduzida em 15%
 }
 
 OniMeiRubbingAshidome: {
 	DisplayName: Ashidome
-	Tooltip: Ficar imóvel acumula força para aumentar drasticamente o dano do próximo quinto golpe ou arte; mover-se dissipa o foco
-	Origin: A primeira lição do mestre: base instável arruína todas as técnicas. Apenas com raízes firmes o vigor se condensa; e quando esse vigor concentrado rompe o ar, desmorona montanhas
-	Power: '''"Passo Plantado": permanecer completamente imóvel segurando a lâmina por 0,75s completa o acúmulo de força, aumentando em 25% o dano do próximo quinto golpe do combo, Zanshin, Lampejo Aniquilador ou Dança Final'''
-	Burden: O golpe fortalecido consome o bônus no acionamento, sem reembolso caso erre; mover-se cancela imediatamente todo o foco acumulado
+	Tooltip: Ficar imóvel acumula força, aumentando enormemente o dano do próximo 5º golpe ou arte; mover-se cancela a carga
+	Origin:
+		'''
+		Quando um velho mestre de caravana instruía seus recrutas, repetia uma única regra: "Não hesite nos passos; apenas a firmeza preserva a vida."
+		Se uma besta fétida bloquear seu caminho numa trilha escura, crave ambos os pés no chão gelado feito um cedro secular e prenda a respiração no peito.
+		Quando o monstro saltar ao seu encontro, o corte explosivo nascido dessa raiz firme fenderá a montanha com violência irresistível.
+		'''
+	Power: "Postura Enraizada": permanecer imóvel por 0.75s conclui a carga, aumentando o dano do próximo 5º golpe do combo, golpe Zanshin, Lampejo da Aniquilação ou Dança Final em 25%
+	Burden: O ataque fortalecido é consumido no momento do golpe, e errar não o reembolsa; mover-se dissipa imediatamente a carga acumulada
 }
 
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
-	Tooltip: Execuções deixam uma poça de brasas ardentes no ponto de impacto; vigor máximo -5%, custo da investida +10% enquanto as brasas queimarem
-	Origin: Após o fogo da forja ser abafado para a noite, o calor das brasas no forno resiste até o amanhecer. O cuteleiro tomou essa essência para o fio: a chama se recolhe, mas o ardor pungente permanece
+	Tooltip: Execuções deixam um braseiro persistente no local do alvo; vigor máximo -5%, custo do Passo Relâmpago aumentado enquanto arder
+	Origin:
+		'''
+		Quando os antigos fornos crematórios apagavam suas chamas no inverno profundo, remexendo a camada de cinzas pálidas sempre se encontravam brasas violetas nas juntas dos tijolos.
+		Mesmo regadas com água gelada, chiuvam soltando fumaça por semanas a fio.
+		Ao aprisionar essas brasas de tumba no aço, cada inimigo esmagado por uma execução incendeia a terra com fogo infernal, reduzindo os perseguidores a carvão e ossos.
+		'''
 	Power:
 		'''
-		"Brasas Residuais": uma execução bem-sucedida abre um campo de brasas durando 3s no local do impacto
-		Inimigos no campo sofrem dano de queimadura equivalente a 16% do dano base da arma a cada 0,75s
-		Apenas um campo pode existir por vez; uma nova execução substitui e move o campo para a nova posição
+		"Brasas": executar um inimigo com sucesso abre um campo de brasas de 3s no local do abate
+		Inimigos no campo sofrem 16% do dano base da arma como queimadura a cada 0.75s
+		Apenas um campo de brasas pode existir por vez; executar outro inimigo desloca o campo para o novo ponto
 		'''
-	Burden: Limite máximo de vigor reduzido em 5%; enquanto o campo de brasas queimar, o custo de vigor do Passo Relâmpago Kamui aumenta em 10%
+	Burden: Vigor máximo reduzido em 5%; enquanto houver um campo de brasas ativo, o custo de vigor do Passo Relâmpago Kamui aumenta em 10%
 }

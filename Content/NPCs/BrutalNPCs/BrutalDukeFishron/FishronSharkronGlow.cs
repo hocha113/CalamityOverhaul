@@ -19,7 +19,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             return null;
         }
 
+        /// <summary>
+        /// 让鲨鱼龙面朝速度方向。原版贴图是头朝左的侧身：向右飞靠 spriteDirection=1 水平翻转，
+        /// 向左飞不翻转但旋转要补 Pi，否则会尾朝前倒着飞。横向分量太小时保留原朝向，免得竖直飞行时左右抖翻
+        /// </summary>
+        internal static void FaceVelocity(NPC npc) {
+            if (npc.velocity.LengthSquared() < 0.01f) {
+                return;
+            }
+            if (Math.Abs(npc.velocity.X) > 0.3f) {
+                npc.spriteDirection = npc.velocity.X > 0f ? 1 : -1;
+            }
+            npc.rotation = npc.velocity.ToRotation() + (npc.spriteDirection == -1 ? MathHelper.Pi : 0f);
+        }
+
         public override void PostAI() {
+            //每帧校正朝向：龙卷甩出的抛物线鲨鱼速度会拐弯，只在发射时设一次不够
+            FaceVelocity(npc);
             //随身点光：身体靠光照读细节，描边只负责勾轮廓
             Lighting.AddLight(npc.Center, FishronMotionFX.SeaGreen.ToVector3() * 0.5f);
             //末相电眼另给一撮头前点光，雨夜里眼睛先于身体被看见

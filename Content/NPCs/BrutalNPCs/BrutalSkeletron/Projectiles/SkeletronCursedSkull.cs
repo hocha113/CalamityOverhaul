@@ -65,7 +65,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
                 }
             }
 
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            //颅骨贴图是正立头骨，只镜像加限幅俯仰，不按速度整周旋转
+            SkeletronRenderHelper.OrientSkull(Projectile, Projectile.velocity);
 
             //三帧循环
             if (++Projectile.frameCounter >= 5) {
@@ -128,17 +129,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
                 Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 Main.EntitySpriteDraw(tex, pos, rect,
                     SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostDeep) * fade,
-                    Projectile.oldRot[i], orig, Projectile.scale * (1f - i * 0.05f), SpriteEffects.None, 0);
+                    Projectile.oldRot[i], orig, Projectile.scale * (1f - i * 0.05f),
+                    SkeletronRenderHelper.SkullEffects(Projectile.oldSpriteDirection[i]), 0);
             }
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            SpriteEffects effects = SkeletronRenderHelper.SkullEffects(Projectile.spriteDirection);
             //三层幽灵体
             Main.EntitySpriteDraw(tex, drawPos, rect, SkeletronRenderHelper.GhostDeep * (0.85f * opacity),
-                Projectile.rotation, orig, scale * 1.18f, SpriteEffects.None, 0);
+                Projectile.rotation, orig, scale * 1.18f, effects, 0);
             Main.EntitySpriteDraw(tex, drawPos, rect, SkeletronRenderHelper.GhostCyan * (0.85f * opacity),
-                Projectile.rotation, orig, scale, SpriteEffects.None, 0);
+                Projectile.rotation, orig, scale, effects, 0);
             Main.EntitySpriteDraw(tex, drawPos, rect, new Color(230, 255, 250, 0) * (0.6f * opacity),
-                Projectile.rotation, orig, scale * 0.82f, SpriteEffects.None, 0);
+                Projectile.rotation, orig, scale * 0.82f, effects, 0);
             return false;
         }
     }

@@ -30,6 +30,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
         public static Color AsAdditive(Color color) => new Color(color.R, color.G, color.B, (byte)0);
         #endregion
 
+        #region 颅火朝向
+        /// <summary>颅骨最大俯仰（弧度，约 25°）：再大头顶就开始离开正上方，变成侧躺的头骨</summary>
+        private const float SkullMaxPitch = 0.44f;
+        /// <summary>镜像死区（归一化横向分量）：近竖直飞行时不来回抖翻</summary>
+        private const float SkullFlipDeadZone = 0.15f;
+
+        /// <summary>
+        /// 原版颅骨贴图(Projectile_270)是 26×30 的正立头骨：头顶朝上、下颌朝下、脸略偏右，
+        /// 不是箭矢那种可以整周旋转的方向性贴图（原版自己也从不给它写 rotation）。
+        /// 所以这里只按横向分量镜像，再叠一层限幅俯仰表示飞行方向，头顶始终朝上
+        /// </summary>
+        internal static void OrientSkull(Projectile proj, Vector2 facing) {
+            if (facing.LengthSquared() < 0.0001f) {
+                return;
+            }
+            facing = Vector2.Normalize(facing);
+            if (facing.X > SkullFlipDeadZone) {
+                proj.spriteDirection = 1;
+            }
+            else if (facing.X < -SkullFlipDeadZone) {
+                proj.spriteDirection = -1;
+            }
+            //俯冲低头、上飞抬头；镜像之后视觉旋向相反，故乘 spriteDirection
+            proj.rotation = facing.Y * SkullMaxPitch * proj.spriteDirection;
+        }
+
+        /// <summary>颅火贴图镜像：沿用原版弹幕约定，spriteDirection == -1 时水平翻转</summary>
+        internal static SpriteEffects SkullEffects(int spriteDirection) {
+            return spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+        }
+        #endregion
+
         #region 幽灵臂条带
 
         private const int ArmSegments = 16;

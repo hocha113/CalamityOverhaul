@@ -228,9 +228,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             shark.target = target.whoAmI;
             Vector2 dir = (target.Center + target.velocity * 14f - top).SafeNormalize(-Vector2.UnitY);
             shark.velocity = dir * 15f - Vector2.UnitY * 3f;
-            shark.rotation = shark.velocity.ToRotation();
             shark.direction = Math.Sign(shark.velocity.X) >= 0 ? 1 : -1;
             shark.spriteDirection = shark.direction;
+            //贴图头朝左，向左飞的旋转要补 Pi，统一走 FaceVelocity
+            FishronSharkronGlow.FaceVelocity(shark);
             shark.netUpdate = true;
         }
 

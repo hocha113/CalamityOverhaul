@@ -81,8 +81,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
                 }
             }
 
-            //毂心颅骨朝滚进方向
-            Projectile.rotation = RollAngle + MathHelper.PiOver2;
+            //毂心颅骨朝滚进方向：正立头骨只镜像不随轮转，轮子的旋感由辐条承担
+            SkeletronRenderHelper.OrientSkull(Projectile, RollAngle.ToRotationVector2());
 
             //三帧循环
             if (++Projectile.frameCounter >= 6) {
@@ -198,13 +198,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             Rectangle rect = tex.GetRectangle(Projectile.frame, Main.projFrames[Type]);
             Vector2 orig = rect.Size() / 2f;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            SpriteEffects effects = SkeletronRenderHelper.SkullEffects(Projectile.spriteDirection);
 
             Main.EntitySpriteDraw(tex, drawPos, rect, SkeletronRenderHelper.CurseViolet * (0.8f * opacity),
-                Projectile.rotation, orig, Projectile.scale * 1.2f, SpriteEffects.None, 0);
+                Projectile.rotation, orig, Projectile.scale * 1.2f, effects, 0);
             Main.EntitySpriteDraw(tex, drawPos, rect, SkeletronRenderHelper.GhostCyan * (0.85f * opacity),
-                Projectile.rotation, orig, Projectile.scale, SpriteEffects.None, 0);
+                Projectile.rotation, orig, Projectile.scale, effects, 0);
             Main.EntitySpriteDraw(tex, drawPos, rect, new Color(230, 255, 250, 0) * (0.6f * opacity),
-                Projectile.rotation, orig, Projectile.scale * 0.82f, SpriteEffects.None, 0);
+                Projectile.rotation, orig, Projectile.scale * 0.82f, effects, 0);
         }
     }
 }

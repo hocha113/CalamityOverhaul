@@ -1,7 +1,13 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
-	Tooltip: Inflige de lourds dégâts supplémentaires aux ennemis affaiblis, l'élimination directe rend de la posture ; dégâts de l'arme -2%
-	Origin: La nuit de l'épreuve de coupe du clan Minamoto, cette lame trancha la tête d'un criminel et coupa net la barbe sous son menton d'un seul coup. Le nom de Higekiri naquit cette nuit-là
+	Tooltip: Les coups directs infligent de lourds dégâts d'exécution aux ennemis affaiblis ; achever une cible rend de la posture ; dégâts de l'arme -2%
+	Origin:
+		'''
+		Les bourreaux de l'ancien échafaud se transmettaient de génération en génération un couperet sinistre qui ne s'ébréchait jamais, quel que soit le nombre de condamnés.
+		La rumeur raconte que lorsque le dernier exécuteur s'effondra d'une crise cardiaque soudaine, la lame tomba de l'estrade d'elle-même.
+		Avant même que l'acier n'effleure le cou, la barbe épaisse tombant sur la poitrine du supplicié glissa net avec sa tête, comme tranchée par une mâchoire invisible.
+		Le vieux légiste de la morgue comprit alors que cette lame reconnaît l'instant précis où la vie s'éteint : à celui qui ne tient qu'à un fil, le souffle de son vent tranche net la gorge.
+		'''
 	Power:
 		'''
 		「Coupe-barbe」les coups directs de lame infligent des dégâts supplémentaires aux cibles ayant moins de 35% de points de vie, augmentant à mesure que leurs points de vie baissent
@@ -13,16 +19,28 @@ OniMeiRubbingHigekiri: {
 
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
-	Tooltip: Inscription d'origine, conserve les caractéristiques de base d'Onikiri sans bonus ni pénalité
-	Origin: Watanabe no Tsuna maniait cette lame au pont d'Ichijo-Modoribashi et trancha le bras d'un oni, le faisant fuir dans la douleur. La lame pourfendeuse d'onis reçut l'inscription Onikiri, gravée profondément dans la soie à travers les âges sans jamais changer
+	Tooltip: Le nom primordial d'Onikiri, conservant toutes ses propriétés d'origine sans bonus ni pénalité
+	Origin:
+		'''
+		Un dossier jauni extrait des archives de l'ancien commissariat de la concession : les nuits de pluie, une femme vêtue d'un qipao et tenant une ombrelle en papier rouge errait sur le pont de pierre, appelant les passants.
+		Quiconque lui répondait était retrouvé au matin au pied du pont, la peau du visage arrachée à vif.
+		Un bretteur aveugle s'avança dans la brume ; sous l'ombrelle, un bras cadavérique et blafard jaillit pour lui broyer la gorge. Au sifflement de l'air, le bretteur dégaina d'un coup ascendant.
+		Le bras spectral et l'ombrelle tombèrent dans le fleuve, se dissolvant en une vase noire fétide. Seul resta le sabre, imprégné de cette souillure primordiale, devenu l'ossature de dix mille sceaux funestes.
+		'''
 	Power: Conserve l'intégralité des caractéristiques de base d'Onikiri, sans ajouter de bonus ni d'effet supplémentaire
 	Burden: Aucun
 }
 
 OniMeiRubbingShishinoko: {
 	DisplayName: Shishi-no-ko
-	Tooltip: Achever le combo complet de cinq coups ajoute des ondes de coupe croisées au coup final ; intervalle entre les attaques du combo +2%
-	Origin: La légende raconte que cette lame reposait près de l'oreiller du seigneur, rugissant soudain comme un lion au cœur de la nuit et faisant trembler la demeure. Émerveillé par sa puissance, le maître fit incruster son nom en or sur la soie, la rebaptisant Shishi-no-ko
+	Tooltip: Achever le combo de cinq coups libère deux ondes de coupe croisées au coup final ; intervalle entre les attaques du combo +2%
+	Origin:
+		'''
+		Dans l'arrière-boutique d'un vieux mont-de-piété du quartier ouest repose un lourd coffre en santal rouge, scellé par des talismans de cinabre.
+		À chaque orage de minuit, des rugissements à glacer le sang s'échappent du coffre comme une bête affamée broyant des os, faisant vibrer toutes les ferrailles de l'entrepôt.
+		On raconte que cette lame fut trempée dans la moelle d'un monstre antique ayant dévoré des bourgades montagnardes entières ; sa sauvagerie ne fut jamais domptée.
+		Seul un enchaînement ininterrompu de cinq entailles libère cette férocité contenue, projetant au cinquième coup deux ondes croisées rugissantes comme des mâchoires qui se referment.
+		'''
 	Power:
 		'''
 		「Rugissement du lion」en achevant le combo de base complet de cinq coups sans être interrompu par le pas éclair Kamui ou des arts
@@ -33,390 +51,556 @@ OniMeiRubbingShishinoko: {
 
 OniMeiRubbingTomokiri: {
 	DisplayName: Tomokiri
-	Tooltip: Annuler un combo par un pas éclair laisse une ombre tranchante différée sur place ; dégâts subis en main +6% et accumule le coût en vigueur du pas éclair
-	Origin: Deux lames illustres du clan Minamoto furent éprouvées tranchant contre tranchant ; le fil de cette lame était si affûté qu'elle trancha net en deux la précieuse lame compagne. Rebaptisée Tomokiri pour avoir blessé sa compagne, son tempérament devint d'autant plus féroce et violent
+	Tooltip: Interrompre un combo par un pas éclair laisse un écho tranchant décalé ; dégâts subis +6% et accumule le coût de course ; dissipé par une frappe Zanshin
+	Origin:
+		'''
+		Deux frères d'armes portant des lames maudites s'abritèrent d'un déluge dans un temple abandonné, posant leurs armes côte à côte sur le râtelier.
+		Au milieu de la nuit, le feu mourant, l'un des sabres bascula de lui-même, tranchant le fourreau de son compagnon — et les reins du maître endormi — deux pouces dans la chair.
+		Imbibé du sang de son frère d'armes, ce sabre déteste les frappes inachevées.
+		Dès que son porteur rompt une attaque pour esquiver, le coup interrompu persiste sous forme d'une ombre écarlate qui achève l'entaille seule ; la moindre hésitation retourne sa fureur contre son maître.
+		'''
 	Power:
 		'''
-		「Ombre du remords」en annulant le combo en cours avec le pas éclair Kamui, l'attaque interrompue laisse une ombre rémanente sur place
-		Après un court délai, elle frappe sur place, infligeant des dégâts équivalents à 35% des dégâts de base de l'arme
+		「Ombre de culpabilité」utiliser le pas éclair Kamui pour interrompre le combo actuel laisse le coup interrompu sous forme d'ombre fantôme
+		Après un court délai, elle s'abat sur place, infligeant 35% des dégâts de base de l'arme
 		'''
 	Burden:
 		'''
-		Tant que cette lame est tenue en main, les dégâts subis augmentent de 6%
-		Chaque ombre du remords accumule 1 charge de 「Remords」 (jusqu'à 3 charges), chaque charge augmentant le coût du prochain pas éclair de 4 points de vigueur
-		Toucher une cible avec la frappe Zanshin suivant un pas éclair dissipe tous les 「Remords」
+		Dégâts subis pendant le port de cette arme augmentés de 6%
+		Chaque ombre de culpabilité générée accumule 1 niveau de « Culpabilité » (jusqu'à 3), chaque niveau augmentant le coût en vigueur du prochain pas éclair Kamui de 4
+		Toucher avec une frappe Zanshin consécutive à un pas éclair dissipe tous les niveaux de Culpabilité
 		'''
 }
 
 OniMeiRubbingKazehi: {
 	DisplayName: Kaze-hi
-	Tooltip: Réduit grandement le coût en vigueur du pas éclair Kamui et du vol des cerisiers ; dégâts d'explosion des marques d'encre -20%
-	Origin: Le forgeron creusa une longue gorge droite sur la lame pour guider le vent le long de l'acier. Lors de la coupe le vent fend l'air en premier, s'apaisant dès que le tranchant regagne le fourreau
-	Power: 「Vent favorable」le coût en vigueur du pas éclair Kamui est réduit de 15%, et la consommation de vigueur du vol des cerisiers est réduite de 20%
+	Tooltip: Réduit considérablement le coût en vigueur du pas éclair Kamui et du vol de sakura ; dégâts d'explosion des marques d'encre -20%
+	Origin:
+		'''
+		Une ancienne troupe de théâtre d'ombres possédait un secret : creuser une fine rainure d'air le long de la tige de bambou permettait à la marionnette de glisser avec la légèreté d'une plume.
+		Le forgeron ouvrit deux fines gorges rectilignes de part et d'autre du dos de la lame. Lorsqu'elle fend l'air, le sifflement du vent la précède, et le déplacement devient impalpable comme porté par des courants d'outre-tombe.
+		Les foulées consomment très peu de souffle, mais la lame ainsi affinée et allégée retire aux marques d'encre une part de leur fracassante onde de choc.
+		'''
+	Power: 「Vent favorable」le coût en vigueur du pas éclair Kamui est réduit de 15%, et la perte de vigueur du vol de sakura est ralentie de 20%
 	Burden: Les dégâts d'explosion des marques d'encre laissées par le pas éclair Kamui sont réduits de 20%
 }
 
 OniMeiRubbingChihi: {
 	DisplayName: Chi-hi
-	Tooltip: Toucher un ennemi avec la lame régénère de la vigueur supplémentaire ; régénération naturelle grandement ralentie et délai de reprise augmenté
-	Origin: La gouttière de sang creusée sur la lame est profonde et déterminée. Le forgeron affirma après forge que cette gorge était taillée pour guider le sang chaud : plus la lame s'abreuve de sang, plus la vigueur du porteur s'épanouit
+	Tooltip: Frapper rend de la vigueur ; régénération naturelle de vigueur grandement ralentie avec un délai accru
+	Origin:
+		'''
+		De vieux herboristes découvrirent jadis sur des falaises humides une liane cramoisie qui ne se nourrissait que de charognes.
+		La gorge large et profonde taillée le long du sabre fut façonnée d'après les conduits de cette plante suceuse de moelle.
+		Dès que le fer mord la chair, le sang brûlant remonte la saignée pour réchauffer la paume du guerrier, décuplant son souffle d'une vigueur bouillonnante.
+		Mais si l'acier reste trop longtemps privé de sang frais, la circulation interne stagne comme une eau croupie, peinant à reprendre son souffle.
+		'''
 	Power:
 		'''
-		「Reflux」le premier coup touchant un ennemi à chaque temps du combo de base restaure 1 point de vigueur supplémentaire
-		Toucher un ennemi avec la frappe Zanshin après un pas éclair Kamui restaure 4 points de vigueur supplémentaires
+		「Reflux」le premier coup de chaque phase du combo de base restaure 1 point de vigueur supplémentaire
+		Les frappes Zanshin suivant un pas éclair Kamui restaurent 4 points de vigueur supplémentaires lorsqu'elles touchent
 		'''
-	Burden: La vitesse de régénération naturelle de la vigueur est réduite de 35%, et dépenser de la vigueur requiert un délai supplémentaire de 0,3 seconde avant le début de la régénération naturelle
+	Burden: Vitesse de régénération naturelle de la vigueur réduite de 35% ; nécessite un délai supplémentaire de 0.3s après l'utilisation d'aptitudes avant que la régénération ne commence
 }
 
 OniMeiRubbingFudo: {
 	DisplayName: Fudo
-	Tooltip: Subir des dégâts durant l'animation ininterrompue d'une technique consomme de la posture pour réduire grandement les dégâts ; gain de posture -15%
-	Origin: Le graveur mania le burin selon la forme de la syllabe sacrée 「Kan」, sculptant avec dévotion l'effigie de Fudo Myoo adossé à un brasier. Tiré du vœu d'immobilité de Fudo : bravant vents et tempêtes, demeurer inébranlable comme une montagne
+	Tooltip: Subir des dégâts pendant des animations ininterrompues consomme de la posture pour réduire lourdement les dégâts et le recul ; gain de posture -15%
+	Origin:
+		'''
+		Au milieu des ruines d'un vieux sanctuaire se dressait une statue en fonte de Fudo Myoo, l'épée dressée devant un mur de flammes éternelles.
+		Lorsqu'un glissement de terrain emporta la montagne et broya le temple principal, ce bouddha de fer resta debout parmi les décombres sans une seule éraflure.
+		Cette lame a hérité de cette posture inébranlable : même piégé dans l'élan vulnérable d'une attaque totale, on peut sacrifier de la posture pour encaisser la tempête, solide comme le roc.
+		'''
 	Power:
 		'''
-		「Garde inébranlable」en subissant des dégâts durant l'animation de frappe Zanshin, d'Éclair annihilateur ou de Danse finale
-		Consomme 20 points de posture pour réduire les dégâts subis à 65% et le recul à 25% (temps de recharge de 2,5 secondes)
+		「Garde inébranlable」en subissant des dégâts pendant les animations verrouillées de frappe Zanshin, d'éclair d'annihilation ou de danse finale
+		Consomme 20 points de posture pour réduire les dégâts subis à 65% et le recul à 25% (temps de recharge de 2.5 secondes)
 		'''
-	Burden: La vitesse de gain de posture standard est réduite de 15%, et ne peut pas amortir les dégâts auto-infligés par le contrecoup du démembrement
+	Burden: Vitesse normale d'accumulation de la posture réduite de 15%, ne protège pas contre les dégâts de contrecoup du démembrement
 }
 
 OniMeiRubbingKurikara: {
 	DisplayName: Kurikara
-	Tooltip: Les exécutions confèrent trois charges de feu draconique, le coup final du combo consomme du feu pour une frappe circulaire ; vigueur maximale -10%
-	Origin: La lame est gravée de l'aspect du roi-dragon Kurikara : un dragon noir enroulé autour d'un glaive sacré, gueule béante prête à en avaler la pointe. Les écailles incrustées de fils d'or révèlent la sainte colère bouddhique contre les démons
+	Tooltip: Les exécutions accordent trois charges de feu de dragon ; le coup final du combo en consomme une pour un coup circulaire ; vigueur max -10%
+	Origin:
+		'''
+		Du fond d'une antique crypte fut exhumée une lame de bronze enlacée par un dragon noir en or massif, les crocs béants autour de la pointe ; quiconque la touchait était réduit en cendres par un feu obscur.
+		Un maître artisan grava la bête féroce sur l'acier par incrustation dorée.
+		Chaque fois qu'une exécution décapite un ennemi puissant, l'odeur de la mort réveille le dragon assoupi, projetant au terme de l'enchaînement trois anneaux de flammes dévastatrices.
+		'''
 	Power:
 		'''
-		「Spirale du feu draconique」après une exécution réussie, confère 3 charges de feu draconique pendant 10 secondes
-		Durant cette période, chaque combo de base complet de cinq coups consomme 1 charge au cinquième coup pour libérer une frappe circulaire vers l'avant, infligeant 50% des dégâts de base de l'arme
+		「Anneau du dragon」exécuter un ennemi avec succès accorde 3 charges de feu de dragon pendant 10s
+		Pendant cette durée, achever un combo de base complet de cinq coups consomme 1 charge pour libérer un coup circulaire vers l'avant infligeant 50% des dégâts de base de l'arme
 		'''
 	Burden: Vigueur maximale réduite de 10%
 }
 
 OniMeiRubbingTessetsu: {
 	DisplayName: Tessetsu
-	Tooltip: Le premier coup du combo inflige 25% de dégâts supplémentaires aux ennemis mécaniques et métalliques ; dégâts généraux de l'arme -10%
-	Origin: Un connaisseur d'armes s'était moqué de cette lame, ricanant de sa réputation creuse et de sa teinte terne comme du fer brut. Le forgeron, sans s'irriter, grava la raillerie droit sur la soie : ce n'est qu'en brisant l'acier que le fer brut révèle son véritable fil
-	Power: 「Coupe-fer」le premier coup porté de chaque temps du combo de base inflige 25% de dégâts supplémentaires aux ennemis mécaniques et métalliques qui projettent des étincelles à l'impact
+	Tooltip: Le premier coup de chaque temps du combo inflige +25% de dégâts aux machines et aux métaux ; dégâts de base de l'arme -10%
+	Origin:
+		'''
+		Un atelier d'armement désaffecté fut frappé d'un étrange fléau : engrenages et pistons d'acier se mirent à bourgeonner de tumeurs de chair, brisant toutes les lames qui s'y risquaient.
+		Un vieux forgeron arriva avec une lourde barre brute en fonte non affûtée ; les curieux rirent de cette masse informe, mais l'artisan la frappa à deux mains.
+		Dans un fracas tonitruant, le noyau mécanique fut réduit en bouillie de fer. Cette lame est pétrie de cette force brutale : elle fracasse le fer comme du bois pourri, bien qu'elle morde avec lenteur la chair tendre.
+		'''
+	Power: 「Coupe-fer」le premier coup de chaque temps du combo de base inflige 25% de dégâts supplémentaires aux cibles métalliques, mécaniques ou projetant des étincelles
 	Burden: Dégâts de base de l'arme réduits de 10%
 }
 
 OniMeiRubbingKyushu: {
 	DisplayName: Kyushu
-	Tooltip: Très lourds dégâts d'exécution réservés aux têtes ou cibles uniques ; dégâts généraux de l'arme -3%
-	Origin: Jadis, bien des lames célèbres changeaient de nom après avoir décapité un général pour vanter leurs mérites. Le porteur de celle-ci refusa cette coutume : les têtes tombent tout autant, le nom reste tel quel. Une vraie lame n'a nul besoin de vains titres pour imposer le respect
+	Tooltip: Lourds dégâts d'exécution ciblant exclusivement la tête ou les cibles uniques ; dégâts de l'arme -3%, inefficace sur les autres segments
+	Origin:
+		'''
+		Un vieux stratège ayant abattu d'innombrables généraux ennemis était pressé par ses pairs de renommer son sabre après chaque victoire pour proclamer sa gloire.
+		L'homme cracha au sol, se contentant d'enrouler une mèche de cheveux du vaincu autour de son fourreau en grognant : « Une arme sanguinaire ne convoite que la chair tendre de la gorge ; les titres ronflants ne sont que vanité. »
+		Les décennies ont passé, le général est poussière, mais la lame ornée de chevelures guette toujours la gorge : lorsque les heures d'une tête sont comptées, elle ne laisse nul survivant.
+		'''
 	Power:
 		'''
-		「Prise de tête」toucher directement la tête d'un ennemi ou une cible unique non articulée ayant moins de 35% de vie inflige de lourds dégâts supplémentaires proportionnels à la vie perdue
-		Jusqu'à +85% de dégâts contre les ennemis ordinaires, et jusqu'à +60% contre les boss
+		「Coupeur de têtes」toucher directement la tête d'un ennemi ou des cibles uniques sans segments inflige de lourds dégâts progressifs si la cible a moins de 35% de vie
+		Jusqu'à +85% de dégâts contre les ennemis normaux et jusqu'à +60% contre les boss
 		'''
-	Burden: Dégâts de base de l'arme réduits de 3%, sans effet contre les segments de torse ou de queue des ennemis
+	Burden: Dégâts de base de l'arme réduits de 3%, inefficace contre le torse, la queue et les segments autres que la tête
 }
 
 OniMeiRubbingIkiai: {
 	DisplayName: Ikiai
-	Tooltip: Le coup final du combo tire une onde d'épée perforante vers le curseur ; intervalle entre les attaques du combo +4%
-	Origin: Les maîtres d'armes disent que lors d'un duel à mort, les souffles des deux adversaires s'entrelacent : celui qui accorde son souffle le premier verra sa lame frapper en premier. C'est cette discipline qui est inscrite ici
-	Power: 「Expiration」en achevant le combo de base de cinq coups, le cinquième coup libère une onde d'épée arquée vers le curseur, infligeant 55% des dégâts de base de l'arme et perforant jusqu'à 3 ennemis
+	Tooltip: Achever le combo complet libère une onde de coupe perforante ; intervalle du combo +4%
+	Origin:
+		'''
+		Les vieux conteurs se souviennent d'un duel mortel où le souffle était retenu : deux bretteurs assis l'un en face de l'autre dans une chambre obscure durant une demi-heure d'encens.
+		Seule la mèche de la lampe tremblait dans la nuit ; le premier à haleter révélerait aussitôt sa faille.
+		Au quatrième coup de cloche, l'un d'eux finit par aspirer goulûment — et à cet instant précis, l'autre dégaina dans son souffle expiré.
+		La résolution glaciale nourrie dans sa poitrine jaillit de la pointe sous forme d'une onde acérée qui traversa son rival de part en part.
+		'''
+	Power: 「Expiration」achever le combo complet de cinq coups libère une onde de coupe arquée dans la direction du curseur, infligeant 55% des dégâts de base et perforant jusqu'à 3 ennemis
 	Burden: Intervalle entre les attaques du combo de base prolongé de 4%
 }
 
 OniMeiRubbingKyoko: {
 	DisplayName: Kyoko
-	Tooltip: S'éloigner charge la force pour booster le premier coup au corps à corps, ralentit les ennemis proches à vide ; enchaîner trop vite au contact brouille la mise au point
-	Origin: Un essayeur de lame poussa un cri retentissant dans une gorge déserte, sans qu'aucun écho ne réponde. Dans cette vaste solitude, cette puissante fougue se replia et s'accumula tout entière au creux de la lame
+	Tooltip: Prendre ses distances charge un puissant coup de corps à corps, ralentit périodiquement les ennemis ; l'acharnement au corps à corps brouille la concentration
+	Origin:
+		'''
+		Au cœur de la montagne s'ouvre une faille déserte où aucun cri ne renvoie jamais d'écho ; le gouffre silencieux semble engloutir le moindre son.
+		Un maître d'armes médita au fond de cette brèche, scellant cette quiétude béante au creux de son fourreau.
+		Plus l'espace autour est vaste, plus la pression invisible s'accumule dans la garde, mettant les bêtes en fuite ; mais dès que la mêlée au corps à corps s'éternise, cette froide contenance se disperse.
+		'''
 	Power:
 		'''
-		「Écho du vide」demeurer sans ennemi dans un rayon de 16 cases pendant 1,5 seconde charge la force
-		Après avoir chargé, le premier coup porté à moins de 16 cases inflige +25% de dégâts (toucher de plus loin ne consomme pas cet effet)
-		Sans ennemi proche ou sans coup porté pendant 1,5 seconde, ralentit les ennemis dans un rayon de 20 cases pendant 0,4 seconde toutes les 1,5 secondes
+		「Cri du vide」termine sa charge si aucun ennemi n'est à moins de 16 blocs pendant 1.5s
+		Après la charge, le premier coup porté à moins de 16 blocs inflige +25% de dégâts (frapper au-delà ne consomme pas la charge)
+		Si aucun ennemi n'est proche ou qu'aucune cible n'est touchée pendant 1.5s, diffuse toutes les 1.5s un ralentissement de 0.4s aux ennemis dans un rayon de 20 blocs
 		'''
-	Burden: Porter 4 coups consécutifs à bout portant en 0,6 seconde provoque un état de flou de 0,4 seconde, durant lequel les dégâts à bout portant sont réduits de 5%
+	Burden: Porter 4 coups à bout portant en 0.6s provoque 0.4s de perte de concentration, réduisant les dégâts à courte portée de 5%
 }
 
 OniMeiRubbingKarikiri: {
 	DisplayName: Karikiri
-	Tooltip: Lancer un pas éclair laisse un leurre annulant entièrement un coup ; dégâts subis accrus tant que le leurre tient ou après sa destruction
-	Origin: Le disciple reproduisait à la perfection le jeu de jambes du maître, chaque geste étant identique. Le maître n'eut qu'un soupir : forme et esprit y étaient, mais la vérité manquait. Cette inscription devient une ombre illusoire pour endurer un coup à la place du corps
+	Tooltip: Initier un pas éclair laisse un leurre de papier annulant entièrement un coup ; dégâts subis accrus tant que le leurre vit ou se brise
+	Origin:
+		'''
+		Les adeptes de la sorcellerie du papier conservent une pratique occulte : la marionnette expiatoire.
+		À l'instant où s'élance le pas éclair, la lame arrache au néant une réplique d'encre fraîche et la plante sur place, absorbant à sa place un coup mortel qui éventrerait un homme.
+		Mais le pantin emporte une parcelle de l'âme ; s'il est déchiqueté par une force brutale, le maître subit une violente onde de choc qui met ses défenses à nu.
+		'''
 	Power:
 		'''
-		「Faux corps」au départ d'un pas éclair Kamui, laisse sur place un leurre statique pendant 1,5 seconde
-		Tant que le leurre existe, subir l'attaque d'un ennemi ou d'un projectile est entièrement annulé par le leurre (temps de recharge de 4 secondes)
+		「Faux corps」laisse un leurre statique pendant 1.5s à la position de départ d'un pas éclair Kamui
+		Tant que le leurre existe, il annule entièrement la prochaine instance de dégâts d'un ennemi ou d'un projectile (temps de recharge de 4 secondes)
 		'''
 	Burden:
 		'''
-		Tant que le leurre persiste, les dégâts subis et le coût en vigueur des pas éclairs augmentent de 12%
-		Pendant 1 seconde après la destruction du leurre, les dégâts subis augmentent de 18% (la dissipation naturelle n'entraîne aucune pénalité)
+		Tant que le leurre existe, les dégâts subis et le coût en vigueur du pas éclair augmentent de 12%
+		Pendant 1s après la destruction du leurre, les dégâts subis augmentent de 18% (sa disparition naturelle n'impose aucune pénalité)
 		'''
 }
 
 OniMeiRubbingMokukiri: {
 	DisplayName: Mokukiri
-	Tooltip: Terminer un pas éclair normal renforce brièvement le coup suivant ; frapper dans le vide consomme aussi le bonus
-	Origin: À l'instant où s'achève un pas éclair, ciel et terre semblent sombrer dans le silence absolu. Les bretteurs chevronnés savent que lorsque l'intention meurtrière se tapit dans le silence, la frappe est d'autant plus lourde
-	Power: 「Frappe silencieuse」pendant 0,75 seconde après avoir achevé un pas éclair Kamui normal payé en vigueur, la prochaine attaque de base ou frappe Zanshin inflige +35% de dégâts
-	Burden: Frapper dans le vide consomme l'effet renforcé, et relancer un pas éclair dissipe le bonus ; les pas éclairs gratuits liés aux exécutions ne déclenchent pas la Frappe silencieuse
+	Tooltip: Les pas éclair consommant de la vigueur renforcent brièvement la prochaine frappe ; rater son coup dissipe aussi l'effet
+	Origin:
+		'''
+		Les chasseurs aguerris connaissent la loi primordiale des sous-bois : le vacarme d'une rafale n'est rien comparé au silence soudain où tous les oiseaux se taisent — c'est le signe que la bête est à l'affût.
+		À l'instant précis où le pas éclair s'immobilise, le monde semble plongé dans un mutisme de mort.
+		Frapper depuis l'angle mort de ce silence délivre un assaut bien plus meurtrier que n'importe quelle attaque précipitée.
+		'''
+	Power: 「Coupe silencieuse」pendant 0.75s après avoir achevé un pas éclair Kamui consommant de la vigueur, la prochaine attaque de base ou frappe Zanshin inflige +35% de dégâts
+	Burden: Ce coup renforcé est consommé même en cas de coup manqué, et esquiver à nouveau dissipe le bonus ; les exécutions gratuites n'activent pas la coupe silencieuse
 }
 
 OniMeiRubbingKumokiri: {
-	DisplayName: Kumo-kiri
-	Tooltip: Frapper un ennemi ancre trois soies qui se resserrent en toile pour infliger des dégâts et lier les ennemis ; régénération naturelle ralentie tant que la toile tient
-	Origin: Minamoto no Raiko était alité par la maladie lorsqu'un tsuchigumo déguisé en moine s'infiltra pour le ligoter de soie. Raiko tira son sabre et trancha les fils en blessant grièvement le monstre, puis suivit les traces de sang le lendemain pour anéantir son nid. La lame fut alors rebaptisée Kumo-kiri
+	DisplayName: Kumokiri
+	Tooltip: Les coups plantent trois ancres de soie qui se resserrent en piège ; régénération de vigueur ralentie tant que des ancres persistent
+	Origin:
+		'''
+		Dans la charpente d'une teinturerie abandonnée nichait une araignée millénaire qui tissait des pièges de poison pour engloutir les voyageurs endormis.
+		Un moine errant enfonça les portes, tranchant les toiles noires d'un grand coup et terrassant le monstre.
+		Ce sabre a absorbé ce fil venimeux : chaque coup plante une ancre de soie d'encre dans les airs, et dès que trois points s'alignent, ils se rétractent en un piège de lames acérées.
+		'''
 	Power:
 		'''
-		「Soie d'encre」toucher directement avec la lame ancre une soie d'encre durant 4 secondes au point d'impact (le même ennemi ne peut pas recevoir d'ancre supplémentaire en 0,4 seconde, et deux ancres voisines doivent être distantes d'environ 6 cases)
-		Lorsque 3 ancres sont posées, elles se relient en une toile triangulaire d'encre qui se resserre rapidement vers le centre, infligeant à tous les ennemis piégés 90% des dégâts de base de l'arme et les immobilisant pendant 1 seconde
-		Après avoir refermé la toile, un temps de recharge de 1,5 seconde est requis avant de pouvoir planter de nouvelles ancres
+		「Soie d'encre」les coups directs plantent une ancre de 4s à l'impact (ne peut pas s'attacher à nouveau sur la même cible avant 0.4s ; ~6 blocs d'écart requis)
+		Une fois 3 ancres plantées, elles forment un triangle d'encre qui se rétracte vers le centre, infligeant 90% des dégâts de base et immobilisant les ennemis pendant 1s
+		Activer le piège impose un temps de recharge de 1.5s avant de pouvoir planter de nouvelles ancres
 		'''
-	Burden: Tant que des ancres de soie non refermées sont présentes, la vitesse de régénération naturelle de la vigueur est réduite de 25%
-	DeedHint: Tuer 30 araignées, scorpions ou créatures arachnides en tenant Onikiri
+	Burden: Tant que des ancres non rétractées restent sur le terrain, la régénération naturelle de vigueur est ralentie de 25%
+	DeedHint: Tuez 30 araignées ou scorpions en tenant Onikiri pour abreuver la lame de sang d'arachnide
 }
 
 OniMeiRubbingOnimaru: {
-	DisplayName: Oni-maru
-	Tooltip: Rester immobile fait voler la lame d'elle-même pour pourfendre les ennemis proches ; manier normalement le sabre est impossible tant qu'elle vole
-	Origin: L'une des Cinq Grandes Épées sous le ciel, Onimaru Kunitsuna. La légende raconte que Hojo Tokimasa était tourmenté chaque nuit par un oni furieux, jusqu'à ce qu'une nuit la lame bascule d'elle-même vers le brasero pour trancher la tête d'oni sculptée sur le pied de fer, bannissant le mal pour toujours
+	DisplayName: Onimaru
+	Tooltip: Rester immobile fait voler la lame pour frapper les ennemis proches ; le maniement normal est indisponible pendant le vol
+	Origin:
+		'''
+		Le maître d'un manoir dépérissait au lit, hanté chaque nuit par un esprit blafard qui tourmentait son âme.
+		Une nuit, le sabre quitta son fourreau de lui-même, tournoyant dans la chambre en un éclair pour fendre en deux le démon tapi sous les poutres, brisant la malédiction.
+		Cette lame possède un orgueil spectral farouche : tenez-vous immobile, et elle jaillira d'elle-même pour abattre l'ennemi ; mais tant que l'acier vole, vos mains restent nues et sans défense.
+		'''
 	Power:
 		'''
-		「Auto-coupe」rester immobile avec le sabre pendant 1 seconde active l'état d'attente
-		Toutes les 1,5 seconde durant l'attente, consomme 10 points de vigueur : la lame vole d'elle-même vers un ennemi dans un rayon de 40 cases, infligeant une frappe équivalente à 140% des dégâts de base de l'arme avant de revenir
+		「Coupe autonome」rester complètement immobile pendant 1s entre en état d'attente
+		En attente, consomme 10 de vigueur toutes les 1.5s et vole vers les ennemis à moins de 40 blocs, assénant une frappe infligeant 140% des dégâts de base avant de revenir
 		'''
-	Burden: Tant que la lame vole au loin, le combo de base, le pas éclair Kamui et le vol des cerisiers sont inutilisables ; elle ne s'élance pas sans cible valide à proximité
-	DeedHint: Rester immobile avec Onikiri en main, encaisser un coup et maintenir l'immobilité pendant 10 secondes cumulées
+	Burden: Pendant que la lame vole, les combos de base, le pas éclair Kamui et le vol de sakura sont inutilisables ; ne décolle pas si aucune cible n'est proche
+	DeedHint: Restez immobile avec Onikiri et encaissez un coup, maintenant l'immobilité pendant 10 secondes cumulées
 }
 
 OniMeiRubbingRaikiri: {
-	DisplayName: Rai-kiri
-	Tooltip: À ciel ouvert, le cinquième coup et les arts suprêmes appellent la foudre sur l'ennemi ; intervalle d'attaque +6%, pas de foudre sous abri
-	Origin: Tachibana Dosetsu s'abritait de la pluie sous un grand arbre lorsqu'un éclair frappa. Dosetsu tira son sabre pour fendre l'éclair et survécut miraculeusement. Sa lame fut renommée Rai-kiri, acquérant une renommée immense à travers les contrées
+	DisplayName: Raikiri
+	Tooltip: À ciel ouvert, le 5e coup et les arts invoquent la foudre à l'impact ; intervalle du combo +6%, aucun éclair sous abri
+	Origin:
+		'''
+		Les bûcherons savent qu'il ne faut jamais s'abriter sous les vieux chênes par temps d'orage, car le bois mort attire le courroux céleste.
+		Pourtant, un guerrier en armure resta debout sous un chêne mort en pleine tourmente ; lorsqu'un éclair violet fusa des cieux, il poussa un rugissement et leva sa lame, fendant la foudre en deux.
+		Depuis lors, le sabre scelle un pacte avec l'orage : tant que le ciel est dégagé au-dessus de lui, les carreaux de foudre s'abattent là où pointe son tranchant.
+		'''
 	Power:
 		'''
-		「Pourfend-foudre」lorsque le cinquième coup du combo de base, la frappe Zanshin, l'Éclair annihilateur ou la Danse finale touchent un ennemi sous un ciel dégagé, une colonne de foudre s'abat du zénith sur la cible
-		La colonne de foudre inflige 70% des dégâts de base de l'arme ; sous un temps orageux, un même coup peut appeler jusqu'à 3 colonnes de foudre
+		「Fendeur d'orage」lorsque le 5e coup du combo, la frappe Zanshin, l'éclair d'annihilation ou la danse finale touchent à ciel ouvert, un éclair frappe la cible
+		L'éclair inflige 70% des dégâts de base de l'arme ; lors des orages, un seul coup invoque jusqu'à 3 éclairs
 		'''
-	Burden: L'intervalle entre les attaques du combo de base est prolongé de 6% (même par temps clair) ; aucun éclair n'est appelé sous un plafond de blocs ou dans les cavernes
-	DeedHint: Vaincre n'importe quel boss avec Onikiri en main sous un orage à ciel ouvert
+	Burden: Intervalle d'attaque du combo de base prolongé de 6% (même par temps clair) ; impossible d'invoquer la foudre sous des blocs ou sous terre
+	DeedHint: Tuez un boss avec Onikiri à ciel ouvert pendant un orage, baignant l'acier dans les éclairs
 }
 
 OniMeiRubbingNuekiri: {
-	DisplayName: Nue-kiri
-	Tooltip: Achever le combo de cinq coups dans les airs transforme le coup final en écrasement au sol attirant les ennemis ; pas éclair indisponible brièvement après l'atterrissage
-	Origin: Des nuées sinistres couvraient le palais impérial la nuit, et l'oiseau monstrueux Nue poussait des cris déchirants. Minamoto no Yorimasa décocha une flèche pour abattre la bête, puis dégaina son sabre pour fendre d'un coup puissant dans la chute et achever le Nue. Cette inscription retient cette fente plongeante
+	DisplayName: Nuekiri
+	Tooltip: Achever le combo dans les airs transforme le cinquième coup en piqué dévastateur ; délai de course à l'atterrissage
+	Origin:
+		'''
+		Lorsque les nuages noirs masquèrent le palais, une chimère à tête de singe et griffes de tigre hurla comme un enfant depuis les toits.
+		Un archer d'élite lui brisa l'aile d'une flèche, et alors que la bête chutait dans la brume, un bretteur sauta des remparts et abattit sa lame d'un coup vertical colossal qui la cloua aux dalles de pierre.
+		Cette inscription a scellé cet écrasement céleste dévastateur dans le tranchant même de la lame.
+		'''
 	Power:
 		'''
-		「Chute du nue」en achevant le combo de base à au moins 3 cases du sol, le cinquième coup devient un puissant plongeon fracassant le sol
-		L'impact engendre une onde de choc d'environ 12 cases de rayon, infligeant 120% des dégâts de base de l'arme et attirant de force les ennemis environnants vers le point d'impact
+		「Chute du Nue」achever le combo complet dans les airs (au moins 3 blocs au-dessus du sol) transforme le 5e coup en un piqué dévastateur vers le sol
+		L'impact crée une onde de choc de ~12 blocs de rayon infligeant 120% des dégâts de base et attirant les ennemis proches vers le point d'impact
 		'''
-	Burden: Le pas éclair Kamui est indisponible pendant environ 0,7 seconde après l'atterrissage ; au ras du sol, le cinquième coup reste un fauchage horizontal ordinaire
-	DeedHint: De nuit et à plus de 30 cases du sol, abattre un ennemi volant avec Onikiri en main
+	Burden: Impossible d'utiliser le pas éclair Kamui pendant ~0.7s après l'atterrissage ; au sol, le 5e coup reste un coup horizontal classique
+	DeedHint: Tuez un ennemi volant de nuit avec Onikiri en vous tenant à plus de 30 blocs de hauteur
 }
 
 OniMeiRubbingKamihi: {
 	DisplayName: Kami-hi
-	Tooltip: Traverser un ennemi en pas éclair laisse une effigie de papier transmettant dégâts et vulnérabilité au corps réel ; coût en vigueur du pas éclair accru tant que l'effigie existe
-	Origin: Le maître colleur de papier maniait la lame avec une virtuosité divine : un seul coup tranchait la forme et l'ombre à la fois. Cette gorge s'inspire de cet art de séparation, découpant l'ombre de l'ennemi au passage pour la laisser dans Omote : trancher le papier revient à trancher la chair
+	Tooltip: Traverser des ennemis laisse une effigie de papier ; la frapper transmet dégâts et vulnérabilité à l'original ; coût en vigueur accru
+	Origin:
+		'''
+		Au fond d'une ruelle vivait un vieil artisan aveugle qui n'avait qu'à effleurer le poignet d'un homme pour découper aux ciseaux une silhouette de papier d'une troublante ressemblance.
+		Dès que le pas éclair traverse un ennemi, la saignée dorsale arrache une ombre d'encre dans les airs et l'abandonne sur place.
+		Fendez le papier, et le supplice des os broyés traversera le voile pour meurtrir la chair de l'adversaire originel.
+		'''
 	Power:
 		'''
-		「Ombre Omote」traverser un ennemi avec le pas éclair Kamui laisse une effigie de papier de la cible au point d'arrivée pendant 7 secondes (au plus 2 effigies sur le terrain)
-		Attaquer directement l'effigie inflige 80% des dégâts de base de l'arme, dégâts entièrement transmis au corps réel
-		Fait également entrer le corps réel dans un état vulnérable durant 1,5 seconde, augmentant les dégâts subis d'Onikiri de 12%
+		「Ombre de surface」traverser un ennemi avec le pas éclair Kamui laisse une effigie au point d'arrivée pendant 7s (jusqu'à 2 sur le terrain)
+		Attaquer l'effigie inflige 80% des dégâts de base, les transférant intégralement à l'original
+		Rend également l'original vulnérable pendant 1.5s, augmentant les dégâts qu'il subit d'Onikiri de 12%
 		'''
-	Burden: Tant qu'une effigie de papier est sur le terrain, le coût en vigueur du pas éclair Kamui augmente de 12%
-	DeedHint: Dans l'Ura, trancher 20 effigies de papier Omokage avec Onikiri en main
+	Burden: Tant que des effigies restent sur le terrain, le coût en vigueur du pas éclair Kamui augmente de 12%
+	DeedHint: Détruisez 20 effigies de papier avec Onikiri dans les Enfers du Domaine oni
 }
 
 OniMeiRubbingSorahi: {
 	DisplayName: Sora-hi
-	Tooltip: Dans les airs, la régénération naturelle est doublée et confère un pas éclair aérien supplémentaire ; la régénération cesse brièvement à l'atterrissage
-	Origin: Le forgeron émit une singulière théorie en ouvrant cette gorge : l'énergie vitale de l'homme s'alourdit dès que ses pieds foulent la terre. Ce n'est qu'en rendant la lame infiniment légère pour bondir dans les airs qu'on peut s'harmoniser avec le vent céleste et nourrir sa vigueur
+	Tooltip: Double la régénération de vigueur dans les airs et accorde une ruée aérienne supplémentaire ; atterrir fige brièvement la régénération
+	Origin:
+		'''
+		Les marcheurs d'ombres disent souvent : « La boue aux semelles alourdit le pas ; un bond dans le vide rend les os légers comme le duvet. »
+		Cette profonde gorge a évidé le dos de la lame jusqu'à lui donner un profil aérien. Dès que les pieds quittent le sol, les courants portent l'acier et doublent le souffle vital.
+		Mais les mortels n'ont pas d'ailes et doivent regagner la terre ; le poids de l'argile interrompt le souffle le temps d'un battement de cœur.
+		'''
 	Power:
 		'''
-		「Corps flottant」quitter le sol double la vitesse de régénération naturelle de la vigueur et confère un usage supplémentaire de pas éclair aérien
-		Après un pas éclair en l'air, vous restez brièvement en lévitation au point d'arrivée pendant 0,5 seconde
+		「Posture flottante」double la vitesse de régénération naturelle de vigueur dans les airs et accorde 1 utilisation supplémentaire du pas éclair en l'air
+		Les pas éclairs aériens planent brièvement sur place pendant 0.5s à leur terme
 		'''
-	Burden: Durant 0,75 seconde après l'atterrissage, la régénération naturelle de vigueur s'interrompt totalement ; le coût en vigueur du pas éclair au sol augmente de 10%
-	DeedHint: Rester en l'air sans toucher le sol pendant 15 secondes consécutives, en touchant au moins 5 fois des ennemis avec Onikiri durant le vol
+	Burden: La régénération naturelle s'interrompt totalement pendant 0.75s après avoir touché terre ; le pas éclair au sol coûte 10% de vigueur en plus
+	DeedHint: Restez en l'air pendant 15 secondes consécutives avec Onikiri en portant au moins 5 coups
 }
 
 OniMeiRubbingKagamihi: {
 	DisplayName: Kagami-hi
-	Tooltip: Le point d'arrivée du pas éclair dresse un miroir de papier reproduisant la frappe suivante ; dégâts de base de l'arme -5%
-	Origin: Les polisseurs de miroirs savent bien que l'image reflétée semble simultanée mais recèle en vérité un infime décalage. L'artisan mit à profit cet instant d'écart pour faire porter à l'image du miroir une frappe en écho
+	Tooltip: La fin d'un pas éclair érige un miroir de papier qui réplique le prochain coup ; dégâts de base de l'arme -5%
+	Origin:
+		'''
+		Dans la remise d'un vieux prêteur sur gages se dressait un miroir de mercure ; la nuit, le reflet bougeait toujours avec un temps de retard sur l'homme vivant.
+		Cette rainure glaciale a capturé ce décalage spectral.
+		Là où s'arrête le pas éclair s'élève un miroir de papier, et un instant plus tard, le reflet porte exactement le même coup que son maître.
+		'''
 	Power:
 		'''
-		「Reflet du miroir」le point d'arrivée du pas éclair Kamui dresse un fantôme de miroir de papier durant 2 secondes
-		Lorsque vous portez votre coup de lame suivant, le fantôme reproduit fidèlement la même frappe et se brise, infligeant 45% des dégâts de base de l'arme
+		「Miroir d'inscription」la fin du pas éclair Kamui érige un miroir de papier pendant 2s
+		Lorsque le porteur effectue son prochain coup d'épée, le miroir reproduit ce coup en synchronie puis vole en éclats, infligeant 45% des dégâts de base
 		'''
-	Burden: Dégâts de base de l'arme réduits de 5% ; la frappe en écho part de l'orientation du miroir, sa précision dépend de l'endroit où le miroir a été dressé
-	DeedHint: Tuer une imitation avec la frappe Zanshin (les faux coffres du clone de Calamitas comptent aussi)
+	Burden: Dégâts de base de l'arme réduits de 5% ; le coup répliqué est porté dans la direction du miroir
+	DeedHint: Achevez un imitateur avec une frappe Zanshin (les faux coffres du clone de Calamitas comptent aussi)
 }
 
 OniMeiRubbingAmahi: {
 	DisplayName: Ama-hi
-	Tooltip: Le vol des cerisiers sème une pluie d'encre formant des flaques entravantes au sol ; consommation de vigueur du vol des cerisiers +15%
-	Origin: La rigole qui recueille la pluie sous l'avant-toit se nomme aussi amahi. Le forgeron façonna la gorge à l'image de ces gouttières : lorsque passe l'éclat du sabre, telle une ondée ruisselant sur mille tuiles, l'eau éparse se déverse tout entière sur les ennemis sous la lame
+	Tooltip: Le vol de sakura projette une pluie d'encre qui forme des bourbiers ; consommation de vigueur du vol +15%
+	Origin:
+		'''
+		Sur les chemins boueux sous l'averse, les voyageurs redoutent les flaques sombres : les anciens savent que les esprits des eaux s'y tapissent pour happer les chevilles.
+		Façonnée à la manière des gouttières en bambou des vieilles toitures, cette gorge laisse couler une encre dense lors du vol de sakura, formant au sol des bourbiers gluants qui entravent les ennemis.
+		'''
 	Power:
 		'''
-		「Chute de pluie」pendant le vol des cerisiers, une goutte d'encre tombe toutes les 0,1 seconde, infligeant 12% des dégâts de base de l'arme
-		Les gouttes touchant le sol s'étalent en flaques d'encre, infligeant une immobilisation et un ralentissement de 0,5 seconde aux ennemis qui y pénètrent
+		「Pluie battante」pendant le vol de sakura, laisse tomber toutes les 0.1s une goutte d'encre infligeant 12% des dégâts de base
+		Les gouttes forment des flaques qui immobilisent et ralentissent les ennemis pendant 0.5s
 		'''
-	Burden: La vitesse de consommation de vigueur du vol des cerisiers augmente de 15%
-	DeedHint: Cumuler 10 secondes de vol des cerisiers sous la pluie ; il n'est pas nécessaire de le faire d'une seule traite
+	Burden: Le taux de consommation de vigueur du vol de sakura augmente de 15%
+	DeedHint: Volez un total de 10 secondes cumulées en vol de sakura sous la pluie (sans nécessiter un seul vol continu)
 }
 
 OniMeiRubbingTsuzurihi: {
 	DisplayName: Tsuzuri-hi
-	Tooltip: Les marques d'encre d'un même pas éclair se relient et explosent ; dégâts de base d'une seule marque d'encre -30%
-	Origin: Le relieur relie les feuillets épars d'un fil et d'une aiguille : une fois le fil tendu, les feuilles deviennent un livre rigoureux. Cette gorge traite les marques d'encre comme des points de couture, les reliant entre elles pour tisser un réseau meurtrier
-	Power: 「Couture d'encre」lorsque les multiples marques d'encre d'un même pas éclair Kamui explosent, elles tracent des lignes de coupe qui se croisent, chaque segment infligeant 35% des dégâts de base de l'arme
-	Burden: Les dégâts de base d'une marque d'encre isolée sont réduits de 30% (si le pas éclair ne traverse qu'une seule cible, les dégâts totaux sont réduits)
-	DeedHint: Traverser au moins 6 ennemis distincts en un seul pas éclair Kamui
+	Tooltip: Les marques d'un même pas éclair se relient par des fils tranchants ; dégâts de chaque marque individuelle -30%
+	Origin:
+		'''
+		À la morgue, un vieux croque-mort recousait les corps démembrés d'un fil de chanvre noir, tirant d'un coup sec pour souder les chairs sans couture.
+		Cette saignée gravée de motifs de points serrés agit de même : les marques d'encre laissées sur plusieurs ennemis explosent de concert, tendant des fils acérés qui cisaillent les victimes en lambeaux.
+		'''
+	Power: 「Traces cousues」lorsque plusieurs marques d'encre d'un même pas éclair Kamui explosent, elles tracent des lignes perforantes entre elles infligeant 35% des dégâts de base chacune
+	Burden: Dégâts de base de chaque marque d'encre réduits de 30% (si le pas éclair ne touche qu'une seule cible, les dégâts globaux diminuent)
+	DeedHint: Perforez au moins 6 ennemis différents avec un seul pas éclair Kamui
 }
 
 OniMeiRubbingBonsho: {
 	DisplayName: Bonsho
-	Tooltip: Si la posture est pleine sans exécuter l'art, le sabre frappe la cloche de lui-même pour balayer la zone ; consomme la moitié de la posture et remplace l'exécution
-	Origin: La cloche bouddhique du temple attend qu'une poutre la frappe pour sonner, mais la cloche antique gravée sur cette lame n'attend aucune aide extérieure. Lorsque la tension atteint son comble sans se relâcher, le son de cloche retentit de lui-même pour avertir les alentours
+	Tooltip: Conserver sa posture sans utiliser la danse finale sonne la cloche ; dissipe la moitié de la posture au lieu de la danse
+	Origin:
+		'''
+		Dans un monastère perché au sommet de la brume était suspendue une cloche de bronze ébréchée et sans battant qui résonnait sourdement la nuit quand le vent soufflait, sans que nul maillet ne la heurte.
+		Les moines disaient qu'elle renfermait la rancœur de martyrs suppliciés ; trop longtemps contenue, elle sonnait d'elle-même pour s'épancher.
+		La cloche gravée dans cet acier est tout aussi fougueuse : accumulez votre posture sans libérer la danse, et la cloche retentira seule, étourdissant les démons alentour mais dissipant votre élan.
+		'''
 	Power:
 		'''
-		「Coup de cloche」si la Danse finale n'est pas déclenchée dans les 3 secondes suivant la jauge pleine de posture, la lame vibre d'elle-même et sonne
-		Libère une onde sonore d'un rayon de 30 cases, infligeant 60% des dégâts de base de l'arme à tous les ennemis et les immobilisant pendant 1,5 seconde, ramenant ensuite la posture à 50 points
+		「Coup de cloche」si la danse finale n'est pas déclenchée dans les 3s suivant une posture pleine, la cloche retentit automatiquement
+		Libère une onde de choc infligeant 60% des dégâts de base aux ennemis dans un rayon de 30 blocs et les immobilise pendant 1.5s, ramenant la posture à 50
 		'''
-	Burden: Le retentissement de la cloche consomme directement la pleine posture et fait perdre cette occasion de déclencher la Danse finale
-	DeedHint: Vaincre un boss au cours d'un combat complet sans jamais utiliser l'Éclair annihilateur ni la Danse finale
+	Burden: La sonnerie consomme la posture pleine et dissipe l'opportunité d'exécuter la danse finale
+	DeedHint: Venez à bout d'un boss sans utiliser d'éclair d'annihilation ni de danse finale pendant tout le combat
 }
 
 OniMeiRubbingHannya: {
 	DisplayName: Hannya
-	Tooltip: À l'article de la mort, manifeste un masque d'oni augmentant dégâts et vol de vie ; dégâts subis accrus sous le masque, dégâts normaux de l'arme -4%
-	Origin: Le masque de hannya du théâtre Noh dépeint l'instant suprême où la rancœur d'une femme la transforme d'humaine en démon. Gravé sur la lame, il rappelle qu'acculé à la mort, le cœur s'inverse pour révéler l'effrayant visage de l'asura furieux
+	Tooltip: À faible santé, prend le masque démoniaque Hannya, augmentant dégâts et vol de vie ; dégâts subis accrus sous le masque, dégâts de base -4%
+	Origin:
+		'''
+		Dans la malle d'une troupe de théâtre reposait un masque de bois d'Hannya souillé de sang séché.
+		La légende raconte que si un acteur le portait sur scène poussé par un désespoir humiliant, des épines jaillissaient du bois pour s'enfoncer dans ses joues, le plongeant dans une frénésie sanguinaire.
+		Ce visage gravé dans l'acier scelle un pacte de sang : acculé au seuil du trépas, le masque démoniaque jaillit, dévorant le sang adverse pour ranimer une vie expirante.
+		'''
 	Power:
 		'''
-		「Masque démon」passer sous 35% de vie fait apparaître un féroce masque d'oni : dégâts de lame +20%, chaque coup restaure 0,5% de la vie maximale
-		Tous les 3 coups portés sous le masque, une mâchoire démoniaque mord la cible en infligeant 50% des dégâts de base de l'arme
+		「Métamorphose du masque」manifeste le masque démoniaque en dessous de 35% de vie : dégâts de la lame +20%, chaque coup restaure 0.5% de vie max
+		Tous les 3 coups sous le masque, invoque une mâchoire spectrale mordant la cible pour 50% des dégâts de base
 		'''
-	Burden: Les dégâts subis augmentent de 15% sous le masque ; au-dessus de 35% de vie à l'état normal, les dégâts de base de l'arme sont réduits de 4%
-	DeedHint: Vaincre n'importe quel boss avec Onikiri en main alors que votre vie est sous la barre des 10%
+	Burden: Dégâts subis augmentés de 15% tant que le masque démoniaque est actif ; dégâts de base de l'arme réduits de 4% à l'état normal au-dessus de 35% de vie
+	DeedHint: Tuez un boss avec Onikiri en état d'agonie critique avec moins de 10% de vie
 }
 
 OniMeiRubbingKaresansui: {
 	DisplayName: Karesansui
-	Tooltip: Rester immobile ratisse un jardin de sable coupant les ennemis en continu et accélérant le gain de posture ; bouger interrompt la concentration
-	Origin: Le maître jardinier trace d'infinies vagues dans le sable fin sans la moindre goutte d'eau. L'artisan transposa cet esprit dans la lame : seul celui qui demeure serein et concentré peut labourer un jardin de quiétude avec l'intention de son sabre
+	Tooltip: Rester immobile ratisse un jardin d'ondes de sable qui blesse continuellement et accélère la posture ; bouger rompt la concentration
+	Origin:
+		'''
+		Devant un temple de montagne s'étendait un jardin de pierres aride sans arbre ni ruisseau, dont le gravier blanc était ratissé en ondes régulières.
+		Au cœur de la nuit, le sable ondulait de lui-même comme une mer sombre ; les brigands qui s'y aventuraient voyaient leur chair décapée jusqu'à l'os en quelques secondes.
+		Cette gravure canalise ce calme funeste : campez au milieu des ennemis, et l'aura de votre lame ratissera un jardin d'ondes qui déchiquette la chair tout en apaisant votre esprit.
+		'''
 	Power:
 		'''
-		「Ondes de sable」rester immobile avec le sabre en main pendant 1,5 seconde déploie un jardin de sable de 20 cases de rayon durant 5 secondes
-		Inflige 18% des dégâts de base de l'arme toutes les 0,5 seconde aux ennemis dans le périmètre
-		Tant que vous vous tenez dans votre propre jardin de sable, la vitesse de gain de posture augmente de 30%
+		「Ondes de sable」rester immobile pendant 1.5s déploie un jardin de sable de 20 blocs de rayon pendant 5s
+		Inflige 18% des dégâts de base de l'arme aux ennemis à l'intérieur toutes les 0.5s
+		Se tenir dans son propre jardin augmente la vitesse de gain de posture de 30%
 		'''
-	Burden: Déployer le domaine nécessite de maintenir l'immobilité pour canaliser, tout mouvement réinitialise la charge
-	DeedHint: Combattre sans interruption pendant 30 secondes avec Onikiri en main sans bouger ni subir le moindre dégât
+	Burden: Déployer le jardin exige de rester immobile à charger ; bouger réinitialise immédiatement la progression de charge
+	DeedHint: Combattez 30 secondes d'affilée près d'ennemis avec Onikiri sans bouger ni subir de dégâts
 }
 
 OniMeiRubbingSenju: {
 	DisplayName: Senju
-	Tooltip: Lors de la Danse finale, six bras spectraux surgissent pour trancher de concert ; vide la vigueur et interdit le pas éclair pendant 3 secondes après l'art
-	Origin: Kannon aux mille bras déploie d'innombrables mains pour délivrer le monde de ses souffrances. L'artisan incrusta son effigie d'or dans l'acier et fixa cette règle : chaque âme délivrée par cet art doit être accueillie par un bras tenant une lame
-	Power: 「Mille bras」durant le plan fixe de la Danse finale, six bras spectraux surgissent derrière vous pour trancher ensemble, chacun infligeant 30% des dégâts de base de l'arme
-	Burden: Déclencher la Danse finale vide la vigueur à zéro, et interdit d'utiliser le pas éclair Kamui pendant 3 secondes
-	DeedHint: Vaincre 8 espèces différentes de boss en utilisant la Danse finale avec Onikiri en main
+	Tooltip: L'arrêt sur image de la danse finale invoque six bras spectraux pour frapper ensemble ; vide la vigueur et bloque la course pendant 3s
+	Origin:
+		'''
+		Dans un sanctuaire écroulé derrière un charnier, une vieille idole d'argile aux membres rompus s'abreuva de malveillance des siècles durant, laissant pousser la nuit des bras blafards de cadavre.
+		L'artisan grava sa silhouette sur le sabre, la métamorphosant en un bourreau impitoyable :
+		Au moment du gros plan de la danse finale, six bras spectraux émergent du néant dans votre dos pour lacérer la cible de concert avec votre lame.
+		Mais invoquer une telle noirceur épuise intégralement votre énergie vitale.
+		'''
+	Power: 「Mille mains」pendant le gros plan de la danse finale, six bras spectraux frappent de concert dans votre dos, infligeant chacun 30% des dégâts de base
+	Burden: La vigueur tombe à 0 après avoir lancé la danse finale, et le pas éclair Kamui est bloqué pendant 3s
+	DeedHint: Éliminez 8 espèces différentes de boss avec la danse finale en tenant Onikiri
 }
 
 OniMeiRubbingKogehi: {
 	DisplayName: Koge-hi
-	Tooltip: Le pas éclair Kamui laisse un sillage de sol brûlant ; dégâts de base de l'arme -4%
-	Origin: Le forgeron vivait près des bancs de lave dangereux et avait souvent vu ceux qui se brûlaient les pieds. Il ouvrit cette gorge de feu pour s'élancer en avant, laissant la chaleur brûlante aux ennemis qui le poursuivaient
+	Tooltip: Le pas éclair Kamui laisse une traînée de sol brûlant ; dégâts de base de l'arme -4%
+	Origin:
+		'''
+		Lorsque les fours crématoires refroidissaient pour le décrassage, les ouvriers trouvaient toujours au fond des joints de briques des morceaux de charbon d'os phosphorescents — même jetés dans la neige d'hiver, ils fumaient encore.
+		Un forgeron trempa ce sillon dans cette cendre de fosse. Quand l'acier fend l'air dans sa course, il laisse une traînée ardente qui roussit la chair des poursuivants.
+		'''
 	Power:
 		'''
-		「Sillage brûlant」le pas éclair Kamui laisse jusqu'à 5 zones brûlantes durant 1,5 seconde tout au long de sa trajectoire
-		Les ennemis foulant le sol brûlé subissent 14% des dégâts de base de l'arme toutes les 0,5 seconde
-		Deux zones brûlantes distantes de moins de 2 cases ne font que réinitialiser la durée de brûlure
+		「Trace de brûlure」laisse jusqu'à 5 zones brûlantes le long de la trajectoire du pas éclair Kamui durant chacune 1.5s
+		Les ennemis dans les zones brûlantes subissent 14% des dégâts de base de l'arme sous forme de brûlure toutes les 0.5s
+		Les nouvelles marques chevauchant une zone existante à moins de 2 blocs ne font que réinitialiser sa durée
 		'''
-	Burden: Dégâts de base de l'arme réduits de 4%, la perte de puissance devant être compensée par le sillage brûlant
+	Burden: Dégâts de base de l'arme réduits de 4%
 }
 
 OniMeiRubbingKanhi: {
 	DisplayName: Kan-hi
-	Tooltip: Quitter le combat accélère grandement la régénération naturelle de vigueur ; coût en vigueur du pas éclair et du vol des cerisiers +8%
-	Origin: Un long banc repose devant l'atelier du forgeron, où il s'assoit pour observer le tumulte du marché pendant ses pauses. C'est dans le calme et la sérénité que le souffle se ressource : cette gorge incarne cette quiétude
-	Power: 「Souffle paisible」après avoir quitté le combat et sans avoir touché de cible pendant 2 secondes, la vitesse de régénération naturelle de vigueur est multipliée par 2,25
-	Burden: Le coût en vigueur du pas éclair Kamui et du vol des cerisiers augmente de 8%
+	Tooltip: La vigueur se régénère bien plus vite hors combat ; coût en vigueur du pas éclair et du vol de sakura +8%
+	Origin:
+		'''
+		Dans l'arrière-cour d'une vieille maison de thé se trouvait un fauteuil d'osier usé. On racontait qu'il y a des décennies, un vagabond blessé s'y était effondré, et qu'après un court somme, ses plaies s'étaient refermées et sa fatigue dissipée.
+		Cette saignée incarne cette halte réparatrice :
+		Dès que le fer réintègre son fourreau, la vigueur épuisée reflue comme une averse sur une terre aride ; mais forcer des feintes vives au milieu de la mêlée s'avère un peu lourd.
+		'''
+	Power: 「Souffle serein」la vitesse de régénération naturelle de vigueur augmente à 2.25x après avoir quitté le combat et sans frapper pendant 2s
+	Burden: Le coût en vigueur du pas éclair Kamui et du vol de sakura augmente de 8%
 }
 
 OniMeiRubbingTodohi: {
 	DisplayName: Todo-hi
-	Tooltip: Toucher avec la lame entrave et ralentit les ennemis ; le démarrage du pas éclair a un léger temps de latence
-	Origin: Une trempe particulière fit que le tranchant adhère à la chair, entravant les mouvements de quiconque est touché. Le forgeron en tirait fierté : ce qui est entravé est l'ennemi blessé, et non la main qui tient le sabre
-	Power: 「Entrave」toucher directement avec la lame ralentit les mouvements de l'ennemi pendant 0,6 seconde, réduisant la vitesse des ennemis ordinaires à 88% et celle des boss à 96%
-	Burden: Le pas éclair Kamui a un délai d'amorce supplémentaire de 0,1 seconde ; les états d'entrave et d'engourdissement ne se cumulent pas sur une même cible, seule la réduction la plus forte est appliquée
+	Tooltip: Les coups directs entravent et ralentissent les ennemis ; l'amorce du pas éclair subit un léger délai
+	Origin:
+		'''
+		Dans le meuble d'un apothicaire reposait un pot de résine de pin pourri de montagne, si poisseuse que tout oiseau qui la frôlait y demeurait piégé pour toujours.
+		L'acier s'abreuva goulûment de cet onguent noir lors de la trempe. Chaque entaille enserre les jointures de la victime de liens invisibles qui alourdissent ses pas dans la boue.
+		Mais lorsque le bretteur veut s'élancer en un sprint soudain, ses propres appuis ressentent cette même pesanteur gluante.
+		'''
+	Power: 「Entrave visqueuse」les coups directs ralentissent l'ennemi pendant 0.6s (réduisant la vitesse des ennemis normaux à 88% et celle des boss à 96%)
+	Burden: Le pas éclair Kamui subit un délai d'amorce de 0.1s ; Entrave visqueuse et Engourdissement ne se cumulent pas
 }
 
 OniMeiRubbingShiorihi: {
 	DisplayName: Shiori-hi
-	Tooltip: Achever soi-même une cible lance des cisailles volantes sur les ennemis blessés voisins ; régénération naturelle -10%, rater une frappe Zanshin pénalise la vigueur
-	Origin: Le jardinier élague les branches avec ordre et méthode : là où passe le sécateur, les rameaux flétris à proximité sont taillés au passage. L'artisan qui ouvrit cette gorge exerçait jadis ce métier
+	Tooltip: Achever une cible projette des sécateurs sur les ennemis blessés proches ; régénération de vigueur -10%, rater Zanshin pénalise la vigueur
+	Origin:
+		'''
+		Les jardiniers des grands domaines taillaient les branches mortes avec une froideur implacable : en coupant une tige pourrie, ils pinçaient sans hésiter les feuilles fanées alentour.
+		Cette gorge personnifie cette habitude impitoyable d'éradiquer la faiblesse :
+		Lorsqu'un ennemi redoutable est fauché, un sécateur spectral jaillit du fourreau pour transpercer la gorge de toute vermine agonisante dans les parages.
+		'''
 	Power:
 		'''
-		「Taille」achever directement une cible recherche un autre ennemi ayant moins de 50% de vie dans un rayon de 15 cases
-		Lance une lame de cisaille sur la cible, infligeant 25% des dégâts de base de l'arme (aucun temps de recharge s'il n'y a pas de cible blessée ; temps de recharge de 0,75 seconde après déclenchement)
+		「Élagage」achever directement une cible cherche un autre ennemi ayant moins de 50% de vie dans un rayon de 15 blocs
+		Projette une lame d'élagage infligeant 25% des dégâts de base (aucun temps de recharge si aucune cible n'est trouvée ; 0.75s après déclenchement)
 		'''
 	Burden:
 		'''
-		La vitesse de régénération naturelle de la vigueur est réduite de 10%
-		Frapper dans le vide avec la frappe Zanshin après un pas éclair retire 2 points de vigueur supplémentaires
-		Tuer un ennemi avec la cisaille ne peut pas déclencher de nouvelle taille en chaîne
+		Vitesse de régénération naturelle de vigueur réduite de 10%
+		Manquer une frappe Zanshin après un pas éclair déduit 2 points de vigueur supplémentaires
+		Les éliminations causées par la lame d'élagage ne peuvent pas déclencher d'autre élagage en chaîne
 		'''
 }
 
 OniMeiRubbingShiohi: {
 	DisplayName: Shio-hi
-	Tooltip: Frapper en rythme avec la marée restaure la vigueur et renforce la frappe Zanshin ; attaquer à contretemps réduit légèrement les dégâts
-	Origin: Le forgeron a grandi au bord de l'océan, aiguisant ses lames au rythme du va-et-vient des vagues. La marée a son flux et reflux, tout comme le souffle humain : frapper sur la marée montante permet à la mer de rendre la vitalité
+	Tooltip: Frapper au rythme de la marée restaure la vigueur et renforce Zanshin ; les coups à contretemps infligent des dégâts réduits
+	Origin:
+		'''
+		Sous la quille d'une vieille barque de pêche pendait un sifflet d'os oscillant avec la houle ; le vieux batelier disait que chaque choc de la vague contre le récif était une respiration du gouffre marin.
+		Les ondulations le long de la lame battent à l'unisson de la marée :
+		Frappez au moment exact où la crête culmine, et la vigueur affluera comme une marée montante ; frappez à contretemps contre le courant, et l'acier mordra avec réticence.
+		'''
 	Power:
 		'''
-		「Rythme de marée」un indicateur de marée d'un cycle de 0,8 seconde apparaît sous la jauge de vigueur, la crête des vagues durant 0,2 seconde formant la fenêtre de marée haute
-		Les attaques de base portées durant cette fenêtre restaurent 3 points de vigueur supplémentaires au premier coup ; la frappe Zanshin portée en phase voit ses dégâts augmentés de 8%
+		「Rythme des marées」affiche une jauge de marée de 0.8s sous la barre de vigueur (la fenêtre d'harmonie correspond aux 0.2s de la crête)
+		Les coups du combo portés dans la fenêtre d'harmonie restaurent 3 de vigueur supplémentaire au premier coup ; les frappes Zanshin harmonieuses infligent +8% de dégâts
 		'''
-	Burden: Les attaques de base portées hors rythme subissent une réduction de dégâts de 3% (évalué à l'instant où la touche est pressée, et non à l'impact)
+	Burden: Les coups portés hors tempo infligent 3% de dégâts en moins (évalué au moment de la frappe)
 }
 
 OniMeiRubbingShibori: {
 	DisplayName: Shibori
-	Tooltip: Traverser en pas éclair ou subir un coup durant un art paralyse et engourdit l'ennemi ; gain de posture standard -15%
-	Origin: Tout apprenti bretteur doit d'abord endurer la douleur et l'engourdissement du poignet sous les chocs. L'artisan renversa ce principe : pour chaque mesure d'engourdissement que je subis, l'assaillant qui heurte ma lame en éprouvera dix
+	Tooltip: Traverser des ennemis ou subir des coups en animation verrouillée paralyse l'assaillant ; gain de posture -15%
+	Origin:
+		'''
+		Sur le bâton de fer d'un vieux prévôt était sculptée une bête de foudre aux crocs découverts.
+		Face aux coupe-jarrets, même si une lourde lame heurtait son arme en lui écorchant les mains, le prévôt ne reculait jamais : il renvoyait l'onde de choc sous forme d'une décharge paralysante qui foudroyait l'agresseur au sol.
+		Cette gravure est tout aussi obstinée : endurez un coup cuisant, et les membres du rival s'engourdiront, paralysés.
+		'''
 	Power:
 		'''
-		「Riposte engourdissante」traverser un ennemi en pas éclair Kamui lui inflige directement l'état 「Engourdi」
-		Subir des dégâts de contact durant l'animation ininterrompue d'un art consomme 15 points de posture pour réduire les dégâts à 85% et engourdir l'assaillant (temps de recharge de 1,5 seconde)
-		Un ennemi engourdi est ralenti pendant 0,75 seconde (vitesse réduite à 90% pour les ordinaires, 98% pour les boss) et ses dégâts de contact baissent de 10%
+		「Riposte paralysante」traverser des ennemis avec le pas éclair Kamui leur inflige Engourdissement
+		Subir des dégâts de contact pendant des animations fixes d'arts consomme 15 de posture pour réduire les dégâts à 85% et engourdit l'agresseur (recharge 1.5s)
+		Les ennemis engourdis sont ralentis pendant 0.75s (normaux à 90%, boss à 98%) et leurs dégâts de contact sont réduits de 10%
 		'''
-	Burden: La vitesse de gain de posture standard est réduite de 15%
+	Burden: Vitesse normale d'accumulation de la posture réduite de 15%
 }
 
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
-	Tooltip: Réduit grandement les dégâts et le recul infligés par les projectiles ennemis ; gain de posture standard -15%
-	Origin: Lorsque flèches et pierres pleuvent sur les lignes de front, ceux qui cèdent à la panique périssent. Le vieux général qui fit graver cette maxime savait qu'au milieu des flèches, garder des appuis inébranlables réduit la douleur de moitié
-	Power: 「Apaisement」subir les dégâts d'un projectile ennemi réduit les dégâts de 12% et ramène le recul subi à 35% de sa valeur
-	Burden: La vitesse de gain de posture standard est réduite de 15% ; cette gravure offre une utilité limitée en pur corps à corps
+	Tooltip: Réduit grandement les dégâts de projectiles et le recul ; gain de posture -15%
+	Origin:
+		'''
+		Un capitaine blanchi sous le harnais ayant survécu à mille salves gravait toujours des sceaux d'apaisement sur le dos de son sabre.
+		Sous un déluge de grenaille au front, les couards cèdent à la panique devant les sifflements aigus et périssent dans la déroute.
+		Grâce à ce talisman calmant son pouls, le capitaine tenait bon face aux flèches et aux balles, stoïque pour abriter ses organes vitaux d'une issue fatale.
+		'''
+	Power: 「Calme de la tourmente」subir des dégâts de projectiles ennemis réduit les dégâts de 12% et le recul à 35%
+	Burden: Vitesse normale d'accumulation de la posture réduite de 15%
 }
 
 OniMeiRubbingAshidome: {
 	DisplayName: Ashidome
-	Tooltip: Rester immobile accumule la force pour renforcer grandement le cinquième coup ou un art suivant ; bouger dissipe la charge
-	Origin: Première leçon de tout maître d'armes : des appuis instables rendent toute technique vaine. Ce n'est qu'avec des racines fermes que le souffle se rassemble, et ce souffle concentré déployé foudroie tout sur son passage
-	Power: 「Pas ancré」rester immobile avec le sabre en main pendant 0,75 seconde charge la force, augmentant de 25% les dégâts du prochain cinquième coup de base, frappe Zanshin, Éclair annihilateur ou Danse finale
-	Burden: Ce coup renforcé est consommé dès l'attaque, frapper dans le vide ne le rembourse pas ; tout déplacement réinitialise immédiatement la charge
+	Tooltip: Rester immobile accumule de la force, augmentant grandement les dégâts du prochain 5e coup ou art ; bouger dissipe la charge
+	Origin:
+		'''
+		Quand un vieux maître de convoi instruisait ses recrues, il répétait une unique maxime : « Ne tremblez pas sur vos pieds ; seule la fixité préserve la vie. »
+		Si une bête féroce vous barre la route sur un sentier obscur, ancrez vos deux pieds dans la terre gelée comme un cèdre séculaire et retenez votre souffle au ventre.
+		Quand la bête bondira sur vous, le coup jailli de cet enracinement fendra la roche avec une puissance inarrêtable.
+		'''
+	Power: 「Posture enracinée」rester immobile pendant 0.75s termine la charge, augmentant les dégâts du prochain 5e coup du combo, de la frappe Zanshin, de l'éclair d'annihilation ou de la danse finale de 25%
+	Burden: Le coup renforcé est consommé à l'attaque, et rater sa cible ne le rend pas ; bouger dissipe immédiatement la charge accumulée
 }
 
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
-	Tooltip: Réaliser une exécution laisse un champ de braises brûlant sur la cible ; vigueur maximale -5%, coût du pas éclair accru tant que les braises brûlent
-	Origin: Une fois le feu du fourneau de forge étouffé, la chaleur des braises persiste toute la nuit sans s'éteindre. Le forgeron emprunta cette règle pour l'acier : bien que les flammes s'apaisent, la chaleur ardente ne s'épuise pas
+	Tooltip: Les exécutions laissent un lit de braises ardentes à l'emplacement de la cible ; vigueur max -5%, coût du pas éclair accru tant que le feu brûle
+	Origin:
+		'''
+		Lorsque les vieux fours crématoires s'éteignaient au creux de l'hiver, en fouillant sous le drap de cendres grises, on trouvait toujours des braises violettes couvant dans les joints de briques.
+		Même arrosées d'eau glacée, elles crépitaient en fumant des semaines durant.
+		En scellant ces braises de sépulture dans la lame, chaque ennemi broyé par une exécution embrase le sol d'un brasier infernal qui consume les poursuivants jusqu'aux os.
+		'''
 	Power:
 		'''
-		「Braises」après une exécution réussie, déploie un champ de braises durant 3 secondes au point d'impact
-		Les ennemis dans le champ subissent 16% des dégâts de base de l'arme toutes les 0,75 seconde
-		Un seul champ peut exister à la fois, une nouvelle exécution déplace le champ vers la nouvelle position
+		「Braises」exécuter une cible déploie un champ de braises de 3s à son emplacement
+		Les ennemis dans le champ subissent 16% des dégâts de base de l'arme sous forme de brûlure toutes les 0.75s
+		Un seul champ de braises peut exister à la fois ; réexécuter une cible déplace le champ au nouvel emplacement
 		'''
-	Burden: Vigueur maximale réduite de 5% ; tant que le champ de braises brûle, le coût en vigueur du pas éclair Kamui augmente de 10%
+	Burden: Vigueur maximale réduite de 5% ; tant qu'un champ de braises existe, le coût en vigueur du pas éclair Kamui augmente de 10%
 }
