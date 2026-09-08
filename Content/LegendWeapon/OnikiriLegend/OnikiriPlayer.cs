@@ -298,6 +298,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private Vector2 executionHandoffDirection = Vector2.UnitX;
         private Vector2 executionBufferedMouseScreen;
 
+        //====终结乱舞演出(全端一致:主控每帧续心跳,护体/架势锁定/HUD 锁定共用)====
+        /// <summary>主控心跳,<see cref="OniFinaleSlash"/> 每帧续 2;起手帧由 FireExecutionFinale 先点上,主控消亡后一帧自落</summary>
+        private int finaleHeartbeat;
+        /// <summary>主控回报的演出帧,HUD 据此对齐纳刀拍;主控不在场时无意义</summary>
+        internal int FinaleFrame { get; private set; }
+        /// <summary>终结乱舞进行中:演出遮屏的整段免伤,架势锁定不蓄,HUD 鞘刀钉在拔出位</summary>
+        internal bool ExecutionActive => finaleHeartbeat > 0;
+
         //====墨丝丝锚:世界锚点,不跟目标走(丝钉在落刀那一刻的位置)====
         private struct SilkAnchor
         {
@@ -343,6 +351,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinAutoHandoffCountdown = 0;
             ResetExecutionState();
             ResetMeiTransient();
+            finaleHeartbeat = 0;
+            FinaleFrame = 0;
             DeedTracker.Reset();
             OniMeiOwned.EnsureSeed(this);
             OnikiriNet.SendOwnedMeiSnapshot(Player);
@@ -388,6 +398,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinAutoHandoffCountdown = 0;
             ResetExecutionState();
             ResetMeiTransient();
+            finaleHeartbeat = 0;
+            FinaleFrame = 0;
             DeedTracker.Reset();
         }
 
@@ -395,6 +407,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             OnikiriNet.RepairDuplicateIdentities(Player);
             OnikiriNet.UpdatePending(Player);
             OnikiriNet.ReconcileAuthoritativeState(Player);
+            //主控消亡后心跳自落:弹幕在玩家之后更新,活着就赶在下一帧受击判定前续上
+            if (finaleHeartbeat > 0) {
+                finaleHeartbeat--;
+            }
+        }
+
+        /// <summary>主控每帧回报(全端):续心跳并记演出帧</summary>
+        internal void ReportFinaleFrame(int frame) {
+            finaleHeartbeat = 2;
+            FinaleFrame = frame;
         }
 
         private void ResetExecutionState() {
@@ -1460,8 +1482,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
             Tutorial.OnikiriTutorialEvents.FireZanshinHit(target);
-            Stance = Math.Min(StanceMax,
-                Stance + StancePerZanshinSlash * profile.StanceGainMul * ResolveSandGardenStanceMul(in profile));
+            GainStance(StancePerZanshinSlash * profile.StanceGainMul * ResolveSandGardenStanceMul(in profile));
             if (profile.ZanshinHitVigorBonus > 0f) {
                 Vigor = Math.Min(VigorMaxCurrent, Vigor + profile.ZanshinHitVigorBonus);
                 if (profile.BloodGroove) {
@@ -1595,6 +1616,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 ClearExecutionFollowup();
                 return false;
             }
+            //心跳与归零同帧点上:HUD 在同一份快照里看到"锁定 + 读数归零",才能把刀钉在拔出位而不是先演一遍泄势
+            ReportFinaleFrame(0);
             Stance = 0f;
             ClearExecutionFollowup();
             ClearZanshinIntent();
@@ -1974,6 +1997,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         //==================== 资源增益(玩法挂点调用,owner 端) ====================
 
+        /// <summary>
+        /// 命中蓄势的统一入口:终结乱舞进行中架势锁定,这段时间的命中不再积累
+        /// (时停里砍冻住的敌人不能白攒下一场;髭切的断首返势是处决自身的奖励,走 <see cref="GrantExecuteRefund"/> 不受此限)
+        /// </summary>
+        private void GainStance(float amount) {
+            if (amount <= 0f || ExecutionActive) {
+                return;
+            }
+            Stance = Math.Min(StanceMax, Stance + amount);
+        }
+
         /// <summary>连段接触:每拍仅首次命中回气蓄势,所有目标都记入命中记忆;血樋在此补气(禁多目标套利)</summary>
         internal void OnComboHit(NPC target, bool grantResources,
             in OniMeiCombatProfile profile, bool tideOnBeat) {
@@ -1982,8 +2016,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
             Vigor = Math.Min(VigorMaxCurrent, Vigor + VigorPerComboBeat + profile.ComboHitVigorBonus);
-            Stance = Math.Min(StanceMax,
-                Stance + StancePerComboBeat * profile.StanceGainMul * ResolveSandGardenStanceMul(in profile));
+            GainStance(StancePerComboBeat * profile.StanceGainMul * ResolveSandGardenStanceMul(in profile));
             if (profile.BloodGroove && profile.ComboHitVigorBonus > 0f) {
                 OniMeiStrikes.SpawnBloodBackflow(Player, target);
                 NotifyBloodBackflow();
@@ -2018,7 +2051,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         internal void OnDashParry(NPC npc, bool grantResources, in OniMeiCombatProfile profile) {
             RecordHit(npc);
             if (grantResources) {
-                Stance = Math.Min(StanceMax, Stance + StancePerDashParry * profile.StanceGainMul);
+                GainStance(StancePerDashParry * profile.StanceGainMul);
             }
             if (profile.NumbCounter) {
                 OniMeiCombat.TryApplyNumbCounter(Player, npc, in profile);
@@ -2404,7 +2437,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return true;
         }
 
-        /// <summary>髭切断首击杀返势(每次招式至多一次,OniMeiCombat 把关)</summary>
+        /// <summary>髭切断首击杀返势(每次招式至多一次,OniMeiCombat 把关);终斩了结落在锁定期内,故绕开 GainStance 的锁</summary>
         internal void GrantExecuteRefund() {
             Stance = Math.Min(StanceMax, Stance + OniMeiCombat.ExecuteKillStanceRefund);
         }
@@ -2449,6 +2482,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             return hostile;
         }
+
+        //==================== 终结乱舞护体 ====================
+
+        /// <summary>
+        /// 演出遮屏的整段里任何来手都伤不到持刀人(时停期本就冻住了敌人与弹幕,这里兜住解冻后的裂世收尾与漏冻的来手);
+        /// 肢解反噬是固定契约,照旧落下。免的是碰撞与弹幕,减益持续伤害不在此列
+        /// </summary>
+        public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
+            => ExecutionActive && !OniPlayerDismember.SelfHurtResolving;
+
+        public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot) => !ExecutionActive;
+
+        public override bool CanBeHitByProjectile(Projectile proj) => !ExecutionActive;
 
         public override bool FreeDodge(Player.HurtInfo info) {
             if (Main.dedServ || Player.whoAmI != Main.myPlayer || !Mei.FalseBody
@@ -3277,7 +3323,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public bool TryGetStance(Player player, out OniStanceSnapshot snapshot) {
             if (player != null && player.active && player.TryGetModPlayer(out OnikiriPlayer okp)) {
-                snapshot = new OniStanceSnapshot(okp.Stance, OnikiriPlayer.StanceMax);
+                snapshot = new OniStanceSnapshot(okp.Stance, OnikiriPlayer.StanceMax
+                    , okp.ExecutionActive, okp.FinaleFrame);
                 return true;
             }
             snapshot = default;

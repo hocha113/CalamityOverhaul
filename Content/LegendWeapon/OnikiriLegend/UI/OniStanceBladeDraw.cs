@@ -15,6 +15,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public float FullGlow;
         /// <summary>0~1 释放拔刀闪</summary>
         public float ReleaseFlash;
+        /// <summary>0~1 终结乱舞灼热:钢在烧(拔出时)/漆身余温(归鞘后)</summary>
+        public float LockHeat;
+        /// <summary>0~1 乱舞拍点闪,整刀过曝一瞬</summary>
+        public float LockPulse;
         public float Alpha;
         public float Time;
     }
@@ -38,6 +42,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             effect.Parameters["uFlow"]?.SetValue(p.Flow);
             effect.Parameters["uFullGlow"]?.SetValue(p.FullGlow);
             effect.Parameters["uReleaseFlash"]?.SetValue(p.ReleaseFlash);
+            effect.Parameters["uLockHeat"]?.SetValue(p.LockHeat);
+            effect.Parameters["uLockPulse"]?.SetValue(p.LockPulse);
             effect.Parameters["uSeed"]?.SetValue(OnikiriUITheme.HudStanceSeed);
             effect.Parameters["uColInk"]?.SetValue(OnikiriUITheme.Ink.ToVector3());
             effect.Parameters["uColPaper"]?.SetValue(OnikiriUITheme.Paper.ToVector3());

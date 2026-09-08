@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.TimeFreezes;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -119,6 +120,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
             ShatterFlowAngle = Aim;
             ShatterFlowActive = true;
+
+            //持刀人护体/架势锁定/HUD 锁定的心跳:全端每帧续,主控在场即演出进行中
+            if (Owner.active) {
+                Owner.GetModPlayer<OnikiriPlayer>().ReportFinaleFrame(timer);
+            }
 
             //时停、纳刀帧前每帧刷新，之后停止、tick 自然衰减，世界恰在终斩落下时苏醒
 
@@ -313,6 +319,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                     , ringDamage, Projectile.knockBack, SizeMul * (1f + 0.18f * escalate) * 1.12f
                     , Projectile.GetSource_FromAI());
                 OniMeiActionContext.Inherit(Projectile, ring, secondary: false, OniMeiActionKind.Finale);
+                //HUD 鞘刀跟着乱舞的拍子震,越往后拍越重
+                OniTalismanHud.NotifyExecutionBeat(0.55f + 0.45f * escalate);
             }
 
             for (int i = 0; i < ScarBeats.Length; i++) {
@@ -327,6 +335,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 Projectile scar = OniFinaleScar.Fire(Owner, center, angle, detonateDelay
                     , scarDamage, Projectile.knockBack * 0.5f, SizeMul, Projectile.GetSource_FromAI());
                 OniMeiActionContext.Inherit(Projectile, scar, secondary: false, OniMeiActionKind.Finale);
+                OniTalismanHud.NotifyExecutionBeat(0.35f);
             }
 
             if (timer == CutSpawnFrame) {
@@ -334,6 +343,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                     , (int)(baseWeaponDamage * 4f), Projectile.knockBack * 2f, SizeMul
                     , Projectile.GetSource_FromAI());
                 OniMeiActionContext.Inherit(Projectile, cut, secondary: false, OniMeiActionKind.FinaleCut);
+                //终斩细线现身:死寂里最深的一记闷震
+                OniTalismanHud.NotifyExecutionBeat(0.8f);
             }
         }
 

@@ -44,6 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText StanceValueFormat { get; private set; }
         public static LocalizedText StanceReadyLine { get; private set; }
         public static LocalizedText StanceHalfLine { get; private set; }
+        public static LocalizedText StanceLockedLine { get; private set; }
         public static LocalizedText DomainTitle { get; private set; }
         public static LocalizedText DomainStateClosed { get; private set; }
         public static LocalizedText DomainStateOmote { get; private set; }
@@ -65,6 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             StanceValueFormat = this.GetLocalization(nameof(StanceValueFormat), () => "{0} / {1}");
             StanceReadyLine = this.GetLocalization(nameof(StanceReadyLine), () => "锋已离鞘，只欠一拔");
             StanceHalfLine = this.GetLocalization(nameof(StanceHalfLine), () => "势已过半，足以一记灭世一闪");
+            StanceLockedLine = this.GetLocalization(nameof(StanceLockedLine), () => "终结乱舞进行中：全程免伤，架势锁定不蓄");
             DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
             DomainStateClosed = this.GetLocalization(nameof(DomainStateClosed), () => "阖目，领域未展");
             DomainStateOmote = this.GetLocalization(nameof(DomainStateOmote), () => "表世界，泛黄和纸");
@@ -88,6 +90,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static void NotifyExecutionLocked() => Instance?.stance.NotifyExecutionLocked();
         /// <summary>专用处决已受理空放路线</summary>
         public static void NotifyExecutionWhiffQueued() => Instance?.stance.NotifyExecutionWhiffQueued();
+        /// <summary>终结乱舞排拍落刀:鞘刀跟拍震一记(主控 owner 端调用,strength 0~1 为拍的轻重)</summary>
+        public static void NotifyExecutionBeat(float strength) => Instance?.stance.NotifyExecutionBeat(strength);
         /// <summary>领域命令被拒反馈:鬼眼急促眨动(玩法层调用,本地客户端)</summary>
         public static void NotifyDomainDenied() => Instance?.domainEye.NotifyDenied();
 
@@ -119,7 +123,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float burnVisual = RestingBurn;
         private bool hover;
         private bool wasHovered;
-        private readonly OniUIParticlePool particles = new(40);
+        //札脚余烬 + 终结乱舞期鞘刀迸出的火星/余烬共用,乱舞拍点最密时约 30 粒在世
+        private readonly OniUIParticlePool particles = new(72);
         //气力墨脉:札旁横书一笔墨痕作气力计,共用本 HUD 锚点(数据层见 OniVigorData)
         private readonly OniVigorStroke vigor = new();
         //架势鞘刀:墨脉之下横悬的鞘中刀,拔刀进度=架势(数据层见 OniStanceData)
@@ -332,7 +337,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //气力墨脉与架势鞘刀推进:点鬼簿开卷时也继续呼吸,只是不受理悬浮
             vigor.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition);
-            stance.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition);
+            stance.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition, particles);
             if (uiCovered) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);

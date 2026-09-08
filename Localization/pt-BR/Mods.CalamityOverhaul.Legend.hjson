@@ -636,6 +636,7 @@ OnikiriText: {
 		// StanceValueFormat: "{0} / {1}"
 		// StanceReadyLine: Full Stance — {0} auto-locks for Finale; double-dash remains available
 		// StanceHalfLine: Half Stance — double-tap {0}, then left-click for Annihilating Flash
+		// StanceLockedLine: Finale Slash in progress — immune to damage, Stance locked and not building
 		// DomainTitle: Eye of the Oni Domain
 		// DomainStateClosed: Shut — no domain unfolded
 		// DomainStateOmote: Omote — the yellowed-paper world

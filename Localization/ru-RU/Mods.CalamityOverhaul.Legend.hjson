@@ -636,6 +636,7 @@ OnikiriText: {
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: Стойка полна: {0} захватывает цель для конечного удара; двойной рывок всё ещё пронзает
 		StanceHalfLine: Стойка больше половины: нажмите {0} дважды подряд, затем ЛКМ — миргубящая вспышка
+		// StanceLockedLine: Finale Slash in progress — immune to damage, Stance locked and not building
 		DomainTitle: Око Призрачного царства
 		DomainStateClosed: Закрыто, домен не развёрнут
 		DomainStateOmote: Явь, пожелтевшая бумага

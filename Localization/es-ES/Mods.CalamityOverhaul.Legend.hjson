@@ -636,6 +636,7 @@ OnikiriText: {
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: Postura llena: {0} fija al enemigo y lanza el tajo final; el doble paso relámpago sigue pudiendo atravesar
 		StanceHalfLine: Postura a medias: pulsa {0} dos veces seguidas, luego clic izquierdo para el destello aniquilador
+		// StanceLockedLine: Finale Slash in progress — immune to damage, Stance locked and not building
 		DomainTitle: Ojo del Reino espectral
 		DomainStateClosed: Cerrado, el dominio no está desplegado
 		DomainStateOmote: Omote, papel amarillento

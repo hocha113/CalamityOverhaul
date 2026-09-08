@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.GameModes;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering;
 using InnoVault.Cinematics;
@@ -67,12 +68,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             Player.controlThrow = false;
         }
 
-        /// <summary>被抓期间任何伤害都留 1 血：投技连段永不处死满血玩家的最终兜底</summary>
+        /// <summary>被抓期间任何伤害都留 1 血：投技连段永不处死满血玩家的最终兜底。
+        /// 走 <see cref="AsuraPlayer.CapHurt"/> 让修罗下限也认这道上限</summary>
         public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
             if (!Pinned) {
                 return;
             }
-            modifiers.SetMaxDamage(Math.Max(Player.statLife - 1, 1));
+            AsuraPlayer.CapHurt(Player, ref modifiers, Math.Max(Player.statLife - 1, 1));
         }
 
         /// <summary>死亡即断投：清本地钉握并停运镜（PostUpdate 死亡期不再执行）</summary>

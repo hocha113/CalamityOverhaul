@@ -327,6 +327,7 @@ namespace CalamityOverhaul
         public static int NPC_GreatSandShark => Get();
         public static int NPC_Mauler => Get();
         public static int NPC_NuclearTerror => Get();
+        public static int NPC_SuperDummyNPC => Get();
         #endregion
         #region 弹幕ID引用
         public static int Proj_ArcZap => Get();

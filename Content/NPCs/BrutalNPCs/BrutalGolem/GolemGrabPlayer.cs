@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.GameModes;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists;
@@ -90,7 +91,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             Player.controlSmart = false;
         }
 
-        /// <summary>保命阀：投技期间石巨人系伤害不可致死（满血一套不死的硬保证）</summary>
+        /// <summary>保命阀：投技期间石巨人系伤害不可致死（满血一套不死的硬保证）。
+        /// 走 <see cref="AsuraPlayer.CapHurt"/> 让修罗下限也认这道上限</summary>
         public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
             if (grabFistIndex < 0 || Player.statLife <= 1) {
                 return;
@@ -98,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             if (!IsGolemSource(modifiers.DamageSource)) {
                 return;
             }
-            modifiers.SetMaxDamage(Math.Max(Player.statLife - 1, 1));
+            AsuraPlayer.CapHurt(Player, ref modifiers, Math.Max(Player.statLife - 1, 1));
         }
 
         /// <summary>抓取瞬间：斩断位移类挂点，起手顿帧反馈</summary>

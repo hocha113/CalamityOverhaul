@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GameModes;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
@@ -523,7 +524,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 modifiers.Cancel();
                 return;
             }
-            modifiers.SetMaxDamage(allowedDamage);
+            //走 CapHurt 让修罗下限也认这道护栏
+            AsuraPlayer.CapHurt(Player, ref modifiers, allowedDamage);
         }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp,

@@ -636,6 +636,7 @@ OnikiriText: {
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: 势已圆满，{0} 锁敌终斩；双疾走仍可穿身
 		StanceHalfLine: 势已过半，连按 {0} 两次，再按左键可接灭世
+		StanceLockedLine: 终结乱舞进行中：全程免伤，架势锁定不蓄
 		DomainTitle: 鬼域之眼
 		DomainStateClosed: 阖目，领域未展
 		DomainStateOmote: 表世界，泛黄和纸

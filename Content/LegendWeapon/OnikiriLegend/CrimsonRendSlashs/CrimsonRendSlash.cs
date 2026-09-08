@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
@@ -65,16 +65,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// <summary>收刀后撤角(rad)</summary>
         private const float ReleaseExitPullRad = 0.35f;
         //==== 姿态残影常量(连续扫掠面,非离散鬼影) ====
-        private const int SmearCapacity = 8;
-        private const int SmearLifeFrames = 3;
+        private static int SmearCapacity => 8;
+        private static int SmearLifeFrames => 3;
         /// <summary>单帧扫掠面最多向后覆盖的弧度(拖尾长度),更早的行程由刀光承担</summary>
-        private const float SmearTrailSpanRad = 0.90f;
+        private static float SmearTrailSpanRad => 0.9f;
         /// <summary>拷贝角步长(rad):刀尖半径约 205px、锋尖末端仅 4px 宽,1.03° 步长下尖端轨迹间距 3.7px 仍相接;
         /// 刀身中段(12px 宽)重叠≈4 张,任何位置都不露梳齿</summary>
-        private const float SmearStepRad = 0.018f;
-        private const int SmearMaxCopies = 50;
+        private static float SmearStepRad => 0.018f;
+        private static int SmearMaxCopies => 50;
         /// <summary>单张拷贝基础 alpha;密排累积后锋尖≈0.4、中段≈0.25,护手处由斜坡贴图归零</summary>
-        private const float SmearCopyAlpha = 0.20f;
+        private static float SmearCopyAlpha => 0.20f;
         /// <summary>贴图护手/刀尖 UV,护手作手心支点</summary>
         private static Vector2 BladeHiltUV => new(0.1f, 1f);
         private static Vector2 BladeTipUV => new(0.73f, 0.01f);

@@ -636,6 +636,7 @@ OnikiriText: {
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: Haltung voll. {0} sperrt und Endhieb; Doppelschritt bleibt möglich
 		StanceHalfLine: Haltung zur Hälfte. {0} zweimal, dann Linksklick für den Weltenblitz
+		// StanceLockedLine: Finale Slash in progress — immune to damage, Stance locked and not building
 		DomainTitle: Auge des Geisterreichs
 		DomainStateClosed: Geschlossen, Reich nicht entfaltet
 		DomainStateOmote: Omote, vergilbtes Papier

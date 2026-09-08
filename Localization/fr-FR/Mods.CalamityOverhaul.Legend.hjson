@@ -636,6 +636,7 @@ OnikiriText: {
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: Posture pleine : {0} verrouille pour la Finale ; le double pas éclair reste possible
 		StanceHalfLine: Posture à mi-jauge : appuyez deux fois sur {0}, puis clic gauche pour l'Éclair annihilateur
+		// StanceLockedLine: Finale Slash in progress — immune to damage, Stance locked and not building
 		DomainTitle: Œil du domaine spectral
 		DomainStateClosed: Clos, le domaine n'est pas déployé
 		DomainStateOmote: Omote, le monde de papier jauni

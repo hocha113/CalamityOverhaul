@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -10,7 +11,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
     /// 架势鞘刀计,<see cref="OniTalismanHud"/> 驱动;
-    /// 读 <see cref="OniStance.Get"/>,拔刀/回鞘/点火在本类推导
+    /// 读 <see cref="OniStance.Get"/>,拔刀/回鞘/点火在本类推导。
+    /// 终结乱舞期间读数锁定:刀钉在整刀出鞘位,钢在烧、随乱舞拍点颚震,
+    /// 与世间那一挑同帧归鞘,之后漆身余温冷到主控退场
     /// </summary>
     internal sealed class OniStanceSheath
     {
@@ -35,6 +38,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private Vector2 pommelBase;
         private Vector2 lastMouse;
 
+        //====终结乱舞锁定(锁态读快照,拍点由 NotifyExecutionBeat 推入)====
+        private bool locked;
+        /// <summary>纳刀前:刀仍在世间,读数钉在整刀出鞘位不看真实值</summary>
+        private bool lockBladeOut;
+        private int lockFrame;
+        /// <summary>0~1 灼热,灌 shader:刀出鞘时钢在烧,纳刀后漆身余温冷却</summary>
+        private float heat;
+        /// <summary>拍点闪,灌 shader,逐帧衰减</summary>
+        private float heatPulse;
+        /// <summary>拍点顿挫幅度(位移),逐帧衰减</summary>
+        private float lockKick;
+        /// <summary>拍点顿挫相位,每拍归零重起</summary>
+        private float lockKickPhase;
+        /// <summary>持续细颚震 0~1,死寂期升压,纳刀后消散</summary>
+        private float lockTremor;
+        /// <summary>拍点待迸的火星数,Update 拿粒子池兑现</summary>
+        private int pendingSparks;
+        private int emberTimer;
+
         /// <summary>本帧悬浮在刀身上(纯读数,不捕获点击)</summary>
         public bool Hovering { get; private set; }
         public bool TooltipVisible => hoverEase > 0.02f;
@@ -48,6 +70,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             seating = false;
             hoverEase = 0f;
             Hovering = false;
+            locked = lockBladeOut = false;
+            heat = heatPulse = lockKick = lockKickPhase = lockTremor = 0f;
+            pendingSparks = 0;
+            emberTimer = 0;
+        }
+
+        /// <summary>终结乱舞排拍落刀:鞘刀跟拍震一记并迸火星;声音交给世间的刀,HUD 不另响</summary>
+        public void NotifyExecutionBeat(float strength) {
+            strength = MathHelper.Clamp(strength, 0f, 1f);
+            lockKick = Math.Max(lockKick, strength);
+            lockKickPhase = 0f;
+            heatPulse = Math.Max(heatPulse, strength);
+            pendingSparks += strength >= 0.7f ? 3 : 2;
         }
 
         /// <summary>架势不足的拒绝反馈:刀在鞘中一顿 + 木鞘叩响(玩法层经 OniTalismanHud 转发调用,本地客户端)</summary>
@@ -87,7 +122,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.42f, Volume = 0.36f });
         }
 
-        public void Update(Player player, Vector2 anchor, bool interactive, Vector2 mouse) {
+        public void Update(Player player, Vector2 anchor, bool interactive, Vector2 mouse
+            , OniUIParticlePool particles = null) {
             pommelBase = anchor + OnikiriUITheme.HudStanceOffset;
             lastMouse = mouse;
             snap = OniStance.Get(player);
@@ -97,35 +133,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 wasFull = newTarget >= 0.995f;
             }
 
-            //大幅泄势,满位按拔刀,余按回鞘
-            float delta = newTarget - targetFill;
-            if (delta < -0.20f) {
-                releaseFlash = Math.Max(releaseFlash, targetFill >= 0.85f ? 1f : 0.45f);
-                seating = true;
+            lockFrame = snap.LockFrame;
+            if (snap.Locked && !locked) {
+                BeginLock();
             }
-            targetFill = newTarget;
+            else if (!snap.Locked && locked) {
+                //提前夭折的演出:钉住的读数交回常态路径,它会照泄势那套自己落底
+                lockBladeOut = false;
+            }
+            locked = snap.Locked;
 
-            //显示值:泄势急落,蓄势稳涨
-            float step = targetFill - displayFill;
-            displayFill += step * (step < 0f ? 0.30f : 0.08f);
-            if (Math.Abs(targetFill - displayFill) < 0.0008f) {
-                displayFill = targetFill;
-                if (seating) {
-                    //纳刀归座:残心的那半拍落定
-                    seating = false;
-                    seatPulse = 1f;
-                    SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.30f, Volume = 0.40f });
-                }
+            if (locked) {
+                UpdateLocked(newTarget);
             }
-            flow = MathHelper.Lerp(flow, MathHelper.Clamp(step * 14f, -1f, 1f), 0.16f);
+            else {
+                UpdateFree(newTarget);
+            }
 
-            //满架势:鲤口切的一声轻响,刃口点火渐入
-            bool full = displayFill >= 0.995f;
-            if (full && !wasFull) {
-                SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.35f, Volume = 0.35f });
-            }
-            wasFull = full;
-            fullGlow += ((targetFill >= 0.995f ? 1f : 0f) - fullGlow) * 0.07f;
             releaseFlash *= 0.88f;
             seatPulse *= 0.86f;
             denyPulse *= 0.87f;
@@ -133,6 +157,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             queuedPulse *= 0.84f;
             lockPulse *= 0.86f;
             whiffPulse *= 0.88f;
+            heatPulse *= 0.80f;
+            lockKick *= 0.82f;
+            lockKickPhase = Math.Min(lockKickPhase + 0.75f, 60f);
 
             //悬浮:整刀(含后撤余量)的轴对齐外包
             float totalLen = OnikiriUITheme.HudStanceTsukaLen + 3f + OnikiriUITheme.HudStanceBladeW;
@@ -145,6 +172,137 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 (int)(Math.Abs(tipY - pommelBase.Y) + 22f));
             Hovering = interactive && box.Contains(mouse.ToPoint());
             hoverEase += ((Hovering ? 1f : 0f) - hoverEase) * (Hovering ? 0.22f : 0.12f);
+
+            SpawnLockParticles(particles);
+        }
+
+        /// <summary>常态:读数变化自行推导拔刀/回鞘/点火</summary>
+        private void UpdateFree(float newTarget) {
+            //大幅泄势,满位按拔刀,余按回鞘
+            float delta = newTarget - targetFill;
+            if (delta < -0.20f) {
+                releaseFlash = Math.Max(releaseFlash, targetFill >= 0.85f ? 1f : 0.45f);
+                seating = true;
+            }
+            targetFill = newTarget;
+
+            //显示值:泄势急落,蓄势稳涨
+            float step = targetFill - displayFill;
+            displayFill += step * (step < 0f ? 0.30f : 0.08f);
+            SettleSeat();
+            flow = MathHelper.Lerp(flow, MathHelper.Clamp(step * 14f, -1f, 1f), 0.16f);
+
+            //满架势:鲤口切的一声轻响,刃口点火渐入
+            bool full = displayFill >= 0.995f;
+            if (full && !wasFull) {
+                SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.35f, Volume = 0.35f });
+            }
+            wasFull = full;
+            fullGlow += ((targetFill >= 0.995f ? 1f : 0f) - fullGlow) * 0.07f;
+
+            //锁解后余温与颚震自然散尽(提前夭折的演出走这里冷)
+            heat *= 0.90f;
+            lockTremor *= 0.85f;
+        }
+
+        /// <summary>读数落底那一帧放归座反馈(纳刀归座:残心的那半拍落定)</summary>
+        private void SettleSeat() {
+            if (Math.Abs(targetFill - displayFill) >= 0.0008f) {
+                return;
+            }
+            displayFill = targetFill;
+            if (seating) {
+                seating = false;
+                seatPulse = 1f;
+                SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.30f, Volume = 0.40f });
+            }
+        }
+
+        /// <summary>锁定起手:处决只在满势时发生,钉住的就是整刀出鞘那一格;读数归零那一下不演泄势</summary>
+        private void BeginLock() {
+            lockBladeOut = lockFrame < OniFinaleSlash.DetonateFrame;
+            seating = false;
+            heat = Math.Max(heat, 0.15f);
+            lockTremor = Math.Max(lockTremor, 0.4f);
+            emberTimer = 0;
+        }
+
+        /// <summary>
+        /// 锁定期:纳刀前刀在世间乱舞,读数钉死、钢在烧、死寂期颚震升压;
+        /// 纳刀拍与世间那一挑同帧归鞘,之后读真实值(归零或髭切返势),漆身余温冷到主控退场恰好熄
+        /// </summary>
+        private void UpdateLocked(float newTarget) {
+            bool bladeOut = lockFrame < OniFinaleSlash.DetonateFrame;
+            if (bladeOut) {
+                targetFill = 1f;
+                displayFill += (targetFill - displayFill) * 0.35f;
+                flow = MathHelper.Lerp(flow, 0f, 0.16f);
+                heat += (1f - heat) * 0.14f;
+                float tension = MathHelper.Clamp((lockFrame - OniFinaleSlash.SilenceStart)
+                    / (float)(OniFinaleSlash.DetonateFrame - OniFinaleSlash.SilenceStart), 0f, 1f);
+                lockTremor += (0.4f + 0.6f * tension - lockTremor) * 0.2f;
+            }
+            else {
+                if (lockBladeOut) {
+                    //纳刀拍:刀猛地归鞘,拔刀闪扫出,最重的一记顿挫
+                    lockBladeOut = false;
+                    releaseFlash = 1f;
+                    seating = true;
+                    lockKick = 1f;
+                    lockKickPhase = 0f;
+                    heatPulse = 1f;
+                    pendingSparks += 4;
+                }
+                targetFill = newTarget;
+                float step = targetFill - displayFill;
+                //比常态泄势更急,贴世间纳刀一挑的六帧
+                displayFill += step * (step < 0f ? 0.42f : 0.08f);
+                SettleSeat();
+                flow = MathHelper.Lerp(flow, MathHelper.Clamp(step * 14f, -1f, 1f), 0.16f);
+                float cool = 1f - MathHelper.Clamp((lockFrame - OniFinaleSlash.DetonateFrame)
+                    / (float)(OniFinaleSlash.TotalDuration - OniFinaleSlash.DetonateFrame), 0f, 1f);
+                heat = Math.Min(heat, cool * cool);
+                lockTremor *= 0.88f;
+            }
+            //锁定期不响鲤口声(读数是被钉住的,不是蓄出来的),只维护状态位
+            wasFull = displayFill >= 0.995f;
+            fullGlow += ((targetFill >= 0.995f ? 1f : 0f) - fullGlow) * 0.07f;
+        }
+
+        /// <summary>镡后刀根(quad 左中点),与 Draw 同一套柄后撤推导,粒子落点才贴刃</summary>
+        private Vector2 BladeRoot(Vector2 dir) {
+            float ease = displayFill * displayFill * (3f - 2f * displayFill);
+            Vector2 pommel = pommelBase - dir * (OnikiriUITheme.HudStanceTsukaRecede * ease);
+            return pommel + dir * (OnikiriUITheme.HudStanceTsukaLen + 3f);
+        }
+
+        /// <summary>火星:拍点从刃缘迸出;余烬:钢在烧时沿刃缘上飘,纳刀后只剩鲤口附近几粒随余温稀落</summary>
+        private void SpawnLockParticles(OniUIParticlePool particles) {
+            if (particles == null || (heat <= 0.05f && pendingSparks <= 0)) {
+                pendingSparks = 0;
+                return;
+            }
+            Vector2 dir = OnikiriUITheme.HudStanceCant.ToRotationVector2();
+            Vector2 perp = (OnikiriUITheme.HudStanceCant + MathHelper.PiOver2).ToRotationVector2();
+            Vector2 root = BladeRoot(dir);
+            //刃缘在轴线刃侧(屏幕上方),半高与 shader 的 bladeHalf 同源
+            float bladeHalf = OnikiriUITheme.HudStanceBladeH * 0.14f;
+            float sayaHalf = OnikiriUITheme.HudStanceBladeH * 0.20f;
+
+            while (pendingSparks > 0) {
+                pendingSparks--;
+                float u = Main.rand.NextFloat(0.15f, 0.95f);
+                particles.SpawnSpark(root + dir * (OnikiriUITheme.HudStanceBladeW * u) - perp * bladeHalf);
+            }
+
+            emberTimer++;
+            int interval = lockBladeOut ? 4 : (int)MathHelper.Lerp(28f, 9f, heat);
+            if (heat > 0.08f && emberTimer >= interval) {
+                emberTimer = 0;
+                float u = lockBladeOut ? Main.rand.NextFloat(0.05f, 0.97f) : Main.rand.NextFloat(0f, 0.35f);
+                float lift = lockBladeOut ? bladeHalf : sayaHalf;
+                particles.SpawnEmber(root + dir * (OnikiriUITheme.HudStanceBladeW * u) - perp * lift);
+            }
         }
 
         /// <summary>绘柄/镡/刃鞘/归座</summary>
@@ -163,6 +321,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (denyPulse > 0.02f) {
                 pommel += dir * (MathF.Sin(time * 46f) * 1.8f * denyPulse);
             }
+            //终结乱舞:两组互质频率叠成的细颚震(沿轴为主、垂轴为辅),
+            //拍点再压一记向柄头的顿挫后回弹;都从柄头推导,柄/镡/刃鞘一体在抖
+            if (lockTremor > 0.01f || lockKick > 0.01f) {
+                float axial = (MathF.Sin(time * 131f) * 0.6f + MathF.Sin(time * 197f + 1.7f) * 0.4f)
+                    * 1.4f * lockTremor;
+                float lateral = (MathF.Sin(time * 151f + 0.6f) * 0.7f + MathF.Sin(time * 89f) * 0.3f)
+                    * 0.9f * lockTremor;
+                axial -= MathF.Cos(lockKickPhase) * 3.4f * lockKick;
+                lateral += MathF.Sin(lockKickPhase * 0.8f) * 1.4f * lockKick;
+                pommel += dir * axial + perp * lateral;
+            }
             Vector2 tsubaC = pommel + dir * OnikiriUITheme.HudStanceTsukaLen;
             Vector2 quadLC = tsubaC + dir * 3f;
 
@@ -175,6 +344,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     Flow = MathHelper.Clamp(flow + queuedPulse * 0.9f, -1f, 1f),
                     FullGlow = fullGlow,
                     ReleaseFlash = Math.Max(releaseFlash, lockPulse * 0.85f),
+                    LockHeat = heat,
+                    LockPulse = heatPulse,
                     Alpha = alpha,
                     Time = time,
                 });
@@ -287,7 +458,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 cant, new Vector2(0.5f), new Vector2(1.6f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>CPU 降级:黑漆鞘条 + 露刃段素钢 + 拔刀线,能读数即可</summary>
+        /// <summary>CPU 降级:黑漆鞘条 + 露刃段素钢 + 拔刀线,能读数即可;乱舞期钢与压线偏向绯红读出灼热</summary>
         private void DrawFallback(SpriteBatch sb, Vector2 quadLC, Vector2 dir, Vector2 perp, float cant, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);
@@ -295,12 +466,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //鞘:黑漆条 + 上缘深红压线
             sb.Draw(pixel, quadLC, src, OnikiriUITheme.Ink * (alpha * 0.95f),
                 cant, new Vector2(0f, 0.5f), new Vector2(w, 12f), SpriteEffects.None, 0f);
-            sb.Draw(pixel, quadLC - perp * 6f, src, OnikiriUITheme.Deep * (alpha * 0.6f),
+            sb.Draw(pixel, quadLC - perp * 6f, src, Color.Lerp(OnikiriUITheme.Deep, OnikiriUITheme.Bright, heat) * (alpha * (0.6f + heat * 0.35f)),
                 cant, new Vector2(0f, 0.5f), new Vector2(w, 1.3f), SpriteEffects.None, 0f);
             //露刃:素钢 + 刃线
             float steelLen = w * displayFill;
             if (steelLen > 1.5f) {
-                sb.Draw(pixel, quadLC, src, OnikiriUITheme.Paper * (alpha * 0.80f),
+                sb.Draw(pixel, quadLC, src, Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.Bright, heat * 0.55f) * (alpha * 0.80f),
                     cant, new Vector2(0f, 0.5f), new Vector2(steelLen, 8f), SpriteEffects.None, 0f);
                 sb.Draw(pixel, quadLC - perp * 4f, src, OnikiriUITheme.HotWhite * (alpha * (0.5f + fullGlow * 0.5f)),
                     cant, new Vector2(0f, 0.5f), new Vector2(steelLen, 1.2f), SpriteEffects.None, 0f);
@@ -325,11 +496,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 , CWRKeySystem.Notbound.Value, mode);
             string dashInput = CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_FlashStep
                 , CWRKeySystem.RightClickFallback.Value, mode);
-            string readyLine = displayFill >= 0.995f
-                ? string.Format(OniTalismanHud.StanceReadyLine.Value, executeInput)
-                : displayFill >= 0.5f
-                    ? string.Format(OniTalismanHud.StanceHalfLine.Value, dashInput)
-                    : null;
+            //锁定期读数是钉住的,提示改讲当前状态:免伤 + 不蓄势
+            string readyLine = locked
+                ? OniTalismanHud.StanceLockedLine.Value
+                : displayFill >= 0.995f
+                    ? string.Format(OniTalismanHud.StanceReadyLine.Value, executeInput)
+                    : displayFill >= 0.5f
+                        ? string.Format(OniTalismanHud.StanceHalfLine.Value, dashInput)
+                        : null;
             OniTooltipPanel.Draw(sb, lastMouse, title, 0.78f, alpha,
                 new OniTooltipLine(line, OnikiriUITheme.TextDim),
                 new OniTooltipLine(readyLine, OnikiriUITheme.Bright * 0.95f));

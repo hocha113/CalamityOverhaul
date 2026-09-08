@@ -67,6 +67,15 @@ namespace CalamityOverhaul.Content.GameModes
         /// <summary>贴身增幅归零距离（像素），由满额线性衰减到此为止</summary>
         public const float AsuraCloseRangeZeroDist = 400f;
 
+        //——修罗：伤害下限镜像的保鲜与消退——
+        //下限记的是"刚才"施予的痛苦：持续交战时每次命中都刷新，记录始终新鲜；
+        //脱手后先保鲜一段，再线性消退到零，几分钟前的一击不会在下一次受伤里索命
+
+        /// <summary>最近一击记录的保鲜帧数，此后开始消退</summary>
+        public const int AsuraFloorGraceTicks = 180;
+        /// <summary>保鲜期后线性消退至零所用帧数（保鲜 3 秒 + 消退 12 秒，脱手 15 秒后归零）</summary>
+        public const int AsuraFloorFadeTicks = 720;
+
         /// <summary>档位血量伤害倍率</summary>
         public static float StatMult(int tier) => tier switch {
             1 => BrutalStatMult,

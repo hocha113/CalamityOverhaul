@@ -10,10 +10,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public readonly float Value;
         /// <summary>架势上限</summary>
         public readonly float MaxValue;
+        /// <summary>终结乱舞进行中:读数锁定不蓄,HUD 把刀钉在拔出位直到纳刀拍</summary>
+        public readonly bool Locked;
+        /// <summary>锁定演出帧(主控 timer),<see cref="Locked"/> 为假时无意义</summary>
+        public readonly int LockFrame;
 
-        public OniStanceSnapshot(float value, float maxValue) {
+        public OniStanceSnapshot(float value, float maxValue, bool locked = false, int lockFrame = 0) {
             Value = value;
             MaxValue = maxValue;
+            Locked = locked;
+            LockFrame = lockFrame;
         }
 
         /// <summary>0~1 拔刀比,上限非正视为空</summary>

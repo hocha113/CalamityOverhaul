@@ -121,6 +121,11 @@ namespace CalamityOverhaul.Content.Items.Melee.Arbiters
 
         public override void OnWorldUnload() => ResetAllState();
 
+        /// <summary>建档、载入、联机进世界都经过 clearWorld,在此归零静态进度,
+        /// 进世界阶段掉线不会跑 OnWorldUnload,旧档的 Unlocked 会活到下一次建档被写进新世界
+        /// (联机客户端此处在首个 WorldData 之后触发,出生请求时服务端重发一份填回)</summary>
+        public override void ClearWorld() => ResetAllState();
+
         public override void Unload() => ResetAllState();
 
         public override void PostUpdateEverything() {
