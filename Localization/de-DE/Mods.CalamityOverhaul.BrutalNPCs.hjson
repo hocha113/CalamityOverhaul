@@ -19,4 +19,6 @@ EmpressOfLightAI: {
 	// Concede_1: You are far stronger than you look.
 	// Concede_2: Those butterflies mean everything to me. Leave them be, and this sky stays ours to share.
 	// Concede_3: The light will remember you.
+	# Moon Shadow: death reason for a player caught outside the shadow cones during the whiteout
+	// RadianceDeath: "{0} evaporated in her light"
 }
