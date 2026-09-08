@@ -6,7 +6,7 @@ LanternBoy: {
 		Cualquier caminante nocturno que mire la llama más de tres alientos siente sus ojos sellados como por cera ardiente, arrastrándole el alma al pellejo del farol.
 		Tres almas torturadas ya están cautivas dentro; allá donde cae su luz marchita, las sombras del farol se mueven al compás de la espada, atacando por su portador.
 		'''
-	Power: "「Luz guía」Tres faroles espectrales orbitan tu cuerpo; su resplandor arroja sombras que replican tus tajos normales a destiempo con el sesenta por ciento de su fuerza original."
+	Power: 「Luz guía」Tres faroles espectrales orbitan tu cuerpo; su resplandor arroja sombras que replican tus tajos normales a destiempo con el sesenta por ciento de su fuerza original.
 	DeathReason: "{0} fue guiado hacia el interior del cuarto farol de papel blanco"
 }
 
@@ -19,7 +19,7 @@ CrimsonBride: {
 		Cuando un portador acorralado invoca este palanquín, llega cruzando el vacío sobre un rastro de sangre, acogiéndolo en un salón fúnebre engalanado de luto blanco y seda roja.
 		Al beber la copa nupcial, toda herida mortal se disuelve en el salón, revirtiendo la muerte en vida.
 		'''
-	Power: "「El cortejo」Pulsa la tecla de Reinicio y el gran palanquín carmesí llegará cabalgando música fúnebre, acogiendo al portador en una sala nupcial ensangrentada y muda; al culminar el brindis, las heridas y estados se lavan y reinician."
+	Power: 「El cortejo」Pulsa la tecla de Reinicio y el gran palanquín carmesí llegará cabalgando música fúnebre, acogiendo al portador en una sala nupcial ensangrentada y muda; al culminar el brindis, las heridas y estados se lavan y reinician.
 	DeathReason: "{0} subió al palanquín carmesí y rindió pleitesía al cielo y la tierra"
 }
 
@@ -32,7 +32,7 @@ ScapeGhost: {
 		El día en que se inscribe en el registro, tu augurio de muerte se ata con una cuerda a su cuello de paja.
 		En el instante en que cae la fatalidad, manos heladas surgen de la oscuridad transfiriendo tu muerte a la carne de un ser vivo cercano.
 		'''
-	Power: "「Traspaso de calamidad」En el instante en que sobreviene una catástrofe letal, transfiere a la fuerza tu muerte a un ser vivo lejano, usando su cuerpo para perecer y librándote del fin."
+	Power: 「Traspaso de calamidad」En el instante en que sobreviene una catástrofe letal, transfiere a la fuerza tu muerte a un ser vivo lejano, usando su cuerpo para perecer y librándote del fin.
 	DeathReason: "{0} se convirtió en el alma muerta tras el señuelo de paja"
 }
 
@@ -44,7 +44,7 @@ HeadlessShade: {
 		Este engendro decapitado ha acechado durante eras en ángulos muertos, ansiando con locura recomponer un cuerpo vivo completo.
 		Se ha cosido a la sombra bajo tus pies; al oler la vida enemiga, se abalanza desde el suelo desgarrando a la presa en pedazos con salvaje ferocidad.
 		'''
-	Power: "「Descuartizar」Acechando en la sombra bajo tus pies, surge del suelo al percibir presas vivas, desgarrando su carne en pedazos con brutalidad salvaje."
+	Power: 「Descuartizar」Acechando en la sombra bajo tus pies, surge del suelo al percibir presas vivas, desgarrando su carne en pedazos con brutalidad salvaje.
 	DeathReason: "{0} vio su cabeza arrancada de cuajo por la sombra sin cabeza"
 }
 
@@ -56,7 +56,7 @@ GhostHand: {
 		Nadie sabe en qué mar de llamas quedó atrapado este cadáver, solo que la sofocante rabia de su estrangulamiento perdura imborrable más allá de la tumba.
 		En cuanto percibe el calor de la respiración viva, la zarpa negra brota del vacío atrapando la garganta de la presa y triturando huesos una y otra vez.
 		'''
-	Power: "「Apretón triturador」Un brazo espectral calcinado surge del vacío para apresar a la presa por la garganta, aplastando y sofocando su movimiento; entre multitudes brotan más manos que pulverizan a enemigos formidables entre sus dedos."
+	Power: 「Apretón triturador」Un brazo espectral calcinado surge del vacío para apresar a la presa por la garganta, aplastando y sofocando su movimiento; entre multitudes brotan más manos que pulverizan a enemigos formidables entre sus dedos.
 	DeathReason: "{0} fue triturado hasta el polvo de los huesos por la mano calcinada"
 }
 
@@ -68,7 +68,7 @@ GhostRain: {
 		Quienes miran al cielo con terror descubren que bajo las nubes cuelgan hileras de rostros cadavéricos con los ojos cerrados que miran hacia abajo fijamente.
 		La lluvia negra cae sin dolor físico, pero miles de sanguijuelas espectrales devoran médula y alma; quien se empapa durante tres alientos se derrite como cera y es arrastrado al lodo.
 		'''
-	Power: "「Manto sombrío」Empuñar la hoja convoca un dosel opresivo de nubes negras y lluvia torrencial; los seres vivos dentro ven su carne disolverse continuamente, sirviendo de blanco fácil para el resto de espíritus."
+	Power: 「Manto sombrío」Empuñar la hoja convoca un dosel opresivo de nubes negras y lluvia torrencial; los seres vivos dentro ven su carne disolverse continuamente, sirviendo de blanco fácil para el resto de espíritus.
 	DeathReason: "{0} fue disuelto por la lluvia negra y arrastrado al fango"
 }
 

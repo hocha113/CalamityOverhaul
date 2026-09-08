@@ -6,7 +6,7 @@ LanternBoy: {
 		Any nocturnal traveler who stares into the flame for more than three breaths finds their eyes sealed shut as if by hot wax, their soul dragged screaming into the paper skin.
 		Three murdered surrogate souls are already sealed within; wherever that sickly light falls, lantern shadows move in tandem with the blade, striking in place of the wielder.
 		'''
-	Power: "「Guiding Light」Three pale ghost lanterns orbit your body, their lamplight casting shadows that echo your normal slashes off-beat for a combined sixty percent of their original power."
+	Power: 「Guiding Light」Three pale ghost lanterns orbit your body, their lamplight casting shadows that echo your normal slashes off-beat for a combined sixty percent of their original power.
 	DeathReason: "{0} was led into the fourth white paper lantern"
 }
 
@@ -19,7 +19,7 @@ CrimsonBride: {
 		When a desperate blade-bearer calls upon this palanquin, it arrives bursting through the void across a trail of blood, receiving them into a funeral hall draped in mourning white and scarlet silk.
 		At the moment of the nuptial cup, all fatal wounds and afflictions are dissolved by the hall, turning death back into life.
 		'''
-	Power: "「The Procession」Press the Self-Restart key and the grand crimson palanquin arrives riding sinister funeral music, welcoming the blade-bearer into a dead, blood-draped wedding hall; at the nuptial toast, all fatal wounds and afflictions are washed away and restarted."
+	Power: 「The Procession」Press the Self-Restart key and the grand crimson palanquin arrives riding sinister funeral music, welcoming the blade-bearer into a dead, blood-draped wedding hall; at the nuptial toast, all fatal wounds and afflictions are washed away and restarted.
 	DeathReason: "{0} sat in the crimson palanquin and bowed to heaven and earth"
 }
 
@@ -32,7 +32,7 @@ ScapeGhost: {
 		The day it is bound to the register, your death omen is tied with twine around its straw neck.
 		The instant doom falls, cold dead hands reach from the dark, violently forcing your mortal demise into the flesh of a nearby living creature.
 		'''
-	Power: "「Death's Stand-In」At the moment fatal catastrophe arrives, forcibly transfers your death onto a distant living creature, using their body to perish in your stead and escaping death."
+	Power: 「Death's Stand-In」At the moment fatal catastrophe arrives, forcibly transfers your death onto a distant living creature, using their body to perish in your stead and escaping death.
 	DeathReason: "{0} became the dead soul behind the straw surrogate"
 }
 
@@ -44,7 +44,7 @@ HeadlessShade: {
 		This decapitated horror has long lurked in dead angles, ravenously craving to piece together a whole living body.
 		It has stitched itself into the shadow beneath your feet; once it catches the scent of enemy life, it tears out from the floor, brutally ripping the prey into severed pieces.
 		'''
-	Power: "「Dismember」Lurking in the shadow beneath your feet, it surges from the ground upon sensing living prey, tearing their flesh into severed pieces with savage brutality."
+	Power: 「Dismember」Lurking in the shadow beneath your feet, it surges from the ground upon sensing living prey, tearing their flesh into severed pieces with savage brutality.
 	DeathReason: "{0}'s head was ripped clean off by the headless shade"
 }
 
@@ -56,7 +56,7 @@ GhostHand: {
 		None know what manner of sea of fire this corpse was trapped within, only that the suffocating malice of its strangling grip lingers unbroken across death.
 		The moment it senses the warmth of living breath, the blackened claw erupts from the void behind, seizing the victim's throat and crushing bone to dust over and over.
 		'''
-	Power: "「Bone-Grip」A charred, withered ghost arm erupts from the void to seize prey by the throat, repeatedly crushing and suppressing their movement; when foes gather, more hands reach out to crush mighty enemies between their fingers."
+	Power: 「Bone-Grip」A charred, withered ghost arm erupts from the void to seize prey by the throat, repeatedly crushing and suppressing their movement; when foes gather, more hands reach out to crush mighty enemies between their fingers.
 	DeathReason: "{0} had every bone crushed to powder by the charred hand"
 }
 
@@ -68,7 +68,7 @@ GhostRain: {
 		Those who look up in terror find that beneath the clouds hang layer upon layer of pale, dead faces staring down with closed eyes.
 		The black rain falls without physical pain, yet thousands of unseen corpse-leeches gnaw away marrow and soul; anyone soaked for three breaths melts like wax and is dragged into the mire.
 		'''
-	Power: "「Gloom-Shower」Holding the blade calls down an oppressive canopy of black clouds and pouring black rain; living things caught within have their flesh dissolved continuously, providing an aggressive targeting medium for other wraiths."
+	Power: 「Gloom-Shower」Holding the blade calls down an oppressive canopy of black clouds and pouring black rain; living things caught within have their flesh dissolved continuously, providing an aggressive targeting medium for other wraiths.
 	DeathReason: "{0} was dissolved by black rain and dragged into the mud"
 }
 

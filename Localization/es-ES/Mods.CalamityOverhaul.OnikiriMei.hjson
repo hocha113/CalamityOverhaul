@@ -1,7 +1,7 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
 	Tooltip: Los golpes de filo infligen daño masivo escalonado a enemigos heridos; las ejecuciones directas devuelven postura; daño de la espada -2%
-		Origin:
+	Origin:
 		'''
 		Los verdugos del viejo patíbulo transmitían de generación en generación un hacha siniestra que jamás se mellaba por muchos reos que decapitara.
 		Cuentan que cuando el último verdugo cayó fulminado por un paro cardíaco repentino, la hoja cayó del cadalso por sí sola.
@@ -20,7 +20,7 @@ OniMeiRubbingHigekiri: {
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
 	Tooltip: El nombre primordial de Onikiri, conservando todas sus propiedades originales sin bonificaciones ni penalizaciones
-		Origin:
+	Origin:
 		'''
 		Un expediente amarillento guardado en los archivos del viejo juzgado local: en las noches de niebla y lluvia, una mujer vestida de carmesí con paraguas de papel rojo rondaba el puente de piedra buscando a los transeúntes.
 		Cualquiera que le respondiera era hallado al amanecer junto al puente con la piel del rostro arrancada de cuajo.
@@ -273,7 +273,7 @@ OniMeiRubbingOnimaru: {
 OniMeiRubbingRaikiri: {
 	DisplayName: Raikiri
 	Tooltip: A cielo abierto, el quinto golpe y los artes atraen rayos sobre el objetivo; intervalo del combo +6%, no cae bajo techo
-		Origin:
+	Origin:
 		'''
 		Los leñadores saben que jamás se debe buscar cobijo bajo viejos robles bajo la lluvia, pues la madera seca atrae el rayo y es fácil perecer fulminado.
 		Sin embargo, un guerrero armado se plantó bajo una encina muerta en plena borrasca; cuando un rayo violeta cayó a plomo, rugió blandiendo su espada hacia arriba y partió la centella en dos.
@@ -564,7 +564,7 @@ OniMeiRubbingShibori: {
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Reduce enormemente el daño de proyectiles y el retroceso; ganancia de postura -15%
-		Origin:
+	Origin:
 		'''
 		Un curtido guerrero acorazado que sobrevivió a innumerables lances de sangre siempre grababa sellos de apaciguamiento en el lomo de su sable.
 		Bajo una lluvia de proyectiles y flechas en el frente, los cobardes caen presos del pánico por los silbidos agudos y perecen en el caos.
@@ -590,7 +590,7 @@ OniMeiRubbingAshidome: {
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
 	Tooltip: Las ejecuciones dejan un campo de brasas ardientes en la posición del objetivo; vigor máximo -5%, gasto de carrera aumentado mientras arde
-		Origin:
+	Origin:
 		'''
 		Cuando los antiguos hornos crematorios apagaban fuegos al promediar el invierno, escarbando bajo el manto de cenizas pálidas siempre se hallaban brasas violetas ardiendo en las juntas de ladrillo.
 		Incluso rociadas con agua helada, chisporroteaban humeantes durante semanas enteras sin extinguirse.

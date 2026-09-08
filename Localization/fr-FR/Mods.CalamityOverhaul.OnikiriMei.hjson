@@ -1,7 +1,7 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
 	Tooltip: Les coups directs infligent de lourds dégâts d'exécution aux ennemis affaiblis ; achever une cible rend de la posture ; dégâts de l'arme -2%
-		Origin:
+	Origin:
 		'''
 		Les bourreaux de l'ancien échafaud se transmettaient de génération en génération un couperet sinistre qui ne s'ébréchait jamais, quel que soit le nombre de condamnés.
 		La rumeur raconte que lorsque le dernier exécuteur s'effondra d'une crise cardiaque soudaine, la lame tomba de l'estrade d'elle-même.
@@ -20,7 +20,7 @@ OniMeiRubbingHigekiri: {
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
 	Tooltip: Le nom primordial d'Onikiri, conservant toutes ses propriétés d'origine sans bonus ni pénalité
-		Origin:
+	Origin:
 		'''
 		Un dossier jauni extrait des archives d'un vieux prétoire de district : les nuits de brume et de pluie, une femme vêtue de pourpre avec une ombrelle en papier rouge errait sur le pont de pierre, appelant les passants.
 		Quiconque lui répondait était retrouvé au matin au pied du pont, la peau du visage arrachée à vif.
@@ -273,7 +273,7 @@ OniMeiRubbingOnimaru: {
 OniMeiRubbingRaikiri: {
 	DisplayName: Raikiri
 	Tooltip: À ciel ouvert, le 5e coup et les arts invoquent la foudre à l'impact ; intervalle du combo +6%, aucun éclair sous abri
-		Origin:
+	Origin:
 		'''
 		Les bûcherons savent qu'il ne faut jamais s'abriter sous les vieux chênes par temps d'orage, car le bois mort attire la foudre et la mort frappe aisément.
 		Pourtant, un guerrier en armure resta debout sous un chêne mort en pleine tourmente ; lorsqu'un éclair violet fusa des cieux, il poussa un rugissement et leva sa lame, fendant la foudre en deux.
@@ -564,7 +564,7 @@ OniMeiRubbingShibori: {
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Réduit grandement les dégâts de projectiles et le recul ; gain de posture -15%
-		Origin:
+	Origin:
 		'''
 		Un vétéran cuirassé ayant survécu à mille champs de carnage gravait toujours des sceaux d'apaisement sur le dos de son sabre.
 		Sous un déluge de flèches et de pierres projetées au front, les couards cèdent à la panique devant les sifflements aigus et périssent dans la déroute.
@@ -590,7 +590,7 @@ OniMeiRubbingAshidome: {
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
 	Tooltip: Les exécutions laissent un lit de braises ardentes à l'emplacement de la cible ; vigueur max -5%, coût du pas éclair accru tant que le feu brûle
-		Origin:
+	Origin:
 		'''
 		Lorsque les vieux fours crématoires s'éteignaient au creux de l'hiver, en fouillant sous le drap de cendres grises, on trouvait toujours des braises violettes couvant dans les joints de briques.
 		Même arrosées d'eau glacée, elles crépitaient en fumant des semaines durant sans s'éteindre.

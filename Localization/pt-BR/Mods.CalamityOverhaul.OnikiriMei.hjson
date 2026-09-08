@@ -1,7 +1,7 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
 	Tooltip: Golpes de lâmina causam dano massivo escalonado a inimigos feridos; execuções diretas restauram postura; dano da espada -2%
-		Origin:
+	Origin:
 		'''
 		Os carrascos do velho patíbulo transmitiam de geração em geração um cutelo sinistro que jamais perdia o fio, por mais réus que decapitasse.
 		Conta-se que quando o último algoz sucumbiu a uma parada cardíaca repentina, a lâmina tombou do cadafalso por si só.
@@ -20,7 +20,7 @@ OniMeiRubbingHigekiri: {
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
 	Tooltip: O nome primordial de Onikiri, mantendo todas as suas propriedades originais sem bônus nem penalidades
-		Origin:
+	Origin:
 		'''
 		Um arquivo amarelado guardado nos registros do velho cartório local: em noites de neblina e chuva, uma mulher em vestes escarlates com sombrinha de papel vermelho rondava a ponte de pedra, chamando pelos transeuntes.
 		Quem quer que lhe respondesse era encontrado pela manhã junto à ponte com a pele do rosto arrancada a sangue-frio.
@@ -273,7 +273,7 @@ OniMeiRubbingOnimaru: {
 OniMeiRubbingRaikiri: {
 	DisplayName: Raikiri
 	Tooltip: Sob céu aberto, o 5º golpe do combo e as artes invocam relâmpagos ao acertar; intervalo do combo +6%, sem raios sob teto
-		Origin:
+	Origin:
 		'''
 		Lenhadores sabem bem que jamais se deve procurar abrigo sob velhos carvalhos na chuva, pois a madeira seca atrai o raio e é fácil perecer.
 		Porém, um guerreiro encouraçado fincou pé sob uma árvore morta em plena tempestade; quando um raio violeta despencou do firmamento, ele rugiu brandindo a espada para o alto e partiu a centelha em dois.
@@ -564,7 +564,7 @@ OniMeiRubbingShibori: {
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Reduz expressivamente o dano de projéteis e a repulsão; ganho de postura -15%
-		Origin:
+	Origin:
 		'''
 		Um guerreiro encouraçado veterano que sobreviveu a incontáveis massacres sempre gravava selos de apaziguamento no lombo do seu sabre.
 		Sob uma tempestade de flechas e pedras de cerco no front, os covardes entram em pânico com os silvos agudos e tombam na confusão.
@@ -590,7 +590,7 @@ OniMeiRubbingAshidome: {
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
 	Tooltip: Execuções deixam um braseiro persistente no local do alvo; vigor máximo -5%, custo do Passo Relâmpago aumentado enquanto arder
-		Origin:
+	Origin:
 		'''
 		Quando os antigos fornos crematórios apagavam suas chamas no inverno profundo, remexendo a camada de cinzas pálidas sempre se encontravam brasas violetas nas juntas dos tijolos.
 		Mesmo regadas com água gelada, chiuvam soltando fumaça por semanas a fio sem se apagar.

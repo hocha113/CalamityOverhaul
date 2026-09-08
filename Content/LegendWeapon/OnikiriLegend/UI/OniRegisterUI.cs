@@ -101,6 +101,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private int ambienceTimer = 600;
 
         //====细节板打字机====
+        /// <summary>每字所占帧数</summary>
+        private const float TypeFramesPerChar = 1.4f;
         private float typeTimer;
         private int lastDetailChars = -1;
         private float detailInkAge = 60f;
@@ -386,6 +388,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (inputAvailable && detailMaxScroll > 0.5f) {
                 int wheel = PlayerInput.ScrollWheelDeltaForUI;
                 if (wheel != 0) {
+                    //要往下看就别再等笔,先落全文,免得滚进一片空纸
+                    TrySkipTypewriter();
                     detailScrollTarget = MathHelper.Clamp(detailScrollTarget - wheel * 0.32f, 0f, detailMaxScroll);
                 }
             }
@@ -396,15 +400,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     return;
                 }
                 if (hoverIndex >= 0) {
-                    SelectEntry(hoverIndex);
+                    //再点已选中的那一只是催笔,不重头写一遍
+                    if (hoverIndex == selectedIndex) {
+                        TrySkipTypewriter();
+                    }
+                    else {
+                        SelectEntry(hoverIndex);
+                    }
+                    return;
+                }
+                //点卷面或细节板:笔还在走就一点落定,写完了才是纯留白
+                Rectangle scrollHit = scrollRect;
+                scrollHit.Inflate(OnikiriUITheme.ScrollEdgePad + 22, OnikiriUITheme.ScrollEdgePad + 22);
+                if (scrollHit.Contains(mp) || detailRect.Contains(mp)) {
+                    TrySkipTypewriter();
                     return;
                 }
                 //点击卷外压暗区合卷:卷轴(含外扩边)、细节板、合卷牌之外都算"外"
-                Rectangle scrollHit = scrollRect;
-                scrollHit.Inflate(OnikiriUITheme.ScrollEdgePad + 22, OnikiriUITheme.ScrollEdgePad + 22);
-                if (!scrollHit.Contains(mp) && !detailRect.Contains(mp)) {
-                    Close();
-                }
+                Close();
             }
         }
 
@@ -493,11 +506,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
             typeTimer += 1f;
-            int chars = (int)(typeTimer / 1.4f);
+            int chars = (int)(typeTimer / TypeFramesPerChar);
             if (chars != lastDetailChars) {
                 lastDetailChars = chars;
                 detailInkAge = 0f;
             }
+        }
+
+        /// <summary>正文落满所需的字数,打字机推到这儿就算写完</summary>
+        private int DetailFullChars {
+            get {
+                OniGhostEntry sel = SelectedEntry;
+                if (sel == null) {
+                    return 0;
+                }
+                //折行会吃掉换行符,按原串长取上界即可,宁多勿少
+                return (sel.Origin?.Invoke()?.Length ?? 0) + (sel.Power?.Invoke()?.Length ?? 0) + 1;
+            }
+        }
+
+        /// <summary>催笔:笔还在走就一点落定全文,不必每次都陪着等</summary>
+        private bool TrySkipTypewriter() {
+            int full = DetailFullChars;
+            if (full <= 1 || DetailVisibleChars >= full) {
+                return false;
+            }
+            //多推一字,免得浮点回除刚好差在截位下沿
+            typeTimer = (full + 1) * TypeFramesPerChar;
+            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.35f, Volume = 0.32f });
+            return true;
         }
 
         /// <summary>按当前细节板实测正文全高,钳出滚动上限,再把滚动量缓动到位</summary>
@@ -518,7 +555,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>细节板正文可见字符数</summary>
-        internal int DetailVisibleChars => Math.Max(0, (int)(typeTimer / 1.4f));
+        internal int DetailVisibleChars => Math.Max(0, (int)(typeTimer / TypeFramesPerChar));
         /// <summary>细节板正文已滚过的高度</summary>
         internal float DetailScroll => detailScroll;
         /// <summary>细节板湿墨强度 0~1</summary>

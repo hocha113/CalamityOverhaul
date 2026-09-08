@@ -6,7 +6,7 @@ LanternBoy: {
 		Qualquer viajante noturno que encare a chama por mais de três suspiros sente os olhos lacrados como por cera fervente, com a alma arrancada para dentro da pele de papel.
 		Três almas sacrificadas já jazem presas dentro dela; onde quer que sua luz fraca caia, sombras da lanterna dançam no compasso do sabre, golpeando pelo mestre.
 		'''
-	Power: "「Luz Guia」Três lanternas fantasmagóricas orbitam seu corpo; seu brilho projeta sombras que repetem seus cortes normais fora de compasso com sessenta por cento do poder original."
+	Power: 「Luz Guia」Três lanternas fantasmagóricas orbitam seu corpo; seu brilho projeta sombras que repetem seus cortes normais fora de compasso com sessenta por cento do poder original.
 	DeathReason: "{0} foi atraído para dentro da quarta lanterna de papel branco"
 }
 
@@ -19,7 +19,7 @@ CrimsonBride: {
 		Quando um espadachim encurralado chama por este palanquim, ele rompe o vazio sobre um rastro de sangue, acolhendo-o num salão fúnebre ornado de luto branco e seda escarlate.
 		Ao erguer o brinde nupcial, todas as feridas fatais se dissolvem no salão, revertendo o fim em vida.
 		'''
-	Power: "「O Cortejo」Pressione a tecla de Reinício e o grande palanquim carmesim chegará cavalgando canções fúnebres, acolhendo o portador num salão ensanguentado e quieto; ao brindar, todas as feridas e males são lavados e reiniciados."
+	Power: 「O Cortejo」Pressione a tecla de Reinício e o grande palanquim carmesim chegará cavalgando canções fúnebres, acolhendo o portador num salão ensanguentado e quieto; ao brindar, todas as feridas e males são lavados e reiniciados.
 	DeathReason: "{0} subiu no palanquim carmesim e curvou-se aos céus e à terra"
 }
 
@@ -32,7 +32,7 @@ ScapeGhost: {
 		No dia em que é assentado no registro, o presságio do seu fim é atado com barbante ao pescoço de palha dele.
 		No instante em que a desgraça cai, mãos geladas brotam do escuro, empurrando sua morte para a carne de um ser vivo próximo.
 		'''
-	Power: "「Transferência de Ruína」No instante em que desaba uma desgraça letal, transfere à força sua morte para um ser vivo distante, usando o corpo dele para morrer e livrando você da cova."
+	Power: 「Transferência de Ruína」No instante em que desaba uma desgraça letal, transfere à força sua morte para um ser vivo distante, usando o corpo dele para morrer e livrando você da cova.
 	DeathReason: "{0} virou a alma penada por trás do boneco de palha"
 }
 
@@ -44,7 +44,7 @@ HeadlessShade: {
 		Essa aberração sem cabeça espreita há eras em pontos cegos, faminta por costurar para si um corpo vivo inteiro.
 		Ela se costurou na sombra sob seus pés; ao farejar vida inimiga, salta do chão estraçalhando a presa em pedaços com violência brutal.
 		'''
-	Power: "「Desmembramento」À espreita na sombra sob seus pés, salta da terra ao pressentir carne viva, rasgando o inimigo em pedaços com fúria selvagem."
+	Power: 「Desmembramento」À espreita na sombra sob seus pés, salta da terra ao pressentir carne viva, rasgando o inimigo em pedaços com fúria selvagem.
 	DeathReason: "{0} teve a cabeça arrancada pela sombra sem cabeça"
 }
 
@@ -56,7 +56,7 @@ GhostHand: {
 		Ninguém sabe em que mar de fogo pereceu esse corpo, só que a raiva sufocante do seu aperto dura intacta além da sepultura.
 		Basta sentir o calor da respiração viva para a garra preta brotar do nada, apertando a garganta da presa e moendo ossos sem parar.
 		'''
-	Power: "「Aperto Esmaga-Ossos」Um braço espectral calcinado surge do nada para agarrar a presa pelo pescoço, sufocando seus passos; em meio à multidão surgem mais mãos que quebram inimigos fortes entre os dedos."
+	Power: 「Aperto Esmaga-Ossos」Um braço espectral calcinado surge do nada para agarrar a presa pelo pescoço, sufocando seus passos; em meio à multidão surgem mais mãos que quebram inimigos fortes entre os dedos.
 	DeathReason: "{0} teve todos os ossos moídos em pó pela mão calcinada"
 }
 
@@ -68,7 +68,7 @@ GhostRain: {
 		Quem olha para o alto em pavor vê fileiras de rostos mortos de olhos fechados encarando tudo lá embaixo.
 		A chuva preta cai sem dor na carne, mas miríades de sanguessugas do túmulo devoram tutano e alma; quem se ensopa por três suspiros derrete feito cera e desce pro barro.
 		'''
-	Power: "「Manto Sombrio」Empunhar a lâmina chama um teto sufocante de nuvens pretas e chuva torrencial; quem fica preso na água derrete aos poucos, servindo de presa fácil para os outros espíritos."
+	Power: 「Manto Sombrio」Empunhar a lâmina chama um teto sufocante de nuvens pretas e chuva torrencial; quem fica preso na água derrete aos poucos, servindo de presa fácil para os outros espíritos.
 	DeathReason: "{0} foi derretido pela chuva preta e arrastado para a lama"
 }
 

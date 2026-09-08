@@ -6,7 +6,7 @@ LanternBoy: {
 		Tout marcheur nocturne fixant la flamme plus de trois souffles sent ses yeux scellés comme par de la cire brûlante, son âme arrachée et aspirée dans la peau de papier.
 		Trois âmes suppliciées y sont déjà enfermées ; là où tombe sa lueur spectrale, les ombres de la lanterne dansent avec la lame et frappent à la place du maître.
 		'''
-	Power: "「Lueur directrice」Trois lanternes spectrales gravitent autour de vous ; leur clarté projette des ombres qui répliquent vos coups ordinaires à contretemps à soixante pour cent de leur puissance d'origine."
+	Power: 「Lueur directrice」Trois lanternes spectrales gravitent autour de vous ; leur clarté projette des ombres qui répliquent vos coups ordinaires à contretemps à soixante pour cent de leur puissance d'origine.
 	DeathReason: "{0} a été guidé au cœur de la quatrième lanterne de papier blanc"
 }
 
@@ -19,7 +19,7 @@ CrimsonBride: {
 		Lorsqu'un bretteur aux abois appelle ce palanquin, il surgit à travers le néant sur une piste de sang pour l'accueillir dans une chapelle funèbre tendue de deuil blanc et de soie rouge.
 		Au toast nuptial, toutes les plaies mortelles se dissolvent dans le sanctuaire, changeant le trépas en vie.
 		'''
-	Power: "「Le cortège」Appuyez sur la touche Réinitialiser et le grand palanquin pourpre surgira au son d'airs funèbres pour accueillir le maître dans un temple sanglant et muet ; au toast nuptial, toutes les blessures et altérations sont effacées et réinitialisées."
+	Power: 「Le cortège」Appuyez sur la touche Réinitialiser et le grand palanquin pourpre surgira au son d'airs funèbres pour accueillir le maître dans un temple sanglant et muet ; au toast nuptial, toutes les blessures et altérations sont effacées et réinitialisées.
 	DeathReason: "{0} est monté dans le palanquin pourpre et a salué le ciel et la terre"
 }
 
@@ -32,7 +32,7 @@ ScapeGhost: {
 		Le jour où il est inscrit au registre, votre augure de mort est lié d'une cordelette à son cou de paille.
 		À l'instant où le trépas survient, des mains glaciales surgissent de l'ombre pour transférer votre mort dans la chair d'une créature vivante proche.
 		'''
-	Power: "「Transfert de malheur」À l'instant d'une catastrophe fatale, transfère de force votre mort sur une créature vivante lointaine, faisant périr son corps à votre place pour vous sauver."
+	Power: 「Transfert de malheur」À l'instant d'une catastrophe fatale, transfère de force votre mort sur une créature vivante lointaine, faisant périr son corps à votre place pour vous sauver.
 	DeathReason: "{0} est devenu l'âme morte derrière le leurre de paille"
 }
 
@@ -44,7 +44,7 @@ HeadlessShade: {
 		Cette horreur décapitée rôde depuis des ères dans les angles morts, consumée par le désir fou de recomposer un corps vivant complet.
 		Elle s'est cousue à l'ombre sous vos pas ; flairant la vie ennemie, elle jaillit du sol pour déchiqueter la proie en lambeaux avec une brutalité sauvage.
 		'''
-	Power: "「Démembrement」Tapi dans l'ombre sous vos pas, il jaillit de terre dès qu'il flaire une proie vivante pour mettre sa chair en pièces avec une rage féroce."
+	Power: 「Démembrement」Tapi dans l'ombre sous vos pas, il jaillit de terre dès qu'il flaire une proie vivante pour mettre sa chair en pièces avec une rage féroce.
 	DeathReason: "{0} a eu la tête arrachée net par l'ombre sans tête"
 }
 
@@ -56,7 +56,7 @@ GhostHand: {
 		Nul ne sait dans quel brasier ce corps a péri, mais la rage étouffante de son étreinte demeure vivace au-delà du tombeau.
 		Dès qu'elle perçoit la tiédeur d'un souffle vivant, la griffe noire jaillit du néant pour broyer la gorge de la proie et concasser ses os en poudre.
 		'''
-	Power: "「Étreinte brise-os」Un bras spectral calciné surgit du néant pour saisir la proie à la gorge, étouffant ses mouvements ; face aux foules, d'autres mains surgissent pour broyer les ennemis entre leurs doigts."
+	Power: 「Étreinte brise-os」Un bras spectral calciné surgit du néant pour saisir la proie à la gorge, étouffant ses mouvements ; face aux foules, d'autres mains surgissent pour broyer les ennemis entre leurs doigts.
 	DeathReason: "{0} a eu tous les os réduits en poussière par la main calcinée"
 }
 
@@ -68,7 +68,7 @@ GhostRain: {
 		Ceux qui lèvent les yeux découvrent avec horreur des rangées de visages cadavériques aux yeux clos qui fixent les vivants vers le bas.
 		La pluie noire tombe sans douleur physique, mais des myriades de sangsues d'outre-tombe dévorent la moelle et l'âme ; quiconque est trempé trois respirations durant fond comme cire et sombre dans la fange.
 		'''
-	Power: "「Voile d'ombre」Tenir la lame invoque une voûte oppressive de nuages noirs et une pluie torrentielle ; les créatures à l'intérieur voient leur chair se dissoudre en continu, offrant une cible facile aux autres spectres."
+	Power: 「Voile d'ombre」Tenir la lame invoque une voûte oppressive de nuages noirs et une pluie torrentielle ; les créatures à l'intérieur voient leur chair se dissoudre en continu, offrant une cible facile aux autres spectres.
 	DeathReason: "{0} a été dissous par la pluie noire et entraîné dans la boue"
 }
 

@@ -6,7 +6,7 @@ LanternBoy: {
 		Blickt ein nächtlicher Wanderer länger als drei Atemzüge in die Flamme, versiegeln sich seine Augen wie mit heißem Wachs, und die Seele wird gellend in die Papierhaut gerissen.
 		Drei ermordete Stellvertreterseelen sind bereits darin gebannt; wohin ihr fables Licht fällt, bewegen sich Laternenschatten im Takt der Klinge und fechten anstelle des Meisters.
 		'''
-	Power: "「Geleitendes Licht」Drei bleiche Geisterlaternen kreisen um deinen Körper; ihr Schein wirft Schatten, die deine normalen Hiebe zeitversetzt mit sechzig Prozent ihrer Ursprungskraft spiegeln."
+	Power: 「Geleitendes Licht」Drei bleiche Geisterlaternen kreisen um deinen Körper; ihr Schein wirft Schatten, die deine normalen Hiebe zeitversetzt mit sechzig Prozent ihrer Ursprungskraft spiegeln.
 	DeathReason: "{0} wurde als vierter Gefangener in die weiße Papierlaterne gelockt"
 }
 
@@ -19,7 +19,7 @@ CrimsonBride: {
 		Ruft ein bedrängter Klingenführer diese Sänfte an, prescht sie auf einer Blutspur durch die Leere und empfängt ihn in einem Saal aus weißer Trauer und roter Seide.
 		Beim Leeren des Brautbechers löscht der Saal alle tödlichen Wunden und Leiden aus und kehrt den Tod ins Leben um.
 		'''
-	Power: "「Der Brautzug」Drücke die Neustart-Taste und die blutrote Sänfte naht auf Trauermusik reitend, um den Klingenführer in ein stilles Blutgemach zu führen; beim Brauttoast werden alle Wunden und Leiden rein gewaschen und neu gestartet."
+	Power: 「Der Brautzug」Drücke die Neustart-Taste und die blutrote Sänfte naht auf Trauermusik reitend, um den Klingenführer in ein stilles Blutgemach zu führen; beim Brauttoast werden alle Wunden und Leiden rein gewaschen und neu gestartet.
 	DeathReason: "{0} bestieg die Scharlachsänfte und verneigte sich vor Himmel und Erde"
 }
 
@@ -32,7 +32,7 @@ ScapeGhost: {
 		Am Tage der Bindung an das Register wird dein Todesomen mit Kordel um ihren Strohhals geschlungen.
 		Im Augenblick des unausweichlichen Verderbens greifen eisige Totenhände aus der Nacht und zwingen dein Sterben in das Fleisch eines nahen Wesens.
 		'''
-	Power: "「Unheilsübertragung」Im Moment des tödlichen Schicksalsschlags überträgt der Geist deinen Tod gewaltsam auf ein fernes Lebewesen, lässt dessen Leib sterben und rettet dein Leben."
+	Power: 「Unheilsübertragung」Im Moment des tödlichen Schicksalsschlags überträgt der Geist deinen Tod gewaltsam auf ein fernes Lebewesen, lässt dessen Leib sterben und rettet dein Leben.
 	DeathReason: "{0} wurde zur toten Seele hinter der Strohpuppe"
 }
 
@@ -44,7 +44,7 @@ HeadlessShade: {
 		Dieses geköpfte Scheusal lauert seit Zeitaltern in toten Winkeln, besessen von dem Wahn, sich einen vollständigen lebenden Leib zusammenzustoppeln.
 		Es hat sich in den Schatten unter deinen Sohlen eingenäht; wittert es feindliches Leben, bricht es aus dem Boden hervor und reißt die Beute in Stücke.
 		'''
-	Power: "「Zerstückelung」Lauert im Schatten unter deinen Sohlen und bricht aus dem Boden hervor, sobald es lebende Beute wittert, um ihr Fleisch mit bestialischer Wut zu zerfetzen."
+	Power: 「Zerstückelung」Lauert im Schatten unter deinen Sohlen und bricht aus dem Boden hervor, sobald es lebende Beute wittert, um ihr Fleisch mit bestialischer Wut zu zerfetzen.
 	DeathReason: "{0}s Kopf wurde vom kopflosen Schatten glatt abgerissen"
 }
 
@@ -56,7 +56,7 @@ GhostHand: {
 		Niemand weiß, in welchem Flammenmeer dieser Leib verging, nur dass die erstickende Wut seines Würgegriffs über den Tod hinaus ungebändigt währt.
 		Wittert die Klaue den Hauch lebenden Atems, bricht sie aus dem Nichts hervor, packt die Kehle der Beute und zermalmt Knochen zu Staub.
 		'''
-	Power: "「Knochengriff」Ein verkohlter Geisterarm bricht aus der Leere hervor, um die Beute an der Kehle zu packen und ihre Bewegung zu ersticken; bei Feindesscharen greifen mehr Hände zu und zerquetschen selbst Riesen zwischen den Fingern."
+	Power: 「Knochengriff」Ein verkohlter Geisterarm bricht aus der Leere hervor, um die Beute an der Kehle zu packen und ihre Bewegung zu ersticken; bei Feindesscharen greifen mehr Hände zu und zerquetschen selbst Riesen zwischen den Fingern.
 	DeathReason: "{0}s Knochen wurden von der Brandhand restlos zu Pulver zerquetscht"
 }
 
@@ -68,7 +68,7 @@ GhostRain: {
 		Wer voller Grauen aufblickt, sieht unter den Wolken Schichten bleicher Totengesichter mit geschlossenen Augen herabstarren.
 		Der schwarze Regen fällt schmerzlos, doch Myriaden unsichtbarer Leichenegel nagen an Mark und Seele; wer drei Atemzüge durchnässt wird, schmilzt wie Wachs und wird in den Schlick gezerrt.
 		'''
-	Power: "「Düsterschauer」Das Führen der Klinge ruft eine drückende Decke schwarzer Wolken und strömenden Regen herbei; Lebewesen darin schmelzen stetig dahin und bieten den Geistern ein leichtes Ziel."
+	Power: 「Düsterschauer」Das Führen der Klinge ruft eine drückende Decke schwarzer Wolken und strömenden Regen herbei; Lebewesen darin schmelzen stetig dahin und bieten den Geistern ein leichtes Ziel.
 	DeathReason: "{0} wurde vom schwarzen Regen zersetzt und in den Schlamm gerissen"
 }
 

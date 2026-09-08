@@ -4,18 +4,19 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.SeaShrimp
 {
-    /// <summary>晶化虾饵：海洋使用召唤渊晶海虾（贴图待自绘，暂借原版虾）</summary>
+    /// <summary>晶化虾饵：海洋使用召唤渊晶海虾</summary>
     internal class SeaShrimpSummonItem : SeaShrimpModItem
     {
-        public override string Texture => $"Terraria/Images/Item_{ItemID.Shrimp}";
+        //自绘贴图（原稿 25×27，按项目 2x 约定近邻放大为 50×54）
+        public override string Texture => CWRConstant.NPC + "SeaShrimp/SeaShrimpSummonItem";
 
         public override void SetStaticDefaults() {
             ItemID.Sets.SortingPriorityBossSpawns[Type] = 13;
         }
 
         public override void SetDefaults() {
-            Item.width = 28;
-            Item.height = 28;
+            Item.width = 50;
+            Item.height = 54;
             Item.maxStack = 20;
             Item.useAnimation = 40;
             Item.useTime = 40;

@@ -1,7 +1,7 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
 	Tooltip: Klingentreffer fügen geschwächten Zielen gewaltigen Bonusschaden zu; direkte Hinrichtungen erstatten Haltung; Waffenschaden -2%
-		Origin:
+	Origin:
 		'''
 		Die Henker der alten Richtstätte vererbten von Geschlecht zu Geschlecht ein unheilvolles Richtbeil, das ungeachtet der zahllosen Verurteilten niemals schartig wurde.
 		Man erzählt sich, als der letzte Scharfrichter einem plötzlichen Herzschlag erlag, stürzte die Klinge von selbst vom Schafott herab.
@@ -20,7 +20,7 @@ OniMeiRubbingHigekiri: {
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
 	Tooltip: Der ursprüngliche Name von Onikiri; bewahrt alle ursprünglichen Eigenschaften ohne Boni oder Strafen
-		Origin:
+	Origin:
 		'''
 		Eine vergilbte Akte aus den Archiven der alten Kreisstube: In nebligen Regennächten wandelte eine Frau in Scharlachrot mit rotem Ölpapierschirm auf der steinernen Brücke und rief Wanderer an.
 		Wer ihr antwortete, lag am nächsten Morgen mit grausam abgezogener Gesichtshaut tot am Brückenkopf.
@@ -273,7 +273,7 @@ OniMeiRubbingOnimaru: {
 OniMeiRubbingRaikiri: {
 	DisplayName: Raikiri
 	Tooltip: Unter freiem Himmel beschwören der 5. Hieb und Künste Blitzeinschläge; Kombointervall +6%, keine Blitze unter Dach
-		Origin:
+	Origin:
 		'''
 		Holzfäller wissen wohl: Suche im Gewitter niemals Schutz unter uralten Eichen, denn morsches Holz zieht den Blitz an und man wird leicht erschlagen.
 		Doch ein gerüsteter Krieger blieb im Unwetter unter einer toten Eiche stehen; als ein violetter Blitz herabfuhr, brüllte er auf, schlug gen Himmel und spaltete den Donnerkeil entzwei.
@@ -564,7 +564,7 @@ OniMeiRubbingShibori: {
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Senkt Projektilschaden und Rückstoß drastisch; Haltungsgewinn -15%
-		Origin:
+	Origin:
 		'''
 		Ein kampferprobter, gepanzerter Krieger, der unzählige Blutbäder überlebte, schnitt stets beruhigende Siegelschrift in den Rücken seines Säbels.
 		Prasseln Schleudersteine und Pfeilschwärme wie Hagel auf die Frontlinie, verfallen Kleinmütige angesichts des gellenden Pfeifens in Panik und gehen im Chaos unter.
@@ -590,7 +590,7 @@ OniMeiRubbingAshidome: {
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
 	Tooltip: Hinrichtungen hinterlassen ein brennendes Glutbett am Zielort; maximale Ausdauer -5%, Blitzschrittkosten erhöht während des Brandes
-		Origin:
+	Origin:
 		'''
 		Erloschen die alten Krematoriumsöfen im tiefsten Winter, glühten unter der grauen Aschedecke in den Ziegelfugen stets violette Glutnester fort.
 		Selbst mit Eiswasser begossen, zischten und dampften sie noch wochenlang, ohne zu erlöschen.

@@ -1,7 +1,7 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
 	Tooltip: Blade deals massive scaling execute damage against low-health foes; direct kills refund stance; weapon damage reduced by 2%
-		Origin:
+	Origin:
 		'''
 		Old executioners at the execution grounds passed down an ominous cleaver that never dulled, no matter how many were condemned.
 		Rumor says when the last executioner collapsed of sudden heart failure, the blade fell from the scaffold of its own accord.
@@ -20,7 +20,7 @@ OniMeiRubbingHigekiri: {
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
 	Tooltip: The primordial name of Onikiri, preserving its original baseline properties without bonuses or penalties
-		Origin:
+	Origin:
 		'''
 		A yellowed case file tucked in the archives of an old county yamen: on foggy rainy nights, a woman in crimson holding a red oilpaper umbrella would wander the stone bridge, calling out to passersby.
 		Whoever answered would be found dead the next morning at the bridgehead, their facial skin torn away.
@@ -273,7 +273,7 @@ OniMeiRubbingOnimaru: {
 OniMeiRubbingRaikiri: {
 	DisplayName: Raikiri
 	Tooltip: In open-air conditions, the fifth combo strike and arts summon lightning bolts upon hit; combo interval extended by 6%, no lightning indoors
-		Origin:
+	Origin:
 		'''
 		Woodsmen know never to seek shelter under tall trees during rain, for ancient wood draws lightning, easily struck by thunder.
 		Yet an armored warrior once stood his ground beneath a dead oak in a tempest; when a bolt of violet lightning plummeted, he roared and swung his blade upward, miraculously cleaving the thunderbolt in two.
@@ -564,7 +564,7 @@ OniMeiRubbingShibori: {
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Greatly reduces projectile damage and knockback taken; standard stance gain speed reduced by 15%
-		Origin:
+	Origin:
 		'''
 		A battle-scarred armored veteran who had marched through blood-soaked battlefields always carved calming seal-script along the spine of his sword.
 		When stones and arrows rain down like a deluge on the front line, the fainthearted panic from the shrieking roar and perish in chaos.
@@ -590,7 +590,7 @@ OniMeiRubbingAshidome: {
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
 	Tooltip: Executions leave a persistent burning ember field at the target's location; max vigor reduced by 5%, Flash Step vigor cost increased while embers burn
-		Origin:
+	Origin:
 		'''
 		When old crematory kilns shut down for midwinter, brushing aside the top layer of pale ash always reveals glowing violet embers smoldering in the brick seams below.
 		Even doused with cold water, they hiss and steam for weeks on end without dying out.
