@@ -129,20 +129,35 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
         protected override string SetBonusLineFallback =>
             "Flower petals still fall on hit; every 5th petal to strike the same enemy splits into two extra homing petals";
 
+        private const int PetalsPerSplit = 5;
+
+        /// <summary>真实命中取样的有效期，过期就退回花瓣自身伤害</summary>
+        private const int SampleFrames = 180;
+
         public override void OnEndowHitNPC(Player player, GodSmithArmorPlayer state, NPC target,
             in NPC.HitInfo hit, int damageDone, Projectile sourceProj) {
-            if (sourceProj == null || sourceProj.type != ProjectileID.FlowerPetal || target.type == NPCID.TargetDummy) {
+            if (target.type == NPCID.TargetDummy) {
+                return;
+            }
+            if (sourceProj == null || sourceProj.type != ProjectileID.FlowerPetal) {
+                //原版花瓣的伤害是写死的 36，不随武器成长，拿它当分裂瓣基准会前期超模、后期归零，
+                //所以非花瓣的命中只用来记下最近一次真实命中伤害（族内 proc 已被 IGsArmorProc 挡在钩子外）
+                SetTally(player, damageDone);
                 return;
             }
             GsArmorMarkNPC mark = target.GetGlobalNPC<GsArmorMarkNPC>();
-            if (++mark.PetalHits < 5) {
+            if (++mark.PetalHits < PetalsPerSplit) {
                 return;
             }
             mark.PetalHits = 0;
+            int reference = TallyStale(player, SampleFrames) ? damageDone : Math.Max(damageDone, Tally(player));
+            //预算账：约 9 次武器命中出一次分裂（原版花瓣 20 帧一片，还要落中 5 片），
+            //两瓣各穿三次实取约 5 段，故期望增量 0.11 × 5 × 0.2 ≈ +11%，落在法四的 +12% 以内
+            int petalDamage = ProcDamage(reference, 0.2f, 5, 120);
             for (int i = 0; i < 2; i++) {
                 Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(6f, 9f);
                 Projectile petal = SpawnProc(player, "GodSmithOrichalcumEndow", target.Center + velocity * 3f, velocity,
-                    ModContent.ProjectileType<GsOrichalcumPetalProj>(), ProcDamage(damageDone, 1f, 5, 120), 2f);
+                    ModContent.ProjectileType<GsOrichalcumPetalProj>(), petalDamage, 2f);
                 if (petal != null) {
                     petal.DamageType = hit.DamageType;
                 }
