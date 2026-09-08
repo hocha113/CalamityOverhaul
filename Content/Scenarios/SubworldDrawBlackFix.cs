@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework.Graphics;
+using SubworldLibrary;
 using System;
 using System.Reflection;
 using Terraria;
@@ -8,20 +9,33 @@ using Terraria.Graphics.Light;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
+namespace CalamityOverhaul.Content.Scenarios
 {
     /// <summary>
-    /// 旧网涂黑修补。原版 <c>Main.DrawBlack</c> 非 force 只处理两段行域：
-    /// 屏顶在世界上半（&lt;maxTilesY/2）时只涂 worldSurface+1 以上，
-    /// 屏顶进下半后只涂 UnderworldLayer(=maxTilesY-200) 以下。旧网 600 行世界
-    /// （半高 300 / UnderworldLayer 400 / worldSurface 430）的地板带与浅层地下
-    /// 恰好落进 300~400 行的涂黑死窗，无光瓦片被瓦片渲染器剔除
-    /// （TileDrawing 光照全零跳绘）后，天幕直接透出。<br/>
-    /// 这里在旧网内把 DrawBlack 整体替换为无行域钳制的等价实现。不走 force=true
-    /// 转发：force 路径对 UnderworldLayer 以下改用 0.2 地狱亮度阈值，
-    /// 旧网深层的昏暗照明会被硬切出成片黑方块边
+    /// 天幕可见子世界的标记：worldSurface 被压到所有地板之下，玩法层判"地表"，
+    /// 于是无光瓦片一旦被跳绘，透出来的是天幕而不是地下背景。<br/>
+    /// <see cref="Subworld"/> 挂上此接口即接入 <see cref="SubworldDrawBlackFix"/> 的涂黑修补。
+    /// 反方向的世界（worldSurface 抬到顶让全图判"地下"，如深牢、深海）不要挂：
+    /// 它们跳绘后透出的是地下背景，本就不漏，多涂一层只是白扫可见窗
     /// </summary>
-    internal sealed class OldNetDrawBlackHook : ModSystem
+    internal interface ISkyVisibleSubworld
+    {
+    }
+
+    /// <summary>
+    /// 子世界地下涂黑修补。原版 <c>Main.DrawBlack</c> 非 force 只处理两段行域：
+    /// 屏顶在世界上半（&lt;maxTilesY/2）时只涂 worldSurface+1 以上，
+    /// 屏顶进下半后只涂 UnderworldLayer(=maxTilesY-200) 以下。
+    /// 于是屏顶落在 [maxTilesY/2, UnderworldLayer) 时两段都够不着，
+    /// 这段行位是永久涂黑死窗：无光瓦片被瓦片渲染器剔除
+    /// （TileDrawing 光照全零跳绘）后，天幕直接透出。<br/>
+    /// 600 行世界（旧网 / 鬼雨）死窗是 300~400 行，800 行世界（鬼梦）是 400~600 行，
+    /// 三者的地板带都正压在窗里，站着不动就漏。<br/>
+    /// 这里在 <see cref="ISkyVisibleSubworld"/> 子世界内把 DrawBlack 整体替换为无行域钳制的
+    /// 等价实现。不走 force=true 转发：force 路径对 UnderworldLayer 以下改用 0.2 地狱亮度阈值，
+    /// 深层的昏暗照明会被硬切出成片黑方块边
+    /// </summary>
+    internal sealed class SubworldDrawBlackFix : ModSystem
     {
         private delegate void OrigDrawBlack(Main self, bool force);
         private delegate void DrawBlackHook(OrigDrawBlack orig, Main self, bool force);
@@ -34,14 +48,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet.Renders
             MethodInfo drawBlack = typeof(Main).GetMethod("DrawBlack",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             if (drawBlack == null) {
-                Mod.Logger.Warn("[OldNet] Main.DrawBlack 反射未命中，地下涂黑死窗修补未挂载");
+                Mod.Logger.Warn("[Scenarios] Main.DrawBlack 反射未命中，子世界地下涂黑死窗修补未挂载");
                 return;
             }
             MonoModHooks.Add(drawBlack, new DrawBlackHook(OnDrawBlack));
         }
 
         private static void OnDrawBlack(OrigDrawBlack orig, Main self, bool force) {
-            if (!OldNetWorld.Active || Main.gameMenu) {
+            if (Main.gameMenu || SubworldSystem.Current is not ISkyVisibleSubworld) {
                 orig(self, force);
                 return;
             }

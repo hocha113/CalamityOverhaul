@@ -1,12 +1,12 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
 	Tooltip: Blade deals massive scaling execute damage against low-health foes; direct kills refund stance; weapon damage reduced by 2%
-	Origin:
+		Origin:
 		'''
 		Old executioners at the execution grounds passed down an ominous cleaver that never dulled, no matter how many were condemned.
 		Rumor says when the last executioner collapsed of sudden heart failure, the blade fell from the scaffold of its own accord.
-		Before the edge even grazed the criminal's neck, the thick beard flowing past his chest slid off with his severed head, as if bitten clean through by an unseen horror.
-		The aging mortician at the morgue remarked that this blade had learned to recognize the exact moment life slips away: once someone is on the verge of death, a single breath of its wind takes their head.
+		Before the edge even grazed the criminal's neck, the long beard on his chin slid off together with his head, as if bitten clean through by an unseen horror.
+		The aging undertaker at the morgue remarked that this blade had learned to recognize the exact moment life slips away: once someone is on the verge of death, a single breath of its wind takes their head.
 		'''
 	Power:
 		'''
@@ -20,12 +20,12 @@ OniMeiRubbingHigekiri: {
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
 	Tooltip: The primordial name of Onikiri, preserving its original baseline properties without bonuses or penalties
-	Origin:
+		Origin:
 		'''
-		A closed case from the early records of the Exorcism Bureau: an elite squad was completely wiped out while hunting a terrifying entity.
-		In the final moments, the dying girl who walked among spirits counter-suppressed the horror, forcing it into total dormancy as its malice condensed into a pitch-black blade.
-		Her breath ceased, yet her lingering consciousness did not scatter, sinking deep into the steel to slumber in that frozen dormancy.
-		A spectral weapon formed from a dormant abomination, and the primordial foundation of Onikiri.
+		A yellowed case file tucked in the archives of an old county yamen: on foggy rainy nights, a woman in crimson holding a red oilpaper umbrella would wander the stone bridge, calling out to passersby.
+		Whoever answered would be found dead the next morning at the bridgehead, their facial skin torn away.
+		A blind swordsman once crossed the bridge in mist; from beneath the umbrella, a withered pale hand shot out for his throat. Hearing the wind, the swordsman drew and slashed upward.
+		The pale hand and red umbrella were severed into the river, melting into foul black sludge. Only his blade remained, drinking deep of that cold malice to become the bedrock of slaying evil.
 		'''
 	Power: Preserves all baseline properties of Onikiri without additional bonuses or effects
 	Burden: None
@@ -273,9 +273,9 @@ OniMeiRubbingOnimaru: {
 OniMeiRubbingRaikiri: {
 	DisplayName: Raikiri
 	Tooltip: In open-air conditions, the fifth combo strike and arts summon lightning bolts upon hit; combo interval extended by 6%, no lightning indoors
-	Origin:
+		Origin:
 		'''
-		Woodsmen know never to seek shelter under tall trees during rain, for ancient wood draws down heaven's wrath.
+		Woodsmen know never to seek shelter under tall trees during rain, for ancient wood draws lightning, easily struck by thunder.
 		Yet an armored warrior once stood his ground beneath a dead oak in a tempest; when a bolt of violet lightning plummeted, he roared and swung his blade upward, miraculously cleaving the thunderbolt in two.
 		Ever since, the blade holds a covenant with the storm: so long as the open sky is bare above, crushing lightning descends wherever the edge points.
 		'''
@@ -564,10 +564,10 @@ OniMeiRubbingShibori: {
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Greatly reduces projectile damage and knockback taken; standard stance gain speed reduced by 15%
-	Origin:
+		Origin:
 		'''
 		A battle-scarred armored veteran who had marched through blood-soaked battlefields always carved calming seal-script along the spine of his sword.
-		When catapult-stones and volleyed arrows rain down like a deluge on the front line, the fainthearted panic from the shrieking roar and perish in chaos.
+		When stones and arrows rain down like a deluge on the front line, the fainthearted panic from the shrieking roar and perish in chaos.
 		Relying on this talisman to still his pulse, the veteran weathered the storm of arrows and stones, standing resolute to shield his vitals from fatal ruin.
 		'''
 	Power: '''"Chinmei": taking damage from enemy projectiles reduces damage taken by 12% and reduces knockback taken to 35%'''
@@ -590,10 +590,10 @@ OniMeiRubbingAshidome: {
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
 	Tooltip: Executions leave a persistent burning ember field at the target's location; max vigor reduced by 5%, Flash Step vigor cost increased while embers burn
-	Origin:
+		Origin:
 		'''
 		When old crematory kilns shut down for midwinter, brushing aside the top layer of pale ash always reveals glowing violet embers smoldering in the brick seams below.
-		Even doused with cold water, they hiss and steam for days on end.
+		Even doused with cold water, they hiss and steam for weeks on end without dying out.
 		Sealing those kiln embers into the blade, every foe shattered by an execution sets the ground ablaze with smoldering hellfire, reducing pursuing fiends to cinder and bone.
 		'''
 	Power:

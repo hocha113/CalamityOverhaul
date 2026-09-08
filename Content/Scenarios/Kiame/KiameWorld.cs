@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiame
 {
     //鬼雨：洼地废村子世界。台地入口向东，废村连绵、洼积黑水、黑雨不歇
     //蓝图 Doc/plans/Kiame/DESIGN.md，骨架镜像 KiyumeWorld 惯例（姊妹世界不互引）
-    internal class KiameWorld : Subworld
+    //ISkyVisibleSubworld：worldSurface 压到地板之下，接 SubworldDrawBlackFix 补涂黑死窗
+    internal class KiameWorld : Subworld, ISkyVisibleSubworld
     {
         public override int Width => KiameMetrics.Width;
         public override int Height => KiameMetrics.Height;

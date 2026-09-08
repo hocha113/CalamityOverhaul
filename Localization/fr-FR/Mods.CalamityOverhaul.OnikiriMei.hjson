@@ -1,12 +1,12 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
 	Tooltip: Les coups directs infligent de lourds dégâts d'exécution aux ennemis affaiblis ; achever une cible rend de la posture ; dégâts de l'arme -2%
-	Origin:
+		Origin:
 		'''
 		Les bourreaux de l'ancien échafaud se transmettaient de génération en génération un couperet sinistre qui ne s'ébréchait jamais, quel que soit le nombre de condamnés.
 		La rumeur raconte que lorsque le dernier exécuteur s'effondra d'une crise cardiaque soudaine, la lame tomba de l'estrade d'elle-même.
-		Avant même que l'acier n'effleure le cou, la barbe épaisse tombant sur la poitrine du supplicié glissa net avec sa tête, comme tranchée par une mâchoire invisible.
-		Le vieux légiste de la morgue comprit alors que cette lame reconnaît l'instant précis où la vie s'éteint : à celui qui ne tient qu'à un fil, le souffle de son vent tranche net la gorge.
+		Avant même que l'acier n'effleure le cou, la longue barbe du menton glissa net avec la tête, comme tranchée par une mâchoire invisible.
+		Le vieux fossoyeur comprit alors que cette lame reconnaît l'instant précis où la vie s'éteint : à celui qui ne tient qu'à un fil, le souffle de son vent tranche net la gorge.
 		'''
 	Power:
 		'''
@@ -20,12 +20,12 @@ OniMeiRubbingHigekiri: {
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
 	Tooltip: Le nom primordial d'Onikiri, conservant toutes ses propriétés d'origine sans bonus ni pénalité
-	Origin:
+		Origin:
 		'''
-		Un dossier classé des anciennes archives du Bureau d'exorcisme : une escouade d'élite fut décimée en traquant une entité terrifiante.
-		À l'article de la mort, la jeune fille renversa l'étreinte et poussa l'abomination dans une inertie totale, sa noirceur se condensant en une lame d'un noir d'ébène.
-		Son souffle s'éteignit, mais sa conscience ne se dissipa point, sombrant au cœur de l'acier pour s'endormir dans cet engourdissement glacial.
-		Une arme spectrale née d'une horreur figée, et le visage originel d'Onikiri.
+		Un dossier jauni extrait des archives d'un vieux prétoire de district : les nuits de brume et de pluie, une femme vêtue de pourpre avec une ombrelle en papier rouge errait sur le pont de pierre, appelant les passants.
+		Quiconque lui répondait était retrouvé au matin au pied du pont, la peau du visage arrachée à vif.
+		Un bretteur aveugle s'avança dans la brume ; sous l'ombrelle, une main cadavérique jaillit pour lui broyer la gorge. Au sifflement de l'air, le bretteur dégaina d'un coup ascendant.
+		La main spectrale et l'ombrelle tombèrent dans le fleuve, se dissolvant en une vase noire fétide. Seul resta le sabre, imprégné de cette souillure primordiale, devenu l'ossature de dix mille sceaux funestes.
 		'''
 	Power: Conserve l'intégralité des caractéristiques de base d'Onikiri, sans ajouter de bonus ni d'effet supplémentaire
 	Burden: Aucun
@@ -273,9 +273,9 @@ OniMeiRubbingOnimaru: {
 OniMeiRubbingRaikiri: {
 	DisplayName: Raikiri
 	Tooltip: À ciel ouvert, le 5e coup et les arts invoquent la foudre à l'impact ; intervalle du combo +6%, aucun éclair sous abri
-	Origin:
+		Origin:
 		'''
-		Les bûcherons savent qu'il ne faut jamais s'abriter sous les vieux chênes par temps d'orage, car le bois mort attire le courroux céleste.
+		Les bûcherons savent qu'il ne faut jamais s'abriter sous les vieux chênes par temps d'orage, car le bois mort attire la foudre et la mort frappe aisément.
 		Pourtant, un guerrier en armure resta debout sous un chêne mort en pleine tourmente ; lorsqu'un éclair violet fusa des cieux, il poussa un rugissement et leva sa lame, fendant la foudre en deux.
 		Depuis lors, le sabre scelle un pacte avec l'orage : tant que le ciel est dégagé au-dessus de lui, les carreaux de foudre s'abattent là où pointe son tranchant.
 		'''
@@ -564,7 +564,7 @@ OniMeiRubbingShibori: {
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Réduit grandement les dégâts de projectiles et le recul ; gain de posture -15%
-	Origin:
+		Origin:
 		'''
 		Un vétéran cuirassé ayant survécu à mille champs de carnage gravait toujours des sceaux d'apaisement sur le dos de son sabre.
 		Sous un déluge de flèches et de pierres projetées au front, les couards cèdent à la panique devant les sifflements aigus et périssent dans la déroute.
@@ -590,10 +590,10 @@ OniMeiRubbingAshidome: {
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
 	Tooltip: Les exécutions laissent un lit de braises ardentes à l'emplacement de la cible ; vigueur max -5%, coût du pas éclair accru tant que le feu brûle
-	Origin:
+		Origin:
 		'''
 		Lorsque les vieux fours crématoires s'éteignaient au creux de l'hiver, en fouillant sous le drap de cendres grises, on trouvait toujours des braises violettes couvant dans les joints de briques.
-		Même arrosées d'eau glacée, elles crépitaient en fumant des semaines durant.
+		Même arrosées d'eau glacée, elles crépitaient en fumant des semaines durant sans s'éteindre.
 		En scellant ces braises de sépulture dans la lame, chaque ennemi broyé par une exécution embrase le sol d'un brasier infernal qui consume les poursuivants jusqu'aux os.
 		'''
 	Power:

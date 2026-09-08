@@ -1,12 +1,12 @@
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
 	Tooltip: Golpes de lâmina causam dano massivo escalonado a inimigos feridos; execuções diretas restauram postura; dano da espada -2%
-	Origin:
+		Origin:
 		'''
 		Os carrascos do velho patíbulo transmitiam de geração em geração um cutelo sinistro que jamais perdia o fio, por mais réus que decapitasse.
 		Conta-se que quando o último algoz sucumbiu a uma parada cardíaca repentina, a lâmina tombou do cadafalso por si só.
-		Antes mesmo que o aço tocasse o pescoço, a espessa barba que caía sobre o peito do condenado deslizou cortada de raiz junto com a cabeça, como arrancada por mandíbulas invisíveis.
-		O velho legista do necrotério compreendeu que esta lâmina aprende a reconhecer o instante exato em que a vida se esvai: a quem está por um fio, o sopro de seu vento decepa a cabeça.
+		Antes mesmo que o aço tocasse o pescoço, a longa barba do queixo deslizou cortada de raiz junto com a cabeça, como arrancada por mandíbulas invisíveis.
+		O velho coveiro do necrotério compreendeu que esta lâmina aprende a reconhecer o instante exato em que a vida se esvai: a quem está por um fio, o sopro de seu vento decepa a cabeça.
 		'''
 	Power:
 		'''
@@ -20,12 +20,12 @@ OniMeiRubbingHigekiri: {
 OniMeiRubbingOnikiri: {
 	DisplayName: Onikiri
 	Tooltip: O nome primordial de Onikiri, mantendo todas as suas propriedades originais sem bônus nem penalidades
-	Origin:
+		Origin:
 		'''
-		Um caso antigo arquivado nos registros do Gabinete de Exorcismo: um esquadrão de elite foi dizimado ao caçar uma entidade aterrorizante.
-		Nos últimos instantes, a jovem à beira da morte reverteu a pressão e forçou o horror a uma inércia absoluta, condensando sua sombra numa lâmina negra como breu.
-		Sua respiração cessou, mas sua consciência não se dispersou, afundando nas entranhas do aço para adormecer naquele torpor gélido.
-		Uma arma paranormal nascida de um horror inerte, e a face primordial de Onikiri.
+		Um arquivo amarelado guardado nos registros do velho cartório local: em noites de neblina e chuva, uma mulher em vestes escarlates com sombrinha de papel vermelho rondava a ponte de pedra, chamando pelos transeuntes.
+		Quem quer que lhe respondesse era encontrado pela manhã junto à ponte com a pele do rosto arrancada a sangue-frio.
+		Certa vez, um espadachim cego cruzou a névoa; de sob a sombrinha, uma mão cadavérica avançou para estrangulá-lo. Ao ouvir o sibilar do ar, o espadachim desembainhou num golpe ascendente.
+		A mão fantasmagórica e a sombrinha caíram no rio, desfazendo-se em lodo negro fétido. Apenas a espada restou, ensopada naquela mancha primordial, tornando-se o pilar de dez mil selos funestos.
 		'''
 	Power: Mantém todas as propriedades básicas de Onikiri, sem conceder bônus nem penalidades adicionais
 	Burden: Nenhum
@@ -273,9 +273,9 @@ OniMeiRubbingOnimaru: {
 OniMeiRubbingRaikiri: {
 	DisplayName: Raikiri
 	Tooltip: Sob céu aberto, o 5º golpe do combo e as artes invocam relâmpagos ao acertar; intervalo do combo +6%, sem raios sob teto
-	Origin:
+		Origin:
 		'''
-		Lenhadores sabem bem que jamais se deve procurar abrigo sob velhos carvalhos na chuva, pois a madeira seca atrai a ira dos céus.
+		Lenhadores sabem bem que jamais se deve procurar abrigo sob velhos carvalhos na chuva, pois a madeira seca atrai o raio e é fácil perecer.
 		Porém, um guerreiro encouraçado fincou pé sob uma árvore morta em plena tempestade; quando um raio violeta despencou do firmamento, ele rugiu brandindo a espada para o alto e partiu a centelha em dois.
 		Desde então a espada guarda um pacto com a tempestade: contanto que o céu se abra límpido acima dela, raios destruidores despencam para onde sua ponta apontar.
 		'''
@@ -564,7 +564,7 @@ OniMeiRubbingShibori: {
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
 	Tooltip: Reduz expressivamente o dano de projéteis e a repulsão; ganho de postura -15%
-	Origin:
+		Origin:
 		'''
 		Um guerreiro encouraçado veterano que sobreviveu a incontáveis massacres sempre gravava selos de apaziguamento no lombo do seu sabre.
 		Sob uma tempestade de flechas e pedras de cerco no front, os covardes entram em pânico com os silvos agudos e tombam na confusão.
@@ -590,10 +590,10 @@ OniMeiRubbingAshidome: {
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
 	Tooltip: Execuções deixam um braseiro persistente no local do alvo; vigor máximo -5%, custo do Passo Relâmpago aumentado enquanto arder
-	Origin:
+		Origin:
 		'''
 		Quando os antigos fornos crematórios apagavam suas chamas no inverno profundo, remexendo a camada de cinzas pálidas sempre se encontravam brasas violetas nas juntas dos tijolos.
-		Mesmo regadas com água gelada, chiuvam soltando fumaça por semanas a fio.
+		Mesmo regadas com água gelada, chiuvam soltando fumaça por semanas a fio sem se apagar.
 		Ao aprisionar essas brasas de tumba no aço, cada inimigo esmagado por uma execução incendeia a terra com fogo infernal, reduzindo os perseguidores a carvão e ossos.
 		'''
 	Power:

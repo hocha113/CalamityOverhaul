@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldNet
 {
     //旧网：黑墙外横向赛博考古子世界，M0=裸循环（进出/黑墙/距离底噪/采集结算）
     //蓝图 Doc/plans/OldNet/DESIGN.md，骨架镜像 Dungeonworld 惯例
-    internal class OldNetWorld : Subworld
+    //ISkyVisibleSubworld：worldSurface 压到地板之下，接 SubworldDrawBlackFix 补涂黑死窗
+    internal class OldNetWorld : Subworld, ISkyVisibleSubworld
     {
         public override int Width => OldNetMetrics.Width;
         public override int Height => OldNetMetrics.Height;

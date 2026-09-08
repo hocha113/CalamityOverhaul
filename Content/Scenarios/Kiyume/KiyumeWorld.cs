@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Scenarios.Kiyume
 {
     //鬼梦：湖畔长卷子世界。西边是无边的血湖，往东依次是滩涂、村落、枯林、远山
     //蓝图 Doc/plans/Kiyume/DESIGN.md，骨架镜像 OldNetWorld 惯例
-    internal class KiyumeWorld : Subworld
+    //ISkyVisibleSubworld：worldSurface 压到地板之下，接 SubworldDrawBlackFix 补涂黑死窗
+    internal class KiyumeWorld : Subworld, ISkyVisibleSubworld
     {
         public override int Width => KiyumeMetrics.Width;
         public override int Height => KiyumeMetrics.Height;
