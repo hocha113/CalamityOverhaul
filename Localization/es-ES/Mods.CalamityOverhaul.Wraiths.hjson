@@ -1,73 +1,105 @@
 LanternBoy: {
-	DisplayName: Niño de la linterna
-	Origin: Quienes cruzan el sendero de montaña de noche dicen que al final del camino suele esperar una lámpara, y bajo ella no hay nadie. Un valiente miró dos veces de más; cuando recobró el sentido, ya estaba dentro de la lámpara, mirando hacia afuera
-	Power: «Guiar» Tres linternas espectrales rodean al portador. Sus sombras replican a destiempo los tajos normales de Onikiri, con un 60% de potencia en total.
-	DeathReason: "{0} se convirtió en la persona de la cuarta linterna"
+	DisplayName: El niño del farol
+	Origin:
+		'''
+		En las sendas serranas oscuras suele bambolearse un farol de papel pálido, flotando sobre un par de pies descalzos de niño que jamás tocan la tierra.
+		Cualquier caminante nocturno que mire la llama más de tres alientos siente sus ojos sellados como por cera ardiente, arrastrándole el alma al pellejo del farol.
+		Tres almas torturadas ya están cautivas dentro; allá donde cae su luz marchita, las sombras del farol se mueven al compás de la espada, atacando por su portador.
+		'''
+	Power: "「Luz guía」Tres faroles espectrales orbitan tu cuerpo; su resplandor arroja sombras que replican tus tajos normales a destiempo con el sesenta por ciento de su fuerza original."
+	DeathReason: "{0} fue guiado hacia el interior del cuarto farol de papel blanco"
 }
 
 CrimsonBride: {
-	DisplayName: Novia carmesí
-	Origin: Frente a una casa se detuvo una litera nupcial que nadie cargaba, y allí se quedó siete noches. En la octava alguien alzó la cortina; desde entonces esa litera reconoce a otra novia
-	Power: «Recibir a la novia» Pulsa «Autorreinicio» y la litera vendrá siguiendo el rastro de sangre, para llevar al que empuña la hoja a una sala nupcial vacía. En el instante de las copas, heridas y estados se reinician por completo.
-	DeathReason: "{0} subió a esa litera nupcial"
+	DisplayName: La novia carmesí
+	Origin:
+		'''
+		Ante una mansión desolada en la sierra descansaba un gran palanquín carmesí de ocho porteadores sin porteador vivo alguno: solo efigies de papel blanco pintadas con sonrisas congeladas.
+		Cada vez que la cortina se entreabría, sonaban por el bosque agudos cuernos nupciales fúnebres; quien tenía su hora de nacimiento elegida era obligado a desposarse en una sala muda y muerta.
+		Cuando un portador acorralado invoca este palanquín, llega cruzando el vacío sobre un rastro de sangre, acogiéndolo en un salón fúnebre engalanado de luto blanco y seda roja.
+		Al beber la copa nupcial, toda herida mortal se disuelve en el salón, revirtiendo la muerte en vida.
+		'''
+	Power: "「El cortejo」Pulsa la tecla de Reinicio y el gran palanquín carmesí llegará cabalgando música fúnebre, acogiendo al portador en una sala nupcial ensangrentada y muda; al culminar el brindis, las heridas y estados se lavan y reinician."
+	DeathReason: "{0} subió al palanquín carmesí y rindió pleitesía al cielo y la tierra"
 }
 
 ScapeGhost: {
-	DisplayName: Espíritu sustituto
-	Origin: En vida no dejó nombre. Solo recuerda haber muerto muchas veces por otros, tantas que olvidó cuál le tocaba de verdad. El día que entró en el libro, su fecha de nacimiento se escribió junto a tu nombre: de ahora en adelante, tu muerte también le corresponde a él
-	Power: «Sustituir» En el instante en que llega la muerte, araña una vida a lo lejos y mete la tuya en ese cuerpo
-	DeathReason: "{0} murió una vez en su lugar"
+	DisplayName: El espíritu expiatorio
+	Origin:
+		'''
+		Un tosco muñeco de paja envuelto en cabellos y fechas natales, acribillado por miles de estocadas en el pecho y cortes profundos en el cuello.
+		En vida murió incontables veces en lugar de otros, quedando maltrecho y olvidando cuál de todas las muertes le pertenecía.
+		El día en que se inscribe en el registro, tu augurio de muerte se ata con una cuerda a su cuello de paja.
+		En el instante en que cae la fatalidad, manos heladas surgen de la oscuridad transfiriendo tu muerte a la carne de un ser vivo cercano.
+		'''
+	Power: "「Traspaso de calamidad」En el instante en que sobreviene una catástrofe letal, transfiere a la fuerza tu muerte a un ser vivo lejano, usando su cuerpo para perecer y librándote del fin."
+	DeathReason: "{0} se convirtió en el alma muerta tras el señuelo de paja"
 }
 
 HeadlessShade: {
-	DisplayName: Sombra descabezada
-	Origin: En una noche de lámparas temblorosas, alguien bajó la vista y vio que su propia sombra se movía sola. Miró mejor: sobre los hombros de la sombra no había nada. Lo que perdió la cabeza se alojó así en la sombra de un vivo
-	Power: «Desmembrar» Acecha a tu espalda. Si huele algo vivo, se lanza y parte el cuerpo en varios trozos
-	DeathReason: "{0} fue despedazado por su propia sombra"
+	DisplayName: La sombra decapitada
+	Origin:
+		'''
+		Bajo la mortecina luz de los candiles de medianoche, alguien bajó la vista y vio su propia sombra revolverse en el suelo: y sobre sus hombros no había absolutamente nada.
+		Este engendro decapitado ha acechado durante eras en ángulos muertos, ansiando con locura recomponer un cuerpo vivo completo.
+		Se ha cosido a la sombra bajo tus pies; al oler la vida enemiga, se abalanza desde el suelo desgarrando a la presa en pedazos con salvaje ferocidad.
+		'''
+	Power: "「Descuartizar」Acechando en la sombra bajo tus pies, surge del suelo al percibir presas vivas, desgarrando su carne en pedazos con brutalidad salvaje."
+	DeathReason: "{0} vio su cabeza arrancada de cuajo por la sombra sin cabeza"
 }
 
 GhostHand: {
-	DisplayName: Mano carbonizada
-	Origin: Un brazo negro y seco, quemado así, y aun así los cinco dedos aprietan. Nadie sabe en quién crecía; solo que, al ver algo vivo, quiere agarrarlo
-	Power: «Apretar» La mano seca sale de tu espalda, sujeta a la presa, la inmoviliza y la aplasta una y otra vez. Si hay muchas presas, salen más manos. Ni siquiera un coloso escapa a esos cinco dedos
-	DeathReason: "{0} fue apretado contra el muro"
+	DisplayName: La mano calcinada
+	Origin:
+		'''
+		Un brazo carbonizado rescatado de las cenizas de piras funerarias, con cinco dedos agarrotados en un apretón voraz e implacable.
+		Nadie sabe en qué mar de llamas quedó atrapado este cadáver, solo que la sofocante rabia de su estrangulamiento perdura imborrable más allá de la tumba.
+		En cuanto percibe el calor de la respiración viva, la zarpa negra brota del vacío atrapando la garganta de la presa y triturando huesos una y otra vez.
+		'''
+	Power: "「Apretón triturador」Un brazo espectral calcinado surge del vacío para apresar a la presa por la garganta, aplastando y sofocando su movimiento; entre multitudes brotan más manos que pulverizan a enemigos formidables entre sus dedos."
+	DeathReason: "{0} fue triturado hasta el polvo de los huesos por la mano calcinada"
 }
 
 GhostRain: {
-	DisplayName: Lluvia espectral
-	Origin: Quienes se mojaron en aquella lluvia dicen que al alzar la vista no vieron nubes, sino capas y capas de rostros que oprimían hacia abajo. Las gotas no duelen al caer; cada una parece reclamarte
-	Power: «Lluvia espectral» Tras invocarlo, al empuñar la hoja el velo sombrío permanece y cae la lluvia espectral. Los vivos bajo el telón se corroen poco a poco, o son arrastrados dentro
-	DeathReason: "{0} fue reclamado por la lluvia"
+	DisplayName: La lluvia espectral
+	Origin:
+		'''
+		Un nubarrón siniestro registrado en antiguos pergaminos que no descarga lluvia bienhechora, sino agua negra helada que apesta a lodo y podredumbre.
+		Quienes miran al cielo con terror descubren que bajo las nubes cuelgan hileras de rostros cadavéricos con los ojos cerrados que miran hacia abajo fijamente.
+		La lluvia negra cae sin dolor físico, pero miles de sanguijuelas espectrales devoran médula y alma; quien se empapa durante tres alientos se derrite como cera y es arrastrado al lodo.
+		'''
+	Power: "「Manto sombrío」Empuñar la hoja convoca un dosel opresivo de nubes negras y lluvia torrencial; los seres vivos dentro ven su carne disolverse continuamente, sirviendo de blanco fácil para el resto de espíritus."
+	DeathReason: "{0} fue disuelto por la lluvia negra y arrastrado al fango"
 }
 
 System: {
-	ScapeGhostActivated: "{0} se ha convertido en el Espíritu sustituto"
-	ScapeGhostUnknownTarget: una criatura viva
-	ScapeGhostDeathBroadcast: "{0} se ha convertido en el Espíritu sustituto de {1}, {2}"
-	ErosionCrawl: Algo se arrastra bajo la piel
-	ErosionStain: En las yemas asoma el azul de las manchas cadavéricas
-	ErosionMirror: Lo que hay en el espejo ya no se parece del todo a ti
-	RevivalStir: El nombre en el sello se ha movido
-	RevivalRise: Te mira a través del papel
-	RevivalBrink: El sello quema tanto que no puedes sostenerlo
-	RevivalHudBrink: Si lo invocas otra vez, despertará
+	ScapeGhostActivated: "{0} se convirtió en el chivo expiatorio"
+	ScapeGhostUnknownTarget: un ser vivo
+	ScapeGhostDeathBroadcast: "{0} se convirtió en el chivo expiatorio de {1}, {2}"
+	ErosionCrawl: Sientes gusanos de fosa gélidos reptando bajo tu piel
+	ErosionStain: Las yemas de tus dedos brotan con manchas cadavéricas imborrables
+	ErosionMirror: El rostro en el espejo de bronce apenas se parece ya a ti
+	RevivalStir: El trazo de cinabrio natal en el talismán se estremeció
+	RevivalRise: Esa cosa te clava la mirada a través del papel amarillo
+	RevivalBrink: El talismán quema como hierro al rojo, apenas puedes contenerlo
+	RevivalHudBrink: El horror está a punto de despertar; un paso más y tomará tu cuerpo
 }
 
 Coven: {
-	RainHandName: Mano en la lluvia
-	RainHandNote: Las presas bajo la lluvia ya no están limitadas por el alcance del brazo. La mano seca cuelga del hilo de lluvia sobre su cabeza. En la lluvia salen como máximo cinco manos a la vez, y el daño de aplastamiento crece con el aguacero
-	RainShadeName: Filo mojado
-	RainShadeNote: Mientras el corte que deja la sombra al atravesar el cuerpo no cierre, cada tic de corrosión de lluvia se duplica en ese objetivo
-	HandShadeName: Sujetar y tajar
-	HandShadeNote: La sombra se lanza primero a la presa apretada por la mano seca. Su velocidad ya es cero; ese tajo no falla
-	LanternHandName: Iluminar
-	LanternHandNote: La presa que ha visto la linterna, la mano seca la encuentra incluso tras un obstáculo. Cuando el filo de las tres lámparas cae sobre un objetivo apretado, el daño aumenta un 60%
+	RainHandName: Zarpa bajo la lluvia
+	RainHandNote: Las presas empapadas en lluvia negra están al alcance sin importar la distancia; la mano calcinada brota directo de los hilos de lluvia. Pueden manifestarse hasta cinco manos a la vez, y el daño de aplastamiento se duplica con la fuerza de la tormenta
+	RainShadeName: Filo húmedo
+	RainShadeNote: Mientras la herida dejada por la sombra siga abierta, cada pulso de corrosión de lluvia inflige daño duplicado al objetivo
+	HandShadeName: Sujetar y rebanar
+	HandShadeNote: La sombra sin cabeza prioriza lanzarse sobre las presas atrapadas por la mano calcinada; con la presa inmovilizada, el tajo ejecutor jamás falla
+	LanternHandName: Alumbramiento
+	LanternHandNote: Las presas reveladas por los faroles espectrales pueden ser alcanzadas por la mano calcinada a través de muros y rocas; los tajos del farol causan un 60% más de daño a los objetivos apresados
 	BrideName: Sala nupcial
-	BrideNote: Las presas encerradas en la sala nupcial en el instante de las copas no pierden el resto de marcas hasta que la sala se disipe
-	ScapeName: Recibir la calamidad
-	ScapeNote: Cada vez que el sustituto muere, el Resurgimiento de los demás espectros sirvientes del mismo círculo baja un grado
-	CallName: Llamarse
-	CallNote: Los espectros sirvientes del mismo círculo se despiertan unos a otros: si invocas a uno, los demás ganan un poco de Resurgimiento. También ocurre entre dos que no tienen reacción propia
-	BurstName: Tres sellos estallan
-	BurstNote: Cuando un mismo objetivo reúne tres marcas, las marcas estallan juntas como un solo golpe, y cada espectro sirviente que participa paga un Resurgimiento
+	BrideNote: Los seres vivos apresados en la sala nupcial durante el brindis dejan de perder otras marcas espectrales hasta que la sala se disipe
+	ScapeName: Desvío de desgracia
+	ScapeNote: Cuando el muñeco de paja muere en tu lugar, el despertar de todos los demás espíritus del tablero retrocede un nivel
+	CallName: Eco resonante
+	CallNote: Los espíritus del tablero se despiertan mutuamente: ordenar a uno aumenta ligeramente el despertar de los demás; incluso los pares sin sinergias exclusivas resuenan con hambre oscura
+	BurstName: Ruptura triple
+	BurstNote: Reunir tres marcas distintas en un mismo objetivo detona múltiples maldiciones a la vez causando daño masivo, aumentando el despertar de cada espíritu participante
 }

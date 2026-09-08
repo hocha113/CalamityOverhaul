@@ -1,215 +1,328 @@
 KikasaTalismanLin: {
 	DisplayName: Fine Rain Talisman
-	Tooltip: Faster rain beats, prolonged rainfall gathers into a drizzle veil; single drop damage -6%
-	Origin: Jinan sees much rain, and the drizzle by Daming Lake often falls unbroken for days. The rain is gentle yet ceaseless, soaking through heaven and earth
-	Power: "'Fine Rain': ink-rain tempo +20%; continuous rainfall for about 10 seconds enters 'Steady Rain': a fine veil of drizzle hangs beneath the umbrella, speeding tempo by another 10%; stops decay gradually, recalling the umbrella halves it at once"
-	Burden: Drop direct damage -6%
+	Tooltip: Faster rain beats; prolonged rain enters 'Steady Rain' for denser drizzle; single ink drop damage -6%
+	Origin:
+		'''
+		Old craftsmen in oilpaper umbrella shops often say that two unbroken weeks of plum rains wear the soul down hardest.
+		Drizzle falls fine as ox-hair, seemingly feeble and silent against the roof tiles, yet ceiling beams and hidden pillars have long rotted through with damp.
+		This talisman records that relentless, bone-chilling seepage: the longer the rain falls, the denser it weaves.
+		'''
+	Power: "'Fine Rain': ink rain cadence accelerated by 20%; continuous rainfall for 10s gathers into the 'Steady Rain' state: a dense curtain of drizzle pours beneath the canopy, speeding cadence by an additional 10%; stopping or stowing the umbrella decays the downpour rapidly."
+	Burden: Single ink drop damage reduced by 6%
 }
 
 KikasaTalismanLao: {
 	DisplayName: Ink Puddle Talisman
-	Tooltip: Ink drops always pool into puddles on impact, puddles drink rain until overflowing to surge outward; direct hit damage -5%
-	Origin: Water gathers in low hollows, and rain that lingers creates dead water. Still waters run deep, connected to unseen undercurrents
-	Power: "'Pooling': ink drops always pool into puddles on landing, puddle duration +50%, coverage area +30%; drops landing in existing puddles raise the water level, absorbing three pours before overflowing, slapping out surges to both sides dealing 50% puddle damage each"
-	Burden: Drop direct damage -5%
+	Tooltip: Ink drops always form large puddles on landing, absorbing rain to surge outward upon overflowing; single drop damage -5%
+	Origin:
+		'''
+		The blueflag pavers of old thoroughfares are worn and rutted; the murky dead water pooled in stone hollows never dries, even through three months of drought.
+		Beneath lies rotting silt and suffocating leaf-muck hidden from sunlight; passersby treat it as a shallow puddle until a misstep sinks their boot hopelessly into the pit.
+		Steeped in stagnant dead water, rain gathers into puddles and overflows in surges.
+		'''
+	Power: "'Pooling': ink drops always gather into puddles on impact, extending puddle duration by 50% and radius by 30%; drops landing in existing puddles raise the water level, absorbing three drops before overflowing into surges on both sides, dealing 50% puddle damage each."
+	Burden: Single ink drop damage reduced by 5%
 }
 
 KikasaTalismanPei: {
 	DisplayName: Downpour Talisman
-	Tooltip: Faster inverted charging rate, full charge torrent triggers a heavy shockwave; steady rain tempo -8%
-	Origin: When a cloudburst falls, the skies feel breached. Rain either stays withheld, or pours without reserve
-	Power: "'Downpour': inverted charge rate +35%, ink geyser damage +20%; at full charge opening the torrent unleashes an area shockwave at the source, dealing 80% torrent damage and widening the deluge"
-	Burden: Steady ink rain tempo -8%
+	Tooltip: Faster inverted charge rate and stronger ink geysers, detonating an explosive shockwave at the source upon full charge; normal rain cadence -8%
+	Origin:
+		'''
+		Before a flash flood breaks loose, mountain brooks mysteriously run bone-dry, dammed up by fallen trunks and dead boulders at the gorge above.
+		Once the rising head of water smashes through the weir, the entire valley is swallowed by crashing mud and unstoppable fury.
+		This talisman holds the deluge tightly pent within the canopy: holding back until the gates breach in a torrential burst.
+		'''
+	Power: "'Downpour': inverted charge rate increased by 35%, ink geyser damage increased by 20%; unleashing a full-charge torrent detonates an area shockwave at the source, dealing 80% torrent damage and greatly widening the deluge."
+	Burden: Standard ink rain cadence slowed by 8%
 }
 
 KikasaTalismanSha: {
 	DisplayName: Swift Rain Talisman
-	Tooltip: Umbrella readies near-instantly, first beat drops three swift raindrops in succession; interval after the volley +40%
-	Origin: Sudden squalls strike unheralded, closing all avenues of retreat in a heartbeat
-	Power: "'Swift Rain': umbrella deployment time -75%; the first beat always drops three swift raindrops in a row, dealing 75% damage each"
-	Burden: After triggering the triple volley, the interval to the next beat is extended by 40%
+	Tooltip: Opens umbrella near-instantly, first beat fires three consecutive drops; interval after the volley extended by 40%
+	Origin:
+		'''
+		Midsummer afternoon squalls strike with the fiercest malice; one moment the blazing sun bakes the roof tiles scorching hot,
+		The next, howling winds drive down coin-sized raindrops headlong, leaving fleeing wanderers no time to take three paces.
+		This talisman harnesses that explosive opening fury as the canopy snaps open.
+		'''
+	Power: "'Swift Rain': umbrella opening deployment time reduced by 75%; the very first beat after opening guarantees three consecutive swift raindrops, each dealing 75% of basic drop damage."
+	Burden: After triggering the opening triple-volley, the attack interval to the next beat is extended by 40%
 }
 
 KikasaTalismanYin: {
 	DisplayName: Ink Bloom Talisman
-	Tooltip: Ink drop hits accumulate ink marks, detonating into burst damage at five stacks; direct hit damage -8%
-	Origin: Concentrated ink dripped onto wet Xuan paper blooms along its fibers. Layer upon layer of bleeding marks must eventually burst the page
-	Power: "'Ink Bloom': ink drops leave marks on hit (stacks up to 5, dealing continuous bleed damage based on stacks); at 5 stacks the ink blooms, detonating for 160% drop damage and clearing all stacks"
-	Burden: Drop direct damage -8%
+	Tooltip: Ink drop hits stack bleeding ink marks, detonating for massive damage at five stacks; single drop damage -8%
+	Origin:
+		'''
+		If a droplet of pitch-black ink accidentally spatters onto finished cloth in a dye-house, rubbing it with a damp rag only drives the pigment deeper along the fibers, rotting into a festering stain.
+		This talisman borrows that burrowing tenacity: ink marks bite layer upon layer into flesh wounds, piling heavier until the flesh bursts open.
+		'''
+	Power: "'Ink Bloom': ink drop hits leave bleeding ink marks (stacks up to 5, dealing continuous bleed damage based on stacks); at 5 stacks the ink blooms, detonating for 160% drop damage in an area and clearing all stacks."
+	Burden: Single ink drop damage reduced by 8%
 }
 
 KikasaTalismanLu: {
 	DisplayName: Sweet Dew Talisman
-	Tooltip: Ink drops occasionally condense dewdrops on hit, restoring life when gathered; ink rain tempo -6%
-	Origin: Morning foliage gathers dew, water vapor sweet to the taste. Gathering clean dewdrops amid grim rain is fortune in itself
-	Power: "'Sweet Dew': ink drops have a 12% chance on hit to condense a dewdrop, collecting it restores 2 life (at most 3 afield)"
-	Burden: Ink rain tempo -6%
+	Tooltip: Ink drops occasionally condense pure dewdrops on hit, restoring life when gathered; ink rain cadence slowed by 6%
+	Origin:
+		'''
+		Itinerant village doctors walking night roads always carried a bamboo phial, sweeping morning dew from grass tips to blend with dried herbs on weeping ulcers.
+		This talisman purges foul malice from black water, condensing a few beads of sweet herbal dew; though it slows the downpour, it preserves life in dire straits.
+		'''
+	Power: "'Sweet Dew': ink drops have a 12% chance on hit to condense a pure dewdrop on the ground, restoring 2 life when gathered (at most 3 afield)."
+	Burden: Ink rain cadence slowed by 6%
 }
 
 KikasaTalismanFei: {
 	DisplayName: Lingering Mist Talisman
-	Tooltip: Every third ink drop turns into mist, leaving a damaging slowing fog on impact; mist drop damage -30%
-	Origin: When water vapor peaks, falling rain condenses into clammy fog. Those caught within lose their bearing, chilled to the marrow
-	Power: "'Lingering Mist': every third ink drop becomes mist: leaves a fog lasting 2 seconds on impact, enemies within take continuous damage and lose 10% movement speed"
-	Burden: Mist drop direct damage -30%
+	Tooltip: Every third ink drop bursts into cold fog, damaging and slowing enemies within; mist drop direct damage -30%
+	Origin:
+		'''
+		At river ferries in late autumn, vapors hang thick as wet batting; three paces out, the mooring lines vanish into gray haze, forcing seasoned boatmen to drop anchor.
+		This talisman shatters every third drop into pervasive wet mist that refuses to disperse, blinding eyes and miring footsteps.
+		'''
+	Power: "'Lingering Mist': every third ink drop becomes a mist droplet: leaves a 2-second ink fog on hit, dealing continuous damage to enemies within and reducing their movement speed by 10%."
+	Burden: Mist droplet direct hit damage reduced by 30%
 }
 
 KikasaTalismanXian: {
 	DisplayName: Scattering Pearls Talisman
-	Tooltip: Heavy ink drops shatter into five leaping ink pearls on landing; puddle radius -15%
-	Origin: Droplets crashing onto blue slate shatter into scattering beads. Seemingly small, yet leaping continuously to strike anew
-	Power: "'Scattering Pearls': heavy ink drops shatter on landing into 5 fine ink pearls, each dealing 30% of the original drop's damage and leaping up to 2 additional times"
-	Burden: Formed puddle radius -15%
+	Tooltip: Heavy ink drops shatter into five bouncing pearls on impact; formed puddle radius -15%
+	Origin:
+		'''
+		Beneath old eaves sits a greenstone cistern; during downpours, water crashing from the roof rafters shatters into leaping spray, pitting the stone rim with countless tiny craters.
+		This talisman gathers heavy rains only to shatter them into bounding stars, ricocheting and burrowing across the ground.
+		'''
+	Power: "'Scattering Pearls': heavy ink drops shatter on ground impact into 5 fine ink pearls, each dealing 30% of original drop damage and bouncing up to 2 additional times along the terrain."
+	Burden: Formed puddle radius reduced by 15%
 }
 
 KikasaTalismanXi: {
 	DisplayName: Tide Talisman
-	Tooltip: Puddles surge rhythmically toward nearby foes; puddle duration -20%
-	Origin: Water flows toward hollows and ebbs with tides. Water holding tidal nature never waits idle, surging forth where currents lead
-	Power: "'Tide': puddles gain tidal cadence: breathing and swelling, new drops landing in existing puddles surge toward the nearest foe, the wave crest dealing 50% puddle damage"
-	Burden: Puddle lifespan -20%
+	Tooltip: Puddles hold tidal surges, actively lunging waves toward nearby foes on rain impacts; puddle duration -20%
+	Origin:
+		'''
+		Mud burrows on tidal flats seem dead by day; yet once the deep tide surges against the outer reefs, the silt in the ditches rolls like serpents, lunging at anything that moves.
+		This talisman infuses ocean undertows into surface puddles: no longer waiting for footsteps, falling rain spurs the dark water to snap forward.
+		'''
+	Power: "'Tide': puddles gain surging tidal cadence: when new drops land in existing puddles, the puddle surges a wave toward the nearest enemy, the crest dealing 50% puddle damage."
+	Burden: Puddle ground duration reduced by 20%
 }
 
 KikasaTalismanZi: {
 	DisplayName: Ink Soak Talisman
-	Tooltip: Enemies lingering in puddles suffer deepening vulnerability; puddle base damage -25%
-	Origin: Cloth immersed in dye vats drinks color the longer it rests. Things steeping in stagnant waters soften in their bones over time
-	Power: "'Ink Soak': enemies standing in puddles stack soak stacks (up to 8 stacks), each stack increasing the ink damage they take by 2.5%"
-	Burden: Puddle base damage -25%
+	Tooltip: Foes standing in puddles stack deepening damage vulnerability; puddle base continuous damage -25%
+	Origin:
+		'''
+		An old dyer presses raw hemp into the vat; the deeper it steeps, the tighter the color takes hold, until stiff cords become sodden and frail to the pull.
+		Creatures trapped in ink mire suffer the same fate: steep long enough, and the cold malice softens their bones, prying open every wound.
+		'''
+	Power: "'Ink Soak': enemies standing in puddles accumulate soak stacks (up to 8 stacks), each stack increasing all ink-type damage taken by 2.5%."
+	Burden: Puddle base continuous damage reduced by 25%
 }
 
 KikasaTalismanTing: {
 	DisplayName: Thunder Geyser Talisman
-	Tooltip: Ink geysers erupt into thunder spouts chaining lightning; inverted charge rate -13%
-	Origin: Stormy lakes by night are treacherous. Thunderbolts piercing the depths turn calm water into a churning sea of lightning
-	Power: "'Thunder Geyser': geyser eruption height +50%, chaining lightning to up to 2 nearby foes on hit (dealing 50% geyser damage each); uncharged cascades also have a 25% chance to stir a small thunder geyser on landing"
-	Burden: Inverted charge rate -13%
+	Tooltip: Ink geysers erupt higher and chain lightning to nearby foes; inverted charge rate -13%
+	Origin:
+		'''
+		Deep pools mid-river hide sunken thunder-veins; in howling storms as vapors rise, a rolling thunderclap striking black water blasts columns of lightning like boiling oil.
+		This talisman channels lightning through water: geysers erupt skyward from the canopy, dragging along chains of tearing thunder.
+		'''
+	Power: "'Thunder Geyser': ink geyser height increased by 50%, chaining lightning to up to 2 nearby foes on hit (dealing 50% geyser damage each); uncharged cascades also have a 25% chance to stir a small thunder geyser on landing."
+	Burden: Inverted charge rate reduced by 13%
 }
 
 KikasaTalismanHong: {
 	DisplayName: Rainbow Bridge Talisman
-	Tooltip: Torrent leaves a rainbow bridge granting speed and burning crossing foes; torrent width -10%
-	Origin: Clouds part after a storm, fleeting sunlight painting a rainbow across rising vapors. A transient phantom, gone in an instant
-	Power: "'Rainbow Bridge': after pouring a torrent, a rainbow bridge forms over the landing zone for 5 seconds: granting +10% movement speed and +10% summon damage underneath; enemies crossing the arc take 40% torrent damage every 0.5s"
-	Burden: Torrent width -10%
+	Tooltip: Torrent leaves an aerial rainbow bridge that buffs movement/summoning and burns crossing foes; torrent width -10%
+	Origin:
+		'''
+		Over rain-washed mountain passes where mist steams upward, a spectral arch of a bridge often hangs in the sky.
+		Seemingly fragile radiance, it is razor-sharp essence forged by storm and blazing sun: mortals borrow its light to tread lightly, while demons walking through enter an inferno.
+		'''
+	Power: "'Rainbow Bridge': after pouring a torrent, an aerial rainbow bridge forms over the landing zone for 5s: granting +10% movement speed and +10% summon damage underneath; enemies crossing the arc suffer 40% torrent damage every 0.5s."
+	Burden: Torrent hitbox width narrowed by 10%
 }
 
 KikasaTalismanHang: {
 	DisplayName: Night Miasma Talisman
-	Tooltip: Night ink damage increased and puddles steam up miasma plumes; day ink damage -5%
-	Origin: Old folk say night vapors rising from dead waters wound deepest. Cold humidity carrying a deadly chill leaves lungs aching
-	Power: "'Night Miasma': ink damage +15% at night, puddles continuously steam up miasma plumes (dealing 30% drop damage every 0.5s)"
-	Burden: Ink damage -5% during daytime
+	Tooltip: Greatly increases ink damage at night and steams up toxic miasma plumes from puddles; day ink damage -5%
+	Origin:
+		'''
+		Deep in swamplands, marshes seal themselves at nightfall; shallow pools that showed bare mud by day bubble with foul black froth past midnight.
+		Old foragers would rather shiver on tree branches than set foot on soil; the cold miasma rising from night waters corrodes human lungs like rust.
+		'''
+	Power: "'Night Miasma': all ink damage increased by 15% at night, and puddles continuously steam up toxic miasma plumes (dealing 30% drop damage every 0.5s)."
+	Burden: All ink damage reduced by 5% during daytime
 }
 
 KikasaTalismanBao: {
 	DisplayName: Hailstone Talisman
-	Tooltip: Every fourth beat turns all drops into armor-shattering heavy hailstones; regular drop damage -8%
-	Origin: Cold rain crystallizes, falling swift through clouds. Hail crashes through roof tiles and vats, stripped of all rain's gentleness
-	Power: "'Hailstone': every fourth beat guarantees a full volley, all drops turning into heavy hailstones: size +60%, damage +120%, tearing enemy defense and knocking back heavily, leaves no puddles"
-	Burden: Regular beat drop direct damage -8%
+	Tooltip: Every fourth beat fires heavy armor-shattering hailstones with doubled damage and strong knockback; regular drop damage -8%
+	Origin:
+		'''
+		In sweltering early summer, when skies turn black as pitch and grinding thunder rumbles like millstones overhead, the frozen core of heaven is about to fall.
+		Fist-sized stones crashing from thousands of feet smash roof tiles and cattle to splinters; the talisman gathers bitter cold, pounding holes through flesh and bone.
+		'''
+	Power: "'Hailstone': every fourth beat guarantees a full volley, all drops turning into heavy hailstones: size +60%, damage +120%, tearing enemy defense with heavy knockback; hailstones do not form puddles on impact."
+	Burden: Standard ink drop damage outside hail beats reduced by 8%
 }
 
 KikasaTalismanShu: {
 	DisplayName: Timely Rain Talisman
-	Tooltip: Rain turns dense and healing for three seconds after taking damage; regular rain interval +5%
-	Origin: Common tales call timely aid 'timely rain'. If rain arrives right when danger looms, it can truly turn aside a catastrophe
-	Power: "'Timely Rain': for 3 seconds after taking damage, rain interval is halved and rain turns golden, each hit restoring 1 life (12-second cooldown)"
-	Burden: Regular rain interval +5%
+	Tooltip: Taking damage accelerates rain to a torrent for three seconds, healing on hit; regular rain interval +5%
+	Origin:
+		'''
+		When parched plains yield no grain, a sudden cloudburst saves a county from ruin.
+		Wandering umbrella peddlers stitch life-preserving wards into the deepest ribs; quiet in peacetime, the moment blood is drawn, golden rain pours from the canopy to pull a soul back from the brink.
+		'''
+	Power: "'Timely Rain': for 3 seconds after taking damage, ink rain interval is halved and rain turns golden, each hit restoring 1 life to the wielder (12-second cooldown)."
+	Burden: Standard rain firing interval extended by 5%
 }
 
 KikasaTalismanLong: {
 	DisplayName: Scouring Falls Talisman
-	Tooltip: Torrent becomes a raging deluge pushing foes away; torrent duration -20%
-	Origin: Mountain flash floods tear downhill carrying mud and stone, unstoppable in their fury. No host can keep footing against such a rush
-	Power: "'Scouring Falls': torrent turns into a raging rush: continuously pushing enemies along the fall line, source direct hit knockback +35%"
-	Burden: Torrent duration -20%
+	Tooltip: Torrent turns into a raging rush that continuously repels foes; torrent duration -20%
+	Origin:
+		'''
+		Through narrow stone gorges where two cliffs meet, summer flash floods crashing down with boulders and felled trees shake the precipices; the head of water snaps bridges and heaves rocks.
+		Inverted, the canopy pours like a ruptured dam, driving even the most stubborn beasts away before its foaming crest.
+		'''
+	Power: "'Scouring Falls': torrent converts into a raging surge: continuously pushing enemies along the flow line, direct hits at the source knockback +35%."
+	Burden: Torrent duration reduced by 20%
 }
 
 KikasaTalismanShuang: {
 	DisplayName: Frost Mirror Talisman
-	Tooltip: Puddles freeze into frost mirrors, treading slows foes and drop impacts shatter mirrors into ice spikes; puddles cannot merge
-	Origin: After late autumn frost, standing water freezes overnight into brittle mirror-ice. Smooth as glass, hiding peril beneath
-	Power: "'Frost Mirror': heavy drops freeze into frost puddles on landing: no longer searing enemies, targets entering frost mirrors lose 40% movement speed; drops striking the mirror shatter it instantly, dealing burst damage scaling with remaining life and raising ice spikes"
-	Burden: Frost mirrors remain separate and cannot merge together to extend duration
+	Tooltip: Puddles freeze into slowing frost mirrors; heavy drops shatter mirrors to erupt ice spikes; puddles cannot merge
+	Origin:
+		'''
+		On midwinter mornings, shallow mud pools freeze into brittle sheets of clear ice; smooth as glass, footsteps slip and slide.
+		When a heavy weight crashes through, jagged shards bite like daggers into flesh; ground frost turns to glass, shattered mirrors spit fangs.
+		'''
+	Power: "'Frost Mirror': heavy drops freeze into thin frost mirrors on landing: no longer dealing burn damage, enemies treading mirrors lose 40% movement speed; subsequent drops striking mirrors shatter them instantly, dealing burst damage scaling with remaining lifespan and raising piercing ice spikes."
+	Burden: Frost mirrors remain separate; puddles cannot merge through falling rain to extend duration
 }
 
 KikasaTalismanZha: {
 	DisplayName: Rain Drum Talisman
-	Tooltip: Hitting seven consecutive beats empowers the eighth beat to deal triple damage; rain pauses briefly after the heavy strike
-	Origin: Storm rain pounding on taut oilpaper drums in steady rhythm. When the tempo never wavers, the final strike reveals its truth
-	Power: "'Rain Drum': seven drum marks gather along the rim: landing at least one drop on each of seven consecutive beats empowers all drops on the eighth beat to deal 3x damage; missing a beat resets the count"
-	Burden: After triggering the heavy drum strike, the next beat pauses rain
+	Tooltip: Landing hits on seven consecutive beats empowers the eighth beat to deal triple damage; rain pauses briefly after the heavy strike
+	Origin:
+		'''
+		Old fishermen drum their skiffs to herd shoals, striking the gunwales seven times without breaking rhythm as currents pulse beneath.
+		At the eighth hollow drumbeat, the fish leap from the river; this talisman tunes rain to a drumming rite, seven beats to bind the spirit, the eighth to shatter stone.
+		'''
+	Power: "'Rain Drum': seven drum marks gather along the rim: landing at least one drop on each of seven consecutive beats empowers all drops on the eighth beat to deal 3x damage; missing a beat resets the count."
+	Burden: After triggering the eighth-beat drum burst, rain pauses briefly for one beat
 }
 
 KikasaTalismanNi: {
 	DisplayName: Tricolor Talisman
-	Tooltip: Rain drops cycle through three attributes: red burst, blue slow, purple erosion; drop base damage -5%
-	Origin: Paranormal waters shift unpredictably. Taking the fury of red, sluggishness of blue, and corrosion of purple, their cycle holds varied purpose
-	Power: "'Tricolor': rain drops cycle through three colors: red drops trigger small bursts on hit (40% splash damage), blue drops slow enemies by 15%, purple drops increase ink damage taken by 5%"
-	Burden: Drop base damage -5%
+	Tooltip: Drops cycle through three aspects: red burst, blue slow, purple erosion; drop base damage -5%
+	Origin:
+		'''
+		Waters in ancient well-springs shift with the seasons: clear water numbs sinew, reddish water boils like vinegar, deep purple water dissolves the soul like venom.
+		The talismansmith drew a gourd from each of the three springs to grind ink, setting their currents into a mutual cycle of burst, bind, and rot.
+		'''
+	Power: "'Tricolor': rain drops cycle through three aspects: red drops trigger 40% area burst splash; blue drops slow enemies by 15%; purple drops increase all ink-type damage taken by 5%."
+	Burden: Drop base damage reduced by 5%
 }
 
 KikasaTalismanWen: {
 	DisplayName: Cloud Script Talisman
-	Tooltip: Talisman stars on the rim charge on hits, launching homing water arrows at full charge; rain interval +8%
-	Origin: Ancient scrolls record cloud seal-script. Though mortals cannot grasp its full meaning, tracing its lines into talismans breathes vitality into water
-	Power: "'Cloud Script': three script-stars orbit the rim, charging on drop hits; when fully charged the active star launches a homing ink arrow dealing 120% drop damage"
-	Burden: Rain interval +8%
+	Tooltip: Talisman stars on the rim charge on hits, launching homing ink arrows at full charge; rain interval +8%
+	Origin:
+		'''
+		Wind-and-thunder seal-scripts chiseled into ruined temple steles wind like clouds, indecipherable to mortal eyes.
+		An old mason traced rubbings onto oiled umbrella paper; as ink flowed through the glyphs, star-gleams clustered along the rim, condensing water into homing arrows of vengeance.
+		'''
+	Power: "'Cloud Script': three script-stars orbit the rim, charging on drop hits; when fully charged the active star launches a homing ink arrow dealing 120% drop damage."
+	Burden: Ink rain firing interval extended by 8%
 }
 
 KikasaTalismanPo: {
 	DisplayName: Moonsoul Talisman
-	Tooltip: Gathers moonlight while open at night, releasing a pale moonfall torrent at full charge; completely ineffective by day
-	Origin: In the dead of night, moonlight spills across deep pools like frost on water. Gathering this cool light under the canopy unleashes an icy cascade
-	Power: "'Moonsoul': landing hits while open at night accumulates lunar phases; when full, the next inverted pour becomes a pale moonfall: torrent area +50%, hits inflict moonbursts (35% splash damage)"
-	Burden: Completely ineffective during daytime
+	Tooltip: Gathers moonlight while open at night, full charge turns the torrent into a vast pale moonfall; completely ineffective by day
+	Origin:
+		'''
+		In windless mountain tarns under a frozen midnight moon, water glistens with pale phosphorescence, cold to the bone as fish sink to the silt, motionless.
+		This talisman gathers that midnight chill into the canopy; unleashed, white light bursts like a blizzard of frost-daggers, yet vanishes before the morning sun.
+		'''
+	Power: "'Moonsoul': landing hits while open at night accumulates lunar phases; when full, the next inverted pour becomes a pale moonfall: torrent area +50%, hits inflict moonbursts with 35% area splash damage."
+	Burden: Completely ineffective during daytime, granting no benefits
 }
 
 KikasaTalismanXiao: {
 	DisplayName: Nine Heavens Talisman
 	Tooltip: Canopy ascends to great heights, high-altitude drops gain immense speed and damage; rain interval +10%
-	Origin: Eaves-drips only ripple the surface, but rain falling from nine heavens shatters stone. The higher the origin, the fiercer the fall
-	Power: "'Nine Heavens': umbrella height is doubled, drops fall vertically from great heights: terminal velocity +40%, direct hit damage +25%, shadow rings telegraph impacts on the ground beforehand"
-	Burden: Rain interval +10%
+	Origin:
+		'''
+		From sheer mountain precipices, cascades plummet thousands of feet into the gorge, roaring like thunder and drilling clean through granite boulders.
+		Lifting the umbrella's stance into the nine heavens, rain falls under crushing gravity, carrying the momentum to split cliffs and smash stone.
+		'''
+	Power: "'Nine Heavens': umbrella height is doubled, drops fall vertically from great heights: terminal velocity +40%, direct hit damage +25%, shadow rings telegraph impacts on the ground beforehand."
+	Burden: Ink rain firing interval extended by 10%
 }
 
 KikasaTalismanMei: {
 	DisplayName: Mold Rain Talisman
-	Tooltip: Ink drops inflict mold rot, infested foes release infectious spore clouds upon death; drop direct damage -10%
-	Origin: Continuous plum rains leave Jiangnan damp and sunless, mold blossoming across walls and trunks. Once moisture takes on decay, it clings like poison
-	Power: "'Mold Rain': drops inflict 'Mold Rot' on hit (stacks up to 10, dealing continuous damage based on stacks); afflicted enemies dying burst into spore clouds, passing half their stacks to nearby foes with light damage"
-	Burden: Drop direct damage -10%
+	Tooltip: Ink drops inflict stacking mold rot, dying victims burst into contagious spore clouds; drop direct damage -10%
+	Origin:
+		'''
+		In sodden rainy months, trampled straw sandals sprout green mold within two nights, reeking with sweet, suffocating rot.
+		Sealing that putrid damp into the talisman core, every drop spreads bone-softening mildew; when the host breathes their last, spores burst out to infect all nearby.
+		'''
+	Power: "'Mold Rain': drops inflict 'Mold Rot' on hit (stacks up to 10, dealing continuous damage based on stacks); afflicted enemies dying burst into spore clouds, passing half their stacks to nearby foes with light area damage."
+	Burden: Drop direct hit damage reduced by 10%
 }
 
 KikasaTalismanPi: {
 	DisplayName: Heavenly Thunder Talisman
-	Tooltip: Short window after torrent pour allows drops to summon direct lightning strikes; geyser burst damage -20%
-	Origin: Standing waters invite lightning under steamy swamplands. When water reaches its peak, thunder descends along the flow, piercing cloud and marsh
-	Power: "'Heavenly Thunder': pouring a torrent opens a 10-second lightning window: drops have a 20% chance on hit to call down direct lightning strikes, dealing 180% piercing damage along the bolt"
-	Burden: Geyser burst damage -20%
+	Tooltip: Short window after torrent pour allows drops to summon piercing lightning; geyser burst damage -20%
+	Origin:
+		'''
+		When summer storms burst reservoir dykes, water floods three feet deep under a lid of black clouds, welcoming lightning dragons that strike water and ignite fire.
+		The torrent paves a watercourse; as yin and yang collide in the clouds, every raindrop summons lightning down like a javelin.
+		'''
+	Power: "'Heavenly Thunder': pouring a torrent opens a 10-second lightning window: drops have a 20% chance on hit to call down direct lightning strikes, dealing 180% piercing damage along the bolt."
+	Burden: Ink geyser burst damage reduced by 20%
 }
 
 KikasaTalismanXia: {
 	DisplayName: Twilight Blaze Talisman
 	Tooltip: Ink damage surges at dawn and dusk with burning twilight flames; damage reduced at noon and midnight by 6%
-	Origin: At daybreak and dusk, distant clouds burn like wildfire. Bringing this twilight gleam into water sets even the coldest rain ablaze
-	Power: "'Twilight Blaze': within an hour and a half around sunrise and sunset, ink damage +18%, drops ignite 'Glowflame' for brief burning, dyeing the entire rain kit golden-orange"
-	Burden: Ink damage -6% at noon and midnight
+	Origin:
+		'''
+		At dawn and dusk when light and night trade hands, the horizon blazes with blood-red clouds as water and fire tangle in the heavens.
+		Drawing that fleeting half-incense of dying sunlight into the inkpot, even icy rain catches fire like crimson twilight.
+		'''
+	Power: "'Twilight Blaze': within 1.5 hours around sunrise and sunset, all ink damage +18%, drops ignite 'Glowflame' for continuous burning, and the entire rain visual turns golden-orange."
+	Burden: All ink damage reduced by 6% at noon and midnight
 }
 
 KikasaTalismanJi: {
 	DisplayName: Clear Skies Talisman
-	Tooltip: Holding umbrella gathers clear-sky light, recalling crashes down a ray of daylight at the cursor; ink damage -8% while open
-	Origin: However dense the storm, clouds must eventually part. The shaft of sunlight piercing through when closing the canopy is the most dazzling of all
-	Power: "'Clearing': landing hits while open accumulates clear-sky intent; the instant the umbrella closes, a searing beam of daylight crashes onto the cursor, damage scaling with gathered charge"
-	Burden: All ink damage -8% while the umbrella remains open
+	Tooltip: Holding umbrella gathers solar warmth, closing crashes down a searing ray of daylight; ink damage -8% while open
+	Origin:
+		'''
+		After a tempest when dark clouds hang low, a golden rift suddenly cracks open in the cloud heart, pouring molten sunlight onto the earth with rolling heat.
+		This talisman works in reverse: cold rain restrains solar fury while open; the instant the canopy folds shut, the clouds part and daylight crashes down like a pillar of fire.
+		'''
+	Power: "'Clearing': landing hits while open accumulates clear-sky vigor; the instant the umbrella closes, clouds part to crash a searing beam of daylight at the cursor, damage scaling with charge."
+	Burden: All ink damage reduced by 8% while the umbrella remains open
 }
 
 KikasaTalismanYu: {
 	DisplayName: Rain Dance Talisman
-	Tooltip: Hits accumulate ritual points triggering Great Rain Dance with torrential downpour and geysers; regular ink damage -10%
-	Origin: During ancient droughts, shamans danced to drums upon altars praying for rain. The umbrella serves as medium, the deluge answering as heaven's echo
-	Power: "'Great Rite': drop hits accumulate ritual points, full charge entering a 10-second 'Great Rite': rain interval halved, drop damage +15%, all drops pool, geysers fully unlocked; ending with three geysers erupting beneath the canopy"
-	Burden: Ink damage -10% outside the Great Rite
+	Tooltip: Continuous hits trigger the 'Great Rite' with torrential rain and geysers; regular ink damage -10% outside the rite
+	Origin:
+		'''
+		In severe droughts when earth cracked for a thousand leagues, ancient shamans built three-tiered altars, beating alligator-skin drums with disheveled hair to offer umbrellas as vessels for rain.
+		When the ritual count was complete, thunder exploded and black torrents cascaded like rivers overturned.
+		This is the consummate scroll of rain-summoning: entering the Great Rite, deluges and geysers erupt as one.
+		'''
+	Power: "'Great Rite': drop hits accumulate ritual points, full charge automatically entering a 10-second 'Great Rite': rain interval halved, drop damage +15%, all drops pool, geysers fully unlocked; ending with three geysers erupting beneath the canopy."
+	Burden: All ink damage reduced by 10% outside the Great Rite
 }

@@ -1,73 +1,105 @@
 LanternBoy: {
-	DisplayName: Enfant à la lanterne
-	Origin: Ceux qui prennent le chemin de montagne la nuit disent qu'au bout de la route une lampe attend souvent, sans personne dessous. Un téméraire l'a regardée un peu trop longtemps. Quand il a repris ses esprits, c'est de l'intérieur de la lampe qu'il regardait
-	Power: 「Guider」 Trois lanternes spectrales orbitent autour du porteur ; leurs ombres reprennent en décalé les tailles ordinaires d'Onikiri, pour soixante pour cent de leur puissance au total.
-	DeathReason: "{0} est devenu celui de la quatrième lampe"
+	DisplayName: L'enfant au falot
+	Origin:
+		'''
+		Sur les sentiers de montagne obscurs flotte souvent une lanterne de papier blanc blafard, oscillant au-dessus d'une paire de pieds nus d'enfant qui ne touchent jamais la terre.
+		Tout marcheur nocturne fixant la flamme plus de trois souffles sent ses yeux scellés comme par de la cire brûlante, son âme arrachée et aspirée dans la peau de papier.
+		Trois âmes suppliciées y sont déjà enfermées ; là où tombe sa lueur spectrale, les ombres de la lanterne dansent avec la lame et frappent à la place du maître.
+		'''
+	Power: "「Lueur directrice」Trois lanternes spectrales gravitent autour de vous ; leur clarté projette des ombres qui répliquent vos coups ordinaires à contretemps à soixante pour cent de leur puissance d'origine."
+	DeathReason: "{0} a été guidé au cœur de la quatrième lanterne de papier blanc"
 }
 
 CrimsonBride: {
-	DisplayName: Mariée écarlate
-	Origin: Devant une porte, un palanquin nuptial s'est arrêté sans porteur, et y est resté sept nuits. La huitième, quelqu'un a soulevé le voile. Depuis, ce palanquin reconnaît une nouvelle mariée
-	Power: 「Cortège nuptial」 Appuyez sur la touche 「Auto-redémarrage」 : le palanquin vient en suivant le sang, et conduit le porteur du sabre dans une salle de noces vide ; à l'heure du partage des coupes, blessures et états sont tous redémarrés.
-	DeathReason: "{0} est monté dans ce palanquin"
+	DisplayName: La promise pourpre
+	Origin:
+		'''
+		Devant une demeure abandonnée dans la montagne reposait un grand palanquin écarlate à huit porteurs sans âme qui vive — seulement des effigies de papier blafard aux sourires figés.
+		Dès que le rideau s'entrebâillait, de stridents fifres nuptiaux résonnaient dans les bois ; quiconque voyait son heure de naissance désignée était contraint de convoler dans un temple silencieux et mort.
+		Lorsqu'un bretteur aux abois appelle ce palanquin, il surgit à travers le néant sur une piste de sang pour l'accueillir dans une chapelle funèbre tendue de deuil blanc et de soie rouge.
+		Au toast nuptial, toutes les plaies mortelles se dissolvent dans le sanctuaire, changeant le trépas en vie.
+		'''
+	Power: "「Le cortège」Appuyez sur la touche Réinitialiser et le grand palanquin pourpre surgira au son d'airs funèbres pour accueillir le maître dans un temple sanglant et muet ; au toast nuptial, toutes les blessures et altérations sont effacées et réinitialisées."
+	DeathReason: "{0} est monté dans le palanquin pourpre et a salué le ciel et la terre"
 }
 
 ScapeGhost: {
-	DisplayName: Fantôme substitut
-	Origin: De son vivant, il n'a pas laissé de nom. Il se souvient seulement d'être mort à la place des autres, trop de fois pour savoir laquelle était la sienne. Le jour où on l'a inscrit au registre, sa date de naissance a été écrite à côté de ton nom. Désormais, tes morts, c'est lui qui les prend
-	Power: 「Substitution」 À l'instant où la mort arrive, il arrache une vie au loin et enfonce ta mort dans ce corps
-	DeathReason: "{0} est mort à sa place, cette fois"
+	DisplayName: Le spectre expiatoire
+	Origin:
+		'''
+		Un pantin de paille grossier entouré de cheveux et de dates de naissance, balafré de milliers d'entailles mortelles à la poitrine et d'égorgements au cou.
+		De son vivant, il est mort d'innombrables fois à la place d'autrui, jusqu'à voir son corps tomber en lambeaux et oublier quelle mort était la sienne.
+		Le jour où il est inscrit au registre, votre augure de mort est lié d'une cordelette à son cou de paille.
+		À l'instant où le trépas survient, des mains glaciales surgissent de l'ombre pour transférer votre mort dans la chair d'une créature vivante proche.
+		'''
+	Power: "「Transfert de malheur」À l'instant d'une catastrophe fatale, transfère de force votre mort sur une créature vivante lointaine, faisant périr son corps à votre place pour vous sauver."
+	DeathReason: "{0} est devenu l'âme morte derrière le leurre de paille"
 }
 
 HeadlessShade: {
-	DisplayName: Ombre sans tête
-	Origin: Une nuit où les lampes vacillaient, quelqu'un a baissé les yeux et vu son ombre bouger toute seule. En y regardant de plus près, au-dessus des épaules, il n'y avait plus rien. Ce qui avait perdu sa tête s'était logé dans l'ombre d'un vivant
-	Power: 「Démembrement」 Il se tient tapi derrière toi. Dès qu'il sent un vivant, il s'élance et déchire le corps en plusieurs morceaux
-	DeathReason: "{0} a été déchiré en morceaux par sa propre ombre"
+	DisplayName: L'ombre sans tête
+	Origin:
+		'''
+		Sous la faible clarté des lampes à huile de minuit, quelqu'un baissa les yeux et vit sa propre ombre ramper sur le sol — et au-dessus des épaules, il n'y avait absolument rien.
+		Cette horreur décapitée rôde depuis des ères dans les angles morts, consumée par le désir fou de recomposer un corps vivant complet.
+		Elle s'est cousue à l'ombre sous vos pas ; flairant la vie ennemie, elle jaillit du sol pour déchiqueter la proie en lambeaux avec une brutalité sauvage.
+		'''
+	Power: "「Démembrement」Tapi dans l'ombre sous vos pas, il jaillit de terre dès qu'il flaire une proie vivante pour mettre sa chair en pièces avec une rage féroce."
+	DeathReason: "{0} a eu la tête arrachée net par l'ombre sans tête"
 }
 
 GhostHand: {
-	DisplayName: Main calcinée
-	Origin: Un bras calciné, desséché. Brûlé à ce point, et les cinq doigts serrent encore. Personne ne sait à qui il appartenait. On sait seulement que dès qu'il voit un vivant, il attrape
-	Power: 「Poigne」 La main desséchée sort dans ton dos, pince la proie, l'immobilise et l'écrase encore et encore ; quand le gibier est nombreux, d'autres mains apparaissent. Même une masse colossale n'échappe pas à ces cinq doigts
-	DeathReason: "{0} a été enserré dans le mur"
+	DisplayName: La main calcinée
+	Origin:
+		'''
+		Un bras carbonisé extrait des cendres de bûchers funéraires, dont les cinq doigts crispés restent figés dans une étreinte vorace et implacable.
+		Nul ne sait dans quel brasier ce corps a péri, mais la rage étouffante de son étreinte demeure vivace au-delà du tombeau.
+		Dès qu'elle perçoit la tiédeur d'un souffle vivant, la griffe noire jaillit du néant pour broyer la gorge de la proie et concasser ses os en poudre.
+		'''
+	Power: "「Étreinte brise-os」Un bras spectral calciné surgit du néant pour saisir la proie à la gorge, étouffant ses mouvements ; face aux foules, d'autres mains surgissent pour broyer les ennemis entre leurs doigts."
+	DeathReason: "{0} a eu tous les os réduits en poussière par la main calcinée"
 }
 
 GhostRain: {
-	DisplayName: Pluie spectrale
-	Origin: Tous ceux qui ont pris cette pluie disent la même chose : en levant la tête, ce n'étaient pas des nuages, mais des visages pressés les uns sur les autres. Les gouttes ne font pas mal. Seulement, chacune a l'air de te réclamer
-	Power: 「Pluie spectrale」 Une fois le Spectre employé, tant que tu tiens le sabre, le voile sombre demeure et la pluie spectrale tombe ; les vivants pris dans le rideau sont lentement rongés, ou tirés dans la pluie
-	DeathReason: "{0} a été réclamé par la pluie"
+	DisplayName: La pluie spectrale
+	Origin:
+		'''
+		Une nuée funeste issue d'anciens parchemins qui ne verse point d'eau bienfaisante, mais un flot noir et glacé empestant la vase et le pourrissement.
+		Ceux qui lèvent les yeux découvrent avec horreur des rangées de visages cadavériques aux yeux clos qui fixent les vivants vers le bas.
+		La pluie noire tombe sans douleur physique, mais des myriades de sangsues d'outre-tombe dévorent la moelle et l'âme ; quiconque est trempé trois respirations durant fond comme cire et sombre dans la fange.
+		'''
+	Power: "「Voile d'ombre」Tenir la lame invoque une voûte oppressive de nuages noirs et une pluie torrentielle ; les créatures à l'intérieur voient leur chair se dissoudre en continu, offrant une cible facile aux autres spectres."
+	DeathReason: "{0} a été dissous par la pluie noire et entraîné dans la boue"
 }
 
 System: {
-	ScapeGhostActivated: "{0} est devenu le substitut"
+	ScapeGhostActivated: "{0} est devenu le bouc émissaire"
 	ScapeGhostUnknownTarget: une créature vivante
-	ScapeGhostDeathBroadcast: "{0} est devenu le substitut de {1}, {2}"
-	ErosionCrawl: Quelque chose rampe sous la peau
-	ErosionStain: Un bleu de cadavre monte aux doigts
-	ErosionMirror: Ce qu'il y a dans le miroir ne te ressemble plus tout à fait
-	RevivalStir: Le nom sur le talisman a bougé
-	RevivalRise: Il te regarde à travers le papier
-	RevivalBrink: Le talisman de sceau brûle trop pour qu'on le tienne
-	RevivalHudBrink: Encore une utilisation, et il se réveille
+	ScapeGhostDeathBroadcast: "{0} est devenu le bouc émissaire de {1}, {2}"
+	ErosionCrawl: Des vers de fosse glacés semblent ramper sous votre peau
+	ErosionStain: Vos doigts se couvrent de marbrures cadavériques indélébiles
+	ErosionMirror: Le visage dans le miroir de bronze ne vous ressemble presque plus
+	RevivalStir: L'inscription natale de cinabre sur le talisman a tressailli
+	RevivalRise: Cette chose vous fixe intensément à travers le papier jaune
+	RevivalBrink: Le talisman brûle comme un fer rouge, vous pouvez à peine le retenir
+	RevivalHudBrink: L'horreur est sur le point d'éclater ; un pas de plus et elle s'empare de votre corps
 }
 
 Coven: {
-	RainHandName: Main dans la pluie
-	RainHandNote: Les proies sous la pluie ne sont plus hors de portée : la main desséchée descend de la ligne de pluie au-dessus d'elles. Jusqu'à cinq mains peuvent sortir à la fois, et l'écrasement s'alourdit avec l'averse
-	RainShadeName: Tranchant mouillé
-	RainShadeNote: Tant que la plaie laissée par l'ombre n'est pas refermée, chaque vague d'érosion pluviale sur cette cible est doublée
-	HandShadeName: Plaqué, puis tranché
-	HandShadeNote: L'ombre se jette d'abord sur la proie déjà enserrée par la main desséchée : sa vitesse est déjà à zéro, ce coup-là ne rate pas
-	LanternHandName: Mis en lumière
-	LanternHandNote: Une proie que la lampe a vue, la main desséchée la trouve même à travers un obstacle ; quand les lames des trois lanternes touchent une cible déjà enserrée, elles frappent soixante pour cent plus fort
-	BrideName: Salle de noces
-	BrideNote: Les proies prises dans la salle à l'heure du partage des coupes gardent leurs autres marques, qui cessent de s'estomper jusqu'à ce que la salle se dissolve
-	ScapeName: Encaisser le coup
-	ScapeNote: Chaque mort du substitut fait reculer d'un cran le Réveil des autres Spectres de la même roue
-	CallName: Appel mutuel
-	CallNote: Les Spectres d'une même roue se réveillent entre eux : employer l'un d'eux fait un peu monter le Réveil des autres. Même entre deux qui n'ont pas de réaction propre
-	BurstName: Rupture des trois sceaux
-	BurstNote: Quand trois marques différentes se rejoignent sur une même proie, elles explosent ensemble en un seul coup, et chaque Spectre impliqué paie un Réveil
+	RainHandName: Étreinte sous l'averse
+	RainHandNote: Les proies trempées par la pluie noire sont à portée quelle que soit la distance ; la main calcinée surgit droit des filets d'eau. Jusqu'à cinq mains peuvent agir de concert, et les dégâts d'écrasement doublent avec l'intensité de l'orage
+	RainShadeName: Lame humide
+	RainShadeNote: Tant que la plaie ouverte par l'ombre reste béante, chaque impulsion de corrosion de pluie inflige des dégâts doublés à la cible
+	HandShadeName: Clouer et fendre
+	HandShadeNote: L'ombre sans tête fonce en priorité sur les proies empoignées par la main calcinée ; la cible étant immobilisée, le coup de grâce ne rate jamais
+	LanternHandName: Illumination
+	LanternHandNote: Les proies révélées par les lanternes spectrales peuvent être pourchassées par la main calcinée même à travers les murs et les rocs ; les coups de lanterne infligent 60% de dégâts supplémentaires aux cibles agrippées
+	BrideName: Chambre nuptiale
+	BrideNote: Les êtres vivants attirés dans la chambre nuptiale pendant le toast cessent de perdre leurs autres marques spectrales jusqu'à ce que la chambre se dissipe
+	ScapeName: Conjuration du sort
+	ScapeNote: Lorsque le pantin de paille périt à votre place, l'éveil de tous les autres esprits du plateau recule d'un cran
+	CallName: Appel des ombres
+	CallNote: Les spectres d'un même plateau se réveillent mutuellement : commander à l'un rapproche légèrement l'éveil des autres ; même les paires sans affinité directe vibrent d'une sombre faim
+	BurstName: Triple rupture
+	BurstNote: Rassembler trois marques distinctes sur une même cible fait détoner les malédictions de concert pour de lourds dégâts, augmentant l'éveil de chaque esprit impliqué
 }

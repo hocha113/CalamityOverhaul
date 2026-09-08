@@ -8,6 +8,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -104,6 +105,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private int lastDetailChars = -1;
         private float detailInkAge = 60f;
 
+        //====细节板正文滚动:来历赋力全文照录,读不完的往下滚====
+        private float detailScroll;
+        private float detailScrollTarget;
+        private float detailMaxScroll;
+
         //====低频异象====
         private Vector2 lastMouse;
         private int idleTimer;
@@ -140,6 +146,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             petalTimer = 0;
             particles.Clear();
             selectedIndex = -1;
+            ResetDetailScroll();
             int equippedIndex = FindFirstEquipped();
             if (equippedIndex >= 0) {
                 SelectEntry(equippedIndex, silent: true);
@@ -200,10 +207,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 typeTimer = 0f;
                 lastDetailChars = -1;
                 detailInkAge = 60f;
+                ResetDetailScroll();
                 if (!silent) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.5f });
                 }
             }
+        }
+
+        /// <summary>换了一只就从头读起</summary>
+        private void ResetDetailScroll() {
+            detailScroll = 0f;
+            detailScrollTarget = 0f;
+            detailMaxScroll = 0f;
         }
 
         internal OniGhostEntry SelectedEntry {
@@ -241,7 +256,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     return;
                 }
                 player.mouseInterface = true;
+                //两把锁都要,且都必须每帧常驻(UI 跑在绘制阶段,滚轮增量帧首已被 Player.Update 吃掉,
+                //等检测到 delta 再锁就晚一帧):SuppressWeaponSwitch 拦滚轮换武器,
+                //LockVanillaMouseScroll 拦背包开着时的配方栏滚动
                 UIInputGuard.SuppressWeaponSwitch();
+                PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/OniRegister");
                 if (!player.active || player.dead) {
                     Close();
                 }
@@ -272,6 +291,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             UpdateAmbient(a);
             UpdateAnomalies();
             UpdateDetailTypewriter();
+            UpdateDetailScroll();
         }
 
         private void LayoutCompute() {
@@ -361,6 +381,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 closeTagRope.Nudge(Main.rand.NextFloat(0.8f, 1.5f) * (Main.rand.NextBool() ? 1f : -1f));
             }
             closeTagWasHovered = tagHovered;
+
+            //细节板是本屏唯一能滚的地方,指针在哪都受理,免得对着名录空滚
+            if (inputAvailable && detailMaxScroll > 0.5f) {
+                int wheel = PlayerInput.ScrollWheelDeltaForUI;
+                if (wheel != 0) {
+                    detailScrollTarget = MathHelper.Clamp(detailScrollTarget - wheel * 0.32f, 0f, detailMaxScroll);
+                }
+            }
 
             if (inputAvailable && keyLeftPressState == KeyPressState.Pressed) {
                 if (tagHovered) {
@@ -472,8 +500,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        /// <summary>按当前细节板实测正文全高,钳出滚动上限,再把滚动量缓动到位</summary>
+        private void UpdateDetailScroll() {
+            OniGhostEntry sel = SelectedEntry;
+            if (sel == null) {
+                ResetDetailScroll();
+                return;
+            }
+            Rectangle body = OniRegisterRenderer.DetailBodyRect(detailRect, sel);
+            float contentH = OniRegisterRenderer.MeasureDetailBody(FontAssets.MouseText.Value, sel, body);
+            detailMaxScroll = Math.Max(0f, contentH - body.Height);
+            detailScrollTarget = MathHelper.Clamp(detailScrollTarget, 0f, detailMaxScroll);
+            detailScroll = MathHelper.Lerp(detailScroll, detailScrollTarget, 0.25f);
+            if (Math.Abs(detailScrollTarget - detailScroll) < 0.4f) {
+                detailScroll = detailScrollTarget;
+            }
+        }
+
         /// <summary>细节板正文可见字符数</summary>
         internal int DetailVisibleChars => Math.Max(0, (int)(typeTimer / 1.4f));
+        /// <summary>细节板正文已滚过的高度</summary>
+        internal float DetailScroll => detailScroll;
         /// <summary>细节板湿墨强度 0~1</summary>
         internal float DetailInkStrength => 1f - MathHelper.Clamp(detailInkAge / 16f, 0f, 1f);
         /// <summary>鬼眼转向光标的强度 0~1</summary>

@@ -34,6 +34,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>到期干涸窗口（帧）：buffTime 余量进窗后透明度衰减到零</summary>
         private const float DryOutFrames = 40f;
 
+        /// <summary>
+        /// 常驻不透明度上限：环是标识层，认得出即可，不该糊住敌人本体与它的出招
+        /// （反馈：墨圈很挡视野）。满墨的笔迹压到这个数，盖印拍与干涸段在此之下再各自衰减
+        /// </summary>
+        private const float PeakAlpha = 0.55f;
+
         /// <summary>在场包络 0~1：盖印淡入、失印淡出</summary>
         private float fade;
 
@@ -51,6 +57,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             Math.Clamp(npc.height * 0.72f + 14f, 26f, 150f));
 
         public override void PostAI(NPC npc) {
+            //多段敌人只有本体挂印（KikasaInkTag.Bearer 的口径），体节不另画一个环
+            if (!ReferenceEquals(KikasaInkTag.Bearer(npc), npc)) {
+                return;
+            }
             int idx = npc.FindBuffIndex(ModContent.BuffType<KikasaInkTag>());
             bool tagged = idx >= 0;
             if (tagged) {
@@ -101,7 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
             //不乘世界光：印记是标识层，黑暗里也要认得出（原版集火白圈同款不吃光）
-            float alpha = fade * MathHelper.Lerp(0.2f, 1f, dry);
+            float alpha = fade * MathHelper.Lerp(0.2f, 1f, dry) * PeakAlpha;
             if (alpha <= 0.02f) {
                 return;
             }

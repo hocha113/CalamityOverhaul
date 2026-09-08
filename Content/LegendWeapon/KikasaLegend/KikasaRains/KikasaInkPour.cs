@@ -518,8 +518,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 .ModifyRainHitNPC(Projectile, KikasaRainSourceKind.Pour, target, ref modifiers);
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //墨印:墨瀑只能被亲手指挥出来,命中即盖印(归属端,骑原版 buff 同步)
-            target.AddBuff(ModContent.BuffType<KikasaInkTag>(), KikasaInkTag.TagFrames);
+            //墨印:墨瀑只能被亲手指挥出来,命中即盖印(归属端,骑原版 buff 同步);
+            //多段敌人盖在本体上,一个敌人只有一个印
+            KikasaInkTag.Apply(target);
             KikasaTalismanHooks.ForOwner(Projectile.owner)
                 .OnRainHitNPC(Projectile, KikasaRainSourceKind.Pour, target, in hit, damageDone);
         }

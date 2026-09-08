@@ -172,7 +172,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 && !ProjectileID.Sets.SentryShot[projectile.type]) {
                 return;
             }
-            if (!target.HasBuff(ModContent.BuffType<KikasaInkTag>())) {
+            //多段敌人的印记在本体上,打哪一节都吃这份加伤
+            if (!KikasaInkTag.Marked(target)) {
                 return;
             }
             //随命中方玩家的鬼伞等级表成长：L0≈2 / L11≈9 / L18≈25 / L24=160

@@ -60,9 +60,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>
         /// 追击穿透门:坠落段咬着活目标且距离在此之内时,妖伞的墨不认地形——
         /// 光标选目标不查视线,墙后的怪原先只会让滴死在墙上(反馈:雨滴不穿墙)。
-        /// 自由落体滴与远距追击滴照旧撞地形留渍,墨的落点特色不丢
+        /// 口径按伞自己的交战范围定(光标搜敌 520 叠上光标离人的距离,保底搜敌 1100),
+        /// 覆盖整屏:凡是伞真派它去追的活目标,一路不认地形。
+        /// 原先 300px 只够穿贴脸的一层砖,滴在够到门槛之前早死在半路,等于没有这道门。
+        /// 无目标的自由落体滴与放弃追踪后的滴照旧撞地形留渍,墨的落点特色不丢
         /// </summary>
-        private const float PhaseGatePx = 300f;
+        private const float PhaseGatePx = 1200f;
 
         private enum DropPhase : byte
         {
@@ -116,7 +119,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         private bool stickyRebitten;
         //近场绕圈保险:累计同向转角,绕满约一圈半判死圈(曲率执照下常规几何到不了这里)
         private float nearWind;
-        //坠落段碰撞武装:首次身处空气后才生效,室内上抛扎进天花板的滴穿回房内再落(反馈七·#74)
+        //坠落段碰撞武装:首次身处空气后才生效,室内上抛扎进天花板的滴穿回房内再落(反馈七·#74);
+        //拿到之后不再撤销,穿透态结束时若还在石头里就当场收场
         private bool plungeArmed;
         //追击穿透态:近距咬着活目标时不认地形(端本地,由同步目标与位置确定性推得);
         //穿墙入口只留一次渗墨渍;ghostVisual 是绘制用的平滑量
@@ -317,10 +321,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             if (Phase == DropPhase.Plunge) {
                 bool insideSolid = Collision.SolidCollision(
                     Projectile.position, Projectile.width, Projectile.height);
+                if (!insideSolid) {
+                    plungeArmed = true;
+                }
                 if (phasing) {
-                    //穿透态:不认地形也不武装,出态时若还在石头里就等出到空气再武装,不死在墙芯;
-                    //穿墙入口留一次渗墨渍,墙上仍有痕
-                    plungeArmed = false;
+                    //穿透态:不认地形,穿墙入口留一次渗墨渍,墙上仍有痕
                     if (insideSolid && !prevInsideSolid && !phaseSplatDone && !Main.dedServ) {
                         phaseSplatDone = true;
                         KikasaInkFX.AddGroundSplat(Projectile.Center, Projectile.velocity,
@@ -328,10 +333,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                                 * Projectile.scale);
                     }
                 }
-                else if (!plungeArmed) {
-                    plungeArmed = !insideSolid;
-                }
-                else if (insideSolid) {
+                else if (plungeArmed && insideSolid) {
+                    //出穿透态时人还在石头里(目标死了/追丢了/追太久)就当场撞地结算。
+                    //武装是一次性的,不随穿透态撤销,否则滴会带着墨在地层里一路游到寿终,
+                    //既不留渍也没落点——穿墙门放宽之后这是最常见的收场路径
                     onTileHit = true;
                     Projectile.Kill();
                 }
@@ -564,9 +569,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //墨印:亲手指挥的滴命中即盖印,AddBuff 骑原版 buff 同步;结算在役从平衡口径
+            //墨印:亲手指挥的滴命中即盖印,AddBuff 骑原版 buff 同步;结算在役从平衡口径。
+            //多段敌人盖在本体上,一个敌人只有一个印
             if (AppliesTag) {
-                target.AddBuff(ModContent.BuffType<KikasaInkTag>(), KikasaInkTag.TagFrames);
+                KikasaInkTag.Apply(target);
             }
             KikasaTalismanHooks.ForOwner(Projectile.owner)
                 .OnRainHitNPC(Projectile, KikasaRainSourceKind.Drop, target, in hit, damageDone);

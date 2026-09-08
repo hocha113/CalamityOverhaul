@@ -1,73 +1,105 @@
 LanternBoy: {
 	DisplayName: The Lantern Boy
-	Origin: Those who walk the mountain road at night tell of a lantern waiting at its end with no one beneath it. One traveler braved a longer look — and when he came to, he was the one looking out from inside the lamp
-	Power: 「Guiding Light」Three Ghost Lanterns orbit the bearer, their shadows echoing Onikiri's normal slashes off-beat for a combined sixty percent of its power.
-	DeathReason: "{0} became the one inside the fourth lantern"
+	Origin:
+		'''
+		On dark mountain paths, a pale white paper lantern often swings through the gloom, floating above a pair of bare, hovering children's feet that never touch the earth.
+		Any nocturnal traveler who stares into the flame for more than three breaths finds their eyes sealed shut as if by hot wax, their soul dragged screaming into the paper skin.
+		Three murdered surrogate souls are already sealed within; wherever that sickly light falls, lantern shadows move in tandem with the blade, striking in place of the wielder.
+		'''
+	Power: "「Guiding Light」Three pale ghost lanterns orbit your body, their lamplight casting shadows that echo your normal slashes off-beat for a combined sixty percent of their original power."
+	DeathReason: "{0} was led into the fourth white paper lantern"
 }
 
 CrimsonBride: {
 	DisplayName: The Crimson Bride
-	Origin: A bridal palanquin once stood at somebody's gate with no bearers to carry it, and stood there seven nights. On the eighth night someone lifted the curtain — and from then on, the palanquin answered to a new bride
-	Power: 「The Procession」Press the Self-Restart key and the palanquin comes following your trail of blood, carrying the blade-bearer into an empty wedding hall; at the nuptial toast, wounds and afflictions alike are restarted.
-	DeathReason: "{0} boarded that palanquin"
+	Origin:
+		'''
+		Outside an isolated mountain manor stood a grand eight-bearer crimson palanquin with no living carriers in sight—only pale paper effigies painted with stiff, grinning faces.
+		Whenever the curtain lifted a crack, sorrowful and shrill wedding horns echoed through the woods; whoever had their birth hour chosen was forced to wed in a silent, dead bridal hall.
+		When a desperate blade-bearer calls upon this palanquin, it arrives bursting through the void across a trail of blood, receiving them into a funeral hall draped in mourning white and scarlet silk.
+		At the moment of the nuptial cup, all fatal wounds and afflictions are dissolved by the hall, turning death back into life.
+		'''
+	Power: "「The Procession」Press the Self-Restart key and the grand crimson palanquin arrives riding sinister funeral music, welcoming the blade-bearer into a dead, blood-draped wedding hall; at the nuptial toast, all fatal wounds and afflictions are washed away and restarted."
+	DeathReason: "{0} sat in the crimson palanquin and bowed to heaven and earth"
 }
 
 ScapeGhost: {
 	DisplayName: The Scapegoat Wraith
-	Origin: It left no name behind in life; it only remembers dying in other people's places, so many times it forgot which death was its own. The day it was entered into the register, its birth date was written beside your name — from then on, your death is its to take
-	Power: 「Death's Stand-In」At the instant death arrives, it seizes a life from afar and forces your death into that body
-	DeathReason: "{0} died in its place, this once"
+	Origin:
+		'''
+		A crude straw doll wrapped in human hair and birth dates, its straw body scarred by thousands of fatal chest wounds and severed neck gashes.
+		In life it took death's place for others countless times, its form battered and incomplete, long forgetting whose death was originally its own.
+		The day it is bound to the register, your death omen is tied with twine around its straw neck.
+		The instant doom falls, cold dead hands reach from the dark, violently forcing your mortal demise into the flesh of a nearby living creature.
+		'''
+	Power: "「Death's Stand-In」At the moment fatal catastrophe arrives, forcibly transfers your death onto a distant living creature, using their body to perish in your stead and escaping death."
+	DeathReason: "{0} became the dead soul behind the straw surrogate"
 }
 
 HeadlessShade: {
 	DisplayName: The Headless Shade
-	Origin: On a night of swaying lamplight, a man looked down and saw his shadow twitch when he had not moved — and looking closer, there was nothing above its shoulders. Something that lost its head had moved into a living man's shadow
-	Power: 「Dismember」It lurks behind you, then rushes anything living and tears its body into pieces
-	DeathReason: "{0} was torn into pieces by their own shadow"
+	Origin:
+		'''
+		Under the dim glow of midnight oil lamps, someone looked down and saw their own shadow squirming and crawling on the floor—and above its shoulders, there was nothing at all.
+		This decapitated horror has long lurked in dead angles, ravenously craving to piece together a whole living body.
+		It has stitched itself into the shadow beneath your feet; once it catches the scent of enemy life, it tears out from the floor, brutally ripping the prey into severed pieces.
+		'''
+	Power: "「Dismember」Lurking in the shadow beneath your feet, it surges from the ground upon sensing living prey, tearing their flesh into severed pieces with savage brutality."
+	DeathReason: "{0}'s head was ripped clean off by the headless shade"
 }
 
 GhostHand: {
 	DisplayName: The Charred Hand
-	Origin: A charred, withered arm, burnt through and still gripping hard. No one knows whose it once was; all anyone knows is that it reaches for whatever lives
-	Power: 「Grip」A withered hand lashes out from behind to seize prey, pinning it down and crushing it over and over; when prey abounds, more hands reach out — even colossal beings cannot slip its fingers
-	DeathReason: "{0} was dragged into the wall"
+	Origin:
+		'''
+		A carbonized limb dug from the ashes of cremated dead and charred infernos, its five claw-like fingers curled inward in a permanent, desperate grasp.
+		None know what manner of sea of fire this corpse was trapped within, only that the suffocating malice of its strangling grip lingers unbroken across death.
+		The moment it senses the warmth of living breath, the blackened claw erupts from the void behind, seizing the victim's throat and crushing bone to dust over and over.
+		'''
+	Power: "「Bone-Grip」A charred, withered ghost arm erupts from the void to seize prey by the throat, repeatedly crushing and suppressing their movement; when foes gather, more hands reach out to crush mighty enemies between their fingers."
+	DeathReason: "{0} had every bone crushed to powder by the charred hand"
 }
 
 GhostRain: {
 	DisplayName: The Ghost Rain
-	Origin: Everyone caught in that rain says the same thing: look up, and it is not clouds — it is faces, pressing down layer upon layer. The drops do not hurt when they land; it is just that every one feels like someone claiming you
-	Power: 「Ghost Rain」While equipped and Onikiri is held, the gloom stays and the ghost rain pours; living things caught in the veil are slowly eaten away, or dragged up into the rain
-	DeathReason: "{0} was claimed by the rain"
+	Origin:
+		'''
+		An ominous gloom recorded in ancient scrolls that unleashes not sweet rain, but freezing black water reeking of silt and decomposing rot.
+		Those who look up in terror find that beneath the clouds hang layer upon layer of pale, dead faces staring down with closed eyes.
+		The black rain falls without physical pain, yet thousands of unseen corpse-leeches gnaw away marrow and soul; anyone soaked for three breaths melts like wax and is dragged into the mire.
+		'''
+	Power: "「Gloom-Shower」Holding the blade calls down an oppressive canopy of black clouds and pouring black rain; living things caught within have their flesh dissolved continuously, providing an aggressive targeting medium for other wraiths."
+	DeathReason: "{0} was dissolved by black rain and dragged into the mud"
 }
 
 System: {
-	ScapeGhostActivated: 「Death's Stand-In」— {0} bore this death in your place
-	ScapeGhostUnknownTarget: something living
-	ScapeGhostDeathBroadcast: "{0} took the hit for {1} — {2}"
-	ErosionCrawl: Something is crawling beneath the skin
-	ErosionStain: A corpse-blue tinge creeps up the fingertips
-	ErosionMirror: The thing in the mirror does not quite look like you
-	RevivalStir: The name on the talisman shifted
-	RevivalRise: It is watching you through the paper
-	RevivalBrink: The talisman is too hot to hold
-	RevivalHudBrink: One more use and it wakes
+	ScapeGhostActivated: "{0} became the scapegoat"
+	ScapeGhostUnknownTarget: a living creature
+	ScapeGhostDeathBroadcast: "{0} became {1}'s scapegoat, {2}"
+	ErosionCrawl: Something feels like cold corpse-worms crawling beneath your skin
+	ErosionStain: Fingertips bloom with permanent, bruised corpse-spots
+	ErosionMirror: The face reflected in the bronze mirror no longer looks like you
+	RevivalStir: The vermilion birth date on the seal talisman twitched
+	RevivalRise: That thing is staring intently at you through the yellow paper
+	RevivalBrink: The seal talisman burns like branding iron, barely held in check
+	RevivalHudBrink: The horror is on the verge of waking; one more act and it seizes you
 }
 
 Coven: {
-	RainHandName: Reach From The Rain
-	RainHandNote: Soaked prey no longer sits beyond arm's reach — the withered hand hangs down from the rainline above it. Up to five hands reach out at once in the rain, and the crush grows heavier with the downpour
-	RainShadeName: Wet Edge
-	RainShadeNote: While the wound the shade tore is still open, every tick of rain-rot on that target is doubled
-	HandShadeName: Held Down, Then Cut
-	HandShadeNote: The shade goes for prey the withered hand has hold of first — its speed is already pinned to zero, so the strike cannot miss
-	LanternHandName: Seen By Lanternlight
-	LanternHandNote: Prey the lantern has lit can be found by the hand even through cover; lantern slashes land 60% heavier on a target already held
-	BrideName: Wedding Hall
-	BrideNote: Prey drawn into the hall at the cup-sharing frame keeps every other mark on it from fading until the hall breaks up
-	ScapeName: Take The Blow
-	ScapeNote: Each time the substitute dies, every other wraith on the wheel drops one step of revival
-	CallName: Calling Each Other
-	CallNote: Wraiths sharing the wheel wake one another: use any of them and the rest gain a little revival. This holds even between two with no signature reaction
-	BurstName: Three Marks Break
-	BurstNote: When three different marks meet on one target, they detonate together as a single hit, and every wraith involved pays one revival
+	RainHandName: Reach in Rain
+	RainHandNote: Prey soaked in black rain is no longer bounded by reach; the charred hand reaches straight down from the rain threads overhead. Up to five hands can manifest simultaneously in rain, and crushing damage doubles as the storm swells
+	RainShadeName: Wet Blade
+	RainShadeNote: While the wound left by the shade passing through remains unhealed, every tick of rain corrosion on that target deals double damage
+	HandShadeName: Pinned to Sever
+	HandShadeNote: The headless shade prioritizes pouncing on prey gripped by the charred hand; with target movement suppressed to zero, the executing slash never misses
+	LanternHandName: Illumination
+	LanternHandNote: Prey revealed by the ghost lanterns can be hunted by the charred hand even through stone and terrain; lantern blade-light deals 60% more damage to gripped targets
+	BrideName: Bridal Hall
+	BrideNote: Living creatures drawn into the bridal hall during the nuptial toast stop losing other wraith marks until the bridal hall disperses
+	ScapeName: Averting Doom
+	ScapeNote: When the straw surrogate dies in your stead, the revival state of all other wraiths on the same board is suppressed back by one tier
+	CallName: Resonant Call
+	CallNote: Wraiths on the same board wake one another: whenever one is commanded, the others gain a small amount of revival; even pairs without unique synergies resonate with dark hunger
+	BurstName: Triple Mark Rupture
+	BurstNote: Gathering three distinct wraith marks on a single target detonates multiple fatal curses at once for heavy burst damage, each participating wraith paying a revival cost
 }

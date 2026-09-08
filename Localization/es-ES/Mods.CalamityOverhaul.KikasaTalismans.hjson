@@ -1,215 +1,328 @@
 KikasaTalismanLin: {
-	DisplayName: Talismán de la llovizna
-	Tooltip: El ritmo de la lluvia de tinta se acelera; la lluvia continua forma un velo de llovizna; daño de cada gota -6%
-	Origin: En Jinan abunda la lluvia; la llovizna junto al lago Daming a menudo cae ininterrumpida durante días enteros. Aunque suave, no cesa, empapando poco a poco cielo y tierra
-	Power: «Llovizna» El compás de caída de la lluvia de tinta se acelera un 20%; desplegar la lluvia sin pausa durante unos 10 segundos entra en el estado «Lluvia persistente»: bajo el paraguas cuelga un velo fino de llovizna que acelera el compás otro 10%; cesar la lluvia lo disipa gradualmente, y cerrar el paraguas lo reduce de inmediato a la mitad
-	Burden: El daño de impacto directo de las gotas se reduce un 6%
+	DisplayName: Talismán de llovizna
+	Tooltip: Acelera el compás de lluvia; llover de continuo acumula «Llovizna copiosa» volviendo las hebras más densas; daño de cada gota -6%
+	Origin:
+		'''
+		Los ancianos artesanos de las tiendas de paraguas de papel aceitado solían decir que dos semanas de llovizna pertinaz desgastan el temple del alma como nada.
+		Las hebras caen finas como pelo de buey, aparentemente débiles y silenciosas sobre las tejas, pero las vigas ocultas y los pilares hace tiempo que se pudrieron por la humedad.
+		Este talismán atesora esa filtración implacable y glacial: mientras no cese el temporal, más tupido arrecia.
+		'''
+	Power: «Llovizna»: cadencia de lluvia de tinta acelerada en un 20%; llover de continuo durante 10s acumula el estado «Llovizna copiosa»: cae una densa cortina de llovizna bajo la sombrilla, acelerando el compás un 10% adicional; cerrar la sombrilla disipa la lluvia con rapidez.
+	Burden: Daño directo de cada gota de tinta reducido en un 6%
 }
 
 KikasaTalismanLao: {
-	DisplayName: Talismán del charco de tinta
-	Tooltip: Las gotas que tocan tierra forman siempre charcos; los charcos beben lluvia hasta rebosar en oleadas; daño de impacto directo -5%
-	Origin: El agua se congrega en las hondonadas; la lluvia que se posa y no se disipa engendra aguas muertas. Las aguas estancadas son insondables y conectan con corrientes subterráneas invisibles
-	Power: «Charco acumulado» Toda gota de tinta que toca el suelo forma sin falta un charco de tinta; la duración del charco aumenta un 50% y su área de cobertura un 30%; las gotas que caen en un charco existente elevan el nivel del agua, y tras absorber tres vertidos rebosa y proyecta hacia ambos lados oleadas de desborde que infligen cada una el 50% del daño del charco
-	Burden: El daño de impacto directo de las gotas se reduce un 5%
+	DisplayName: Talismán de charco de tinta
+	Tooltip: Las gotas siempre forman grandes charcos de tinta al caer, absorbiendo lluvia hasta desbordarse y batir olas; daño directo de la gota -5%
+	Origin:
+		'''
+		Las losas de las viejas calzadas están desgastadas y hendidas; el agua estancada y muerta en los huecos de la piedra jamás se seca, ni tras tres meses de sequía.
+		En el fondo anida cieno negro y hojarasca podrida vedada al sol; los caminantes la toman por un lodazal superficial hasta que dan un mal paso y la bota queda atascada sin remedio en el hoyo.
+		Empapado en aguas muertas de antaño, el aguacero forma charcos y desborda en oleadas.
+		'''
+	Power: «Acumulación»: las gotas de tinta siempre forman charcos al impactar, prolongando su duración en un 50% y su radio en un 30%; las gotas que caen en charcos existentes elevan el nivel del agua, y tras absorber tres gotas se desbordan batiendo olas a ambos lados que infligen el 50% del daño del charco cada una.
+	Burden: Daño directo de cada gota de tinta reducido en un 5%
 }
 
 KikasaTalismanPei: {
-	DisplayName: Talismán del aguacero
-	Tooltip: Mayor velocidad de carga invertida; verter a carga completa desata una potente onda de choque; el compás habitual se ralentiza un 8%
-	Origin: Cuando se desata un aguacero torrencial, la bóveda celeste parece haber quebrado sus diques. La lluvia o bien se contiene, o bien cae sin dejar tregua alguna
-	Power: «Aguacero» La velocidad de carga de tinta invertida aumenta un 35% y el daño de los surtidores de tinta aumenta un 20%; al alcanzar la carga completa abre compuertas al instante, detonando en el origen de la cascada una onda de choque expansiva que asesta un golpe equivalente al 80% del daño de la cascada y ensancha el torrente
-	Burden: El compás habitual de la lluvia de tinta se ralentiza un 8%
+	DisplayName: Talismán de aguacero
+	Tooltip: Carga invertida más veloz y géiseres más fuertes, detonando una onda expansiva en el origen al cargarse al máximo; compás normal -8%
+	Origin:
+		'''
+		Antes de que estalle una riada, los torrentes de la sierra suelen secarse de improviso, taponados en la garganta alta por troncos caídos y peñascos ciegos.
+		En cuanto el agua acumulada revienta la presa, todo el valle queda anegado bajo un turbión enfurecido e imparable.
+		Este talismán aprieta la lluvia con ferocidad en el cuenco de la sombrilla: retener el caudal hasta que las compuertas cedan en una tromba desatada.
+		'''
+	Power: «Aguacero»: velocidad de carga invertida aumentada en un 35%, daño del géiser de tinta aumentado en un 20%; al desatar el torrente a carga completa, detona una onda expansiva en el origen que inflige el 80% del daño del torrente y ensancha enormemente su caudal.
+	Burden: Cadencia de lluvia de tinta normal ralentizada en un 8%
 }
 
 KikasaTalismanSha: {
-	DisplayName: Talismán de la lluvia veloz
-	Tooltip: Despliegue casi instantáneo del paraguas; el primer compás arroja tres gotas veloces sucesivas; el intervalo tras la salva aumenta un 40%
-	Origin: La lluvia repentina suele desencadenarse veloz e impredecible; en un parpadeo, las cortinas de agua han clausurado toda senda de retirada
-	Power: «Lluvia veloz» El tiempo requerido para abrir el paraguas se reduce un 75%; el primer compás tras abrirlo arroja sin falta tres gotas veloces consecutivas, infligiendo cada una el 75% del daño
-	Burden: Tras activar la salva triple, el intervalo hasta el siguiente compás se extiende un 40%
+	DisplayName: Talismán de lluvia rauda
+	Tooltip: Abre la sombrilla casi al instante, el primer compás descarga tres gotas seguidas; intervalo tras la ráfaga prolongado en un 40%
+	Origin:
+		'''
+		Los chubascos veraniegos de media tarde caen con una saña implacable; un segundo antes el sol ardiente abrasa las tejas,
+		Y al siguiente, vientos huracanados arrojan goterones como monedas a quemarropa, sin dar tiempo a los viandantes ni a dar tres zancadas.
+		Este talismán canaliza esa furia explosiva al abrir la sombrilla de golpe.
+		'''
+	Power: «Lluvia rauda»: tiempo de apertura y despliegue de la sombrilla reducido en un 75%; el primer compás tras abrir la sombrilla descarga con certeza tres gotas rápidas consecutivas, causando cada una el 75% del daño de gota base.
+	Burden: Tras activar la descarga triple inicial, el intervalo de lluvia hasta el siguiente compás se prolonga en un 40%
 }
 
 KikasaTalismanYin: {
-	DisplayName: Talismán de la flor de tinta
-	Tooltip: Los impactos acumulan marcas de tinta que florecen en una detonación al llegar a cinco acumulaciones; daño de impacto directo -8%
-	Origin: Cuando la tinta espesa cae sobre papel de arroz húmedo, en instantes se propaga por las fibras formando una mancha viva. Capa tras capa de sangrado e impregnación acaban por desbordar el papel
-	Power: «Flor de tinta» Los impactos de gotas dejan una marca de tinta (acumulable hasta 5 veces, infligiendo daño continuo de sangrado según las acumulaciones); al alcanzar las 5 acumulaciones la flor de tinta florece, detonando con un 160% del daño de gota y disipando todas las marcas
-	Burden: El daño de impacto directo de las gotas se reduce un 8%
+	DisplayName: Talismán de flor de tinta
+	Tooltip: Los impactos acumulan marcas de tinta sangrantes que detonan con daño masivo a las cinco acumulaciones; daño directo de la gota -8%
+	Origin:
+		'''
+		Si en un taller de tintado una gota de tinta negra salpica por descuido una tela acabada, frotarla con un paño húmedo solo hace que el pigmento penetre más hondo entre las fibras, pudriendo la tela en una gran mancha.
+		Este talismán toma prestada esa tenacidad perforante: las gotas de tinta muerden capa sobre capa en las heridas, acumulándose hasta que la carne estalla.
+		'''
+	Power: «Flor de tinta»: los impactos de gota dejan marcas de tinta desgarradoras (hasta 5 acumulaciones, infligiendo daño continuo por sangrado según las acumulaciones); al alcanzar 5 acumulaciones la flor de tinta estalla, causando el 160% del daño de gota en área y disipando las acumulaciones.
+	Burden: Daño directo de cada gota de tinta reducido en un 8%
 }
 
 KikasaTalismanLu: {
-	DisplayName: Talismán del rocío
-	Tooltip: Los impactos de gotas condensan a veces rocío que restaura vida al recogerse; el compás de lluvia se ralentiza un 6%
-	Origin: Al amanecer, la vegetación se cubre de rocío con un vapor ligeramente dulce. Congregar unas cuantas gotas de rocío limpio en mitad de una tempestad sombría es una auténtica fortuna
-	Power: «Rocío» Cada impacto de gota contra un enemigo tiene un 12% de probabilidad de condensar una gota de rocío; recogerla restaura 2 puntos de vida (máximo 3 presentes en el campo simultáneamente)
-	Burden: El compás de la lluvia de tinta se ralentiza un 6%
+	DisplayName: Talismán de rocío
+	Tooltip: Las gotas de tinta condensan rocío puro ocasionalmente al golpear, curando al recogerlo; compás de lluvia ralentizado en un 6%
+	Origin:
+		'''
+		Los médicos rurales ambulantes que recorrían caminos nocturnos siempre llevaban un tubo de bambú, barriendo al alba el rocío de las briznas de hierba para mezclarlo con ungüentos en llagas supurantes.
+		Este talismán purga la ponzoña del agua negra, destilando unas pocas gotas de rocío balsámico; aunque frena el ímpetu de la lluvia, salva el aliento en momentos de peligro.
+		'''
+	Power: «Rocío dulce»: las gotas de tinta tienen un 12% de probabilidad al impactar de condensar una gota de rocío puro en el suelo que restaura 2 de vida al recogerse (máximo 3 en el campo).
+	Burden: Cadencia de lluvia de tinta ralentizada en un 6%
 }
 
 KikasaTalismanFei: {
-	DisplayName: Talismán de la niebla
-	Tooltip: Cada tercera gota se torna niebla que deja una bruma ralentizante y dañina al impactar; el daño propio de la gota de niebla se reduce un 30%
-	Origin: Cuando la humedad alcanza su colmo, la lluvia que cae se condensa en una niebla densa y gélida. Quienes quedan atrapados en ella pierden el rumbo, sintiendo el frío calarles hasta el tuétano
-	Power: «Niebla condensada» Cada tercera gota de tinta arrojada se transforma en gota de niebla: en el punto de impacto deja una bruma de tinta que persiste 2 segundos; los enemigos en su interior sufren daño continuo y ven reducida su velocidad de movimiento un 10%
-	Burden: El daño propio de la gota de niebla se reduce un 30%
+	DisplayName: Talismán de bruma densa
+	Tooltip: Cada tercera gota se disipa en densa niebla fría que daña y frena a los enemigos; daño directo de la gota de bruma -30%
+	Origin:
+		'''
+		En los vados del río a finales de otoño la niebla se vuelve espesa como algodón empapado; a tres pasos las amarras se pierden en la bruma gris, obligando a los barqueros viejos a echar el ancla.
+		Este talismán quiebra cada tercera gota en una bruma húmeda persistente que ciega la vista y entorpece el paso.
+		'''
+	Power: «Bruma densa»: cada tercera gota de tinta se convierte en gota de bruma: deja una niebla de tinta de 2s al impactar, dañando continuamente a los enemigos dentro y reduciendo su velocidad de movimiento en un 10%.
+	Burden: Daño de impacto directo de la gota de bruma reducido en un 30%
 }
 
 KikasaTalismanXian: {
-	DisplayName: Talismán de las perlas salpicadas
-	Tooltip: Las gotas pesadas se quiebran al caer en cinco perlas rebotantes; el radio de los charcos formados se reduce un 15%
-	Origin: Las gotas que caen desde lo alto contra la losa de piedra se fragmentan en cuentas dispersas. Aparentemente menudas, saltan sin cesar causando daño a su paso
-	Power: «Perlas salpicadas» Las gotas pesadas de tinta se quiebran al tocar tierra en 5 finas perlas de tinta; cada una inflige un 30% del daño de la gota original y puede rebotar hasta 2 veces más
-	Burden: El radio de los charcos de tinta generados se reduce un 15%
+	DisplayName: Talismán de perlas dispersas
+	Tooltip: Las gotas pesadas de tinta se quiebran en cinco perlas rebotadoras al chocar; radio del charco -15%
+	Origin:
+		'''
+		Bajo los aleros viejos reposa un pilón de piedra azulada; en días de tormenta el agua que cae desde las vigas estalla en un rocío saltarín, acribillando el borde de piedra con incontables muescas.
+		El talismán reúne la lluvia pesada para quebrarla en perlas que rebotan y penetran por doquier.
+		'''
+	Power: «Perlas dispersas»: las gotas pesadas de tinta se quiebran al chocar contra el suelo en 5 perlas finas, causando cada una el 30% del daño de la gota original y rebotando por el terreno hasta 2 veces adicionales.
+	Burden: Radio de cobertura del charco de tinta generado reducido en un 15%
 }
 
 KikasaTalismanXi: {
-	DisplayName: Talismán de la marea
-	Tooltip: Los charcos arremeten rítmicamente contra enemigos cercanos; la duración de los charcos se reduce un 20%
-	Origin: El agua desciende hacia las hondonadas y se mece al compás de la marea. Las charcas que albergan cadencia de marea jamás aguardan inmóviles; allí donde el oleaje fluye, el agua arremete por sí misma
-	Power: «Marea» Los charcos de tinta adquieren la cadencia de la marea: crecen y menguan como una respiración; al caer una nueva gota en un charco existente, este se abalanza en oleadas hacia el enemigo más próximo, infligiendo el filo de la ola un 50% del daño del charco
-	Burden: La duración de los charcos de tinta se reduce un 20%
+	DisplayName: Talismán de marea
+	Tooltip: Los charcos albergan resaca marina, arrojando olas hacia los enemigos cercanos al caer gotas; duración del charco -20%
+	Origin:
+		'''
+		Las madrigueras de fango en los bajíos parecen muertas a la luz del día; pero en cuanto la marea de fondo rompe contra los arrecifes, el lodo de las zanjas se revuelve como sierpes mordiendo cuanto pasa.
+		Este talismán infunde la corriente marina en los charcos: ya no aguardan pasos incautos, cada gota que cae azuza el agua negra a saltar al frente.
+		'''
+	Power: «Marea»: los charcos adquieren pulso de marea: cuando nuevas gotas caen en charcos existentes, el charco lanza una ola hacia el enemigo más cercano, causando el 50% del daño del charco en la cresta.
+	Burden: Duración de los charcos de tinta en el suelo reducida en un 20%
 }
 
 KikasaTalismanZi: {
-	DisplayName: Talismán de la impregnación
-	Tooltip: Los enemigos en charcos acumulan vulnerabilidad progresiva; el daño base de los charcos se reduce un 25%
-	Origin: Cuando la tela se sumerge en la tina del tinte, cuanto más tiempo reposa, más hondo cala el color. Lo que permanece sumergido en aguas estancadas, con el paso de los días, ve reblandecerse hasta sus huesos
-	Power: «Impregnación» Los enemigos que permanecen sobre un charco de tinta acumulan continuamente el estado de impregnación (hasta 8 acumulaciones); cada acumulación incrementa el daño espectral de tinta que reciben un 2.5%
-	Burden: El daño base de los charcos de tinta se reduce un 25%
+	DisplayName: Talismán de maceración
+	Tooltip: Los enemigos en charcos acumulan vulnerabilidad progresiva al daño de tinta; daño continuo base del charco -25%
+	Origin:
+		'''
+		El viejo tintorero sumerge el cáñamo basto en la cuba; cuanto más macera, más hondo cala el color, hasta que las fibras rígidas se vuelven quebradizas al tirón.
+		Las criaturas atrapadas en el lodo de tinta sufren la misma suerte: maceradas largo tiempo, el frío nocivo reblandece sus huesos abriendo cada llaga.
+		'''
+	Power: «Maceración»: los enemigos en charcos de tinta acumulan estados de maceración (hasta 8 acumulaciones), aumentando cada acumulación todo el daño de tipo tinta recibido en un 2.5%.
+	Burden: Daño continuo base del propio charco de tinta reducido en un 25%
 }
 
 KikasaTalismanTing: {
-	DisplayName: Talismán del manantial de trueno
-	Tooltip: El surtidor de tinta estalla en una columna de trueno que encadena relámpagos; la velocidad de carga invertida disminuye un 13%
-	Origin: Las aguas de un lago en noche de tormenta entrañan el mayor de los peligros; cuando el rayo hiere el agua mansa, la profundidad entera se transmuta al instante en un mar embravecido de electricidad
-	Power: «Manantial de trueno» La altura de erupción del surtidor de tinta aumenta un 50% y encadena relámpagos hacia un máximo de 2 enemigos cercanos al impactar (infligiendo el 50% del daño del surtidor a cada uno); las cascadas arrojadas sin carga completa tienen además un 25% de probabilidad de suscitar un surtidor menor al tocar tierra
-	Burden: La velocidad de carga de tinta invertida se reduce un 13%
+	DisplayName: Talismán de géiser de trueno
+	Tooltip: Los géiseres de tinta brotan más alto y encadenan rayos a enemigos cercanos; velocidad de carga invertida -13%
+	Origin:
+		'''
+		Los remansos profundos en mitad del río guardan vetas de relámpago; en tempestades donde sube el vapor, un trueno rodante que impacte en el agua negra hace estallar columnas de rayos como aceite hirviendo.
+		Este talismán guía el trueno por el agua: los géiseres brotan al cielo desde la sombrilla arrastrando cadenas de relámpagos.
+		'''
+	Power: «Géiser de trueno»: altura de erupción del géiser aumentada en un 50%, encadenando rayos sobre hasta 2 enemigos cercanos al impactar (infligiendo el 50% del daño del géiser a cada uno); los torrentes no cargados tienen un 25% de probabilidad al tocar tierra de despertar un pequeño géiser de trueno.
+	Burden: Velocidad de carga invertida reducida en un 13%
 }
 
 KikasaTalismanHong: {
-	DisplayName: Talismán del puente iris
-	Tooltip: La cascada tiende un puente iris que otorga velocidad e inflige quemadura a los enemigos que lo cruzan; la anchura de la cascada se reduce un 10%
-	Origin: Apenas amaina el temporal, la luz solar se abre paso entre las nubes dibujando un arcoíris allí donde el vapor se eleva. Un fulgor etéreo, efímero y fugaz
-	Power: «Puente iris» Tras verter la cascada de tinta, sobre el punto de impacto se proyecta durante 5 segundos un puente iris: bajo él, tu velocidad de movimiento y tu daño de invocación aumentan un 10%; los enemigos que atraviesen el arco sufren cada 0.5 segundos un daño equivalente al 40% de la cascada
-	Burden: La anchura efectiva de la cascada de tinta se reduce un 10%
+	DisplayName: Talismán de arcoíris
+	Tooltip: El torrente deja un arcoíris aéreo que acelera al portador y quema a los enemigos que lo crucen; anchura del torrente -10%
+	Origin:
+		'''
+		Sobre las gargantas serranas lavadas por el turbión, donde el vapor humea, suele tenderse el arco espectral de un puente.
+		Luz aparentemente quebradiza, es en verdad energía afilada nacida del choque entre borrasca y sol abrasador: los vivos se sirven de su luz para ganar ligereza, mientras los engendros que la cruzan arden como en un horno.
+		'''
+	Power: «Arcoíris»: tras verter un torrente, se forma un arcoíris en el aire sobre el punto de impacto durante 5s: otorga +10% de velocidad de movimiento y +10% de daño de invocación debajo; los enemigos que crucen el arco sufren un 40% del daño del torrente cada 0.5s.
+	Burden: Anchura del área de impacto del torrente estrechada en un 10%
 }
 
 KikasaTalismanHang: {
-	DisplayName: Talismán del miasma nocturno
-	Tooltip: El daño de tinta aumenta de noche y los charcos desprenden columnas de miasma; el daño de tinta de día se reduce un 5%
-	Origin: Decían los antiguos que el vapor nocturno que emana de las aguas umbrías es el que más hiere al hombre. La humedad mezclada con el frío mortal produce una honda opresión en el pecho
-	Power: «Miasma nocturno» El daño de tinta aumenta un 15% durante la noche, y los charcos despiden sin tregua columnas de vapor venenoso (infligiendo cada 0.5 segundos un daño equivalente al 30% de la gota)
-	Burden: Durante el día, el daño de tinta se reduce un 5%
+	DisplayName: Talismán de miasma nocturno
+	Tooltip: Aumenta enormemente el daño de tinta de noche y los charcos exhalan columnas de vapor ponzoñoso; daño de tinta diurno -5%
+	Origin:
+		'''
+		En las ciénagas profundas, los pantanos se cierran al anochecer; los charcos lodosos que mostraban el fondo de día hierven con espuma negra fétida pasada la medianoche.
+		Los viejos herbolarios prefieren tiritar sobre las ramas de los árboles antes que pisar tierra firme: el miasma frío que sube de las aguas nocturnas pudre los pulmones como el orín.
+		'''
+	Power: «Miasma nocturno»: todo el daño de tinta aumenta en un 15% por la noche, y los charcos exhalan continuamente columnas de vapor ponzoñoso (infligiendo el 30% del daño de la gota cada 0.5s).
+	Burden: Todo el daño de tinta se reduce en un 5% durante el día
 }
 
 KikasaTalismanBao: {
-	DisplayName: Talismán del granizo
-	Tooltip: Cada cuarto compás todas las gotas se transforman en granizo demoledor que quiebra defensas; el daño de las gotas habituales se reduce un 8%
-	Origin: La lluvia helada cristaliza y cae veloz horadando las nubes. El granizo se precipita quebrando tejas y cuencos, despojado de toda la suavidad y calma de la lluvia mansa
-	Power: «Granizo» Cada cuarto compás de lluvia arroja sin falta una salva completa en la que todas las gotas se transforman en granizo pesado: su volumen crece un 60%, su daño aumenta un 120%, destroza la defensa enemiga e inflige un potente retroceso; el granizo no deja charcos al chocar contra bloques
-	Burden: El daño de impacto directo de las gotas en los compases normales se reduce un 8%
+	DisplayName: Talismán de granizo
+	Tooltip: Cada cuarto compás descarga pesados pedriscos demoledores con daño doble y gran retroceso; daño de gotas normales -8%
+	Origin:
+		'''
+		En el bochorno del estío, si el cielo se vuelve negro como la pez y retumban truenos sordos como muelas de molino en lo alto, el corazón helado de las nubes está a punto de desplomarse.
+		Pedruscos como puños cayendo desde miles de varas pulverizan tejas y bestias; el talismán amasa ese frío feroz, abriendo boquetes sangrantes al golpear.
+		'''
+	Power: «Granizo»: cada cuarto compás descarga con certeza una andanada completa de granizo pesado: tamaño +60%, daño +120%, desgarrando la defensa enemiga con gran retroceso; los pedriscos no forman charcos al impactar.
+	Burden: Daño directo de las gotas de tinta en compases ordinarios reducido en un 8%
 }
 
 KikasaTalismanShu: {
-	DisplayName: Talismán de la lluvia oportuna
-	Tooltip: Tras recibir daño, durante tres segundos la lluvia se intensifica y sana con cada impacto; el intervalo de lluvia habitual se extiende un 5%
-	Origin: En el dicho popular se llama auxilio oportuno a quien acude justo a tiempo. Si la lluvia acierta a caer en el instante de mayor apuro, ciertamente es capaz de conjurar una desgracia
-	Power: «Lluvia oportuna» Durante 3 segundos tras recibir daño, el intervalo de caída de la lluvia de tinta se reduce a la mitad y las gotas brillan con un fulgor dorado; cada impacto contra un enemigo restaura 1 punto de vida propia (enfriamiento de 12 segundos)
-	Burden: En condiciones normales, el intervalo entre gotas de la lluvia de tinta se incrementa un 5%
+	DisplayName: Talismán de lluvia oportuna
+	Tooltip: Sufrir daño desata una lluvia torrencial durante tres segundos que cura al golpear; intervalo de lluvia normal +5%
+	Origin:
+		'''
+		Cuando la sequía desola los páramos, una lluvia inesperada salva a una comarca entera de la perdición.
+		Los paragüeros ambulantes cosían conjuros salvavidas en las varillas más hondas; callados en la calma, en cuanto brota sangre, un rocío dorado se precipita para arrebatar una vida a la fosa.
+		'''
+	Power: «Lluvia oportuna»: durante 3 segundos tras recibir daño, el intervalo de lluvia se reduce a la mitad y las gotas se vuelven doradas, restaurando 1 de vida al portador por cada impacto (12 segundos de enfriamiento).
+	Burden: Intervalo de ataque de la lluvia ordinaria prolongado en un 5%
 }
 
 KikasaTalismanLong: {
-	DisplayName: Talismán de la cascada impetuosa
-	Tooltip: La cascada de tinta se transforma en una corriente impetuosa que repele enemigos; la duración de la cascada disminuye un 20%
-	Origin: Las riadas de montaña descienden arrastrando lodo y peñascos con un ímpetu imposible de contener. Ante semejante torrente, ni los ejércitos más nutridos logran hacer pie
-	Power: «Cascada impetuosa» La cascada de tinta se transforma en un torrente impetuoso: la corriente empuja sin descanso a los enemigos a lo largo de su curso, y el retroceso del impacto directo en el origen aumenta un 35%
-	Burden: La duración activa de la cascada de tinta se reduce un 20%
+	DisplayName: Talismán de torrente bravo
+	Tooltip: El torrente se transforma en un turbión embravecido que empuja continuamente a los enemigos; duración del torrente -20%
+	Origin:
+		'''
+		En las angosturas rocosas donde dos peñas se juntan, las riadas estivales cargadas de troncos y peñascos hacen temblar los riscos; la fuerza de la corriente parte puentes y arrastra rocas.
+		Al invertir la sombrilla, el agua cae como una presa rota, empujando lejos incluso a las bestias más tercas.
+		'''
+	Power: «Torrente bravo»: el torrente se convierte en una corriente impetuosa: empuja continuamente a los enemigos a lo largo de su curso, y el retroceso del impacto directo en el origen aumenta en un 35%.
+	Burden: Duración del torrente reducida en un 20%
 }
 
 KikasaTalismanShuang: {
-	DisplayName: Talismán del espejo de escarcha
-	Tooltip: Los charcos se congelan en espejos de escarcha que ralentizan y estallan en púas al recibir gotas; los charcos no pueden fusionarse
-	Origin: Tras las heladas de otoño avanzado, el agua estancada amanece convertida en una quebradiza capa de hielo. Tersa como un espejo, solo al posar el pie se advierte el peligro que encierra
-	Power: «Espejo de escarcha» Las gotas pesadas de tinta se congelan al tocar tierra en una charca de fina escarcha convertida en espejo: ya no inflige quemadura, pero los enemigos que la pisan ven reducida su velocidad un 40%; el impacto de una gota pulveriza el espejo al instante, liberando daño explosivo según su duración restante y alzando púas de hielo
-	Burden: Los espejos de escarcha permanecen aislados y no pueden fundirse entre sí para prolongar su duración
+	DisplayName: Talismán de espejo de escarcha
+	Tooltip: Los charcos cuajan en espejos helados que frenan el paso; el impacto de gotas pesadas hace estallar púas de hielo; no se fusionan
+	Origin:
+		'''
+		En las mañanas de invierno, el agua encharcada cuaja en una fina película de hielo transparente; tersa como un espejo, el pie patina y resbala.
+		Mas en cuanto un peso quiebra la costra, las lascas afiladas muerden como dagas en la carne; el fango se hiela en cristal y el espejo roto escupe colmillos.
+		'''
+	Power: «Espejo de escarcha»: las gotas pesadas cuajan al tocar tierra en espejos de escarcha: ya no causan quemadura, pero reducen la velocidad de los enemigos que los pisen en un 40%; las gotas posteriores que golpeen el espejo lo rompen al instante, detonando daño en base al tiempo restante y alzando púas de hielo.
+	Burden: Los espejos de escarcha permanecen separados y los charcos no pueden fusionarse con lluvia nueva para prolongar su duración
 }
 
 KikasaTalismanZha: {
-	DisplayName: Talismán del tambor de lluvia
-	Tooltip: Acertar siete compases consecutivos desata en el octavo un impacto demoledor de triple daño; tras el golpe la lluvia se detiene un compás
-	Origin: La lluvia torrencial golpea la superficie tensa del paraguas de papel aceitado con un repiqueteo que evoca el batir de tambores. Si la cadencia no se quiebra, es en el compás final donde se revela su poderío
-	Power: «Tambor de lluvia» En el borde del paraguas se congregan siete marcas de compás: si en siete compases seguidos al menos una gota acierta al blanco, en el octavo compás todas las gotas triplican su daño; errar un compás reinicia la cuenta
-	Burden: Tras descargar el redoble pesado, la lluvia se detiene brevemente durante el siguiente compás
+	DisplayName: Talismán de tambor de lluvia
+	Tooltip: Acertar durante siete compases seguidos triplica el daño en el octavo; la lluvia se detiene un compás tras el golpe
+	Origin:
+		'''
+		El viejo pescador golpea la borda de su barca siete veces seguidas con el remo sin perder el compás, y la corriente submarina responde a su ritmo.
+		A la octava llamada sorda, el banco de peces salta del agua; este talismán afina la lluvia a un rito de percusión: siete golpes atan el espíritu, el octavo revienta la roca.
+		'''
+	Power: «Tambor de lluvia»: el borde de la sombrilla reúne siete marcas de tambor: si al menos una gota impacta en cada uno de siete compases consecutivos, todas las gotas del octavo compás infligen el triple de daño; fallar un compás reinicia la cuenta.
+	Burden: Tras activar el estallido del octavo compás, la lluvia se detiene durante el compás siguiente
 }
 
 KikasaTalismanNi: {
 	DisplayName: Talismán tricolor
-	Tooltip: Las gotas alternan tres propiedades elementales: roja explosiva, cian ralentizante y púrpura corrosiva; el daño base de las gotas se reduce un 5%
-	Origin: Las manifestaciones espectrales del agua son mudables e impredecibles. Tomando la furia del agua roja, la pesadez del agua cian y la corrosión del agua púrpura, su ciclo revela virtudes singulares
-	Power: «Tricolor» Las gotas arrojadas alternan en secuencia tres propiedades: las rojas detonan en un área reducida (40% de daño disperso), las cianes ralentizan al enemigo un 15% y las púrpuras aumentan el daño espectral de tinta que este recibe un 5%
-	Burden: El daño base de las gotas de tinta se reduce un 5%
+	Tooltip: Las gotas alternan cíclicamente entre tres aspectos: estallido rojo, lentitud azul y corrosión púrpura; daño base -5%
+	Origin:
+		'''
+		El agua de los manantiales antiguos muda de temple con las estaciones: el agua clara entumece los tendones, la rojiza hierve como vinagre agrio, y la púrpura carcome el alma como ponzoña.
+		El maestro tomó una jícara de cada fuente para moler la tinta, entrelazándolas en un ciclo mutuo de estallido, traba y ruina.
+		'''
+	Power: «Tricolor»: las gotas alternan sucesivamente entre tres aspectos: las rojas causan una explosión en área del 40%; las azules ralentizan a los enemigos en un 15%; las púrpuras aumentan todo el daño de tipo tinta recibido en un 5%.
+	Burden: Daño base de las gotas de tinta reducido en un 5%
 }
 
 KikasaTalismanWen: {
-	DisplayName: Talismán de la escritura de nubes
-	Tooltip: Las estrellas del borde se cargan con los impactos y disparan saetas de tinta rastreadoras al llenarse; el intervalo de lluvia aumenta un 8%
-	Origin: En los textos arcanos se trazan caracteres entre las nubes; aunque los mortales no puedan desentrañar su significado pleno, trasladar sus formas al talismán permite infundir vida propia al agua
-	Power: «Escritura de nubes» Tres estrellas de caracteres de nubes orbitan el borde del paraguas cargándose con cada impacto; al llenarse, la estrella activa arroja una saeta de tinta rastreadora que inflige un 120% del daño de la gota
-	Burden: El intervalo entre gotas de la lluvia de tinta se incrementa un 8%
+	DisplayName: Talismán de caracteres celestes
+	Tooltip: Las estrellas del borde cargan con los impactos, disparando saetas de tinta teledirigidas al llenarse; intervalo de lluvia +8%
+	Origin:
+		'''
+		Los caracteres sagrados de viento y trueno grabados en las losas de templos en ruinas serpentean como nubes, incomprensibles para los ojos mortales.
+		Un viejo cantero calcó sus formas sobre el papel aceitado de la sombrilla; al fluir la tinta por los trazos, brillaron estrellas en el alero que condensan el agua en saetas vengadoras.
+		'''
+	Power: «Caracteres celestes»: tres estrellas giran por el borde de la sombrilla cargándose con los impactos; al llenarse, la estrella activa dispara una saeta de tinta teledirigida que inflige el 120% del daño de gota.
+	Burden: Intervalo entre gotas de lluvia prolongado en un 8%
 }
 
 KikasaTalismanPo: {
 	DisplayName: Talismán del alma lunar
-	Tooltip: Acumula luz lunar al abrir el paraguas de noche; al llenarse, verter desata una cascada pálida; sin efecto alguno durante el día
-	Origin: En el sosiego de la noche, la luna se vierte sobre el estanque profundo asemejando escarcha en el agua. Recoger esa gélida luz bajo el paraguas y derramarla es como desatar un río helado
-	Power: «Alma lunar» Abrir el paraguas y asestar impactos durante la noche acumula fases lunares; al colmarse, la siguiente cascada invertida se transmuta en una cascada lunar pálida: el área aumenta un 50% y los impactos producen estallidos lunares (35% de daño de dispersión)
-	Burden: Este talismán pierde todo efecto durante el día
+	Tooltip: Absorbe luz de luna al abrirse de noche, volcando un gran torrente pálido a carga completa; inútil de día
+	Origin:
+		'''
+		En las lagunas serranas sin viento bajo la luna helada, el agua fosforece con una palidez mortecina; el frío cala los huesos y los peces reposan inmóviles en el fango.
+		Este talismán encierra ese relente de medianoche bajo el cuenco de la sombrilla; al verterse, la luz blanca estalla como una ventisca de cuchillos de escarcha, mas huye ante el sol matutino.
+		'''
+	Power: «Alma lunar»: acertar de noche con la sombrilla abierta acumula fases lunares; al llenarse, el siguiente vertido invertido se vuelve un torrente lunar: área del torrente +50%, y los impactos desatan ráfagas lunares con un 35% de daño en área.
+	Burden: Este talismán pierde todo su poder durante el día, no otorgando ningún beneficio
 }
 
 KikasaTalismanXiao: {
-	DisplayName: Talismán de los Nueve Cielos
-	Tooltip: El paraguas se eleva a gran altura y las gotas que caen en picado ganan tremenda velocidad y daño; el intervalo de lluvia aumenta un 10%
-	Origin: El goteo del alero apenas levanta leves ondas, mas la lluvia precipitada desde las nubes de los Nueve Cielos horada la roca. Cuanto más encumbrado el origen, más fiero es su descenso
-	Power: «Nueve Cielos» La altura del paraguas suspendido se duplica y las gotas se precipitan verticalmente desde gran altura: su velocidad terminal aumenta un 40% y su daño directo un 25%, mostrando sombras de aviso en el suelo antes de impactar
-	Burden: El intervalo entre gotas de la lluvia de tinta se incrementa un 10%
+	DisplayName: Talismán de las nueve alturas
+	Tooltip: La sombrilla asciende al doble de altura, las gotas ganan tremenda velocidad y daño al caer de lo alto; intervalo de lluvia +10%
+	Origin:
+		'''
+		Desde los riscos más altos de la serranía, las cascadas caen miles de varas al abismo bramando como truenos y perforando cantos de granito de parte a parte.
+		Elevando la sombrilla hacia las nueve alturas, el agua cae con el peso colosal de la gravedad, arrastrando la fuerza de hendir riscos y quebrar peñas.
+		'''
+	Power: «Nueve alturas»: la altura de suspensión de la sombrilla se duplica, haciendo caer las gotas en vertical desde gran altitud: velocidad terminal +40%, daño directo +25%, proyectando sombras de aviso en el suelo antes del impacto.
+	Burden: Intervalo de ataque de la lluvia prolongado en un 10%
 }
 
 KikasaTalismanMei: {
-	DisplayName: Talismán de la lluvia de moho
-	Tooltip: Las gotas aplican corrosión venenosa de moho; los enemigos infectados que caen liberan esporas tóxicas; daño de impacto directo -10%
-	Origin: Durante la temporada de lluvias en el sur, la humedad pertinaz impregna los rincones y hace brotar moho en las paredes. Una vez que el agua se torna pútrida e insidiosa, se adhiere como veneno en los huesos
-	Power: «Lluvia de moho» Los impactos aplican el estado «Corrosión de moho» (hasta 10 acumulaciones, infligiendo daño continuo según las acumulaciones); al morir un enemigo afectado, estalla en una bruma de esporas que contagia la mitad de las acumulaciones a los enemigos cercanos con daño leve
-	Burden: El daño de impacto directo de las gotas se reduce un 10%
+	DisplayName: Talismán de lluvia mohosa
+	Tooltip: Las gotas contagian moho venenoso, los enemigos caídos revientan en nubes de esporas infecciosas; daño directo de la gota -10%
+	Origin:
+		'''
+		En los meses de lluvias eternas, las sandalias de paja embarradas crían moho verdoso en dos noches, despidiendo un olor dulzón y asfixiante a podredumbre.
+		Encerrando esa pestilencia en el talismán, cada gota inocula una mancha que corroe los huesos; al exhalar la víctima el último suspiro, nubes de esporas estallan para contagiar a los que la rodean.
+		'''
+	Power: «Lluvia mohosa»: las gotas inoculan «Moho corrosivo» al golpear (hasta 10 acumulaciones con daño continuo); los enemigos infestados que perezcan estallan en una nube de esporas, contagiando la mitad de sus acumulaciones a los enemigos cercanos con daño leve.
+	Burden: Daño de impacto directo de la gota reducido en un 10%
 }
 
 KikasaTalismanPi: {
-	DisplayName: Talismán del trueno celestial
-	Tooltip: Breve ventana tras verter la cascada en la que las gotas pueden convocar truenos celestiales; el estallido del surtidor se reduce un 20%
-	Origin: Las aguas acumuladas en extensas ciénagas atraen los rayos. Llegada el agua a su cúspide, el trueno desciende encauzado por ella, rasgando las nubes hasta el suelo
-	Power: «Trueno celestial» Tras vaciar la cascada se abre una ventana de 10 segundos: los impactos tienen un 20% de probabilidad de convocar un rayo celestial que inflige un 180% de daño perforante
-	Burden: El daño de estallido de los surtidores de tinta se reduce un 20%
+	DisplayName: Talismán de rayo celestial
+	Tooltip: Verter el torrente abre una ventana donde las gotas pueden atraer rayos penetrantes; daño del géiser -20%
+	Origin:
+		'''
+		Cuando las riadas estivales revientan las presas de los lagos, el agua cubre tres palmos bajo un manto de nubarrones, invitando a dragones de relámpago que azotan el agua encendiendo fuegos.
+		El torrente abre una senda de agua; al chocar las fuerzas del cielo, cada gota caída atrae el rayo como una lanza hendiendo al enemigo.
+		'''
+	Power: «Rayo celestial»: tras verter un torrente se abre una ventana de 10s: las gotas tienen un 20% de probabilidad al impactar de atraer un rayo que inflige el 180% del daño de gota penetrando a lo largo del rayo.
+	Burden: Daño base de erupción del géiser de tinta reducido en un 20%
 }
 
 KikasaTalismanXia: {
-	DisplayName: Talismán del fulgor crepuscular
-	Tooltip: El daño de tinta se eleva al alba y al ocaso prendiendo llamas crepusculares; el daño se reduce un 6% a mediodía y a medianoche
-	Origin: En el romper del alba y en el crepúsculo, las nubes del confín arden como un incendio. Al fundir ese instante de luz celeste en el agua, hasta la lluvia más fría se enciende en arreboles
-	Power: «Fulgor crepuscular» Durante hora y media en torno al amanecer y al atardecer, el daño de tinta aumenta un 18% y las gotas prenden «Llama crepuscular» causando quemadura breve, tiñendo toda la lluvia de un tono anaranjado
-	Burden: A mediodía y en plena medianoche, el daño de tinta disminuye un 6%
+	DisplayName: Talismán de fulgor crepuscular
+	Tooltip: El daño de tinta se dispara al alba y al ocaso encendiendo llamaradas; daño reducido un 6% a mediodía y medianoche
+	Origin:
+		'''
+		Al alba y al ocaso, cuando el día y la noche se dan la mano, el horizonte arde con arreboles como sangre derramada mientras agua y fuego se enredan en las nubes.
+		Atrayendo esa media vara de incienso de sol poniente al tintero, hasta el agua más helada prende en llamaradas carmesíes.
+		'''
+	Power: «Fulgor crepuscular»: en el intervalo de 1.5 horas alrededor del amanecer y atardecer, todo el daño de tinta aumenta en un 18%, las gotas prenden «Llama del ocaso» con quemadura continua y la lluvia adopta tonos dorados y anaranjados.
+	Burden: Todo el daño de tinta se reduce en un 6% a mediodía y medianoche
 }
 
 KikasaTalismanJi: {
-	DisplayName: Talismán del cielo despejado
-	Tooltip: Mantener el paraguas acumula serenidad celestial; cerrarlo descarga un rayo solar en el cursor; el daño de tinta con el paraguas abierto baja un 8%
-	Origin: Por densos que sean los nubarrones, siempre llega el instante en que el sol los rasga. Ese rayo de luz que quiebra las nubes al cerrar el dosel es el más deslumbrante de todos
-	Power: «Cielo despejado» Los impactos con el paraguas abierto acumulan serenidad; al cerrar el paraguas, las nubes se parten y descargan un haz abrasador sobre el cursor con daño acorde a la carga
-	Burden: Todo el daño de tinta se reduce un 8% mientras el paraguas permanezca abierto
+	DisplayName: Talismán de cielo raso
+	Tooltip: Mantener la sombrilla acumula sol, cerrarla descarga un haz ardiente de luz solar; daño de tinta -8% mientras esté abierta
+	Origin:
+		'''
+		Tras la tempestad, si las nubes negras cuelgan muy bajas, a veces se abre una brecha dorada en el corazón del nubarrón por donde el sol cae como oro derretido cociendo la tierra.
+		Este talismán invierte el orden: la lluvia fría contiene la furia solar mientras está abierta; al cerrar la sombrilla, las nubes se parten y la luz del día cae a plomo como una columna de fuego.
+		'''
+	Power: «Aclarecer»: acertar con la sombrilla abierta acumula vigor de cielo raso; al cerrar la sombrilla las nubes se abren descargando un haz ardiente en el cursor, con daño proporcional a la carga acumulada.
+	Burden: Todo el daño de tinta se reduce en un 8% mientras la sombrilla permanezca abierta
 }
 
 KikasaTalismanYu: {
-	DisplayName: Talismán de la danza ritual de la lluvia
-	Tooltip: Los impactos acumulan devoción hasta desatar el Gran Rito con diluvio denso y surtidores abiertos; el daño fuera del rito se reduce un 10%
-	Origin: En las sequías remotas se erigían altares y se danzaba al son de tambores para impetrar la lluvia, ceremonia conocida como la danza Yu. Siendo el paraguas el vínculo espiritual, el diluvio es la respuesta del cielo y la tierra
-	Power: «Gran Rito» Los impactos acumulan devoción hasta acceder automáticamente al estado «Gran Rito» durante 10 segundos: el intervalo de lluvia se reduce a la mitad, el daño de gota aumenta un 15%, todas forman charcos y los surtidores se liberan por completo, brotando tres surtidores simultáneos al concluir
-	Burden: En estado normal fuera del Gran Rito, todo el daño de tinta se reduce un 10%
+	DisplayName: Talismán de danza de lluvia
+	Tooltip: Acertar continuamente activa el «Gran Rito» desatando chaparrón y géiseres; daño de tinta normal -10% fuera del rito
+	Origin:
+		'''
+		En las grandes sequías donde la tierra se agrietaba mil leguas, los antiguos chamanes alzaban altares de tres pisos, tocando tambores de piel de caimán con el cabello revuelto para ofrecer sombrillas como plegarias de agua.
+		Al cumplirse las ofrendas, los truenos estallaban y riadas negras caían a plomo como ríos volcados.
+		Este es el pergamino supremo del rito de la lluvia: al iniciarse el Gran Rito, diluvios y géiseres rompen a la vez.
+		'''
+	Power: «Gran Rito»: los impactos de gota acumulan puntos de rito, entrando automáticamente al llenarse en el «Gran Rito» de 10s: intervalo de lluvia reducido a la mitad, daño de gotas +15%, todas las gotas forman charcos y los géiseres se activan; al despedirse, tres géiseres brotan bajo la sombrilla.
+	Burden: Todo el daño de tinta se reduce en un 10% fuera del Gran Rito
 }

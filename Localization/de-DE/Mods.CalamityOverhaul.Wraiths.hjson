@@ -1,73 +1,105 @@
 LanternBoy: {
-	DisplayName: Laternenknabe
-	Origin: Wer nachts den Bergweg geht, erzählt von einer Laterne am Ende der Straße, und niemand darunter. Einer wagte einen zweiten Blick; als er zu sich kam, schaute er selbst von innen hinaus
-	Power: »Wegweisung« Drei Geisterlaternen umkreisen den Träger. Ihre Schatten wiederholen Onikiris normale Schnitte im Versatz, zusammen mit sechzig Prozent der Kraft
-	DeathReason: "{0} wurde der im vierten Licht"
+	DisplayName: Der Laternendirne
+	Origin:
+		'''
+		Auf dunklen Bergpfaden schaukelt oft eine bleiche weiße Papierlaterne durch die Nacht, schwebend über nackten Kinderfüßen, die den Boden niemals berühren.
+		Blickt ein nächtlicher Wanderer länger als drei Atemzüge in die Flamme, versiegeln sich seine Augen wie mit heißem Wachs, und die Seele wird gellend in die Papierhaut gerissen.
+		Drei ermordete Stellvertreterseelen sind bereits darin gebannt; wohin ihr fables Licht fällt, bewegen sich Laternenschatten im Takt der Klinge und fechten anstelle des Meisters.
+		'''
+	Power: "「Geleitendes Licht」Drei bleiche Geisterlaternen kreisen um deinen Körper; ihr Schein wirft Schatten, die deine normalen Hiebe zeitversetzt mit sechzig Prozent ihrer Ursprungskraft spiegeln."
+	DeathReason: "{0} wurde als vierter Gefangener in die weiße Papierlaterne gelockt"
 }
 
 CrimsonBride: {
-	DisplayName: Scharlachbraut
-	Origin: Vor jemandes Tor stand eine Sänfte ohne Träger, sieben Nächte lang. In der achten Nacht hob jemand den Vorhang; von da an gehörte die Sänfte einer neuen Braut
-	Power: »Brautzug« Drücke Selbst-Neustart, und die Sänfte folgt dem Blut, trägt den Klingenträger in eine leere Hochzeitshalle; beim Becherteilen werden Wunden und Zustände neu gestartet
-	DeathReason: "{0} stieg in jene Sänfte"
+	DisplayName: Die Scharlachbraut
+	Origin:
+		'''
+		Vor einem verlassenen Berggehöft stand eine prächtige achtsitzige karminrote Sänfte ohne lebende Träger — nur bleiche Papierpuppen mit starr grinsenden Fratzen.
+		Hob sich der Vorhang einen Spalt, klagten schrille Hochzeitsbläser durch den Wald; wer zur Geisterstunde auserkoren war, musste im toten Brautgemach vermählt werden.
+		Ruft ein bedrängter Klingenführer diese Sänfte an, prescht sie auf einer Blutspur durch die Leere und empfängt ihn in einem Saal aus weißer Trauer und roter Seide.
+		Beim Leeren des Brautbechers löscht der Saal alle tödlichen Wunden und Leiden aus und kehrt den Tod ins Leben um.
+		'''
+	Power: "「Der Brautzug」Drücke die Neustart-Taste und die blutrote Sänfte naht auf Trauermusik reitend, um den Klingenführer in ein stilles Blutgemach zu führen; beim Brauttoast werden alle Wunden und Leiden rein gewaschen und neu gestartet."
+	DeathReason: "{0} bestieg die Scharlachsänfte und verneigte sich vor Himmel und Erde"
 }
 
 ScapeGhost: {
-	DisplayName: Ersatzgeist
-	Origin: Zu Lebzeiten hinterließ es keinen Namen, nur die Erinnerung, unzählige Male für andere gestorben zu sein, bis es vergaß, welcher Tod der eigene war. Am Tag der Eintragung ins Register stand sein Geburtsdatum neben deinem Namen: fortan gehört auch dein Tod ihm
-	Power: »Sterben an deiner Stelle« Im Augenblick des Todes greift es aus der Ferne ein Leben und drückt deinen Tod in jenen Leib
-	DeathReason: "{0} starb einmal an seiner Stelle"
+	DisplayName: Der Sühnegeist
+	Origin:
+		'''
+		Eine grobe Strohpuppe, umwickelt mit Menschenhaaren und Geburtsdaten, deren Leib von tausenden Hieben und Schnittnarben am Hals gezeichnet ist.
+		Zu Lebzeiten starb sie unzählige Male anstelle anderer, bis ihr eigener Leib zerfiel und sie vergaß, welcher Tod ihr eigener war.
+		Am Tage der Bindung an das Register wird dein Todesomen mit Kordel um ihren Strohhals geschlungen.
+		Im Augenblick des unausweichlichen Verderbens greifen eisige Totenhände aus der Nacht und zwingen dein Sterben in das Fleisch eines nahen Wesens.
+		'''
+	Power: "「Unheilsübertragung」Im Moment des tödlichen Schicksalsschlags überträgt der Geist deinen Tod gewaltsam auf ein fernes Lebewesen, lässt dessen Leib sterben und rettet dein Leben."
+	DeathReason: "{0} wurde zur toten Seele hinter der Strohpuppe"
 }
 
 HeadlessShade: {
-	DisplayName: Kopfloser Schatten
-	Origin: In einer Nacht schwankender Lampen sah jemand den eigenen Schatten sich bewegen, und über den Schultern war nichts. Was den Kopf verloren hatte, wohnte fortan im Schatten eines Lebenden
-	Power: »Zergliederung« Es lauert hinter dir, wittert Lebendes und stürzt sich darauf, den Leib in Stücke zu reißen
-	DeathReason: "{0} wurde vom eigenen Schatten in Stücke gerissen"
+	DisplayName: Der kopflose Schatten
+	Origin:
+		'''
+		Im flackernden Schein der Mitternachtslampe blickte jemand zu Boden und sah seinen Schatten kriechen — doch über den Schultern war rein gar nichts.
+		Dieses geköpfte Scheusal lauert seit Zeitaltern in toten Winkeln, besessen von dem Wahn, sich einen vollständigen lebenden Leib zusammenzustoppeln.
+		Es hat sich in den Schatten unter deinen Sohlen eingenäht; wittert es feindliches Leben, bricht es aus dem Boden hervor und reißt die Beute in Stücke.
+		'''
+	Power: "「Zerstückelung」Lauert im Schatten unter deinen Sohlen und bricht aus dem Boden hervor, sobald es lebende Beute wittert, um ihr Fleisch mit bestialischer Wut zu zerfetzen."
+	DeathReason: "{0}s Kopf wurde vom kopflosen Schatten glatt abgerissen"
 }
 
 GhostHand: {
-	DisplayName: Verkohlte Hand
-	Origin: Ein verkohlter, verdorrter Arm, so verbrannt, und die fünf Finger noch fest geballt. Niemand weiß, an wem er einst wuchs; nur dass er greift, sobald er Lebendes sieht
-	Power: »Griff« Die verdorrte Hand greift von hinten, klemmt die Beute fest und zerquetscht sie wieder und wieder; sind es viele, kommen mehr Hände, selbst Kolosse entkommen den fünf Fingern kaum
-	DeathReason: "{0} wurde in die Wand geklemmt"
+	DisplayName: Die Brandhand
+	Origin:
+		'''
+		Ein verkohlter Arm, geborgen aus der Asche von Totenfeuern und Brandstätten, dessen fünf krallenartige Finger in unlösbarem Griff verkrampft sind.
+		Niemand weiß, in welchem Flammenmeer dieser Leib verging, nur dass die erstickende Wut seines Würgegriffs über den Tod hinaus ungebändigt währt.
+		Wittert die Klaue den Hauch lebenden Atems, bricht sie aus dem Nichts hervor, packt die Kehle der Beute und zermalmt Knochen zu Staub.
+		'''
+	Power: "「Knochengriff」Ein verkohlter Geisterarm bricht aus der Leere hervor, um die Beute an der Kehle zu packen und ihre Bewegung zu ersticken; bei Feindesscharen greifen mehr Hände zu und zerquetschen selbst Riesen zwischen den Fingern."
+	DeathReason: "{0}s Knochen wurden von der Brandhand restlos zu Pulver zerquetscht"
 }
 
 GhostRain: {
-	DisplayName: Geisterregen
-	Origin: Wer in jenem Regen stand, sagt dasselbe: oben sind keine Wolken, sondern Gesichter, Schicht um Schicht. Die Tropfen tun nicht weh; jeder einzelne scheint dich zu beanspruchen
-	Power: »Geisterregen« Im Dienst, solange die Klinge gehoben ist, bleibt der Schleier und der Geisterregen fällt; Lebendes im Vorhang wird langsam zerfressen oder in den Regen gezogen
-	DeathReason: "{0} wurde vom Regen beansprucht"
+	DisplayName: Der Geisterregen
+	Origin:
+		'''
+		Eine unheilvolle Wolke aus alten Schriftrollen, die keinen süßen Regen spendet, sondern eiskaltes schwarzes Wasser, das nach Schlamm und Fäulnis stinkt.
+		Wer voller Grauen aufblickt, sieht unter den Wolken Schichten bleicher Totengesichter mit geschlossenen Augen herabstarren.
+		Der schwarze Regen fällt schmerzlos, doch Myriaden unsichtbarer Leichenegel nagen an Mark und Seele; wer drei Atemzüge durchnässt wird, schmilzt wie Wachs und wird in den Schlick gezerrt.
+		'''
+	Power: "「Düsterschauer」Das Führen der Klinge ruft eine drückende Decke schwarzer Wolken und strömenden Regen herbei; Lebewesen darin schmelzen stetig dahin und bieten den Geistern ein leichtes Ziel."
+	DeathReason: "{0} wurde vom schwarzen Regen zersetzt und in den Schlamm gerissen"
 }
 
 System: {
-	ScapeGhostActivated: "{0} wurde zum Ersatzgeist"
+	ScapeGhostActivated: "{0} wurde zum Sündenbock"
 	ScapeGhostUnknownTarget: ein Lebewesen
-	ScapeGhostDeathBroadcast: "{0} wurde zum Ersatzgeist von {1}, {2}"
-	ErosionCrawl: Unter der Haut kriecht etwas
-	ErosionStain: An den Fingerspitzen steigt Leichenblau auf
-	ErosionMirror: Das im Spiegel sieht nicht ganz nach dir aus
-	RevivalStir: Der Name auf dem Talisman hat sich bewegt
-	RevivalRise: Es sieht dich durch das Papier an
-	RevivalBrink: Der Siegelzettel brennt zu heiß zum Halten
-	RevivalHudBrink: Noch einmal in Dienst, dann erwacht es
+	ScapeGhostDeathBroadcast: "{0} wurde zum Sündenbock für {1}, {2}"
+	ErosionCrawl: Kalte Grabeswürmer scheinen unter deiner Haut zu kriechen
+	ErosionStain: Auf deinen Fingerkuppen blühen unauslöschliche Leichenflecken
+	ErosionMirror: Das Gesicht im Bronzespiegel sieht dir kaum noch ähnlich
+	RevivalStir: Der zinnoberrote Geburtszug auf dem Siegeltalisman zuckte
+	RevivalRise: Jenes Etwas starrt dich unverwandt durch das gelbe Papier an
+	RevivalBrink: Der Siegeltalisman glüht wie Brenneisen, kaum noch zu bändigen
+	RevivalHudBrink: Das Grauen erwacht gleich; ein Schritt mehr und es reißt deinen Leib an sich
 }
 
 Coven: {
-	RainHandName: Griff aus dem Regen
-	RainHandNote: Durchnässte Beute sitzt nicht mehr außerhalb der Reichweite. Die verdorrte Hand hängt von der Regenlinie über ihr herab. Im Regen greifen höchstens fünf Hände zugleich, und der Druck wächst mit dem Niederschlag
-	RainShadeName: Nasse Schneide
-	RainShadeNote: Solange die Wunde des Schattens noch offen ist, verdoppelt sich jeder Tick Regenätzung auf diesem Ziel
-	HandShadeName: Festgehalten und geschnitten
-	HandShadeNote: Der Schatten stürzt zuerst auf Beute, die die verdorrte Hand hält. Ihre Geschwindigkeit ist bereits null, dieser Schnitt verfehlt nicht
-	LanternHandName: Im Laternenlicht gesehen
-	LanternHandNote: Beute, die die Laterne gesehen hat, findet die Hand auch durch Deckung; Laternenklingen auf einem gehaltenen Ziel treffen sechzig Prozent schwerer
-	BrideName: Hochzeitshalle
-	BrideNote: Beute, die beim Becherteilen in die Halle gezogen wird, lässt alle anderen Male nicht verblassen, bis die Halle zerfällt
-	ScapeName: Den Schlag auffangen
-	ScapeNote: Stirbt der Ersatz einmal, fällt die Wiederbelebung der übrigen Dienstgeister auf dem Rad um eine Stufe
-	CallName: Einander rufen
-	CallNote: Dienstgeister auf demselben Rad wecken einander: wird einer in Dienst genommen, gewinnen die übrigen etwas Wiederbelebung. Auch zwischen zweien ohne eigene Reaktion gilt das
-	BurstName: Drei Male brechen
-	BurstNote: Treffen drei verschiedene Male auf einem Ziel zusammen, detonieren sie als ein Schaden, und jeder beteiligte Dienstgeist zahlt eine Wiederbelebung
+	RainHandName: Griff im Regen
+	RainHandNote: Vom schwarzen Regen durchnässte Beute ist ungeachtet der Distanz greifbar; die Brandhand bricht direkt aus den Regenfäden herab. Bis zu fünf Hände greifen zugleich, und der Quetschschaden verdoppelt sich mit der Stärke des Sturms
+	RainShadeName: Nasse Klinge
+	RainShadeNote: Solange die vom Schatten geschlagene Wunde klafft, verdoppelt jeder Tick der Regenverätzung den Schaden am Ziel
+	HandShadeName: Packen und Spalten
+	HandShadeNote: Der kopflose Schatten stürzt sich vorrangig auf von der Brandhand gepackte Beute; da das Ziel auf Tempo Null fixiert ist, verfehlt der Richtstreich nie
+	LanternHandName: Erhellung
+	LanternHandNote: Von Geisterlaternen erhellte Beute kann von der Brandhand selbst durch Mauern und Felsen gejagt werden; Laternenschläge fügen gepackten Zielen 60% mehr Schaden zu
+	BrideName: Brautgemach
+	BrideNote: Lebewesen, die während des Brauttoasts ins Brautgemach gebannt werden, behalten alle übrigen Geistermale, bis das Gemach verweht
+	ScapeName: Unheilsabwendung
+	ScapeNote: Stirbt die Strohpuppe an deiner statt, weicht das Erwachen aller übrigen Geister auf dem Brett um eine Stufe zurück
+	CallName: Geisterruf
+	CallNote: Geister auf demselben Brett wecken einander: Wird einer befohlen, rückt das Erwachen der anderen ein Stück näher; selbst Paare ohne eigene Synergien teilen den finsteren Hunger
+	BurstName: Dreimal-Bruch
+	BurstNote: Drei verschiedene Geistermale auf einem Ziel lassen die Flüche zeitgleich für gewaltigen Schaden detonieren, was das Erwachen jedes beteiligten Geistes steigert
 }

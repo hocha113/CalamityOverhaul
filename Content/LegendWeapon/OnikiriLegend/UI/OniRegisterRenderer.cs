@@ -499,6 +499,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 影绘细节板 ======================
 
+        //文案区几何:量高与绘制共用这一份口径,改一处两处都跟着走
+        private const float DetailTextTopRatio = 0.48f;
+        private const float DetailTextPad = 24f;
+        /// <summary>右缘留给线香的落地宽度</summary>
+        private const float DetailIncenseGutter = 88f;
+        /// <summary>题头刀痕到正文首行</summary>
+        private const float DetailBodyTopOffset = 34f;
+        /// <summary>正文底沿到板底,留给代价读数</summary>
+        private const float DetailBodyBottomPad = 52f;
+        private const float DetailLabelScale = 0.62f;
+        private const float DetailBodyScale = 0.74f;
+        /// <summary>小签到其下正文的行进</summary>
+        private const float DetailLabelStep = 16f;
+        /// <summary>来历与赋力之间的空行</summary>
+        private const float DetailSectionGap = 8f;
+        /// <summary>正文列内缘让给滚动朱迹的一道,再往右是线香与复苏读数,不能占</summary>
+        private const float DetailMarkGutter = 8f;
+
         //裱板角落家纹水印:外环+内菱+心点(与稽古符同 SVG 底座)
         private const string DetailMonD =
             "M 0,-1 C 0.5523,-1 1,-0.5523 1,0 C 1,0.5523 0.5523,1 0,1"
@@ -530,13 +548,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             DrawDetailShadow(sb, ui, entry, rect, lightCenter, alpha);
 
             //====文案区(右缘给线香让位)====
-            float textTop = rect.Y + rect.Height * 0.48f;
-            float textLeft = rect.X + 24f;
-            float headerRight = rect.Right - 24f;
-            bool hasIncense = entry.CanEquip;
-            float textRight = hasIncense ? rect.Right - 88f : headerRight;
+            float textTop = rect.Y + rect.Height * DetailTextTopRatio;
+            float textLeft = rect.X + DetailTextPad;
+            float headerRight = rect.Right - DetailTextPad;
 
-            //名讳 + 状态签
+            //名讳 + 状态签(题头不随正文滚动)
             string name = entry.Name?.Invoke() ?? entry.Key;
             Utils.DrawBorderString(sb, name, new Vector2(textLeft, textTop), OnikiriUITheme.HotWhite * alpha, 1.02f);
             (string stateText, Color stateCol) = StateLabel(entry);
@@ -548,23 +564,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Utils.DrawBorderString(sb, stateText, new Vector2(headerRight - stSize.X, textTop + 6f), stateCol * alpha, 0.68f);
             OniBrush.DrawTaperedSlash(sb, new Vector2(textLeft - 4f, textTop + 26f), new Vector2(headerRight + 4f, textTop + 24f), 1.8f, 1.2f, alpha * 0.8f);
 
-            //来历(打字机+湿墨) 与 赋力,各带一枚小签
-            string origin = entry.Origin?.Invoke() ?? string.Empty;
-            string power = entry.Power?.Invoke() ?? string.Empty;
-            float y = textTop + 34f;
-            Utils.DrawBorderString(sb, OniRegisterUI.OriginLabel.Value, new Vector2(textLeft, y), OnikiriUITheme.Deep * (alpha * 1.2f), 0.62f);
-            y += 16f;
-            y = DrawTypedWrapped(sb, font, origin, new Vector2(textLeft, y), textRight - textLeft,
-                OnikiriUITheme.TextDim, 0.74f, alpha, ui.DetailVisibleChars, ui.DetailInkStrength,
-                maxLines: 3, ellipsis: true);
-            if (power.Length > 0 && ui.DetailVisibleChars > origin.Length) {
-                y += 8f;
-                Utils.DrawBorderString(sb, OniRegisterUI.PowerLabel.Value, new Vector2(textLeft, y), OnikiriUITheme.Deep * (alpha * 1.2f), 0.62f);
-                y += 16f;
-                DrawTypedWrapped(sb, font, power, new Vector2(textLeft, y), textRight - textLeft,
-                    Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.Bright, 0.28f), 0.74f, alpha,
-                    ui.DetailVisibleChars - origin.Length, ui.DetailInkStrength,
-                    maxLines: 3, ellipsis: true);
+            //来历与赋力:全文照录,读不下的往下滚,不截省略号
+            Rectangle body = DetailBodyRect(rect, entry);
+            if (body.Height > 0) {
+                float contentH = MeasureDetailBody(font, entry, body);
+                float maxScroll = Math.Max(0f, contentH - body.Height);
+                float scroll = MathHelper.Clamp(ui.DetailScroll, 0f, maxScroll);
+
+                sb.End();
+                Rectangle prevScissor = sb.GraphicsDevice.ScissorRectangle;
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                    DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
+                sb.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(sb, body);
+
+                DrawDetailBody(sb, font, ui, entry, body, body.Y - scroll, alpha);
+
+                sb.End();
+                sb.GraphicsDevice.ScissorRectangle = prevScissor;
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                    DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+                DrawDetailScrollMark(sb, body, contentH, maxScroll, scroll, alpha, ui.ShaderTime);
             }
 
             //线香复苏计 + 代价读数（图鉴只报数，结印在结印盘上做）
@@ -576,6 +596,79 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 Utils.DrawBorderString(sb, costLine, new Vector2(rect.X + 24f, rect.Bottom - 40f),
                     OnikiriUITheme.TextDim * (alpha * 0.82f), 0.62f);
             }
+        }
+
+        /// <summary>正文可视区:题头刀痕之下到代价读数之上,右缘让位线香</summary>
+        internal static Rectangle DetailBodyRect(Rectangle rect, OniGhostEntry entry) {
+            bool hasIncense = entry?.CanEquip == true;
+            int left = rect.X + (int)DetailTextPad;
+            int right = rect.Right - (int)(hasIncense ? DetailIncenseGutter : DetailTextPad);
+            int top = (int)(rect.Y + rect.Height * DetailTextTopRatio + DetailBodyTopOffset);
+            int bottom = rect.Bottom - (int)(hasIncense ? DetailBodyBottomPad : DetailTextPad);
+            return new Rectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top));
+        }
+
+        /// <summary>正文折行宽度:正文区扣掉内缘朱迹那一道</summary>
+        private static float DetailWrapWidth(Rectangle body) => Math.Max(32f, body.Width - DetailMarkGutter);
+
+        /// <summary>正文全高(与 <see cref="DrawDetailBody"/> 同口径),供图鉴算滚动上限</summary>
+        internal static float MeasureDetailBody(DynamicSpriteFont font, OniGhostEntry entry, Rectangle body) {
+            if (entry == null || body.Width <= 0) {
+                return 0f;
+            }
+            string origin = entry.Origin?.Invoke() ?? string.Empty;
+            string power = entry.Power?.Invoke() ?? string.Empty;
+            float wrapW = DetailWrapWidth(body);
+            float h = DetailLabelStep + MeasureWrappedHeight(font, origin, wrapW, DetailBodyScale);
+            if (power.Length > 0) {
+                h += DetailSectionGap + DetailLabelStep
+                    + MeasureWrappedHeight(font, power, wrapW, DetailBodyScale);
+            }
+            return h;
+        }
+
+        /// <summary>可滚正文:来历与赋力各带一枚小签,逐字打字机与湿墨照旧</summary>
+        private static void DrawDetailBody(SpriteBatch sb, DynamicSpriteFont font, OniRegisterUI ui,
+            OniGhostEntry entry, Rectangle body, float y, float alpha) {
+            string origin = entry.Origin?.Invoke() ?? string.Empty;
+            string power = entry.Power?.Invoke() ?? string.Empty;
+            float wrapW = DetailWrapWidth(body);
+            Utils.DrawBorderString(sb, OniRegisterUI.OriginLabel.Value, new Vector2(body.X, y),
+                OnikiriUITheme.Deep * (alpha * 1.2f), DetailLabelScale);
+            y += DetailLabelStep;
+            y = DrawTypedWrapped(sb, font, origin, new Vector2(body.X, y), wrapW,
+                OnikiriUITheme.TextDim, DetailBodyScale, alpha, ui.DetailVisibleChars, ui.DetailInkStrength);
+            if (power.Length == 0 || ui.DetailVisibleChars <= origin.Length) {
+                return;
+            }
+            y += DetailSectionGap;
+            Utils.DrawBorderString(sb, OniRegisterUI.PowerLabel.Value, new Vector2(body.X, y),
+                OnikiriUITheme.Deep * (alpha * 1.2f), DetailLabelScale);
+            y += DetailLabelStep;
+            DrawTypedWrapped(sb, font, power, new Vector2(body.X, y), wrapW,
+                Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.Bright, 0.28f), DetailBodyScale, alpha,
+                ui.DetailVisibleChars - origin.Length, ui.DetailInkStrength);
+        }
+
+        /// <summary>正文溢出时,列内缘立一道朱迹,高低即读到何处(非现代滑块)</summary>
+        private static void DrawDetailScrollMark(SpriteBatch sb, Rectangle body,
+            float contentH, float maxScroll, float scroll, float alpha, float time) {
+            if (maxScroll <= 0.5f) {
+                return;
+            }
+            int x = body.Right - 3;
+            int trackY = body.Y + 4;
+            float trackH = body.Height - 8f;
+            if (trackH < 12f) {
+                return;
+            }
+            sb.Draw(Pixel, new Rectangle(x, trackY, 1, (int)trackH), PixelSrc, OnikiriUITheme.Deep * (alpha * 0.3f));
+            float markH = Math.Min(trackH, Math.Max(14f, trackH * (body.Height / contentH)));
+            float markY = trackY + scroll / maxScroll * (trackH - markH);
+            //未曾往下翻时朱迹自明自灭,提醒纸还没读完
+            float breath = scroll > 0.5f ? 1f : 0.7f + 0.3f * MathF.Sin(time * 2.4f);
+            sb.Draw(Pixel, new Rectangle(x, (int)markY, 2, (int)markH), PixelSrc,
+                OnikiriUITheme.Seal * (alpha * 0.62f * breath));
         }
 
         /// <summary>细节板角落家纹水印:淡朱环+菱,极缓呼吸,不抢影绘</summary>
@@ -754,11 +847,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>逐字换行+打字机+湿墨,返回块底 Y;freshColor 缺省湿墨绯红(改铭台传灼橙作烙印)</summary>
         internal static float DrawTypedWrapped(SpriteBatch sb, DynamicSpriteFont font, string text, Vector2 pos,
             float maxWidth, Color color, float scale, float alpha, int visibleChars, float inkStrength,
-            Color? freshColor = null, int maxLines = int.MaxValue, bool ellipsis = false) {
+            Color? freshColor = null) {
             if (string.IsNullOrEmpty(text)) {
                 return pos.Y;
             }
-            List<string> lines = VaultUtils.WrapText(text, font, maxWidth, scale, maxLines, ellipsis);
+            List<string> lines = VaultUtils.WrapText(text, font, maxWidth, scale);
             float lineH = font.MeasureString("字").Y * scale + 2f;
             int remaining = visibleChars;
             float y = pos.Y;
