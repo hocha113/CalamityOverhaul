@@ -22,7 +22,7 @@ OniMeiRubbingOnikiri: {
 	Tooltip: El nombre primordial de Onikiri, conservando todas sus propiedades originales sin bonificaciones ni penalizaciones
 	Origin:
 		'''
-		Un expediente amarillento archivado en una comisaría de la vieja concesión: en las noches de lluvia, una dama con qipao y paraguas de papel rojo rondaba el puente de piedra del río buscando a los transeúntes.
+		Un expediente amarillento sellado en los archivos de un antiguo juzgado: en las noches de lluvia, una hermosa dama vestida de carmesí con paraguas de papel rojo rondaba el puente de piedra del río buscando a los transeúntes.
 		Cualquiera que le respondiera era hallado al amanecer junto al puente con la piel del rostro arrancada de cuajo.
 		Un espadachín ciego cruzó la niebla; bajo el paraguas, un brazo cadavérico y pálido se extendió para estrangularlo. Al oír el viento cortarse, el espadachín desenvainó y asestó un tajo ascendente.
 		El brazo espectral y el paraguas cayeron al río, disolviéndose en fétido lodo negro. Solo la espada permaneció, empapada en aquella ponzoña primordial, convirtiéndose en el armazón de diez mil sellos siniestros.
@@ -142,9 +142,9 @@ OniMeiRubbingTessetsu: {
 	Tooltip: El primer impacto de cada tiempo del combo inflige +25% de daño a máquinas y metales; daño base del arma -10%
 	Origin:
 		'''
-		Un taller de armamento abandonado sufrió una insólita plaga: engranajes y cilindros de acero comenzaron a cubrirse de brotes carnosos, quebrando cuanta espada los golpeara.
+		Un antiguo taller mecánico abandonado sufrió una insólita plaga: engranajes, pivotes y armazones de acero comenzaron a cubrirse de brotes carnosos, quebrando cuanta espada los golpeara.
 		Un anciano herrero llegó cargando una tosca y pesada barra de hierro en bruto sin afilar; los curiosos se mofaron de su tosca contundencia, pero el herrero la blandió con ambos brazos.
-		Con un estruendo ensordecedor, el núcleo palpitante quedó reducido a chatarra. Esta hoja está imbuida de esa fuerza bruta que parte el hierro como madera podrida, aunque muerde con lentitud la carne tierna.
+		Con un estruendo ensordecedor, el núcleo autómata palpitante quedó reducido a chatarra. Esta hoja está imbuida de esa fuerza bruta que parte el hierro como madera podrida, aunque muerde con lentitud la carne tierna.
 		'''
 	Power: «Corta-Metales»: el primer golpe de cada tiempo del combo básico inflige un 25% más de daño a enemigos mecánicos, metálicos o que despidan chispas al ser dañados
 	Burden: Daño base del arma reducido en un 10%
@@ -155,9 +155,9 @@ OniMeiRubbingKyushu: {
 	Tooltip: Daño masivo de ejecución exclusivamente contra cabezas o entidades únicas; daño del arma -3%, ineficaz en otros segmentos
 	Origin:
 		'''
-		Un veterano general que había abatido a innumerables caudillos enemigos era instado por sus estrategas a rebautizar su espada tras cada hazaña para engrandecer su fama.
-		El general se burló, atando en cambio un mechón de cabellos del vencido a la vaina y sentenciando: «Un filo sanguinario solo busca la carne tierna de la garganta; los títulos pomposos no son más que vanidad».
-		Pasaron las décadas y el general se volvió cenizas, pero la espada trenzada con cabellos aún codicia el cuello: cuando las horas de una testa se agotan, no deja superviviente.
+		Un veterano curtido en cien batallas que había abatido a innumerables caudillos enemigos era instado por sus consejeros a rebautizar su espada tras cada hazaña para engrandecer su fama.
+		El guerrero se burló, atando en cambio un mechón de cabellos del vencido a la vaina y sentenciando: «Un filo sanguinario solo busca la carne tierna de la garganta; los títulos pomposos no son más que vanidad».
+		Pasaron las décadas y el guerrero se volvió cenizas, pero la espada trenzada con cabellos aún codicia el cuello: cuando las horas de una testa se agotan, no deja superviviente.
 		'''
 	Power:
 		'''
@@ -566,9 +566,9 @@ OniMeiRubbingChinmei: {
 	Tooltip: Reduce enormemente el daño de proyectiles y el retroceso; ganancia de postura -15%
 	Origin:
 		'''
-		Un curtido oficial que sobrevivió a mil ráfagas de plomo siempre grababa sellos de apaciguamiento en el lomo de su sable.
-		Bajo una lluvia de metralla en el frente, los cobardes caen presos del pánico por los silbidos agudos y perecen en el caos.
-		Amparado en este talismán para sosegar el pulso, el oficial resistía la tempestad de flechas y balas, firme como un baluarte para blindar sus órganos vitales de un final fatídico.
+		Un curtido guerrero acorazado que sobrevivió a innumerables lances de sangre siempre grababa sellos de apaciguamiento en el lomo de su sable.
+		Bajo una lluvia de proyectiles y flechas en el frente, los cobardes caen presos del pánico por los silbidos agudos y perecen en el caos.
+		Amparado en este talismán para sosegar el pulso, el guerrero resistía la tempestad de flechas y peñascos, firme como un baluarte para blindar sus órganos vitales de un final fatídico.
 		'''
 	Power: «Calma del clamor»: recibir daño de proyectiles enemigos reduce el daño en un 12% y el retroceso al 35%
 	Burden: Velocidad de ganancia de postura estándar reducida en un 15%

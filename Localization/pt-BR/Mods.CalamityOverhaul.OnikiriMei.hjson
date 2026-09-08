@@ -22,7 +22,7 @@ OniMeiRubbingOnikiri: {
 	Tooltip: O nome primordial de Onikiri, mantendo todas as suas propriedades originais sem bônus nem penalidades
 	Origin:
 		'''
-		Um arquivo amarelado guardado nos registros de uma antiga delegacia da concessão: em noites chuvosas, uma dama em trajes orientais com sombrinha de papel vermelho rondava a ponte de pedra do rio, chamando pelos transeuntes.
+		Um arquivo amarelado guardado nos registros de um antigo tribunal: em noites chuvosas, uma bela dama em vestes escarlates com sombrinha de papel vermelho rondava a ponte de pedra do rio, chamando pelos transeuntes.
 		Quem quer que lhe respondesse era encontrado pela manhã junto à ponte com a pele do rosto arrancada a sangue-frio.
 		Certa vez, um espadachim cego cruzou a névoa; de sob a sombrinha, um braço cadavérico e pálido avançou para estrangulá-lo. Ao ouvir o sibilar do ar, o espadachim desembainhou num golpe ascendente.
 		O braço fantasmagórico e a sombrinha caíram no rio, desfazendo-se em lodo negro fétido. Apenas a espada restou, ensopada naquela mancha primordial, tornando-se o pilar de dez mil selos funestos.
@@ -142,9 +142,9 @@ OniMeiRubbingTessetsu: {
 	Tooltip: O primeiro golpe de cada tempo do combo causa +25% de dano a máquinas e metais; dano base da arma -10%
 	Origin:
 		'''
-		Uma fábrica de munições abandonada foi tomada por uma anomalia sinistra: engrenagens e eixos de aço começaram a brotar tumores carnosos, quebrando qualquer espada que tentasse atingi-los.
+		Uma antiga oficina mecânica abandonada foi tomada por uma anomalia sinistra: engrenagens, pivôs e armações de aço começaram a brotar tumores carnosos, quebrando qualquer espada que tentasse atingi-los.
 		Um velho ferreiro chegou carregando uma barra tosca de ferro cru sem afiação; curiosos riram daquela peça bruta, mas o ferreiro desferiu o golpe com ambos os braços.
-		Com um estrondo colossal, o núcleo pulsante foi esmagado em sucata. Esta lâmina está imbuída dessa força avassaladora: estraçalha ferro como madeira podre, embora morda a carne mole com lentidão.
+		Com um estrondo colossal, o núcleo autômato pulsante foi esmagado em sucata. Esta lâmina está imbuída dessa força avassaladora: estraçalha ferro como madeira podre, embora morda a carne mole com lentidão.
 		'''
 	Power: '''"Corta-Ferro": o primeiro acerto de cada golpe do combo básico causa 25% de dano adicional a inimigos metálicos, mecânicos ou que soltem faíscas ao serem atingidos'''
 	Burden: Dano base da arma reduzido em 10%
@@ -155,9 +155,9 @@ OniMeiRubbingKyushu: {
 	Tooltip: Dano massivo de execução exclusivamente contra cabeças ou alvos únicos; dano da arma -3%, ineficaz em outros segmentos
 	Origin:
 		'''
-		Um general veterano que havia abatido incontáveis comandantes inimigos era instigado por seus conselheiros a renomear sua espada a cada glória para exaltar seu prestígio.
-		O general escarneceu, enrolando apenas uma mecha de cabelo do caído na bainha e sentenciando: "Uma lâmina sanguinária só cobiça a carne macia da garganta; títulos pomposos são pura vaidade."
-		As décadas se foram e o general virou poeira, mas o sabre envolto em cabelos ainda busca a garganta: quando as horas de uma cabeça se esgotam, não resta sobrevivente.
+		Um veterano calejado por cem batalhas que havia abatido incontáveis comandantes inimigos era instigado por seus conselheiros a renomear sua espada a cada glória para exaltar seu prestígio.
+		O guerreiro escarneceu, enrolando apenas uma mecha de cabelo do caído na bainha e sentenciando: "Uma lâmina sanguinária só cobiça a carne macia da garganta; títulos pomposos são pura vaidade."
+		As décadas se foram e o guerreiro virou poeira, mas o sabre envolto em cabelos ainda busca a garganta: quando as horas de uma cabeça se esgotam, não resta sobrevivente.
 		'''
 	Power:
 		'''
@@ -566,9 +566,9 @@ OniMeiRubbingChinmei: {
 	Tooltip: Reduz expressivamente o dano de projéteis e a repulsão; ganho de postura -15%
 	Origin:
 		'''
-		Um capitão calejado que sobreviveu a saraivadas de fogo sempre gravava selos de apaziguamento no lombo do seu sabre.
-		Sob uma chuva de chumbo grosso no front, os covardes entram em pânico com os silvos agudos e tombam na confusão.
-		Apoiado neste amuleto para acalmar a pulsação, o capitão mantinha a posição contra flechas e balas, firme para blindar seus órgãos vitais de um destino trágico.
+		Um guerreiro encouraçado veterano que sobreviveu a incontáveis massacres sempre gravava selos de apaziguamento no lombo do seu sabre.
+		Sob uma tempestade de flechas e pedras de cerco no front, os covardes entram em pânico com os silvos agudos e tombam na confusão.
+		Apoiado neste amuleto para acalmar a pulsação, o guerreiro mantinha a posição contra flechas e rochas, firme para blindar seus órgãos vitais de um destino trágico.
 		'''
 	Power: '''"Calmaria do Clamor": sofrer dano de projéteis inimigos reduz o dano em 12% e a repulsão para 35%'''
 	Burden: Velocidade padrão de ganho de postura reduzida em 15%

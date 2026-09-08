@@ -22,7 +22,7 @@ OniMeiRubbingOnikiri: {
 	Tooltip: Le nom primordial d'Onikiri, conservant toutes ses propriétés d'origine sans bonus ni pénalité
 	Origin:
 		'''
-		Un dossier jauni extrait des archives de l'ancien commissariat de la concession : les nuits de pluie, une femme vêtue d'un qipao et tenant une ombrelle en papier rouge errait sur le pont de pierre, appelant les passants.
+		Un dossier jauni extrait des archives d'un ancien prétoire : les nuits de pluie, une belle dame vêtue de pourpre et tenant une ombrelle en papier rouge errait sur le pont de pierre, appelant les passants.
 		Quiconque lui répondait était retrouvé au matin au pied du pont, la peau du visage arrachée à vif.
 		Un bretteur aveugle s'avança dans la brume ; sous l'ombrelle, un bras cadavérique et blafard jaillit pour lui broyer la gorge. Au sifflement de l'air, le bretteur dégaina d'un coup ascendant.
 		Le bras spectral et l'ombrelle tombèrent dans le fleuve, se dissolvant en une vase noire fétide. Seul resta le sabre, imprégné de cette souillure primordiale, devenu l'ossature de dix mille sceaux funestes.
@@ -142,9 +142,9 @@ OniMeiRubbingTessetsu: {
 	Tooltip: Le premier coup de chaque temps du combo inflige +25% de dégâts aux machines et aux métaux ; dégâts de base de l'arme -10%
 	Origin:
 		'''
-		Un atelier d'armement désaffecté fut frappé d'un étrange fléau : engrenages et pistons d'acier se mirent à bourgeonner de tumeurs de chair, brisant toutes les lames qui s'y risquaient.
+		Un vieil atelier mécanique abandonné fut frappé d'un étrange fléau : engrenages, rouages et bâtis d'acier se mirent à bourgeonner de tumeurs de chair, brisant toutes les lames qui s'y risquaient.
 		Un vieux forgeron arriva avec une lourde barre brute en fonte non affûtée ; les curieux rirent de cette masse informe, mais l'artisan la frappa à deux mains.
-		Dans un fracas tonitruant, le noyau mécanique fut réduit en bouillie de fer. Cette lame est pétrie de cette force brutale : elle fracasse le fer comme du bois pourri, bien qu'elle morde avec lenteur la chair tendre.
+		Dans un fracas tonitruant, le cœur automate palpitant fut réduit en bouillie de fer. Cette lame est pétrie de cette force brutale : elle fracasse le fer comme du bois pourri, bien qu'elle morde avec lenteur la chair tendre.
 		'''
 	Power: 「Coupe-fer」le premier coup de chaque temps du combo de base inflige 25% de dégâts supplémentaires aux cibles métalliques, mécaniques ou projetant des étincelles
 	Burden: Dégâts de base de l'arme réduits de 10%
@@ -155,9 +155,9 @@ OniMeiRubbingKyushu: {
 	Tooltip: Lourds dégâts d'exécution ciblant exclusivement la tête ou les cibles uniques ; dégâts de l'arme -3%, inefficace sur les autres segments
 	Origin:
 		'''
-		Un vieux stratège ayant abattu d'innombrables généraux ennemis était pressé par ses pairs de renommer son sabre après chaque victoire pour proclamer sa gloire.
-		L'homme cracha au sol, se contentant d'enrouler une mèche de cheveux du vaincu autour de son fourreau en grognant : « Une arme sanguinaire ne convoite que la chair tendre de la gorge ; les titres ronflants ne sont que vanité. »
-		Les décennies ont passé, le général est poussière, mais la lame ornée de chevelures guette toujours la gorge : lorsque les heures d'une tête sont comptées, elle ne laisse nul survivant.
+		Un vétéran aguerri par cent batailles ayant abattu d'innombrables chefs ennemis était pressé par ses conseillers de renommer son sabre après chaque victoire pour proclamer sa gloire.
+		Le guerrier cracha au sol, se contentant d'enrouler une mèche de cheveux du vaincu autour de son fourreau en grognant : « Une arme sanguinaire ne convoite que la chair tendre de la gorge ; les titres ronflants ne sont que vanité. »
+		Les décennies ont passé, le guerrier est poussière, mais la lame ornée de chevelures guette toujours la gorge : lorsque les heures d'une tête sont comptées, elle ne laisse nul survivant.
 		'''
 	Power:
 		'''
@@ -566,9 +566,9 @@ OniMeiRubbingChinmei: {
 	Tooltip: Réduit grandement les dégâts de projectiles et le recul ; gain de posture -15%
 	Origin:
 		'''
-		Un capitaine blanchi sous le harnais ayant survécu à mille salves gravait toujours des sceaux d'apaisement sur le dos de son sabre.
-		Sous un déluge de grenaille au front, les couards cèdent à la panique devant les sifflements aigus et périssent dans la déroute.
-		Grâce à ce talisman calmant son pouls, le capitaine tenait bon face aux flèches et aux balles, stoïque pour abriter ses organes vitaux d'une issue fatale.
+		Un vétéran cuirassé ayant survécu à mille champs de carnage gravait toujours des sceaux d'apaisement sur le dos de son sabre.
+		Sous un déluge de flèches et de pierres projetées au front, les couards cèdent à la panique devant les sifflements aigus et périssent dans la déroute.
+		Grâce à ce talisman calmant son pouls, le guerrier tenait bon face aux traits et aux projectiles, stoïque pour abriter ses organes vitaux d'une issue fatale.
 		'''
 	Power: 「Calme de la tourmente」subir des dégâts de projectiles ennemis réduit les dégâts de 12% et le recul à 35%
 	Burden: Vitesse normale d'accumulation de la posture réduite de 15%

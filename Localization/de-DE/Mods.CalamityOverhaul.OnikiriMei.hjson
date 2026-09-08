@@ -22,7 +22,7 @@ OniMeiRubbingOnikiri: {
 	Tooltip: Der ursprüngliche Name von Onikiri; bewahrt alle ursprünglichen Eigenschaften ohne Boni oder Strafen
 	Origin:
 		'''
-		Eine vergilbte Akte aus den Archiven der alten Konzessionspolizei: In regnerischen Nächten wandelte eine Dame im Qipao mit rotem Ölpapierschirm auf der steinernen Flussbrücke und rief Wanderer an.
+		Eine vergilbte Akte aus den Archiven einer uralten Richterstube: In regnerischen Nächten wandelte eine schöne Dame in Scharlachrot mit rotem Ölpapierschirm auf der steinernen Flussbrücke und rief Wanderer an.
 		Wer ihr antwortete, lag am nächsten Morgen mit grausam abgezogener Gesichtshaut tot am Brückenkopf.
 		Einst überquerte ein blinder Schwertkämpfer den Nebel; unter dem Schirm schoss ein bleicher, knochiger Arm hervor, um seine Kehle zu packen. Am Klang des schneidenden Windes zog der Blinde blitzschnell nach oben.
 		Der Geisterarm und der Schirm stürzten in den Fluss und lösten sich in fauligem Schlamm auf. Nur das Schwert blieb zurück, getränkt von jener uralten Bosheit, als Fundament von zehntausend unheilvollen Siegeln.
@@ -142,9 +142,9 @@ OniMeiRubbingTessetsu: {
 	Tooltip: Der erste Treffer jedes Komboschlags fügt mechanischen und metallenen Feinden +25% Schaden zu; Waffenbasisschaden -10%
 	Origin:
 		'''
-		Eine verlassene Waffenwerkstatt wurde von einer unheimlichen Seuche heimgesucht: Zahnräder und Stahlwellen trieben fleischige Wucherungen hervor, die jedes Schwert zersplitterten.
+		Eine uralte, verlassene mechanische Werkstatt wurde von einer unheimlichen Seuche heimgesucht: Zahnräder, Gestänge und Stahlrahmen trieben fleischige Wucherungen hervor, die jedes Schwert zersplitterten.
 		Ein alter Schmied trat mit einem rohen, stumpfen Barren aus Roheisen heran; Gaffer lachten über das plumpe Eisen, doch der Schmied schwang es mit beiden Armen.
-		Mit donnerndem Getöse wurde der pulsierende Kern zu Eisenschrott zerschlagen. Diese Klinge ist von jener zerschmetternden Wucht erfüllt: Sie spaltet Eisen wie morsches Holz, beißt sich jedoch träge durch weiches Fleisch.
+		Mit donnerndem Getöse wurde der pulsierende Maschinenkern zu Eisenschrott zerschlagen. Diese Klinge ist von jener zerschmetternden Wucht erfüllt: Sie spaltet Eisen wie morsches Holz, beißt sich jedoch träge durch weiches Fleisch.
 		'''
 	Power: „Eisenschnitt“: der erste Treffer jedes Schlags der Basiskombo fügt metallenen, mechanischen oder funkensprühenden Gegnern +25% Schaden zu
 	Burden: Waffenbasisschaden um 10% verringert
@@ -155,9 +155,9 @@ OniMeiRubbingKyushu: {
 	Tooltip: Enormer Hinrichtungsschaden ausschließlich gegen Köpfe oder Einzelsegmente; Basisschaden -3%, unwirksam gegen Körpersegmente
 	Origin:
 		'''
-		Ein ergrauter Feldherr, der unzählige Heere zerschlug, wurde von seinen Beratern gedrängt, seinem Schwert nach jedem Sieg einen rühmlichen Namen zu geben.
-		Der General spottete nur, band eine Strähne des Gefallenen um die Scheide und knurrte: „Eine blutgierige Klinge begehrt nur das zarte Fleisch des Nackens; stolze Titel sind eitle Täuschung.“
-		Jahrzehnte vergingen und der General zerfiel zu Staub, doch das haarumwundene Schwert giert noch immer nach der Kehle: Ist die Frist eines Hauptes abgelaufen, lässt es keinen am Leben.
+		Ein in hundert Schlachten gestählter Veteran, der unzählige Heere zerschlug, wurde von seinen Beratern gedrängt, seinem Schwert nach jedem Sieg einen rühmlichen Namen zu geben.
+		Der Krieger spottete nur, band eine Strähne des Gefallenen um die Scheide und knurrte: „Eine blutgierige Klinge begehrt nur das zarte Fleisch des Nackens; stolze Titel sind eitle Täuschung.“
+		Jahrzehnte vergingen und der Krieger zerfiel zu Staub, doch das haarumwundene Schwert giert noch immer nach der Kehle: Ist die Frist eines Hauptes abgelaufen, lässt es keinen am Leben.
 		'''
 	Power:
 		'''
@@ -566,9 +566,9 @@ OniMeiRubbingChinmei: {
 	Tooltip: Senkt Projektilschaden und Rückstoß drastisch; Haltungsgewinn -15%
 	Origin:
 		'''
-		Ein ergrauter Hauptmann, der unzählige Salven überlebte, schnitt stets beruhigende Siegelschrift in den Rücken seines Säbels.
-		Prasselt Blei und Granatsplitter wie Hagel auf die Frontlinie, verfallen Kleinmütige angesichts des gellenden Pfeifens in Panik und gehen im Chaos unter.
-		Mit diesem Talisman hielt der Hauptmann Schritt und Stand, trotzte dem Pfeilsturm und schirmte sein Herz vor dem tödlichen Verderben ab.
+		Ein kampferprobter, gepanzerter Krieger, der unzählige Blutbäder überlebte, schnitt stets beruhigende Siegelschrift in den Rücken seines Säbels.
+		Prasseln Schleudersteine und Pfeilschwärme wie Hagel auf die Frontlinie, verfallen Kleinmütige angesichts des gellenden Pfeifens in Panik und gehen im Chaos unter.
+		Mit diesem Talisman hielt der Krieger Schritt und Stand, trotzte dem Pfeilsturm und schirmte sein Herz vor dem tödlichen Verderben ab.
 		'''
 	Power: „Klangstille“: das Erleiden von Feindprojektilen senkt den Schaden um 12% und den Rückstoß auf 35%
 	Burden: Standard-Haltungsgewinn um 15% verringert

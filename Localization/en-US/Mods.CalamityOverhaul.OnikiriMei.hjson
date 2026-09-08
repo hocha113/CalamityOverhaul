@@ -22,7 +22,7 @@ OniMeiRubbingOnikiri: {
 	Tooltip: The primordial name of Onikiri, preserving its original baseline properties without bonuses or penalties
 	Origin:
 		'''
-		A yellowed case file tucked away in an old concession police precinct: on rainy nights, a lady in a qipao holding a red oilpaper umbrella would wander the stone bridge by the river, calling out to passersby.
+		A yellowed case file sealed in the archives of an ancient magistrate: on rainy nights, a fair lady in crimson holding a red oilpaper umbrella would wander the stone bridge by the river, calling out to passersby.
 		Whoever answered would be found dead the next morning at the bridgehead, their facial skin torn entirely away.
 		A blind swordsman once crossed through the mist; from beneath the umbrella, a withered pale arm shot out to grasp his throat. Hearing the rush of air, the swordsman drew and slashed upward.
 		The gruesome white arm and the red umbrella were severed into the river, melting into foul black sludge. Only the blade remained, steeped in that primordial taint, becoming the bedrock of ten thousand sinister seals.
@@ -142,9 +142,9 @@ OniMeiRubbingTessetsu: {
 	Tooltip: The first hit of each combo beat deals +25% damage to mechanical and metal foes; regular weapon base damage reduced by 10%
 	Origin:
 		'''
-		An abandoned munitions plant once suffered an unsettling plague: gears, bearings, and steel rods began sprouting fleshy growths, snapping any sword that struck them.
+		An ancient, abandoned clockwork workshop once suffered an unsettling plague: gears, linkages, and steel frames began sprouting fleshy growths, snapping any sword that struck them.
 		An old blacksmith arrived carrying an unsharpened, brutish slab of raw pig iron; onlookers laughed at its blunt heft, but the smith swung with both arms.
-		With a thunderous crash, the pulsating core was smashed into scrap iron. This blade is steeped in that violent, unyielding force: it shatters iron like rotting wood, though it bites sluggishly into living flesh.
+		With a thunderous crash, the pulsating automaton core was smashed into scrap iron. This blade is steeped in that violent, unyielding force: it shatters iron like rotting wood, though it bites sluggishly into living flesh.
 		'''
 	Power: '''"Iron-Cut": the first hit of each basic combo beat deals +25% damage to foes that spark upon taking damage, such as machines and metal entities'''
 	Burden: Weapon base damage reduced by 10%
@@ -155,7 +155,7 @@ OniMeiRubbingKyushu: {
 	Tooltip: Massive execute scaling damage strictly against head or standalone targets; regular weapon damage reduced by 3%, non-head segments immune
 	Origin:
 		'''
-		A veteran general who had slain countless enemy commanders was once urged by his tacticians to rename his blade with every triumph to broadcast his renown.
+		A battle-hardened veteran who had slain countless commanders was once urged by his counselors to rename his blade with every triumph to broadcast his renown.
 		The general scoffed, merely wrapping another strand of the fallen commander's hair around the scabbard, muttering: "A bloodthirsty blade cares only for the soft flesh of the neck; gilded titles are nothing but vanity."
 		Decades passed and the general became dust, but the hair-wrapped weapon still hungers only for the throat; when a skull's allotted span runs dry, it leaves no survivor.
 		'''
@@ -566,9 +566,9 @@ OniMeiRubbingChinmei: {
 	Tooltip: Greatly reduces projectile damage and knockback taken; standard stance gain speed reduced by 15%
 	Origin:
 		'''
-		A grizzled captain who had survived volleys of gunfire always carved calming seal-script along the spine of his sword.
-		When shot and shrapnel rain down like hail on the front line, the fainthearted panic from the shrieking roar and perish in chaos.
-		Relying on this talisman to still his pulse, the captain weathered the storm of arrows and bullets, standing resolute to shield his vitals from fatal ruin.
+		A battle-scarred armored veteran who had marched through blood-soaked battlefields always carved calming seal-script along the spine of his sword.
+		When catapult-stones and volleyed arrows rain down like a deluge on the front line, the fainthearted panic from the shrieking roar and perish in chaos.
+		Relying on this talisman to still his pulse, the veteran weathered the storm of arrows and stones, standing resolute to shield his vitals from fatal ruin.
 		'''
 	Power: '''"Chinmei": taking damage from enemy projectiles reduces damage taken by 12% and reduces knockback taken to 35%'''
 	Burden: Standard stance gain speed reduced by 15%
