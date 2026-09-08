@@ -81,10 +81,7 @@ OniMeiRubbingKazehi: {
 		O ferreiro abriu canais retos e finos em ambos os lados da lombada do sabre. Ao golpear, o silvo do ar cortado chega antes, e o movimento torna-se etéreo como impulsionado por correntes fúnebres.
 		Passadas e voos consomem pouquíssimo fôlego, mas com a lâmina afinada e leve, as marcas de tinta perdem parte de sua detonação devastadora.
 		'''
-	Power:
-		'''
-		"Vento Favorável": custo de vigor do Passo Relâmpago Kamui reduzido em 15%, dreno de vigor do Voo de Sakura reduzido em 20%
-		'''
+	Power: '''"Vento Favorável": custo de vigor do Passo Relâmpago Kamui reduzido em 15%, dreno de vigor do Voo de Sakura reduzido em 20%'''
 	Burden: Dano de explosão das marcas de tinta deixadas pelo Passo Relâmpago Kamui reduzido em 20%
 }
 
@@ -149,10 +146,7 @@ OniMeiRubbingTessetsu: {
 		Um velho ferreiro chegou carregando uma barra tosca de ferro cru sem afiação; curiosos riram daquela peça bruta, mas o ferreiro desferiu o golpe com ambos os braços.
 		Com um estrondo colossal, o núcleo pulsante foi esmagado em sucata. Esta lâmina está imbuída dessa força avassaladora: estraçalha ferro como madeira podre, embora morda a carne mole com lentidão.
 		'''
-	Power:
-		'''
-		"Corta-Ferro": o primeiro acerto de cada golpe do combo básico causa 25% de dano adicional a inimigos metálicos, mecânicos ou que soltem faíscas ao serem atingidos
-		'''
+	Power: '''"Corta-Ferro": o primeiro acerto de cada golpe do combo básico causa 25% de dano adicional a inimigos metálicos, mecânicos ou que soltem faíscas ao serem atingidos'''
 	Burden: Dano base da arma reduzido em 10%
 }
 
@@ -183,10 +177,7 @@ OniMeiRubbingIkiai: {
 		Ao soar a quarta badalada da noite, um deles finalmente arfou por ar — e naquele exato suspiro, o outro desembainhou num golpe certeiro.
 		A intenção gélida maturada nos pulmões explodiu da ponta como uma onda de lâmina em arco, atravessando a escuridão e o adversário.
 		'''
-	Power:
-		'''
-		"Expiração": concluir o combo completo de cinco golpes libera uma onda de espada em arco na direção do cursor, causando 55% do dano base da arma e perfurando até 3 inimigos
-		'''
+	Power: '''"Expiração": concluir o combo completo de cinco golpes libera uma onda de espada em arco na direção do cursor, causando 55% do dano base da arma e perfurando até 3 inimigos'''
 	Burden: Intervalo de ataque do combo básico aumentado em 4%
 }
 
@@ -238,10 +229,7 @@ OniMeiRubbingMokukiri: {
 		No momento em que o Passo Relâmpago estanca repentinamente, o mundo parece mergulhar num silêncio tumular.
 		Desferir o corte a partir do ponto cego dessa calmaria sepulcral atinge o alvo com precisão infinitamente mais letal do que qualquer investida estabanada.
 		'''
-	Power:
-		'''
-		"Abate Silencioso": por 0.75s após concluir um Passo Relâmpago Kamui comum com custo de vigor, o próximo ataque básico ou golpe Zanshin causa +35% de dano
-		'''
+	Power: '''"Abate Silencioso": por 0.75s após concluir um Passo Relâmpago Kamui comum com custo de vigor, o próximo ataque básico ou golpe Zanshin causa +35% de dano'''
 	Burden: Este ataque fortalecido é consumido mesmo em caso de erro, e esquivar novamente cancela o bônus; execuções gratuitas não ativam o Abate Silencioso
 }
 
@@ -398,10 +386,7 @@ OniMeiRubbingTsuzurihi: {
 		No necrotério, um velho embalsamador costurava membros mutilados com fio grosso de cânhamo negro, repuxando a linha num só puxão para fechar a carne sem emendas.
 		Este canal cravado de costuras age da mesma forma: marcas de tinta deixadas ao transpassar múltiplos inimigos detonam em uníssono, esticando linhas que fatiam os alvos em pedaços.
 		'''
-	Power:
-		'''
-		"Marcas Costuradas": quando múltiplas marcas de tinta de um mesmo Passo Relâmpago Kamui detonam, geram linhas cortantes entre si causando 35% do dano base cada uma
-		'''
+	Power: '''"Marcas Costuradas": quando múltiplas marcas de tinta de um mesmo Passo Relâmpago Kamui detonam, geram linhas cortantes entre si causando 35% do dano base cada uma'''
 	Burden: Dano base de cada marca individual reduzido em 30% (se a corrida transpassar apenas um alvo, há perda líquida de dano)
 	DeedHint: Perfure ao menos 6 inimigos diferentes com um único Passo Relâmpago Kamui, atando as linhas
 }
@@ -471,10 +456,7 @@ OniMeiRubbingSenju: {
 		No instante em que a Dança Final congela em close, seis braços espectrais emergem do nada às suas costas para estraçalhar o alvo em uníssono com sua espada.
 		Mas invocar tamanha escuridão drena por completo toda a sua energia vital.
 		'''
-	Power:
-		'''
-		"Mil Mãos": durante o close travado da Dança Final, seis braços espectrais golpeiam em uníssono às suas costas, cada um causando 30% do dano base da arma
-		'''
+	Power: '''"Mil Mãos": durante o close travado da Dança Final, seis braços espectrais golpeiam em uníssono às suas costas, cada um causando 30% do dano base da arma'''
 	Burden: O vigor cai para 0 após lançar a Dança Final, e o Passo Relâmpago Kamui é bloqueado por 3s
 	DeedHint: Elimine 8 espécies diferentes de chefes usando a Dança Final empunhando Onikiri
 }
@@ -505,10 +487,7 @@ OniMeiRubbingKanhi: {
 		Este canal traduz esse descanso revigorante:
 		Assim que a espada repousa na bainha, o vigor esgotado jorra como chuva em terra seca; mas forçar fintas ágeis no meio da peleja torna-se pesado e custoso.
 		'''
-	Power:
-		'''
-		"Respiração Serena": a velocidade de regeneração natural de vigor sobe para 2.25x após sair de combate e sem acertar golpes por 2s
-		'''
+	Power: '''"Respiração Serena": a velocidade de regeneração natural de vigor sobe para 2.25x após sair de combate e sem acertar golpes por 2s'''
 	Burden: Custo de vigor de Passo Relâmpago Kamui e Voo de Sakura aumentado em 8% cada
 }
 
@@ -521,10 +500,7 @@ OniMeiRubbingTodohi: {
 		O aço bebeu com fartura desse unguento negro na têmpera. Cada golpe envolve as articulações da vítima em amarras invisíveis que atolam seus passos no barro.
 		Porém, quando o espadachim tenta arrancar numa corrida súbita, seus próprios pés ressentem essa mesma pesadez grudenta.
 		'''
-	Power:
-		'''
-		"Amortecimento Viscoso": golpes diretos desaceleram os inimigos por 0.6s (reduzindo inimigos comuns para 88% e chefes para 96% de velocidade)
-		'''
+	Power: '''"Amortecimento Viscoso": golpes diretos desaceleram os inimigos por 0.6s (reduzindo inimigos comuns para 88% e chefes para 96% de velocidade)'''
 	Burden: O Passo Relâmpago Kamui sofre um atraso de inicialização de 0.1s; Amortecimento Viscoso e Entorpecimento não se acumulam
 }
 
@@ -594,10 +570,7 @@ OniMeiRubbingChinmei: {
 		Sob uma chuva de chumbo grosso no front, os covardes entram em pânico com os silvos agudos e tombam na confusão.
 		Apoiado neste amuleto para acalmar a pulsação, o capitão mantinha a posição contra flechas e balas, firme para blindar seus órgãos vitais de um destino trágico.
 		'''
-	Power:
-		'''
-		"Calmaria do Clamor": sofrer dano de projéteis inimigos reduz o dano em 12% e a repulsão para 35%
-		'''
+	Power: '''"Calmaria do Clamor": sofrer dano de projéteis inimigos reduz o dano em 12% e a repulsão para 35%'''
 	Burden: Velocidade padrão de ganho de postura reduzida em 15%
 }
 
@@ -610,10 +583,7 @@ OniMeiRubbingAshidome: {
 		Se uma besta fétida bloquear seu caminho numa trilha escura, crave ambos os pés no chão gelado feito um cedro secular e prenda a respiração no peito.
 		Quando o monstro saltar ao seu encontro, o corte explosivo nascido dessa raiz firme fenderá a montanha com violência irresistível.
 		'''
-	Power:
-		'''
-		"Postura Enraizada": permanecer imóvel por 0.75s conclui a carga, aumentando o dano do próximo 5º golpe do combo, golpe Zanshin, Lampejo da Aniquilação ou Dança Final em 25%
-		'''
+	Power: '''"Postura Enraizada": permanecer imóvel por 0.75s conclui a carga, aumentando o dano do próximo 5º golpe do combo, golpe Zanshin, Lampejo da Aniquilação ou Dança Final em 25%'''
 	Burden: O ataque fortalecido é consumido no momento do golpe, e errar não o reembolsa; mover-se dissipa imediatamente a carga acumulada
 }
 

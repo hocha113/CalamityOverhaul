@@ -81,10 +81,7 @@ OniMeiRubbingKazehi: {
 		The smith hollowed out straight, slender channels along both sides of the blade's spine. As it cuts, the hiss of parting air arrives first, carrying the body forward as if borne by unseen spectral drafts.
 		Dashes and airborne cruising cost remarkably little breath, but with the blade lightened and thinned, the ink brands left in its wake lose some of their ground-shattering blast.
 		'''
-	Power:
-		'''
-		"Wind-Rider": Kamui Flash Step vigor cost reduced by 15%, Sakura Flight vigor drain rate reduced by 20%
-		'''
+	Power: '''"Wind-Rider": Kamui Flash Step vigor cost reduced by 15%, Sakura Flight vigor drain rate reduced by 20%'''
 	Burden: Explosion damage of ink brands left by Kamui Flash Step reduced by 20%
 }
 
@@ -149,10 +146,7 @@ OniMeiRubbingTessetsu: {
 		An old blacksmith arrived carrying an unsharpened, brutish slab of raw pig iron; onlookers laughed at its blunt heft, but the smith swung with both arms.
 		With a thunderous crash, the pulsating core was smashed into scrap iron. This blade is steeped in that violent, unyielding force: it shatters iron like rotting wood, though it bites sluggishly into living flesh.
 		'''
-	Power:
-		'''
-		"Iron-Cut": the first hit of each basic combo beat deals +25% damage to foes that spark upon taking damage, such as machines and metal entities
-		'''
+	Power: '''"Iron-Cut": the first hit of each basic combo beat deals +25% damage to foes that spark upon taking damage, such as machines and metal entities'''
 	Burden: Weapon base damage reduced by 10%
 }
 
@@ -183,10 +177,7 @@ OniMeiRubbingIkiai: {
 		As the fourth watch drum sounded, one man finally gasped for air—and in that exact exhale, the other drew his sword.
 		The icy intent nurtured in that stifled breath burst from the tip as an arcing wave of blade-qi, cleaving through the dark.
 		'''
-	Power:
-		'''
-		"Exhale": completing the full five-beat basic combo releases an arcing blade wave in the cursor's direction, dealing 55% of weapon base damage and piercing up to 3 enemies
-		'''
+	Power: '''"Exhale": completing the full five-beat basic combo releases an arcing blade wave in the cursor's direction, dealing 55% of weapon base damage and piercing up to 3 enemies'''
 	Burden: Basic combo attack interval extended by 4%
 }
 
@@ -238,10 +229,7 @@ OniMeiRubbingMokukiri: {
 		The moment a Flash Step skids to a halt, the world seems swallowed by sudden stillness.
 		Drawing the blade from the blind spot of that dead silence delivers a strike far more lethal than any hurried blow.
 		'''
-	Power:
-		'''
-		"Silent Kill": for 0.75s after completing a standard vigor-consuming Kamui Flash Step, the next basic attack or Zanshin strike deals +35% damage
-		'''
+	Power: '''"Silent Kill": for 0.75s after completing a standard vigor-consuming Kamui Flash Step, the next basic attack or Zanshin strike deals +35% damage'''
 	Burden: This empowered strike is consumed even if it misses, and dashing again clears the bonus; free executions do not grant Silent Kill
 }
 
@@ -398,10 +386,7 @@ OniMeiRubbingTsuzurihi: {
 		In the mortuary, an old coroner stitched severed limbs back onto mangled bodies, pulling black hemp thread taut to seal the flesh seamlessly.
 		This groove, etched like dense stitches of twine, operates on the same logic: multiple ink marks left across enemies during a single dash detonate simultaneously, snapping taut intersecting slicing lines that flay trapped foes into ribbons.
 		'''
-	Power:
-		'''
-		"Stitched Marks": when multiple ink brands from a single Kamui Flash Step detonate, they generate piercing cut-lines between each other, each line dealing 35% of weapon base damage
-		'''
+	Power: '''"Stitched Marks": when multiple ink brands from a single Kamui Flash Step detonate, they generate piercing cut-lines between each other, each line dealing 35% of weapon base damage'''
 	Burden: Base damage of individual ink brands reduced by 30% (if a dash passes through only one target, overall damage is lost)
 	DeedHint: Pierce at least 6 different enemies with a single Kamui Flash Step, binding the threads together
 }
@@ -471,10 +456,7 @@ OniMeiRubbingSenju: {
 		As the final freeze of Finale Flurry locks in place, six spectral arms burst from the void behind you, hacking the target into mincemeat alongside your edge.
 		Yet invoking such dark wrath completely drains your vitality.
 		'''
-	Power:
-		'''
-		"Thousand Arms": during the close-up freeze of Finale Flurry, six spectral arms manifest behind you to slash in unison, each arm dealing 30% of weapon base damage
-		'''
+	Power: '''"Thousand Arms": during the close-up freeze of Finale Flurry, six spectral arms manifest behind you to slash in unison, each arm dealing 30% of weapon base damage'''
 	Burden: Vigor drops to 0 after casting Finale Flurry, and Kamui Flash Step cannot be used for 3s
 	DeedHint: Slay 8 different boss species using Finale Flurry while holding Onikiri, opening the path with six arms
 }
@@ -505,10 +487,7 @@ OniMeiRubbingKanhi: {
 		This groove captures that restorative respite:
 		The moment steel returns to the sheath, depleted vigor rushes back like rain on parched earth; yet forcing hurried footwork in the thick of battle feels slightly clumsy and taxing.
 		'''
-	Power:
-		'''
-		"Quiet Breath": natural vigor recovery speed is increased to 2.25x after disengaging from combat and landing no hits for 2s
-		'''
+	Power: '''"Quiet Breath": natural vigor recovery speed is increased to 2.25x after disengaging from combat and landing no hits for 2s'''
 	Burden: Kamui Flash Step and Sakura Flight vigor cost both increased by 8%
 }
 
@@ -521,10 +500,7 @@ OniMeiRubbingTodohi: {
 		The edge drank deep of this black salve during quenching. Each bite into flesh wraps invisible snares around the victim's joints, dragging their movements into sludge.
 		Yet when the wielder attempts to launch into a sudden sprint, their own footing feels slightly mired by the same clinging weight.
 		'''
-	Power:
-		'''
-		"Sticky Bind": direct hits slow enemy movement for 0.6s, reducing regular enemy speed to 88% and boss speed to 96%
-		'''
+	Power: '''"Sticky Bind": direct hits slow enemy movement for 0.6s, reducing regular enemy speed to 88% and boss speed to 96%'''
 	Burden: Kamui Flash Step has an additional 0.1s start-up delay; Sticky Bind and Numb states do not stack on the same enemy, taking the higher slow value
 }
 
@@ -594,10 +570,7 @@ OniMeiRubbingChinmei: {
 		When shot and shrapnel rain down like hail on the front line, the fainthearted panic from the shrieking roar and perish in chaos.
 		Relying on this talisman to still his pulse, the captain weathered the storm of arrows and bullets, standing resolute to shield his vitals from fatal ruin.
 		'''
-	Power:
-		'''
-		"Chinmei": taking damage from enemy projectiles reduces damage taken by 12% and reduces knockback taken to 35%
-		'''
+	Power: '''"Chinmei": taking damage from enemy projectiles reduces damage taken by 12% and reduces knockback taken to 35%'''
 	Burden: Standard stance gain speed reduced by 15%
 }
 
@@ -610,10 +583,7 @@ OniMeiRubbingAshidome: {
 		When cornered by a howling beast on a dark trail, root both feet into the frozen soil like an ancient cedar, holding your breath in your core.
 		When the monster leaps within reach, the explosive draw launched off that rooted footing carries the earth-shattering force to split mountains.
 		'''
-	Power:
-		'''
-		"Rooted Stature": standing completely still for 0.75s completes charge, increasing damage of the next 5th combo strike, Zanshin strike, Annihilating Flash, or Finale Slash by 25%
-		'''
+	Power: '''"Rooted Stature": standing completely still for 0.75s completes charge, increasing damage of the next 5th combo strike, Zanshin strike, Annihilating Flash, or Finale Slash by 25%'''
 	Burden: The empowered strike is consumed upon attack, and misses do not refund it; moving immediately clears accumulated charge
 }
 
