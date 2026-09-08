@@ -11,11 +11,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
     /// 三阶段变身（15%）：护盾碎裂 → 悬停头顶 → 七句台词 → 日舞姿势里回血至 35% → 相位姿势 → 终章。
     /// 600f 全程无敌，是全场最长的一次呼吸，用回血宣布"后面才是正戏"
     /// </summary>
-    [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.Phase3Transform, typeof(EmpressStateContext))]
-    internal class EmpressPhase3TransformState : EmpressStateBase
+    [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.Ascension, typeof(EmpressStateContext))]
+    internal class EmpressAscensionState : EmpressStateBase
     {
-        public override string StateName => "EmpressPhase3Transform";
-        public override EmpressStateIndex StateIndex => EmpressStateIndex.Phase3Transform;
+        public override string StateName => "EmpressAscension";
+        public override EmpressStateIndex StateIndex => EmpressStateIndex.Ascension;
 
         internal const int TotalTime = 600;
         private const int HealStart = 330;
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             //台词（权威端广播）
             for (int i = 0; i < LineTicks.Length; i++) {
                 if (Timer == LineTicks[i]) {
-                    EmpressOfLightAI.SayPhase3(i);
+                    EmpressOfLightAI.SayAscension(i);
                 }
             }
 

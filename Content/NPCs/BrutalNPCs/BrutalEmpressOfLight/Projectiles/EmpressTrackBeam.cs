@@ -51,9 +51,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         private ref float Elapsed => ref Projectile.localAI[0];
         private ref float HoldFrames => ref Projectile.localAI[1];
 
-        private float markerOpacity;
-        private float beamStrength;
-        private float firingFrames;
+        private float markerAlpha;
+        private float beamPower;
+        private float fireAge;
         private static uint lastWarmupTick;
 
         private bool Firing => Projectile.timeLeft <= BeamTime;
@@ -109,20 +109,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
 
             //包络：标记不透明度线性爬，束体前半满、后半二次收
             float beamT = Projectile.timeLeft / (float)BeamTime;
-            beamStrength = Firing ? (beamT > 0.5f ? 1f : beamT * beamT * 4f) : 0f;
-            markerOpacity = Firing ? 0f : 1f - (Projectile.timeLeft - BeamTime) / (float)MarkerTime;
+            beamPower = Firing ? (beamT > 0.5f ? 1f : beamT * beamT * 4f) : 0f;
+            markerAlpha = Firing ? 0f : 1f - (Projectile.timeLeft - BeamTime) / (float)MarkerTime;
             if (Mode == EmpressBeamMode.Tripwire && HoldFrames > 0f) {
-                markerOpacity = 1f;
+                markerAlpha = 1f;
             }
 
             Vector2 dir = Angle.ToRotationVector2();
             Color light = EmpressMotion.FormColor(Hue, DayBlend, 0.66f);
             for (int i = 1; i <= 6; i++) {
-                Lighting.AddLight(Projectile.Center + dir * (Length / 7f * i), light.ToVector3() * (0.25f + 0.55f * beamStrength));
+                Lighting.AddLight(Projectile.Center + dir * (Length / 7f * i), light.ToVector3() * (0.25f + 0.55f * beamPower));
             }
 
             //标记期充能条纹：垂直朝向的光丝沿束随机撒，0.8 不透明度处停止（发射前的静默）
-            if (!VaultUtils.isServer && markerOpacity > 0.05f && markerOpacity < 0.8f) {
+            if (!VaultUtils.isServer && markerAlpha > 0.05f && markerAlpha < 0.8f) {
                 for (int i = 0; i < 2; i++) {
                     float along = Main.rand.NextFloat();
                     Vector2 pos = Projectile.Center + dir * Length * along;
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                     Vector2 perp = dir.RotatedBy(Main.rand.NextBool() ? MathHelper.PiOver2 : -MathHelper.PiOver2);
                     float hue = Hue + Main.rand.NextFloat(0.1f);
                     PRTLoader.NewParticle<PRT_EmpressSpark>(pos + perp * Main.rand.NextFloat(60f, 200f), -perp * Main.rand.NextFloat(2f, 5f),
-                        EmpressMotion.FormColor(hue, DayBlend, 0.7f) * markerOpacity, Main.rand.NextFloat(0.6f, 1f))?.Configure(14, hue, DayBlend);
+                        EmpressMotion.FormColor(hue, DayBlend, 0.7f) * markerAlpha, Main.rand.NextFloat(0.6f, 1f))?.Configure(14, hue, DayBlend);
                 }
             }
         }
@@ -199,14 +199,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             if (Projectile.timeLeft == BeamTime) {
                 OnFire(dir);
             }
-            firingFrames++;
+            fireAge++;
 
             switch (Mode) {
                 case EmpressBeamMode.Persistent:
                     if (TargetPlayer() is Player t) {
                         Angle = EmpressMotion.TurnToward(Angle, Projectile.AngleTo(t.Center), PersistentTurnSpeed(t));
                     }
-                    if (firingFrames < ExtraFire) {
+                    if (fireAge < ExtraFire) {
                         Projectile.timeLeft = Math.Max(Projectile.timeLeft, 15);
                         if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                             EmpressMotion.SparkBurst(Projectile.Center + dir * Main.rand.NextFloat(Length * 0.8f), dir, 1, 8f, 14f, DayBlend, 0.3f);
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                     break;
                 case EmpressBeamMode.Barrier:
                     Angle = Angle.AngleLerp(-MathHelper.PiOver2 + HoldFrames * 0.02f, 0.0075f);
-                    if (firingFrames < ExtraFire) {
+                    if (fireAge < ExtraFire) {
                         Projectile.timeLeft = Math.Max(Projectile.timeLeft, 12);
                     }
                     break;
@@ -295,12 +295,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
 
         /// <summary>实体批：夜束加一道暗芯保证剪影（真 alpha Extra_98），昼由压暗世界托底</summary>
         public override bool PreDraw(ref Color lightColor) {
-            if (beamStrength <= 0.01f || DayBlend >= 0.5f) {
+            if (beamPower <= 0.01f || DayBlend >= 0.5f) {
                 return false;
             }
             Microsoft.Xna.Framework.Graphics.Texture2D dark = CWRAsset.Extra_98.Value;
-            float widthRatio = MathHelper.Clamp(beamStrength, 0.08f, 1f);
-            Main.spriteBatch.Draw(dark, Projectile.Center - Main.screenPosition, null, new Color(40, 20, 60) * (0.6f * beamStrength),
+            float widthRatio = MathHelper.Clamp(beamPower, 0.08f, 1f);
+            Main.spriteBatch.Draw(dark, Projectile.Center - Main.screenPosition, null, new Color(40, 20, 60) * (0.6f * beamPower),
                 Angle, new Vector2(0f, dark.Height / 2f), new Vector2(Length / dark.Width, 0.4f * widthRatio),
                 Microsoft.Xna.Framework.Graphics.SpriteEffects.None, 0f);
             return false;
@@ -314,8 +314,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             float day = DayBlend;
             Color main = EmpressMotion.FormColor(Hue, day, 0.68f);
 
-            if (markerOpacity > 0.01f && beamStrength <= 0f) {
-                float t = MathHelper.Clamp(markerOpacity, 0f, 1f);
+            if (markerAlpha > 0.01f && beamPower <= 0f) {
+                float t = MathHelper.Clamp(markerAlpha, 0f, 1f);
                 //不透明度：三次爬升+线性尾，末 1/8 骤灭；聚焦 1-(1-t)^4；末段爆亮 ((t-0.33)/0.67)^10
                 float opacity = (t * t * t + 0.25f * t * (1f - t)) * MathHelper.Clamp(8f * (1f - t), 0f, 1f);
                 if (Mode == EmpressBeamMode.Tripwire && HoldFrames > 0f) {
@@ -327,11 +327,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 EmpressBeamDraw.DrawMarker(Projectile.Center, dir, Length, MarkerHalfWidth, mc, opacity, focus, glow, 1f - t, HitHalfWidth / MarkerHalfWidth);
             }
 
-            if (beamStrength > 0.01f) {
-                float widthRatio = MathHelper.Clamp(beamStrength, 0.08f, 1f);
+            if (beamPower > 0.01f) {
+                float widthRatio = MathHelper.Clamp(beamPower, 0.08f, 1f);
                 //昼：束体金白由顶点色乘；夜：走光谱 hue
                 Color tint = Color.Lerp(Color.White, new Color(255, 236, 200), day);
-                EmpressBeamDraw.DrawSunbeam(Projectile.Center - dir * 40f, dir, Length + 40f, BeamHalfWidth * 2.4f * widthRatio + 18f, Hue, widthRatio, tint * beamStrength);
+                EmpressBeamDraw.DrawSunbeam(Projectile.Center - dir * 40f, dir, Length + 40f, BeamHalfWidth * 2.4f * widthRatio + 18f, Hue, widthRatio, tint * beamPower);
             }
         }
     }

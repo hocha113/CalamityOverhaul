@@ -8,7 +8,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
-    /// 聚集之光：60f 就位充能（世界为它变暗）→ 释放帧冲击波推开 → 120f 八臂加速光球螺旋。
+    /// 光球螺旋：60f 就位充能（世界为它变暗）→ 释放帧冲击波推开 → 120f 八臂加速光球螺旋。
     /// 先把人推远，再开火，是这招的公平阀
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.LightSpiral, typeof(EmpressStateContext))]
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             if (!VaultUtils.isServer) {
                 if (context.DayEmpowered) {
                     //世界为这一招变暗
-                    EmpressDayDrive.AddBlackout(0.011f);
+                    EmpressDayDrive.Dim(0.011f);
                 }
                 EmpressMotion.HandChargeDust(context.CastHand, t, context.DayFormBlend);
                 if (Timer % 8 == 0) {
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         /// <summary>释放帧：冲击波推开、震屏、双音，之后才开火</summary>
         private void Release(EmpressStateContext context, NPC npc) {
             npc.velocity *= 0.5f;
-            EmpressCast.Shockwave(npc, context.CastHand + npc.velocity);
+            EmpressCast.RepelRing(npc, context.CastHand + npc.velocity);
             PlayLocal(SoundID.Item165 with { Volume = 1.2f, Pitch = -0.2f }, npc.Center);
             PlayLocal(SoundID.Item122 with { Volume = 0.9f, Pitch = -0.1f }, npc.Center);
             EmpressMotion.Shake(npc.Center, 12f, 18);
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             for (int j = 0; j < arms; j++) {
                 float angle = MathHelper.TwoPi / arms * j + turn;
                 Vector2 dir = angle.ToRotationVector2();
-                EmpressCast.Bolt(npc, context.CastHand, dir * (day ? 16f : 13f), context.BoltDamage, EmpressBoltMode.Accelerating);
+                EmpressCast.Bolt(npc, context.CastHand, dir * (day ? 16f : 13f), context.BoltDamage, EmpressBoltMode.Quicken);
             }
             if (volley % 4 == 0) {
                 PlayLocal(SoundID.Item164 with { Volume = 0.55f, Pitch = 0.2f + volley * 0.004f }, npc.Center);

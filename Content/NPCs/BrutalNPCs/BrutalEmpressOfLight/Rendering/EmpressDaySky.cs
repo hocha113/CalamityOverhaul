@@ -19,11 +19,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
         /// <summary>压暗强度 0~1</summary>
         public static float Intensity { get; private set; }
         /// <summary>临时加黑（蓄力/加速光球靠近），每帧衰减</summary>
-        public static float Blackout { get; private set; }
+        public static float ExtraDim { get; private set; }
         /// <summary>灯光闪烁幅度 0~1+，入场可拉到 3.5</summary>
         public static float FlickerScale { get; private set; }
         /// <summary>仍需在场（含渐出尾巴）</summary>
-        public static bool Visible => Intensity > 0.004f || Blackout > 0.004f;
+        public static bool Visible => Intensity > 0.004f || ExtraDim > 0.004f;
 
         private static float lease;
         private static float flickerLease;
@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
         }
 
         /// <summary>临时加黑（同帧多源累加，上限 0.6）</summary>
-        public static void AddBlackout(float v) {
-            Blackout = MathHelper.Clamp(Blackout + v, 0f, 0.6f);
+        public static void Dim(float v) {
+            ExtraDim = MathHelper.Clamp(ExtraDim + v, 0f, 0.6f);
         }
 
         /// <summary>当前灯光闪烁乘数（ModifyLightingBrightness 用）</summary>
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
 
             float step = Intensity < target ? FadeInPerTick : -FadeOutPerTick;
             Intensity = MathHelper.Clamp(Math.Abs(target - Intensity) <= FadeInPerTick ? target : Intensity + step, 0f, 1f);
-            Blackout = Blackout < 0.005f ? 0f : Blackout * 0.96f;
+            ExtraDim = ExtraDim < 0.005f ? 0f : ExtraDim * 0.96f;
 
             FlickerScale = MathHelper.Lerp(FlickerScale, flickerT, 0.1f);
             if (FlickerScale > 0.001f) {
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
 
         internal static void Reset() {
             Intensity = 0f;
-            Blackout = 0f;
+            ExtraDim = 0f;
             FlickerScale = 0f;
             lease = flickerLease = 0f;
             leaseAlive = false;
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             if (maxDepth < 0f || minDepth >= 0f) {
                 return;
             }
-            float cover = MathHelper.Clamp(EmpressDayDrive.Intensity * 0.85f + EmpressDayDrive.Blackout, 0f, 1f);
+            float cover = MathHelper.Clamp(EmpressDayDrive.Intensity * 0.85f + EmpressDayDrive.ExtraDim, 0f, 1f);
             if (cover <= 0.004f) {
                 return;
             }

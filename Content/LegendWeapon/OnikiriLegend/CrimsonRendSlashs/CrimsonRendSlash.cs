@@ -64,12 +64,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private const int ReleaseExitFrames = 5;
         /// <summary>收刀后撤角(rad)</summary>
         private const float ReleaseExitPullRad = 0.35f;
-        //==== 姿态残影常量 ====
-        private const int SmearCapacity = 26;
+        //==== 姿态残影常量(连续扫掠面,非离散鬼影) ====
+        private const int SmearCapacity = 8;
         private const int SmearLifeFrames = 3;
-        private const int SmearMaxDrawn = 6;
-        /// <summary>单帧角位移超过此值(rad)才补一张中点残像,否则只留上一姿态</summary>
-        private const float SmearMidStepRad = 1.2f;
+        /// <summary>单帧扫掠面最多向后覆盖的弧度(拖尾长度),更早的行程由刀光承担</summary>
+        private const float SmearTrailSpanRad = 0.90f;
+        /// <summary>拷贝角步长(rad):刀尖半径约 205px、锋尖末端仅 4px 宽,1.03° 步长下尖端轨迹间距 3.7px 仍相接;
+        /// 刀身中段(12px 宽)重叠≈4 张,任何位置都不露梳齿</summary>
+        private const float SmearStepRad = 0.018f;
+        private const int SmearMaxCopies = 50;
+        /// <summary>单张拷贝基础 alpha;密排累积后锋尖≈0.4、中段≈0.25,护手处由斜坡贴图归零</summary>
+        private const float SmearCopyAlpha = 0.20f;
         /// <summary>贴图护手/刀尖 UV,护手作手心支点</summary>
         private static Vector2 BladeHiltUV => new(0.1f, 1f);
         private static Vector2 BladeTipUV => new(0.73f, 0.01f);
@@ -115,14 +120,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// <summary>轻点缓冲(帧),让位/签名拍保留中的点击不丢,窗口关后补发</summary>
         private const int PressBufferFrames = 24;
 
-        /// <summary>实体刀姿态残影(挂当前手心,只留角度/深度)</summary>
+        /// <summary>实体刀单帧扫掠段(挂当前手心):自 RotTo 向后 SweepRad 的拖尾,绘制时按角步长展开成连续扫掠面</summary>
         private struct BladeSmear
         {
-            public float Rotation;
-            public float Depth;
+            public float RotTo;     //段头=该帧刀角
+            public float SweepRad;  //带符号扫过角,段尾=RotTo-SweepRad
+            public float DepthTo;
+            public float DepthFrom;
             public int Facing;
             public bool EdgeFlip;
-            public float Scale;
             public int Life;        //剩余帧
             public float Strength;  //出生角速度权重
         }
@@ -1017,8 +1023,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>高速帧姿态残像入环:只记上一姿态(定格残像),大跳再补一张中点<br/>
-        /// 行程本身由刀光承担;旧版按角位移细分最多 5 张、活 6 帧,一次爆发叠成十余把等距鬼刀,读作扇开的一排刀而非速度</summary>
+        /// <summary>高速帧记一段紧贴刀身的拖尾扫掠段;更早的行程由刀光承担<br/>
+        /// 离散姿态拷贝无论几张都会被读成一排鬼刀(5 张=扇子,1~2 张=数得出来的碎片),
+        /// 只有绘制期按角步长密排成连续扫掠面才不暴露采样;段内深度按本帧行程线性内插</summary>
         private void PushSmearSamples(float prevDepth) {
             if (Main.dedServ || bladeOpacity <= 0.05f) {
                 return;
@@ -1028,22 +1035,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (absDelta < 0.09f) {
                 return;
             }
-            int steps = absDelta > SmearMidStepRad ? 2 : 1;
-            float strength = MathHelper.Clamp((absDelta - 0.06f) / 0.42f, 0f, 1f) * bladeOpacity;
-            for (int i = 0; i < steps; i++) {
-                float t = i / (float)steps;   //0=上一姿态 0.5=中点,不含当前帧本体
-                float depth = MathHelper.Lerp(prevDepth, bladeDepth, t);
-                smears[smearHead] = new BladeSmear {
-                    Rotation = bladePrevRotation + delta * t,
-                    Depth = depth,
-                    Facing = bladeFacing,
-                    EdgeFlip = bladeEdgeFlip,
-                    Scale = BladeVisualScale(depth),
-                    Life = SmearLifeFrames,
-                    Strength = strength * (i == 0 ? 1f : 0.6f),
-                };
-                smearHead = (smearHead + 1) % SmearCapacity;
-            }
+            float span = MathF.Min(absDelta, SmearTrailSpanRad);
+            float tailT = 1f - span / absDelta;   //段尾落在本帧行程中的位置
+            smears[smearHead] = new BladeSmear {
+                RotTo = bladeRotation,
+                SweepRad = MathF.Sign(delta) * span,
+                DepthTo = bladeDepth,
+                DepthFrom = MathHelper.Lerp(prevDepth, bladeDepth, tailT),
+                Facing = bladeFacing,
+                EdgeFlip = bladeEdgeFlip,
+                Life = SmearLifeFrames,
+                Strength = MathHelper.Clamp((absDelta - 0.06f) / 0.42f, 0f, 1f) * bladeOpacity,
+            };
+            smearHead = (smearHead + 1) % SmearCapacity;
         }
 
         /// <summary>起手音,轻拍只留低量气口(主响在爆发帧),重击低鸣预告</summary>
@@ -1553,8 +1557,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         /// <summary>实体刀精灵,护手钉 <see cref="bladeHandWorld"/>;朝左时垂直翻转并镜像支点,edgeFlip 再镜像一次=转腕翻刃</summary>
         private void DrawBladeSprite(SpriteBatch sb, float rotation, int facing, float scale, Color color
-            , Vector2 posOffset = default, bool edgeFlip = false) {
-            Texture2D blade = TextureAssets.Item[ModContent.ItemType<OnikiriItem>()].Value;
+            , Vector2 posOffset = default, bool edgeFlip = false)
+            => DrawBladeSprite(sb, TextureAssets.Item[ModContent.ItemType<OnikiriItem>()].Value
+                , rotation, facing, scale, color, posOffset, edgeFlip);
+
+        /// <summary>同上,指定贴图(残影用斜坡烘焙图,与原图同尺寸同 UV 约定)</summary>
+        private void DrawBladeSprite(SpriteBatch sb, Texture2D blade, float rotation, int facing, float scale
+            , Color color, Vector2 posOffset, bool edgeFlip) {
             Vector2 textureSize = blade.Size();
             Vector2 origin = new(textureSize.X * BladeHiltUV.X, textureSize.Y * BladeHiltUV.Y);
             Vector2 textureTip = new(textureSize.X * BladeTipUV.X, textureSize.Y * BladeTipUV.Y);
@@ -1578,41 +1587,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return false;
         }
 
-        /// <summary>姿态残影,环内自旧到新,按年龄/角速度/深度侧渐隐</summary>
+        /// <summary>扫掠面残影:每段按角步长密排斜坡贴图拷贝,尾→头由淡到实,环内自旧到新;<br/>
+        /// 老化时尾端先蒸发(拖尾追上刀身),深度侧权重按段内位置逐张判定</summary>
         private void DrawSmears(SpriteBatch sb, bool nearSide) {
-            int alive = 0;
-            for (int i = 0; i < smears.Length; i++) {
-                if (smears[i].Life > 0) {
-                    alive++;
-                }
-            }
-            if (alive == 0) {
+            Texture2D tex = OniBladeProfile.SmearTexture;
+            if (tex == null) {
                 return;
             }
-            int skip = Math.Max(0, alive - SmearMaxDrawn);
-
             for (int i = 0; i < SmearCapacity; i++) {
                 BladeSmear s = smears[(smearHead + i) % SmearCapacity];
                 if (s.Life <= 0) {
                     continue;
                 }
-                if (skip > 0) {
-                    skip--;
-                    continue;
-                }
                 float ageT = 1f - s.Life / (float)SmearLifeFrames;
-                float sideW = nearSide ? NearWeight(s.Depth) : 1f - NearWeight(s.Depth);
-                float alpha = s.Strength * (1f - ageT) * sideW;
-                if (alpha <= 0.02f) {
-                    continue;
+                float ageFade = 1f - ageT;
+                float span = MathF.Abs(s.SweepRad);
+                int copies = Math.Clamp((int)MathF.Ceiling(span / SmearStepRad), 2, SmearMaxCopies);
+                float tailCut = ageT * 0.7f;
+                Color tint = Color.Lerp(new Color(210, 42, 38), new Color(126, 20, 30), ageT);
+
+                for (int k = 0; k < copies; k++) {
+                    float t = k / (float)(copies - 1);   //0=段尾 1=段头(刀身当前位)
+                    if (t < tailCut) {
+                        continue;
+                    }
+                    float depth = MathHelper.Lerp(s.DepthFrom, s.DepthTo, t);
+                    float sideW = nearSide ? NearWeight(depth) : 1f - NearWeight(depth);
+                    float headW = MathHelper.Lerp(0.25f, 1f, (t - tailCut) / MathF.Max(1f - tailCut, 0.01f));
+                    float alpha = SmearCopyAlpha * s.Strength * ageFade * headW * sideW;
+                    if (alpha <= 0.004f) {
+                        continue;
+                    }
+                    Color c = tint * alpha;
+                    if (!nearSide) {
+                        c *= DepthDim(depth);
+                    }
+                    float rotation = s.RotTo - s.SweepRad * (1f - t);
+                    DrawBladeSprite(sb, tex, rotation, s.Facing, BladeDrawScale * sizeMul * BladeVisualScale(depth)
+                        , c, default, s.EdgeFlip);
                 }
-                Color c = Color.Lerp(new Color(210, 42, 38, 130), new Color(126, 20, 30, 105), ageT)
-                    * (alpha * 0.55f);
-                if (!nearSide) {
-                    c *= DepthDim(s.Depth);
-                }
-                DrawBladeSprite(sb, s.Rotation, s.Facing, BladeDrawScale * sizeMul * s.Scale, c
-                    , default, s.EdgeFlip);
             }
         }
 

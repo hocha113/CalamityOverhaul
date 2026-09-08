@@ -17,17 +17,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         /// <summary>直飞，轻微加速</summary>
         Straight = 0,
         /// <summary>沿初始朝向恒加速 0.5/f，出生带 2800px 预告线</summary>
-        Accelerating = 1,
+        Quicken = 1,
         /// <summary>30f 后追玩家（ai[1]=玩家索引），同类互斥 60px</summary>
-        Chase = 2,
+        Seek = 2,
         /// <summary>速度每帧旋 ai[1] 弧度并被宿主微推离，寿命×2</summary>
-        Spinning = 3,
+        Whirl = 3,
         /// <summary>向宿主汇聚，正弦扭旋成漩涡臂，225px 内爆散</summary>
-        Vortex = 4,
+        Converge = 4,
     }
 
     /// <summary>
-    /// 聚集之光·光球：本体=原版 873 棱彩弹贴图（真 alpha 占遮挡），暗边+金晕叠层，拖尾同材质 0.55×；
+    /// 光球螺旋·光球：本体=原版 873 棱彩弹贴图（真 alpha 占遮挡），暗边+金晕叠层，拖尾同材质 0.55×；
     /// ai[0]=模式 ai[1]=模式参数 ai[2]=宿主 whoAmI。扫掠圆碰撞防高速穿人
     /// </summary>
     internal class EmpressLightBolt : ModProjectile, IEmpressAttack, IPrimitiveDrawable
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         private float Hue => (Projectile.identity * 0.137f + Projectile.ai[0] * 0.21f) % 1f;
 
         /// <summary>本帧追踪光球，PostUpdate 时互斥</summary>
-        private static readonly List<Projectile> chasing = new();
+        private static readonly List<Projectile> seekers = new();
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 12;
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         public override void AI() {
             if (Timer == 0f) {
                 Projectile.localAI[1] = Projectile.velocity.ToRotation();
-                if (Mode == EmpressBoltMode.Spinning) {
+                if (Mode == EmpressBoltMode.Whirl) {
                     Projectile.timeLeft = MaxLife * 2;
                 }
             }
@@ -84,23 +84,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 case EmpressBoltMode.Straight:
                     Projectile.velocity *= 1.012f;
                     break;
-                case EmpressBoltMode.Accelerating:
+                case EmpressBoltMode.Quicken:
                     Projectile.velocity += Projectile.localAI[1].ToRotationVector2() * 0.5f;
                     if (!VaultUtils.isServer && Projectile.Distance(Main.LocalPlayer.Center) < 1800f) {
-                        EmpressDayDrive.AddBlackout(0.0002f);
+                        EmpressDayDrive.Dim(0.0002f);
                     }
                     break;
-                case EmpressBoltMode.Chase:
-                    ChaseUpdate();
+                case EmpressBoltMode.Seek:
+                    SeekUpdate();
                     break;
-                case EmpressBoltMode.Spinning:
+                case EmpressBoltMode.Whirl:
                     Projectile.velocity = Projectile.velocity.RotatedBy(Param);
                     if (Host is NPC host) {
                         Projectile.velocity += Projectile.DirectionFrom(host.Center) * 0.025f;
                     }
                     break;
-                case EmpressBoltMode.Vortex:
-                    VortexUpdate();
+                case EmpressBoltMode.Converge:
+                    ConvergeUpdate();
                     break;
             }
 
@@ -114,11 +114,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             }
         }
 
-        private void ChaseUpdate() {
+        private void SeekUpdate() {
             if (Timer < 30f) {
                 return;
             }
-            chasing.Add(Projectile);
+            seekers.Add(Projectile);
             int idx = (int)Param;
             if (idx < 0 || idx >= Main.maxPlayers) {
                 return;
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             Projectile.velocity += diff.SafeNormalize(Vector2.Zero) * Math.Min(diff.Length(), accel);
         }
 
-        private void VortexUpdate() {
+        private void ConvergeUpdate() {
             if (Host is not NPC host) {
                 Projectile.velocity *= 0.96f;
                 return;
@@ -155,21 +155,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         }
 
         /// <summary>追踪光球互斥：60px 内按 (1-t²)×2 推开，防聚成一个点</summary>
-        internal static void RepelChasers() {
-            for (int i = 0; i < chasing.Count; i++) {
-                for (int j = 0; j < chasing.Count; j++) {
+        internal static void SpreadSeekers() {
+            for (int i = 0; i < seekers.Count; i++) {
+                for (int j = 0; j < seekers.Count; j++) {
                     if (i == j) {
                         continue;
                     }
-                    Vector2 d = chasing[i].position - chasing[j].position;
+                    Vector2 d = seekers[i].position - seekers[j].position;
                     float len = d.Length();
                     if (len > 1e-4f && len < 60f) {
                         float t = len / 60f;
-                        chasing[i].velocity += d / len * (1f - t * t) * 2f;
+                        seekers[i].velocity += d / len * (1f - t * t) * 2f;
                     }
                 }
             }
-            chasing.Clear();
+            seekers.Clear();
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
 
         /// <summary>加速光球的预告线：出生 25f 渐显，60f 后随速度起来渐隐（线告诉你它会去哪）</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
-            if (Mode != EmpressBoltMode.Accelerating || VaultUtils.isServer) {
+            if (Mode != EmpressBoltMode.Quicken || VaultUtils.isServer) {
                 return;
             }
             float fadeIn = MathHelper.Clamp(Timer / 25f, 0f, 1f);
@@ -305,7 +305,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         }
 
         public override void PostUpdateProjectiles() {
-            EmpressLightBolt.RepelChasers();
+            EmpressLightBolt.SpreadSeekers();
             EmpressLacewing.Separate();
             if (VaultUtils.isServer) {
                 return;

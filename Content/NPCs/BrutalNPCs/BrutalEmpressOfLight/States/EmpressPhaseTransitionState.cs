@@ -79,12 +79,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     npc.netUpdate = true;
                     context.AttackCounter = 0;
                 }
-                EmpressCast.Radiance(npc, npc.Center, 640f, 36, 0.7f);
-                EmpressCast.Radiance(npc, npc.Center, 300f, 26, 0.2f);
+                EmpressCast.Bloom(npc, npc.Center, 640f, 36, 0.7f);
+                EmpressCast.Bloom(npc, npc.Center, 300f, 26, 0.2f);
                 EmpressMotion.Shake(npc.Center, 12f, 24);
                 if (!VaultUtils.isServer) {
                     EmpressScreenFX.PushPrismPulse(npc.Center, 1f, 38);
-                    EmpressScreenFX.PushHitDark(0.3f);
+                    EmpressScreenFX.PushImpactDim(0.3f);
                     for (int i = 0; i < 12; i++) {
                         float bh = i / 12f;
                         PRTLoader.NewParticle<PRT_EmpressButterfly>(npc.Center,

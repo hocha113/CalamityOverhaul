@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.BrutalRelics.EmpressOfLight
             float ringR = Radius * VaultUtils.EaseOutCubic(p) * 0.9f;
 
             Color prismCol = EmpressMotion.Prism(Hue, 0.68f);
-            //共享冲击环：白热前锋+色散滞后双层（EmpressRadiance 同语法）
+            //共享冲击环：白热前锋+色散滞后双层（EmpressBloomBurst 同语法）
             ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center, ringR, ringR * 0.24f,
                 Color.White, Color.White, prismCol, 0.75f * fade,
                 timeSeed: Projectile.whoAmI * 0.41f);

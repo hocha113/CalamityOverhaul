@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         /// <summary>二阶段门槛</summary>
         internal const float Phase2LifeFraction = 0.6f;
         /// <summary>三阶段（终章）门槛</summary>
-        internal const float Phase3LifeFraction = 0.15f;
+        internal const float AscensionLifeFraction = 0.15f;
 
         private int ChaseFrames => Context.IsSecondPhase ? 20 : 15;
         private int Duration => ChaseFrames + Context.Scaled(14);
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             if (target.Alives()) {
                 if (Timer <= ChaseFrames) {
                     //贴身追击：追不是飘
-                    EmpressMotion.DashTo(npc, target.Center, target.velocity, Timer, context.DayEmpowered || context.IsSecondPhase);
+                    EmpressMotion.ChaseStep(npc, target.Center, target.velocity, Timer, context.DayEmpowered || context.IsSecondPhase);
                 }
                 else {
                     npc.velocity *= 0.9f;
@@ -107,8 +107,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 return new EmpressPhaseTransitionState();
             }
 
-            if (context.IsSecondPhase && !context.IsThirdPhase && npc.life <= npc.lifeMax * Phase3LifeFraction) {
-                return new EmpressPhase3TransformState();
+            if (context.IsSecondPhase && !context.IsThirdPhase && npc.life <= npc.lifeMax * AscensionLifeFraction) {
+                return new EmpressAscensionState();
             }
 
             if (context.IsThirdPhase) {

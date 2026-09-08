@@ -7,18 +7,18 @@ WallOfFleshAI: {
 
 EmpressOfLightAI: {
 	# Phase 3 transformation lines, spoken at fixed ticks; the seventh plays when the closing ring finishes and she can be killed again
-	Phase3_0: ……哈？
-	Phase3_1: 这怎么可能？
-	Phase3_2: 我已将我的力量迫至极限，你又是怎么活下来的？
-	Phase3_3: ……不。
-	Phase3_4: 我不会就这样向你低头。
-	Phase3_5: 你想赢下这一场，就要接住我的每一分光。
-	Phase3_6: 现在，到你了。
+	Ascension_0: ……哈？
+	Ascension_1: 这怎么可能？
+	Ascension_2: 我已将我的力量迫至极限，你又是怎么活下来的？
+	Ascension_3: ……不。
+	Ascension_4: 我不会就这样向你低头。
+	Ascension_5: 你想赢下这一场，就要接住我的每一分光。
+	Ascension_6: 现在，到你了。
 	# Concession monologue, one line per beat of the death performance
-	Concede_0: ……够了。
-	Concede_1: 你远比看上去更强。
-	Concede_2: 那些蝴蝶对我意义非凡，别去惊扰它们，这片天空就还是我们共有的。
-	Concede_3: 光会记得你。
+	Farewell_0: ……够了。
+	Farewell_1: 你远比看上去更强。
+	Farewell_2: 那些蝴蝶对我意义非凡，别去惊扰它们，这片天空就还是我们共有的。
+	Farewell_3: 光会记得你。
 	# Moon Shadow: death reason for a player caught outside the shadow cones during the whiteout
-	RadianceDeath: "{0}在她的光里蒸发了"
+	WhiteoutDeath: "{0}在她的光里蒸发了"
 }

@@ -13,7 +13,7 @@ float uIntensity;     //脉冲强度 0~1
 float uAmbient;       //环境棱彩档 0~1
 float2 uCenter;       //脉冲中心UV
 float uAspect;        //宽高比
-float uHitDark;       //命中压黑 0~0.8
+float uImpactDim;       //命中压黑 0~0.8
 float2 uFlashDir;     //定向闪光：方向×强度（0~1.2）
 float2 uArenaCenter;  //竞技场圆心UV
 float uArenaRadius;   //竞技场半径（宽高比修正后UV单位），0=关
@@ -109,7 +109,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     color += float3(0.55, 0.2, 0.05) * smoothstep(0.3, 0.9, rimDist) * uArenaPull * 0.7;
 
     //命中链：先压黑，再沿击向提亮
-    color *= 1.0 - uHitDark;
+    color *= 1.0 - uImpactDim;
     color += float3(1.0, 0.95, 0.85) * fl * 0.32;
 
     //终章停顿：预光（暖色呼吸提亮）与闪

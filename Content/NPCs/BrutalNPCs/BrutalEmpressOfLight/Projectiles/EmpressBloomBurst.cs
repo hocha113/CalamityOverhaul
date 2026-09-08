@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
     /// 辉光爆放：一次性棱彩绽放（涟漪环+放射星芒+光尘），纯演出载体，零伤害；
     /// 走弹幕同步所以各端都看得到；ai[0]=最大半径 ai[1]=寿命 ai[2]=色相种子
     /// </summary>
-    internal class EmpressRadiance : ModProjectile
+    internal class EmpressBloomBurst : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
 

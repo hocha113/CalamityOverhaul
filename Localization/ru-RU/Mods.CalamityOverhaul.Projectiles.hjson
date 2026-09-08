@@ -588,12 +588,8 @@ EowBreachOmen.DisplayName: Знамение прорыва земли
 EowGeyserProj.DisplayName: Гейзер разъедающей почвы
 EowHuskMine.DisplayName: Кислотная мина сброшенной шкуры
 EmpressAuroraVeil.DisplayName: Завеса сияния
-EmpressBlade.DisplayName: Радужный меч
 EmpressLance.DisplayName: Призматическое копьё
-EmpressPetal.DisplayName: Вечный радужный лепесток
-EmpressPrismBolt.DisplayName: Призматический снаряд
-EmpressRadiance.DisplayName: Сияющее цветение
-EmpressSunray.DisplayName: Луч солнечного танца
+EmpressBloomBurst.DisplayName: Сияющее цветение
 EocBloodShot.DisplayName: Кровавая бусина
 EocBloodSpike.DisplayName: Кровавый шип
 EocFogCloud.DisplayName: Сгусток кровавого тумана
@@ -719,7 +715,6 @@ DestroyerCoilRingProj.DisplayName: Винтовое кольцо Уничтож�
 FishronVortexProj.DisplayName: Вихрь бешеной акулы
 EowDevourOmen.DisplayName: Предупреждение о пожирании
 EmpressLightBind.DisplayName: Световые путы
-EmpressSnareSigil.DisplayName: Ловящая световая печать
 GolemGrabRay.DisplayName: Гравитационный луч Голема
 PincerBindTether.DisplayName: Стягивающий трос Близнецов
 MLordGrabLashProj.DisplayName: Глубококосмическое щупальце
@@ -1276,12 +1271,10 @@ SoulbindingCounterFlame.DisplayName: Контрударное пламя свя�
 // GsSpiderArmorWebProj.DisplayName: Gs Spider Armor Web Proj
 // GsTinArmorChimeProj.DisplayName: Gs Tin Armor Chime Proj
 // GsVortexArmorArcProj.DisplayName: Gs Vortex Armor Arc Proj
-// EmpressHitscanLance.DisplayName: Empress Hitscan Lance
 // EmpressLightBolt.DisplayName: Empress Light Bolt
-// EmpressMeltingFan.DisplayName: Empress Melting Fan
-// EmpressShockwave.DisplayName: Empress Shockwave
 // EmpressTrackBeam.DisplayName: Empress Track Beam
 // EmpressEcho.DisplayName: Empress Echo
 // EmpressLacewing.DisplayName: Empress Lacewing
 // EmpressMoonShard.DisplayName: Empress Moon Shard
 // EmpressWhipCrack.DisplayName: Empress Whip Crack
+// EmpressRepelRing.DisplayName: Empress Repel Ring

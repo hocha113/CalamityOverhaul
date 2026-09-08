@@ -35,6 +35,72 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public static bool Ready => bladeTex?.Value != null;
         public static Texture2D Texture => bladeTex?.Value;
 
+        //====残影刀贴图:alpha 沿轴自护手向锋尖抬升,供绕手心密排的扫掠面残影使用====
+        /// <summary>护手起点的轴向位置(u 自锋尖起,0=尖 1=柄尾;量自贴图,u≈0.70 起厚度由 12px 跳到 48px),此后段不参与残影</summary>
+        private const float SmearGuardU = 0.70f;
+        /// <summary>斜坡指数:1 时扫掠面沿刀身密度均匀,>1 向护手渐隐</summary>
+        private const float SmearRampPow = 1.2f;
+        private static Texture2D smearTex;
+        private static bool smearBuildTried;
+
+        /// <summary>
+        /// 残影专用刀贴图,每像素四通道乘 ((GuardU-u)/GuardU)^pow。<br/>
+        /// 绕手心按小角步密排刀拷贝时,半径 r 处每像素被 ∝1/r 张拷贝覆盖,原贴图会在手心糊成实心色饼;
+        /// 斜坡把重叠密度抵消成沿刀身均匀渐隐的扫掠面,护手与握柄归零。<br/>
+        /// 尺寸与原贴图相同,支点/刀尖 UV 通用;未就绪或烘焙失败退回原贴图
+        /// </summary>
+        public static Texture2D SmearTexture {
+            get {
+                if (smearTex != null) {
+                    return smearTex;
+                }
+                if (smearBuildTried || !Ready) {
+                    return Texture;
+                }
+                smearBuildTried = true;
+                try {
+                    smearTex = BuildSmearTexture(bladeTex.Value);
+                }
+                catch {
+                    //GetData/SetData 偶发失败走原贴图,不重试
+                    smearTex = null;
+                }
+                return smearTex ?? Texture;
+            }
+        }
+
+        private static Texture2D BuildSmearTexture(Texture2D src) {
+            Color[] data = new Color[src.Width * src.Height];
+            src.GetData(data);
+            Vector2 axis = SpritePommel - SpriteTip;
+            float axisLenSq = axis.LengthSquared();
+            for (int y = 0; y < src.Height; y++) {
+                for (int x = 0; x < src.Width; x++) {
+                    int i = y * src.Width + x;
+                    if (data[i].A == 0) {
+                        continue;
+                    }
+                    float u = Vector2.Dot(new Vector2(x + 0.5f, y + 0.5f) - SpriteTip, axis) / axisLenSq;
+                    float w = MathF.Pow(MathHelper.Clamp((SmearGuardU - u) / SmearGuardU, 0f, 1f), SmearRampPow);
+                    //Color*float 四通道同乘,保持预乘 alpha 一致
+                    data[i] = data[i] * w;
+                }
+            }
+            Texture2D tex = new(Main.instance.GraphicsDevice, src.Width, src.Height);
+            tex.SetData(data);
+            return tex;
+        }
+
+        /// <summary>卸载运行时烘焙的残影贴图(先摘引用再主线程 Dispose)</summary>
+        internal static void UnloadSmear() {
+            Texture2D tex = smearTex;
+            smearTex = null;
+            smearBuildTried = false;
+            if (tex != null) {
+                Main.RunOnMainThread(() => tex.Dispose());
+            }
+        }
+
         //====轮廓表:沿轴 u∈[0,1] 采样,+s = 栋/柄侧====
         private const int Samples = 48;
         private static bool profileBuilt;
@@ -182,5 +248,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 : new BladeXform(handWorld, bladeRotation, facing, bladeScale, edgeFlip,
                     tex.Size(), hiltUV, tipUV);
         }
+    }
+
+    /// <summary>运行时烘焙贴图的卸载钩子(静态类不能挂 ICWRLoader)</summary>
+    internal sealed class OniBladeProfileLoader : ICWRLoader
+    {
+        void ICWRLoader.UnLoadData() => OniBladeProfile.UnloadSmear();
     }
 }

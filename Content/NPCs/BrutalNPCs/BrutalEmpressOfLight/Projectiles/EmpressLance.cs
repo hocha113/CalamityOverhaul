@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         /// <summary>瞄准枪：强追踪 0.075×((60-t)/60)^2.25，发射后 1000px 内补追</summary>
         Aimed = 1,
         /// <summary>终章疾速：瞄准期后退 30px 再射，40f 出手，68px/f 子步</summary>
-        Fast = 2,
+        Rush = 2,
         /// <summary>终章智能：瞄准期恒定强追踪，发射 100px/f，60f 后预测补追</summary>
-        Smart = 3,
+        Tracking = 3,
     }
 
     /// <summary>
@@ -45,14 +45,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
         private NPC Host => ((int)Projectile.ai[2]).TryGetNPC(out NPC n) ? n : null;
         private ref float Timer => ref Projectile.localAI[0];
 
-        private int AimTime => Mode == EmpressLanceMode.Fast ? 40 : 60;
+        private int AimTime => Mode == EmpressLanceMode.Rush ? 40 : 60;
         private bool Launched => Timer >= AimTime;
         private float Hue => (Projectile.identity * 0.157f) % 1f;
         private static float DayBlend => VaultUtils.isServer ? 0f : EmpressDayDrive.Intensity;
 
         private float Speedup => Mode switch {
-            EmpressLanceMode.Fast => 0.7f,
-            EmpressLanceMode.Smart => 1.5f,
+            EmpressLanceMode.Rush => 0.7f,
+            EmpressLanceMode.Tracking => 1.5f,
             _ => NPC.ShouldEmpressBeEnraged() ? 0.4f : 0.15f,
         };
 
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 float maxDelta = Mode switch {
                     EmpressLanceMode.Wall => 0.009f * MathF.Pow(1f - t, 0.4f),
                     EmpressLanceMode.Aimed => 0.075f * MathF.Pow(1f - t, 2.25f),
-                    EmpressLanceMode.Fast => 0.02f * MathF.Pow(1f - t, 0.4f),
+                    EmpressLanceMode.Rush => 0.02f * MathF.Pow(1f - t, 0.4f),
                     _ => 0.12f,
                 };
                 if (!day) {
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             }
 
             //终章疾速：瞄准期沿方向后退再射（反向运动）
-            if (Mode == EmpressLanceMode.Fast) {
+            if (Mode == EmpressLanceMode.Rush) {
                 Projectile.position -= Angle.ToRotationVector2() * (MathF.Pow(1f - t, 2f) * 1.6f);
             }
 
@@ -140,12 +140,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
 
             //发射后补追：1000px 内以 (1000-d)/450 的加速度转向（智能枪 60f 后才开，用预测点）
             Player target = TargetPlayer();
-            int homingDelay = Mode == EmpressLanceMode.Smart ? 60 : (Mode == EmpressLanceMode.Aimed ? 45 : 999);
+            int homingDelay = Mode == EmpressLanceMode.Tracking ? 60 : (Mode == EmpressLanceMode.Aimed ? 45 : 999);
             if (target != null && Timer - AimTime > homingDelay) {
                 float d = Projectile.Distance(target.Center);
                 float accel = Math.Max((1000f - d) / 450f, 0f);
                 if (accel > 0f) {
-                    Vector2 aim = Mode == EmpressLanceMode.Smart ? EmpressMotion.Intercept(Projectile.Center, target, speed) : target.Center;
+                    Vector2 aim = Mode == EmpressLanceMode.Tracking ? EmpressMotion.Intercept(Projectile.Center, target, speed) : target.Center;
                     Vector2 desired = Projectile.DirectionTo(aim) * BaseSpeed;
                     Vector2 diff = desired - Projectile.velocity;
                     Projectile.velocity += diff.SafeNormalize(Vector2.Zero) * Math.Min(diff.Length(), accel);

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
     /// 光绫缚舞：光笼收拢缚住玩家悬空定身，女皇绕身三段交叉剑舞（全程零接触的优雅处刑），
-    /// 辐光爆绽掷出收尾。节拍固定帧不吃TempoScale，运镜与受缚端按常量对表；
+    /// 日辉爆绽掷出收尾。节拍固定帧不吃TempoScale，运镜与受缚端按常量对表；
     /// 伤害由受缚者本端脚本化结算（见EmpressGrabPerformancePlayer），本状态只管她的舞与世界侧演出
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.LightBindWaltz, typeof(EmpressStateContext))]
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         internal const int FinaleStart = BindHold + PassCount * PassLen;
         /// <summary>聚光截止，进入爆绽前的屏息</summary>
         internal const int GatherEnd = 206;
-        /// <summary>辐光爆绽帧：终结伤+掷出</summary>
+        /// <summary>日辉爆绽帧：终结伤+掷出</summary>
         internal const int BurstTick = 218;
         /// <summary>总时长，保底超时出口</summary>
         internal const int TotalTime = 270;
@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     npc.Center += EmpressMotion.ReelBack(-dashDir, (beat - 14) / 12f, 5.4f);
                 }
                 context.Pose = EmpressPose.Dance;
-                //原版日舞臂帧窗口下限10（镜像RadiantDance约定）
+                //原版日舞臂帧窗口下限10（镜像旧日舞约定）
                 context.PoseTimer = MathHelper.Clamp(beat * 2.4f, 10f, 60f);
                 context.SetChargeState(3, beat / (float)GlideEnd * 0.7f);
             }
@@ -284,11 +284,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             }
         }
 
-        /// <summary>爆绽与回复拍：辐光强拍掷出受缚者，她被反作用推离后敛息退场</summary>
+        /// <summary>爆绽与回复拍：日辉强拍掷出受缚者，她被反作用推离后敛息退场</summary>
         private void ReleaseUpdate(EmpressStateContext context, NPC npc, Vector2 vpos) {
             if (Timer == BurstTick) {
-                //辐光爆绽：终结强拍（服务端生成同步，全端可见）
-                EmpressCast.Radiance(npc, vpos, 620f, 44, 0.62f);
+                //日辉爆绽：终结强拍（服务端生成同步，全端可见）
+                EmpressCast.Bloom(npc, vpos, 620f, 44, 0.62f);
                 EmpressMotion.CinematicShake(vpos, 9f, 30);
                 PlayLocal(SoundID.Item162 with { Volume = 1f, Pitch = 0.1f }, vpos);
                 PlayLocal(SoundID.Item163 with { Volume = 1f, Pitch = -0.1f }, vpos);

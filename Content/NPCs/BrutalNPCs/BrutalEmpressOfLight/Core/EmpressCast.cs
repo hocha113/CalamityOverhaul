@@ -76,12 +76,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         }
 
         /// <summary>冲击波：零伤害推开</summary>
-        public static void Shockwave(NPC npc, Vector2 pos) {
+        public static void RepelRing(NPC npc, Vector2 pos) {
             if (!Authority) {
                 return;
             }
             Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
-                ModContent.ProjectileType<EmpressShockwave>(), 0, 0f, Main.myPlayer, npc.whoAmI);
+                ModContent.ProjectileType<EmpressRepelRing>(), 0, 0f, Main.myPlayer, npc.whoAmI);
         }
 
         /// <summary>极光帘幕：drift 横漂速度，life 寿命（入场/死亡演出装饰）</summary>
@@ -117,12 +117,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         }
 
         /// <summary>辉光爆放：纯演出，各端可见</summary>
-        public static void Radiance(NPC npc, Vector2 pos, float radius, int life, float hue) {
+        public static void Bloom(NPC npc, Vector2 pos, float radius, int life, float hue) {
             if (!Authority) {
                 return;
             }
             Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
-                ModContent.ProjectileType<EmpressRadiance>(), 0, 0f, Main.myPlayer, radius, life, hue % 1f);
+                ModContent.ProjectileType<EmpressBloomBurst>(), 0, 0f, Main.myPlayer, radius, life, hue % 1f);
         }
 
         /// <summary>是否本 Boss 的敌对弹幕类型（月屑零伤害，但清场时一并处理）</summary>

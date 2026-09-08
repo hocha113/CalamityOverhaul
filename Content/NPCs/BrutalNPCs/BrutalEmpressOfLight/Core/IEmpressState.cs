@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         /// <summary>光绫缚舞投技</summary>
         LightBindWaltz = 14,
         /// <summary>三阶段变身：台词+回血+相位姿势</summary>
-        Phase3Transform = 15,
+        Ascension = 15,
         /// <summary>终章步进剧本：加速墙→智能枪→反向日舞→缩圈</summary>
         Finale = 16,
     }

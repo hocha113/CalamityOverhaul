@@ -588,12 +588,8 @@ EowBreachOmen.DisplayName: Présage de percée
 EowGeyserProj.DisplayName: Geyser corrompu
 EowHuskMine.DisplayName: Mine de carapace
 EmpressAuroraVeil.DisplayName: Voile d'aurore
-EmpressBlade.DisplayName: Lame irisée
 EmpressLance.DisplayName: Lance prismatique
-EmpressPetal.DisplayName: Pétale éternel
-EmpressPrismBolt.DisplayName: Trait prismatique
-EmpressRadiance.DisplayName: Éclat radiant
-EmpressSunray.DisplayName: Rayon de danse solaire
+EmpressBloomBurst.DisplayName: Éclat radiant
 EocBloodShot.DisplayName: Perle de sang
 EocBloodSpike.DisplayName: Épine de sang
 EocFogCloud.DisplayName: Nuage de sang
@@ -719,7 +715,6 @@ DestroyerCoilRingProj.DisplayName: Anneau spiralé du Destructeur
 FishronVortexProj.DisplayName: Vortex de requin
 EowDevourOmen.DisplayName: Avertissement de dévoration
 EmpressLightBind.DisplayName: Lien de lumière
-EmpressSnareSigil.DisplayName: Sceau de lumière
 GolemGrabRay.DisplayName: Rayon gravitationnel du Golem
 PincerBindTether.DisplayName: Câble des Jumeaux
 MLordGrabLashProj.DisplayName: Tentacule cosmique
@@ -1276,12 +1271,10 @@ SoulbindingCounterFlame.DisplayName: Flamme de contre de l'âme liée
 // GsSpiderArmorWebProj.DisplayName: Gs Spider Armor Web Proj
 // GsTinArmorChimeProj.DisplayName: Gs Tin Armor Chime Proj
 // GsVortexArmorArcProj.DisplayName: Gs Vortex Armor Arc Proj
-// EmpressHitscanLance.DisplayName: Empress Hitscan Lance
 // EmpressLightBolt.DisplayName: Empress Light Bolt
-// EmpressMeltingFan.DisplayName: Empress Melting Fan
-// EmpressShockwave.DisplayName: Empress Shockwave
 // EmpressTrackBeam.DisplayName: Empress Track Beam
 // EmpressEcho.DisplayName: Empress Echo
 // EmpressLacewing.DisplayName: Empress Lacewing
 // EmpressMoonShard.DisplayName: Empress Moon Shard
 // EmpressWhipCrack.DisplayName: Empress Whip Crack
+// EmpressRepelRing.DisplayName: Empress Repel Ring

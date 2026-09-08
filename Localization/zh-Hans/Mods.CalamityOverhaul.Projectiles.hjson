@@ -588,12 +588,8 @@ EowBreachOmen.DisplayName: 破土预兆
 EowGeyserProj.DisplayName: 蚀土间歇泉
 EowHuskMine.DisplayName: 蜕壳酸雷
 EmpressAuroraVeil.DisplayName: 极光帷幕
-EmpressBlade.DisplayName: 虹光之剑
 EmpressLance.DisplayName: 棱彩光矛
-EmpressPetal.DisplayName: 永恒虹瓣
-EmpressPrismBolt.DisplayName: 棱彩弹
-EmpressRadiance.DisplayName: 辉光绽放
-EmpressSunray.DisplayName: 日舞光束
+EmpressBloomBurst.DisplayName: 辉光绽放
 EocBloodShot.DisplayName: 血珠弹
 EocBloodSpike.DisplayName: 血棘
 EocFogCloud.DisplayName: 血雾团
@@ -719,7 +715,6 @@ DestroyerCoilRingProj.DisplayName: 毁灭盘旋光环
 FishronVortexProj.DisplayName: 狂鲨漩涡
 EowDevourOmen.DisplayName: 噬生吞噬预警
 EmpressLightBind.DisplayName: 光之束缚
-EmpressSnareSigil.DisplayName: 诱捕光印
 GolemGrabRay.DisplayName: 石巨人引力射线
 PincerBindTether.DisplayName: 双子钳制索
 MLordGrabLashProj.DisplayName: 深空触须
@@ -1276,12 +1271,10 @@ SoulbindingCounterFlame.DisplayName: 缚魂反击烈焰
 // GsSpiderArmorWebProj.DisplayName: Gs Spider Armor Web Proj
 // GsTinArmorChimeProj.DisplayName: Gs Tin Armor Chime Proj
 // GsVortexArmorArcProj.DisplayName: Gs Vortex Armor Arc Proj
-// EmpressHitscanLance.DisplayName: Empress Hitscan Lance
 // EmpressLightBolt.DisplayName: Empress Light Bolt
-// EmpressMeltingFan.DisplayName: Empress Melting Fan
-// EmpressShockwave.DisplayName: Empress Shockwave
 // EmpressTrackBeam.DisplayName: Empress Track Beam
 // EmpressEcho.DisplayName: Empress Echo
 // EmpressLacewing.DisplayName: Empress Lacewing
 // EmpressMoonShard.DisplayName: Empress Moon Shard
 // EmpressWhipCrack.DisplayName: Empress Whip Crack
+// EmpressRepelRing.DisplayName: Empress Repel Ring

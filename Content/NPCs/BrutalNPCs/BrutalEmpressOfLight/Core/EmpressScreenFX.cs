@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         private static float ambientTarget;
 
         //命中链：整屏压黑一拍再回亮（×0.93 消退）
-        internal static float HitDark { get; private set; }
+        internal static float ImpactDim { get; private set; }
 
         //定向闪光：光束擦身/被击方向的运动模糊，向量编码方向与强度
         internal static Vector2 FlashDir { get; private set; }
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         private static float whiteoutTarget;
         internal static Vector2 SunWorld { get; private set; }
 
-        public static bool HasAny => PulseActive || AmbientGrade > 0.012f || HitDark > 0.01f
+        public static bool HasAny => PulseActive || AmbientGrade > 0.012f || ImpactDim > 0.01f
             || FlashDir.LengthSquared() > 0.0001f || ArenaPull > 0.01f || ArenaFlash > 0.01f
             || PhaseGlow > 0.01f || PhaseFlash > 0.01f || Whiteout > 0.005f;
 
@@ -74,11 +74,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         }
 
         /// <summary>命中压黑：先暗一下，闪光才亮得起来</summary>
-        public static void PushHitDark(float amount) {
+        public static void PushImpactDim(float amount) {
             if (VaultUtils.isServer) {
                 return;
             }
-            HitDark = MathHelper.Clamp(HitDark + amount, 0f, 0.8f);
+            ImpactDim = MathHelper.Clamp(ImpactDim + amount, 0f, 0.8f);
         }
 
         /// <summary>定向闪光累加（方向×强度）</summary>
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             }
             ambientTarget *= 0.92f;
 
-            HitDark = HitDark < 0.005f ? 0f : HitDark * 0.93f;
+            ImpactDim = ImpactDim < 0.005f ? 0f : ImpactDim * 0.93f;
 
             flashRaw = flashRaw.LengthSquared() < 0.0001f ? Vector2.Zero : flashRaw * 0.75f;
             FlashDir = Vector2.Distance(FlashDir, flashRaw) < 0.005f ? flashRaw : FlashDir + (flashRaw - FlashDir) * 0.35f;
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             PulseAge = PulseLife = 0;
             AmbientGrade = 0f;
             ambientTarget = 0f;
-            HitDark = 0f;
+            ImpactDim = 0f;
             FlashDir = flashRaw = Vector2.Zero;
             ArenaPull = arenaPullTarget = 0f;
             ArenaFlash = 0f;

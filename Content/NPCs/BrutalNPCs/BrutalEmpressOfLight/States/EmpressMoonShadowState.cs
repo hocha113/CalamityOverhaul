@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 
         private const int ThrowBar = 0;
         private const int GatherBar = 1;
-        private const int RadianceStartBar = 2;
-        private const int RadianceEndBar = 6;
+        private const int WhiteoutStartBar = 2;
+        private const int WhiteoutEndBar = 6;
         private const int ReleaseBar = 6;
         private const int EndBar = 7;
 
@@ -95,8 +95,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     }
                 }
             }
-            else if (bar >= RadianceStartBar && bar < RadianceEndBar) {
-                RadianceUpdate(context, npc, target, bar, bf);
+            else if (bar >= WhiteoutStartBar && bar < WhiteoutEndBar) {
+                WhiteoutUpdate(context, npc, target, bar, bf);
             }
             else if (bar == ReleaseBar) {
                 //释放：白光退，月屑碎，她吐气
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         }
 
         /// <summary>全白四小节：每拍不在阴影里的本地玩家蒸发一截；她悬着不动只随呼吸</summary>
-        private void RadianceUpdate(EmpressStateContext context, NPC npc, Player target, int bar, int bf) {
+        private void WhiteoutUpdate(EmpressStateContext context, NPC npc, Player target, int bar, int bf) {
             context.Pose = EmpressPose.Transform;
             context.PoseTimer = 40f + 18f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f);
             context.SetChargeState(3, 1f);
@@ -178,11 +178,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 }
                 return;
             }
-            int dmg = Math.Max((int)(me.statLifeMax2 * context.RadianceTickFraction), 1);
-            PlayerDeathReason reason = PlayerDeathReason.ByCustomReason(EmpressOfLightAI.RadianceDeathText(me.name));
+            int dmg = Math.Max((int)(me.statLifeMax2 * context.WhiteoutTickFraction), 1);
+            PlayerDeathReason reason = PlayerDeathReason.ByCustomReason(EmpressOfLightAI.WhiteoutDeathText(me.name));
             me.Hurt(reason, dmg, 0, false, false, -1, false, 0f, 1f, 0f);
-            EmpressHitFeedback.Trigger(me.Center, Vector2.UnitY, 0.6f, true);
-            EmpressScreenFX.PushHitDark(0.15f);
+            EmpressHitFeedback.Play(me.Center, Vector2.UnitY, 0.6f, true);
+            EmpressScreenFX.PushImpactDim(0.15f);
         }
 
         private static void ShatterShards(NPC npc) {

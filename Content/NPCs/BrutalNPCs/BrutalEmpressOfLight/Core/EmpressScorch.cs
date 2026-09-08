@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             }
 
             if (Player.whoAmI == Main.myPlayer) {
-                EmpressHitFeedback.Trigger(Player.Center, dir, intensity, NPC.ShouldEmpressBeEnraged());
+                EmpressHitFeedback.Play(Player.Center, dir, intensity, NPC.ShouldEmpressBeEnraged());
             }
         }
 

@@ -588,12 +588,8 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // EowGeyserProj.DisplayName: Corrupt Geyser
 // EowHuskMine.DisplayName: Husk Mine
 // EmpressAuroraVeil.DisplayName: Aurora Veil
-// EmpressBlade.DisplayName: Radiant Blade
 // EmpressLance.DisplayName: Prismatic Lance
-// EmpressPetal.DisplayName: Everlasting Petal
-// EmpressPrismBolt.DisplayName: Prism Bolt
-// EmpressRadiance.DisplayName: Radiant Burst
-// EmpressSunray.DisplayName: Sun Dance
+// EmpressBloomBurst.DisplayName: Radiant Burst
 // EocBloodShot.DisplayName: Blood Bead
 // EocBloodSpike.DisplayName: Blood Barb
 // EocFogCloud.DisplayName: Blood Fog
@@ -719,7 +715,6 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // FishronVortexProj.DisplayName: Shark Vortex
 // EowDevourOmen.DisplayName: Devour Telegraph
 // EmpressLightBind.DisplayName: Light Binding
-// EmpressSnareSigil.DisplayName: Light Snare Sigil
 // GolemGrabRay.DisplayName: Golem Gravity Ray
 // PincerBindTether.DisplayName: Pincer Tether
 // MLordGrabLashProj.DisplayName: Cosmic Lash
@@ -1276,12 +1271,10 @@ ScapegoatDollWalker.DisplayName: Espantalho substituto
 // GsSpiderArmorWebProj.DisplayName: Gs Spider Armor Web Proj
 // GsTinArmorChimeProj.DisplayName: Gs Tin Armor Chime Proj
 // GsVortexArmorArcProj.DisplayName: Gs Vortex Armor Arc Proj
-// EmpressHitscanLance.DisplayName: Empress Hitscan Lance
 // EmpressLightBolt.DisplayName: Empress Light Bolt
-// EmpressMeltingFan.DisplayName: Empress Melting Fan
-// EmpressShockwave.DisplayName: Empress Shockwave
 // EmpressTrackBeam.DisplayName: Empress Track Beam
 // EmpressEcho.DisplayName: Empress Echo
 // EmpressLacewing.DisplayName: Empress Lacewing
 // EmpressMoonShard.DisplayName: Empress Moon Shard
 // EmpressWhipCrack.DisplayName: Empress Whip Crack
+// EmpressRepelRing.DisplayName: Empress Repel Ring

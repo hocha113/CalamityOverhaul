@@ -53,16 +53,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 
             //认输独白：四拍各一句（权威端广播）
             if (Timer == 12) {
-                EmpressOfLightAI.SayConcede(0);
+                EmpressOfLightAI.SayFarewell(0);
             }
             else if (Timer == StaggerEnd + 10) {
-                EmpressOfLightAI.SayConcede(1);
+                EmpressOfLightAI.SayFarewell(1);
             }
             else if (Timer == AscendEnd + 6) {
-                EmpressOfLightAI.SayConcede(2);
+                EmpressOfLightAI.SayFarewell(2);
             }
             else if (Timer == GatherEnd + 30) {
-                EmpressOfLightAI.SayConcede(3);
+                EmpressOfLightAI.SayFarewell(3);
             }
 
             if (Timer < StaggerEnd) {
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 
             if (dissolveT == 1) {
                 //绽散主拍
-                EmpressCast.Radiance(npc, npc.Center, 720f, 44, 0.62f);
+                EmpressCast.Bloom(npc, npc.Center, 720f, 44, 0.62f);
                 EmpressMotion.CinematicShake(npc.Center, 10f, 34);
                 if (!VaultUtils.isServer) {
                     EmpressScreenFX.PushPrismPulse(npc.Center, 1f, 46);
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             if ((dissolveT == 10 || dissolveT == 20) && !VaultUtils.isClient) {
                 //错拍次级绽放
                 float radius = dissolveT == 10 ? 440f : 260f;
-                EmpressCast.Radiance(npc, npc.Center + Main.rand.NextVector2Circular(40f, 40f), radius, 34, 0.3f + dissolveT * 0.02f);
+                EmpressCast.Bloom(npc, npc.Center + Main.rand.NextVector2Circular(40f, 40f), radius, 34, 0.3f + dissolveT * 0.02f);
             }
 
             //第二波光蝶：主拍余韵里迟到的振翅，升向天幕

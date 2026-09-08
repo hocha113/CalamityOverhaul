@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.GameModes;
+﻿using CalamityOverhaul.Content.GameModes;
 using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;
@@ -17,10 +17,11 @@ namespace CalamityOverhaul.Content.NPCs
     internal abstract class BrutalNPCOverride : NPCOverride
     {
         /// <summary>
-        /// 重制未完成、默认不接管的 NPC 类型。加 ID 即禁用，从集合移除即重新启用。
-        /// 2026-09-06 光之女皇重制完成移出，当前为空
+        /// 重制未完成、默认不接管的 NPC 类型。加 ID 即禁用，从集合移除即重新启用
         /// </summary>
-        internal static readonly HashSet<int> DisabledReworkTypes = [];
+        internal static readonly HashSet<int> DisabledReworkTypes = [
+            NPCID.HallowBoss,
+        ];
 
         public sealed override bool CanOverride() {
             if (DisabledReworkTypes.Contains(TargetID)) {

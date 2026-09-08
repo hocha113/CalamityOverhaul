@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
                 return;
             }
 
-            //终结：辐光爆绽落伤+掷出，交还身体
+            //终结：日辉爆绽落伤+掷出，交还身体
             if (age == EmpressLightBindWaltzState.BurstTick) {
                 FinishAndThrow(boss);
                 return;

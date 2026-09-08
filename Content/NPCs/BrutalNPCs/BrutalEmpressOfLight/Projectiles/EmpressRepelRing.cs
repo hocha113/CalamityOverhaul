@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
     /// 冲击波：零伤害的扩张环，波前扫过玩家给一次朝外冲量 34×(1-r/R)。先把人推开，再开火。
     /// 半径 += 50 + 60(1-t)²，扩到 MaxRadius 消散。ai[0]=宿主 whoAmI
     /// </summary>
-    internal class EmpressShockwave : ModProjectile
+    internal class EmpressRepelRing : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
 

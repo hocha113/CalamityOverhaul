@@ -588,12 +588,8 @@ EowBreachOmen.DisplayName: Durchbruch-Vorzeichen
 EowGeyserProj.DisplayName: Ätzender Geysir
 EowHuskMine.DisplayName: Häutungs-Säuremine
 EmpressAuroraVeil.DisplayName: Aurora-Vorhang
-EmpressBlade.DisplayName: Regenbogenschwert
 EmpressLance.DisplayName: Prisma-Lichtlanze
-EmpressPetal.DisplayName: Ewiges Regenbogenblatt
-EmpressPrismBolt.DisplayName: Prismageschoss
-EmpressRadiance.DisplayName: Strahlende Entfaltung
-EmpressSunray.DisplayName: Sonnentanz-Strahl
+EmpressBloomBurst.DisplayName: Strahlende Entfaltung
 EocBloodShot.DisplayName: Blutperlen-Geschoss
 EocBloodSpike.DisplayName: Blutstachel
 EocFogCloud.DisplayName: Blutnebelwolke
@@ -719,7 +715,6 @@ DestroyerCoilRingProj.DisplayName: Zerstörer-Spirallichtring
 FishronVortexProj.DisplayName: Wildhai-Wirbel
 EowDevourOmen.DisplayName: Verschlingungs-Warnung
 EmpressLightBind.DisplayName: Lichtfessel
-EmpressSnareSigil.DisplayName: Fang-Lichtsiegel
 GolemGrabRay.DisplayName: Golem-Gravitationsstrahl
 PincerBindTether.DisplayName: Zwillings-Klemmseil
 MLordGrabLashProj.DisplayName: Tiefenraum-Tentakel
@@ -1276,12 +1271,10 @@ GsGunHoldPoseProj.DisplayName: Gottesschmied-Gewehrhaltung
 // GsSpiderArmorWebProj.DisplayName: Gs Spider Armor Web Proj
 // GsTinArmorChimeProj.DisplayName: Gs Tin Armor Chime Proj
 // GsVortexArmorArcProj.DisplayName: Gs Vortex Armor Arc Proj
-// EmpressHitscanLance.DisplayName: Empress Hitscan Lance
 // EmpressLightBolt.DisplayName: Empress Light Bolt
-// EmpressMeltingFan.DisplayName: Empress Melting Fan
-// EmpressShockwave.DisplayName: Empress Shockwave
 // EmpressTrackBeam.DisplayName: Empress Track Beam
 // EmpressEcho.DisplayName: Empress Echo
 // EmpressLacewing.DisplayName: Empress Lacewing
 // EmpressMoonShard.DisplayName: Empress Moon Shard
 // EmpressWhipCrack.DisplayName: Empress Whip Crack
+// EmpressRepelRing.DisplayName: Empress Repel Ring

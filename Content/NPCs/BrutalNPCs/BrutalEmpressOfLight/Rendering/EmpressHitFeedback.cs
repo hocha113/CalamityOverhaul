@@ -13,14 +13,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
     /// </summary>
     internal static class EmpressHitFeedback
     {
-        public static void Trigger(Vector2 pos, Vector2 dir, float intensity, bool day) {
+        public static void Play(Vector2 pos, Vector2 dir, float intensity, bool day) {
             if (VaultUtils.isServer) {
                 return;
             }
             intensity = MathHelper.Clamp(intensity, 0.3f, 1.6f);
             float dayBlend = day ? 1f : 0f;
 
-            EmpressScreenFX.PushHitDark(0.35f * Math.Max(intensity - 0.3f, 0f));
+            EmpressScreenFX.PushImpactDim(0.35f * Math.Max(intensity - 0.3f, 0f));
             EmpressScreenFX.PushFlash(dir, 0.45f * intensity);
             EmpressMotion.ShakeAlong(pos, dir, 6f + 12f * intensity, 14);
 
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             if (VaultUtils.isServer) {
                 return;
             }
-            EmpressScreenFX.PushHitDark(0.35f);
+            EmpressScreenFX.PushImpactDim(0.35f);
             EmpressScreenFX.PushPrismPulse(pos, 0.5f, 22);
             SoundEngine.PlaySound(SoundID.NPCDeath58 with { Volume = 0.9f, Pitch = -0.6f, MaxInstances = 2 }, pos);
             SoundEngine.PlaySound(SoundID.Item74 with { Volume = 1f, Pitch = -0.7f, MaxInstances = 2 }, pos);

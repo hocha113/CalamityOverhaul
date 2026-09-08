@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         public override string StateName => "EmpressFinale";
         public override EmpressStateIndex StateIndex => EmpressStateIndex.Finale;
 
-        private enum Step { Overture, EchoWaltz, Swarm, Radiance, Final }
+        private enum Step { Overture, EchoWaltz, Swarm, Whiteout, Final }
 
         /// <summary>缩圈：起止半径与用时（20 秒）</summary>
         internal const float ArenaStart = 3000f;
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         private const int OvertureBars = 2;
         private const int EchoBars = 8;
         private const int SwarmBars = 10;
-        private const int RadianceBars = 7;
+        private const int WhiteoutBars = 7;
 
         private Step step;
         private int stepStartBar = -1;
@@ -96,8 +96,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 case Step.Swarm:
                     Swarm(context, npc, target);
                     break;
-                case Step.Radiance:
-                    Radiance(context, npc, target);
+                case Step.Whiteout:
+                    Whiteout(context, npc, target);
                     break;
                 case Step.Final:
                     Final(context, npc, target);
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             if (bar >= SwarmBars && context.Downbeat) {
                 KillLacewings(npc);
                 HopOut(npc);
-                Advance(context.DayEmpowered ? Step.Radiance : Step.Final);
+                Advance(context.DayEmpowered ? Step.Whiteout : Step.Final);
             }
         }
 
@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 
         #region 月影
         /// <summary>七小节：抛屑 → 聚光 → 四小节全白每拍蒸发 → 释放。与 MoonShadow 态同一几何</summary>
-        private void Radiance(EmpressStateContext context, NPC npc, Player target) {
+        private void Whiteout(EmpressStateContext context, NPC npc, Player target) {
             context.ArenaRadiusRequest = 2600f;
             int bar = StepBar;
             int bf = context.BarFrame;
@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     EmpressScreenFX.DeclareWhiteout(0.9f, npc.Center);
                     EmpressScreenFX.DeclareAmbient(0.6f);
                     if (context.OnBeat) {
-                        RadianceTick(context, npc);
+                        WhiteoutTick(context, npc);
                     }
                 }
             }
@@ -282,7 +282,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                     EmpressScreenFX.DeclareWhiteout(0.9f * (1f - bf / 60f), npc.Center);
                 }
             }
-            if (bar >= RadianceBars && context.Downbeat) {
+            if (bar >= WhiteoutBars && context.Downbeat) {
                 HopOut(npc);
                 Advance(Step.Final);
             }
@@ -302,11 +302,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 float ang = npc.AngleTo(target.Center) + sideSign * MathHelper.ToRadians(110f);
                 pos = npc.Center + ang.ToRotationVector2() * 700f;
             }
-            int life = RadianceBars * EmpressTempo.BarFrames - context.BarFrame + 10;
+            int life = WhiteoutBars * EmpressTempo.BarFrames - context.BarFrame + 10;
             EmpressCast.MoonShard(npc, pos, npc.DirectionTo(pos) * 0.5f, life);
         }
 
-        private static void RadianceTick(EmpressStateContext context, NPC npc) {
+        private static void WhiteoutTick(EmpressStateContext context, NPC npc) {
             Player me = Main.LocalPlayer;
             if (!me.Alives() || me.Distance(npc.Center) > 3200f) {
                 return;
@@ -314,11 +314,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             if (EmpressMoonShadow.InShadow(me.Center, npc.Center, EmpressMoonShard.Active)) {
                 return;
             }
-            int dmg = Math.Max((int)(me.statLifeMax2 * context.RadianceTickFraction), 1);
-            PlayerDeathReason reason = PlayerDeathReason.ByCustomReason(EmpressOfLightAI.RadianceDeathText(me.name));
+            int dmg = Math.Max((int)(me.statLifeMax2 * context.WhiteoutTickFraction), 1);
+            PlayerDeathReason reason = PlayerDeathReason.ByCustomReason(EmpressOfLightAI.WhiteoutDeathText(me.name));
             me.Hurt(reason, dmg, 0, false, false, -1, false, 0f, 1f, 0f);
-            EmpressHitFeedback.Trigger(me.Center, Vector2.UnitY, 0.6f, true);
-            EmpressScreenFX.PushHitDark(0.15f);
+            EmpressHitFeedback.Play(me.Center, Vector2.UnitY, 0.6f, true);
+            EmpressScreenFX.PushImpactDim(0.15f);
         }
 
         private static void ShatterShards(NPC npc) {
@@ -347,7 +347,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
             context.ArenaFollowSpeed = 6f;
             if (k >= 1f && !context.FinaleKillable) {
                 context.FinaleKillable = true;
-                EmpressOfLightAI.SayPhase3(6);
+                EmpressOfLightAI.SayAscension(6);
                 if (!VaultUtils.isServer) {
                     EmpressScreenFX.PushPhaseFlash(0.5f);
                 }

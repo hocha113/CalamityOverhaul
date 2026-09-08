@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Renderin
             shader.Parameters["uAmbient"]?.SetValue(EmpressScreenFX.AmbientGrade);
             shader.Parameters["uCenter"]?.SetValue(centerUV);
             shader.Parameters["uAspect"]?.SetValue(aspect);
-            shader.Parameters["uHitDark"]?.SetValue(EmpressScreenFX.HitDark);
+            shader.Parameters["uImpactDim"]?.SetValue(EmpressScreenFX.ImpactDim);
             shader.Parameters["uFlashDir"]?.SetValue(EmpressScreenFX.FlashDir);
             shader.Parameters["uArenaCenter"]?.SetValue(arenaCenterUV);
             shader.Parameters["uArenaRadius"]?.SetValue(arenaUV);

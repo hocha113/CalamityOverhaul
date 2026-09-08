@@ -108,16 +108,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
     internal class EmpressArenaPlayer : ModPlayer
     {
         /// <summary>捕获进度 0~60</summary>
-        public float CaptureProgress;
+        public float EdgeStrain;
         /// <summary>释放冷却</summary>
         public int Cooldown;
         /// <summary>本帧越界（HUD/屏幕暗化读）</summary>
         public float OutsideDepth;
-        public bool Captured => CaptureProgress >= EmpressArena.CaptureFrames;
+        public bool Captured => EdgeStrain >= EmpressArena.CaptureFrames;
 
         public override void PreUpdateMovement() {
             if (Player.whoAmI != Main.myPlayer || Player.dead || Player.ghost) {
-                CaptureProgress = 0f;
+                EdgeStrain = 0f;
                 OutsideDepth = 0f;
                 return;
             }
@@ -132,14 +132,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
 
             bool wasCaptured = Captured;
             if (over > 0f) {
-                CaptureProgress = Math.Min(CaptureProgress + 1f, EmpressArena.CaptureFrames);
+                EdgeStrain = Math.Min(EdgeStrain + 1f, EmpressArena.CaptureFrames);
                 Cooldown = EmpressArena.ReleaseCooldown;
             }
             else if (Cooldown > 0) {
                 Cooldown--;
             }
             else {
-                CaptureProgress = Math.Max(CaptureProgress - 0.25f, 0f);
+                EdgeStrain = Math.Max(EdgeStrain - 0.25f, 0f);
             }
 
             //被捕：跑速翅膀归零、被拖向她；捕获瞬间扣三成并上灼痕
@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
                 }
                 if (Player.Distance(boss.Center) < 220f) {
                     //拖到身边即松手，进入冷却释放期
-                    CaptureProgress = EmpressArena.CaptureFrames - 1f;
+                    EdgeStrain = EmpressArena.CaptureFrames - 1f;
                     Cooldown = EmpressArena.ReleaseCooldown / 2;
                 }
             }
@@ -163,8 +163,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
                 if (Player.wings != -1 && Player.wingTime < Player.wingTimeMax) {
                     Player.wingTime = Math.Min(Player.wingTime + 2f, Player.wingTimeMax);
                 }
-                if (CaptureProgress > 45f) {
-                    EmpressMotion.Shake(Player.Center, (CaptureProgress / 60f - 0.75f) * 6f, 6);
+                if (EdgeStrain > 45f) {
+                    EmpressMotion.Shake(Player.Center, (EdgeStrain / 60f - 0.75f) * 6f, 6);
                 }
                 EmpressScreenFX.DeclareArenaPull(OutsideDepth);
             }
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
                 Cooldown--;
             }
             else {
-                CaptureProgress = Math.Max(CaptureProgress - 0.5f, 0f);
+                EdgeStrain = Math.Max(EdgeStrain - 0.5f, 0f);
             }
         }
 

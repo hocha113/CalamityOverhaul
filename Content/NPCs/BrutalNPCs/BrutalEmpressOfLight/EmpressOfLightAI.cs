@@ -34,9 +34,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
         private const int SlotKillable = 3;
 
         internal static readonly Color BossTextColor = new(255, 231, 160);
-        private static LocalizedText[] phase3Lines;
-        private static LocalizedText[] concedeLines;
-        private static LocalizedText radianceDeath;
+        private static LocalizedText[] ascensionLines;
+        private static LocalizedText[] farewellLines;
+        private static LocalizedText whiteoutDeath;
 
         private VaultStateMachine<EmpressStateContext> stateMachine;
         private EmpressStateContext stateContext;
@@ -50,33 +50,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 
         #region 加载与初始化
         public override void SetStaticDefaults() {
-            phase3Lines = new LocalizedText[7];
-            string[] phase3Defaults = [
+            ascensionLines = new LocalizedText[7];
+            string[] ascensionDefaults = [
                 "……哈？", "这怎么可能？", "我已将我的力量迫至极限，你又是怎么活下来的？", "……不。",
                 "我不会就这样向你低头。", "你想赢下这一场，就要接住我的每一分光。", "现在，到你了。",
             ];
-            for (int i = 0; i < phase3Lines.Length; i++) {
+            for (int i = 0; i < ascensionLines.Length; i++) {
                 int idx = i;
-                phase3Lines[i] = this.GetLocalization($"Phase3_{i}", () => phase3Defaults[idx]);
+                ascensionLines[i] = this.GetLocalization($"Ascension_{i}", () => ascensionDefaults[idx]);
             }
-            concedeLines = new LocalizedText[4];
-            string[] concedeDefaults = [
+            farewellLines = new LocalizedText[4];
+            string[] farewellDefaults = [
                 "……够了。", "你远比看上去更强。", "那些蝴蝶对我意义非凡，别去惊扰它们，这片天空就还是我们共有的。", "光会记得你。",
             ];
-            for (int i = 0; i < concedeLines.Length; i++) {
+            for (int i = 0; i < farewellLines.Length; i++) {
                 int idx = i;
-                concedeLines[i] = this.GetLocalization($"Concede_{i}", () => concedeDefaults[idx]);
+                farewellLines[i] = this.GetLocalization($"Farewell_{i}", () => farewellDefaults[idx]);
             }
-            radianceDeath = this.GetLocalization("RadianceDeath", () => "{0}在她的光里蒸发了");
+            whiteoutDeath = this.GetLocalization("WhiteoutDeath", () => "{0}在她的光里蒸发了");
         }
 
         /// <summary>月影蒸发的死亡原因文本</summary>
-        internal static string RadianceDeathText(string playerName) => radianceDeath?.Format(playerName) ?? playerName;
+        internal static string WhiteoutDeathText(string playerName) => whiteoutDeath?.Format(playerName) ?? playerName;
 
         /// <summary>三阶段台词（权威端广播，客户端忽略）</summary>
-        internal static void SayPhase3(int index) => Say(phase3Lines, index);
+        internal static void SayAscension(int index) => Say(ascensionLines, index);
         /// <summary>认输独白</summary>
-        internal static void SayConcede(int index) => Say(concedeLines, index);
+        internal static void SayFarewell(int index) => Say(farewellLines, index);
 
         private static void Say(LocalizedText[] lines, int index) {
             if (VaultUtils.isClient || lines == null || index < 0 || index >= lines.Length || lines[index] == null) {
@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
                 return 0f;
             }
             if (stateMachine?.CurrentState is EmpressIntroState or EmpressDeathState or EmpressDespawnState
-                or EmpressPhaseTransitionState or EmpressPhase3TransformState or EmpressLightBindWaltzState) {
+                or EmpressPhaseTransitionState or EmpressAscensionState or EmpressLightBindWaltzState) {
                 return 0f;
             }
             return stateContext.IsSecondPhase ? 2600f : 2400f;
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             }
         }
 
-        /// <summary>昼夜换形瞬间：破晓辐光强拍，入夜柔光敛息</summary>
+        /// <summary>昼夜换形瞬间：破晓日辉强拍，入夜柔光敛息</summary>
         private void UpdateDayNightForm() {
             bool now = stateContext.DayEmpowered;
             if (now == lastDayEmpowered) {
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             if (!VaultUtils.isServer) {
                 if (now) {
                     EmpressScreenFX.PushPrismPulse(npc.Center, 0.85f, 40);
-                    EmpressScreenFX.PushHitDark(0.4f);
+                    EmpressScreenFX.PushImpactDim(0.4f);
                     SoundEngine.PlaySound(SoundID.Item161 with { Volume = 0.9f, Pitch = 0.25f }, npc.Center);
                     SoundEngine.PlaySound(SoundID.Item163 with { Volume = 0.7f, Pitch = 0.4f }, npc.Center);
                     EmpressMotion.SparkBurst(npc.Center, Vector2.UnitY, 20, 3f, 10f, 1f, MathHelper.Pi);

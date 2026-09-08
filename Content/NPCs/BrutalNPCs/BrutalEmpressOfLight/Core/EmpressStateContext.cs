@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         /// <summary>琉璃蝶接触伤害</summary>
         public int LacewingDamage => ScaleDamage(IsSecondPhase ? 50 : 44, IsSecondPhase ? 34 : 28);
         /// <summary>月影每拍蒸发：占最大生命比例（不走灼痕）</summary>
-        public float RadianceTickFraction => IsSecondPhase ? 0.07f : 0.055f;
+        public float WhiteoutTickFraction => IsSecondPhase ? 0.07f : 0.055f;
 
         /// <summary>昼形态 ×1.25，不再 9999（灼痕系统接管威慑）</summary>
         private int ScaleDamage(int normal, int expert) {

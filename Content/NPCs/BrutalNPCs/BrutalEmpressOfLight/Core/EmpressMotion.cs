@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         /// 贴身追击（连接段用）：目标点=玩家 - 朝向×225 - (50·sign, 80)，速度插值 0.92，前 5 帧起步。
         /// 是追不是飘，连接段本身有压迫
         /// </summary>
-        public static void DashTo(NPC npc, Vector2 targetPos, Vector2 targetVel, int frame, bool fast) {
+        public static void ChaseStep(NPC npc, Vector2 targetPos, Vector2 targetVel, int frame, bool fast) {
             Vector2 back = npc.DirectionTo(targetPos) * -225f;
             targetPos.Y -= 80f;
             targetPos.X -= MathF.Sign(npc.DirectionTo(targetPos).X) * 50f;
