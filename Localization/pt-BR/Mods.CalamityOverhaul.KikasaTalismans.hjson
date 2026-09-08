@@ -7,7 +7,7 @@ KikasaTalismanLin: {
 		As gotas caem finas feito pelos de boi, aparentemente fracas e silenciosas sobre as telhas, mas as vigas e os esteios ocultos já apodreceram há muito com a umidade.
 		Este talismã preserva essa infiltração gélida e incansável: quanto mais a chuva cai, mais densa ela se tece.
 		'''
-	Power: "Garoa": cadência da chuva de tinta acelerada em 20%; chuva contínua por 10s acumula o estado «Chuva Constante»: uma cortina densa de garoa precipita sob a sombrinha, acelerando a cadência em mais 10%; fechar a sombrinha dissipa a chuva rapidamente.
+	Power: "'Garoa': cadência da chuva de tinta acelerada em 20%; chuva contínua por 10s acumula o estado «Chuva Constante»: uma cortina densa de garoa precipita sob a sombrinha, acelerando a cadência em mais 10%; fechar a sombrinha dissipa a chuva rapidamente."
 	Burden: Dano direto de cada gota de tinta reduzido em 6%
 }
 
@@ -20,7 +20,7 @@ KikasaTalismanLao: {
 		No fundo acumula-se lodo escuro e folhas apodrecidas longe do sol; os passantes pensam ser mera poça rasa até darem um passo em falso e afundarem a bota na lama sem volta.
 		Embevecido em águas mortas de outrora, o aguaceiro forma poças e transborda em ondas.
 		'''
-	Power: "Acúmulo": gotas de tinta sempre formam poças ao atingir o chão, aumentando sua duração em 50% e seu raio em 30%; gotas que caem em poças existentes elevam o nível da água e, após absorver três gotas, transbordam em ondas para ambos os lados causando 50% do dano da poça cada.
+	Power: "'Acúmulo': gotas de tinta sempre formam poças ao atingir o chão, aumentando sua duração em 50% e seu raio em 30%; gotas que caem em poças existentes elevam o nível da água e, após absorver três gotas, transbordam em ondas para ambos os lados causando 50% do dano da poça cada."
 	Burden: Dano direto de cada gota de tinta reduzido em 5%
 }
 
@@ -33,7 +33,7 @@ KikasaTalismanPei: {
 		Assim que a água acumulada arrebenta a barreira, todo o vale é varrido por um turbilhão revolto e avassalador.
 		Este talismã segura a chuva com mão de ferro na concha da sombrinha: não vaza nada até que as comportas arrebentem numa tromba d'água.
 		'''
-	Power: "Toró": velocidade de carga invertida aumentada em 35%, dano do gêiser de tinta aumentado em 20%; despejar a torrente com carga cheia detona uma onda de choque na origem que causa 80% do dano da torrente e alarga expressivamente seu fluxo.
+	Power: "'Toró': velocidade de carga invertida aumentada em 35%, dano do gêiser de tinta aumentado em 20%; despejar a torrente com carga cheia detona uma onda de choque na origem que causa 80% do dano da torrente e alarga expressivamente seu fluxo."
 	Burden: Cadence normal da chuva de tinta reduzida em 8%
 }
 
@@ -46,7 +46,7 @@ KikasaTalismanSha: {
 		E no instante seguinte ventos uivantes jogam gotas grossas feito moedas sem dó, sem dar tempo aos transeuntes nem de dar três passadas.
 		Este talismã aproveita essa fúria impetuosa ao abrir a sombrinha de supetão.
 		'''
-	Power: "Pancada": tempo de abertura e desdobramento da sombrinha reduzido em 75%; o primeiríssimo compasso após abrir garante três gotas rápidas em sequência, cada uma causando 75% do dano base da gota.
+	Power: "'Pancada': tempo de abertura e desdobramento da sombrinha reduzido em 75%; o primeiríssimo compasso após abrir garante três gotas rápidas em sequência, cada uma causando 75% do dano base da gota."
 	Burden: Após ativar o disparo triplo de abertura, o intervalo de chuva até o próximo compasso aumenta em 40%
 }
 
@@ -58,7 +58,7 @@ KikasaTalismanYin: {
 		Numa tinturaria, se uma gota de tinta preta espirrar sem querer num tecido acabado, esfregar com pano úmido só faz o pigmento penetrar mais fundo nas tramas, apodrecendo numa mancha feia.
 		Este talismã herda essa teimosia penetrante: as marcas de tinta mordem camada sobre camada nas feridas, acumulando-se até a carne rebentar.
 		'''
-	Power: "Flor de Tinta": acertos de gotas deixam marcas de tinta lacerantes (até 5 acúmulos, causando dano contínuo de sangramento); com 5 acúmulos a flor de tinta explode, causando 160% do dano da gota em área e dissipando os acúmulos.
+	Power: "'Flor de Tinta': acertos de gotas deixam marcas de tinta lacerantes (até 5 acúmulos, causando dano contínuo de sangramento); com 5 acúmulos a flor de tinta explode, causando 160% do dano da gota em área e dissipando os acúmulos."
 	Burden: Dano direto de cada gota de tinta reduzido em 8%
 }
 
@@ -70,7 +70,7 @@ KikasaTalismanLu: {
 		Curandeiros errantes que andavam por trilhas noturnas sempre carregavam uma cabaça de bambu para colher ao amanhecer o orvalho na ponta dos capins e lavar feridas.
 		Este talismã limpa a água preta de suas impurezas, destilando gotas de orvalho revigorante; embora amanse a chuva, salva o fôlego nas horas de aperto.
 		'''
-	Power: "Orvalho Doce": gotas de tinta têm 12% de chance ao acertar de condensar uma gota de orvalho puro no chão que restaura 2 de vida ao ser coletada (máximo 3 no campo).
+	Power: "'Orvalho Doce': gotas de tinta têm 12% de chance ao acertar de condensar uma gota de orvalho puro no chão que restaura 2 de vida ao ser coletada (máximo 3 no campo)."
 	Burden: Cadência da chuva de tinta reduzida em 6%
 }
 
@@ -82,7 +82,7 @@ KikasaTalismanFei: {
 		Nas balsas dos rios no fim do outono o vapor sobe denso como estopa molhada; a três passos as cordas do atracadouro somem na cerração cinzenta, forçando os balseiros velhos a ancorar.
 		Este talismã esmigalha cada terceira gota numa névoa úmida que se recusa a sumir, cegando os olhos e travando as pernas.
 		'''
-	Power: "Névoa Espessa": cada terceira gota de tinta vira uma gota de névoa: deixa um nevoeiro de 2s ao atingir, causando dano contínuo aos inimigos dentro e reduzindo sua velocidade em 10%.
+	Power: "'Névoa Espessa': cada terceira gota de tinta vira uma gota de névoa: deixa um nevoeiro de 2s ao atingir, causando dano contínuo aos inimigos dentro e reduzindo sua velocidade em 10%."
 	Burden: Dano de impacto direto da gota de névoa reduzido em 30%
 }
 
@@ -94,7 +94,7 @@ KikasaTalismanXian: {
 		Sob os beirais antigos repousa uma gamela de pedra azul; na tempestade, a água que cai dos caibros explode em pingos saltitantes, crivando a beirada de pedra com incontáveis covinhas.
 		O talismã junta a chuva grossa para estilhaçá-la em pérolas que quicam e vasculham o chão.
 		'''
-	Power: "Gotas Espalhadas": gotas pesadas de tinta quebram-se ao tocar o chão em 5 pérolas finas, causando cada uma 30% do dano da gota original e quicando pelo terreno até mais 2 vezes.
+	Power: "'Gotas Espalhadas': gotas pesadas de tinta quebram-se ao tocar o chão em 5 pérolas finas, causando cada uma 30% do dano da gota original e quicando pelo terreno até mais 2 vezes."
 	Burden: Raio de cobertura da poça de tinta formada reduzido em 15%
 }
 
@@ -106,7 +106,7 @@ KikasaTalismanXi: {
 		Os buracos de lodo nas vazantes parecem vazios de dia; mas assim que a maré de fundo arrebenta nos recifes, a lama das valas se agita como cobras, saltando em tudo que se mexe.
 		Este talismã bota a correnteza do mar nas poças: não esperam mais passos descuidados; cada gota que cai açula a água escura a avançar.
 		'''
-	Power: "Maré": as poças ganham ritmo de maré: quando novas gotas caem em poças existentes, a poça arremessa uma onda no inimigo mais próximo, causando 50% do dano da poça na crista.
+	Power: "'Maré': as poças ganham ritmo de maré: quando novas gotas caem em poças existentes, a poça arremessa uma onda no inimigo mais próximo, causando 50% do dano da poça na crista."
 	Burden: Duração das poças de tinta no chão reduzida em 20%
 }
 
@@ -118,7 +118,7 @@ KikasaTalismanZi: {
 		O tintureiro idoso afunda o cânhamo cru no tacho; quanto mais tempo de molho, mais fundo a cor pega, até as fibras duras ficarem moles e fáceis de rasgar.
 		As criaturas presas no lodaçal de tinta sofrem a mesma sina: de molho por muito tempo, a friagem corrói seus ossos e abre cada ferimento.
 		'''
-	Power: "Maceração": inimigos em poças de tinta acumulam níveis de maceração (até 8 acúmulos), aumentando cada acúmulo todo o dano de tinta sofrido em 2.5%.
+	Power: "'Maceração': inimigos em poças de tinta acumulam níveis de maceração (até 8 acúmulos), aumentando cada acúmulo todo o dano de tinta sofrido em 2.5%."
 	Burden: Dano contínuo base da própria poça de tinta reduzido em 25%
 }
 
@@ -130,7 +130,7 @@ KikasaTalismanTing: {
 		Os poços fundos no meio do rio guardam veios de tempestade; em temporais uivantes de onde sobe fumaça, um trovão que atinge a água escura faz jorrar colunas de raios feito azeite fervente.
 		Este talismã conduz o trovão pela água: os gêiseres sobem ao céu a partir da sombrinha, arrastando correntes de relâmpagos estalantes.
 		'''
-	Power: "Gêiser de Trovão": altura de erupção do gêiser aumentada em 50%, encadeando raios em até 2 inimigos próximos ao acertar (causando 50% do dano do gêiser a cada um); torrentes não carregadas têm 25% de chance de erguer um pequeno gêiser ao tocar o chão.
+	Power: "'Gêiser de Trovão': altura de erupção do gêiser aumentada em 50%, encadeando raios em até 2 inimigos próximos ao acertar (causando 50% do dano do gêiser a cada um); torrentes não carregadas têm 25% de chance de erguer um pequeno gêiser ao tocar o chão."
 	Burden: Velocidade de carga invertida reduzida em 13%
 }
 
@@ -142,7 +142,7 @@ KikasaTalismanHong: {
 		Sobre as gargantas serranas lavadas pelo temporal, onde a bruma sobe, costuma se formar o arco fantasmagórico de uma ponte.
 		Luz aparentemente frágil, é na verdade energia afiada nascida do choque entre temporal e sol abrasador: os vivos usam sua luz para andar com leveza, enquanto os espectros que passam entram num braseiro.
 		'''
-	Power: "Ponte do Arco-Íris": após despejar uma torrente, forma-se uma ponte no ar sobre o local por 5s: concede +10% de velocidade e +10% de dano de invocação embaixo; inimigos que cruzarem o arco sofrem 40% do dano da torrente a cada 0.5s.
+	Power: "'Ponte do Arco-Íris': após despejar uma torrente, forma-se uma ponte no ar sobre o local por 5s: concede +10% de velocidade e +10% de dano de invocação embaixo; inimigos que cruzarem o arco sofrem 40% do dano da torrente a cada 0.5s."
 	Burden: Largura da área de acerto da torrente reduzida em 10%
 }
 
@@ -154,7 +154,7 @@ KikasaTalismanHang: {
 		No fundo dos brejos, os pântanos se fecham ao cair da noite; as poças lamacentas que mostravam o fundo de dia fervem com espuma preta asquerosa após a meia-noite.
 		Os mateiros velhos preferem tremer nos galhos das árvores a pisar em terra firme: o vapor gélido que sobe das águas noturnas enferruja os pulmões como ferrugem.
 		'''
-	Power: "Miasma Noturno": todo o dano de tinta aumenta em 15% à noite, e as poças exalam continuamente colunas de vapor tóxico (causando 30% do dano da gota a cada 0.5s).
+	Power: "'Miasma Noturno': todo o dano de tinta aumenta em 15% à noite, e as poças exalam continuamente colunas de vapor tóxico (causando 30% do dano da gota a cada 0.5s)."
 	Burden: Todo o dano de tinta é reduzido em 5% durante o dia
 }
 
@@ -166,7 +166,7 @@ KikasaTalismanBao: {
 		No mormaço do começo do verão, se o céu fica preto feito breu e trovões surdos rolam como mós de moinho no alto, o coração gelado das nuvens está a ponto de despencar.
 		Pedras de gelo do tamanho de punhos caindo de milhares de braças quebram telhas e gado; o talismã junta essa friagem feroz, abrindo rombos de sangue ao bater.
 		'''
-	Power: "Granizo": cada quarto compasso dispara com certeza uma saraivada completa de granizo pesado: tamanho +60%, dano +120%, rasgando a defesa inimiga com forte repulsão; as pedras de gelo não formam poças ao bater.
+	Power: "'Granizo': cada quarto compasso dispara com certeza uma saraivada completa de granizo pesado: tamanho +60%, dano +120%, rasgando a defesa inimiga com forte repulsão; as pedras de gelo não formam poças ao bater."
 	Burden: Dano direto das gotas normais fora dos tempos de granizo reduzido em 8%
 }
 
@@ -178,7 +178,7 @@ KikasaTalismanShu: {
 		Quando a seca castiga os sertões sem colheita, uma chuva repentina salva uma comarca inteira da desgraça.
 		Os mascates de sombrinhas costuravam rezas de proteção nas varetas mais fundas; quietas na bonança, assim que o sangue escorre, água dourada desaba para puxar uma vida da beira da cova.
 		'''
-	Power: "Chuva Oportuna": por 3 segundos após receber dano, o intervalo da chuva cai pela metade e as gotas ficam douradas, restaurando 1 de vida ao portador a cada golpe (12 segundos de recarga).
+	Power: "'Chuva Oportuna': por 3 segundos após receber dano, o intervalo da chuva cai pela metade e as gotas ficam douradas, restaurando 1 de vida ao portador a cada golpe (12 segundos de recarga)."
 	Burden: Intervalo de ataque da chuva comum aumentado em 5%
 }
 
@@ -190,7 +190,7 @@ KikasaTalismanLong: {
 		Nas gargantas estreitas de pedra onde dois morros se encontram, as trombas d'água de verão cheias de troncos e pedras fazem tremer os paredões; a pancada da água quebra pontes e rola pedregulhos.
 		Ao virar a sombrinha, a água jorra feito represa arrombada, empurrando para longe até os bichos mais teimosos.
 		'''
-	Power: "Correnteza Braba": a torrente vira uma enxurrada bravia: empurra continuamente os inimigos ao longo do seu caminho, aumentando a repulsão do golpe direto na origem em 35%.
+	Power: "'Correnteza Braba': a torrente vira uma enxurrada bravia: empurra continuamente os inimigos ao longo do seu caminho, aumentando a repulsão do golpe direto na origem em 35%."
 	Burden: Duração da torrente despejada reduzida em 20%
 }
 
@@ -202,7 +202,7 @@ KikasaTalismanShuang: {
 		Nas manhãs de inverno brabo, a água barrenta das poças congela numa casca fina de gelo transparente; lisa feito vidro, o pé escorrega e desliza.
 		Mas assim que um peso quebra a crosta, cacos afiados mordem a carne feito facas; a lama vira vidro e o espelho quebrado cospe espinhos.
 		'''
-	Power: "Espelho de Geada": gotas pesadas congelam ao tocar o chão em espelhos de geada: não causam mais queimadura, mas reduzem a velocidade dos inimigos que pisarem neles em 40%; gotas seguintes que baterem no espelho quebram-no na hora, causando dano com base no tempo restante e erguendo espinhos pontiagudos de gelo.
+	Power: "'Espelho de Geada': gotas pesadas congelam ao tocar o chão em espelhos de geada: não causam mais queimadura, mas reduzem a velocidade dos inimigos que pisarem neles em 40%; gotas seguintes que baterem no espelho quebram-no na hora, causando dano com base no tempo restante e erguendo espinhos pontiagudos de gelo."
 	Burden: Espelhos de geada ficam separados e as poças não podem se fundir com chuva nova para estender sua duração
 }
 
@@ -214,7 +214,7 @@ KikasaTalismanZha: {
 		O velho pescador cerca os cardumes batendo com o remo na borda da canoa sete vezes sem errar o tempo, e a correnteza no fundo responde no mesmo compasso.
 		Na oitava batida oca, o cardume salta da água; este talismã afina a chuva a um batuque de ritual: sete batidas prendem o espírito, a oitava racha a pedra.
 		'''
-	Power: "Tambor de Chuva": a beirada da sombrinha junta sete marcas de tambor: se ao menos uma gota acertar em cada um de sete compassos seguidos, todas as gotas do oitavo compasso causam o triplo de dano; errar um tempo zera a contagem.
+	Power: "'Tambor de Chuva': a beirada da sombrinha junta sete marcas de tambor: se ao menos uma gota acertar em cada um de sete compassos seguidos, todas as gotas do oitavo compasso causam o triplo de dano; errar um tempo zera a contagem."
 	Burden: Após ativar o estouro do oitavo compasso, a chuva para por um compasso seguinte
 }
 
@@ -226,7 +226,7 @@ KikasaTalismanNi: {
 		A água dos poços antigos muda de feição com as estações: a água clara entorpece as juntas, a avermelhada ferve feito vinagre azedo, e a roxa corrói a alma feito veneno.
 		O mestre tirou uma cuia de cada fonte para moer a tinta, trançando-as num ciclo mútuo de estrondo, amarra e ruína.
 		'''
-	Power: "Tricolor": as gotas alternam entre três feições: as vermelhas causam explosão em área de 40%; as azuis deixam os inimigos 15% mais lentos; as roxas aumentam todo o dano de tinta sofrido em 5%.
+	Power: "'Tricolor': as gotas alternam entre três feições: as vermelhas causam explosão em área de 40%; as azuis deixam os inimigos 15% mais lentos; as roxas aumentam todo o dano de tinta sofrido em 5%."
 	Burden: Dano base das gotas de tinta reduzido em 5%
 }
 
@@ -238,7 +238,7 @@ KikasaTalismanWen: {
 		As escrituras sagradas de vento e trovão cravadas nas lápides de templos arruinados ondulam feito nuvens, incompreensíveis para os olhos dos mortais.
 		Um canteiro idoso decalcou suas formas no papel encerado da sombrinha; quando a tinta correu pelos traços, brilharam estrelas no beiral que juntam a água em flechas certeiras de vingança.
 		'''
-	Power: "Glifos Celestes": três estrelas giram pela borda da sombrinha se carregando com os acertos; com carga cheia, a estrela ativa atira uma flecha de tinta teleguiada que causa 120% do dano da gota.
+	Power: "'Glifos Celestes': três estrelas giram pela borda da sombrinha se carregando com os acertos; com carga cheia, a estrela ativa atira uma flecha de tinta teleguiada que causa 120% do dano da gota."
 	Burden: Intervalo entre gotas de chuva aumentado em 8%
 }
 
@@ -250,7 +250,7 @@ KikasaTalismanPo: {
 		Nas lagoas do mato sem vento sob a lua gelada, a água reluz com uma palidez fosforescente; o frio corta até a espinha e os peixes ficam quietos no lodo.
 		Este talismã tranca essa friagem da madrugada dentro da sombrinha; despejada, a luz branca arrebenta como nevasca de lâminas de gelo, mas foge do sol da manhã.
 		'''
-	Power: "Alma Lunar": acertar de noite com a sombrinha aberta junta fases da lua; com carga cheia, a próxima torrente vira uma torrente lunar: área da torrente +50%, e os acertos soltam estouros lunares com 35% de dano em área.
+	Power: "'Alma Lunar': acertar de noite com a sombrinha aberta junta fases da lua; com carga cheia, a próxima torrente vira uma torrente lunar: área da torrente +50%, e os acertos soltam estouros lunares com 35% de dano em área."
 	Burden: Este talismán perde todo o efeito durante o dia, não dando nenhum benefício
 }
 
@@ -262,7 +262,7 @@ KikasaTalismanXiao: {
 		Dos penhascos mais altos da serra, as cachoeiras despencam milhares de braças no desfiladeiro urrando feito trovão e furando lajes de granito de fora a fora.
 		Subindo a sombrinha para as nove alturas, a água cai com o peso esmagador da gravidade, com força de fender morros e britar pedras.
 		'''
-	Power: "Nove Alturas": a altura da sombrinha é dobrada, fazendo as gotas caírem retas de grande altitude: velocidade terminal +40%, dano direto +25%, projetando sombras de aviso no chão antes da batida.
+	Power: "'Nove Alturas': a altura da sombrinha é dobrada, fazendo as gotas caírem retas de grande altitude: velocidade terminal +40%, dano direto +25%, projetando sombras de aviso no chão antes da batida."
 	Burden: Intervalo de ataque da chuva aumentado em 10%
 }
 
@@ -274,7 +274,7 @@ KikasaTalismanMei: {
 		Nos meses de chuvarada sem fim, alparcatas sujas de barro criam bolor esverdeado em duas noites, soltando um cheiro adocicado e sufocante de podridão.
 		Trancando essa inhaca no talismã, cada gota pinga uma mancha que amolece a carne; quando o bicho morre, nuvens de esporos pipocam para contagiar quem estiver em volta.
 		'''
-	Power: "Chuva Mofada": gotas aplicam «Bolor Corrosivo» ao bater (até 10 acúmulos com dano contínuo); inimigos empesteados que morrerem explodem numa nuvem de esporos, passando metade dos acúmulos para inimigos próximos com dano leve.
+	Power: "'Chuva Mofada': gotas aplicam «Bolor Corrosivo» ao bater (até 10 acúmulos com dano contínuo); inimigos empesteados que morrerem explodem numa nuvem de esporos, passando metade dos acúmulos para inimigos próximos com dano leve."
 	Burden: Dano de impacto direto da gota reduzido em 10%
 }
 
@@ -286,7 +286,7 @@ KikasaTalismanPi: {
 		Quando os temporais de verão arrombam açudes, a água sobe três palmos sob um teto de nuvens pretas, chamando cobras de fogo que batem na água soltando labaredas.
 		A torrente abre o caminho de água; quando as forças do céu se chocam, cada gota caída chama o raio feito lança atravessando o inimigo.
 		'''
-	Power: "Relâmpago Celestial": despejar uma torrente abre uma janela de 10s: gotas têm 20% de chance ao bater de atrair um raio direto que causa 180% do dano da gota perfurando por onde passa.
+	Power: "'Relâmpago Celestial': despejar uma torrente abre uma janela de 10s: gotas têm 20% de chance ao bater de atrair um raio direto que causa 180% do dano da gota perfurando por onde passa."
 	Burden: Dano base do estouro do gêiser de tinta reduzido em 20%
 }
 
@@ -298,7 +298,7 @@ KikasaTalismanXia: {
 		No lusco-fusco, quando o dia e a noite trocam de mão, o poente queima com nuvens vermelhas feito sangue derramado enquanto água e fogo se enrolam no céu.
 		Chamando esse instante de sol poente para o tinteiro, até a água mais gelada pega fogo em labaredas carmesins.
 		'''
-	Power: "Rubor Vespertino": no intervalo de 1.5 hora ao redor do nascer e do pôr do sol, todo o dano de tinta sobe 18%, gotas acendem «Labareda do Poente» com queimadura contínua e a chuva ganha tons dourados e alaranjados.
+	Power: "'Rubor Vespertino': no intervalo de 1.5 hora ao redor do nascer e do pôr do sol, todo o dano de tinta sobe 18%, gotas acendem «Labareda do Poente» com queimadura contínua e a chuva ganha tons dourados e alaranjados."
 	Burden: Todo o dano de tinta cai 6% ao meio-dia e à meia-noite
 }
 
@@ -310,7 +310,7 @@ KikasaTalismanJi: {
 		Depois do vendaval, se as nuvens pretas estiverem muito baixas, às vezes abre um rasgão dourado no meio da cerração por onde o sol desce feito ouro derretido cozinhando o chão.
 		Este talismã faz o contrário: a chuva fria segura o calor do sol enquanto está aberta; ao fechar a sombrinha, as nuvens se partem e a luz do dia despenca feito pilar de fogo.
 		'''
-	Power: "Clarear": acertar com a sombrinha aberta junta força de tempo limpo; ao fechar a sombrinha as nuvens se abrem desabando um raio ardente no cursor, com dano proporcional à carga acumulada.
+	Power: "'Clarear': acertar com a sombrinha aberta junta força de tempo limpo; ao fechar a sombrinha as nuvens se abrem desabando um raio ardente no cursor, com dano proporcional à carga acumulada."
 	Burden: Todo o dano de tinta é reduzido em 8% enquanto a sombrinha estiver aberta
 }
 
@@ -323,6 +323,6 @@ KikasaTalismanYu: {
 		Ao findar as oferendas, os trovões pipocavam e trombas pretas despencavam feito rios virados de cabeça para baixo.
 		Este é o pergamino mestre do rito da chuva: ao começar o Grande Rito, tempestades e gêiseres jorram juntos.
 		'''
-	Power: "Grande Rito": acertos de gotas juntam pontos de rito, entrando automaticamente ao encher no «Grande Rito» de 10s: intervalo da chuva cortado pela metade, dano das gotas +15%, todas as gotas viram poças e os gêiseres funcionam a todo vapor; ao se despedir, três gêiseres brotam sob a sombrinha.
+	Power: "'Grande Rito': acertos de gotas juntam pontos de rito, entrando automaticamente ao encher no «Grande Rito» de 10s: intervalo da chuva cortado pela metade, dano das gotas +15%, todas as gotas viram poças e os gêiseres funcionam a todo vapor; ao se despedir, três gêiseres brotam sob a sombrinha."
 	Burden: Todo o dano de tinta é reduzido em 10% fora do Grande Rito
 }
