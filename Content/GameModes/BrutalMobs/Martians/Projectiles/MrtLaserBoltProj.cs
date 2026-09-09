@@ -36,6 +36,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
             ProjectileID.Sets.TrailingMode[Type] = 2;
+            //原版炮塔弹竖排四帧，整图直画会四帧叠着出
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.MartianTurretBolt];
         }
 
         public override void SetDefaults() {
@@ -57,6 +59,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
 
             Projectile.alpha = (int)MathHelper.Lerp(200f, 0f, MathHelper.Clamp(Age / (float)MuzzleFadeFrames, 0f, 1f));
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
+            if (++Projectile.frameCounter >= 4) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
 
             Color body = BodyColors[Flavor];
             Lighting.AddLight(Projectile.Center, body.ToVector3() * 0.32f);
@@ -95,7 +102,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 origin = tex.Size() / 2f;
+            Rectangle frame = tex.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+            Vector2 origin = frame.Size() / 2f;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float opacity = 1f - Projectile.alpha / 255f;
             Color body = Color.Lerp(lightColor, BodyColors[Flavor], 0.55f);
@@ -108,16 +116,16 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
                 }
                 float t = 1f - i / (float)Projectile.oldPos.Length;
                 Vector2 oldDrawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                Main.EntitySpriteDraw(tex, oldDrawPos, null, glow * (0.3f * t * opacity), Projectile.rotation,
+                Main.EntitySpriteDraw(tex, oldDrawPos, frame, glow * (0.3f * t * opacity), Projectile.rotation,
                     origin, Projectile.scale * (0.5f + 0.4f * t), SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(tex, oldDrawPos, null, body * (0.4f * t * opacity), Projectile.rotation,
+                Main.EntitySpriteDraw(tex, oldDrawPos, frame, body * (0.4f * t * opacity), Projectile.rotation,
                     origin, Projectile.scale * (0.45f + 0.35f * t), SpriteEffects.None, 0);
             }
 
             //弹体：加色衬底 + 原版贴图实体层（A>0）
-            Main.EntitySpriteDraw(tex, drawPos, null, glow * (0.55f * opacity), Projectile.rotation,
+            Main.EntitySpriteDraw(tex, drawPos, frame, glow * (0.55f * opacity), Projectile.rotation,
                 origin, Projectile.scale * 1.25f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(tex, drawPos, null, body * opacity, Projectile.rotation,
+            Main.EntitySpriteDraw(tex, drawPos, frame, body * opacity, Projectile.rotation,
                 origin, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }

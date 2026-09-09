@@ -338,6 +338,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaInkDrop { get; set; }
         public static Asset<Effect> KikasaBloodRain { get; set; }
         public static Asset<Effect> KikasaInkSplat { get; set; }
+        public static Asset<Effect> KikasaInkSplash { get; set; }
         public static Asset<Effect> KikasaUmbrella { get; set; }
         public static Asset<Effect> KikasaUmbrellaTrail { get; set; }
         public static Asset<Effect> KikasaHound { get; set; }

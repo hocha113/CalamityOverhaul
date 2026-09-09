@@ -9,9 +9,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 {
     /// <summary>
-    /// 墨雨渲染层:渍斑贴花最底、墨滴居中、悬伞最上。
+    /// 墨雨渲染层:渍斑贴花最底、墨滴/血珠居中、命中水花其上、悬伞最上。
     /// 独立于领域渲染，普攻在领域外也要工作;
-    /// 地面渍与墨滴画在 EndEntityDraw,域内会被血湖镜面自动倒影;
+    /// 地面渍、墨滴与水花画在 EndEntityDraw,域内会被血湖镜面自动倒影;
     /// 湖晕由领域 EndCapture 在 TechUnify 之后叠到水面上
     /// </summary>
     internal class KikasaRainRender : RenderHandle
@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             //主菜单兜底清场(PostUpdateEverything 不再运行)
             if (Main.gameMenu) {
                 KikasaInkFX.Clear();
+                KikasaInkSplashFX.Clear();
             }
         }
 
@@ -70,7 +71,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     anyBlood |= proj.ModProjectile is KikasaRainUmbrella umbrella && umbrella.SiphonVisible;
                 }
             }
-            if (!anyInk && !anyBlood && !anyUmbrella) {
+            //命中水花活在弹幕死后的十几帧里,没有活弹幕也要画
+            bool anySplash = KikasaInkSplashFX.Count > 0;
+            if (!anyInk && !anyBlood && !anyUmbrella && !anySplash) {
                 return;
             }
 
@@ -82,6 +85,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             if (anyBlood) {
                 DrawBloodBodies(spriteBatch, dropType, columnType, geyserType, umbrellaType, view);
+            }
+            if (anySplash) {
+                //水花独立 Effect 独立批,盖在墨/血体之上、悬伞之下
+                KikasaInkSplashFX.Draw(spriteBatch);
             }
             if (anyUmbrella) {
                 DrawUmbrellas(spriteBatch, umbrellaType, view);

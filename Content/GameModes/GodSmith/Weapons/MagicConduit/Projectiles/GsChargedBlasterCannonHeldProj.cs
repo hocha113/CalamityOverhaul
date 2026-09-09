@@ -108,6 +108,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
 
         public override string LocalizationCategory => "GodSmithMagicConduit";
 
+        public override void SetStaticDefaults() {
+            //原版电浆球竖排三帧，不声明帧数会三帧叠着画
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.ChargedBlasterOrb];
+        }
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 56;
             Projectile.friendly = true;
@@ -123,6 +128,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         public override void AI() {
             Projectile.velocity *= 0.995f;
             Projectile.rotation += 0.04f;
+
+            //帧步同原版电浆球
+            if (++Projectile.frameCounter >= 3) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
 
             //电弧舔舐：owner 端每 20t 向近敌甩一道小弧
             if (Projectile.IsOwnedByLocalPlayer() && Projectile.timeLeft % 20 == 0) {
@@ -146,9 +157,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         public override bool PreDraw(ref Color lightColor) {
             //原版电浆球贴图一笔按命中盒直径缩放（原图很小，默认绘制看不出巨球尺寸）
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            float scale = Projectile.width / (float)Math.Max(tex.Width, tex.Height);
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor,
-                Projectile.rotation, tex.Size() / 2f, scale, SpriteEffects.None, 0);
+            Rectangle frame = tex.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+            float scale = Projectile.width / (float)Math.Max(frame.Width, frame.Height);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor,
+                Projectile.rotation, frame.Size() / 2f, scale, SpriteEffects.None, 0);
             return false;
         }
     }

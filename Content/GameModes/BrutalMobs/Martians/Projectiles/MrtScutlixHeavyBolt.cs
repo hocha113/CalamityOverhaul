@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 9;
             ProjectileID.Sets.TrailingMode[Type] = 2;
+            //原版炮塔弹竖排四帧，整图直画会四帧叠着出
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.MartianTurretBolt];
         }
 
         public override void SetDefaults() {
@@ -48,6 +50,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
 
             Projectile.alpha = (int)MathHelper.Lerp(200f, 0f, MathHelper.Clamp(Age / (float)MuzzleFadeFrames, 0f, 1f));
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
+            if (++Projectile.frameCounter >= 4) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
 
             Lighting.AddLight(Projectile.Center, ShellRed.ToVector3() * 0.5f);
             if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
@@ -79,7 +86,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             Texture2D rim = CWRAsset.Extra_98.Value;
-            Vector2 origin = tex.Size() / 2f;
+            Rectangle frame = tex.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+            Vector2 origin = frame.Size() / 2f;
             Vector2 rimOrigin = rim.Size() / 2f;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float opacity = 1f - Projectile.alpha / 255f;
@@ -95,18 +103,18 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
                 Vector2 oldDrawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 Main.EntitySpriteDraw(rim, oldDrawPos, null, DarkRim * (0.5f * t * opacity), Projectile.rotation,
                     rimOrigin, new Vector2(0.2f, 0.3f) * Projectile.scale * (0.6f + 0.4f * t), SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(tex, oldDrawPos, null, body * (0.42f * t * opacity), Projectile.rotation,
+                Main.EntitySpriteDraw(tex, oldDrawPos, frame, body * (0.42f * t * opacity), Projectile.rotation,
                     origin, Projectile.scale * (0.55f + 0.4f * t), SpriteEffects.None, 0);
             }
 
             //暗缘衬底（真 alpha，亮背景下的轮廓保险）→ 加色光晕 → 弹体核 → 白热心
             Main.EntitySpriteDraw(rim, drawPos, null, DarkRim * (0.85f * opacity), Projectile.rotation,
                 rimOrigin, new Vector2(0.24f, 0.36f) * Projectile.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(tex, drawPos, null, glow * (0.6f * opacity), Projectile.rotation,
+            Main.EntitySpriteDraw(tex, drawPos, frame, glow * (0.6f * opacity), Projectile.rotation,
                 origin, Projectile.scale * 1.35f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(tex, drawPos, null, body * opacity, Projectile.rotation,
+            Main.EntitySpriteDraw(tex, drawPos, frame, body * opacity, Projectile.rotation,
                 origin, Projectile.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(tex, drawPos, null, new Color(255, 240, 230, 40) * (0.7f * opacity), Projectile.rotation,
+            Main.EntitySpriteDraw(tex, drawPos, frame, new Color(255, 240, 230, 40) * (0.7f * opacity), Projectile.rotation,
                 origin, Projectile.scale * 0.5f, SpriteEffects.None, 0);
             return false;
         }

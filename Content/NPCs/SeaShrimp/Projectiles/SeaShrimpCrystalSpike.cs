@@ -120,14 +120,21 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
             (0f, 1f, 3.1f),
         ];
 
+        /// <summary>簇内每根刺定一款原版帧（原版按 rand 取款式，这里按 identity 定死保各端同解）</summary>
+        private Rectangle SpikeFrame(Texture2D tex, int index) {
+            int frameCount = Math.Max(1, Main.projFrames[ProjectileID.QueenSlimeMinionBlueSpike]);
+            return tex.Frame(1, frameCount, 0, (Projectile.identity + index) % frameCount);
+        }
+
         /// <summary>画一遍三刺簇（鬼影与实体共用同一轮廓：可见范围=判定范围）</summary>
-        private static void DrawCluster(Texture2D tex, Vector2 basePos, Vector2 origin,
-            float spikeHeight, float h01, System.Func<int, Color> colorOf, float extraScale = 1f) {
+        private void DrawCluster(Texture2D tex, Vector2 basePos, float spikeHeight, float h01,
+            System.Func<int, Color> colorOf, float extraScale = 1f) {
             for (int i = 0; i < Cluster.Length; i++) {
                 (float offX, float hFrac, float w) = Cluster[i];
-                float scaleY = spikeHeight * hFrac / tex.Height * h01;
-                Main.spriteBatch.Draw(tex, basePos + new Vector2(offX, 0f), null, colorOf(i), 0f,
-                    origin, new Vector2(w, scaleY) * extraScale, SpriteEffects.None, 0f);
+                Rectangle src = SpikeFrame(tex, i);
+                float scaleY = spikeHeight * hFrac / src.Height * h01;
+                Main.spriteBatch.Draw(tex, basePos + new Vector2(offX, 0f), src, colorOf(i), 0f,
+                    new Vector2(src.Width * 0.5f, src.Height), new Vector2(w, scaleY) * extraScale, SpriteEffects.None, 0f);
             }
         }
 
@@ -142,26 +149,26 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.Projectiles
             int age = Age;
             float h01 = Height01();
             Vector2 basePos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = new(tex.Width * 0.5f, tex.Height);
 
             if (age < OmenFrames) {
                 //鬼影预告：真实高度的低亮度剪影，可见范围=将来的判定范围
                 float a = 0.16f + 0.22f * (age / (float)OmenFrames)
                     * (0.7f + 0.3f * MathF.Sin(Main.GlobalTimeWrappedHourly * 18f + Projectile.identity));
-                DrawCluster(tex, basePos, origin, SpikeHeight, 1f, _ => SeaShrimpRenderer.CrystalBlue * a);
+                DrawCluster(tex, basePos, SpikeHeight, 1f, _ => SeaShrimpRenderer.CrystalBlue * a);
                 return false;
             }
 
             //暗缘剪影（亮背景下的轮廓保障）+ 主体 + 亮芯
-            DrawCluster(tex, basePos + new Vector2(2f, 0f), origin, SpikeHeight, h01,
+            DrawCluster(tex, basePos + new Vector2(2f, 0f), SpikeHeight, h01,
                 _ => new Color(12, 20, 42) * 0.9f, 1.06f);
             Color lit = lightColor;
-            DrawCluster(tex, basePos, origin, SpikeHeight, h01,
+            DrawCluster(tex, basePos, SpikeHeight, h01,
                 i => i == Cluster.Length - 1 ? lit : lit.MultiplyRGB(new Color(180, 195, 225)));
             //亮芯只给主刺：晶簇的光从中央长出来
-            float coreY = SpikeHeight / tex.Height * h01;
-            Main.spriteBatch.Draw(tex, basePos, null,
-                new Color(190, 225, 255, 120) * 0.6f, 0f, origin,
+            Rectangle coreFrame = SpikeFrame(tex, Cluster.Length - 1);
+            float coreY = SpikeHeight / coreFrame.Height * h01;
+            Main.spriteBatch.Draw(tex, basePos, coreFrame,
+                new Color(190, 225, 255, 120) * 0.6f, 0f, new Vector2(coreFrame.Width * 0.5f, coreFrame.Height),
                 new Vector2(1.4f, coreY * 0.98f), SpriteEffects.None, 0f);
             return false;
         }

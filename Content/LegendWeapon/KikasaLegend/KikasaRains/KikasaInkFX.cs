@@ -24,12 +24,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     }
 
     /// <summary>
-    /// 墨渍贴花管理器:命中的余韵层,渍斑比墨滴活得久。
+    /// 墨渍贴花管理器:命中的余韵层,渍斑比弹幕活得久。
     /// 地面渍按命中面(地/墙/顶)吸附到 tile 表面并换贴面姿态,
     /// NPC 渍挂宿主随行(宿主消亡快淡),湖面墨晕沿水线晕开、稀释、随水漂。
     /// 环形上限防堆积,纯客户端表现,由 <see cref="KikasaRainSystem"/> 驱动、
     /// <see cref="KikasaRainRender"/> 在墨滴之下绘制地面/NPC 渍,
-    /// 湖晕由 <see cref="KikasaDomainRender"/> 在 TechUnify 之后叠到做好的水面上
+    /// 湖晕由 <see cref="KikasaDomainRender"/> 在 TechUnify 之后叠到做好的水面上。
+    /// 2026-09-09 起左键墨滴不再入账地面/NPC 渍(滞留挡视野),命中改走 <see cref="KikasaInkSplashFX"/>
+    /// 的爆发式水花;墨滴只保留入湖墨膜。地渍/NPC 渍仍由墨瀑落点、墨泉、墨洼、传送、殷符与血沫落地供给
     /// </summary>
     internal static class KikasaInkFX
     {
@@ -133,8 +135,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             return t.HasTile && Main.tileSolid[t.TileType] && !Main.tileSolidTop[t.TileType];
         }
 
-        /// <summary>按入射姿态排出候选面依次探测,命中即把锚点吸附到该 tile 表面</summary>
-        private static SplatSurface ResolveSurface(ref Vector2 pos, Vector2 vel) {
+        /// <summary>
+        /// 按入射姿态排出候选面依次探测,命中即把锚点吸附到该 tile 表面。
+        /// 墨滴的水花(<see cref="KikasaInkSplashFX"/>)也借这套四邻探测定根与法线
+        /// </summary>
+        internal static SplatSurface ResolveSurface(ref Vector2 pos, Vector2 vel) {
             Span<SplatSurface> order = stackalloc SplatSurface[4];
             SplatSurface sideFirst = vel.X >= 0f ? SplatSurface.WallRight : SplatSurface.WallLeft;
             SplatSurface sideLast = vel.X >= 0f ? SplatSurface.WallLeft : SplatSurface.WallRight;
@@ -165,6 +170,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             //探不到面(理论上贴地命中才会入账):按地面处理
             return SplatSurface.Floor;
+        }
+
+        /// <summary>命中面的离面法线(世界坐标,y 向下):地↑ 顶↓ 左墙→ 右墙←</summary>
+        internal static Vector2 SurfaceNormal(SplatSurface surf) {
+            return surf switch {
+                SplatSurface.Ceiling => Vector2.UnitY,
+                SplatSurface.WallLeft => Vector2.UnitX,
+                SplatSurface.WallRight => -Vector2.UnitX,
+                _ => -Vector2.UnitY,
+            };
         }
 
         private static bool TrySnap(SplatSurface surf, ref Vector2 pos) {

@@ -7,10 +7,12 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 {
     /// <summary>
-    /// 沉湖清圈：本机玩家在观看域的湖里确认没顶后，湖水在人周围让出一口清水
-    /// （圈内倒影/血染/墨雾退去，可见度回到水面上的口径），站在湖面或半身入水不出圈。
+    /// 沉湖清圈与潜水视角：本机玩家在观看域的湖里确认没顶后，湖水先在人周围让出一口清水
+    /// （圈内倒影/血染/墨雾退去，可见度回到水面上的口径），随后"眼睛适应了这片水"：
+    /// 第二包络 <see cref="Clarity"/> 起爬，清圈半径外扩成一道扫向整湖的清明前沿、圈强度同步让位，
+    /// 整湖按 uDive 淡化（倒影退去、墨雾变薄、血水转成透光的血光）。站在湖面或半身入水两者都不出。
     /// 纯本机表现量：只看本机玩家与 <see cref="KikasaDomain.Viewed"/>，无网络；
-    /// 着色器侧见 KikasaGrade.fx 的 uClearRing
+    /// 着色器侧见 KikasaGrade.fx 的 uClearRing / uDive
     /// </summary>
     internal static class KikasaDiveClearing
     {
@@ -33,11 +35,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>收拢：线性快收，约 9 帧合回中心（出水不是淡出，是水合回来）</summary>
         private const float CloseStep = 0.11f;
 
+        //==================== 潜水视角包络 ====================
+
+        /// <summary>清圈张到这么开之后再等一段，眼睛才开始适应</summary>
+        private const float ClarityArmStrength = 0.9f;
+
+        /// <summary>清圈张开后到整湖开始淡化的延迟帧数</summary>
+        private const int ClarityDelayFrames = 8;
+
+        /// <summary>整湖淡化的指数逼近速率：约 55 帧到 90%，与"眼睛适应"的体感同量级</summary>
+        private const float ClarityRate = 0.04f;
+
+        /// <summary>出水线性收回：约 10 帧，与清圈同口径（水合回来，不是淡出）</summary>
+        private const float ClarityCloseStep = 0.10f;
+
+        /// <summary>清圈半径随 Clarity 外扩的倍数：圈缘那一线血沫水膜就是清明扫过整湖的前沿</summary>
+        private const float FrontGrow = 5f;
+
+        /// <summary>潜水视角期水下环境血泡的生成间隔（帧）</summary>
+        private const int AmbientBubbleMin = 10;
+        private const int AmbientBubbleMax = 16;
+
         private static int submergedFrames;
         private static bool confirmed;
+        private static int clarityDelay;
+        private static int ambientBubbleTimer;
 
         /// <summary>清圈在场强度 0~1，同时驱动半径与清水量：圈从人身中心张开、合回</summary>
         public static float Strength { get; private set; }
+
+        /// <summary>潜水视角 0~1：整湖淡化程度，着色器 uDive；清圈开满后延迟起爬，出水快收</summary>
+        public static float Clarity { get; private set; }
 
         /// <summary>圈心世界坐标（本机玩家中心），绘制时按当前相机投影</summary>
         public static Vector2 CenterWorld { get; private set; }
@@ -45,7 +73,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         public static void Clear() {
             submergedFrames = 0;
             confirmed = false;
+            clarityDelay = 0;
+            ambientBubbleTimer = 0;
             Strength = 0f;
+            Clarity = 0f;
         }
 
         public static void Update() {
@@ -72,18 +103,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (target) {
                 CenterWorld = player.Center;
                 Strength += (1f - Strength) * OpenRate;
+                //清圈张开后再等一拍，眼睛才开始适应这片水：整湖淡化起爬
+                if (Strength >= ClarityArmStrength) {
+                    if (clarityDelay < ClarityDelayFrames) {
+                        clarityDelay++;
+                    }
+                    else {
+                        Clarity += (1f - Clarity) * ClarityRate;
+                    }
+                }
             }
             else {
                 Strength = MathF.Max(Strength - CloseStep, 0f);
+                Clarity = MathF.Max(Clarity - ClarityCloseStep, 0f);
+                clarityDelay = 0;
                 //收拢期圈心继续跟人，圈不会钉在原地
                 if (Strength > 0f && player?.active == true) {
                     CenterWorld = player.Center;
                 }
             }
+
+            //潜水视角期水下静场要有东西在动才像在水里：屏幕内随机点缓升的小血泡
+            if (Clarity > 0.5f && kdp != null && player?.active == true) {
+                AmbientBubbles(kdp);
+            }
+            else {
+                ambientBubbleTimer = 0;
+            }
         }
 
-        /// <summary>着色器 uClearRing 打包：xy=圈心 uv，z=半径像素（≥1），w=强度；闲置 w=0</summary>
+        /// <summary>
+        /// 着色器 uClearRing 打包：xy=圈心 uv，z=半径像素（≥1），w=强度；闲置 w=0。
+        /// 潜水视角起爬后半径按 Clarity 外扩成前沿、强度同步让位，Clarity 到 1 时圈完全消失只剩整湖淡化；
+        /// uDive 即 Clarity
+        /// </summary>
         internal static void FillUniforms(Effect effect, Vector2 viewSize) {
+            effect.Parameters["uDive"]?.SetValue(Clarity);
             if (Strength <= 0.002f) {
                 effect.Parameters["uClearRing"]?.SetValue(new Vector4(0.5f, 0.5f, 1f, 0f));
                 return;
@@ -92,8 +147,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 CenterWorld - Main.screenPosition,
                 Main.GameViewMatrix.TransformationMatrix) / viewSize;
             float eased = 1f - MathF.Pow(1f - Strength, 2f);
-            float radiusPx = MathF.Max(RadiusPx * Main.GameViewMatrix.Zoom.X * eased, 1f);
-            effect.Parameters["uClearRing"]?.SetValue(new Vector4(centerUv.X, centerUv.Y, radiusPx, Strength));
+            float radiusPx = MathF.Max(
+                RadiusPx * Main.GameViewMatrix.Zoom.X * eased * (1f + FrontGrow * Clarity), 1f);
+            effect.Parameters["uClearRing"]?.SetValue(new Vector4(
+                centerUv.X, centerUv.Y, radiusPx, Strength * (1f - Clarity)));
+        }
+
+        //屏幕内水线下随机点生一颗小血泡缓升，节流间隔随机；只在潜水视角成立时跑
+
+        private static void AmbientBubbles(KikasaDomainPlayer kdp) {
+            if (--ambientBubbleTimer > 0) {
+                return;
+            }
+            ambientBubbleTimer = Main.rand.Next(AmbientBubbleMin, AmbientBubbleMax + 1);
+            float lakeY = kdp.LakeWorldY;
+            float top = MathF.Max(Main.screenPosition.Y, lakeY + 24f);
+            float bottom = Main.screenPosition.Y + Main.screenHeight;
+            if (bottom <= top) {
+                return;
+            }
+            Vector2 at = new(
+                Main.screenPosition.X + Main.rand.NextFloat(Main.screenWidth),
+                Main.rand.NextFloat(top, bottom));
+            PRTLoader.NewParticle<PRT_KikasaLakeBubble>(at,
+                new Vector2(Main.rand.NextFloat(-0.15f, 0.15f), -Main.rand.NextFloat(0.25f, 0.55f)), default,
+                Main.rand.NextFloat(0.3f, 0.6f))?.Configure(Main.rand.Next(45, 90), lakeY);
         }
 
         /// <summary>

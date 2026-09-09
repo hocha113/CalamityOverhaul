@@ -14,6 +14,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
 
         internal static int GetDamage(NPC boss) => Math.Max((int)(boss.defDamage * 0.34f), 14);
 
+        public override void SetStaticDefaults() {
+            //原版毒种竖排两帧，不声明帧数会两帧叠着画
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.PoisonSeedPlantera];
+        }
+
         public override void SetDefaults() {
             Projectile.width = 12;
             Projectile.height = 12;
@@ -34,6 +39,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
                 Projectile.velocity.Y = 16f;
             }
             Projectile.rotation += Projectile.velocity.X * 0.04f;
+
+            //帧步同原版毒种
+            if (++Projectile.frameCounter >= 2) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
 
             Lighting.AddLight(Projectile.Center, PlanteraRenderHelper.SporeGreen.ToVector3() * 0.3f);
 

@@ -106,7 +106,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
         public override bool PreDraw(ref Color lightColor) {
             Main.instance.LoadProjectile(ProjectileID.PhantasmalBolt);
             Texture2D tex = TextureAssets.Projectile[ProjectileID.PhantasmalBolt].Value;
-            Vector2 origin = tex.Size() * 0.5f;
+            //原版波弹竖排五帧，整图直画会五帧叠成一条竖条；帧步同原版（每 9 帧一跳）
+            int frameCount = Math.Max(1, Main.projFrames[ProjectileID.PhantasmalBolt]);
+            Rectangle frame = tex.Frame(1, frameCount, 0, (int)(Timer / 9f) % frameCount);
+            Vector2 origin = frame.Size() * 0.5f;
             Vector2 pos = Projectile.Center - Main.screenPosition;
 
             //显形包络：快速淡入 + 由小到大（原版箭系淡入观感）
@@ -122,17 +125,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
                     }
                     float k = 1f - i / (float)Projectile.oldPos.Length;
                     Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                    Main.EntitySpriteDraw(tex, trailPos, null, Color.White * (0.42f * k * alpha),
+                    Main.EntitySpriteDraw(tex, trailPos, frame, Color.White * (0.42f * k * alpha),
                         Projectile.oldRot[i], origin, scale * MathHelper.Lerp(0.6f, 0.9f, k), SpriteEffects.None, 0);
                 }
             }
 
             //本体：原版贴图原色直画，不改色不压形——样貌即原版幻影矢
-            Main.EntitySpriteDraw(tex, pos, null, Color.White * alpha,
+            Main.EntitySpriteDraw(tex, pos, frame, Color.White * alpha,
                 Projectile.rotation, origin, scale, SpriteEffects.None, 0);
             //幻影青薄晕（加色，速度越快越亮——能量弹自发光，不改剪影）
             float speedHeat = MathHelper.Clamp(Projectile.velocity.Length() / (FullSpeed * AccelCap + 0.01f), 0f, 1f);
-            Main.EntitySpriteDraw(tex, pos, null,
+            Main.EntitySpriteDraw(tex, pos, frame,
                 MLordDirector.Phantasmal with { A = 0 } * (0.2f + 0.25f * speedHeat) * alpha,
                 Projectile.rotation, origin, scale * 1.05f, SpriteEffects.None, 0);
             return false;

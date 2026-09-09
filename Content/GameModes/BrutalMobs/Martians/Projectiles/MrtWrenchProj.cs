@@ -47,6 +47,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
             ProjectileID.Sets.TrailCacheLength[Type] = 6;
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 720;
+            //原版废件竖排五帧，整图直画会五块叠着出
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.SaucerScrap];
         }
 
         public override void SetDefaults() {
@@ -68,6 +70,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
         public override bool? CanDamage() => Flying ? null : false;
 
         public override void AI() {
+            if (Age == 0f) {
+                //五帧是五种碎块款式而非动画，按 identity 定死一款（各端同解，飞行中不变形）
+                Projectile.frame = Projectile.identity % Main.projFrames[Type];
+            }
             Age++;
 
             //迟入玩家/权威掷出包先到：预告期速度只可能为零，非零即已掷出的同步证据，本地快进到飞行期
@@ -132,7 +138,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
-            Vector2 orig = tex.Size() / 2f;
+            Rectangle frame = tex.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+            Vector2 orig = frame.Size() / 2f;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             //灰蓝染色：本体保留原版贴图遮挡像素
             Color body = Color.Lerp(lightColor, SteelBlue, 0.5f);
@@ -152,9 +159,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
                     new Vector2(MarkerWidth / glowTex.Width, MarkerHeight / glowTex.Height), SpriteEffects.None, 0);
 
                 //悬浮扳手：冷光衬底 + 本体渐显
-                Main.EntitySpriteDraw(tex, drawPos, null, MarkerCore * (0.3f * windup * pulse),
+                Main.EntitySpriteDraw(tex, drawPos, frame, MarkerCore * (0.3f * windup * pulse),
                     Projectile.rotation, orig, Projectile.scale * 1.2f, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(tex, drawPos, null, body * (0.45f + 0.55f * windup),
+                Main.EntitySpriteDraw(tex, drawPos, frame, body * (0.45f + 0.55f * windup),
                     Projectile.rotation, orig, Projectile.scale, SpriteEffects.None, 0);
                 return false;
             }
@@ -167,14 +174,14 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Martians.Projectiles
                 }
                 float t = 1f - i / (float)Projectile.oldPos.Length;
                 Vector2 oldDrawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                Main.EntitySpriteDraw(tex, oldDrawPos, null, body * (0.4f * t),
+                Main.EntitySpriteDraw(tex, oldDrawPos, frame, body * (0.4f * t),
                     Projectile.oldRot[i], orig, Projectile.scale * 0.78f, SpriteEffects.None, 0);
             }
 
             //冷光衬底 + 本体
-            Main.EntitySpriteDraw(tex, drawPos - Projectile.velocity * 0.5f, null, MarkerCore * 0.3f,
+            Main.EntitySpriteDraw(tex, drawPos - Projectile.velocity * 0.5f, frame, MarkerCore * 0.3f,
                 Projectile.rotation - 0.2f * SpinDir, orig, Projectile.scale * 1.12f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(tex, drawPos, null, body,
+            Main.EntitySpriteDraw(tex, drawPos, frame, body,
                 Projectile.rotation, orig, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }

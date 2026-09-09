@@ -115,6 +115,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         private float SpinDir => Projectile.ai[0] >= 0f ? 1f : -1f;
         private float SwayPhase => Projectile.ai[1] * 1.7f;
 
+        public override void SetStaticDefaults() {
+            //原版花瓣贴图是竖排三帧，不声明帧数会整条竖图当一片瓣画
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.FlowerPetal];
+        }
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 18;
             Projectile.friendly = true;
@@ -129,6 +134,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         public override void AI() {
             Life++;
+
+            if (++Projectile.frameCounter >= 5) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
 
             if (Life <= 14f) {
                 //飘落段：轻重力 + 横向摇曳，像真花瓣旋落

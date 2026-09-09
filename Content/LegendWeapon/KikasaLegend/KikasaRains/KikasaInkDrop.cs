@@ -19,7 +19,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     /// 轨迹恒为圆滑弧线,无锐角;无目标时重力坠向光标列。
     /// 追太久、擦身而过或近场绕满一圈半即放弃追踪转坠落,不绕圈。
     /// 血湖是介质不是地板:入水留墨膜与水花后穿入继续飞,水下粘阻+追击变钝,
-    /// 死在湖底地形照常留渍。集中绘制在 <see cref="KikasaRainRender"/>,本体 PreDraw 不画
+    /// 死在湖底地形照常起水花。命中谢幕走 <see cref="KikasaInkSplashFX"/> 的爆发式水花
+    /// (14 帧崩解,不留滞留渍;2026-09-09 撤掉落地渍斑与沾敌附着渍)。
+    /// 集中绘制在 <see cref="KikasaRainRender"/>,本体 PreDraw 不画
     /// </summary>
     internal class KikasaInkDrop : ModProjectile
     {
@@ -123,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         //拿到之后不再撤销,穿透态结束时若还在石头里就当场收场
         private bool plungeArmed;
         //追击穿透态:近距咬着活目标时不认地形(端本地,由同步目标与位置确定性推得);
-        //穿墙入口只留一次渗墨渍;ghostVisual 是绘制用的平滑量
+        //穿墙入口只起一次小水花;ghostVisual 是绘制用的平滑量
         private bool phasing;
         private bool prevInsideSolid;
         private bool phaseSplatDone;
@@ -163,7 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         //身在湖中:穿水态(湖是介质不是地板),粘阻+追踪变钝+拖尾冒泡;
         //入/出水沿各留一次边沿谢幕,各端从同步领域态自算同一答案
         private bool inLake;
-        //实心命中:AI 的地形检测各端确定性一致,渍斑贴地
+        //实心命中:AI 的地形检测各端确定性一致,水花贴面
         private bool onTileHit;
 
         /// <summary>确定性相位:绘制与曲线抖动都用它,多端一致</summary>
@@ -317,7 +319,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             //坠落段的实心检测。碰撞在坠落段首次身处空气后才武装:室内上抛扎进天花板的滴
             //先穿回房内再正常落地,不死在顶上(反馈七·#74);
-            //穿水改制后湖下地形照常接墨,滴能死在湖底,渍斑与墨洼一并落底
+            //穿水改制后湖下地形照常接墨,滴能死在湖底,水花与墨洼一并落底
             if (Phase == DropPhase.Plunge) {
                 bool insideSolid = Collision.SolidCollision(
                     Projectile.position, Projectile.width, Projectile.height);
@@ -325,18 +327,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     plungeArmed = true;
                 }
                 if (phasing) {
-                    //穿透态:不认地形,穿墙入口留一次渗墨渍,墙上仍有痕
+                    //穿透态:不认地形,穿墙入口起一朵半量的小水花(不响),墙上有痕但十几帧即散
                     if (insideSolid && !prevInsideSolid && !phaseSplatDone && !Main.dedServ) {
                         phaseSplatDone = true;
-                        KikasaInkFX.AddGroundSplat(Projectile.Center, Projectile.velocity,
-                            (12f + 4f * MathHelper.Clamp(Projectile.velocity.Length() / plungeMaxSpeed, 0f, 1f))
-                                * Projectile.scale);
+                        float entryKe = MathHelper.Clamp(Projectile.velocity.Length() / plungeMaxSpeed, 0.25f, 1f);
+                        Vector2 entryAt = BackOutOfSolid(Projectile.Center, Projectile.velocity)
+                            + Projectile.velocity.SafeNormalize(Vector2.UnitY) * 8f;
+                        SplatSurface entrySurf = KikasaInkFX.ResolveSurface(ref entryAt, Projectile.velocity);
+                        KikasaInkSplashFX.Burst(entryAt, KikasaInkFX.SurfaceNormal(entrySurf), Projectile.velocity,
+                            entryKe * 0.5f, Projectile.scale * 0.6f, ResolveSplashPalette(), SplashKind.Tile,
+                            quiet: true);
                     }
                 }
                 else if (plungeArmed && insideSolid) {
                     //出穿透态时人还在石头里(目标死了/追丢了/追太久)就当场撞地结算。
                     //武装是一次性的,不随穿透态撤销,否则滴会带着墨在地层里一路游到寿终,
-                    //既不留渍也没落点——穿墙门放宽之后这是最常见的收场路径
+                    //既无水花也没落点——穿墙门放宽之后这是最常见的收场路径
                     onTileHit = true;
                     Projectile.Kill();
                 }
@@ -589,14 +595,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             Vector2 impactVel = Projectile.velocity;
             float ke = MathHelper.Clamp(impactVel.Length() / plungeMaxSpeed, 0.25f, 1f);
-            float splatSize = 20f + ke * 42f;
+            SplashPalette palette = ResolveSplashPalette();
+            //屏震只给亲手指挥的滴,且只在归属端本机
+            bool manual = AppliesTag && Main.myPlayer == Projectile.owner;
 
-            //渍斑归属:贴地>沾敌>空中散尽。NPC 命中只在所有者端跑 OnHitNPC,
-            //这里按死点就近找宿主,各端跑同一套规则,旁观者也看得到渍
-            NPC host = null;
+            //水花归属:贴地>沾敌>空中散尽。NPC 命中只在所有者端跑 OnHitNPC,
+            //这里按死点就近找宿主,各端跑同一套规则,旁观者也看得到花。
+            //水花 14 帧崩解干净,不留滞留层(音效与飞沫都在 Burst 里)
             if (onTileHit) {
-                Vector2 into = impactVel.SafeNormalize(Vector2.UnitY) * 8f;
-                KikasaInkFX.AddGroundSplat(Projectile.Center + into, impactVel, splatSize);
+                //贴地形:先把死点退回到砖外(高速滴一帧能扎进半块砖),再沿来势探 8px 让四邻探测够到砖,
+                //把根吸附到表面、取离面法线,水花沿法线立起
+                Vector2 at = BackOutOfSolid(Projectile.Center, impactVel)
+                    + impactVel.SafeNormalize(Vector2.UnitY) * 8f;
+                SplatSurface surf = KikasaInkFX.ResolveSurface(ref at, impactVel);
+                KikasaInkSplashFX.Burst(at, KikasaInkFX.SurfaceNormal(surf), impactVel, ke,
+                    Projectile.scale, palette, SplashKind.Tile, manual: manual);
                 //湖倾档:落点积成一汪滞留的墨洼,持续烫伤踩进来的东西;
                 //近处已有同主墨洼则只续命,一波齐掷不铺一地重叠洼;
                 //潦符的寿命/半径倍率随生成参数带给洼(ai 通道随生成包同步)
@@ -605,9 +618,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 }
             }
             else {
-                host = FindSplatHost();
+                NPC host = FindImpactHost();
                 if (host != null) {
-                    KikasaInkFX.AddNpcSplat(host, Projectile.Center, impactVel, splatSize * 0.8f);
+                    //沾敌:法线取来势反向,水花从敌人身上朝来路炸开,根随宿主走
+                    KikasaInkSplashFX.Burst(Projectile.Center, -impactVel, impactVel, ke,
+                        Projectile.scale, palette, SplashKind.Npc, host, manual);
                     //湖倾档也认打在敌人身上:洼起在宿主脚下的地形（平台也算），
                     //追踪流打空中怪同样吃得到墨洼构筑线（反馈七·#36 拍板）
                     if (LeavesPuddle && Main.myPlayer == Projectile.owner
@@ -615,40 +630,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                         SpawnOrRefreshPuddleAt(groundAt);
                     }
                 }
-            }
-
-            //迸溅:半球墨珠反弹(贴法线快)+一口墨雾在空气里晕开,预算 ≤6 粒;血珠换血珠族
-            Vector2 normal = -impactVel.SafeNormalize(Vector2.UnitY);
-            float mainAngle = normal.ToRotation();
-            int count = (int)(2 + 3 * ke);
-            for (int i = 0; i < count; i++) {
-                float spread = Main.rand.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
-                float speedRatio = 1f - MathF.Abs(spread) / MathHelper.PiOver2;
-                Vector2 vel = (mainAngle + spread).ToRotationVector2()
-                    * Main.rand.NextFloat(1.8f, 6.5f) * (0.35f + 0.65f * speedRatio) * (0.5f + ke);
-                Vector2 at = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
-                if (bloodBead) {
-                    PRTLoader.NewParticle<PRT_KikasaBloodGlob>(at, vel,
-                        Main.rand.NextBool(3) ? KikasaInk.BloodBright : KikasaInk.BloodBody,
-                        Main.rand.NextFloat(0.3f, 0.48f) * Projectile.scale)?.Configure(Main.rand.Next(18, 30));
-                }
                 else {
-                    PRTLoader.NewParticle<PRT_KikasaInkBead>(at, vel,
-                        Main.rand.NextBool(3) ? KikasaInk.InkDeep : KikasaInk.InkBody,
-                        Main.rand.NextFloat(0.14f, 0.22f) * Projectile.scale)?.Configure(Main.rand.Next(18, 30));
+                    //空中散尽(寿终/无宿主):全向小爆,量减
+                    KikasaInkSplashFX.Burst(Projectile.Center, -impactVel, impactVel, ke * 0.7f,
+                        Projectile.scale, palette, SplashKind.Air);
                 }
-            }
-            PRTLoader.NewParticle<PRT_KikasaInkMist>(Projectile.Center + normal * 6f,
-                normal * Main.rand.NextFloat(0.4f, 1f), bloodBead ? KikasaInk.BloodDeep : KikasaInk.InkDeep,
-                Main.rand.NextFloat(0.8f, 1.2f) * Projectile.scale)?.Configure(Main.rand.Next(28, 40));
-
-            KikasaInk.Play(KikasaInk.InkSplash, Projectile.Center, 0.42f + 0.22f * ke, -0.35f, 5);
-            if (host != null) {
-                KikasaInk.Play(SoundID.NPCHit13, Projectile.Center, 0.32f + 0.12f * ke, -0.45f, 4);
             }
         }
 
-        /// <summary>死点附近同主的既有墨洼,用于合并续命</summary>
+        /// <summary>
+        /// 水花色板与滴体同源:鬼滴鬼青 / 血珠浓血四件 / 墨三件,再过符绘制挂钩(霓染色、雹冰蓝等),
+        /// 符染过的滴炸出同色的花
+        /// </summary>
+        private SplashPalette ResolveSplashPalette() {
+            KikasaDropDrawParams draw = new() {
+                Body = IsGhostDrop ? KikasaInk.GhostBody : bloodBead ? KikasaInk.BloodBody : KikasaInk.InkBody,
+                Deep = IsGhostDrop ? KikasaInk.GhostDeep : bloodBead ? KikasaInk.BloodDeep : KikasaInk.InkDeep,
+                Core = IsGhostDrop ? KikasaInk.GhostCore : bloodBead ? KikasaInk.BloodBright : KikasaInk.BloodCore,
+                SizeMul = 1f,
+                Ghost = 0f,
+            };
+            if (TalismanTagId != 0) {
+                KikasaTalismanHooks.ModifyDropDraw(Projectile, ref draw);
+            }
+            Color sheen = IsGhostDrop ? KikasaInk.GhostCore : bloodBead ? KikasaInk.BloodSheen : KikasaInk.WetSheen;
+            return new SplashPalette(draw.Body, draw.Deep, draw.Core, sheen);
+        }
+
         /// <summary>湖倾档起洼/续命共用路径：落点由调用方给（贴地=死点，沾敌=宿主脚下地形）</summary>
         private void SpawnOrRefreshPuddleAt(Vector2 at) {
             KikasaTalismanProfile talismans =
@@ -669,6 +677,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     0f, Projectile.owner,
                     talismans.PuddleRadiusMul, talismans.PuddleLifeMul);
             }
+        }
+
+        /// <summary>
+        /// 把死点沿来势反向退回到砖外(每步 4px,最多 32px):26px/f 的滴一帧能扎进半块砖,
+        /// 直接拿死点探面会把水花根吸到下一块砖的顶上;退出来再探,根才落在真正的入砖面
+        /// </summary>
+        private static Vector2 BackOutOfSolid(Vector2 center, Vector2 vel) {
+            Vector2 back = -vel.SafeNormalize(Vector2.UnitY) * 4f;
+            Vector2 p = center;
+            for (int i = 0; i < 8 && Collision.SolidCollision(p - new Vector2(2f, 2f), 4, 4); i++) {
+                p += back;
+            }
+            return p;
         }
 
         /// <summary>从起点向下找首个可站立地表（实心或平台，最多 20 格），命中返回贴地点</summary>
@@ -703,8 +724,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             return null;
         }
 
-        /// <summary>死点附近最近的可沾渍宿主</summary>
-        private NPC FindSplatHost() {
+        /// <summary>死点附近最近的命中宿主(水花随行、湖倾档洼起在其脚下)</summary>
+        private NPC FindImpactHost() {
             NPC best = null;
             float bestDist = 76f;
             for (int i = 0; i < Main.maxNPCs; i++) {

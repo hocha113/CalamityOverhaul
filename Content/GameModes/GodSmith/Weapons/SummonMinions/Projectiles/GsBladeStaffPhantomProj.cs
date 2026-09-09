@@ -20,6 +20,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
 
         private int Elapsed => LifeFrames - Projectile.timeLeft;
 
+        public override void SetStaticDefaults() {
+            //原版小刀仆从竖排两帧，不声明帧数会两帧叠着画；只闪一下的幻影固定取首帧
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.Smolstar];
+        }
+
         public override void SetDefaults() {
             Projectile.width = 90;
             Projectile.height = 90;

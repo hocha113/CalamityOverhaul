@@ -23,6 +23,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
 
         private bool Fading => Projectile.timeLeft <= FadeFrames;
 
+        public override void SetStaticDefaults() {
+            //原版细胞弹是竖排四帧，不声明帧数会整条竖图一起画
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.StardustCellMinionShot];
+        }
+
         public override void SetDefaults() {
             Projectile.width = 16;
             Projectile.height = 16;
@@ -53,6 +58,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
                 Projectile.velocity *= 0.9f;
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
+            if (++Projectile.frameCounter >= 5) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
         }
 
         /// <summary>最近可追猎敌人（各端本地同判，寻的量随 velocity 过线容差可接受）</summary>

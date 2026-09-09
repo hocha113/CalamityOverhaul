@@ -274,6 +274,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
 
         private ref float TargetIndex => ref Projectile.ai[0];
 
+        public override void SetStaticDefaults() {
+            //原版细胞弹是竖排四帧，不声明帧数会整条竖图一起画
+            Main.projFrames[Type] = Math.Max(1, Main.projFrames[ProjectileID.StardustCellMinionShot]);
+        }
+
         public override void SetDefaults() {
             Projectile.width = 16;
             Projectile.height = 16;
@@ -295,6 +300,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
                 }
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            if (++Projectile.frameCounter >= 5) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
             Lighting.AddLight(Projectile.Center, 0.3f, 0.5f, 0.8f);
             if (!Main.dedServ) {
                 Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.UltraBrightTorch,

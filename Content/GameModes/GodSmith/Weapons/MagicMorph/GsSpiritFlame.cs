@@ -56,6 +56,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
 
         public override string LocalizationCategory => "GodSmithMagicMorph";
 
+        public override void SetStaticDefaults() {
+            //原版魂火是竖排四帧，不声明帧数会整条竖图一起画
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.SpiritFlame];
+        }
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 14;
             Projectile.friendly = true;
@@ -67,6 +72,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicMorph
         }
 
         public override void AI() {
+            if (++Projectile.frameCounter >= 5) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
+
             //前 18t 上飘减速（出手弧线），随后锁定近敌俯冲
             if (Projectile.timeLeft > 72) {
                 Projectile.velocity *= 0.95f;

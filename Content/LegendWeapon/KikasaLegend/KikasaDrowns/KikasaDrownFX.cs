@@ -154,6 +154,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             return false;
         }
 
+        /// <summary>该 NPC 槽位是否正被本机某场沉溺演出当作目标（含组员）。
+        /// 客户端可用：KikasaDrown 的权威表在客户端恒空，湖底勾边这类本机表现要靠这份演出记录排除目标，
+        /// 否则干净本体会盖住画在它身上的鬼手</summary>
+        internal static bool IsShowTarget(int npcIndex) {
+            for (int i = 0; i < shows.Count; i++) {
+                DrownShow show = shows[i];
+                if (show.Cancelled || show.Done) {
+                    continue;
+                }
+                List<GhostSeg> segs = show.Segs;
+                for (int j = 0; j < segs.Count; j++) {
+                    if (segs[j].Identity.Index == npcIndex) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         //==================== 起演 ====================
 
         internal static void StartShow(int ownerWho, int drownId, float seed,

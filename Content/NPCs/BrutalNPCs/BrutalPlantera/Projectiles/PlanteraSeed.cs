@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 6;
+            //原版种子竖排两帧，整图直画会两帧叠着出
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.SeedPlantera];
         }
 
         public override void SetDefaults() {
@@ -35,6 +37,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
 
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
+            //帧步同原版种子
+            if (++Projectile.frameCounter >= 2) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
 
             //40帧后进入坠落段
             if (Projectile.timeLeft < 200) {
@@ -73,6 +81,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
         public override bool PreDraw(ref Color lightColor) {
             Main.instance.LoadProjectile(Type);
             Texture2D tex = TextureAssets.Projectile[Type].Value;
+            Rectangle frame = tex.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+            Vector2 seedOrigin = frame.Size() / 2f;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float speed = Projectile.velocity.Length();
@@ -92,12 +102,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
                 }
                 float fade = (1f - i / (float)Projectile.oldPos.Length) * 0.35f;
                 Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                Main.EntitySpriteDraw(tex, ghostPos, null, tracer * fade,
-                    Projectile.rotation, tex.Size() / 2f, Projectile.scale * 0.92f, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(tex, ghostPos, frame, tracer * fade,
+                    Projectile.rotation, seedOrigin, Projectile.scale * 0.92f, SpriteEffects.None, 0);
             }
 
-            Main.EntitySpriteDraw(tex, drawPos, null, lightColor,
-                Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(tex, drawPos, frame, lightColor,
+                Projectile.rotation, seedOrigin, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

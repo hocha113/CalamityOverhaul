@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 {
     /// <summary>
     /// 血湖领域 RenderHandle。环境调色走 NPC 层之前的 TechGrade；
-    /// EndCapture 走 TechUnify：全帧轻罩 + 血湖镜面（倒影含实体）+ 沉湖清圈 + 撕纸前沿；
+    /// EndCapture 走 TechUnify：全帧轻罩 + 血湖镜面（倒影含实体）+ 沉湖清圈/潜水视角 + 撕纸前沿
+    /// + 敌意实体掩膜（<see cref="KikasaLakeHighlight"/>，透水显形与血膜勾边）；
     /// 湖面墨晕在 Unify 之后叠上，避免被镜像换掉。
     /// </summary>
     internal class KikasaDomainRender : RenderHandle
@@ -32,6 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaHoundReflection.Clear();
                 KikasaWispFX.Clear();
                 KikasaDiveClearing.Clear();
+                KikasaLakeHighlight.Clear();
             }
         }
 
@@ -224,6 +226,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
+            //主屏已保进交换缓冲，借这段窗口把湖里的敌意实体重画进掩膜 RT（湖只照敌意）
+            KikasaLakeHighlight.CaptureMask(spriteBatch, graphicsDevice, kdp);
+
             SetSharedParams(grade, kdp);
 
             //统一罩+血湖镜面回写主屏
@@ -232,6 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             graphicsDevice.Clear(Color.Transparent);
             graphicsDevice.Textures[1] = noise;
             graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+            KikasaLakeHighlight.FillUniforms(grade, graphicsDevice, kdp);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             grade.CurrentTechnique = grade.Techniques["TechUnify"];
             grade.CurrentTechnique.Passes[0].Apply();
@@ -271,6 +277,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
 
             float coverage = kdp.SpreadProgress;
+            //潜水视角：低质量路径没有镜面，下潜也给一点"变清"的反馈，罩色减淡
+            coverage *= 1f - 0.5f * KikasaDiveClearing.Clarity;
             if (coverage <= 0.001f) {
                 return;
             }

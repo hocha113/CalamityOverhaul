@@ -49,6 +49,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
 
         private ref float Life => ref Projectile.ai[1];
 
+        public override void SetStaticDefaults() {
+            //原版魂火是竖排四帧，不声明帧数会整条竖图一起画
+            Main.projFrames[Type] = Main.projFrames[ProjectileID.SpiritFlame];
+        }
+
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 20;
@@ -71,6 +76,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, want, 0.09f);
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            if (++Projectile.frameCounter >= 5) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Type];
+            }
             Lighting.AddLight(Projectile.Center, 0.2f, 0.6f, 0.3f);
             if (!Main.dedServ && Main.rand.NextBool(2)) {
                 Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.JungleGrass,
