@@ -3,11 +3,21 @@ KikasaTalismanLin: {
 	Tooltip: Cadence de pluie accélérée ; une pluie continue accumule « Averse tenace » densifiant les gouttes ; dégâts par goutte -6%
 	Origin:
 		'''
-		Les maîtres des échoppes d'ombrelles en papier huilé le savent bien : deux semaines de bruine ininterrompue usent l'esprit plus que tout.
-		Les gouttes tombent aussi fines que des crins, silencieuses et dociles sur les tuiles, mais les poutres et les piliers secrets ont pourri depuis longtemps sous l'humidité.
-		Ce talisman capture cette imprégnation glaciale et sourde : tant que l'averse dure, plus dense elle se tisse.
+		Les maîtres des échoppes d'ombrelles en papier huilé le savent bien :
+		deux semaines de bruine ininterrompue usent l'esprit plus que tout.
+		Les gouttes tombent aussi fines que des crins, silencieuses et dociles sur les tuiles,
+		mais les poutres et les piliers secrets ont pourri depuis longtemps sous l'humidité.
+		Ce talisman capture cette imprégnation glaciale et sourde :
+		tant que l'averse dure, plus dense elle se tisse.
 		'''
-	Power: 「Bruine」cadence de pluie d'encre accélérée de 20% ; une pluie continue pendant 10s accumule l'état « Averse tenace » : un rideau dense de bruine s'abat sous l'ombrelle, accélérant la cadence de 10% supplémentaires ; fermer l'ombrelle dissipe la pluie rapidement.
+	Power:
+		'''
+		「Bruine」cadence de pluie d'encre accélérée de 20%
+		une pluie continue pendant 10s accumule l'état « Averse tenace » :
+		un rideau dense de bruine s'abat sous l'ombrelle,
+		accélérant la cadence de 10% supplémentaires
+		fermer l'ombrelle dissipe la pluie rapidement.
+		'''
 	Burden: Dégâts d'impact direct de la goutte d'encre réduits de 6%
 }
 
@@ -16,11 +26,19 @@ KikasaTalismanLao: {
 	Tooltip: Les gouttes forment toujours de larges mares d'encre à l'impact, buvant la pluie jusqu'à déborder en vagues ; dégâts par goutte -5%
 	Origin:
 		'''
-		Les dalles des vieilles chaussées sont creusées d'ornières ; l'eau croupie dans les fentes de pierre ne sèche jamais, même après trois mois de sécheresse.
-		Au fond croupissent une vase noire et des feuilles pourries privées de soleil ; les passants n'y voient qu'une flaque jusqu'à ce qu'un faux pas engloutisse leur botte sans recours.
+		Les dalles des vieilles chaussées sont creusées d'ornières ;
+		l'eau croupie dans les fentes de pierre ne sèche jamais, même après trois mois de sécheresse.
+		Au fond croupissent une vase noire et des feuilles pourries privées de soleil ;
+		les passants n'y voient qu'une flaque jusqu'à ce qu'un faux pas engloutisse leur botte sans recours.
 		Imbibée d'eaux mortes séculaires, la pluie s'amasse en mares et déborde en vagues d'assaut.
 		'''
-	Power: 「Accumulation」les gouttes d'encre forment toujours des mares au sol, prolongeant leur durée de 50% et leur rayon de 30% ; les gouttes tombant dans des mares existantes élèvent le niveau d'eau, et après en avoir absorbé trois, débordent en vagues latérales infligeant 50% des dégâts de la mare chacune.
+	Power:
+		'''
+		「Accumulation」les gouttes d'encre forment toujours des mares au sol,
+		prolongeant leur durée de 50% et leur rayon de 30%
+		les gouttes tombant dans des mares existantes élèvent le niveau d'eau,
+		et après en avoir absorbé trois, débordent en vagues latérales infligeant 50% des dégâts de la mare chacune.
+		'''
 	Burden: Dégâts d'impact direct de la goutte d'encre réduits de 5%
 }
 
@@ -29,11 +47,19 @@ KikasaTalismanPei: {
 	Tooltip: Charge inversée plus rapide et geysers plus puissants, détonant une onde de choc à l'origine à pleine charge ; cadence normale -8%
 	Origin:
 		'''
-		Avant qu'une lave torrentielle n'éclate, les ruisseaux de montagne s'assèchent étrangement, retenus dans la gorge haute par des troncs abattus et des rochers aveugles.
+		Avant qu'une lave torrentielle n'éclate, les ruisseaux de montagne s'assèchent étrangement,
+		retenus dans la gorge haute par des troncs abattus et des rochers aveugles.
 		Dès que l'eau amassée pulvérise la digue, toute la vallée est balayée par des flots furieux et irrésistibles.
-		Ce talisman retient la pluie avec une poigne de fer dans le dôme de l'ombrelle : rien ne filtre jusqu'à ce que les vannes cèdent en trombe.
+		Ce talisman retient la pluie avec une poigne de fer dans le dôme de l'ombrelle :
+		rien ne filtre jusqu'à ce que les vannes cèdent en trombe.
 		'''
-	Power: 「Averse torrentielle」vitesse de charge inversée augmentée de 35%, dégâts du geyser d'encre augmentés de 20% ; libérer un torrent à pleine charge déclenche une onde de choc à la source infligeant 80% des dégâts du torrent et élargissant considérablement le flux.
+	Power:
+		'''
+		「Averse torrentielle」vitesse de charge inversée augmentée de 35%,
+		dégâts du geyser d'encre augmentés de 20%
+		libérer un torrent à pleine charge déclenche une onde de choc à la source infligeant 80%
+		des dégâts du torrent et élargissant considérablement le flux.
+		'''
 	Burden: Cadence de pluie d'encre normale ralentie de 8%
 }
 
@@ -42,11 +68,18 @@ KikasaTalismanSha: {
 	Tooltip: Déploiement quasi instantané de l'ombrelle, le premier temps libère trois gouttes rapides ; intervalle suivant prolongé de 40%
 	Origin:
 		'''
-		Les giboulées d'été de l'après-midi frappent avec une férocité sans pareille ; un instant plus tôt, le soleil cuit les tuiles à blanc,
-		Et l'instant d'après, des vents d'orage abattent des gouttes larges comme des écus, ne laissant même pas le temps de faire trois pas.
+		Les giboulées d'été de l'après-midi frappent avec une férocité sans pareille ;
+		un instant plus tôt, le soleil cuit les tuiles à blanc,
+		Et l'instant d'après, des vents d'orage abattent des gouttes larges comme des écus,
+		ne laissant même pas le temps de faire trois pas.
 		Ce talisman capture cette impétuosité fulgurante dès l'ouverture de l'ombrelle.
 		'''
-	Power: 「Pluie battante」temps de déploiement de l'ombrelle réduit de 75% ; le tout premier temps après ouverture garantit trois gouttes rapides consécutives infligeant chacune 75% des dégâts de base.
+	Power:
+		'''
+		「Pluie battante」temps de déploiement de l'ombrelle réduit de 75%
+		le tout premier temps après ouverture garantit trois gouttes rapides consécutives
+		infligeant chacune 75% des dégâts de base.
+		'''
 	Burden: Après avoir déclenché la salve triple initiale, l'intervalle jusqu'au prochain temps de pluie est prolongé de 40%
 }
 
@@ -55,10 +88,17 @@ KikasaTalismanYin: {
 	Tooltip: Les impacts accumulent des marques d'encre saignantes qui explosent à cinq charges pour de lourds dégâts ; dégâts par goutte -8%
 	Origin:
 		'''
-		Dans un atelier de teinture, si une goutte d'encre noire éclabousse par mégarde un coupon de tissu, frotter avec un linge humide ne fait qu'enfoncer le pigment dans les fibres, formant une plaie purulente.
-		Ce talisman emprunte cette ténacité insidieuse : les marques d'encre s'incrustent couche après couche dans les chairs jusqu'à ce que la blessure éclate.
+		Dans un atelier de teinture, si une goutte d'encre noire éclabousse par mégarde un coupon de tissu,
+		frotter avec un linge humide ne fait qu'enfoncer le pigment dans les fibres, formant une plaie purulente.
+		Ce talisman emprunte cette ténacité insidieuse :
+		les marques d'encre s'incrustent couche après couche dans les chairs jusqu'à ce que la blessure éclate.
 		'''
-	Power: 「Fleur d'encre」les impacts de gouttes laissent des marques d'encre sanglantes (jusqu'à 5 charges, infligeant des dégâts de saignement continus) ; à 5 charges, la fleur éclate, infligeant 160% des dégâts de la goutte en zone et réinitialisant les charges.
+	Power:
+		'''
+		「Fleur d'encre」les impacts de gouttes laissent des marques d'encre sanglantes
+		(jusqu'à 5 charges, infligeant des dégâts de saignement continus)
+		à 5 charges, la fleur éclate, infligeant 160% des dégâts de la goutte en zone et réinitialisant les charges.
+		'''
 	Burden: Dégâts d'impact direct de la goutte d'encre réduits de 8%
 }
 
@@ -67,10 +107,17 @@ KikasaTalismanLu: {
 	Tooltip: Les gouttes d'encre condensent parfois de la rosée pure au contact, soignant en la ramassant ; cadence de pluie ralentie de 6%
 	Origin:
 		'''
-		Les herboristes itinérants marchant sur les sentiers nocturnes portaient toujours une fiole de bambou pour cueillir à l'aube la rosée au bout des herbes et panser les plaies.
-		Ce talisman purifie l'eau noire de ses souillures, distillant quelques perles de rosée bienfaisante ; bien qu'il modère la pluie, il sauve la vie aux heures critiques.
+		Les herboristes itinérants marchant sur les sentiers nocturnes portaient toujours une fiole de bambou pour
+		cueillir à l'aube la rosée au bout des herbes et panser les plaies.
+		Ce talisman purifie l'eau noire de ses souillures, distillant quelques perles de rosée bienfaisante ;
+		bien qu'il modère la pluie, il sauve la vie aux heures critiques.
 		'''
-	Power: 「Douce rosée」les gouttes d'encre ont 12% de chance à l'impact de condenser une perle de rosée pure au sol restaurant 2 points de vie lorsqu'elle est ramassée (maximum 3 sur le terrain).
+	Power:
+		'''
+		「Douce rosée」les gouttes d'encre ont 12% de chance à l'impact de condenser une perle
+		de rosée pure au sol restaurant 2 points de vie lorsqu'elle est ramassée
+		(maximum 3 sur le terrain).
+		'''
 	Burden: Cadence de pluie d'encre ralentie de 6%
 }
 
@@ -79,10 +126,17 @@ KikasaTalismanFei: {
 	Tooltip: Chaque troisième goutte se disperse en brouillard froid qui blesse et ralentit ; dégâts directs de la goutte de brume -30%
 	Origin:
 		'''
-		Aux bacs fluviaux à la fin de l'automne, les vapeurs s'élèvent épaisses comme du coton trempé ; à trois pas, les amarres s'effacent dans la brume grise, forçant les vieux passeurs à mouiller l'ancre.
-		Ce talisman brise chaque troisième goutte en une brume humide persistante qui refuse de se dissiper, aveuglant les yeux et alourdissant le pas.
+		Aux bacs fluviaux à la fin de l'automne, les vapeurs s'élèvent épaisses comme du coton trempé ;
+		à trois pas, les amarres s'effacent dans la brume grise, forçant les vieux passeurs à mouiller l'ancre.
+		Ce talisman brise chaque troisième goutte en une brume humide persistante qui refuse de se dissiper,
+		aveuglant les yeux et alourdissant le pas.
 		'''
-	Power: 「Brume dense」chaque troisième goutte d'encre devient une goutte de brume : laisse à l'impact un brouillard de 2s qui inflige des dégâts continus aux ennemis et réduit leur vitesse de 10%.
+	Power:
+		'''
+		「Brume dense」chaque troisième goutte d'encre devient une goutte de brume :
+		laisse à l'impact un brouillard de 2s qui inflige des dégâts continus aux ennemis et
+		réduit leur vitesse de 10%.
+		'''
 	Burden: Dégâts d'impact direct de la goutte de brume réduits de 30%
 }
 
@@ -91,10 +145,16 @@ KikasaTalismanXian: {
 	Tooltip: Les gouttes d'encre lourdes éclatent en cinq perles ricochantes au sol ; rayon de la mare -15%
 	Origin:
 		'''
-		Sous les vieux avant-toits repose une auge de pierre bleue ; sous les trombes d'eau, les gouttes chutant des poutres éclatent en gerbes bondissantes, criblant la pierre de milliers d'alvéoles.
+		Sous les vieux avant-toits repose une auge de pierre bleue ;
+		sous les trombes d'eau, les gouttes chutant des poutres éclatent en gerbes bondissantes,
+		criblant la pierre de milliers d'alvéoles.
 		Le talisman concentre la pluie lourde pour la faire éclater en perles ricochantes qui rebondissent et fouillent le terrain.
 		'''
-	Power: 「Perles éclaboussantes」les gouttes d'encre lourdes éclatent au contact du sol en 5 perles fines infligeant chacune 30% des dégâts de la goutte d'origine et ricochant jusqu'à 2 fois sur le relief.
+	Power:
+		'''
+		「Perles éclaboussantes」les gouttes d'encre lourdes éclatent au contact du sol en 5 perles
+		fines infligeant chacune 30% des dégâts de la goutte d'origine et ricochant jusqu'à 2 fois sur le relief.
+		'''
 	Burden: Rayon de couverture de la mare d'encre formée réduit de 15%
 }
 
@@ -103,10 +163,19 @@ KikasaTalismanXi: {
 	Tooltip: Les mares portent le ressac de la houle, projetant des vagues vers les ennemis proches lors des impacts ; durée de la mare -20%
 	Origin:
 		'''
-		Les fosses de vase des estrans semblent désertes le jour ; mais dès que la marée de fond frappe les récifs, la boue des chenaux ondule comme des vipères bondissant sur tout ce qui bouge.
-		Ce talisman insuffle le ressac océanique aux mares : n'attendant plus les pas imprudents, chaque goutte qui tombe pousse la vague noire en avant.
+		Les fosses de vase des estrans semblent désertes le jour ;
+		mais dès que la marée de fond frappe les récifs,
+		la boue des chenaux ondule comme des vipères bondissant sur tout ce qui bouge.
+		Ce talisman insuffle le ressac océanique aux mares :
+		n'attendant plus les pas imprudents, chaque goutte qui tombe pousse la vague noire en avant.
 		'''
-	Power: 「Marée」les mares acquièrent la cadence du ressac : lorsque de nouvelles gouttes tombent dans des mares existantes, la mare projette une vague vers l'ennemi le plus proche, la crête infligeant 50% des dégâts de la mare.
+	Power:
+		'''
+		「Marée」les mares acquièrent la cadence du ressac :
+		lorsque de nouvelles gouttes tombent dans des mares existantes,
+		la mare projette une vague vers l'ennemi le plus proche,
+		la crête infligeant 50% des dégâts de la mare.
+		'''
 	Burden: Durée des mares d'encre au sol réduite de 20%
 }
 
@@ -115,10 +184,17 @@ KikasaTalismanZi: {
 	Tooltip: Les ennemis dans les mares accumulent une vulnérabilité accrue aux dégâts d'encre ; dégâts continus de base de la mare -25%
 	Origin:
 		'''
-		Le vieux teinturier plonge le chanvre brut dans la cuve ; plus il macère, plus la couleur s'ancre profondément, jusqu'à ce que les fibres raides s'amollissent et se déchirent.
-		Les créatures piégées dans le bourbier d'encre partagent le même sort : trempées trop longtemps, le froid pernicieux ramollit leurs os et avive chaque blessure.
+		Le vieux teinturier plonge le chanvre brut dans la cuve ;
+		plus il macère, plus la couleur s'ancre profondément,
+		jusqu'à ce que les fibres raides s'amollissent et se déchirent.
+		Les créatures piégées dans le bourbier d'encre partagent le même sort :
+		trempées trop longtemps, le froid pernicieux ramollit leurs os et avive chaque blessure.
 		'''
-	Power: 「Imprégnation」les ennemis dans les mares d'encre accumulent des charges d'imprégnation (jusqu'à 8 charges), chaque charge augmentant tous les dégâts de type encre subis de 2.5%.
+	Power:
+		'''
+		「Imprégnation」les ennemis dans les mares d'encre accumulent des charges d'imprégnation
+		(jusqu'à 8 charges), chaque charge augmentant tous les dégâts de type encre subis de 2.5%.
+		'''
 	Burden: Dégâts continus de base de la mare d'encre réduits de 25%
 }
 
@@ -127,10 +203,19 @@ KikasaTalismanTing: {
 	Tooltip: Les geysers jaillissent plus haut et propagent des éclairs en chaîne ; vitesse de charge inversée -13%
 	Origin:
 		'''
-		Les gouffres au milieu du fleuve abritent des veines d'orage ; dans la tempête où s'élèvent les vapeurs, un roulement de tonnerre frappant l'eau noire fait jaillir des colonnes d'éclairs comme de l'huile bouillante.
-		Ce talisman achemine la foudre par l'onde : les geysers montent au ciel depuis l'ombrelle, entraînant des chaînes d'éclairs déchirants.
+		Les gouffres au milieu du fleuve abritent des veines d'orage ;
+		dans la tempête où s'élèvent les vapeurs, un roulement de tonnerre frappant l'eau noire fait jaillir
+		des colonnes d'éclairs comme de l'huile bouillante.
+		Ce talisman achemine la foudre par l'onde : les geysers montent au ciel depuis l'ombrelle,
+		entraînant des chaînes d'éclairs déchirants.
 		'''
-	Power: 「Geyser de foudre」hauteur d'éruption du geyser d'encre augmentée de 50%, propageant des éclairs en chaîne vers jusqu'à 2 ennemis proches à l'impact (infligeant 50% des dégâts du geyser chacun) ; les cascades non chargées ont 25% de chance de lever un petit geyser au sol.
+	Power:
+		'''
+		「Geyser de foudre」hauteur d'éruption du geyser d'encre augmentée de 50%,
+		propageant des éclairs en chaîne vers jusqu'à 2 ennemis proches à l'impact
+		(infligeant 50% des dégâts du geyser chacun)
+		les cascades non chargées ont 25% de chance de lever un petit geyser au sol.
+		'''
 	Burden: Vitesse de charge inversée réduite de 13%
 }
 
@@ -139,10 +224,19 @@ KikasaTalismanHong: {
 	Tooltip: Le torrent laisse un pont arc-en-ciel aérien qui accélère le porteur et brûle les ennemis ; largeur du torrent -10%
 	Origin:
 		'''
-		Au-dessus des défilés lavés par les trombes d'eau, là où la brume monte, se dessine souvent l'arche spectrale d'un pont suspendu.
-		Lueur d'apparence fragile, elle est en vérité l'énergie acérée forgée par la tempête et le soleil brûlant : les vivants s'en servent pour marcher avec légèreté, tandis que les spectres qui la franchissent entrent dans un brasier.
+		Au-dessus des défilés lavés par les trombes d'eau, là où la brume monte,
+		se dessine souvent l'arche spectrale d'un pont suspendu.
+		Lueur d'apparence fragile, elle est en vérité l'énergie acérée forgée par la tempête et le soleil brûlant :
+		les vivants s'en servent pour marcher avec légèreté,
+		tandis que les spectres qui la franchissent entrent dans un brasier.
 		'''
-	Power: 「Pont arc-en-ciel」après avoir déversé un torrent, un pont aérien se forme au-dessus du point d'impact pendant 5s : accorde +10% de vitesse et +10% de dégâts d'invocation dessous ; les ennemis traversant l'arche subissent 40% des dégâts du torrent toutes les 0.5s.
+	Power:
+		'''
+		「Pont arc-en-ciel」après avoir déversé un torrent,
+		un pont aérien se forme au-dessus du point d'impact pendant 5s :
+		accorde +10% de vitesse et +10% de dégâts d'invocation dessous
+		les ennemis traversant l'arche subissent 40% des dégâts du torrent toutes les 0.5s.
+		'''
 	Burden: Largeur de la zone d'impact du torrent réduite de 10%
 }
 
@@ -151,10 +245,17 @@ KikasaTalismanHang: {
 	Tooltip: Augmente grandement les dégâts d'encre la nuit et fait fumer les mares en colonnes de vapeur toxique ; dégâts de jour -5%
 	Origin:
 		'''
-		Au cœur des marais, les marécages se referment à la nuit tombée ; les flaques boueuses qui découvraient leur fond le jour bouillonnent d'écume noire fétide passé minuit.
-		Les vieux ramasseurs de simples préfèrent grelotter dans les branches d'arbres que de poser le pied à terre : la buée glaciale des eaux nocturnes ronge les poumons comme la rouille.
+		Au cœur des marais, les marécages se referment à la nuit tombée ;
+		les flaques boueuses qui découvraient leur fond le jour bouillonnent d'écume noire fétide passé minuit.
+		Les vieux ramasseurs de simples préfèrent grelotter dans les branches d'arbres que de poser le pied à terre :
+		la buée glaciale des eaux nocturnes ronge les poumons comme la rouille.
 		'''
-	Power: 「Miasme nocturne」tous les dégâts d'encre augmentent de 15% la nuit, et les mares émettent continuellement des colonnes de vapeur toxique (infligeant 30% des dégâts de la goutte toutes les 0.5s).
+	Power:
+		'''
+		「Miasme nocturne」tous les dégâts d'encre augmentent de 15% la nuit,
+		et les mares émettent continuellement des colonnes de vapeur toxique
+		(infligeant 30% des dégâts de la goutte toutes les 0.5s).
+		'''
 	Burden: Tous les dégâts d'encre sont réduits de 5% pendant le jour
 }
 
@@ -163,10 +264,17 @@ KikasaTalismanBao: {
 	Tooltip: Chaque quatrième temps libère une volée de grêlons perforants doublant les dégâts avec fort recul ; gouttes normales -8%
 	Origin:
 		'''
-		Dans la moiteur du début d'été, si le ciel tourne au noir d'encre et que des grondements sourds roulent comme des meules de moulin au-dessus des têtes, le cœur de glace des nuées est sur le point de s'effondrer.
-		Des grêlons gros comme le poing s'écrasant de milliers de toises pulvérisent tuiles et bétail ; le talisman amasse ce froid assassin, perçant des trous sanglants dans la chair.
+		Dans la moiteur du début d'été, si le ciel tourne au noir d'encre et que des grondements sourds roulent
+		comme des meules de moulin au-dessus des têtes, le cœur de glace des nuées est sur le point de s'effondrer.
+		Des grêlons gros comme le poing s'écrasant de milliers de toises pulvérisent tuiles et bétail ;
+		le talisman amasse ce froid assassin, perçant des trous sanglants dans la chair.
 		'''
-	Power: 「Grêle」chaque quatrième temps déclenche une volée complète de grêlons lourds : taille +60%, dégâts +120%, brisant la défense ennemie avec un puissant recul ; les grêlons ne forment pas de mares au sol.
+	Power:
+		'''
+		「Grêle」chaque quatrième temps déclenche une volée complète de grêlons lourds :
+		taille +60%, dégâts +120%, brisant la défense ennemie avec un puissant recul
+		les grêlons ne forment pas de mares au sol.
+		'''
 	Burden: Dégâts directs des gouttes ordinaires en dehors des temps de grêle réduits de 8%
 }
 
@@ -176,9 +284,15 @@ KikasaTalismanShu: {
 	Origin:
 		'''
 		Lorsque la sécheresse affame des contrées entières, une pluie soudaine sauve des milliers de vies.
-		Les colporteurs d'ombrelles cousaient des conjurations protectrices dans les baleines les plus profondes : endormies en temps de paix, dès que le sang coule, une averse dorée jaillit pour arracher une vie au trépas.
+		Les colporteurs d'ombrelles cousaient des conjurations protectrices dans les baleines les plus profondes :
+		endormies en temps de paix, dès que le sang coule, une averse dorée jaillit pour arracher une vie au trépas.
 		'''
-	Power: 「Pluie opportune」pendant 3 secondes après avoir subi des dégâts, l'intervalle de pluie est divisé par deux et les gouttes deviennent dorées, chaque coup soignant 1 point de vie (temps de recharge de 12 secondes).
+	Power:
+		'''
+		「Pluie opportune」pendant 3 secondes après avoir subi des dégâts,
+		l'intervalle de pluie est divisé par deux et les gouttes deviennent dorées,
+		chaque coup soignant 1 point de vie (temps de recharge de 12 secondes).
+		'''
 	Burden: Intervalle d'attaque de la pluie normale prolongé de 5%
 }
 
@@ -187,10 +301,18 @@ KikasaTalismanLong: {
 	Tooltip: Transforme le torrent en un flot mugissant qui repousse continuellement les ennemis ; durée du torrent -20%
 	Origin:
 		'''
-		Dans les étroits défilés rocheux où deux falaises se rejoignent, les crues estivales chargées de troncs et de rochers ébranlent les parois ; la force du courant emporte les ponts et déplace les rocs.
-		En renversant l'ombrelle, l'eau se déverse comme une digue rompue, repoussant même les bêtes les plus acharnées.
+		Dans les étroits défilés rocheux où deux falaises se rejoignent,
+		les crues estivales chargées de troncs et de rochers ébranlent les parois ;
+		la force du courant emporte les ponts et déplace les rocs.
+		En renversant l'ombrelle, l'eau se déverse comme une digue rompue,
+		repoussant même les bêtes les plus acharnées.
 		'''
-	Power: 「Courant impétueux」le torrent devient un flot tumultueux : repousse continuellement les ennemis le long de son cours, le recul à la source augmentant de 35%.
+	Power:
+		'''
+		「Courant impétueux」le torrent devient un flot tumultueux :
+		repousse continuellement les ennemis le long de son cours,
+		le recul à la source augmentant de 35%.
+		'''
 	Burden: Durée du torrent déversé réduite de 20%
 }
 
@@ -199,10 +321,18 @@ KikasaTalismanShuang: {
 	Tooltip: Les mares gèlent en miroirs glissants ralentissant les ennemis ; les gouttes lourdes brisent les miroirs en pointes de glace ; ne fusionnent pas
 	Origin:
 		'''
-		Aux matins d'hiver, l'eau boueuse des ornières prend en une fine pellicule de glace translucide ; lisse comme un miroir, le pied glisse et dérape.
-		Mais dès qu'un poids lourd brise la croûte, les éclats déchiquetés mordent la chair comme des poignards ; la boue se fige en verre et le miroir brisé crache des crocs.
+		Aux matins d'hiver, l'eau boueuse des ornières prend en une fine pellicule de glace translucide ;
+		lisse comme un miroir, le pied glisse et dérape.
+		Mais dès qu'un poids lourd brise la croûte, les éclats déchiquetés mordent la chair comme des poignards ;
+		la boue se fige en verre et le miroir brisé crache des crocs.
 		'''
-	Power: 「Miroir de givre」les gouttes lourdes gèlent au sol en miroirs de givre : n'infligent plus de brûlure, mais réduisent la vitesse des ennemis qui marchent dessus de 40% ; les gouttes suivantes frappant le miroir le brisent net, provoquant une explosion selon le temps restant et érigeant des pointes de glace acérées.
+	Power:
+		'''
+		「Miroir de givre」les gouttes lourdes gèlent au sol en miroirs de givre :
+		n'infligent plus de brûlure, mais réduisent la vitesse des ennemis qui marchent dessus de 40%
+		les gouttes suivantes frappant le miroir le brisent net,
+		provoquant une explosion selon le temps restant et érigeant des pointes de glace acérées.
+		'''
 	Burden: Les miroirs de givre restent séparés et ne peuvent fusionner avec la pluie pour prolonger leur durée
 }
 
@@ -211,10 +341,19 @@ KikasaTalismanZha: {
 	Tooltip: Toucher sur sept temps d'affilée triple les dégâts au huitième temps ; la pluie marque une brève pause après la frappe
 	Origin:
 		'''
-		Le vieux pêcheur rassemble les bancs en frappant le plat-bord de sa barque sept fois de sa rame sans faillir au tempo, et le courant sous-marin répond en cadence.
-		Au huitième coup sourd, les poissons bondissent des profondeurs ; ce talisman accorde la pluie à un rite de tambour : sept temps lient l'esprit, le huitième fracasse la pierre.
+		Le vieux pêcheur rassemble les bancs en frappant le plat-bord de sa barque sept fois de sa rame sans faillir
+		au tempo, et le courant sous-marin répond en cadence.
+		Au huitième coup sourd, les poissons bondissent des profondeurs ;
+		ce talisman accorde la pluie à un rite de tambour :
+		sept temps lient l'esprit, le huitième fracasse la pierre.
 		'''
-	Power: 「Tambour de pluie」sept marques de tambour se rassemblent sur le rebord de l'ombrelle : si au moins une goutte touche sur chacun de sept temps consécutifs, toutes les gouttes du huitième temps infligent le triple de dégâts ; rater un temps réinitialise le compte.
+	Power:
+		'''
+		「Tambour de pluie」sept marques de tambour se rassemblent sur le rebord de l'ombrelle :
+		si au moins une goutte touche sur chacun de sept temps consécutifs,
+		toutes les gouttes du huitième temps infligent le triple de dégâts
+		rater un temps réinitialise le compte.
+		'''
 	Burden: Après avoir déclenché l'assaut du huitième temps, la pluie s'interrompt pour le temps suivant
 }
 
@@ -223,10 +362,19 @@ KikasaTalismanNi: {
 	Tooltip: Les gouttes alternent entre trois aspects : explosion rouge, lenteur bleue et corrosion pourpre ; dégâts de base -5%
 	Origin:
 		'''
-		L'eau des sources antiques change d'humeur au fil des saisons : l'eau limpide engourdit les tendons, la rougeâtre bouillonne comme du vinaigre aigre, et la pourpre ronge l'âme comme un venin.
-		Le maître a puisé à chacune des trois sources pour broyer son encre, les unissant dans un cycle mutuel d'éclatement, d'entrave et de ruine.
+		L'eau des sources antiques change d'humeur au fil des saisons :
+		l'eau limpide engourdit les tendons, la rougeâtre bouillonne comme du vinaigre aigre,
+		et la pourpre ronge l'âme comme un venin.
+		Le maître a puisé à chacune des trois sources pour broyer son encre,
+		les unissant dans un cycle mutuel d'éclatement, d'entrave et de ruine.
 		'''
-	Power: 「Tricolore」les gouttes alternent successivement entre trois aspects : les rouges provoquent une explosion de zone de 40% ; les bleues ralentissent les ennemis de 15% ; les pourpres augmentent tous les dégâts de type encre subis de 5%.
+	Power:
+		'''
+		「Tricolore」les gouttes alternent successivement entre trois aspects :
+		les rouges provoquent une explosion de zone de 40%
+		les bleues ralentissent les ennemis de 15%
+		les pourpres augmentent tous les dégâts de type encre subis de 5%.
+		'''
 	Burden: Dégâts de base des gouttes d'encre réduits de 5%
 }
 
@@ -235,10 +383,18 @@ KikasaTalismanWen: {
 	Tooltip: Les étoiles du rebord se chargent aux impacts, décochant des flèches d'encre téléguidées à pleine charge ; intervalle de pluie +8%
 	Origin:
 		'''
-		Les caractères sacrés de vent et de tonnerre gravés sur les stèles de temples en ruine ondulent comme des nuées, indéchiffrables pour les yeux mortels.
-		Un vieux tailleur de pierre en calqua les contours sur le papier huilé de l'ombrelle ; l'encre coulant dans les sillons alluma des étoiles au bord du dôme, condensant l'eau en flèches vengeresses.
+		Les caractères sacrés de vent et de tonnerre gravés sur les stèles de temples en ruine ondulent comme
+		des nuées, indéchiffrables pour les yeux mortels.
+		Un vieux tailleur de pierre en calqua les contours sur le papier huilé de l'ombrelle ;
+		l'encre coulant dans les sillons alluma des étoiles au bord du dôme,
+		condensant l'eau en flèches vengeresses.
 		'''
-	Power: 「Glyphes célestes」trois étoiles de glyphes tournoient sur le rebord de l'ombrelle, se chargeant aux impacts ; à pleine charge, l'étoile active décoche une flèche d'encre téléguidée infligeant 120% des dégâts de la goutte.
+	Power:
+		'''
+		「Glyphes célestes」trois étoiles de glyphes tournoient sur le rebord de l'ombrelle,
+		se chargeant aux impacts
+		à pleine charge, l'étoile active décoche une flèche d'encre téléguidée infligeant 120% des dégâts de la goutte.
+		'''
 	Burden: Intervalle entre les gouttes de pluie prolongé de 8%
 }
 
@@ -247,10 +403,18 @@ KikasaTalismanPo: {
 	Tooltip: Amasse le clair de lune lorsqu'ouverte la nuit, libérant un immense torrent pâle à pleine charge ; inerte de jour
 	Origin:
 		'''
-		Dans les étangs de montagne sans vent sous la lune glacée, l'eau miroite d'une lueur blafarde ; le froid mord jusqu'à l'os et les poissons gisent immobiles dans la vase.
-		Ce talisman emprisonne ce givre de minuit sous l'ombrelle ; déversée, l'onde blanche éclate comme une tempête de lames de givre, mais s'évanouit devant le soleil levant.
+		Dans les étangs de montagne sans vent sous la lune glacée, l'eau miroite d'une lueur blafarde ;
+		le froid mord jusqu'à l'os et les poissons gisent immobiles dans la vase.
+		Ce talisman emprisonne ce givre de minuit sous l'ombrelle ;
+		déversée, l'onde blanche éclate comme une tempête de lames de givre,
+		mais s'évanouit devant le soleil levant.
 		'''
-	Power: 「Âme lunaire」toucher avec l'ombrelle ouverte la nuit accumule des phases lunaires ; à pleine charge, le prochain torrent devient un déferlement lunaire : aire du torrent +50%, et les impacts déclenchent des éclats lunaires infligeant 35% de dégâts de zone.
+	Power:
+		'''
+		「Âme lunaire」toucher avec l'ombrelle ouverte la nuit accumule des phases lunaires
+		à pleine charge, le prochain torrent devient un déferlement lunaire :
+		aire du torrent +50%, et les impacts déclenchent des éclats lunaires infligeant 35% de dégâts de zone.
+		'''
 	Burden: Ce talisman perd tout pouvoir pendant la journée, n'accordant aucun bénéfice
 }
 
@@ -259,10 +423,19 @@ KikasaTalismanXiao: {
 	Tooltip: L'ombrelle s'élève à double hauteur, les gouttes gagnent une vitesse et des dégâts colossaux en chutant ; intervalle de pluie +10%
 	Origin:
 		'''
-		Depuis les plus hauts escarpements montagnards, les cascades tombent de milliers de toises dans l'abîme en grondant comme le tonnerre et perforant les blocs de granit de part en part.
-		Élevant l'ombrelle vers les neuf cieux, l'eau s'abat avec la force colossale de la gravité, capable de fendre les rocs et d'écraser la pierre.
+		Depuis les plus hauts escarpements montagnards,
+		les cascades tombent de milliers de toises dans l'abîme en grondant comme le tonnerre et perforant les blocs
+		de granit de part en part.
+		Élevant l'ombrelle vers les neuf cieux, l'eau s'abat avec la force colossale de la gravité,
+		capable de fendre les rocs et d'écraser la pierre.
 		'''
-	Power: 「Neuf cieux」la hauteur de suspension de l'ombrelle double, faisant tomber les gouttes à la verticale depuis de très hautes altitudes : vitesse terminale +40%, dégâts directs +25%, projetant des ombres d'avertissement au sol avant l'impact.
+	Power:
+		'''
+		「Neuf cieux」la hauteur de suspension de l'ombrelle double,
+		faisant tomber les gouttes à la verticale depuis de très hautes altitudes :
+		vitesse terminale +40%, dégâts directs +25%,
+		projetant des ombres d'avertissement au sol avant l'impact.
+		'''
 	Burden: Intervalle d'attaque de la pluie prolongé de 10%
 }
 
@@ -271,10 +444,17 @@ KikasaTalismanMei: {
 	Tooltip: Les gouttes propagent une moisissure venimeuse, les victimes tombées éclatent en nuages de spores contagieux ; dégâts directs -10%
 	Origin:
 		'''
-		Dans les mois de pluies continuelles, les sandales de paille boueuses moisissent en deux nuits d'un duvet verdâtre exhalant une odeur douceâtre et étouffante de décomposition.
-		Enfermant cette pestilence dans le talisman, chaque goutte propage une pourriture qui ronge les chairs ; dès que l'hôte expire, des nuages de spores éclatent pour contaminer tous les alentours.
+		Dans les mois de pluies continuelles, les sandales de paille boueuses moisissent en deux nuits d'un duvet
+		verdâtre exhalant une odeur douceâtre et étouffante de décomposition.
+		Enfermant cette pestilence dans le talisman, chaque goutte propage une pourriture qui ronge les chairs ;
+		dès que l'hôte expire, des nuages de spores éclatent pour contaminer tous les alentours.
 		'''
-	Power: 「Pluie moisie」les gouttes appliquent « Moisissure corrosive » à l'impact (jusqu'à 10 charges avec dégâts continus) ; les ennemis infectés qui meurent éclatent en un nuage de spores, transmettant la moitié de leurs charges aux cibles proches avec de légers dégâts.
+	Power:
+		'''
+		「Pluie moisie」les gouttes appliquent « Moisissure corrosive » à l'impact (jusqu'à 10 charges avec dégâts continus)
+		les ennemis infectés qui meurent éclatent en un nuage de spores,
+		transmettant la moitié de leurs charges aux cibles proches avec de légers dégâts.
+		'''
 	Burden: Dégâts d'impact direct de la goutte réduits de 10%
 }
 
@@ -283,10 +463,18 @@ KikasaTalismanPi: {
 	Tooltip: Déverser le torrent ouvre une fenêtre où les gouttes peuvent invoquer des éclairs perforants ; dégâts du geyser -20%
 	Origin:
 		'''
-		Quand les orages estivaux rompent les digues des lacs, l'eau monte de trois coudées sous un couvercle de nuées noires, attirant des dragons d'éclairs qui frappent l'onde en allumant des feux.
-		Le torrent ouvre une voie d'eau ; lorsque les forces célestes s'entrechoquent, chaque goutte attire l'éclair comme une javeline transperçant l'ennemi.
+		Quand les orages estivaux rompent les digues des lacs,
+		l'eau monte de trois coudées sous un couvercle de nuées noires,
+		attirant des dragons d'éclairs qui frappent l'onde en allumant des feux.
+		Le torrent ouvre une voie d'eau ; lorsque les forces célestes s'entrechoquent,
+		chaque goutte attire l'éclair comme une javeline transperçant l'ennemi.
 		'''
-	Power: 「Éclair céleste」déverser un torrent ouvre une fenêtre de 10s : les gouttes ont 20% de chance à l'impact d'invoquer un éclair direct infligeant 180% des dégâts de la goutte et perforant le long de sa course.
+	Power:
+		'''
+		「Éclair céleste」déverser un torrent ouvre une fenêtre de 10s :
+		les gouttes ont 20% de chance à l'impact d'invoquer un éclair direct infligeant 180%
+		des dégâts de la goutte et perforant le long de sa course.
+		'''
 	Burden: Dégâts de base de l'éruption du geyser d'encre réduits de 20%
 }
 
@@ -295,10 +483,18 @@ KikasaTalismanXia: {
 	Tooltip: Les dégâts d'encre flambent à l'aube et au crépuscule en allumant des flammes ; dégâts réduits de 6% à midi et minuit
 	Origin:
 		'''
-		À l'aube et au crépuscule, lorsque le jour et la nuit se croisent, l'horizon s'embrase de nuages écarlates comme du sang répandu tandis que l'eau et le feu s'entrelacent aux cieux.
-		Attirant ce court instant de soleil couchant dans l'encrier, même l'eau la plus glaciale s'enflamme d'une lueur pourpre.
+		À l'aube et au crépuscule, lorsque le jour et la nuit se croisent,
+		l'horizon s'embrase de nuages écarlates comme du sang répandu tandis que l'eau et le feu s'entrelacent aux cieux.
+		Attirant ce court instant de soleil couchant dans l'encrier,
+		même l'eau la plus glaciale s'enflamme d'une lueur pourpre.
 		'''
-	Power: 「Braise crépusculaire」dans un intervalle de 1.5 heure autour du lever et du coucher du soleil, tous les dégâts d'encre augmentent de 18%, les gouttes allument « Flamme du crépuscule » avec brûlure continue et la pluie prend des teintes dorées et orangées.
+	Power:
+		'''
+		「Braise crépusculaire」dans un intervalle de 1.5 heure autour du lever et du coucher
+		du soleil, tous les dégâts d'encre augmentent de 18%,
+		les gouttes allument « Flamme du crépuscule » avec brûlure continue et la pluie prend
+		des teintes dorées et orangées.
+		'''
 	Burden: Tous les dégâts d'encre sont réduits de 6% à midi et minuit
 }
 
@@ -307,10 +503,17 @@ KikasaTalismanJi: {
 	Tooltip: Tenir l'ombrelle amasse la chaleur solaire, la fermer abat un rayon brûlant de lumière ; dégâts d'encre -8% lorsqu'ouverte
 	Origin:
 		'''
-		Après la tempête, lorsque les nuages noirs pendent très bas, une brèche dorée se déchire soudain au cœur des nuées et le soleil tombe comme de l'or en fusion, brûlant la terre.
-		Ce talisman inverse l'ordre : la pluie froide retient la fureur solaire tant qu'elle est ouverte ; dès qu'on ferme l'ombrelle, les nuages s'écartent et la lumière du jour s'abat comme une colonne de feu.
+		Après la tempête, lorsque les nuages noirs pendent très bas,
+		une brèche dorée se déchire soudain au cœur des nuées et le soleil tombe comme de l'or en fusion, brûlant la terre.
+		Ce talisman inverse l'ordre : la pluie froide retient la fureur solaire tant qu'elle est ouverte ;
+		dès qu'on ferme l'ombrelle, les nuages s'écartent et la lumière du jour s'abat comme une colonne de feu.
 		'''
-	Power: 「Éclaircie」toucher avec l'ombrelle ouverte accumule la vigueur du ciel dégagé ; à la fermeture de l'ombrelle, les nuages s'ouvrent pour abattre un rayon brûlant sur le curseur, avec des dégâts proportionnels à la charge.
+	Power:
+		'''
+		「Éclaircie」toucher avec l'ombrelle ouverte accumule la vigueur du ciel dégagé
+		à la fermeture de l'ombrelle, les nuages s'ouvrent pour abattre un rayon brûlant sur
+		le curseur, avec des dégâts proportionnels à la charge.
+		'''
 	Burden: Tous les dégâts d'encre sont réduits de 8% tant que l'ombrelle reste ouverte
 }
 
@@ -319,10 +522,20 @@ KikasaTalismanYu: {
 	Tooltip: Frapper sans cesse déclenche le « Grand Rite » avec déluge et geysers ; dégâts d'encre ordinaires -10% hors du rite
 	Origin:
 		'''
-		Lors des grandes sécheresses où la terre se fissurait sur mille lieues, les anciens chamans dressaient des autels à trois étages, frappant des tambours en peau d'alligator les cheveux épars pour offrir des ombrelles comme réceptacles de pluie.
+		Lors des grandes sécheresses où la terre se fissurait sur mille lieues,
+		les anciens chamans dressaient des autels à trois étages,
+		frappant des tambours en peau d'alligator les cheveux épars pour offrir des ombrelles comme réceptacles de pluie.
 		Le compte des offrandes achevé, le tonnerre explosait et des torrents noirs s'abattaient comme des fleuves renversés.
-		C'est le rouleau suprême du rite de la pluie : lorsque débute le Grand Rite, déluges et geysers surgissent d'un même élan.
+		C'est le rouleau suprême du rite de la pluie :
+		lorsque débute le Grand Rite, déluges et geysers surgissent d'un même élan.
 		'''
-	Power: 「Grand Rite」les impacts de gouttes accumulent des points de rite, entrant automatiquement à pleine charge dans le « Grand Rite » de 10s : intervalle de pluie divisé par deux, dégâts des gouttes +15%, toutes les gouttes forment des mares et les geysers sont pleinement actifs ; à la sortie, trois geysers jaillissent sous l'ombrelle.
+	Power:
+		'''
+		「Grand Rite」les impacts de gouttes accumulent des points de rite,
+		entrant automatiquement à pleine charge dans le « Grand Rite » de 10s :
+		intervalle de pluie divisé par deux, dégâts des gouttes +15%,
+		toutes les gouttes forment des mares et les geysers sont pleinement actifs
+		à la sortie, trois geysers jaillissent sous l'ombrelle.
+		'''
 	Burden: Tous les dégâts d'encre sont réduits de 10% en dehors du Grand Rite
 }
