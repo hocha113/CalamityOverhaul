@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rimehollow
         //==== 环境声循环槽（镜像 OldNetAmbience 的 SlotId+回调惯例） ====
         private static SlotId caveWindSlot;
         private static readonly SoundStyle CaveWindStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         //==== 空洞冰鸣调度 ====
         private static int groanIn = 600;

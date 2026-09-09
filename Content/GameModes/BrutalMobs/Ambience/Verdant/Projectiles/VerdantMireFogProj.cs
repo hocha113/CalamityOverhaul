@@ -205,7 +205,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant.Project
             if (fog == null) {
                 return false;
             }
-            Color veil = new Color(72, 84, 70).MultiplyRGB(lightColor) * (0.10f * density);
+            //环境光连 alpha 一起乘（只压 RGB 会在夜里变成一块暗盘）
+            float lightK = 0.3f + 0.7f * ((lightColor.R + lightColor.G + lightColor.B) / 765f);
+            Color veil = new Color(72, 84, 70) * (0.10f * density * lightK);
             float px = FogRadius * 1.7f;
             float scale = px / (fog.Width * 0.8f);
             Main.EntitySpriteDraw(fog, Projectile.Center - Main.screenPosition, null,

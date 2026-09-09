@@ -32,9 +32,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sporeshine
         private static SlotId humSlot;
         private static SlotId dampSlot;
         private static readonly SoundStyle HumStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle DampStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
         private static int dripIn;
         private static int gurgleIn;
 

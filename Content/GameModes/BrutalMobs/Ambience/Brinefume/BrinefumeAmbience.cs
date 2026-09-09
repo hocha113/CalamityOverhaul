@@ -57,9 +57,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Brinefume
         private static SlotId gurgleSlot;
         private static SlotId fizzSlot;
         private static readonly SoundStyle GurgleStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle FizzStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         //一次性远响计时（本机演出量，非逐玩家游戏状态）
         private static int thunderIn = 700;

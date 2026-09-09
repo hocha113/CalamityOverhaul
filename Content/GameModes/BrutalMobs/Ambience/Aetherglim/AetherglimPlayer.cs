@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Aetherglim
             }
             if (!SoundEngine.TryGetActiveSound(humSlot, out _)) {
                 humSlot = SoundEngine.PlaySound(
-                    SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 },
+                    SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 },
                     null, UpdateHumCallback);
             }
         }

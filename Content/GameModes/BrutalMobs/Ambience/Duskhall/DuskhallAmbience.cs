@@ -97,10 +97,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Duskhall
         private static SlotId windSlot;
         /// <summary>幽魂低语声床：低沉门扉嗡鸣压低音调，随凝视值渐清晰</summary>
         private static readonly SoundStyle WhisperBedStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
         /// <summary>穿廊阴风：室内闷风声</summary>
         private static readonly SoundStyle WindLoopStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         private static int cueTimer = 480;
         private static int boneTimer = 1800;

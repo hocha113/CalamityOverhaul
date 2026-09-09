@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant
         //环境声循环槽（湿热空气的底噪）
         private static SlotId humidSlot;
         private static readonly SoundStyle HumidStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         //点缀节拍：虫鸣（连响簇）/蛙声（双连）/叶隙风
         private static int chirpTimer = 240;

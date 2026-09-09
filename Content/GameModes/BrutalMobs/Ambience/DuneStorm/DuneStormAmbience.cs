@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.DuneStorm
         //环境声循环槽（镜像 OldNetAmbience 的 SlotId+回调惯例）
         private static SlotId windHowlSlot;
         private static readonly SoundStyle WindHowlStyle =
-            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 0 };
 
         /// <summary>风堑波每帧上报涌起量（客户端演出）</summary>
         internal static void ReportGustSwell(float value) {

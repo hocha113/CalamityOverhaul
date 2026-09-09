@@ -22,9 +22,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Sunkendune
         private static SlotId windMoanSlot;
         private static SlotId grainHissSlot;
         private static readonly SoundStyle WindMoanStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle GrainHissStyle =
-            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 0 };
 
         private static int moteTimer;
 

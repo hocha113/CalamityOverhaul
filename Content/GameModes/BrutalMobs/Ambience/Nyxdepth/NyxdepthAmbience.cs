@@ -34,10 +34,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Nyxdepth
         private static SlotId tinnitusSlot;
         /// <summary>水压闷响：室内暴雪循环压到最低音高，读作深水闷压</summary>
         private static readonly SoundStyle RumbleStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
         /// <summary>耳鸣：传送门待机循环拔高音高成细鸣，深层才浮现</summary>
         private static readonly SoundStyle TinnitusStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
 
         //心跳双响（lub-dub 拆两帧，与克脑的同帧双响区分节奏感）
         private static readonly SoundStyle LubStyle = SoundID.DD2_OgreGroundPound with {

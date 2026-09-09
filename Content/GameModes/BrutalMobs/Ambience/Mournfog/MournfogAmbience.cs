@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mournfog
         //==== 声床（呜咽风循环 + 一次性点缀） ====
         private static SlotId windSlot;
         private static readonly SoundStyle WindMoanStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
         /// <summary>远鸦：Roar 拉高变薄双连（镜像 Dungeonworld 逆唱诗的既有手法）</summary>
         private static int cawIn = 900;
         private static int cawHitsLeft;

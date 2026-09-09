@@ -33,10 +33,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Lumindepth
         private static SlotId hushLoopSlot;
         /// <summary>水晶泛音：空灵微鸣的高频底</summary>
         private static readonly SoundStyle ChimeLoopStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
         /// <summary>深水浸润：闷化的水息低频底</summary>
         private static readonly SoundStyle HushLoopStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         public override void PostUpdateEverything() {
             bool enabled = CWRRef.Has && GameModeSystem.BrutalActive;

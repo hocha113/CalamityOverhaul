@@ -40,10 +40,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Hollowdeep
         private static SlotId tinnitusSlot;
         /// <summary>深洞低鸣：门户闲置环压低八度当洞腔共鸣</summary>
         private static readonly SoundStyle DroneStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
         /// <summary>耳鸣：室内风雪环拔高当高频嘶鸣</summary>
         private static readonly SoundStyle TinnitusStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         //==== 空聆调度计时（本地屏幕演出量，静态仅存本机） ====
         private static int dripTimer;

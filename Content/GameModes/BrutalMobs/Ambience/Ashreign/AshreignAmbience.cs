@@ -54,11 +54,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Ashreign
         private static SlotId rumbleSlot;
         private static SlotId stormWindSlot;
         private static readonly SoundStyle GurgleStyle =
-            SoundID.Lavafall with { IsLooped = true, MaxInstances = 1 };
+            SoundID.Lavafall with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle RumbleStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle StormWindStyle =
-            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 0 };
 
         //==== 点缀声与号角计时 ====
         private static int bloopTimer;

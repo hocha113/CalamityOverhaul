@@ -14,7 +14,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
     /// 「林语」白日花粉柳絮蝶尘缓飘+鸟鸣加密，黄昏萤火渐起，风大时叶浪波次+叶涌声；<br/>
     /// 「暮雾」夜间贴地薄雾（绘制在 <see cref="WoodsongMistRender"/>），雾中远狼嚎与枝裂声，只有声与雾，绝不生成敌怪；<br/>
     /// 「引路鬼火」夜雾中低频亮起的中性冷白鬼火，缓缓飘向最近洞口或开阔地（<see cref="PRT_WoodsongWisp"/>）；<br/>
-    /// 「惊鸦」浓雾夜树冠黑影掠动+鸦群惊飞（<see cref="PRT_WoodsongRaven"/>）。<br/>
+    /// 「惊鸦」屏外树冠或地面落一群栖息的渡鸦（<see cref="PRT_WoodsongRaven"/>），玩家走近就惊飞；
+    /// 屏外有敌怪锁定玩家时鸟群骚动后背离来敌惊飞，浓雾夜里也会被看不见的东西惊起。
+    /// 鸟从不在屏内凭空出现或消失：屏外落位、屏外销毁，没有栖息群时报敌改为从威胁侧屏缘外横穿。<br/>
     /// 氛围层为本地客户端演出（镜像 GhostRainAmbience/OldNetAmbience 的生命周期管理，无网络包）；
     /// 战斗中的荆棘丛由 <see cref="WoodsongBrambleSystem"/> 权威端投放，不在本类判定。
     /// 档位（EffectiveTier）只调雾浓度上限与鬼火频率。<br/>
@@ -47,7 +49,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         //==== 环境音循环（镜像 OldNetAmbience 的 SlotId+回调惯例）====
         private static SlotId windBedSlot;
         private static readonly SoundStyle WindBedStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         private static float fogRaw;
         private static int birdIn = 300;
@@ -58,11 +60,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         private static int gustIn = 420;
         private static int gustTimer;
         private static int gustLen = 1;
+        /// <summary>雾夜惊鸦日程（帧）</summary>
         private static int ravenIn = 3200;
-        private static int ravenBurstIn;
-        private static Vector2 ravenBurstPos;
-        /// <summary>惊飞方向偏置：0=随机（雾夜惊吓），±1=威胁预警（鸟群背离来敌）</summary>
-        private static int ravenBurstDir;
+        /// <summary>栖息群补位日程（帧）：无群时到点在屏外落一群</summary>
+        private static int roostIn = 900;
         /// <summary>威胁预警冷却（独立于雾夜惊鸦的日程）</summary>
         private static int warnIn = 600;
         /// <summary>Boss 开场预警窗（帧）：惊鸦报敌只许落在开场这一小段内</summary>
@@ -102,8 +103,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             gustTimer = 0;
             gustLen = 1;
             ravenIn = 3200;
-            ravenBurstIn = 0;
-            ravenBurstDir = 0;
+            roostIn = 900;
             warnIn = 600;
             bossWasUp = false;
             bossWarnGrace = 0;
@@ -113,6 +113,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 pending[i].Delay = 0;
             }
             PRT_WoodsongWisp.LastBeat = 0;
+            PRT_WoodsongRaven.ResetRegistry();
             WoodsongMistRender.ClearBanks();
         }
 
@@ -196,6 +197,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 UpdateSoundSchedulers(player);
             }
             SpawnAmbientVisuals(player);
+            UpdateRoostScheduler(player, bossUp);
             UpdateRavenScare(player, bossUp);
             UpdateThreatWarning(player, bossUp);
             UpdateWispScheduler(player, bossUp);
@@ -419,70 +421,105 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 ?.Configure(drive, Main.rand.Next(150, 240));
         }
 
-        //==================== 「惊鸦」====================
+        //==================== 「栖息鸦群」====================
+
+        /// <summary>栖息群落位距屏缘的外扩下限/上限（像素）：玩家看不见落位，走过去才发现</summary>
+        private const float RoostOffscreenMin = 200f;
+        private const float RoostOffscreenMax = 600f;
+        /// <summary>栖息时长范围（帧），到点后不在屏内就静默回收、在屏内则自行飞走</summary>
+        private const int RoostLifeMin = 1800;
+        private const int RoostLifeMax = 3600;
+        /// <summary>报敌/雾夜能调用栖息群的最大距离（像素）：覆盖屏外落位带</summary>
+        private const float FlockReachRange = 1800f;
+
+        /// <summary>无栖息群时按日程在屏外落一群，一次只养一群</summary>
+        private static void UpdateRoostScheduler(Player player, bool bossUp) {
+            if (PRT_WoodsongRaven.HasPerchedFlock) {
+                return;
+            }
+            if (--roostIn > 0) {
+                return;
+            }
+            roostIn = Main.rand.Next(1200, 2400);
+            if (bossUp) {
+                //Boss 战中不补新群（新演出排程冻结）
+                return;
+            }
+            //偏向玩家行进方向落位，静止时随机一侧
+            float side = Math.Abs(player.velocity.X) > 0.5f
+                ? Math.Sign(player.velocity.X) : (Main.rand.NextBool() ? 1f : -1f);
+            float edgeX = side > 0f ? Main.screenPosition.X + Main.screenWidth : Main.screenPosition.X;
+            int tileX = (int)((edgeX + side * Main.rand.NextFloat(RoostOffscreenMin, RoostOffscreenMax)) / 16f);
+            if (!TryFindRoost(tileX, out Vector2 foot, out bool treetop)) {
+                //这一侧没处落脚：很快再试
+                roostIn = 240;
+                return;
+            }
+            SeedFlock(foot, treetop, Main.rand.Next(2, 6));
+        }
+
+        /// <summary>在脚点附近落 birds 只栖息鸟；树冠横向散开，地面逐列探地防生进坡里</summary>
+        private static void SeedFlock(Vector2 foot, bool treetop, int birds) {
+            int roostLife = Main.rand.Next(RoostLifeMin, RoostLifeMax);
+            int centerTileX = (int)(foot.X / 16f);
+            for (int i = 0; i < birds; i++) {
+                Vector2 spot;
+                if (treetop) {
+                    spot = foot + new Vector2(Main.rand.NextFloat(-30f, 30f), Main.rand.NextFloat(-8f, 4f));
+                }
+                else {
+                    int tx = centerTileX + Main.rand.Next(-2, 3);
+                    if (!TryFindOutdoorSurface(tx, out int sy)) {
+                        continue;
+                    }
+                    spot = new Vector2(tx * 16f + 8f, sy * 16f);
+                }
+                PRTLoader.NewParticle<PRT_WoodsongRaven>(spot, Vector2.Zero, Color.White,
+                    Main.rand.NextFloat(0.72f, 1.02f))
+                    ?.ConfigurePerch(spot, 0, roostLife + Main.rand.Next(-120, 121), treetop);
+            }
+        }
+
+        /// <summary>没有栖息群时的报敌兜底：从威胁侧屏缘外飞入，横穿屏幕逃向安全侧</summary>
+        private static void SpawnFlyThrough(Player player, float fromSide, int birds) {
+            float edgeX = fromSide > 0f ? Main.screenPosition.X + Main.screenWidth : Main.screenPosition.X;
+            for (int i = 0; i < birds; i++) {
+                Vector2 pos = new(edgeX + fromSide * Main.rand.NextFloat(60f, 200f),
+                    player.Center.Y - Main.rand.NextFloat(60f, 200f));
+                Vector2 vel = new(-fromSide * Main.rand.NextFloat(3.0f, 3.8f), -Main.rand.NextFloat(0.2f, 0.6f));
+                PRTLoader.NewParticle<PRT_WoodsongRaven>(pos, vel, Color.White,
+                    Main.rand.NextFloat(0.72f, 1.02f))
+                    ?.ConfigureFlight(Main.rand.Next(1, 12));
+            }
+        }
+
+        //==================== 「惊鸦」（雾夜惊吓）====================
 
         private static void UpdateRavenScare(Player player, bool bossUp) {
-            //第二拍：黑影掠过 20 tick 后鸦群自树冠惊飞
-            if (ravenBurstIn > 0 && --ravenBurstIn == 0) {
-                Main.instance.LoadNPC(NPCID.Raven);
-                int birds = Main.rand.Next(3, 6);
-                for (int i = 0; i < birds; i++) {
-                    //预警态鸟群整齐背离来敌（逃向=安全向的读法）；雾夜惊吓保持随机四散
-                    float side = ravenBurstDir != 0 ? ravenBurstDir : Main.rand.NextBool() ? 1f : -1f;
-                    PRTLoader.NewParticle<PRT_WoodsongRaven>(
-                        ravenBurstPos + Main.rand.NextVector2Circular(26f, 14f),
-                        new Vector2(side * Main.rand.NextFloat(1.0f, 2.2f),
-                            -Main.rand.NextFloat(1.6f, 2.6f)),
-                        Color.White, Main.rand.NextFloat(0.72f, 1.02f))
-                        ?.Configure(PRT_WoodsongRaven.ModeBird, Main.rand.Next(88, 132));
-                }
-                ravenBurstDir = 0;
-                int shed = Main.rand.Next(7, 12);
-                for (int i = 0; i < shed; i++) {
-                    PRTLoader.NewParticle<PRT_WoodsongLeaf>(
-                        ravenBurstPos + Main.rand.NextVector2Circular(34f, 18f),
-                        new Vector2(Main.rand.NextFloat(-1.8f, 1.8f), Main.rand.NextFloat(-0.5f, 0.8f)),
-                        Color.White, Main.rand.NextFloat(0.8f, 1.1f))
-                        ?.Configure(Main.windSpeedCurrent * 1.5f, Main.rand.Next(110, 170));
-                }
-                SoundEngine.PlaySound(SoundID.Grass with {
-                    Volume = 0.40f,
-                    Pitch = -0.08f,
-                    MaxInstances = 3
-                }, ravenBurstPos);
-                for (int k = 0; k < 3; k++) {
-                    Enqueue(6 + k * 9, SoundID.Item32 with {
-                        Volume = 0.30f,
-                        Pitch = 0.22f + k * 0.14f,
-                        MaxInstances = 4
-                    }, ravenBurstPos + new Vector2(k * 22f - 22f, -k * 16f));
-                }
-            }
-
-            //触发门：夜里雾浓才有惊鸦；Boss 战中不排新惊吓（已起拍的两拍演出照常走完）
+            //触发门：夜里雾浓才有惊鸦；Boss 战中不排新惊吓
             if (Main.dayTime || bossUp || FogStrength < 0.5f) {
                 return;
             }
             if (--ravenIn > 0) {
                 return;
             }
-            if (!TryFindTreetop(player, out Vector2 top)) {
-                ravenIn = 600;
+            ravenIn = Main.rand.Next(2700, 6000);
+            if (!PRT_WoodsongRaven.HasPerchedFlock) {
+                //没有栖息群就先催一群落到屏外，惊吓留给下一轮
+                roostIn = Math.Min(roostIn, 30);
                 return;
             }
-            ravenIn = Main.rand.Next(2700, 6000);
-            ravenBurstPos = top;
-            ravenBurstIn = 20;
-            //第一拍：树影错动，黑影自树冠掠过+一声轻响
-            float dir = Main.rand.NextBool() ? 1f : -1f;
-            PRTLoader.NewParticle<PRT_WoodsongRaven>(top + new Vector2(-dir * 46f, -8f),
-                new Vector2(dir * 2.8f, 0.2f), Color.White, 1f)
-                ?.Configure(PRT_WoodsongRaven.ModeShade, 26);
+            Vector2 anchor = PRT_WoodsongRaven.PerchAnchor;
+            if (Vector2.Distance(anchor, player.Center) > FlockReachRange) {
+                return;
+            }
+            //雾里有什么东西经过：远处一声枝响作"来处"，鸟群骚动后随机一侧惊飞
             SoundEngine.PlaySound(SoundID.Grass with {
                 Volume = 0.22f,
                 Pitch = -0.35f,
                 MaxInstances = 3
-            }, top);
+            }, anchor + new Vector2(Main.rand.NextFloat(-120f, 120f), 20f));
+            PRT_WoodsongRaven.FlushFlock(Main.rand.NextBool() ? 1f : -1f, agitate: true);
         }
 
         //==================== 「惊鸦预警」（威胁方向情报） ====================
@@ -491,10 +528,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
         private const float WarnRange = 1100f;
         /// <summary>预警触发后的冷却（帧）</summary>
         private const int WarnCooldown = 1080;
+        /// <summary>屏内判定的外扩（像素）：屏内的敌人玩家自己看得见，不报</summary>
+        private const int ThreatOnScreenFluff = 40;
 
         /// <summary>
-        /// 敌讯惊鸦：有敌对个体锁定本地玩家并进入感知圈时，黑影自敌向掠入、
-        /// 鸦群整齐背离来敌惊飞——鸟群逃离的反方向就是敌人来向。
+        /// 敌讯惊鸦：有敌对个体锁定本地玩家、进入感知圈且不在屏内时，栖息鸦群骚动后
+        /// 整齐背离来敌惊飞，鸟群逃离的反方向就是敌人来向；没有栖息群则从威胁侧屏缘外横穿。
+        /// 屏内的敌人不报（用户裁定 2026-09-09），鸟群只报玩家看不见的那一个。
         /// 纯本地情报演出（读的都是已同步的 NPC 状态），不做任何判定改动。<br/>
         /// Boss 战只在开场预警窗内放送一次（<see cref="BossWarnWindowFrames"/>），战中不复读
         /// </summary>
@@ -526,6 +566,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 if (!npc.HasValidTarget || npc.target != player.whoAmI) {
                     continue;
                 }
+                //屏内的敌人不报：预警只对看不见的来敌才有情报价值
+                if (VaultUtils.IsPointOnScreen(npc.Center - Main.screenPosition, ThreatOnScreenFluff)) {
+                    continue;
+                }
                 float dist = npc.Distance(player.Center);
                 if (dist < best) {
                     best = dist;
@@ -539,24 +583,17 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
                 //开场只警这一次
                 bossWarnGrace = 0;
             }
+            warnIn = WarnCooldown;
 
             float threatSide = threat.Center.X >= player.Center.X ? 1f : -1f;
-            if (!TryFindTreetop(player, out Vector2 top)) {
-                top = player.Center + new Vector2(threatSide * 140f, -170f);
+            if (PRT_WoodsongRaven.HasPerchedFlock
+                && Vector2.Distance(PRT_WoodsongRaven.PerchAnchor, player.Center) < FlockReachRange) {
+                //有栖息群：骚动一拍（转头、小跳、一声鸦鸣）再背离来敌惊飞
+                PRT_WoodsongRaven.FlushFlock(-threatSide, agitate: true);
+                return;
             }
-            ravenBurstPos = top;
-            ravenBurstDir = (int)-threatSide;
-            ravenBurstIn = 14;
-            warnIn = WarnCooldown;
-            //第一拍：黑影自敌向掠入 + 一声短促枝响
-            PRTLoader.NewParticle<PRT_WoodsongRaven>(top + new Vector2(threatSide * 52f, -6f),
-                new Vector2(-threatSide * 3.2f, 0.1f), Color.White, 1f)
-                ?.Configure(PRT_WoodsongRaven.ModeShade, 22);
-            SoundEngine.PlaySound(SoundID.Grass with {
-                Volume = 0.30f,
-                Pitch = -0.2f,
-                MaxInstances = 3
-            }, top);
+            //无栖息群：鸟群自威胁侧屏缘外飞入横穿，逃向安全侧
+            SpawnFlyThrough(player, threatSide, Main.rand.Next(3, 6));
         }
 
         //==================== 「引路鬼火」====================
@@ -707,27 +744,41 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             return tile.WallType == WallID.None && tile.LiquidAmount == 0;
         }
 
-        /// <summary>找玩家附近一棵够高的树，返回树冠位置（自地面沿树干上爬）</summary>
-        private static bool TryFindTreetop(Player player, out Vector2 top) {
-            top = default;
-            int px = (int)(player.Center.X / 16f);
-            for (int attempt = 0; attempt < 14; attempt++) {
-                int x = px + (Main.rand.NextBool() ? 1 : -1) * Main.rand.Next(8, 36);
-                if (!TryFindOutdoorSurface(x, out int surfY)) {
-                    continue;
-                }
-                int trunk = 0;
-                while (trunk < 40) {
-                    Tile t = Framing.GetTileSafely(x, surfY - 1 - trunk);
-                    if (!t.HasTile || t.TileType != TileID.Trees) {
-                        break;
+        /// <summary>
+        /// 在指定列附近找鸟群落脚点：优先 ±3 格内一棵够高的树（自地面沿树干上爬，脚点落在树冠上部），
+        /// 其次该列的露天地面。全部找不到返回 false
+        /// </summary>
+        private static bool TryFindRoost(int tileX, out Vector2 foot, out bool treetop) {
+            foot = default;
+            treetop = false;
+            for (int dx = 0; dx <= 3; dx++) {
+                for (int s = -1; s <= 1; s += 2) {
+                    if (dx == 0 && s > 0) {
+                        continue;
                     }
-                    trunk++;
+                    int x = tileX + dx * s;
+                    if (!TryFindOutdoorSurface(x, out int surfY)) {
+                        continue;
+                    }
+                    int trunk = 0;
+                    while (trunk < 40) {
+                        Tile t = Framing.GetTileSafely(x, surfY - 1 - trunk);
+                        if (!t.HasTile || t.TileType != TileID.Trees) {
+                            break;
+                        }
+                        trunk++;
+                    }
+                    if (trunk < 6) {
+                        continue;
+                    }
+                    //树冠贴图在顶端干格上方展开，脚点抬到冠的上部
+                    foot = new Vector2(x * 16f + 8f, (surfY - trunk) * 16f - 34f);
+                    treetop = true;
+                    return true;
                 }
-                if (trunk < 6) {
-                    continue;
-                }
-                top = new Vector2(x * 16f + 8f, (surfY - trunk) * 16f - 12f);
+            }
+            if (TryFindOutdoorSurface(tileX, out int groundY)) {
+                foot = new Vector2(tileX * 16f + 8f, groundY * 16f);
                 return true;
             }
             return false;

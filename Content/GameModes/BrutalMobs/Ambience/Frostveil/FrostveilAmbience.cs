@@ -41,9 +41,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Frostveil
         private static SlotId howlSlot;
         private static SlotId waveSlot;
         private static readonly SoundStyle HowlStyle =
-            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle WaveHowlStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         /// <summary>最近一面风雪墙到本地玩家的距离（本帧扫描缓存，声回调消费）</summary>
         private static float nearestWaveDist = float.MaxValue;

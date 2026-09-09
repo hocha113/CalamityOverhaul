@@ -82,10 +82,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos
         private static SlotId breathSlot;
         /// <summary>薄风：暴风雪嘶声拉高音调，比地表风更薄更冷</summary>
         private static readonly SoundStyle ThinWindStyle =
-            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 0 };
         /// <summary>呼吸：屋内闷风循环加节律起伏，读作面罩里渐重的喘息</summary>
         private static readonly SoundStyle BreathStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         public override void PostUpdateEverything() {
             if (!Main.dedServ) {

@@ -47,11 +47,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Tidecall
         private static SlotId roarSlot;
 
         private static readonly SoundStyle SeaWindStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle SurfWashStyle =
-            SoundID.Waterfall with { IsLooped = true, MaxInstances = 2 };
+            SoundID.Waterfall with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle WaveRoarStyle =
-            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 0 };
 
         //==== 权威端调度（世界级决策私产，ClearWorld 重置） ====
         /// <summary>离岸流间隔，档位只调频率</summary>

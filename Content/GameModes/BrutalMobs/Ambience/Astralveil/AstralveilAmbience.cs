@@ -62,9 +62,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Astralveil
         private static SlotId pulseSlot;
         //扭曲耳鸣：吹雪闷响拉高音调成细薄啸鸣；异星脉冲：以太门空鸣压到低频
         private static readonly SoundStyle TinnitusStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle PulseStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
 
         public override void PostUpdateEverything() {
             if (Main.dedServ) {

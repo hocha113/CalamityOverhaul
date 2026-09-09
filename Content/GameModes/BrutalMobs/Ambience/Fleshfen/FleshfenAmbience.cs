@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Fleshfen
         private static SlotId heartDroneSlot;
         private static SlotId mistWindSlot;
         private static readonly SoundStyle HeartDroneStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle MistWindStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         //==== 肉块地形脉动微光 ====
         internal struct PulseSpot

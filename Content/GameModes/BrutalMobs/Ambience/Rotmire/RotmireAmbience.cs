@@ -59,10 +59,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Rotmire
         private static SlotId breathSlot;
         /// <summary>低频腹鸣：群系深处传来的消化般低鸣</summary>
         private static readonly SoundStyle DroneStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
         /// <summary>腐息风噪：衬在腹鸣下的干哑气流声</summary>
         private static readonly SoundStyle BreathStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         //==== 低语一次性音 ====
         private static int whisperTimer;

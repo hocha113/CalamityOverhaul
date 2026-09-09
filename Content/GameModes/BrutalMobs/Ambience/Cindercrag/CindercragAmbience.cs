@@ -50,10 +50,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Cindercrag
         private static SlotId windSlot;
         /// <summary>岩层呻吟底噪：低频嗡鸣压到极低音高</summary>
         private static readonly SoundStyle GroanStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
         /// <summary>崖风底噪：闷风裹着哀音</summary>
         private static readonly SoundStyle WindStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         private static int distantWailIn;
         private static int rockGroanIn;

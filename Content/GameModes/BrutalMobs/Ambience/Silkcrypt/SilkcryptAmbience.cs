@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Silkcrypt
         //环境声循环槽（丢失补挂，音量在回调里逐帧走）
         private static SlotId draftSlot;
         private static readonly SoundStyle DraftStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
 
         //一次性声与低频事件的调度计时
         private static int skitterTimer;

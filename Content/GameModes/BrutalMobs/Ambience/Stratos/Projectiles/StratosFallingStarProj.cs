@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stratos.Project
 
         /// <summary>呼啸：暴风雪嘶声定位循环，音量音调随逼近渐强渐尖</summary>
         private static readonly SoundStyle WhistleStyle =
-            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 4 };
+            SoundID.BlizzardStrongLoop with { IsLooped = true, MaxInstances = 0 };
 
         /// <summary>熔石壳贴图：真 alpha 梭形（有 alpha 才能遮挡，读作石体而非光点）</summary>
         [VaultLoaden(CWRConstant.Masking)]

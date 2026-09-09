@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Starfall
         //金属质感低鸣循环槽（镜像 OldNetAmbience 的 SlotId+回调惯例）
         private static SlotId humSlot;
         private static readonly SoundStyle HumStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
 
         //偶发事件计时器
         private static int sparkIn;

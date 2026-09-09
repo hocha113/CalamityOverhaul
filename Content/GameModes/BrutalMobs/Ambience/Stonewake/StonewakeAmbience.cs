@@ -44,10 +44,10 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Stonewake
         private static SlotId marbleDroneSlot;
         /// <summary>花岗岩厅底噪：静电嘶鸣</summary>
         private static readonly SoundStyle GraniteHissStyle =
-            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.BlizzardInsideBuildingLoop with { IsLooped = true, MaxInstances = 0 };
         /// <summary>大理石厅底噪：圣殿空旷低鸣</summary>
         private static readonly SoundStyle MarbleDroneStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
 
         //==== 氛围计时（屏幕级演出，纯本地） ====
         private static int arcTimer;

@@ -62,13 +62,26 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart
         private static readonly RecentCell[] recentCells = new RecentCell[MaxRecentCells];
         private static int rippleScanTimer;
 
-        //==== 环境声（镜像 OldNetAmbience 的 SlotId+回调惯例）====
+        //==== 环境声（镜像 OldNetAmbience 的 SlotId+回调惯例；共享样本 MaxInstances=0 防跨环境互杀）====
         private static SlotId wetLoopSlot;
         private static SlotId hiveLoopSlot;
+        /// <summary>
+        /// 湿洞水声床：原版瀑布环境循环压低音调当远处流水。
+        /// 曾用 LiquidsWaterLava（黑曜石生成音）循环，玩家反馈"反复播放黑曜石音效"，2026-09-09 换样本
+        /// </summary>
         private static readonly SoundStyle WetLoopStyle =
-            SoundID.LiquidsWaterLava with { IsLooped = true, MaxInstances = 1 };
+            SoundID.Waterfall with { IsLooped = true, MaxInstances = 0 };
         private static readonly SoundStyle HiveDroneStyle =
-            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 1 };
+            SoundID.DD2_EtherianPortalIdleLoop with { IsLooped = true, MaxInstances = 0 };
+
+        //==== 水声锚定：声床音量跟屏幕内真实水体占比走，干燥通道自然静音 ====
+        /// <summary>水体采样间隔（帧）</summary>
+        private const int WaterScanGap = 20;
+        /// <summary>每次采样的随机格数</summary>
+        private const int WaterSamples = 40;
+        /// <summary>屏幕窗口内水体占比（平滑后 0~1）</summary>
+        private static float waterFrac;
+        private static int waterScanTimer;
 
         private static int dripTimer;
         private static int critterTimer;
@@ -91,9 +104,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart
 
             bool gate = GameModeSystem.BrutalActive && !Main.gameMenu;
             Player player = Main.LocalPlayer;
-            bool inMain = gate && LocalInUndergroundJungle;
-            bool inHive = gate && player.active && player.ZoneHive;
-            bool inTemple = gate && player.active && player.ZoneLihzhardTemple;
+            //死亡界面里在场强度按出场斜率退掉：声床不在尸体旁照放（镜像 Rotmire 的 !dead 门）
+            bool alive = player.active && !player.dead;
+            bool inMain = gate && alive && LocalInUndergroundJungle;
+            bool inHive = gate && alive && player.ZoneHive;
+            bool inTemple = gate && alive && player.ZoneLihzhardTemple;
 
             Presence = Approach(Presence, inMain ? 1f : 0f, inMain ? 0.03f : 0.05f);
             //离开蜂巢立即平息：出场斜率远陡于入场
@@ -107,6 +122,7 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart
             UpdateRipples();
 
             if (Presence > 0.02f || HivePresence > 0.02f || TemplePresence > 0.02f) {
+                ScanWater();
                 UpdateAmbientLoops();
             }
             if (Presence <= 0.05f) {
@@ -262,6 +278,29 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart
 
         //==== 环境声 ====
 
+        /// <summary>屏幕窗口随机采样水格占比：水声床的世界锚，没有水就听不到水</summary>
+        private static void ScanWater() {
+            if (Main.gamePaused || --waterScanTimer > 0) {
+                return;
+            }
+            waterScanTimer = WaterScanGap;
+            int hits = 0;
+            for (int i = 0; i < WaterSamples; i++) {
+                int x = (int)((Main.screenPosition.X + Main.rand.NextFloat(Main.screenWidth)) / 16f);
+                int y = (int)((Main.screenPosition.Y + Main.rand.NextFloat(Main.screenHeight)) / 16f);
+                if (!WorldGen.InWorld(x, y, 10)) {
+                    continue;
+                }
+                Tile tile = Main.tile[x, y];
+                if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water) {
+                    hits++;
+                }
+            }
+            //占比放大四倍再夹紧：屏幕四分之一是水就算"水边"
+            float raw = MathHelper.Clamp(hits * 4f / WaterSamples, 0f, 1f);
+            waterFrac = MathHelper.Lerp(waterFrac, raw, 0.15f);
+        }
+
         /// <summary>循环丢失（切场景/音量档变化）就补挂；音量在回调里逐帧走</summary>
         private static void UpdateAmbientLoops() {
             if (Main.gameMenu) {
@@ -275,13 +314,13 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart
             }
         }
 
-        /// <summary>湿洞底噪：水声极低音量常驻，只当空气里的潮气</summary>
+        /// <summary>湿洞水声床：压低音调的远处流水，音量锚定屏幕内水体占比，无水处只剩极低潮气底</summary>
         private static bool UpdateWetLoop(ActiveSound sound) {
             if (Main.gameMenu || Presence <= 0.02f) {
                 return false;
             }
-            sound.Volume = 0.11f * Presence;
-            sound.Pitch = -0.35f;
+            sound.Volume = (0.02f + 0.09f * waterFrac) * Presence;
+            sound.Pitch = -0.5f;
             sound.Position = null;
             return true;
         }
@@ -322,6 +361,8 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Mireheart
             Presence = 0f;
             HivePresence = 0f;
             TemplePresence = 0f;
+            waterFrac = 0f;
+            waterScanTimer = 0;
             for (int i = 0; i < ripples.Length; i++) {
                 ripples[i].Active = false;
             }

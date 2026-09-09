@@ -56,8 +56,11 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Verdant
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            Color draw = Color.MultiplyRGB(Lighting.GetColor(Position.ToTileCoordinates()));
-            spriteBatch.Draw(tex, Position - Main.screenPosition, null, draw, Rotation,
+            //乘环境光要连 alpha 一起乘：只压 RGB 会让夜里的雾团变成半透明黑绿块（玩家反馈"深绿/黑色孢子状物"，2026-09-09）。
+            //雾是被光照亮的悬浮水汽，暗处应当沉没而不是变黑；保 0.3 底让近处仍读得出雾的存在
+            Color light = Lighting.GetColor(Position.ToTileCoordinates());
+            float lightK = 0.3f + 0.7f * ((light.R + light.G + light.B) / 765f);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * lightK, Rotation,
                 tex.Size() * 0.5f, Scale, SpriteEffects.None, 0f);
             return false;
         }
