@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     /// 追太久、擦身而过或近场绕满一圈半即放弃追踪转坠落,不绕圈。
     /// 血湖是介质不是地板:入水留墨膜与水花后穿入继续飞,水下粘阻+追击变钝,
     /// 死在湖底地形照常起水花。命中谢幕走 <see cref="KikasaInkSplashFX"/> 的爆发式水花
-    /// (14 帧崩解,不留滞留渍;2026-09-09 撤掉落地渍斑与沾敌附着渍)。
+    /// (十六帧内抛物线走完、珠链交接给粒子,不留滞留渍;2026-09-09 撤掉落地渍斑与沾敌附着渍)。
     /// 集中绘制在 <see cref="KikasaRainRender"/>,本体 PreDraw 不画
     /// </summary>
     internal class KikasaInkDrop : ModProjectile
@@ -601,7 +601,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
 
             //水花归属:贴地>沾敌>空中散尽。NPC 命中只在所有者端跑 OnHitNPC,
             //这里按死点就近找宿主,各端跑同一套规则,旁观者也看得到花。
-            //水花 14 帧崩解干净,不留滞留层(音效与飞沫都在 Burst 里)
+            //水花十几帧内崩解干净,不留滞留层(音效与飞沫都在 Burst 里)
             if (onTileHit) {
                 //贴地形:先把死点退回到砖外(高速滴一帧能扎进半块砖),再沿来势探 8px 让四邻探测够到砖,
                 //把根吸附到表面、取离面法线,水花沿法线立起

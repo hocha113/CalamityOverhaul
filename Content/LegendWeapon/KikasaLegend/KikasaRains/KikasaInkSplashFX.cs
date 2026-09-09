@@ -13,11 +13,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     /// <summary>水花的命中面类别:决定扇形、溅裙与随行</summary>
     internal enum SplashKind : byte
     {
-        /// <summary>贴地形(地/墙/顶):沿表面法线展开半扇,有溅裙</summary>
+        /// <summary>贴地形(地/墙/顶):指根沿表面铺开、朝法线半空发射,落回表面即消失,有溅裙</summary>
         Tile,
-        /// <summary>沾敌:法线取来势反向,根随宿主走</summary>
+        /// <summary>沾敌:法线取来势反向,根随宿主走,无落面</summary>
         Npc,
-        /// <summary>空中散尽:全向小爆,无溅裙</summary>
+        /// <summary>空中散尽:全向小爆,无溅裙无落面</summary>
         Air
     }
 
@@ -42,31 +42,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     }
 
     /// <summary>
-    /// 墨水花:墨滴命中一瞬爆发、14 帧内崩解干净的溅射演出(2026-09-09 取代 220f 落地渍斑与 150f 沾敌附着渍)。
-    /// 配方对齐血柱:着色器(<see cref="EffectLoader.KikasaInkSplash"/> TechSplash)只画连续的冠状液指,
-    /// 离散的那一半交给有物理的 <see cref="PRT_KikasaInkSpray"/>——爆发帧一蓬扇形飞沫,
-    /// 之后几帧从着色器的指尖上按同一组指几何续甩珠(珠从指上断下来,不是两套东西);
-    /// 贴面溅裙一撮低角度小珠、一口墨雾;音效帧预算、屏震只给手动高动能滴。
+    /// 墨水花:墨滴命中一瞬爆发、十几帧内崩解干净的溅射演出(2026-09-09 取代 220f 落地渍斑与 150f 沾敌附着渍)。
+    /// 二版改成拉格朗日弹道模型(一版直线液指+三段包络被判"像帧图动画"):每指是一根液体射流,
+    /// 流体元自铺开薄片的边缘以初速沿方向喷出、只受重力,着色器(<see cref="EffectLoader.KikasaInkSplash"/> TechSplash)
+    /// 按同一套公式逐像素反解流体元龄画出弯下去的抛物线珠链;本类持有指几何(方位角落位/发射方向/初速/根半宽/
+    /// 喷出时长),用**同一公式**算指尖与珠的位置速度:爆发帧一蓬扇形飞沫沿指向飞、之后几帧从指尖甩珠(继承流体速度,
+    /// 珠接着同一条抛物线飞)、寿命末四帧把整条珠链交接给 <see cref="PRT_KikasaInkSpray"/> 再让着色器清残——
+    /// 着色器与粒子是同一股液体的两半,不是两套东西。贴面溅裙一撮低角度小珠、一口墨雾;音效帧预算、屏震只给手动高动能滴。
     /// 纯客户端列表(环形上限),无网络;各端在自己的 OnKill 里各起一朵,近似一致即可。
     /// 由 <see cref="KikasaRainSystem"/> 推进、<see cref="KikasaRainRender"/> 在墨/血体之后绘制
     /// </summary>
     internal static class KikasaInkSplashFX
     {
-        /// <summary>一朵水花的寿命(帧):快,不许拖</summary>
-        public const int LifeFrames = 14;
+        /// <summary>一朵水花的寿命(帧):快,不许拖;末四帧交接粒子、末三帧着色器清残</summary>
+        public const int LifeFrames = 16;
         private const int Cap = 24;
         private const int FingerSlots = 7;
+        private const int HandoffFrame = LifeFrames - 4;
 
-        /// <summary>指根沿切向的摊开量(H 单位),与 KikasaInkSplash.fx 的 RootSpread 同值</summary>
-        private const float RootSpread = 0.18f;
+        /// <summary>
+        /// 流体重力 px/f²:墨是重液体,取得比粒子默认(0.36)沉,十六帧内抛物线走完整段(升、悬、落);
+        /// 所有自水花脱手的粒子都显式带这个值,珠接着同一条抛物线飞
+        /// </summary>
+        private const float Gravity = 0.55f;
 
-        /// <summary>画布护栏:横向 |xc|≤0.88、纵向 v∈[0.04,0.96] 可见,几何折算按此让位</summary>
-        private const float GuardX = 0.88f;
-        private const float GuardY = 0.96f;
+        /// <summary>珠链波长(根半宽倍数),与 KikasaInkSplash.fx 的 kB.x=2π/6.4 同源</summary>
+        private const float BeadWavelengthR0 = 6.4f;
 
-        /// <summary>H(指长基准,px)=(HBase+HKe·ke)·scale</summary>
-        private const float HBase = 40f;
-        private const float HKe = 36f;
+        /// <summary>画布护栏:横向两侧各 5%、纵向 4% 归零,几何让位按此除</summary>
+        private const float GuardX = 0.90f;
+        private const float GuardY = 0.92f;
 
         private class Splash
         {
@@ -77,18 +82,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             public Vector2 Tangent;
             public float Skew;
             public float Ke;
-            public float HPx;
             public float ScaleMul;
-            /// <summary>quad 半宽/根上/根下延伸(H 单位,含护栏让位)</summary>
-            public float HalfWH;
-            public float TopH;
-            public float BottomH;
             public float Seed;
             public int Age;
             public SplashKind Kind;
             public SplashPalette Palette;
-            public Vector4[] Fingers = new Vector4[FingerSlots];
+            /// <summary>x,y=发射方向(quad 空间) z=初速 px/f w=根半宽 px</summary>
+            public Vector4[] FingerA = new Vector4[FingerSlots];
+            /// <summary>x=相位 y=喷出时长 te(帧) z=甩尾幅 px w=指根落位系数 c</summary>
+            public Vector4[] FingerB = new Vector4[FingerSlots];
             public int FingerN;
+            /// <summary>薄片最大半宽 px,指根随它外扩</summary>
+            public float RimMax;
+            //quad 让位(px)与根在 quad 内的 uv
+            public float QuadW;
+            public float QuadH;
+            public float RootU;
+            public float RootV;
             //沾敌随行
             public int NpcWho = -1;
             public int NpcType;
@@ -147,7 +157,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 Tangent = tangent,
                 Skew = skew,
                 Ke = ke,
-                HPx = (HBase + HKe * ke) * scale * (kind == SplashKind.Air ? 0.7f : 1f),
                 ScaleMul = scale,
                 Seed = Main.rand.NextFloat(8f),
                 Kind = kind,
@@ -160,6 +169,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             s.LakeY = ResolveLakeY(pos);
             SolveFingers(s);
+            SolveQuad(s);
             list.Add(s);
 
             SpawnBurstParticles(s, impactVel);
@@ -178,115 +188,146 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         }
 
         /// <summary>
-        /// 解指几何:5~7 指(空中 4)按扇等分再 hash 抖动,整扇随切向偏斜转、偏斜侧指更长;
-        /// 长随离法线角度收(中间高两翼低),根半宽 hash;槽 0 恒为主指(居中、略粗)。
-        /// 顺手算 quad 让位:半宽/根上/根下按最长伸展(长包络峰值×指尖尾串)取最大再除护栏
+        /// 解指几何:指根落在薄片边缘这个 3D 圆环上,按方位角 az 等分再 hash 抖动;侧视投影下根位 x=cos(az)·rimR,
+        /// 发射方向=(cos(az)·cosE, sinE) 归一(E=离面仰角 31°~66°,hash),两翼指外倾、正前正后的指近直立;
+        /// 表观初速按投影长度折算、偏斜侧更快;根半宽/喷出时长/甩尾幅各自 hash。空中散尽改全向。
+        /// 与着色器共用 FingerA/FingerB 两组 float4,任何一端改公式另一端必须同改
         /// </summary>
         private static void SolveFingers(Splash s) {
             bool air = s.Kind == SplashKind.Air;
-            int n = air ? 4 : 5 + (int)MathF.Round(2f * s.Ke);
+            int n = air ? 5 : 5 + (int)MathF.Round(2f * s.Ke);
             n = Math.Clamp(n, 2, FingerSlots);
-            float halfFan = air ? 2.6f : 0.95f + 0.35f * s.Ke;
+            float sizeMul = MathHelper.Clamp(s.ScaleMul, 0.8f, 1.4f);
+            float vBase = (7f + 5f * s.Ke) * sizeMul;
+            s.RimMax = (9f + 8f * s.Ke) * sizeMul;
             int seed = (int)(s.Seed * 977f);
-            int mainJ = n / 2;
 
-            float halfW = 0.6f;
-            float top = 0.4f;
-            float bottom = 0.15f;
-            int slot = 1;
             for (int j = 0; j < n; j++) {
-                float baseAng = -halfFan + 2f * halfFan * j / (n - 1);
-                float ang = baseAng + (KikasaInk.Hash(seed, j) - 0.5f) * 0.24f + s.Skew * 0.45f;
-                if (!air) {
-                    //贴面/沾敌的指不许扎回面里:偏斜转过头时钳在离面 83° 内
-                    ang = MathHelper.Clamp(ang, -1.45f, 1.45f);
-                }
-                float len;
+                Vector2 dir;
+                float c;
+                float vProj;
                 if (air) {
-                    len = (0.7f + 0.3f * KikasaInk.Hash(seed, j + 7)) * 0.8f;
+                    float th = MathHelper.TwoPi * j / n + (KikasaInk.Hash(seed, j) - 0.5f) * 0.5f;
+                    dir = th.ToRotationVector2();
+                    c = dir.X * 0.5f;
+                    vProj = vBase * (0.7f + 0.4f * KikasaInk.Hash(seed, j + 14)) * 0.8f;
                 }
                 else {
-                    len = (0.75f + 0.25f * KikasaInk.Hash(seed, j + 7))
-                        * (0.6f + 0.4f * MathF.Cos(baseAng))
-                        * (1f + 0.35f * s.Ke)
-                        * MathHelper.Clamp(1f + 0.4f * s.Skew * MathF.Sin(ang), 0.7f, 1.5f);
+                    float az = MathHelper.TwoPi * j / n + (KikasaInk.Hash(seed, j) - 0.5f) * 0.7f;
+                    c = MathF.Cos(az);
+                    //离面仰角 43°~77°:要往上冲的力量感,不是贴地扫
+                    float elev = 0.75f + 0.6f * KikasaInk.Hash(seed, j + 7);
+                    Vector2 proj = new(c * MathF.Cos(elev) + s.Skew * 0.35f, MathF.Sin(elev));
+                    float pl = MathF.Max(proj.Length(), 0.2f);
+                    dir = proj / pl;
+                    //初速散得开(0.65~1.3):一样高的一排头读成手掌,高低错落才是甩出来的
+                    vProj = vBase * (0.65f + 0.65f * KikasaInk.Hash(seed, j + 14)) * pl
+                        * (1f + 0.25f * s.Skew * dir.X);
                 }
-                float hw = 0.07f + 0.05f * KikasaInk.Hash(seed, j + 14);
-                float phase = KikasaInk.Hash(seed, j + 21) * MathHelper.TwoPi;
-                int target;
-                if (j == mainJ) {
-                    target = 0;
-                    hw += 0.015f;
-                }
-                else {
-                    target = slot++;
-                }
-                s.Fingers[target] = new Vector4(ang, len, hw, phase);
-
-                //最长伸展:长包络峰值 1.22(过冲 1.08 与缓增 0.22 不同时到顶,取和保守)× 指尖尾串 1.3
-                float reach = len * 1.3f * 1.25f;
-                halfW = MathF.Max(halfW, MathF.Abs(MathF.Sin(ang)) * reach + hw + RootSpread + 0.1f);
-                top = MathF.Max(top, MathF.Cos(ang) * reach + hw + 0.08f);
-                bottom = MathF.Max(bottom, -MathF.Cos(ang) * reach + hw + 0.08f);
+                float r0 = (2.8f + 1.8f * KikasaInk.Hash(seed, j + 21)) * sizeMul * (0.85f + 0.3f * s.Ke);
+                float phase = KikasaInk.Hash(seed, j + 28) * MathHelper.TwoPi;
+                float te = 4.5f + 2.5f * KikasaInk.Hash(seed, j + 35);
+                float whip = (0.25f + 0.35f * KikasaInk.Hash(seed, j + 42)) * r0;
+                s.FingerA[j] = new Vector4(dir.X, dir.Y, MathF.Max(vProj, 1f), r0);
+                s.FingerB[j] = new Vector4(phase, te, whip, c);
             }
             for (int i = n; i < FingerSlots; i++) {
-                s.Fingers[i] = Vector4.Zero;
+                s.FingerA[i] = Vector4.Zero;
+                s.FingerB[i] = Vector4.Zero;
             }
             s.FingerN = n;
-            s.HalfWH = halfW / GuardX;
-            s.TopH = top / GuardY;
-            s.BottomH = bottom / GuardY;
         }
 
-        //==================== 与着色器同源的指几何 ====================
-
-        /// <summary>起手 EaseOutBack 过冲 + 之后开方缓增,与 KikasaInkSplash.fx 同式</summary>
-        private static float LenEnvelope(float age) {
-            float tr = MathHelper.Clamp(age / 0.25f, 0f, 1f);
-            float e = tr - 1f;
-            float rise = 1f + 2.3f * e * e * e + 1.3f * e * e;
-            float grow = 0.22f * MathF.Sqrt(MathHelper.Clamp((age - 0.25f) / 0.75f, 0f, 1f));
-            return rise + grow;
+        /// <summary>
+        /// quad 让位:沿每指整段寿命的轨迹取包围盒(含液滴头、甩尾余量),并入薄片与撞击芯;
+        /// 贴面时面下一律不画(落地即消失),下缘只留 4px。护栏让位后反推根在 quad 内的 uv
+        /// </summary>
+        private static void SolveQuad(Splash s) {
+            float xMin = -(s.RimMax + 6f);
+            float xMax = s.RimMax + 6f;
+            float yMin = -4f;
+            float yMax = 3f + 3f * s.Ke + 8f;
+            for (int j = 0; j < s.FingerN; j++) {
+                float pad = s.FingerA[j].W * 1.35f + s.FingerB[j].Z + 3f;
+                for (int k = 0; k <= 4; k++) {
+                    float T = LifeFrames * k / 4f;
+                    ElementAt(s, j, T, T, out Vector2 e, out _);
+                    xMin = MathF.Min(xMin, e.X - pad);
+                    xMax = MathF.Max(xMax, e.X + pad);
+                    yMin = MathF.Min(yMin, e.Y - pad);
+                    yMax = MathF.Max(yMax, e.Y + pad);
+                }
+            }
+            if (s.Kind == SplashKind.Tile) {
+                yMin = -4f;
+            }
+            float contentW = xMax - xMin;
+            float contentH = yMax - yMin;
+            s.QuadW = contentW / GuardX;
+            s.QuadH = contentH / GuardY;
+            xMin -= (s.QuadW - contentW) * 0.5f;
+            yMax += (s.QuadH - contentH) * 0.5f;
+            s.RootU = -xMin / s.QuadW;
+            s.RootV = yMax / s.QuadH;
         }
 
-        /// <summary>第 i 指此刻的指尖世界坐标与指向</summary>
-        private static void FingerTip(Splash s, int i, out Vector2 tip, out Vector2 dir) {
-            Vector4 f = s.Fingers[i];
-            float sa = MathF.Sin(f.X);
-            float ca = MathF.Cos(f.X);
-            dir = s.Tangent * sa + s.Normal * ca;
-            float len = f.Y * LenEnvelope(s.Age / (float)LifeFrames);
-            tip = s.Pos + s.Tangent * (sa * RootSpread * s.HPx) + dir * (len * s.HPx);
+        //==================== 与着色器同源的流体元公式 ====================
+
+        /// <summary>喷出元速度:晚喷出的慢,v(T)=v0·(0.65+0.35·sat(T/te))</summary>
+        private static float ElemSpeed(float v0, float T, float te)
+            => v0 * (0.65f + 0.35f * MathHelper.Clamp(T / MathF.Max(te, 1f), 0f, 1f));
+
+        /// <summary>薄片此刻半宽:快起后停</summary>
+        private static float RimR(Splash s, float t) => s.RimMax * (1f - MathF.Exp(-t / 2.2f));
+
+        /// <summary>重力在 quad 空间(px/f²)</summary>
+        private static Vector2 GravQ(Splash s) => new Vector2(s.Tangent.Y, s.Normal.Y) * Gravity;
+
+        /// <summary>第 j 指龄为 T 的流体元在第 t 帧的位置与速度(quad 空间 px),不含甩尾</summary>
+        private static void ElementAt(Splash s, int j, float t, float T, out Vector2 posQ, out Vector2 velQ) {
+            Vector4 fa = s.FingerA[j];
+            Vector4 fb = s.FingerB[j];
+            Vector2 dir = new(fa.X, fa.Y);
+            float vT = ElemSpeed(fa.Z, T, fb.Y);
+            Vector2 g = GravQ(s);
+            posQ = new Vector2(fb.W * RimR(s, t), 0f) + dir * (vT * T) + g * (0.5f * T * T);
+            velQ = dir * vT + g * T;
         }
+
+        private static Vector2 ToWorld(Splash s, Vector2 q) => s.Pos + s.Tangent * q.X + s.Normal * q.Y;
+        private static Vector2 ToWorldDir(Splash s, Vector2 q) => s.Tangent * q.X + s.Normal * q.Y;
 
         //==================== 粒子编舞 ====================
 
         private static Color PickColor(in SplashPalette p) => Main.rand.NextBool(3) ? p.Deep : p.Body;
 
+        /// <summary>粒子尺寸:按液体半径折算(Extra_98 泪滴可见半宽≈8.4·scale px)</summary>
+        private static float SprayScale(float radiusPx) => MathHelper.Clamp(radiusPx * 0.12f, 0.24f, 0.7f);
+
         /// <summary>
-        /// 爆发帧:沿各指角散一蓬快飞沫(带一点切向来势的前带),
+        /// 爆发帧:沿各指发射方向散一蓬比韧带更快的细飞沫(细雾先于韧带冲出去),带一点切向来势;
         /// 贴面一撮低角度小珠当溅裙,一口墨雾;空中散尽只有半量飞沫、无溅裙
         /// </summary>
         private static void SpawnBurstParticles(Splash s, Vector2 impactVel) {
             bool air = s.Kind == SplashKind.Air;
             float ke = s.Ke;
             float sizeMul = MathHelper.Clamp(s.ScaleMul, 0.8f, 1.4f);
-            Vector2 carry = s.Tangent * (Vector2.Dot(impactVel, s.Tangent) * 0.15f);
+            Vector2 carry = s.Tangent * (Vector2.Dot(impactVel, s.Tangent) * 0.12f);
 
-            int sprays = 5 + (int)(7f * ke);
+            int sprays = 4 + (int)(6f * ke);
             if (air) {
                 sprays /= 2;
             }
             for (int i = 0; i < sprays; i++) {
-                Vector4 f = s.Fingers[i % s.FingerN];
-                float ang = f.X + Main.rand.NextFloat(-0.25f, 0.25f);
-                Vector2 dir = s.Tangent * MathF.Sin(ang) + s.Normal * MathF.Cos(ang);
-                float speed = Main.rand.NextFloat(5f, 10f) * (0.7f + 0.5f * ke) * sizeMul;
-                Vector2 at = s.Pos + s.Normal * Main.rand.NextFloat(2f, 6f)
-                    + s.Tangent * Main.rand.NextFloat(-0.15f, 0.15f) * s.HPx;
-                float scale = Main.rand.NextFloat(0.34f, 0.62f) * sizeMul;
-                PRTLoader.NewParticle<PRT_KikasaInkSpray>(at, dir * speed + carry, PickColor(s.Palette), scale)
-                    ?.Configure(Main.rand.Next(16, 30), s.Palette.Deep, s.Palette.Sheen, s.LakeY, scale > 0.45f, true);
+                int j = i % s.FingerN;
+                Vector4 fa = s.FingerA[j];
+                Vector2 dirQ = new Vector2(fa.X, fa.Y).RotatedBy(Main.rand.NextFloat(-0.22f, 0.22f));
+                float speed = fa.Z * Main.rand.NextFloat(1.05f, 1.5f);
+                Vector2 at = ToWorld(s, new Vector2(s.FingerB[j].W * s.RimMax * 0.5f, 2f));
+                float scale = SprayScale(fa.W * Main.rand.NextFloat(0.5f, 0.9f));
+                PRTLoader.NewParticle<PRT_KikasaInkSpray>(at, ToWorldDir(s, dirQ) * speed + carry,
+                    PickColor(s.Palette), scale)
+                    ?.Configure(Main.rand.Next(16, 30), s.Palette.Deep, s.Palette.Sheen, s.LakeY, scale > 0.45f, true, Gravity);
             }
 
             if (!air) {
@@ -296,7 +337,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     float side = i % 2 == 0 ? 1f : -1f;
                     float lift = Main.rand.NextFloat(0.1f, 0.45f);
                     Vector2 dir = s.Tangent * (side * MathF.Cos(lift)) + s.Normal * MathF.Sin(lift);
-                    Vector2 at = s.Pos + s.Normal * 2f + s.Tangent * (side * Main.rand.NextFloat(0.05f, 0.3f) * s.HPx);
+                    Vector2 at = s.Pos + s.Normal * 2f + s.Tangent * (side * Main.rand.NextFloat(0.3f, 0.9f) * s.RimMax);
                     PRTLoader.NewParticle<PRT_KikasaInkSpray>(at, dir * Main.rand.NextFloat(1.5f, 3.5f),
                         PickColor(s.Palette), Main.rand.NextFloat(0.22f, 0.34f) * sizeMul)
                         ?.Configure(Main.rand.Next(12, 22), s.Palette.Deep, s.Palette.Sheen, s.LakeY, false, false, 0.3f, 0.985f);
@@ -310,21 +351,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 ?.Configure(Main.rand.Next(20, 28));
         }
 
-        /// <summary>持续段指尖甩珠:第 2~7 帧每帧挑一两根指,从它此刻的指尖沿指向甩出不再分裂的小珠</summary>
+        /// <summary>
+        /// 持续段指尖甩珠:第 2~9 帧每帧挑一两根指,从液滴头此刻的位置沿流体速度甩出不再分裂的小珠——
+        /// 珠继承头的速度,接着同一条抛物线飞,着色器的头与粒子的珠是同一股液体
+        /// </summary>
         private static void ShedTips(Splash s) {
-            if (s.Age < 2 || s.Age > 7 || s.FingerN <= 0) {
+            if (s.Age < 2 || s.Age > 9 || s.FingerN <= 0) {
                 return;
             }
             int count = Main.rand.NextBool(3) ? 2 : 1;
-            float sizeMul = MathHelper.Clamp(s.ScaleMul, 0.8f, 1.4f);
             for (int k = 0; k < count; k++) {
-                int i = Main.rand.Next(s.FingerN);
-                FingerTip(s, i, out Vector2 tip, out Vector2 dir);
-                Vector2 vel = dir * Main.rand.NextFloat(2.5f, 4.5f) * sizeMul
-                    + s.Tangent * Main.rand.NextFloat(-0.6f, 0.6f);
-                PRTLoader.NewParticle<PRT_KikasaInkSpray>(tip + Main.rand.NextVector2Circular(2f, 2f), vel,
-                    PickColor(s.Palette), Main.rand.NextFloat(0.28f, 0.4f) * sizeMul)
-                    ?.Configure(Main.rand.Next(14, 24), s.Palette.Deep, s.Palette.Sheen, s.LakeY, false, true);
+                int j = Main.rand.Next(s.FingerN);
+                ElementAt(s, j, s.Age, s.Age, out Vector2 posQ, out Vector2 velQ);
+                Vector2 tip = ToWorld(s, posQ);
+                Vector2 vel = ToWorldDir(s, velQ) * Main.rand.NextFloat(0.85f, 1.05f)
+                    + s.Tangent * Main.rand.NextFloat(-0.5f, 0.5f);
+                PRTLoader.NewParticle<PRT_KikasaInkSpray>(tip + Main.rand.NextVector2Circular(1.5f, 1.5f), vel,
+                    PickColor(s.Palette), SprayScale(s.FingerA[j].W * Main.rand.NextFloat(0.55f, 0.85f)))
+                    ?.Configure(Main.rand.Next(14, 24), s.Palette.Deep, s.Palette.Sheen, s.LakeY, false, true, Gravity);
+            }
+        }
+
+        /// <summary>
+        /// 寿命末四帧交接:每指从液滴头往后按珠链波长取两三颗珠的位置与速度,原地换成粒子继续飞,
+        /// 着色器随后三帧清残——观者看到的是同一串珠一直在飞,不是花消失了又冒出粒子
+        /// </summary>
+        private static void Handoff(Splash s) {
+            float t = s.Age;
+            for (int j = 0; j < s.FingerN; j++) {
+                Vector4 fa = s.FingerA[j];
+                Vector4 fb = s.FingerB[j];
+                float tMin = MathF.Max(0f, t - fb.Y);
+                float spacing = BeadWavelengthR0 * fa.W / MathF.Max(fa.Z, 1f);
+                for (int k = 0; k < 3; k++) {
+                    float T = t - k * spacing;
+                    if (T <= tMin + 0.3f) {
+                        break;
+                    }
+                    ElementAt(s, j, t, T, out Vector2 posQ, out Vector2 velQ);
+                    if (s.Kind == SplashKind.Tile && posQ.Y < 0f) {
+                        continue;
+                    }
+                    //头最大,身后的珠按链上半径剖面缩
+                    float u = MathHelper.Clamp(T / t, 0f, 1f);
+                    float rProf = fa.W * (k == 0 ? 1.08f : 0.65f + 0.35f * u);
+                    PRTLoader.NewParticle<PRT_KikasaInkSpray>(ToWorld(s, posQ), ToWorldDir(s, velQ),
+                        PickColor(s.Palette), SprayScale(rProf))
+                        ?.Configure(Main.rand.Next(14, 22), s.Palette.Deep, s.Palette.Sheen, s.LakeY, false, true, Gravity);
+                }
             }
         }
 
@@ -365,6 +439,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     }
                 }
                 ShedTips(s);
+                if (s.Age == HandoffFrame) {
+                    Handoff(s);
+                }
             }
         }
 
@@ -395,6 +472,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 gd.Textures[1] = noise;
                 gd.SamplerStates[1] = SamplerState.LinearWrap;
                 fx.CurrentTechnique = fx.Techniques["TechSplash"];
+                fx.Parameters["uLife"]?.SetValue((float)LifeFrames);
                 foreach (Splash s in list) {
                     if (!view.Contains(s.Pos.ToPoint())) {
                         continue;
@@ -417,25 +495,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         }
 
         /// <summary>
-        /// 一朵一个 quad:根钉在撞击点(origin=(半宽, uRootV·quadH)),quad "上"对准法线
-        /// (rotation=法线角+PiOver2,同墨滴 quad 朝向法),尺寸由 SolveFingers 的让位量折算
+        /// 一朵一个 quad:根钉在撞击点(origin=(RootU·W, RootV·H)),quad "上"对准法线
+        /// (rotation=法线角+PiOver2,同墨滴 quad 朝向法),尺寸与根 uv 由 SolveQuad 的轨迹包围盒折算
         /// </summary>
         private static void DrawQuad(SpriteBatch sb, Effect fx, Texture2D canvas, Splash s) {
-            float quadW = 2f * s.HalfWH * s.HPx;
-            float quadH = (s.TopH + s.BottomH) * s.HPx;
-            float rootV = s.TopH / (s.TopH + s.BottomH);
-            //世界重力在 quad 空间的方向:x=切向分量,y=法向分量
-            Vector2 gravQ = new(s.Tangent.Y, s.Normal.Y);
-
-            fx.Parameters["uAge"]?.SetValue(s.Age / (float)LifeFrames);
+            fx.Parameters["uT"]?.SetValue((float)s.Age);
+            fx.Parameters["uQuad"]?.SetValue(new Vector4(s.QuadW, s.QuadH, s.RootU, s.RootV));
+            fx.Parameters["uGrav"]?.SetValue(GravQ(s));
+            fx.Parameters["uSurfaceClip"]?.SetValue(s.Kind == SplashKind.Tile ? 1f : 0f);
+            fx.Parameters["uRimMax"]?.SetValue(s.RimMax);
             fx.Parameters["uKe"]?.SetValue(s.Ke);
             fx.Parameters["uSkew"]?.SetValue(s.Skew);
             fx.Parameters["uFingerN"]?.SetValue((float)s.FingerN);
-            fx.Parameters["uFinger"]?.SetValue(s.Fingers);
-            fx.Parameters["uGravQ"]?.SetValue(gravQ);
-            fx.Parameters["uHScale"]?.SetValue(s.HPx / quadH);
-            fx.Parameters["uRootV"]?.SetValue(rootV);
-            fx.Parameters["uHalfWH"]?.SetValue(s.HalfWH);
+            fx.Parameters["uFinger"]?.SetValue(s.FingerA);
+            fx.Parameters["uFingerB"]?.SetValue(s.FingerB);
             fx.Parameters["uSeed"]?.SetValue(s.Seed);
             fx.Parameters["uColBody"]?.SetValue(s.Palette.Body.ToVector3());
             fx.Parameters["uColDeep"]?.SetValue(s.Palette.Deep.ToVector3());
@@ -444,37 +517,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             fx.CurrentTechnique.Passes[0].Apply();
 
             float rotation = s.Normal.ToRotation() + MathHelper.PiOver2;
-            Vector2 origin = new(canvas.Width * 0.5f, canvas.Height * rootV);
+            Vector2 origin = new(canvas.Width * s.RootU, canvas.Height * s.RootV);
             sb.Draw(canvas, s.Pos - Main.screenPosition, null, Color.White, rotation, origin,
-                new Vector2(quadW / canvas.Width, quadH / canvas.Height), SpriteEffects.None, 0f);
+                new Vector2(s.QuadW / canvas.Width, s.QuadH / canvas.Height), SpriteEffects.None, 0f);
         }
 
-        /// <summary>精灵回退:沿各指角画速度拉伸的纺锤(暗缘+体),长度走同一包络,后半寿命随根断供缩短</summary>
+        /// <summary>精灵回退:每指沿抛物线取四段,用速度拉伸的纺锤连成链(暗缘+体),末三帧淡出</summary>
         private static void DrawFallback(SpriteBatch sb, Splash s) {
             Texture2D tex = CWRAsset.Extra_98?.Value;
             if (tex == null) {
                 return;
             }
-            float age = s.Age / (float)LifeFrames;
-            float env = LenEnvelope(age);
-            float rootCut = MathHelper.Clamp((age - 0.35f) / 0.45f, 0f, 1f) * 0.85f;
-            float alive = 1f - MathHelper.Clamp((age - 0.9f) / 0.1f, 0f, 1f);
+            float t = s.Age;
+            float alive = 1f - MathHelper.Clamp((t - (LifeFrames - 3f)) / 3f, 0f, 1f);
             Vector2 origin = tex.Size() * 0.5f;
-            for (int i = 0; i < s.FingerN; i++) {
-                Vector4 f = s.Fingers[i];
-                float sa = MathF.Sin(f.X);
-                float ca = MathF.Cos(f.X);
-                Vector2 dir = s.Tangent * sa + s.Normal * ca;
-                float lenPx = f.Y * env * s.HPx;
-                float startPx = rootCut * lenPx;
-                float bodyLen = MathF.Max(lenPx - startPx, 2f);
-                Vector2 mid = s.Pos + s.Tangent * (sa * RootSpread * s.HPx) + dir * (startPx + bodyLen * 0.5f)
-                    - Main.screenPosition;
-                float rot = dir.ToRotation() + MathHelper.PiOver2;
-                Vector2 scale = new(f.Z * s.HPx * 2f / tex.Width * 1.6f, bodyLen / tex.Height * 1.4f);
-                sb.Draw(tex, mid, null, s.Palette.Deep * (0.9f * alive), rot, origin,
-                    scale * new Vector2(1.3f, 1.04f), SpriteEffects.None, 0f);
-                sb.Draw(tex, mid, null, s.Palette.Body * alive, rot, origin, scale, SpriteEffects.None, 0f);
+            for (int j = 0; j < s.FingerN; j++) {
+                Vector4 fa = s.FingerA[j];
+                float tMin = MathF.Max(0f, t - s.FingerB[j].Y);
+                const int Segs = 4;
+                for (int k = 0; k < Segs; k++) {
+                    float T0 = MathHelper.Lerp(tMin, t, k / (float)Segs);
+                    float T1 = MathHelper.Lerp(tMin, t, (k + 1) / (float)Segs);
+                    ElementAt(s, j, t, T0, out Vector2 a, out _);
+                    ElementAt(s, j, t, T1, out Vector2 b, out _);
+                    if (s.Kind == SplashKind.Tile && a.Y < 0f && b.Y < 0f) {
+                        continue;
+                    }
+                    Vector2 mid = ToWorld(s, (a + b) * 0.5f) - Main.screenPosition;
+                    Vector2 seg = ToWorldDir(s, b - a);
+                    float len = MathF.Max(seg.Length(), 2f);
+                    float rot = seg.ToRotation() + MathHelper.PiOver2;
+                    float radius = fa.W * (k == Segs - 1 ? 1.3f : 0.7f);
+                    Vector2 scale = new(radius * 2f / tex.Width * 1.6f, len / tex.Height * 1.5f);
+                    sb.Draw(tex, mid, null, s.Palette.Deep * (0.9f * alive), rot, origin,
+                        scale * new Vector2(1.3f, 1.04f), SpriteEffects.None, 0f);
+                    sb.Draw(tex, mid, null, s.Palette.Body * alive, rot, origin, scale, SpriteEffects.None, 0f);
+                }
             }
         }
     }

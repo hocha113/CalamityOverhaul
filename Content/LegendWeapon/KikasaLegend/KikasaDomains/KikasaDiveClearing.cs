@@ -32,8 +32,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>张开：指数逼近，约 18 帧到 97%</summary>
         private const float OpenRate = 0.18f;
 
-        /// <summary>收拢：线性快收，约 9 帧合回中心（出水不是淡出，是水合回来）</summary>
-        private const float CloseStep = 0.11f;
+        /// <summary>出水合回的总帧数（满值起步）：清圈强度与整湖淡化同走一条 S 曲线（慢起慢收）从出水时的值回零。
+        /// 旧版 9~10 帧线性快收实机判"略快、突兀"（2026-09-09），改为半秒余的水合回来</summary>
+        private const int ExitFrames = 32;
+
+        /// <summary>刚沾水就出来（包络还很小）时的合回帧数下限：小值不拖半秒长尾</summary>
+        private const int ExitFramesMin = 10;
 
         //==================== 潜水视角包络 ====================
 
@@ -45,9 +49,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         /// <summary>整湖淡化的指数逼近速率：约 55 帧到 90%，与"眼睛适应"的体感同量级</summary>
         private const float ClarityRate = 0.04f;
-
-        /// <summary>出水线性收回：约 10 帧，与清圈同口径（水合回来，不是淡出）</summary>
-        private const float ClarityCloseStep = 0.10f;
 
         /// <summary>清圈半径随 Clarity 外扩的倍数：圈缘那一线血沫水膜就是清明扫过整湖的前沿</summary>
         private const float FrontGrow = 5f;
@@ -61,20 +62,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         private static int clarityDelay;
         private static int ambientBubbleTimer;
 
+        //出水合回：出水一帧锁下当时的两包络值与前沿位置，之后按 S 曲线回零。
+        //前沿位置冻结是关键：若让半径继续跟着 Clarity 缩，整湖清明退场时圈会从屏外一路冲回人身，
+        //读成"可视圈猛地收拢"；冻住后整湖只是均匀合回血镜，圈缘不出场
+        private static bool exiting;
+        private static int exitTimer;
+        private static int exitFrames;
+        private static float exitStrength0;
+        private static float exitClarity0;
+
         /// <summary>清圈在场强度 0~1，同时驱动半径与清水量：圈从人身中心张开、合回</summary>
         public static float Strength { get; private set; }
 
-        /// <summary>潜水视角 0~1：整湖淡化程度，着色器 uDive；清圈开满后延迟起爬，出水快收</summary>
+        /// <summary>潜水视角 0~1：整湖淡化程度，着色器 uDive；清圈开满后延迟起爬，出水按 S 曲线合回</summary>
         public static float Clarity { get; private set; }
 
         /// <summary>圈心世界坐标（本机玩家中心），绘制时按当前相机投影</summary>
         public static Vector2 CenterWorld { get; private set; }
+
+        /// <summary>驱动清圈半径外扩与让位的那份 Clarity：入水期就是 Clarity，出水期冻结在出水一帧的值</summary>
+        private static float FrontClarity => exiting ? exitClarity0 : Clarity;
 
         public static void Clear() {
             submergedFrames = 0;
             confirmed = false;
             clarityDelay = 0;
             ambientBubbleTimer = 0;
+            exiting = false;
+            exitTimer = 0;
+            exitFrames = ExitFrames;
+            exitStrength0 = 0f;
+            exitClarity0 = 0f;
             Strength = 0f;
             Clarity = 0f;
         }
@@ -101,6 +119,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             confirmed = target;
 
             if (target) {
+                //合回半途又沉回去：从当前值继续张开，不跳变
+                exiting = false;
                 CenterWorld = player.Center;
                 Strength += (1f - Strength) * OpenRate;
                 //清圈张开后再等一拍，眼睛才开始适应这片水：整湖淡化起爬
@@ -114,8 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 }
             }
             else {
-                Strength = MathF.Max(Strength - CloseStep, 0f);
-                Clarity = MathF.Max(Clarity - ClarityCloseStep, 0f);
+                UpdateExit();
                 clarityDelay = 0;
                 //收拢期圈心继续跟人，圈不会钉在原地
                 if (Strength > 0f && player?.active == true) {
@@ -132,9 +151,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
         }
 
+        //出水合回：两包络沿同一条 smoothstep 从出水时的值回零，慢起慢收，
+        //既不是旧版的线性快收，也不是淡出（水是合回来的，只是合得从容）
+
+        private static void UpdateExit() {
+            if (Strength <= 0f && Clarity <= 0f) {
+                exiting = false;
+                return;
+            }
+            if (!exiting) {
+                exiting = true;
+                exitTimer = 0;
+                exitStrength0 = Strength;
+                exitClarity0 = Clarity;
+                //合回时长随出水时的包络量缩放：满值半秒余，刚沾水就出来只走十来帧
+                exitFrames = (int)MathHelper.Lerp(ExitFramesMin, ExitFrames,
+                    MathHelper.Clamp(MathF.Max(exitStrength0, exitClarity0), 0f, 1f));
+            }
+            exitTimer++;
+            float s = MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp(exitTimer / (float)exitFrames, 0f, 1f));
+            float keep = 1f - s;
+            Strength = exitStrength0 * keep;
+            Clarity = exitClarity0 * keep;
+            if (exitTimer >= exitFrames) {
+                Strength = 0f;
+                Clarity = 0f;
+                exiting = false;
+            }
+        }
+
         /// <summary>
         /// 着色器 uClearRing 打包：xy=圈心 uv，z=半径像素（≥1），w=强度；闲置 w=0。
         /// 潜水视角起爬后半径按 Clarity 外扩成前沿、强度同步让位，Clarity 到 1 时圈完全消失只剩整湖淡化；
+        /// 出水期前沿位置与让位量冻结在出水一帧（<see cref="FrontClarity"/>），圈不会从屏外冲回人身；
         /// uDive 即 Clarity
         /// </summary>
         internal static void FillUniforms(Effect effect, Vector2 viewSize) {
@@ -147,10 +196,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 CenterWorld - Main.screenPosition,
                 Main.GameViewMatrix.TransformationMatrix) / viewSize;
             float eased = 1f - MathF.Pow(1f - Strength, 2f);
+            float front = FrontClarity;
             float radiusPx = MathF.Max(
-                RadiusPx * Main.GameViewMatrix.Zoom.X * eased * (1f + FrontGrow * Clarity), 1f);
+                RadiusPx * Main.GameViewMatrix.Zoom.X * eased * (1f + FrontGrow * front), 1f);
             effect.Parameters["uClearRing"]?.SetValue(new Vector4(
-                centerUv.X, centerUv.Y, radiusPx, Strength * (1f - Clarity)));
+                centerUv.X, centerUv.Y, radiusPx, Strength * (1f - front)));
         }
 
         //屏幕内水线下随机点生一颗小血泡缓升，节流间隔随机；只在潜水视角成立时跑

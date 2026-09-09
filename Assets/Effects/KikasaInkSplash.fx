@@ -1,180 +1,209 @@
 // ============================================================================
-//KikasaInkSplash.fx 鬼伞墨滴命中水花:命中一瞬爆发,14 帧内崩解干净,不留任何滞留层
-//TechSplash:冠状离散液指。撞击点为根,沿撞击法线展开一把不均匀的扇——
-//           uFinger[7] 的角/长/根半宽/相位由 C# 决定,飞沫粒子从同一组指尖上断下来;
-//           起手 EaseOutBack 过冲(快),之后指长按开方缓增(液体只会继续飞,不会缩回);
-//           每指沿长按解析正弦颈缩(Plateau-Rayleigh 波长规则,珠是圆的,噪声只扰相位),
-//           波谷切珠,断裂阈值随寿命与沿长抬升(越老越碎、指尖先碎);
-//           根部随寿命断供(薄片先排空),断离段随 uGravQ 剪切下坠(指尖多、根少);
-//           冠膜=指根之间被顶起的薄片,头三成寿命里按噪声阈值撕成洞再消失(指是从它上面撕出来的);
-//           溅裙=命中一瞬被压扁摊开的极薄毛边片,只活前三成寿命;收场=崩解不淡出。
-//           厚(叠合)处沉、单指薄处透成飞白,血芯只在根部头几帧,窄湿光只在主指一侧头几帧。
-//           全部由 uAge(0~1,CPU life 驱动)驱动,无 uTime:暂停即冻结,多端一致。
-//坐标全笛卡尔;直线算术+普通 tex2D,零流控(step/smoothstep/lerp 门乘),FNA3D 安全;
+//KikasaInkSplash.fx 鬼伞墨滴命中水花:命中一瞬爆发,十几帧内崩解干净,不留任何滞留层
+//二版(2026-09-09):一版是"沿直线摆放的液指 + 起手/断裂/断供三段包络",实机被判
+//"像帧图动画,不够液体"。根因:形状是摆出来的,不是流出来的——指是直线、珠链相位钉在空间里
+//(只会出现消失不会滑动)、三段包络是离散状态切换。二版改成像素空间的**拉格朗日弹道模型**:
+//  · 每指是一根液体射流:流体元自指根以初速 v 沿方向 d 喷出,之后只受重力(uGrav,px/f²),
+//    射流此刻的形状 = 历次喷出元此刻所在位置连成的线(streakline),天然是弯下去的抛物线;
+//    像素→流体元的反解:沿 d 的位置 f(T)=v(T)·T+½g_d·T² 由二阶初猜+一步牛顿解出该像素的元龄 T
+//  · 晚喷出的元更慢(薄片余能衰减,v(T)=v0·(0.65+0.35·T/te)),链从根被"拉"出来、头快尾慢
+//  · 颈缩珠链的相位是 T 的函数(拉格朗日):珠贴着流体一起往外滑,不是原地闪;
+//    颈缩幅度与断裂阈值随元龄增长(Plateau-Rayleigh 扰动随时间放大):指尖先碎、根部仍连
+//  · 半径沿链:根 R0 → 中段拉细 → 头部鼓成液滴头(质量往头聚);头是真正的圆球
+//  · 喷出在 te 帧后停止:此后最新元龄 Tmin=t−te>0,链脱根整体继续飞、后端拉细断成珠串
+//  · 指根落在铺开薄片的边缘上(边缘半径 rimR(t) 随时间外扩后停),不是从一个点射出:
+//    边缘是 3D 圆环的侧视投影,根位 x=c·rimR、c=cos(方位角),两翼指外倾、正前正后的指近直立
+//  · 甩尾:横向正弦沿链传播,尾端幅大
+//  · 落回表面(uSurfaceClip,y<0)即消失=落地了,重力真的在收尾
+//  · 逐指湿光带在朝天一侧(upQ=−重力方向),随元龄褪成哑光;薄韧带半透成飞白、头与叠合处沉
+//  · 薄片=撞击点铺开的透镜薄膜,边缘环状略厚+噪声波峰隆起,质量随喷出流失而消失;
+//    撞击芯=头几帧的一团墨(带血芯)随铺开缩没
+//  没有任何"阶段切换":每一帧都是同一套物理往前推。全部由 uT(帧)驱动,无 uTime:暂停即冻结,多端一致。
+//坐标:像素空间,根为原点,+y 沿撞击法线离面,+x 沿贴面切向。
+//直线算术+普通 tex2D,零流控(step/smoothstep/lerp 门乘),FNA3D 安全;
 //绑定噪声实测值域 0.227~0.776,阈值一律过 nrm() 归一。
-//预乘输出进 AlphaBlend 批;消费入口 KikasaRains/KikasaInkSplashFX.cs
+//旧版效果框架(fx_2_0)不去重内联函数里的字面常量,7 份 finger() 展开会顶到 224 常量寄存器:
+//字面数尽量并入 kA/kB 两个 float4 由主函数传入,函数体内少写数字(编译失败 X4507 即此症)。
+//预乘输出进 AlphaBlend 批;消费入口 KikasaRains/KikasaInkSplashFX.cs(指几何与轨迹公式两端同式)
 // ============================================================================
 
-float uAge;        //寿命相位 0~1
-float uKe;         //撞击动能 0~1(溅裙尺度)
-float uSkew;       //切向偏斜 -1~1:斜撞往前甩,溅裙与血芯随之偏
-float uFingerN;    //液指数 4~7(整数值,多余槽位门乘归零)
-float4 uFinger[7]; //x=角(rad,自法线,+x 侧为正) y=长(H 单位) z=根半宽(H 单位) w=相位
-float2 uGravQ;     //世界重力在 quad 空间的单位方向(x=切向,y=法向;y 正=沿法线离面)
-float uHScale;     //一个 H 的 v 跨度(H/quadH)
-float uRootV;      //根所在 v
-float uHalfWH;     //quad 半宽(H 单位)
+float uT;           //寿命帧数 0~uLife(CPU 驻帧驱动)
+float uLife;        //总寿命(帧)
+float4 uQuad;       //x=quadW px  y=quadH px  z=根 u  w=根 v
+float2 uGrav;       //重力 px/f² 在 quad 空间:x=切向 y=法向(正=离面)
+float uSurfaceClip; //1=贴面(y<0 的流体已落地消失) 0=无面(沾敌/空中)
+float uRimMax;      //薄片最大半宽 px,指根随它外扩
+float uKe;          //撞击动能 0~1(薄片厚度/撞击芯)
+float uSkew;        //切向偏斜 -1~1(薄片与撞击芯往前带)
+float uFingerN;     //液指数 ≤7(整数值,多余槽位门乘归零)
+float4 uFinger[7];  //x,y=发射方向(quad 空间单位向量) z=初速 px/f  w=根半宽 px
+float4 uFingerB[7]; //x=相位  y=喷出时长 te(帧)  z=甩尾幅 px  w=指根落位系数 c∈[-1,1]
 float uSeed;
-float3 uColBody;   //墨体
-float3 uColDeep;   //墨缘/叠合沉色
-float3 uColCore;   //血芯(根部头几帧)
-float3 uColSheen;  //湿光(主指一侧窄带)
+float3 uColBody;    //墨体
+float3 uColDeep;    //墨缘/叠合沉色
+float3 uColCore;    //血芯(撞击芯头几帧)
+float3 uColSheen;   //湿光
 
 sampler uNoiseTex : register(s1);
 
 //绑定噪声归一:实测值域 0.227~0.776,映到 0~1 后阈值才有效
 float nrm(float n) { return saturate((n - 0.23) * 1.82); }
 
-//指根沿切向的摊开量(H 单位):指不是从一个点射出,而是从摊开的薄片沿上立起
-static const float RootSpread = 0.18;
-
-//单指:p 为像素位置(H 单位,根为原点,y 沿法线),f=(角,长,根半宽,相位),w=该指权重(0/1 门)
-//返回覆盖 0~1;thick 回报相对厚度供叠合沉色
-float fingerMask(float2 p, float4 f, float w, float rise, float grow, float brk, float neckAmp,
-    float rootCut, float fall, float eN, out float thick)
+//单指。p=像素(px,根原点),fa=(dx,dy,v0,R0),fb=(相位,te,甩尾幅,c),w=槽位权重,t=当前帧,
+//rimR=此刻薄片半宽,eJ=共享蚀边抖动(px,带符号),upQ=朝天方向,
+//kA=(0.65,0.35,0.5,0.9) kB=(6.2832/6.4, 1.0/7.0, 1.6, 0.4):常量打包传入,省寄存器。
+//返回覆盖;thick=相对厚度(头厚),sheen=湿光
+float finger(float2 p, float4 fa, float4 fb, float w, float t, float rimR, float eJ, float2 upQ,
+    float4 kA, float4 kB, out float thick, out float sheen)
 {
-    float sa = sin(f.x);
-    float ca = cos(f.x);
-    float2 dir = float2(sa, ca);
-    float2 nrm2 = float2(ca, -sa);
-    float2 pl = p - float2(sa * RootSpread, 0.0);
-    float len = f.y * (rise + grow);
+    float2 d = fa.xy;
+    float2 n = float2(-d.y, d.x);
+    float v0 = fa.z;
+    float R0 = fa.w;
+    float te = fb.y;
+    float2 pl = p - float2(fb.w * rimR, 0.0);
+    float s = dot(pl, d);
+    float q = dot(pl, n);
+    float gd = dot(uGrav, d);
+    float gn = dot(uGrav, n);
 
-    //坠落剪切:断离段(靠指尖)坠得多、根几乎不坠;沿长权重用未坠位置估,直线算术
-    float sFrac = saturate(dot(pl, dir) / max(len, 1e-3));
-    float2 pf = pl - uGravQ * (fall * sFrac);
-    float s = dot(pf, dir);
-    float t = dot(pf, nrm2);
-    float u = saturate(s / max(len, 1e-3));
+    //反解元龄 T:先按恒速+重力的二阶初猜,再对含速度衰减的 f(T)=v(T)·T+½g_d·T² 做一步牛顿;f' 钳正
+    float T0 = s / v0;
+    float T = T0 - kA.z * gd * T0 * T0 / v0;
+    float sv = saturate(T / te);
+    float vT = v0 * (kA.x + kA.y * sv);
+    float dv = v0 * kA.y / te * (1.0 - step(te, T));
+    float f = vT * T + kA.z * gd * T * T;
+    float fp = max(vT + dv * T + gd * T, kB.w);
+    T -= (f - s) / fp;
+    T = clamp(T, -1.5, t + 1.5);
 
-    //沿长收锥,指尖细
-    float R = f.z * (1.0 - 0.72 * u);
-    //解析正弦颈缩:波长约 4.4 倍根半宽,噪声只扰相位与幅度让珠链不机械
-    float nb = nrm(tex2D(uNoiseTex, float2(f.w * 0.37 + uSeed, s * 0.55 + f.w)).r);
-    float k = 6.2832 / max(f.z * 4.4, 0.02);
-    float wave = 0.5 + 0.5 * sin(s * k + f.w * 6.0 + (nb - 0.5) * 2.2);
-    //断裂阈值:指尖先碎(沿长抬升),波谷切断=一颗颗圆珠
-    float brkL = brk + 0.35 * u;
-    float bead = smoothstep(brkL - 0.16, brkL + 0.16, wave);
-    float rad = R * (1.0 - neckAmp * (1.0 - wave)) * (0.85 + 0.3 * nb) * bead;
-    //指尖外渐小滴串,超长三成归零;根部断供:rootCut 之下无物;s<0 无物
-    rad *= 1.0 - smoothstep(len, len * 1.3, s);
-    rad *= smoothstep(rootCut * len - 0.03, rootCut * len + 0.02, s);
-    rad *= step(-0.02, s);
+    //链存在的元龄区间:[Tmin,t],喷出停止后 Tmin 抬升=链脱根
+    float Tmin = max(0.0, t - te);
+    float inRange = smoothstep(Tmin - 0.6, Tmin + kB.w, T) * (1.0 - smoothstep(t - 0.3, t + 0.3, T));
 
-    float d = abs(t) + (eN - 0.5) * 0.02;
-    float m = (1.0 - smoothstep(rad - 0.012, rad + 0.006, d)) * w;
-    //半径归零处不得留一根发丝线
-    m *= smoothstep(0.003, 0.012, rad);
-    thick = m * saturate(rad / max(f.z, 1e-3));
+    //珠链:相位随元龄走(珠贴着流体外滑),波长≈6.4 倍根半宽;颈缩与断裂随元龄放大,指尖先碎;
+    //断开时质量往珠里聚:波峰随颈缩幅度鼓起(Rayleigh 断滴比韧带粗),波谷收零
+    float omega = kB.x * v0 / R0;
+    float wave = kA.z + kA.z * sin(T * omega + fb.x + eJ * kB.z);
+    float age = saturate((T - 1.0) * kB.y);
+    float neckAmp = kA.w * age * sqrt(age);
+    float brk = lerp(-0.35, 0.62, age);
+    float bead = smoothstep(brk - 0.17, brk + 0.17, wave);
+    //半径沿链:根 R0 → 中段拉细到 0.65 → 近头回粗(质量往头聚),不做球棒头
+    float u = saturate(T / max(t, 0.01));
+    float Rprof = R0 * (1.0 - kA.y * smoothstep(0.0, kA.z, u) + kA.y * smoothstep(0.6, 1.0, u));
+    float rad = Rprof * (1.0 - neckAmp * (1.0 - wave)) * (1.0 + 0.45 * neckAmp * wave) * bead;
+
+    //甩尾:横向正弦沿链传播(相位含 t),尾端幅大;元的横向位置=重力偏折+甩尾
+    float whip = fb.z * sin(T * kA.w - t * kA.y + fb.x + fb.x) * saturate(T * 0.25);
+    float cq = kA.z * gn * T * T + whip;
+    float dq = abs(q - cq) + eJ;
+    float body = (1.0 - smoothstep(rad - kA.w, rad + 0.7, dq)) * inRange;
+    //半径归零处不得留发丝线
+    body *= smoothstep(0.25, kA.w, rad);
+
+    //液滴头:最早喷出的元,沿自身速度方向拉长的泪滴(运动的液体必须各向异性),略随元龄收一点
+    float vH = v0 * (kA.x + kA.y * saturate(t / te));
+    float whipH = fb.z * sin(t * 0.55 + fb.x + fb.x) * saturate(t * 0.25);
+    float2 rHead = d * (vH * t + kA.z * gd * t * t) + n * (kA.z * gn * t * t + whipH);
+    float2 hv = normalize(d * vH + uGrav * t + float2(0.0001, 0.0));
+    float2 rel = pl - rHead;
+    float along = dot(rel, hv) / 1.45;
+    float across = dot(rel, float2(-hv.y, hv.x));
+    float Rh = R0 * 1.08 * (1.0 - 0.1 * saturate((t - 8.0) * 0.125));
+    float dh = sqrt(along * along + across * across) + eJ;
+    float head = 1.0 - smoothstep(Rh - kA.w, Rh + 0.7, dh);
+
+    float m = max(body, head) * w;
+    thick = (body * saturate(rad / R0) + head * 1.2) * w;
+
+    //湿光:朝天一侧的窄带,新鲜流体亮、随元龄褪成哑光。头上不点高光:一稿头顶亮点让指读成"长眼睛的触手"
+    float sgn = sign(dot(n, upQ) + 0.0001);
+    float bandW = 0.3 * max(rad, kA.z) + kA.z;
+    float bx = (q - cq - sgn * kA.z * rad) / bandW;
+    float fresh = 1.0 - smoothstep(1.0, 9.0, T);
+    sheen = exp2(-bx * bx * 1.4) * body * fresh * 0.7 * w;
     return m;
 }
 
 float4 PSSplash(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLOR0
 {
-    float xc = (coords.x - 0.5) * 2.0;
-    float2 p = float2(xc * uHalfWH, (uRootV - coords.y) / max(uHScale, 0.004));
+    float2 p = float2((coords.x - uQuad.z) * uQuad.x, (uQuad.w - coords.y) * uQuad.y);
+    float t = uT;
+    //薄片边缘外扩:快起后停
+    float rimR = uRimMax * (1.0 - exp(-t / 2.2));
+    float2 upQ = -normalize(uGrav + float2(0.0, 0.0001));
+    float4 kA = float4(0.65, 0.35, 0.5, 0.9);
+    float4 kB = float4(6.2832 / 6.4, 1.0 / 7.0, 1.6, 0.4);
 
-    //起手 EaseOutBack 过冲:前四分之一寿命窜到 1.08 再落回 1;之后开方缓增
-    float tr = saturate(uAge / 0.25);
-    float e = tr - 1.0;
-    float rise = 1.0 + 2.3 * e * e * e + 1.3 * e * e;
-    float grow = 0.22 * sqrt(saturate((uAge - 0.25) / 0.75));
-    //越老越碎:断裂阈值与颈缩幅度随寿命抬升;根部随寿命断供;断离段随寿命坠落
-    float brk = lerp(-0.2, 0.7, smoothstep(0.2, 1.0, uAge));
-    float neckAmp = lerp(0.15, 0.7, smoothstep(0.1, 0.9, uAge));
-    float rootCut = smoothstep(0.35, 0.8, uAge) * 0.85;
-    float ef = max(uAge - 0.4, 0.0);
-    float fall = 1.2 * ef * ef;
-
-    //共享蚀边(中频、略毛)
-    float eN = nrm(tex2D(uNoiseTex, p * 0.9 + uSeed * 2.1).g);
+    //共享蚀边(中频、略毛,折成 ±0.6px 抖动)与低频撕裂噪声
+    float eN = nrm(tex2D(uNoiseTex, p * 0.045 + uSeed * 2.1).g);
+    float eJ = (eN - 0.5) * 1.2;
+    float nTear = nrm(tex2D(uNoiseTex, p * float2(0.02, 0.05) + uSeed * 1.3 + 0.41).r);
+    float nCrest = nrm(tex2D(uNoiseTex, float2(p.x * 0.07 + uSeed * 3.7, 0.31)).b);
 
     float th0, th1, th2, th3, th4, th5, th6;
-    float m0 = fingerMask(p, uFinger[0], step(0.5, uFingerN), rise, grow, brk, neckAmp, rootCut, fall, eN, th0);
-    float m1 = fingerMask(p, uFinger[1], step(1.5, uFingerN), rise, grow, brk, neckAmp, rootCut, fall, eN, th1);
-    float m2 = fingerMask(p, uFinger[2], step(2.5, uFingerN), rise, grow, brk, neckAmp, rootCut, fall, eN, th2);
-    float m3 = fingerMask(p, uFinger[3], step(3.5, uFingerN), rise, grow, brk, neckAmp, rootCut, fall, eN, th3);
-    float m4 = fingerMask(p, uFinger[4], step(4.5, uFingerN), rise, grow, brk, neckAmp, rootCut, fall, eN, th4);
-    float m5 = fingerMask(p, uFinger[5], step(5.5, uFingerN), rise, grow, brk, neckAmp, rootCut, fall, eN, th5);
-    float m6 = fingerMask(p, uFinger[6], step(6.5, uFingerN), rise, grow, brk, neckAmp, rootCut, fall, eN, th6);
+    float sh0, sh1, sh2, sh3, sh4, sh5, sh6;
+    float m0 = finger(p, uFinger[0], uFingerB[0], step(0.5, uFingerN), t, rimR, eJ, upQ, kA, kB, th0, sh0);
+    float m1 = finger(p, uFinger[1], uFingerB[1], step(1.5, uFingerN), t, rimR, eJ, upQ, kA, kB, th1, sh1);
+    float m2 = finger(p, uFinger[2], uFingerB[2], step(2.5, uFingerN), t, rimR, eJ, upQ, kA, kB, th2, sh2);
+    float m3 = finger(p, uFinger[3], uFingerB[3], step(3.5, uFingerN), t, rimR, eJ, upQ, kA, kB, th3, sh3);
+    float m4 = finger(p, uFinger[4], uFingerB[4], step(4.5, uFingerN), t, rimR, eJ, upQ, kA, kB, th4, sh4);
+    float m5 = finger(p, uFinger[5], uFingerB[5], step(5.5, uFingerN), t, rimR, eJ, upQ, kA, kB, th5, sh5);
+    float m6 = finger(p, uFinger[6], uFingerB[6], step(6.5, uFingerN), t, rimR, eJ, upQ, kA, kB, th6, sh6);
     float body = max(max(max(m0, m1), max(m2, m3)), max(max(m4, m5), m6));
     float thick = saturate(th0 + th1 + th2 + th3 + th4 + th5 + th6);
+    float sheen = saturate(sh0 + sh1 + sh2 + sh3 + sh4 + sh5 + sh6);
 
-    //冠膜:指根之间那层被顶起的薄片,头三成寿命里被撕成指——半径随起手涨,
-    //撕裂阈值随寿命抬升:先撕出洞,再只剩指根一圈,最后没有;比指薄(飞白色),不是实心丘
-    float sheetR = 0.26 * rise * (0.7 + 0.3 * uKe);
-    float2 ps = float2((p.x - uSkew * 0.08) * 0.72, p.y - 0.02);
-    float nSh = nrm(tex2D(uNoiseTex, ps * 2.3 + uSeed * 3.3).r);
-    float sheetEdge = 1.0 - smoothstep(sheetR * (0.75 + 0.3 * (nSh - 0.5)), sheetR * (1.05 + 0.3 * (nSh - 0.5)), length(ps));
-    //噪声高处膜厚活得久:阈值抬过噪声即撕穿,抬到 1.15 时整片没有
-    float tearLvl = lerp(-0.2, 1.15, smoothstep(0.04, 0.32, uAge));
-    float nTear = nrm(tex2D(uNoiseTex, ps * 3.7 + uSeed * 1.3 + 0.41).g);
-    float sheet = sheetEdge * smoothstep(tearLvl - 0.15, tearLvl + 0.15, nTear)
-        * step(-0.02, p.y) * (1.0 - body);
+    //落回表面即消失:贴面时 y<0 的流体已经落地
+    float clip = lerp(1.0, smoothstep(-3.0, -0.5, p.y), uSurfaceClip);
+    body *= clip;
+    thick *= clip;
+    sheen *= clip;
 
-    //溅裙:命中一瞬被压扁摊开的极薄透镜片(中厚端薄),EaseOut 向两侧摊、偏向偏斜侧,
-    //低频噪声把片撕成几段(不是颗粒噪点),阈值随寿命抬升越撕越碎,只活前三成寿命
-    float skT = saturate(uAge / 0.2);
-    float skE = 1.0 - (1.0 - skT) * (1.0 - skT);
-    float skirtW = lerp(0.25, 0.8, skE) * uHalfWH;
-    float skirtH = (0.045 + 0.045 * uKe) * (1.0 - 0.45 * skT);
-    float xs = p.x - uSkew * 0.25 * skirtW;
-    float xn = saturate(abs(xs) / max(skirtW, 1e-3));
-    float lensH = skirtH * (1.0 - xn * xn);
-    float nSk = nrm(tex2D(uNoiseTex, float2(p.x * 1.4 + uSeed * 4.3, p.y * 2.6 + uSeed * 1.9)).b);
-    float skirtY = 1.0 - smoothstep(lensH * 0.7, lensH * (1.0 + 0.3 * nSk) + 0.004, abs(p.y - skirtH * 0.25));
-    float skirtTearLvl = lerp(0.3, 0.75, smoothstep(0.05, 0.3, uAge));
-    float skirtTear = smoothstep(skirtTearLvl - 0.12, skirtTearLvl + 0.12, nSk);
-    float skirtLife = smoothstep(0.0, 0.03, uAge) * (1.0 - smoothstep(0.15, 0.3, uAge));
-    float skirt = skirtY * skirtTear * skirtLife * step(xn, 0.999) * (1.0 - body) * (1.0 - sheet);
+    //薄片:撞击点铺开的透镜薄膜,向边缘变薄、边缘环略厚、噪声波峰隆起;质量随喷出流失而消失,晚期被撕
+    float h0 = 3.0 + 3.0 * uKe;
+    float massLeft = 1.0 - smoothstep(3.0, 10.0, t);
+    float hT = h0 * (1.0 - 0.5 * saturate(t * 0.125));
+    float tor = (abs(p.x) - rimR) / 3.0;
+    float torus = exp2(-tor * tor * 1.4427);
+    float hLocal = hT * (1.0 - 0.35 * smoothstep(0.0, max(rimR, 1.0), abs(p.x))) + 1.4 * torus + 1.5 * smoothstep(0.55, 0.85, nCrest);
+    float xs = p.x - uSkew * 0.3 * rimR;
+    float edgeJ = eJ + eJ;
+    float inX = 1.0 - smoothstep(rimR + 0.5 + edgeJ, rimR + 2.5 + edgeJ, abs(xs));
+    float sheetY = 1.0 - smoothstep(hLocal - 0.8, hLocal + 0.8, abs(p.y - hLocal * 0.35));
+    float tearLvl = lerp(-0.2, 0.8, smoothstep(4.0, 10.0, t));
+    float tear = smoothstep(tearLvl - 0.15, tearLvl + 0.15, nTear);
+    float sheet = inX * sheetY * massLeft * tear * step(-1.5, p.y) * (1.0 - body);
 
-    //体色:叠合厚处沉,单指薄处透成飞白;体缘一线暗轮廓;血芯只在根部头几帧且只在厚处
+    //撞击芯:头几帧撞击点上的一团墨,随铺开缩没;带血芯
+    float coreT = saturate(t * 0.2);
+    float coreR = (5.0 + 4.0 * uKe) * (1.0 - coreT);
+    float core = (1.0 - smoothstep(coreR - 1.0, coreR + 0.8, length(p - float2(uSkew + uSkew, 1.5)) + eJ))
+        * (1.0 - body) * step(-1.5, p.y);
+
+    //体色:薄韧带透成飞白、体墨、头与叠合处沉;体缘一线暗轮廓
     float3 wash = lerp(uColBody, uColSheen, 0.16);
-    float3 col = lerp(uColBody, uColDeep, smoothstep(0.35, 1.0, thick) * 0.7);
-    col = lerp(wash, col, smoothstep(0.05, 0.4, thick));
+    float3 col = lerp(wash, uColBody, smoothstep(0.1, 0.5, thick));
+    col = lerp(col, uColDeep, smoothstep(0.7, 1.3, thick) * 0.6);
     float outline = smoothstep(0.1, 0.45, body) * (1.0 - smoothstep(0.45, 0.9, body));
     col = lerp(col, uColDeep, outline * 0.6);
-    float coreZone = (1.0 - smoothstep(0.04, 0.17, length(p - float2(uSkew * 0.06, 0.05))))
-        * (1.0 - smoothstep(0.08, 0.22, uAge));
-    col = lerp(col, uColCore, coreZone * 0.25 * smoothstep(0.3, 0.9, thick));
 
-    //主指(槽 0)一侧的窄湿光,头几帧、只在指的下半段
-    float sa0 = sin(uFinger[0].x);
-    float ca0 = cos(uFinger[0].x);
-    float2 p0 = p - float2(sa0 * RootSpread, 0.0);
-    float s0 = dot(p0, float2(sa0, ca0));
-    float t0 = dot(p0, float2(ca0, -sa0));
-    float len0 = max(uFinger[0].y, 1e-3);
-    float R0 = uFinger[0].z * (1.0 - 0.72 * saturate(s0 / len0));
-    float bx = (t0 - R0 * 0.5) / max(R0 * 0.12, 0.003);
-    float sheen = exp2(-bx * bx * 1.5) * m0 * (1.0 - smoothstep(0.2, 0.35, uAge))
-        * smoothstep(0.05, 0.3, s0) * (1.0 - smoothstep(len0 * 0.45, len0 * 0.65, s0));
-
-    //预乘合成:指体近实心,冠膜与溅裙只补体外;冠膜薄=飞白色
-    float aBody = body * (0.86 + 0.12 * thick);
-    float aSheet = sheet * 0.62;
-    float aSkirt = skirt * 0.7;
-    float a = saturate(aBody + aSheet + aSkirt);
+    //预乘合成:薄处略透、厚处近实;薄片与撞击芯只补体外
+    float aBody = body * (0.78 + 0.22 * saturate(thick));
+    float aSheet = sheet * 0.72;
+    float aCore = core * 0.9;
+    float a = saturate(aBody + aSheet + aCore);
     float3 outCol = col * aBody
-                  + lerp(wash, uColBody, 0.55) * aSheet
-                  + lerp(uColBody, uColDeep, 0.4) * aSkirt;
-    outCol += uColSheen * sheen * 0.22;
+                  + lerp(wash, uColBody, 0.6) * aSheet
+                  + lerp(uColBody, uColCore, 0.35 * (1.0 - coreT)) * aCore;
+    outCol += uColSheen * sheen * 0.35;
 
-    //画布护栏:左右/上下缘归零;寿命末一成清残(内容此前已崩解归零)
-    float guard = smoothstep(1.0, 0.88, abs(xc))
+    //画布护栏:四缘归零;寿命末三帧交接给粒子后清残
+    float guard = smoothstep(0.0, 0.05, coords.x) * smoothstep(1.0, 0.95, coords.x)
         * smoothstep(0.0, 0.04, coords.y) * smoothstep(1.0, 0.96, coords.y);
-    float k = guard * (1.0 - smoothstep(0.9, 1.0, uAge));
+    float k = guard * (1.0 - smoothstep(uLife - 3.0, uLife, t));
     return float4(outCol * k, a * k) * vc;
 }
 
