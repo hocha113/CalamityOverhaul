@@ -458,21 +458,28 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             SeedFlock(foot, treetop, Main.rand.Next(2, 6));
         }
 
-        /// <summary>在脚点附近落 birds 只栖息鸟；树冠横向散开，地面逐列探地防生进坡里</summary>
+        /// <summary>
+        /// 在脚点附近落 birds 只栖息鸟。鸟宽约 36px，落点按序号等距排开再加小抖动，不许叠成一团黑：
+        /// 树冠只容 3 只（冠宽约 80px，间距 30px），地面每 3 格一只并逐列探地防生进坡里
+        /// </summary>
         private static void SeedFlock(Vector2 foot, bool treetop, int birds) {
             int roostLife = Main.rand.Next(RoostLifeMin, RoostLifeMax);
             int centerTileX = (int)(foot.X / 16f);
+            if (treetop) {
+                birds = Math.Min(birds, 3);
+            }
             for (int i = 0; i < birds; i++) {
+                float slot = i - (birds - 1) * 0.5f;
                 Vector2 spot;
                 if (treetop) {
-                    spot = foot + new Vector2(Main.rand.NextFloat(-30f, 30f), Main.rand.NextFloat(-8f, 4f));
+                    spot = foot + new Vector2(slot * 30f + Main.rand.NextFloat(-5f, 5f), Main.rand.NextFloat(-8f, 4f));
                 }
                 else {
-                    int tx = centerTileX + Main.rand.Next(-2, 3);
+                    int tx = centerTileX + (int)MathF.Round(slot * 3f);
                     if (!TryFindOutdoorSurface(tx, out int sy)) {
                         continue;
                     }
-                    spot = new Vector2(tx * 16f + 8f, sy * 16f);
+                    spot = new Vector2(tx * 16f + 8f + Main.rand.NextFloat(-4f, 4f), sy * 16f);
                 }
                 PRTLoader.NewParticle<PRT_WoodsongRaven>(spot, Vector2.Zero, Color.White,
                     Main.rand.NextFloat(0.72f, 1.02f))

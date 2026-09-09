@@ -395,9 +395,16 @@ namespace CalamityOverhaul.Content.GameModes.BrutalMobs.Ambience.Woodsong
             int frame = flying && frames > 2 ? 1 + (Time / 4) % (frames - 1) : 0;
             Rectangle src = tex.Frame(1, frames, 0, frame);
 
+            //渡鸦贴图原生朝右（原版 case 301 里 velocity.X>0 给的是 spriteDirection=-1，与常规 NPC 相反），
+            //所以朝左才翻面；写反会尾巴朝前"倒着飞"（2026-09-09 玩家截图）
             bool faceRight = flying ? Velocity.X > 0f : faceDir > 0;
-            SpriteEffects flip = faceRight ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            float rotation = flying ? Velocity.X * 0.1f : 0f;
+            SpriteEffects flip = faceRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            //机头顺着飞行方向：爬升时抬头，限 ±35°；朝左时贴图已镜像，角度取反
+            float rotation = 0f;
+            if (flying) {
+                float tilt = MathHelper.Clamp(MathF.Atan2(Velocity.Y, Math.Abs(Velocity.X)), -0.6f, 0.6f);
+                rotation = faceRight ? tilt : -tilt;
+            }
 
             //世界光照：黑羽在暗处沉没，月下与白日读作剪影（保 0.3 底）
             Color light = Lighting.GetColor((int)(Position.X / 16f), (int)(Position.Y / 16f));
