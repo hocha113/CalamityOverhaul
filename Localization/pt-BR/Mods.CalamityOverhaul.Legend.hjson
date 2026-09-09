@@ -1135,157 +1135,157 @@ KikasaText: {
 	}
 
 	KikasaHud: {
-		// ScrollName: Lakeheart
-		// OpenTag: Click to open
-		// TipWaterFormat: Water {0}%
-		// TipTideHintFormat: Hold {0} to draw the waterline to your cursor
-		// TipVaultFormat: Hoard {0} / {1}
-		// TipWispClick: Click the flame sprout to light or draw back the fire
-		// TipCooldownFormat: Cooling down · {0}%
-		// TipDrownTitle: Drown
-		// TipDrownHintFormat: Aim at an enemy or hold an item and press {0}
-		// TipDrownReady: Ready
-		// TipResetTitle: Wide Restart
-		// TipResetHintFormat: Press {0} anytime to rewind nearby things a few seconds
-		// TipTeleportTitle: Ghostwater Passage
-		// TipTeleportHintFormat: Press {0} to slip through a pool of water to the cursor; swifter within the lake, with a shorter cooldown
-		// TipThrallFormat: Thralls out {0} / {1}
-		// TipHoundCountFormat: Hounds out {0} / {1}
-		// TipDreamNoTalis: Only the hounds' bite counts here; it ignores armor, and talismans do not apply
-		// TipSeatsHintFormat: Hold {0} for the wheel · change the lineup in the Lakeheart
-		// TipSeatEmpty: Empty
-		// TipTalisHint: Click to open the Lakeheart and hang talismans on the rope
+		ScrollName: Coração do Lago
+		OpenTag: Clique para abrir
+		TipWaterFormat: Água {0}%
+		TipTideHintFormat: Segure {0} para ajustar o nível da água com o cursor
+		TipVaultFormat: Depósito do Lago {0} / {1}
+		TipWispClick: Clique na chama para acender ou recolher o fogo
+		TipCooldownFormat: Recarga · {0}%
+		TipDrownTitle: Submergir
+		TipDrownHintFormat: Segure um item ou aponte para um inimigo e pressione {0}
+		TipDrownReady: Pronto
+		TipResetTitle: Reinício Amplo
+		TipResetHintFormat: Pressione {0} a qualquer momento para rebobinar você e inimigos próximos alguns segundos
+		TipTeleportTitle: Passagem Espectral
+		TipTeleportHintFormat: Pressione {0} para se teletransportar até o cursor; mais rápido e com menor recarga dentro do Lago de Sangue
+		TipThrallFormat: Servos do guarda-chuva ativos {0} / {1}
+		TipHoundCountFormat: Cães ativos {0} / {1}
+		TipDreamNoTalis: No Sonho Fantasma, apenas a mordida dos cães causa dano (ignora armadura); talismãs não têm efeito
+		TipSeatsHintFormat: Segure {0} para abrir a roda de invocação ou recolhimento; ajuste a formação no Coração do Lago
+		TipSeatEmpty: Vazio
+		TipTalisHint: Clique para abrir o Coração do Lago e pendurar talismãs na corda
 	}
 
 	KikasaServantWheelUI: {
-		// WheelEmptyTitle: Empty
-		// WheelEmptyDesc: Drown a boss and its shade takes an empty seat on its own; you can also seat one by hand in the Lakeheart
-		// WheelEmptyStatus: Nothing here yet
-		// WheelSeatFormat: Seat {0}
-		// WheelStatusRecall: "[Release] Call it back"
-		// WheelStatusSummon: "[Release] Call it out"
-		// WheelStatusAwaitOrder: "[Release] Remember this; it comes out when the lake opens"
-		// WheelCenterTitle: All Seats
-		// WheelCenterDesc: If any are out, call them all back. If none are out, call them all out
-		// WheelCenterCountFormat: "{0}/{1} out"
-		// WheelCenterRecallAll: "[Release] Call all back"
-		// WheelCenterSummonAll: "[Release] Call all out"
-		// WheelCenterEmpty: No shades seated yet
-		// WheelDamageFormat: Damage per shade out {0}%
-		// WheelHint: "[{0}] Hold · Release to confirm · Right-click closes the wheel only, shades stay afield"
-		// WheelWispName: Gold Flame
-		// WheelWispDesc: Once lit, the gold flame spreads along the shore and scorches whatever it reaches
-		// WheelWispIgnite: "[Release] Light it"
-		// WheelWispSnuff: "[Release] Draw the fire back"
+		WheelEmptyTitle: Vazio
+		WheelEmptyDesc: Submergir um chefe atribui automaticamente sua Sombra a um assento vazio; você também pode ajustar a formação no Coração do Lago
+		WheelEmptyStatus: Nada aqui ainda
+		WheelSeatFormat: Assento de Sombra {0}
+		WheelStatusRecall: "[Soltar] Recolher"
+		WheelStatusSummon: "[Soltar] Invocar"
+		WheelStatusAwaitOrder: "[Soltar] Lembrar; sairá ao abrir o lago"
+		WheelCenterTitle: Comando Geral
+		WheelCenterDesc: Se houver Sombras em campo, recolhe todas; se não houver nenhuma, invoca todas
+		WheelCenterCountFormat: "{0}/{1} em batalha"
+		WheelCenterRecallAll: "[Soltar] Recolher todas"
+		WheelCenterSummonAll: "[Soltar] Invocar todas"
+		WheelCenterEmpty: Nenhuma Sombra atribuída a um assento ainda
+		WheelDamageFormat: Dano por Sombra em campo {0}%
+		WheelHint: "[{0}] Segure para abrir · Solte para confirmar · Botão direito fecha apenas a roda, Sombras permanecem em campo"
+		WheelWispName: Chama Dourada
+		WheelWispDesc: Quando acesa, a chama dourada se espalha pela margem e queima o que tocar
+		WheelWispIgnite: "[Soltar] Acender"
+		WheelWispSnuff: "[Soltar] Recolher o fogo"
 	}
 
 	KikasaPanoramaUI: {
-		// Title: Lakeheart
-		// HoundTitle: Hound · Ghost Dream
-		// WispTitle: Gold Flame · Ghost Fire
-		// ReflectAwake: The reflection is awake
-		// ReflectAsleep: The reflection is still asleep
-		// InDreamLine: You are in the Ghost Dream
-		// DreamReturnFormat: Press {0} again to return
-		// DreamEnterKeyFormat: Hold {0} to enter the Ghost Dream
-		// DreamEnterClick: Click the hound to enter the Ghost Dream
-		// NeedDomainFormat: Press {0} to open the Blood Lake
-		// NeedFullWater: The lake isn't full yet
-		// HoundBonusFormat: Hound cap {0} · damage {1}%
-		// WispBurning: Burning, scorching along the shore
-		// WispIdle: Unlit; the flame waits on your word
-		// WispBoil: Still burning in the rain
-		// WispQuenchedLine: Being put out by Ghost Rain
-		// WispBonusFormat: Burn {0}s · flame reach {1}
-		// WispIgniteClick: Click the gold flame to light the ghost fire
-		// WispSnuffClick: Click the gold flame to draw the fire back
-		// ActionDreamTag: Enter the Dream
-		// ActionIgniteTag: Ignite
-		// ActionSnuffTag: Snuff
-		// EdgeDreamFire: Dreamfire
-		// EdgeBoilRain: Boiling Rain
-		// EdgeRainNightmare: Rain-Nightmare
-		// EdgeTriSeal: Three-Shade Seal
-		// SeatsTitle: Three Seats
-		// SeatEmptyLine: Empty — pick a shade from the list below
-		// SeatPickHint: Click to pick up · right-click to remove
-		// SeatPlaceHint: Click to place it here
-		// SeatHeldLineFormat: Held back — hold {0} for the wheel to call it out
-		// RosterTallyFormat: Codex {0} / {1}
-		// RosterSeatTallyFormat: Seats {0} / {1}
-		// RosterUnknown: Not drowned yet
-		// RosterUnknownHintFormat: With the lake open, aim at it and press {0}
-		// RosterSeatedTag: Seated
-		// RosterPickHint: Click to pick up
-		// NotePlacedFormat: "{0} is now seated"
-		// NoteUnslottedFormat: "{0} was removed from its seat"
-		// NoteNotCollected: You haven't drowned it yet
-		// NotePickFirst: Pick a shade from the list below first
-		// NoteArmsNoStock: No original of that weapon in the hoard, so the shade can't take shape
-		// TalisTitle: Raincall Rope
-		// TalisEmptyLine: An empty knot — click to open the talisman case
-		// TalisNoneOwned: The talisman case is empty; craft a talisman at a workbench by the water first
-		// TalisNeedUmbrella: Hold Kikasa in hand — the talismans answer only the umbrella
-		// TalisSwapHint: Click to swap · drag onto another knot to relocate · right-click to take down
-		// TalisHangHint: Click to hang it here
-		// TalisTakeDownLabel: Take down
-		// TalisAlreadyHung: It already hangs on another knot
-		// TalisCurrentTag: Hanging here
-		// TalisStackRule: Every hung talisman keeps working, even with its ink hidden; each drop takes one talisman's color and signature effect, leftmost first
-		// TalisDragSwapHint: Release to trade knots
-		// TalisDragMoveHint: Release to move it here
-		// NoteFuHungFormat: 「{0}」rose onto the raincall rope
-		// NoteFuTakenFormat: 「{0}」returned to the talisman case
-		// VaultTitle: Lake Hoard
-		// VaultCountFormat: "{0} / {1}"
-		// VaultEmptyHint: Nothing here yet
-		// VaultExtractHint: Click to take it back
-		// VaultViewOnlyLine: The lake hasn't risen yet — you can only look
-		// ArmsStockFormat: Originals ×{0}
-		// ThrallLineFormat: Thrall cap {0} · convert one every {1}s
-		// FooterHintFormat: Esc or {0} to close · hold an item and press {1} to sink it · hold {2} for the wheel
+		Title: Coração do Lago
+		HoundTitle: Cão · Sonho Fantasma
+		WispTitle: Chama Dourada · Fogo-Fátuo
+		ReflectAwake: O reflexo acordou
+		ReflectAsleep: O reflexo ainda está dormindo
+		InDreamLine: Você está no Sonho Fantasma
+		DreamReturnFormat: Pressione {0} novamente para retornar
+		DreamEnterKeyFormat: Segure {0} para entrar no Sonho Fantasma
+		DreamEnterClick: Clique no cão para entrar no Sonho Fantasma
+		NeedDomainFormat: Pressione {0} para expandir o Lago de Sangue
+		NeedFullWater: O Lago de Sangue ainda não está cheio
+		HoundBonusFormat: Limite de cães {0} · dano {1}%
+		WispBurning: Queimando ao longo da margem
+		WispIdle: Apagado; o fogo aguarda seu comando
+		WispBoil: Ainda queimando sob a Chuva Fantasma
+		WispQuenchedLine: Sendo apagado pela Chuva Fantasma
+		WispBonusFormat: Queimadura {0}s · alcance da chama {1}
+		WispIgniteClick: Clique na chama dourada para acender o fogo-fátuo
+		WispSnuffClick: Clique na chama dourada para recolher o fogo-fátuo
+		ActionDreamTag: Entrar no Sonho
+		ActionIgniteTag: Acender
+		ActionSnuffTag: Recolher
+		EdgeDreamFire: Fogo Onírico
+		EdgeBoilRain: Chuva Fervente
+		EdgeRainNightmare: Pesadelo de Chuva
+		EdgeTriSeal: Selo de Três Sombras
+		SeatsTitle: Três Assentos de Sombra
+		SeatEmptyLine: Vazio; escolha uma Sombra do registro abaixo para atribuir
+		SeatPickHint: Clique para pegar · Botão direito para remover
+		SeatPlaceHint: Clique para posicionar aqui
+		SeatHeldLineFormat: Recolhida; segure {0} para abrir a roda e invocá-la
+		RosterTallyFormat: Códex {0} / {1}
+		RosterSeatTallyFormat: Assentos {0} / {1}
+		RosterUnknown: Ainda não submergido
+		RosterUnknownHintFormat: No Lago de Sangue, aponte para um inimigo e pressione {0} para submergi-lo
+		RosterSeatedTag: Atribuído
+		RosterPickHint: Clique para pegar
+		NotePlacedFormat: "{0} agora está atribuído a um assento"
+		NoteUnslottedFormat: "{0} foi removido do assento"
+		NoteNotCollected: Você ainda não submergiu este no lago
+		NotePickFirst: Selecione primeiro uma Sombra do registro abaixo
+		NoteArmsNoStock: Nenhum original desta arma no depósito do lago, a Sombra não pode se formar
+		TalisTitle: Corda de Oração da Chuva
+		TalisEmptyLine: Nó vazio; clique para abrir o estojo de talismãs
+		TalisNoneOwned: O estojo de talismãs está vazio; crie talismãs em uma bancada perto da água
+		TalisNeedUmbrella: Talismãs só têm efeito enquanto empunha Kikasa
+		TalisSwapHint: Clique para trocar · arraste para outro nó para reposicionar · Botão direito para retirar
+		TalisHangHint: Clique para pendurar aqui
+		TalisTakeDownLabel: Retirar
+		TalisAlreadyHung: Já está pendurado em outro nó
+		TalisCurrentTag: Pendurado aqui
+		TalisStackRule: Todos os talismãs pendurados surtem efeito. Cada gota de tinta ativa apenas um talismán, da esquerda para a direita, alterando o visual do projétil e os efeitos exclusivos
+		TalisDragSwapHint: Solte para trocar de nós
+		TalisDragMoveHint: Solte para mover aqui
+		NoteFuHungFormat: 「{0}」 subiu para a corda de oração
+		NoteFuTakenFormat: 「{0}」 voltou para o estojo de talismãs
+		VaultTitle: Depósito do Lago
+		VaultCountFormat: "{0} / {1}"
+		VaultEmptyHint: Nada aqui ainda
+		VaultExtractHint: Clique para retirar
+		VaultViewOnlyLine: O nível da água ainda não está cheio; apenas visualização por enquanto
+		ArmsStockFormat: Originais ×{0}
+		ThrallLineFormat: Limite de servos {0} · converte um a cada {1}s
+		FooterHintFormat: Esc ou {0} para fechar · segure um item e pressione {1} para submergir · segure {2} para a roda
 	}
 
 	KikasaHudLead: {
-		// DomainTitle: Raise the Blood Lake
-		// DomainBody: The Blood Lake is where the umbrella does its work: storing items, drowning foes, and commanding shades all start with the lake open. Raise it and let the water climb. The tide answers you: hold the Command the Tide key (X by default) and the waterline follows your cursor.
-		// DomainPrompt: Hold Kikasa and press {0}
-		// SinkTitle: Sink Something
-		// SinkBody: Hold an item and press the sink key to store it on the lakebed; you can reclaim it in the Lakeheart. Press the same key aiming at an enemy to push it under. A drowned boss leaves behind a shade, and you can command it to fight for you later.
-		// SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at an enemy
-		// PanoramaTitle: Open the Lakeheart
-		// PanoramaBody: The Lakeheart is Kikasa's home screen: the hound and the ghost fire live up top, the three seats in the middle hold your shades, and everything you sank rests on the lakebed. The next steps all run through here.
-		// PanoramaPrompt: Click the wind chime at the bottom left, or hold Kikasa and press {0}
-		// WheelTitle: Call the Shades
-		// WheelBody: Seated shades come out to fight on their own once the lake is open. The wheel calls them out or back one by one at any time: the fewer afield, the harder each one hits. The gold-flame sector on the wheel lights or draws back the ghost fire.
-		// WheelPrompt: Hold {0} to open the wheel, then release on a seat
-		// WheelNoMemory: No shades in the lake yet. Drown a boss first, or skip this step.
-		// RainTitle: Mutate into Ghost Rain
-		// RainBody: The Flip the Lake key (middle mouse by default) works two ways: at full water, tap it to flip the Blood Lake into ghost rain; hold it to sink into the Ghost Dream, saved for the last step. Foes slain under the ghost rain rise as umbrella thralls that fight for you.
-		// RainPrompt: At full water, tap {0} to flip the lake
-		// RestartTitle: Wide Restart
-		// RestartBody: Press the restart key and the scene freezes into a black-and-white photograph, then washes open: nearby foes and you slide back to where you stood seconds ago, your life refills, debuffs rinse off, and nothing can touch you while it rewinds. It works outside the ghost rain too: the shutter borrows a ghost rain for that moment, and once the rewind settles the rain withdraws, leaving your domain as it was.
-		// RestartPrompt: Hold the umbrella and press {0}
-		// DreamTitle: Enter the Ghost Dream
-		// DreamBody: At full water, hold the Flip the Lake key and the reflection in the lake pulls you into the dream. Foes there are helpless and no ranged projectile can exist; your items are sealed too, so hold left click to loose the hounds instead. Their bite ignores armor. Press the same key again to wake.
-		// DreamPrompt: At full water, hold {0}
-		// CloseTitle: Draw the Lake Back
-		// CloseBody: The Blood Lake never recedes on its own: switch weapons or walk a mile and the lake and its sky follow you. Hold Kikasa and press the Domain Expansion key once more, and the water drains and the world comes back. Your hoard, shades and drowning records all stay in the umbrella, ready for the next time you raise it.
-		// ClosePrompt: Hold Kikasa and press {0} to draw the lake back
-		// CloseInDreamNote: You're still inside the Ghost Dream. Press {0} to wake first, then close the lake.
-		// CloseSettlingNote: The lake is still changing form. Wait for it to settle.
-		// KeyUnboundFallback: The key "{0}" isn't bound. For this step you can press {1} instead; bind it in Settings > Controls to keep using it.
-		// ShieldNote: While the tutorial runs, foes can't hurt you and none spawn nearby.
-		// SkipBtn: Skip
-		// ConfirmBtn: Got it
-		// AssistBtn: Show me
-		// OpenPanoramaBtn: Open it for me
-		// DismissBtn: Put away
-		// KeyUnbound: This step's key "{0}" isn't bound. Bind it in Settings > Controls, or click Skip.
-		// AlreadyDoneNote: You've already done this one. Read on, then press Got it.
-		// WaterRisingNote: Wait for the blood water to reach your feet. Water level: {0}%.
-		// ResetCooldownFormat: Restart still cooling down: {0}%
-		// HelpHover: Replay the umbrella tutorial
-		// MutateFallbackKey: middle mouse
+		DomainTitle: Expandir o Lago de Sangue
+		DomainBody: O Lago de Sangue é o domínio fundamental de Kikasa. Armazenar itens, submergir inimigos e comandar Sombras requer expandir o Lago de Sangue e deixar o nível da água subir. Segure a tecla «Kikasa: Guiar a Maré» (X por padrão) para ajustar livremente o nível da água com o cursor.
+		DomainPrompt: Empunhe Kikasa e pressione {0} para expandir o domínio
+		SinkTitle: Submergir Itens e Inimigos
+		SinkBody: Pressione a tecla «Kikasa: Submergir no Lago» segurando um item para guardá-lo no depósito do lago (recuperável no Coração do Lago). Pressione a mesma tecla apontando para um inimigo para submergi-lo. Chefes submergidos tornam-se «Sombras do Lago» que lutarão ao seu lado.
+		SinkPrompt: Aguarde o Lago de Sangue encher completamente, depois segure um item ou aponte para um inimigo e pressione {0}
+		PanoramaTitle: Abrir o Coração do Lago
+		PanoramaBody: O Coração do Lago é a interface de gerenciamento de Kikasa: o topo controla os cães e o fogo-fátuo, o meio contém 3 assentos para organizar Sombras ativas, e o fundo é o depósito com os itens guardados. Clique na corda para pendurar talismãs.
+		PanoramaPrompt: Clique no sino no canto inferior esquerdo ou empunhe Kikasa e pressione {0}
+		WheelTitle: Roda de Sombras
+		WheelBody: Sombras atribuídas aos assentos combatem automaticamente quando o Lago de Sangue é expandido. Segure a tecla da roda em combate para invocar ou recolher Sombras individualmente: quanto menos em campo, maior o dano de cada uma. A opção de chama dourada acende ou apaga o fogo-fátuo que queima inimigos.
+		WheelPrompt: Segure {0} para abrir a roda, aponte para um assento e solte
+		WheelNoMemory: Nenhuma Sombra registrada no lago ainda. Submerja um chefe primeiro ou clique em Pular.
+		RainTitle: Alternar para Chuva Fantasma
+		RainBody: Com a água cheia, dê um toque rápido na tecla «Kikasa: Anverso e Reverso do Lago» (botão do meio por padrão) para alternar o lago para a forma de Chuva Fantasma. Inimigos comuns abatidos sob a chuva viram «servos do guarda-chuva» que lutarão por você. Segurar a tecla entra no Sonho Fantasma.
+		RainPrompt: Com a água cheia, dê um toque rápido em {0} para alternar para a Chuva Fantasma
+		RestartTitle: Reinício Amplo
+		RestartBody: Pressione a tecla «Auto-Reinício» para rebobinar você e todos os inimigos próximos para suas posições de segundos atrás. Durante o rebobinamento você fica invulnerável, a vida é totalmente restaurada e todas as penalidades são removidas. Pode ser acionado a qualquer momento, mesmo fora da chuva, retornando ao estado anterior ao terminar.
+		RestartPrompt: Empunhe Kikasa e pressione {0} para reiniciar
+		DreamTitle: Entrar no Sonho Fantasma
+		DreamBody: Com a água cheia, segure a tecla «Kikasa: Anverso e Reverso do Lago» para entrar no Sonho Fantasma. Os inimigos ficam paralisados e projéteis à distância não podem existir. Itens normais ficam selados; segure o botão esquerdo para invocar continuamente cães que atacam os inimigos (mordidas ignoram armadura). Pressione a tecla novamente para acordar e sair do sonho.
+		DreamPrompt: Com a água cheia, segure {0} para entrar no Sonho Fantasma
+		CloseTitle: Recolher o Lago de Sangue
+		CloseBody: Uma vez expandido, o Lago de Sangue segue você continuamente e não desaparecerá ao trocar de arma. Empunhe Kikasa e pressione a tecla «Expansão de Domínio» novamente para fechar o domínio. Todos os itens guardados, Sombras e registros de submersão permanecem salvos no guarda-chuva para a próxima vez.
+		ClosePrompt: Empunhe Kikasa e pressione {0} para recolher o Lago de Sangue
+		CloseInDreamNote: Você ainda está no Sonho Fantasma. Pressione {0} para sair do sonho primeiro antes de fechar o domínio.
+		CloseSettlingNote: O domínio está mudando de forma, por favor aguarde a transição.
+		KeyUnboundFallback: A tecla «{0}» não está vinculada. Você pode usar temporariamente {1} neste passo; vincule-a em Configurações > Controles para uso contínuo.
+		ShieldNote: Proteção ativa durante o tutorial: inimigos não podem ferir você e nenhum inimigo surgirá por perto.
+		SkipBtn: Pular
+		ConfirmBtn: Entendido
+		AssistBtn: Demonstre para mim
+		OpenPanoramaBtn: Abra para mim
+		DismissBtn: Recolher tutorial
+		KeyUnbound: A tecla «{0}» necessária para este passo não está vinculada. Vincule-a em Configurações > Controles ou clique em Pular.
+		AlreadyDoneNote: Você já concluiu este passo. Leia as instruções e clique em Entendido para continuar.
+		WaterRisingNote: Aguardando o Lago de Sangue encher. Nível atual: {0}%.
+		ResetCooldownFormat: Reinício ainda em recarga: {0}%
+		HelpHover: Repetir tutorial de Kikasa
+		MutateFallbackKey: botão do meio do mouse
 	}
 }

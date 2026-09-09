@@ -1138,41 +1138,41 @@ KikasaText: {
 		ScrollName: Cœur  du  lac
 		OpenTag: Cliquer pour ouvrir
 		TipWaterFormat: Niveau {0}%
-		TipTideHintFormat: Maintenez {0} : le niveau suit le curseur
+		TipTideHintFormat: Maintenez {0} pour ajuster le niveau de l'eau avec le curseur
 		TipVaultFormat: Trésor du lac {0} / {1}
 		TipWispClick: Cliquez la flamme pour l'allumer ou la rentrer
 		TipCooldownFormat: En recharge · {0}%
 		TipDrownTitle: Noyer
-		TipDrownHintFormat: Visez un ennemi ou tenez un objet et appuyez sur {0}
+		TipDrownHintFormat: Tenez un objet ou visez un ennemi et appuyez sur {0}
 		TipDrownReady: Prêt à noyer
 		TipResetTitle: Redémarrage de zone
-		TipResetHintFormat: Appuyez sur {0} à tout moment pour ramener tout ce qui est proche quelques secondes en arrière
+		TipResetHintFormat: Appuyez sur {0} à tout moment pour ramener vous et les ennemis proches quelques secondes en arrière
 		TipTeleportTitle: Téléportation spectrale
-		TipTeleportHintFormat: Appuyez sur {0} pour passer par une mare jusqu'au curseur ; plus rapide dans le lac de sang, avec une recharge plus courte
+		TipTeleportHintFormat: Appuyez sur {0} pour vous téléporter vers le curseur ; plus rapide et avec un temps de recharge réduit dans le lac de sang
 		TipThrallFormat: Serviteurs d'ombrelle en champ {0} / {1}
 		TipHoundCountFormat: Molosses en champ {0} / {1}
-		TipDreamNoTalis: Dans le rêve, seules les morsures des molosses comptent : les sceaux n'agissent pas
-		TipSeatsHintFormat: Maintenez {0} pour ouvrir la roue et appeler ou rentrer · Ajustez la composition dans le Cœur du lac
+		TipDreamNoTalis: Dans le Rêve spectral, seules les morsures des molosses infligent des dégâts (ignorent l'armure) ; les sceaux n'ont aucun effet
+		TipSeatsHintFormat: Maintenez {0} pour ouvrir la roue et invoquer ou rentrer des ombres ; ajustez la composition dans le Cœur du lac
 		TipSeatEmpty: Vide
 		TipTalisHint: Cliquez pour ouvrir le Cœur du lac et accrocher des sceaux à la corde de prière
 	}
 
 	KikasaServantWheelUI: {
 		WheelEmptyTitle: Vide
-		WheelEmptyDesc: Noyez un boss : son ombre s'assoit d'elle-même dans un siège vide ; vous pouvez aussi composer à la main dans le Cœur du lac
+		WheelEmptyDesc: Après avoir noyé un boss, son ombre occupe automatiquement un siège vide ; vous pouvez aussi ajuster la composition dans le Cœur du lac
 		WheelEmptyStatus: Rien ici pour l'instant
 		WheelSeatFormat: Siège d'ombre {0}
 		WheelStatusRecall: "[Relâcher] Rentrer celui-ci"
 		WheelStatusSummon: "[Relâcher] L'appeler"
 		WheelStatusAwaitOrder: "[Relâcher] Noter d'abord : il sortira de lui-même à l'ouverture du lac"
 		WheelCenterTitle: Ordre général
-		WheelCenterDesc: S'il reste des ombres en champ, toutes rentrent ; s'il n'y en a aucune, toutes sortent
+		WheelCenterDesc: S'il y a des ombres sur le champ, les rentre toutes ; s'il n'y en a aucune, les invoque toutes
 		WheelCenterCountFormat: "{0}/{1} en combat"
 		WheelCenterRecallAll: "[Relâcher] Tout rentrer"
 		WheelCenterSummonAll: "[Relâcher] Tout appeler"
 		WheelCenterEmpty: Aucune ombre n'est encore composée dans un siège
 		WheelDamageFormat: Dégâts par ombre en champ {0}%
-		WheelHint: "[{0}] Maintenir · Relâcher pour confirmer · Clic droit ferme seulement la roue, les ombres restent"
+		WheelHint: "[{0}] Maintenir pour ouvrir · Relâcher pour confirmer · Clic droit ferme la roue en gardant les ombres sur le champ"
 		WheelWispName: Flamme dorée
 		WheelWispDesc: Une fois allumée, la flamme dorée rampe le long de la rive et brûle ce qu'elle touche
 		WheelWispIgnite: "[Relâcher] Allumer"
@@ -1189,8 +1189,8 @@ KikasaText: {
 		DreamReturnFormat: Appuyez encore sur {0} pour revenir
 		DreamEnterKeyFormat: Maintenez {0} pour entrer dans le Rêve spectral
 		DreamEnterClick: Cliquez le molosse pour entrer dans le Rêve spectral
-		NeedDomainFormat: Appuyez sur {0} pour lever le lac de sang
-		NeedFullWater: Le lac n'est pas encore plein
+		NeedDomainFormat: Appuyez sur {0} pour déployer le lac de sang
+		NeedFullWater: Le lac de sang n'est pas encore plein
 		HoundBonusFormat: Plafond de molosses {0} · dégâts {1}%
 		WispBurning: En feu, brûle le long de la rive
 		WispIdle: Éteint ; le feu attend votre ordre
@@ -1207,14 +1207,14 @@ KikasaText: {
 		EdgeRainNightmare: Cauchemar de pluie
 		EdgeTriSeal: Trois ombres scellent le lac
 		SeatsTitle: Trois sièges d'ombre
-		SeatEmptyLine: Vide : choisissez-en une dans le registre ci-dessous
+		SeatEmptyLine: Siège vide : choisissez une ombre dans le registre ci-dessous pour l'assigner
 		SeatPickHint: Cliquez pour prendre · Clic droit pour retirer
 		SeatPlaceHint: Cliquez pour placer ici
-		SeatHeldLineFormat: Rentrée : maintenez {0} pour ouvrir la roue et la rappeler
+		SeatHeldLineFormat: Rentrée : maintenez {0} pour ouvrir la roue et l'invoquer
 		RosterTallyFormat: Atlas {0} / {1}
 		RosterSeatTallyFormat: Sièges d'ombre {0} / {1}
 		RosterUnknown: Pas encore noyée
-		RosterUnknownHintFormat: Lac ouvert, visez-la et appuyez sur {0} pour noyer
+		RosterUnknownHintFormat: Dans le lac de sang, visez un ennemi et appuyez sur {0} pour le noyer
 		RosterSeatedTag: Composée
 		RosterPickHint: Cliquez pour prendre
 		NotePlacedFormat: "{0} a été composée dans un siège d'ombre"
@@ -1224,14 +1224,14 @@ KikasaText: {
 		NoteArmsNoStock: Le trésor du lac n'a pas l'original de cette arme : l'ombre ne peut pas prendre forme
 		TalisTitle: Corde  de  prière
 		TalisEmptyLine: Nœud vide : cliquez pour ouvrir le coffret de sceaux et en choisir un
-		TalisNoneOwned: Le coffret de sceaux est encore vide : fabriquez d'abord un sceau à un établi près de l'eau
-		TalisNeedUmbrella: Tenez Kikasa en main : les sceaux ne reconnaissent que l'ombrelle
+		TalisNoneOwned: Le coffret de sceaux est vide ; fabriquez des sceaux à un établi près de l'eau
+		TalisNeedUmbrella: Les sceaux ne prennent effet que lorsque vous tenez Kikasa
 		TalisSwapHint: Cliquez pour changer de sceau · Glissez sur un autre nœud pour déplacer · Clic droit pour décrocher
 		TalisHangHint: Cliquez pour accrocher
 		TalisTakeDownLabel: Décrocher
 		TalisAlreadyHung: Il est déjà accroché à un autre nœud
 		TalisCurrentTag: Accroché ici
-		TalisStackRule: Tous les sceaux accrochés restent actifs, même si leur encre est recouverte ; chaque goutte n'appartient qu'à un sceau, le plus à gauche d'abord, couleur et effet exclusif avec lui
+		TalisStackRule: Tous les sceaux accrochés prennent effet. Chaque goutte d'encre ne déclenche qu'un seul sceau, de gauche à droite, modifiant l'apparence des projectiles et leurs effets exclusifs
 		TalisDragSwapHint: Relâchez pour échanger
 		TalisDragMoveHint: Relâchez pour accrocher ici
 		NoteFuHungFormat: 「{0}」 est monté sur la corde de prière
@@ -1240,50 +1240,50 @@ KikasaText: {
 		VaultCountFormat: "{0} / {1}"
 		VaultEmptyHint: Rien ici pour l'instant
 		VaultExtractHint: Cliquez pour récupérer
-		VaultViewOnlyLine: Le lac n'est pas encore monté : on ne peut que regarder
+		VaultViewOnlyLine: Le niveau de l'eau n'est pas encore plein ; consultation uniquement pour l'instant
 		ArmsStockFormat: Originaux ×{0}
 		ThrallLineFormat: Plafond de serviteurs d'ombrelle {0} · un toutes les {1} s
 		FooterHintFormat: Esc ou {0} pour fermer · Tenez un objet et appuyez sur {1} pour l'immerger · Maintenez {2} pour ouvrir la roue
 	}
 
 	KikasaHudLead: {
-		DomainTitle: Lever le lac de sang
-		DomainBody: Le lac de sang est le pied de Kikasa : ranger des objets, noyer des ennemis, commander des ombres, tout commence par lever le lac et laisser l'eau monter. Le niveau vous obéit : maintenez 「Commander la marée」 (X par défaut), et la surface suit le curseur.
-		DomainPrompt: Tenez Kikasa et appuyez sur {0}
-		SinkTitle: Immerger dans le lac
-		SinkBody: Tenez un objet et appuyez sur la touche d'immersion : il ira au fond, et vous pourrez le récupérer dans le Cœur du lac. Visez un ennemi et appuyez sur la même touche pour l'enfoncer dans l'eau. Un boss noyé laisse une ombre : c'est une ombre immergée, que vous pourrez ensuite commander au combat.
-		SinkPrompt: Quand l'eau atteint vos pieds, tenez un objet ou visez un ennemi et appuyez sur {0}
+		DomainTitle: Déployer le lac de sang
+		DomainBody: Le lac de sang est le domaine fondamental de Kikasa. Ranger des objets, noyer des ennemis et invoquer des ombres nécessitent de déployer le lac et de laisser l'eau monter. Maintenez la touche 「Kikasa : Commander la marée」 (X par défaut) pour ajuster librement la hauteur de l'eau selon le curseur.
+		DomainPrompt: Tenez Kikasa et appuyez sur {0} pour déployer le domaine
+		SinkTitle: Immersion d'objets et de créatures
+		SinkBody: Tenez un objet et appuyez sur 「Kikasa : Immerger dans le lac」 pour le ranger dans la réserve au fond (récupérable dans le Cœur du lac). Visez un ennemi et appuyez sur la même touche pour le noyer. Les boss noyés deviennent des « ombres immergées » qui combattront à vos côtés.
+		SinkPrompt: Attendez que le lac de sang soit complètement plein, puis tenez un objet ou visez un ennemi et appuyez sur {0}
 		PanoramaTitle: Ouvrir le Cœur du lac
-		PanoramaBody: Le Cœur du lac est l'écran principal de Kikasa : en haut vivent le molosse et le feu follet, au milieu trois sièges d'ombre reçoivent les ombres, au fond du lac s'alignent les objets immergés. Les prochaines étapes passent toutes par là.
-		PanoramaPrompt: Cliquez le carillon en bas à gauche, ou tenez Kikasa et appuyez sur {0}
-		WheelTitle: Appeler les ombres
-		WheelBody: Les ombres composées dans un siège sortent d'elles-mêmes au combat une fois le lac ouvert. La roue les appelle ou les rentre une par une à tout moment : moins il y en a en champ, plus chacune frappe fort. Le secteur de flamme dorée sur la roue allume et rentre le feu follet.
-		WheelPrompt: Maintenez {0} pour ouvrir la roue, visez un siège d'ombre et relâchez
-		WheelNoMemory: Le lac n'a pas encore d'ombre. Noyez d'abord un boss, ou passez cette étape.
+		PanoramaBody: Le Cœur du lac est l'interface de gestion de Kikasa : la partie supérieure contrôle les molosses et le feu follet, le milieu contient 3 sièges pour organiser les ombres actives, et le fond abrite la réserve des objets immergés. Cliquez sur la corde de prière pour accrocher des sceaux.
+		PanoramaPrompt: Cliquez sur le carillon en bas à gauche ou tenez Kikasa et appuyez sur {0}
+		WheelTitle: Roue des ombres
+		WheelBody: Les ombres assignées aux sièges combattent automatiquement lorsque le lac de sang est déployé. Maintenez la touche de la roue en combat pour invoquer ou rentrer des ombres individuellement : moins il y en a sur le champ, plus chacune inflige de dégâts. L'option de flamme dorée allume ou éteint le feu follet qui brûle les ennemis.
+		WheelPrompt: Maintenez {0} pour ouvrir la roue, visez un siège et relâchez
+		WheelNoMemory: Aucune ombre enregistrée dans le lac pour l'instant. Noyez d'abord un boss ou cliquez sur Passer.
 		RainTitle: Basculer en pluie spectrale
-		RainBody: La touche 「Endroit et envers du lac de sang」 (clic molette par défaut) a deux usages : lac plein, un appui court inverse le lac de sang en pluie spectrale ; un appui long vous enfonce dans le Rêve spectral, gardé pour la dernière étape. Les ennemis tués sous la pluie spectrale deviennent des serviteurs d'ombrelle et se battent pour vous.
-		RainPrompt: Lac plein, appuyez brièvement sur {0} pour inverser le lac de sang
+		RainBody: Lac plein, appuyez brièvement sur 「Kikasa : Endroit et envers du lac」 (clic molette par défaut) pour transformer le lac en pluie spectrale. Les ennemis normaux vaincus sous la pluie se transforment en « serviteurs d'ombrelle » combattant pour vous. Maintenir la touche vous plonge dans le Rêve spectral.
+		RainPrompt: Lac plein, appuyez brièvement sur {0} pour basculer en pluie spectrale
 		RestartTitle: Redémarrage de zone
-		RestartBody: Appuyez sur la touche de redémarrage : l'image se fige en photo noir et blanc, puis la pluie la déchire. Les ennemis proches et vous reculez de quelques secondes, votre vie se remplit, les affaiblissements sont lavés, et vous êtes invincible pendant le retour. Ça marche hors de la pluie spectrale : l'obturateur emprunte alors une pluie spectrale pour cet instant ; une fois le retour posé, la pluie se retire, et le domaine reste celui d'avant la touche.
-		RestartPrompt: Tenez Kikasa et appuyez sur {0}
+		RestartBody: Appuyez sur la touche 「Auto-redémarrage」 pour remonter le temps pour vous et les ennemis proches jusqu'à vos positions de quelques secondes plus tôt. Vous êtes totalement invulnérable pendant le rembobinage, vos PV sont restaurés au maximum et tous les malus sont dissipés. Peut être déclenché à tout moment même hors de la pluie, et rétablit l'état de domaine précédent après la fin.
+		RestartPrompt: Tenez Kikasa et appuyez sur {0} pour déclencher le redémarrage
 		DreamTitle: Entrer dans le Rêve spectral
-		DreamBody: Lac plein, maintenez 「Endroit et envers du lac de sang」 : le reflet du lac vous tire dans le Rêve spectral. Dans le rêve, les ennemis sont hors d'état, aucun projectile à distance ne peut exister ; vos objets sont aussi scellés, et vous maintenez le clic gauche pour lâcher les molosses. Un nouvel appui sur la même touche vous réveille.
-		DreamPrompt: Lac plein, maintenez {0}
-		// CloseTitle: Draw the Lake Back
-		// CloseBody: The Blood Lake never recedes on its own: switch weapons or walk a mile and the lake and its sky follow you. Hold Kikasa and press the Domain Expansion key once more, and the water drains and the world comes back. Your hoard, shades and drowning records all stay in the umbrella, ready for the next time you raise it.
-		// ClosePrompt: Hold Kikasa and press {0} to draw the lake back
-		// CloseInDreamNote: You're still inside the Ghost Dream. Press {0} to wake first, then close the lake.
-		// CloseSettlingNote: The lake is still changing form. Wait for it to settle.
-		// KeyUnboundFallback: The key "{0}" isn't bound. For this step you can press {1} instead; bind it in Settings > Controls to keep using it.
-		// ShieldNote: While the tutorial runs, foes can't hurt you and none spawn nearby.
+		DreamBody: Lac plein, maintenez 「Kikasa : Endroit et envers du lac」 pour entrer dans le Rêve spectral. Les ennemis y sont paralysés et aucun projectile à distance ne peut exister. Les objets normaux sont scellés ; maintenez le clic gauche pour invoquer en continu des molosses qui déchirent les ennemis (les morsures ignorent l'armure). Appuyez de nouveau sur la touche pour vous réveiller et quitter le rêve.
+		DreamPrompt: Lac plein, maintenez {0} pour entrer dans le Rêve spectral
+		CloseTitle: Retirer le lac de sang
+		CloseBody: Une fois déployé, le lac de sang vous suit en continu et ne disparaît pas lors d'un changement d'arme. Tenez Kikasa et appuyez de nouveau sur 「Déploiement de domaine」 pour fermer le domaine. Tous les objets stockés, ombres et archives de noyade restent définitivement conservés dans l'ombrelle pour la prochaine fois.
+		ClosePrompt: Tenez Kikasa et appuyez sur {0} pour retirer le lac de sang
+		CloseInDreamNote: Vous êtes toujours dans le Rêve spectral. Appuyez d'abord sur {0} pour quitter le rêve avant de fermer le domaine.
+		CloseSettlingNote: Le domaine est en cours de transition, veuillez patienter.
+		KeyUnboundFallback: La touche 「{0}」 n'est pas assignée. Vous pouvez utiliser temporairement {1} pour cette étape ; assignez-la dans Paramètres > Contrôles pour un usage durable.
+		ShieldNote: Protection active pendant le tutoriel : les ennemis ne peuvent pas vous blesser et aucun ennemi n'apparaîtra à proximité.
 		SkipBtn: Passer
 		ConfirmBtn: Compris
 		AssistBtn: Démontrez pour moi
 		OpenPanoramaBtn: Ouvrez-le pour moi
 		DismissBtn: Ranger le tutoriel
-		KeyUnbound: La touche 「{0}」 de cette étape n'est pas liée. Liez-la d'abord dans Paramètres > Contrôles, ou cliquez 「Passer」.
-		AlreadyDoneNote: Vous avez déjà fait cette étape. Lisez, puis cliquez 「Compris」.
-		WaterRisingNote: Attendez d'abord que l'eau de sang atteigne vos pieds. Niveau {0}%.
+		KeyUnbound: La touche 「{0}」 requise pour cette étape n'est pas assignée. Veuillez l'assigner dans Paramètres > Contrôles ou cliquez sur 「Passer」.
+		AlreadyDoneNote: Vous avez déjà accompli cette étape. Lisez les instructions et cliquez sur 「Compris」 pour continuer.
+		WaterRisingNote: En attente du remplissage complet du lac de sang. Niveau actuel : {0}%.
 		ResetCooldownFormat: Le redémarrage est encore en recharge : {0}%
 		HelpHover: Revoir le tutoriel de Kikasa
 		MutateFallbackKey: clic molette

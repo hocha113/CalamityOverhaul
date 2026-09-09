@@ -1138,41 +1138,41 @@ KikasaText: {
 		ScrollName: Seeherz
 		OpenTag: Klicken zum Öffnen
 		TipWaterFormat: Wasserstand {0}%
-		TipTideHintFormat: "{0} halten, der Spiegel folgt dem Cursor"
+		TipTideHintFormat: "{0} halten, damit der Wasserstand dem Cursor folgt"
 		TipVaultFormat: Seespeicher {0} / {1}
 		TipWispClick: Flämmchen klicken, zünden oder Feuer einziehen
 		TipCooldownFormat: Abkühlung · {0}%
 		TipDrownTitle: Versenken
-		TipDrownHintFormat: Auf einen Feind oder mit einem Gegenstand {0} drücken
+		TipDrownHintFormat: Gegenstand halten oder auf einen Feind zielen und {0} drücken
 		TipDrownReady: Bereit zum Versenken
 		TipResetTitle: Weitbereich-Neustart
-		TipResetHintFormat: Jederzeit {0}: alles in der Nähe um Sekunden zurück
+		TipResetHintFormat: Jederzeit {0} drücken, um sich selbst und nahe Feinde um Sekunden zurückzuspulen
 		TipTeleportTitle: Geisterreich-Teleport
-		TipTeleportHintFormat: "{0} leiht eine Wasserlache bis zum Cursor; im Blutsee schneller, kürzere Abkühlung"
+		TipTeleportHintFormat: "{0} drücken, um zur Cursorposition zu teleportieren; im Blutsee schneller und mit kürzerer Abkühlung"
 		TipThrallFormat: Schirmsklaven im Feld {0} / {1}
 		TipHoundCountFormat: Höllenhunde im Feld {0} / {1}
-		TipDreamNoTalis: Im Traum zählt nur der Biss der Hunde. Talismane greifen nicht
-		TipSeatsHintFormat: "{0} halten: Rad zum Rufen oder Einziehen · Aufstellung im Seeherz"
+		TipDreamNoTalis: Im Geistertraum richtet nur der Biss der Höllenhunde Schaden an (ignoriert Rüstung); Talismane wirken nicht
+		TipSeatsHintFormat: "{0} halten, um das Rad zum Rufen oder Einziehen zu öffnen; Aufstellung im Seeherz anpassen"
 		TipSeatEmpty: Leer
 		TipTalisHint: Klicken öffnet das Seeherz. Talismane an die Regenleine
 	}
 
 	KikasaServantWheelUI: {
 		WheelEmptyTitle: Leer
-		WheelEmptyDesc: Versenkst du einen Boss, setzt sich sein Versunkener Schatten von selbst. Du kannst auch im Seeherz von Hand setzen
+		WheelEmptyDesc: Wird ein Boss versenkt, setzt sich sein Schatten automatisch auf einen freien Platz; die Aufstellung kann im Seeherz angepasst werden
 		WheelEmptyStatus: Hier ist noch leer
 		WheelSeatFormat: Schattenplatz {0}
 		WheelStatusRecall: "[Loslassen] Diesen einziehen"
 		WheelStatusSummon: "[Loslassen] Diesen rufen"
 		WheelStatusAwaitOrder: "[Loslassen] Erst merken; ist der See auf, kommt es von selbst"
 		WheelCenterTitle: Allen befehlen
-		WheelCenterDesc: Sind Versunkene Schatten im Feld, alle einziehen. Ist keiner da, alle rufen
+		WheelCenterDesc: Sind Schatten im Feld, werden alle eingezogen; ist keiner im Feld, werden alle gerufen
 		WheelCenterCountFormat: "{0}/{1} im Feld"
 		WheelCenterRecallAll: "[Loslassen] Alle einziehen"
 		WheelCenterSummonAll: "[Loslassen] Alle rufen"
 		WheelCenterEmpty: Noch kein Versunkener Schatten auf einem Platz
 		WheelDamageFormat: Schaden je Versunkenem Schatten im Feld {0}%
-		WheelHint: "[{0}] halten · loslassen bestätigt · Rechtsklick schließt nur das Rad, Schatten bleiben"
+		WheelHint: "[{0}] halten zum Öffnen · Loslassen zum Bestätigen · Rechtsklick schließt nur das Rad, Schatten bleiben im Feld"
 		WheelWispName: Goldflamme
 		WheelWispDesc: Gezündet kriecht die Goldflamme am Ufer und verbrennt, was sie erreicht
 		WheelWispIgnite: "[Loslassen] Zünden"
@@ -1189,8 +1189,8 @@ KikasaText: {
 		DreamReturnFormat: Noch einmal {0}, dann zurück
 		DreamEnterKeyFormat: "{0} halten, in den Geistertraum"
 		DreamEnterClick: Höllenhund klicken, in den Geistertraum
-		NeedDomainFormat: "{0} spannt den Blutsee auf"
-		NeedFullWater: Der See ist noch nicht voll
+		NeedDomainFormat: "{0} drücken, um den Blutsee aufzuspannen"
+		NeedFullWater: Der Blutsee ist noch nicht voll
 		HoundBonusFormat: Höllenhund-Maximum {0} · Schaden {1}%
 		WispBurning: Brennt, sengt am Ufer
 		WispIdle: Nicht gezündet. Das Feuer wartet auf dein Wort
@@ -1207,31 +1207,31 @@ KikasaText: {
 		EdgeRainNightmare: Regenalp
 		EdgeTriSeal: Drei Schatten halten den See
 		SeatsTitle: Drei Schattenplätze
-		SeatEmptyLine: Leer. Wähle eins aus dem Verzeichnis darunter
+		SeatEmptyLine: Freier Platz; wähle einen Schatten aus dem Verzeichnis darunter
 		SeatPickHint: Klicken zum Aufnehmen · Rechtsklick zum Ablegen
 		SeatPlaceHint: Hierher klicken
-		SeatHeldLineFormat: Eingezogen. {0} halten öffnet das Rad zum Rufen
+		SeatHeldLineFormat: Eingezogen; {0} halten öffnet das Rad zum Rufen
 		RosterTallyFormat: Kodex {0} / {1}
 		RosterSeatTallyFormat: Plätze {0} / {1}
 		RosterUnknown: Noch nicht versenkt
-		RosterUnknownHintFormat: See offen, darauf zielen, {0} drücken
+		RosterUnknownHintFormat: Im Blutsee auf einen Feind zielen und {0} drücken, um ihn zu versenken
 		RosterSeatedTag: Eingesetzt
 		RosterPickHint: Klicken zum Aufnehmen
 		NotePlacedFormat: "{0} sitzt jetzt auf einem Platz"
 		NoteUnslottedFormat: "{0} vom Platz genommen"
 		NoteNotCollected: Du hast es noch nicht in den See gedrückt
-		NotePickFirst: Nimm zuerst eins aus dem Verzeichnis darunter
+		NotePickFirst: Wähle zuerst einen Schatten aus dem Verzeichnis darunter
 		NoteArmsNoStock: Im Seespeicher liegt kein Original dieser Waffe. Der Schatten kann sich nicht formen
 		TalisTitle: Regenleine
 		TalisEmptyLine: Leerer Knoten. Klicken öffnet den Talismankasten
-		TalisNoneOwned: Der Kasten ist leer. Mach zuerst einen Talisman an der Werkbank am Wasser
-		TalisNeedUmbrella: Halte Kikasa. Die Talismane erkennen nur den Schirm
+		TalisNoneOwned: Der Kasten ist leer; stelle Talismane an einer Werkbank am Wasser her
+		TalisNeedUmbrella: Talismane wirken nur, während Kikasa geführt wird
 		TalisSwapHint: Klicken zum Tauschen · auf einen anderen Knoten ziehen · Rechtsklick zum Abnehmen
 		TalisHangHint: Hier aufhängen
 		TalisTakeDownLabel: Abnehmen
 		TalisAlreadyHung: Es hängt schon an einem anderen Knoten
 		TalisCurrentTag: Hängt hier
-		TalisStackRule: Jeder hängende Talisman wirkt, auch wenn die Tinte verdeckt ist; jeder Tropfen gehört einem Talisman, von links zuerst, Farbe und Sonderwirkung mit ihm
+		TalisStackRule: Alle aufgehängten Talismane wirken. Jeder Tintentropfen löst nur einen Talisman von links nach rechts aus und passt Geschossoptik sowie Spezialeffekte an
 		TalisDragSwapHint: Loslassen zum Tauschen
 		TalisDragMoveHint: Loslassen, hier aufhängen
 		NoteFuHungFormat: »{0}« ist auf die Regenleine gestiegen
@@ -1240,7 +1240,7 @@ KikasaText: {
 		VaultCountFormat: "{0} / {1}"
 		VaultEmptyHint: Hier ist noch leer
 		VaultExtractHint: Klicken zum Zurückholen
-		VaultViewOnlyLine: Der See ist noch nicht gestiegen. Jetzt nur schauen
+		VaultViewOnlyLine: Der Wasserstand ist noch nicht voll; derzeit nur Ansicht möglich
 		ArmsStockFormat: Originale ×{0}
 		ThrallLineFormat: Schirmsklaven-Maximum {0} · alle {1} s einer
 		FooterHintFormat: Esc oder {0} schließt · Gegenstand halten und {1} versenkt in den Speicher · {2} halten öffnet das Rad
@@ -1248,43 +1248,43 @@ KikasaText: {
 
 	KikasaHudLead: {
 		DomainTitle: Blutsee aufspannen
-		DomainBody: Der Blutsee ist der Stand der Kikasa. Gegenstände lagern, Feinde versenken, Versunkene Schatten befehlen: zuerst den See aufspannen, das Blutwasser steigen lassen. Der Wasserstand folgt dir: »Gezeiten lenken« halten (Standard X), dann steigt und fällt die Fläche mit dem Cursor.
-		DomainPrompt: Halte Kikasa und drücke {0}
-		SinkTitle: In den See
-		SinkBody: Gegenstand halten und die Versenktaste drücken, dann liegt er am Grund und holst ihn später im Seeherz. Dieselbe Taste auf einen Feind drückt ihn unter Wasser. Ein versenkter Boss hinterlässt einen Schatten, das ist der Versunkene Schatten, den du später kämpfen lässt.
-		SinkPrompt: Ist das Wasser an den Füßen, Gegenstand halten oder auf einen Feind zielen und {0}
+		DomainBody: Der Blutsee ist die Basisdomäne von Kikasa. Gegenstände lagern, Feinde versenken und Schatten rufen erfordert das Aufspannen des Sees und das Steigen des Wassers. Halte »Kikasa: Gezeiten lenken« (Standard X), um den Wasserstand frei mit dem Cursor zu steuern.
+		DomainPrompt: Halte Kikasa und drücke {0}, um die Domäne aufzuspannen
+		SinkTitle: Gegenstände versenken & Versenkung
+		SinkBody: Halte einen Gegenstand und drücke »Kikasa: In den See versenken«, um ihn im Seespeicher zu lagern (im Seeherz wiederholbar). Ziele auf einen Feind und drücke dieselbe Taste, um ihn zu versenken. Versenkte Bosse werden zu Schatten, die an deiner Seite kämpfen.
+		SinkPrompt: Warte, bis der Blutsee voll ist, dann Gegenstand halten oder auf einen Feind zielen und {0} drücken
 		PanoramaTitle: Seeherz öffnen
-		PanoramaBody: Das Seeherz ist die Hauptfläche der Kikasa. Oben wohnen Höllenhund und Irrlicht, in der Mitte drei Plätze für Versunkene Schatten, am Grund liegt, was du versenkt hast. Die nächsten Schritte laufen alle hier.
-		PanoramaPrompt: Klicke das Windspiel unten links, oder halte Kikasa und drücke {0}
-		WheelTitle: Versunkene Schatten rufen
-		WheelBody: Eingesetzte Schatten kommen von selbst, sobald der See offen ist. Das Rad ruft oder zieht einzeln: je weniger im Feld, desto härter trifft jedes. Die Goldflamme auf dem Rad zündet und zieht das Irrlicht ein.
-		WheelPrompt: Halte {0}, öffne das Rad, lass über einem Platz los
-		WheelNoMemory: Im See ist noch kein Versunkener Schatten. Versenk zuerst einen Boss, oder überspringe diesen Schritt.
+		PanoramaBody: Das Seeherz ist die Verwaltungsübersicht von Kikasa: Oben werden Höllenhunde und Irrlicht gesteuert, in der Mitte gibt es 3 Plätze für aktive Schatten, und am Grund liegt der Seespeicher. Klicke auf die Regenleine, um Talismane aufzuhängen.
+		PanoramaPrompt: Klicke das Windspiel unten links oder halte Kikasa und drücke {0}
+		WheelTitle: Schattenrad
+		WheelBody: Auf Plätze gesetzte Schatten kämpfen automatisch, wenn der Blutsee geöffnet ist. Halte die Rad-Taste im Kampf, um Schatten einzeln zu rufen oder einzuziehen: Je weniger im Feld sind, desto mehr Schaden verursacht jeder. Die Goldflamme auf dem Rad entzündet oder löscht das Irrlicht.
+		WheelPrompt: Halte {0}, um das Rad zu öffnen, ziele auf einen Platz und lass los
+		WheelNoMemory: Noch keine Schatten im See verzeichnet. Versenke zuerst einen Boss oder klicke Überspringen.
 		RainTitle: Zum Geisterregen wenden
-		RainBody: »Blutsee wenden« (Standard mittlere Maustaste) hat zwei Drücke: bei vollem Wasser kurz, der Blutsee klappt zum Geisterregen; halten sinkt in den Geistertraum, das bleibt der letzte Schritt. Im Geisterregen getötete Feinde werden Schirmsklaven und kämpfen für dich.
-		RainPrompt: Ist der See voll, {0} kurz drücken und wenden
+		RainBody: Ist das Wasser voll, drücke kurz »Kikasa: Blutsee wenden« (Standard mittlere Maustaste), um den Blutsee zum Geisterregen zu wenden. Im Regen getötete normale Feinde werden zu Schirmsklaven, die für dich kämpfen. Längeres Halten führt in den Geistertraum.
+		RainPrompt: Ist der See voll, drücke kurz {0}, um zum Geisterregen zu wenden
 		RestartTitle: Weitbereich-Neustart
-		RestartBody: Drücke Neustart, das Bild friert zur Schwarzweißaufnahme, dann wäscht der Regen es auf: nahe Feinde und du stehen Sekunden früher, Leben voll, Schwächungen weg, die ganze Rückspulung unverwundbar. Auch ohne Geisterregen: im Moment des Verschlusses leiht sich eine Geisterregen, danach zieht der Regen ab, das Reich bleibt wie vor dem Tastendruck.
-		RestartPrompt: Halte den Schirm und drücke {0}
-		DreamTitle: In den Geistertraum
-		DreamBody: Bei vollem Wasser »Blutsee wenden« halten, das Spiegelbild zieht dich in den Traum. Dort sind Feinde machtlos, Fernkampfgeschosse existieren nicht; deine Gegenstände sind gesperrt, halte die linke Taste und rufe Höllenhunde zum Beißen. Dieselbe Taste noch einmal weckt dich.
-		DreamPrompt: Ist der See voll, halte {0}
-		// CloseTitle: Draw the Lake Back
-		// CloseBody: The Blood Lake never recedes on its own: switch weapons or walk a mile and the lake and its sky follow you. Hold Kikasa and press the Domain Expansion key once more, and the water drains and the world comes back. Your hoard, shades and drowning records all stay in the umbrella, ready for the next time you raise it.
-		// ClosePrompt: Hold Kikasa and press {0} to draw the lake back
-		// CloseInDreamNote: You're still inside the Ghost Dream. Press {0} to wake first, then close the lake.
-		// CloseSettlingNote: The lake is still changing form. Wait for it to settle.
-		// KeyUnboundFallback: The key "{0}" isn't bound. For this step you can press {1} instead; bind it in Settings > Controls to keep using it.
-		// ShieldNote: While the tutorial runs, foes can't hurt you and none spawn nearby.
+		RestartBody: Drücke die Selbst-Neustart-Taste, um dich und nahe Feinde auf die Positionen von vor wenigen Sekunden zurückzuspulen. Während des Rückspulens bist du unverwundbar, das Leben wird voll regeneriert und alle Schwächungen werden entfernt. Kann jederzeit auch außerhalb des Regens ausgelöst werden und kehrt danach zum vorherigen Zustand zurück.
+		RestartPrompt: Halte Kikasa und drücke {0}, um den Neustart auszulösen
+		DreamTitle: In den Geistertraum eintreten
+		DreamBody: Ist der See voll, halte »Kikasa: Blutsee wenden«, um den Geistertraum zu betreten. Feinde darin sind gelähmt und Fernkampfgeschosse können nicht existieren. Normale Gegenstände sind gesperrt; halte die linke Maustaste gedrückt, um Höllenhunde zu rufen (Bisse ignorieren Rüstung). Drücke die Taste erneut, um zu erwachen und den Traum zu verlassen.
+		DreamPrompt: Ist der See voll, halte {0}, um in den Geistertraum einzutreten
+		CloseTitle: Blutsee einziehen
+		CloseBody: Einmal aufgespannt folgt der Blutsee dir dauerhaft und verschwindet nicht beim Waffenwechsel. Halte Kikasa und drücke die Domänenentfaltung-Taste erneut, um die Domäne zu schließen. Alle gespeicherten Gegenstände, Schatten und Versenkungseinträge bleiben dauerhaft im Schirm für das nächste Mal erhalten.
+		ClosePrompt: Halte Kikasa und drücke {0}, um den Blutsee einzuziehen
+		CloseInDreamNote: Du bist noch im Geistertraum. Drücke zuerst {0}, um zu erwachen, bevor du die Domäne schließt.
+		CloseSettlingNote: Die Domäne wechselt gerade ihre Form, bitte warte einen Moment.
+		KeyUnboundFallback: Taste »{0}« ist nicht belegt. Für diesen Schritt kannst du vorübergehend {1} drücken; belege sie unter Einstellungen > Steuerung.
+		ShieldNote: Während des Tutorials geschützt: Feinde können dir keinen Schaden zufügen und es erscheinen keine neuen Feinde.
 		SkipBtn: Überspringen
 		ConfirmBtn: Verstanden
 		AssistBtn: Mach es vor
 		OpenPanoramaBtn: Öffne es für mich
 		DismissBtn: Tutorial weglegen
-		KeyUnbound: Die Taste »{0}« für diesen Schritt ist nicht gebunden. Unter Einstellungen > Steuerung binden, oder Überspringen.
-		AlreadyDoneNote: Diesen Schritt hast du schon. Lies zu Ende, dann Verstanden.
-		WaterRisingNote: Warte, bis das Blutwasser an den Füßen steht. Wasserstand {0}%.
-		ResetCooldownFormat: Neustart kühlt noch: {0}%
+		KeyUnbound: Die für diesen Schritt benötigte Taste »{0}« ist nicht belegt. Bitte belege sie unter Einstellungen > Steuerung oder klicke Überspringen.
+		AlreadyDoneNote: Du hast diesen Schritt bereits abgeschlossen. Lies die Erklärung und klicke Verstanden zum Fortfahren.
+		WaterRisingNote: Warten auf das Füllen des Blutsees. Aktueller Wasserstand: {0}%.
+		ResetCooldownFormat: Neustart kühlt noch ab: {0}%
 		HelpHover: Kikasa-Tutorial noch einmal
 		MutateFallbackKey: mittlere Maustaste
 	}

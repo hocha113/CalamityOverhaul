@@ -1138,41 +1138,41 @@ KikasaText: {
 		ScrollName: Corazón  del  lago
 		OpenTag: Clic para abrir
 		TipWaterFormat: Nivel {0}%
-		TipTideHintFormat: Mantén pulsado {0} y el nivel sigue al cursor
+		TipTideHintFormat: Mantén pulsado {0} para que el nivel de agua siga la altura del cursor
 		TipVaultFormat: Tesoro del lago {0} / {1}
 		TipWispClick: Clic en la llama para encender o recoger el fuego
 		TipCooldownFormat: En enfriamiento · {0}%
 		TipDrownTitle: Inmersión
-		TipDrownHintFormat: Apunta a un enemigo o sujeta un objeto y pulsa {0}
+		TipDrownHintFormat: Sujeta un objeto o apunta a un enemigo y pulsa {0}
 		TipDrownReady: Listo para la Inmersión
 		TipResetTitle: Reinicio de gran alcance
-		TipResetHintFormat: Pulsa {0} cuando quieras y echa atrás unos segundos todo lo cercano
+		TipResetHintFormat: Pulsa {0} en cualquier momento para retroceder unos segundos a ti y a los enemigos cercanos
 		TipTeleportTitle: Teletransporte del Reino espectral
-		TipTeleportHintFormat: Pulsa {0} para cruzar un charco hasta el cursor; en el lago de sangre es más rápido y el enfriamiento más corto
+		TipTeleportHintFormat: Pulsa {0} para teletransportarte a la posición del cursor; más rápido y con menor enfriamiento dentro del lago de sangre
 		TipThrallFormat: Siervos del paraguas en campo {0} / {1}
 		TipHoundCountFormat: Sabuesos en campo {0} / {1}
-		TipDreamNoTalis: En el sueño solo cuentan las dentelladas de los sabuesos; los talismanes no actúan
-		TipSeatsHintFormat: Mantén pulsado {0} para abrir el menú radial y llamar o recoger · Ajusta la formación en el Corazón del lago
+		TipDreamNoTalis: En el Sueño espectral solo cuenta el daño por dentellada de los sabuesos (ignora armadura); los talismanes no surten efecto
+		TipSeatsHintFormat: Mantén pulsado {0} para abrir el menú radial y llamar o retirar Sombras del lago; ajusta la formación en el Corazón del lago
 		TipSeatEmpty: Vacío
 		TipTalisHint: Clic para abrir el Corazón del lago y colgar talismanes en la cuerda de la lluvia
 	}
 
 	KikasaServantWheelUI: {
 		WheelEmptyTitle: Vacío
-		WheelEmptyDesc: Hunde a un jefe en el lago y su Sombra del lago ocupará sola una plaza vacía; también puedes formarla a mano en el Corazón del lago
+		WheelEmptyDesc: Tras aplicar Inmersión a un jefe, su Sombra del lago ocupará automáticamente una plaza vacía; también puedes ajustar la formación en el Corazón del lago
 		WheelEmptyStatus: Aquí aún está vacío
 		WheelSeatFormat: Plaza de sombra {0}
 		WheelStatusRecall: "[Soltar] Recoger esta"
 		WheelStatusSummon: "[Soltar] Llamarla"
 		WheelStatusAwaitOrder: "[Soltar] Apúntala; al abrir el lago saldrá sola"
 		WheelCenterTitle: Orden general
-		WheelCenterDesc: Si queda alguna Sombra del lago en campo, se recogen todas; si no hay ninguna, se llaman todas
+		WheelCenterDesc: Si hay Sombras del lago en el campo, se retiran todas; si no hay ninguna, se invocan todas
 		WheelCenterCountFormat: "{0}/{1} en combate"
 		WheelCenterRecallAll: "[Soltar] Recogerlas todas"
 		WheelCenterSummonAll: "[Soltar] Llamarlas todas"
 		WheelCenterEmpty: Aún no hay Sombras del lago formadas en una plaza
 		WheelDamageFormat: Daño de cada Sombra del lago en campo {0}%
-		WheelHint: "[{0}] Mantener pulsado · Soltar para confirmar · Clic derecho solo cierra el menú, las Sombras del lago se quedan"
+		WheelHint: "[{0}] Mantener pulsado para abrir · Soltar para confirmar · Clic derecho solo cierra el menú y mantiene las Sombras del lago en el campo"
 		WheelWispName: Llama dorada
 		WheelWispDesc: Encendida, la llama dorada cunde por la orilla y quema a quien toca
 		WheelWispIgnite: "[Soltar] Encender"
@@ -1189,8 +1189,8 @@ KikasaText: {
 		DreamReturnFormat: Pulsa {0} otra vez para volver
 		DreamEnterKeyFormat: Mantén pulsado {0} para entrar en el Sueño espectral
 		DreamEnterClick: Clic en el sabueso para entrar en el Sueño espectral
-		NeedDomainFormat: Pulsa {0} para alzar el lago de sangre
-		NeedFullWater: El lago aún no ha llenado
+		NeedDomainFormat: Pulsa {0} para desplegar el lago de sangre
+		NeedFullWater: El lago de sangre aún no está lleno
 		HoundBonusFormat: Tope de sabuesos {0} · daño {1}%
 		WispBurning: Ardiendo, quema a lo largo de la orilla
 		WispIdle: Apagado, el fuego espera tu orden
@@ -1207,31 +1207,31 @@ KikasaText: {
 		EdgeRainNightmare: Pesadilla de lluvia
 		EdgeTriSeal: Tres sombras sellan el lago
 		SeatsTitle: Tres plazas de sombra
-		SeatEmptyLine: Vacía; elige una del registro de abajo y súbela
+		SeatEmptyLine: Plaza vacía; elige una Sombra del lago del registro inferior para asignarla
 		SeatPickHint: Clic para tomar · Clic derecho para quitar
 		SeatPlaceHint: Clic para colocarla aquí
 		SeatHeldLineFormat: Guardada; mantén pulsado {0} para abrir el menú radial y llamarla
 		RosterTallyFormat: Atlas {0} / {1}
 		RosterSeatTallyFormat: Plazas {0} / {1}
 		RosterUnknown: Aún no ha recibido Inmersión
-		RosterUnknownHintFormat: Con el lago abierto, apunta y pulsa {0} para la Inmersión
+		RosterUnknownHintFormat: En el lago de sangre, apunta a un enemigo y pulsa {0} para aplicarle Inmersión
 		RosterSeatedTag: En formación
 		RosterPickHint: Clic para tomar
 		NotePlacedFormat: "{0} ha entrado en una plaza de sombra"
 		NoteUnslottedFormat: "{0} ha salido de su plaza de sombra"
 		NoteNotCollected: Aún no lo has hundido en el lago
-		NotePickFirst: Elige primero una del registro de abajo
+		NotePickFirst: Elige primero una Sombra del lago del registro inferior
 		NoteArmsNoStock: En el tesoro del lago no está el original de esta arma, la Sombra del lago no puede tomar forma
 		TalisTitle: Cuerda  de  la  lluvia
 		TalisEmptyLine: Nudo vacío; clic para abrir el estuche y elegir un talismán
-		TalisNoneOwned: El estuche aún está vacío; fabrica primero un talismán en un banco junto al agua
-		TalisNeedUmbrella: Sostén Kikasa en la mano; el talismán solo reconoce a su dueño
+		TalisNoneOwned: El estuche de talismanes está vacío; fabrica talismanes en un banco de trabajo junto al agua
+		TalisNeedUmbrella: Los talismanes solo surten efecto mientras sostengas Kikasa
 		TalisSwapHint: Clic para cambiar de talismán · Arrastra a otro nudo para cambiar de sitio · Clic derecho para descolgar
 		TalisHangHint: Clic para colgar
 		TalisTakeDownLabel: Descolgar
 		TalisAlreadyHung: Ya está colgado en otro nudo
 		TalisCurrentTag: Colgado aquí
-		TalisStackRule: Todos los talismanes colgados siguen activos, aunque su tinta quede tapada; cada gota de tinta pertenece a un solo talismán, el de más a la izquierda primero, y el color y el efecto propio van con él
+		TalisStackRule: Todos los talismanes colgados surten efecto. Cada gota de tinta activa solo un talismán, de izquierda a derecha, alterando el aspecto visual del proyectil y sus efectos exclusivos
 		TalisDragSwapHint: Suelta para intercambiarlos
 		TalisDragMoveHint: Suelta para colgarlo aquí
 		NoteFuHungFormat: «{0}» ha subido a la cuerda de la lluvia
@@ -1240,50 +1240,50 @@ KikasaText: {
 		VaultCountFormat: "{0} / {1}"
 		VaultEmptyHint: Aquí aún está vacío
 		VaultExtractHint: Clic para recuperar
-		VaultViewOnlyLine: El agua aún no ha subido; ahora solo se puede mirar
+		VaultViewOnlyLine: El nivel de agua aún no está lleno; por ahora solo se puede consultar
 		ArmsStockFormat: Originales ×{0}
 		ThrallLineFormat: Tope de siervos del paraguas {0} · se puede convertir uno cada {1} s
 		FooterHintFormat: Esc o {0} para cerrar · Sujeta un objeto y pulsa {1} para hundirlo en el tesoro · Mantén pulsado {2} para abrir el menú radial
 	}
 
 	KikasaHudLead: {
-		DomainTitle: Alzar el lago de sangre
-		DomainBody: El lago de sangre es el sitio donde Kikasa se planta: guardar objetos, aplicar Inmersión a enemigos y mandar Sombras del lago, todo empieza por alzar el lago y dejar que el agua suba. El nivel te obedece: mantén pulsada la tecla «Guiar la marea» (X por defecto) y la superficie sube y baja con el cursor.
-		DomainPrompt: Sostén Kikasa y pulsa {0}
-		SinkTitle: Hundirlo en el lago
-		SinkBody: Sujeta un objeto y pulsa la tecla de hundir: irá al fondo, y luego lo puedes recuperar en el Corazón del lago. Apunta a un enemigo y pulsa la misma tecla para empujarlo al agua. Un jefe que haya recibido Inmersión deja una sombra: eso es una Sombra del lago, y después puedes mandarla a combatir por ti.
-		SinkPrompt: Cuando el agua te llegue a los pies, sujeta un objeto o apunta a un enemigo y pulsa {0}
+		DomainTitle: Desplegar el lago de sangre
+		DomainBody: El lago de sangre es el dominio base de Kikasa. Almacenar objetos, aplicar Inmersión a enemigos e invocar Sombras del lago requiere desplegar el lago de sangre y dejar subir el agua. Mantén pulsada la tecla «Kikasa: Guiar la marea» (X por defecto) para ajustar la altura del agua según el cursor.
+		DomainPrompt: Sostén Kikasa y pulsa {0} para desplegar el dominio
+		SinkTitle: Hundir objetos e Inmersión
+		SinkBody: Sujeta un objeto y pulsa la tecla «Kikasa: Hundir en el lago» para guardarlo en el almacén del fondo (recuperable en el Corazón del lago). Apunta a un enemigo y pulsa la misma tecla para aplicarle Inmersión. Los jefes sumergidos se convierten en «Sombras del lago», que combatirán a tu lado.
+		SinkPrompt: Espera a que el lago de sangre se llene por completo, luego sujeta un objeto o apunta a un enemigo y pulsa {0}
 		PanoramaTitle: Abrir el Corazón del lago
-		PanoramaBody: El Corazón del lago es la pantalla principal de Kikasa: arriba viven el sabueso y el fuego fatuo, en el medio tres plazas de sombra alojan las Sombras del lago, y en el fondo se alinean los objetos hundidos. Los siguientes pasos pasan todos por aquí.
-		PanoramaPrompt: Pulsa el carillón de abajo a la izquierda, o sostén Kikasa y pulsa {0}
-		WheelTitle: Llamar a las Sombras del lago
-		WheelBody: Las Sombras del lago formadas en una plaza salen solas a combatir cuando el lago está abierto. Con el menú radial puedes llamarlas o recogerlas una a una en cualquier momento: cuantas menos haya en campo, más daño hace cada una. El sector de llama dorada del menú enciende y recoge el fuego fatuo.
+		PanoramaBody: El Corazón del lago es el panel de gestión de Kikasa: en la parte superior se controlan los sabuesos y el fuego fatuo, en el centro hay 3 plazas para organizar las Sombras del lago activas, y en el fondo está el almacén con los objetos guardados. Haz clic en la cuerda de la lluvia para colgar talismanes.
+		PanoramaPrompt: Pulsa el carillón abajo a la izquierda o sostén Kikasa y pulsa {0}
+		WheelTitle: Menú radial de sombras
+		WheelBody: Las Sombras del lago asignadas a las plazas combaten automáticamente al abrir el lago de sangre. Mantén pulsada la tecla del menú radial en combate para invocar o retirar sombras individualmente: cuantas menos haya en el campo, mayor daño causará cada una. La opción de llama dorada enciende o apaga el fuego fatuo que quema a los enemigos.
 		WheelPrompt: Mantén pulsado {0} para abrir el menú radial, apunta a una plaza y suelta
-		WheelNoMemory: En el lago aún no hay Sombras del lago. Primero hunde a un jefe, o salta este paso.
-		RainTitle: Voltear a lluvia espectral
-		RainBody: La tecla «Anverso y reverso del lago de sangre» (clic de la rueda por defecto) se usa de dos modos: con el lago lleno, un pulso corto voltea el lago de sangre en lluvia espectral; mantener pulsado te hunde en el Sueño espectral, que queda para el último paso. Los enemigos que mueren bajo la lluvia espectral se vuelven siervos del paraguas y combaten por ti.
-		RainPrompt: Con el lago lleno, pulsa {0} un momento para voltear el lago de sangre
+		WheelNoMemory: Aún no hay Sombras del lago registradas. Aplica Inmersión a un jefe primero o pulsa «Saltar».
+		RainTitle: Cambiar a lluvia espectral
+		RainBody: Con el lago lleno, pulsa brevemente la tecla «Kikasa: Anverso y reverso del lago de sangre» (clic de la rueda por defecto) para transformar el lago de sangre en lluvia espectral. Los enemigos comunes derrotados bajo la lluvia se convertirán en «siervos del paraguas» que lucharán por ti. Mantener pulsada la tecla te llevará al Sueño espectral.
+		RainPrompt: Con el lago lleno, pulsa brevemente {0} para cambiar a lluvia espectral
 		RestartTitle: Reinicio de gran alcance
-		RestartBody: Pulsa la tecla de Autorreinicio y la imagen se congela en una foto en blanco y negro, luego la lluvia la abre: los enemigos cercanos y tú volvéis a donde estabais unos segundos atrás, tu vida se llena, los perjuicios se lavan, y durante el retroceso eres invulnerable. También se puede pulsar fuera de la lluvia espectral: el obturador pide prestada una lluvia espectral para ese instante; al asentarse el retroceso, la lluvia se retira sola y el dominio queda como antes de pulsar.
-		RestartPrompt: Sostén Kikasa y pulsa {0}
-		DreamTitle: Entrar en el Sueño espectral
-		DreamBody: Con el lago lleno, mantén pulsada la tecla «Anverso y reverso del lago de sangre» y el reflejo del lago te arrastra al Sueño espectral. En el sueño los enemigos quedan incapaces y no puede existir ningún proyectil a distancia; tus objetos también quedan sellados, y en su lugar mantienes pulsado el clic izquierdo para soltar sabuesos que muerdan. Pulsa la misma tecla otra vez para despertar.
-		DreamPrompt: Con el lago lleno, mantén pulsado {0}
-		// CloseTitle: Draw the Lake Back
-		// CloseBody: The Blood Lake never recedes on its own: switch weapons or walk a mile and the lake and its sky follow you. Hold Kikasa and press the Domain Expansion key once more, and the water drains and the world comes back. Your hoard, shades and drowning records all stay in the umbrella, ready for the next time you raise it.
-		// ClosePrompt: Hold Kikasa and press {0} to draw the lake back
-		// CloseInDreamNote: You're still inside the Ghost Dream. Press {0} to wake first, then close the lake.
-		// CloseSettlingNote: The lake is still changing form. Wait for it to settle.
-		// KeyUnboundFallback: The key "{0}" isn't bound. For this step you can press {1} instead; bind it in Settings > Controls to keep using it.
-		// ShieldNote: While the tutorial runs, foes can't hurt you and none spawn nearby.
+		RestartBody: Pulsa la tecla «Autorreinicio» para rebobinar las posiciones de ti y de todos los enemigos cercanos a hace unos segundos. Serás totalmente invulnerable durante el rebobinado, recuperarás toda la vida y se limpiarán todas las desventajas. Puede activarse en cualquier momento incluso fuera de la lluvia, regresando al estado de dominio previo tras terminar.
+		RestartPrompt: Sostén Kikasa y pulsa {0} para reiniciar
+		DreamTitle: Entrar al Sueño espectral
+		DreamBody: Con el lago lleno, mantén pulsada la tecla «Kikasa: Anverso y reverso del lago de sangre» para entrar al Sueño espectral. Los enemigos quedarán paralizados y los proyectiles a distancia no podrán existir. Los objetos comunes no se pueden usar; mantén pulsado el clic izquierdo para invocar continuamente sabuesos que desgarren a los enemigos (sus dentelladas ignoran armadura). Pulsa la tecla de nuevo para despertar y salir del sueño.
+		DreamPrompt: Con el lago lleno, mantén pulsado {0} para entrar al Sueño espectral
+		CloseTitle: Retirar el lago de sangre
+		CloseBody: Una vez desplegado, el lago de sangre te seguirá continuamente y no desaparecerá al cambiar de arma. Sostén Kikasa y pulsa de nuevo la tecla «Despliegue de dominio» para cerrar el dominio. Todos los objetos guardados, Sombras del lago y registros de inmersión permanecerán guardados para la próxima vez.
+		ClosePrompt: Sostén Kikasa y pulsa {0} para retirar el lago de sangre
+		CloseInDreamNote: Aún estás dentro del Sueño espectral. Pulsa primero {0} para salir del sueño antes de cerrar el dominio.
+		CloseSettlingNote: El dominio está cambiando de forma, espera a que termine la transición.
+		KeyUnboundFallback: La tecla «{0}» no está asignada. Puedes usar temporalmente {1} para este paso; asígnala en Ajustes > Controles para usarla habitualmente.
+		ShieldNote: Protección activa durante el tutorial: los enemigos no pueden dañarte y no aparecerán enemigos cercanos.
 		SkipBtn: Saltar
 		ConfirmBtn: Entendido
 		AssistBtn: Demuéstramelo
 		OpenPanoramaBtn: Ábrelo por mí
 		DismissBtn: Guardar el tutorial
-		KeyUnbound: La tecla «{0}» de este paso aún no está asignada. Asígnala primero en Ajustes > Controles, o pulsa «Saltar».
-		AlreadyDoneNote: Este paso ya lo has hecho. Cuando termines de leer, pulsa «Entendido».
-		WaterRisingNote: Espera primero a que el agua de sangre te llegue a los pies. Nivel {0}%.
+		KeyUnbound: La tecla «{0}» requerida para este paso no está asignada. Por favor asígnala en Ajustes > Controles o pulsa «Saltar».
+		AlreadyDoneNote: Ya has completado este paso. Lee la información y pulsa «Entendido» para continuar.
+		WaterRisingNote: Esperando a que el lago de sangre se llene. Nivel actual: {0}%.
 		ResetCooldownFormat: El reinicio aún está en enfriamiento: {0}%
 		HelpHover: Volver a ver el tutorial de Kikasa
 		MutateFallbackKey: Clic de la rueda
