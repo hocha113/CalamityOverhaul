@@ -319,12 +319,12 @@ OniKeikoRune: {
 	DisplayName: Sceau de keiko
 	Tooltip:
 		'''
-		Utiliser relance la leçon d'Onikiri depuis le début ; le réutiliser pendant la leçon la range
-		Laissé quand on refuse la leçon d'ouverture ; le sceau ne se consomme pas et peut être rouvert
+		Utilisez pour rouvrir le tutoriel d'Onikiri ; utilisez à nouveau pendant le tutoriel pour le fermer
+		Objet reçu en refusant le tutoriel initial ; n'est pas consommé et peut être réutilisé
 		'''
-	NeedBlade: Pas d'Onikiri dans le sac, le sceau n'a pas de leçon à ouvrir
-	Closed: La leçon est rangée ; réutilisez ce sceau pour la rouvrir
-	NotNow: Autre chose occupe la scène, le sceau ne peut pas tenir le terrain
+	NeedBlade: Onikiri n'est pas dans l'inventaire ; impossible d'ouvrir le tutoriel
+	Closed: Tutoriel fermé ; utilisez ce sceau à nouveau pour le rouvrir
+	NotNow: Impossible d'ouvrir le tutoriel actuellement ; veuillez réessayer plus tard
 }
 
 ScrapBeacon: {

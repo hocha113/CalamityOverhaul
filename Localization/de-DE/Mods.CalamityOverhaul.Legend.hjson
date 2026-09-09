@@ -634,79 +634,79 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Haltung
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: Haltung voll. {0} sperrt und Endhieb; Doppelschritt bleibt möglich
-		StanceHalfLine: Haltung zur Hälfte. {0} zweimal, dann Linksklick für den Weltenblitz
-		// StanceLockedLine: Finale Slash in progress — immune to damage, Stance locked and not building
+		StanceReadyLine: Haltung voll: {0} drücken, um das Ziel zu fixieren und den Endhieb auszuführen; Doppelschritt durchdringt weiterhin Feinde
+		StanceHalfLine: Haltung über der Hälfte: {0} zweimal drücken, dann Linksklick für den Weltenblitz
+		StanceLockedLine: Hinrichtung im Gang: unempfindlich gegen Schaden, Haltung gesperrt
 		DomainTitle: Auge des Geisterreichs
-		DomainStateClosed: Geschlossen, Reich nicht entfaltet
-		DomainStateOmote: Omote, vergilbtes Papier
-		DomainStateUra: Ura, Tusche-Jenseits
-		DomainStateShifting: Wandelt sich, nicht stören
+		DomainStateClosed: Reich nicht entfaltet
+		DomainStateOmote: Omote (Papierform)
+		DomainStateUra: Ura (Tuscheform)
+		DomainStateShifting: Gestaltwechsel
 		DomainToggleHintFormat: "{0} oder Linksklick: Reich entfalten oder schließen"
 		DomainFlipHintFormat: "{0} oder Rechtsklick: Omote/Ura wenden (öffnet zuerst, wenn geschlossen)"
 	}
 
 	OnikiriTutorialLead: {
-		AskTitle: Willst du zuerst unterwiesen werden
-		AskBody: Kraft und Haltung, Omote und Ura des Geisterreichs, der Rückschlag der Zergliederung. Diese drei findet man allein kaum heraus. Das frage ich nur dies eine Mal
-		AskPrompt: Jetzt lernen; in Eile die Lehre überspringen, gilt als durchlaufen; oder die Übungsrune nehmen und später selbst aufschlagen
-		RefreshAskTitle: Zwei neue Seiten
-		RefreshAskBody: Diese Fassung fügt zwei Lektionen hinzu: wie man den Kodex neben dem Inschriftentisch liest, und was das Auge des Geisterreichs vor dem Zug wissen muss. Die Übung hast du schon, sie wird nicht wiederholt
-		RefreshAskPrompt: Jetzt nachholen; oder die Übungsrune nehmen und später selbst aufschlagen
-		AcceptBtn: Unterweise mich
-		DeclineBtn: Nicht nötig
-		DeclineNotice: Die Übungsrune bleibt bei dir. Damit kannst du die Lehre jederzeit öffnen
+		AskTitle: Tutorial ansehen?
+		AskBody: Kraft und Haltung, Omote- und Ura-Formen des Geisterreichs sowie der Rückschlag der Zergliederung: Diese Schlüsselmechaniken vorab zu kennen, hilft Fehler im Kampf zu vermeiden. Dieser Hinweis erscheint nur einmal
+		AskPrompt: Klicke »Tutorial starten«, um die Mechaniken zu lernen; bei Eile kannst du »Tutorial überspringen«; oder nimm die Keiko-Rune, um das Tutorial später jederzeit zu öffnen
+		RefreshAskTitle: Tutorial aktualisiert
+		RefreshAskBody: Diese Fassung ergänzt zwei Anleitungen: wie man den Kodex neben dem Tisch liest und was vor dem Entfalten des Reiches zu beachten ist. Bereits geübte Schritte werden nicht wiederholt
+		RefreshAskPrompt: Klicke, um die neuen Inhalte zu sehen, oder nimm die Keiko-Rune zum späteren Nachholen
+		AcceptBtn: Tutorial starten
+		DeclineBtn: Jetzt nicht
+		DeclineNotice: Die Keiko-Rune wurde in dein Inventar gelegt; benutze sie jederzeit, um das Tutorial erneut zu öffnen
 		HudTitle: Kraft und Haltung
-		HudBody: Hältst du Onikiri, bleiben unten links zwei Anzeigen. Kraft speist Kamui-Blitzschritt und Sakuraflug und füllt sich von selbst; Haltung wächst mit Treffern, zur Hälfte und voll schaltet je eine Hinrichtungsstufe frei. Hier nur die Anzeigen; die Griffrechnung steht auf der Waffe
-		HudPrompt: Sieh dir diese Anzeigen an. Der einzige HUD-Eingang ist der Siegelzettel
+		HudBody: Solange Onikiri geführt wird, zeigen zwei Balken unten links den Status. Kraft speist Kamui-Blitzschritt und Sakuraflug und regeneriert sich von selbst; Haltung wächst durch Treffer an Feinden und schaltet bei halber und voller Füllung Hinrichtungsstufen frei. Details stehen in der Waffenbeschreibung
+		HudPrompt: Überprüfe die Statusanzeigen unten links und klicke »Verstanden«, um fortzufahren. Klicke den Siegelzettel, um das Menü zu öffnen
 		SigilTitle: Siegelrad
-		SigilBody: Links am Balken des Inschriftentischs hängt das Schild »Siegelrad«, darunter ein Miniaturrad. Außen sitzen sechs Geister, innen nur drei Siegelplätze. Außenring wählen, leeren Platz siegeln. Geister auf demselben Rad wecken einander, die Wiederbelebung steigt zusammen. Im Schlitz unter dem Sockel steckt das Geisterregister; herausziehen nur zum Lesen, nicht zum Siegeln
-		SigilPrompt: Klicke das markierte Schild oder das Rad; lerne Außenring und drei Plätze, dann schließe und weiter
+		SigilBody: Klicke oben links am Inschriftentisch auf den Reiter »Siegelrad«, um zu diesem Menü zu wechseln. Der Außenring zeigt registrierte Geister, das innere Dreieck hat 3 Plätze. Klicke auf einen Geist und dann auf einen freien Platz zum Binden. Gebundene Geister gewähren Kampfboni, doch jede Nutzung erhöht Wiederbelebung und Erosion. Klicke auf die Schriftrolle darunter, um das Geisterregister zu öffnen
+		SigilPrompt: Klicke auf den hervorgehobenen Reiter oben links, um zum Siegelrad zu wechseln und Außenring sowie 3 Plätze anzusehen
 		MeiTitle: Inschriftentisch
-		MeiBody: Der Siegelzettel ist der einzige HUD-Eingang und öffnet zuerst den Inschriftentisch. Angelinschrift, Hohlkehle und Schnitzbett lassen sich schlagen, jede Inschrift bringt Wirkung und Preis. Platz klicken, Fächerrippen aufklappen; Stempel im Beutel liegen im Kasten darunter
-		MeiPrompt: Drücke {0} oder klicke den markierten Zettel, dann lerne die drei Plätze
+		MeiBody: Klicke auf den hervorgehobenen Siegelzettel unten links (oder drücke die Taste), um den Inschriftentisch zu öffnen. Onikiri besitzt drei Inschriftenslots: Angel, Kehle und Schnitzbett. Jede Inschrift bringt einen Spezieleffekt mit entsprechenden Kosten. Klicke auf einen Slot zur Stempelauswahl; Stempel im Inventar liegen im Kasten darunter
+		MeiPrompt: Drücke {0} oder klicke den hervorgehobenen Zettel, um den Tisch zu öffnen und die drei Plätze anzusehen
 		CodexTitle: Inschriftenkodex
-		CodexBody: Unter dem Kontobrett des Tisches liegt ein fadengeheftetes Heft, das ist der Kodex. Links stehen alle Inschriften nach Angel, Kehle und Schnitzbett; rechts Wirkung, Preis und Herkunft. Ungeschlagene zeigen nur das Schicksalsband. Hier nur lesen; schlagen bleibt am Tisch
-		CodexPrompt: Klicke das markierte Heft; nach dem Schließen kehrst du zum Tisch zurück
+		CodexBody: Rechts neben dem Tisch liegt ein Buch: der Inschriftenkodex. Die linke Seite ordnet alle Inschriften nach Angel, Kehle und Schnitzbett; die rechte zeigt Wirkung, Preis und Herkunft. Ungeschlagene zeigen den Fortschritt des Bandes. Nur lesbar; das Schlagen erfolgt am Tisch
+		CodexPrompt: Klicke das hervorgehobene Buch rechts zum Öffnen des Kodex; Schließen bringt dich zurück zum Tisch
 		DomainTitle: Auge des Geisterreichs
-		DomainBody: Das Auge neben der Kraft führt das Geisterreich: Omote entfalten (vergilbtes Papier), nach Ura wenden (Tusche-Jenseits), dann schließen. Zergliederung gilt nur in Ura
-		DomainPrompt: Linksklick aufs Auge öffnet oder schließt; Rechtsklick oder {0} wendet Omote/Ura
+		DomainBody: Das Auge neben der Kraftanzeige stellt den Status des Geisterreichs dar: entfalte das flache »Omote«, wende ins tiefe »Ura« oder schließe das Reich wieder. Onikiris Kernexekution »Zergliederung« funktioniert nur in Ura
+		DomainPrompt: Linksklick aufs Auge öffnet oder schließt das Reich; Rechtsklick oder {0} wendet zwischen Omote und Ura
 		PrepareTitle: Vorbereitung zur Übung
-		PrepareBody: Schließe Inschriftentisch und Geisterregister, halte Onikiri. Ist das Reich offen, schließe ich es zuerst auf dem normalen Weg; nach einer Unterbrechung stelle ich auch den Zustand für den nächsten Schritt her
-		PreparePrompt: Halte Onikiri und warte, bis Auge und Oberflächen ruhen; bleibt es stehen, klicke Überspringen und geh zur Übung
+		PrepareBody: Schließe alle offenen Menüs und halte Onikiri. Ist das Reich bereits entfaltet, wird das System es automatisch schließen und die Startbedingungen für das Tutorial wiederherstellen
+		PreparePrompt: Halte Onikiri in der Hand und warte, bis Interface und Reich zurückgesetzt sind; bei Verzögerung klicke »Überspringen« für den direkten Übungsstart
 		OpenDomainTitle: Omote entfalten
-		OpenDomainBody: Drücke die Domänentaste (Standard Q), um das Geisterreich zu öffnen. Aus geschlossenem Auge führt die erste Öffnung ins flache Omote, vergilbtes Papier legt sich über die Welt
-		OpenDomainPrompt: Drücke {0} selbst und warte, bis das Reich in Omote steht
+		OpenDomainBody: Drücke die Taste zur Domänenentfaltung (Standard Q), um das Reich zu öffnen. Im geschlossenen Zustand führt das erste Drücken ins flache »Omote«, das die Umgebung in vergilbtes Papier hüllt
+		OpenDomainPrompt: Drücke {0}, um das Reich zu entfalten, und warte, bis es sich in Omote stabilisiert
 		FlipDomainTitle: Nach Ura wenden
-		FlipDomainBody: In Omote die Wendetaste (Standard Mouse3, mittlere Maustaste) drücken, und das flache Reich klappt ins tiefe Ura
-		FlipDomainPrompt: Drücke {0} nach Ura, warte bis die Tusche steht, dann zieh die Klinge
+		FlipDomainBody: Drücke in Omote die Wendetaste (Standard mittlere Maustaste), um ins tiefe »Ura« zu wechseln, was die Grafik in einen Tuschestiel verwandelt
+		FlipDomainPrompt: Drücke {0}, um nach Ura zu wenden, und warte auf die Stabilisierung des Bildes
 		DismemberTitle: Zergliederungsübung
-		DismemberBody: Lege den Cursor auf den markierten Santa-NK1-Rumpf, lass die linke Taste los und drücke sie einmal. Onikiri zergliedert den Leib direkt; Omokage-Papier ginge auch, diese Lektion verlangt es nicht
-		DismemberPrompt: Ziel auf den Panzerrumpf, loslassen, dann einmal Linksklick
+		DismemberBody: Ziele in Ura mit dem Cursor auf das hervorgehobene Übungsziel, lass die linke Maustaste los und drücke sie erneut. Onikiri stürmt vor und zergliedert das Ziel direkt (Treffer auf erscheinende Omokage-Papiere lösen die Zergliederung ebenfalls aus)
+		DismemberPrompt: Ziele auf das hervorgehobene Ziel, lass Linksklick los und drücke erneut zum Zergliedern
 		BacklashTitle: Den Rückschlag tragen
-		BacklashBody: Direkte Zergliederung kostet den Träger echte 25% Maximalleben und nimmt die Bewegung während des Bergens. Sieh die ganze Folge; danach setze ich dich wieder her
-		BacklashPrompt: Keine Eingabe. Warte auf Rückschlag, Bergen und Wundheilung
-		CloseDomainTitle: Reich vom Auge schließen
-		CloseDomainBody: Zum Schluss das Reich selbst schließen. Linksklick aufs HUD-Auge ist der kürzeste Weg; die Domänentaste zählt auch, Rechtsklick aufs Auge wendet Omote/Ura
-		CloseDomainPrompt: Linksklick auf das markierte Auge und warte, bis es ganz zu ist
-		DomainUnboundHint: Keine Domänentaste gebunden. Für diese Lehre gilt Q als vorläufiger Standard
-		FlipUnboundHint: Keine Wendetaste gebunden. Für diese Lehre gilt Mouse3 (mittlere Maustaste) als vorläufiger Standard
-		WaitingFeedback: Warte, bis das Ergebnis dieses Schritts festliegt
-		BusyFeedback: Das Geisterreich wandelt sich noch. Warte, bis es steht
-		RetryFeedback: Das hat nicht gesessen. Folge dem Hinweis noch einmal, oder lass mich vormachen
-		NeedBladeHold: Onikiri ist nicht im Beutel. Hol es zurück, dann weiter
-		TargetStalledHint: Die Übungsattrappe ist noch nicht da. Bei Gedränge bekommt sie keinen Platz. Stell dich ins Freie und warte
+		BacklashBody: Direkte Zergliederung eines Feindes fügt dem Träger echten Rückschlagschaden in Höhe von 25% des Maximallebens zu und nimmt kurzzeitig die Bewegung bis zum Ende der Bergen-Animation (Zergliederung über Omokage-Papier verursacht keinen Rückschlag). Danach wird dein Leben regeneriert
+		BacklashPrompt: Warte einen Moment, bis die Bergen-Animation beendet und dein Leben wiederhergestellt ist
+		CloseDomainTitle: Reich schließen
+		CloseDomainBody: Übung abgeschlossen. Schließe nun das Reich. Ein Linksklick auf das hervorgehobene Auge im HUD schließt das Reich schnell; erneutes Drücken der Domänentaste schließt es ebenfalls
+		CloseDomainPrompt: Linksklick auf das hervorgehobene Auge (oder Domänentaste drücken) und warten, bis das Reich ganz geschlossen ist
+		DomainUnboundHint: Domänentaste ist nicht belegt. Für dieses Tutorial kannst du Q als vorläufige Taste drücken
+		FlipUnboundHint: Wendetaste ist nicht belegt. Für dieses Tutorial kannst du Mouse3 (mittlere Maustaste) als vorläufige Taste drücken
+		WaitingFeedback: Warten auf Registrierung der Aktion
+		BusyFeedback: Das Reich wechselt gerade seine Form; bitte warten
+		RetryFeedback: Die Aktion hat das Ziel verfehlt. Folge dem Hinweis und versuche es erneut, oder klicke »Mach es vor«
+		NeedBladeHold: Onikiri ist nicht im Inventar. Nimm es ins Inventar, um fortzufahren
+		TargetStalledHint: Spawnpunkt des Übungsziels blockiert. Bei Gedränge bitte an einen freien Ort gehen und warten
 		AssistBtn: Mach es vor
 		RetryBtn: Nochmal
 		NextBtn: Verstanden
-		OpenSigilBtn: Siegelrad öffnen
+		OpenSigilBtn: Rad öffnen
 		OpenMeiBtn: Tisch öffnen
-		OpenCodexBtn: Kodex lesen
+		OpenCodexBtn: Kodex öffnen
 		SkipBtn: Überspringen
-		SkipStepBtn: Diesen Schritt überspringen
-		AbortBtn: Lehre weglegen
+		SkipStepBtn: Schritt überspringen
+		AbortBtn: Tutorial schließen
 		SkipAllBtn: Tutorial überspringen
-		SkipAllNotice: Das Tutorial gilt als durchlaufen. Prüfungsaufträge sind offen
+		SkipAllNotice: Tutorial übersprungen; Prüfungsaufträge sind jetzt freigeschaltet
 	}
 
 	OniMeiCodexUI: {

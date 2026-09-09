@@ -318,12 +318,12 @@ OniKeikoRune: {
 	DisplayName: Keiko-Rune
 	Tooltip:
 		'''
-		Benutzen, um die Onikiri-Lektion von vorn zu halten; während der Lektion erneut benutzen, um sie wegzulegen
-		Bleibt zurück, wenn du die Eröffnung ablehnst; die Rune wird nicht verbraucht und kann immer wieder aufgeschlagen werden
+		Benutzen, um das Onikiri-Tutorial erneut zu öffnen; erneute Nutzung während des Tutorials schließt es
+		Gegenstand, der beim Überspringen des Anfangstutorials erhalten wird; wird nicht verbraucht und ist wiederverwendbar
 		'''
-	NeedBlade: Kein Onikiri im Gepäck, die Rune kann keine Lektion öffnen
-	Closed: Die Lektion ist weggelegt; benutze die Rune erneut, um sie wieder zu öffnen
-	NotNow: Gerade liegt etwas anderes an, die Rune hält die Bühne nicht
+	NeedBlade: Onikiri ist nicht im Inventar; Tutorial kann nicht geöffnet werden
+	Closed: Tutorial geschlossen; benutze diese Rune erneut zum Öffnen
+	NotNow: Tutorial kann derzeit nicht geöffnet werden; bitte später versuchen
 }
 
 ScrapBeacon: {

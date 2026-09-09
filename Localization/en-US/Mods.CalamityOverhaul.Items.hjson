@@ -358,12 +358,12 @@ OniKeikoRune: {
 	DisplayName: Keiko Rune
 	Tooltip:
 		'''
-		Use it to open the Onikiri lesson from the beginning, or use it again mid-lesson to put the lesson away
-		Left with you when the opening lesson is declined; the rune is not consumed and may be used again
+		Use to reopen the Onikiri tutorial, or use again mid-tutorial to close it
+		Item received when declining the opening tutorial; never consumed and can be used repeatedly
 		'''
-	NeedBlade: Onikiri is not in your bag, so the rune has no lesson to open
-	Closed: The lesson is put away; use the rune again to reopen
-	NotNow: Something else holds the stage right now
+	NeedBlade: Onikiri is not in your inventory; cannot open tutorial
+	Closed: Tutorial closed; use this rune again to reopen
+	NotNow: Cannot open tutorial in the current scene; please try again later
 }
 
 ScrapBeacon: {

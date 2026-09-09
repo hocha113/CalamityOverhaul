@@ -634,79 +634,79 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Postura
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: Postura llena: {0} fija al enemigo y lanza el tajo final; el doble paso relámpago sigue pudiendo atravesar
+		StanceReadyLine: Postura llena: pulsa {0} para fijar al objetivo y ejecutar el tajo final; el doble paso relámpago aún atraviesa a los enemigos
 		StanceHalfLine: Postura a medias: pulsa {0} dos veces seguidas, luego clic izquierdo para el destello aniquilador
-		// StanceLockedLine: Finale Slash in progress — immune to damage, Stance locked and not building
+		StanceLockedLine: Ejecución en curso: invulnerable, Postura bloqueada
 		DomainTitle: Ojo del Reino espectral
-		DomainStateClosed: Cerrado, el dominio no está desplegado
-		DomainStateOmote: Omote, papel amarillento
-		DomainStateUra: Ura, el más allá de tinta
-		DomainStateShifting: En transmutación, no interrumpas
+		DomainStateClosed: Dominio no desplegado
+		DomainStateOmote: Omote (forma de papel)
+		DomainStateUra: Ura (forma de tinta)
+		DomainStateShifting: Cambiando de forma
 		DomainToggleHintFormat: "{0} o clic izquierdo: desplegar / recoger el dominio"
-		DomainFlipHintFormat: "{0} o clic derecho: voltear Omote/Ura (si está cerrado, primero lo despliega)"
+		DomainFlipHintFormat: "{0} o clic derecho: voltear Omote/Ura (si está cerrado, se despliega)"
 	}
 
 	OnikiriTutorialLead: {
-		AskTitle: ¿Quieres recibir primero la lección?
-		AskBody: El Vigor y la Postura, el anverso y el reverso del Reino espectral, el contragolpe del desmembramiento: sin oírlos una vez, estas tres cosas cuestan de pillar solas. Esta pregunta solo se hace una vez
-		AskPrompt: Recibe la lección ahora; si tienes prisa, salta el tutorial y contará como visto; o quédate el talismán de keiko y ábrelo tú más adelante
-		RefreshAskTitle: Un par de páginas nuevas
-		RefreshAskBody: Esta versión añade dos lecciones: cómo consultar el Códice de inscripciones junto al Atril, y qué hay que reconocer en el Ojo del Reino espectral antes de actuar. La práctica ya la hiciste; esta vez no se repite
-		RefreshAskPrompt: Completa ahora; o quédate el talismán de keiko y ábrelo tú más adelante
-		AcceptBtn: Enséñame
-		DeclineBtn: No hace falta
-		DeclineNotice: El talismán de keiko se ha quedado contigo; úsalo para abrir la lección cuando quieras
+		AskTitle: ¿Ver el tutorial?
+		AskBody: El Vigor y la Postura, las formas Omote y Ura del dominio, y el contragolpe del desmembramiento: conviene conocer estas mecánicas clave con antelación para no cometer errores en combate. Este aviso solo aparece una vez
+		AskPrompt: Pulsa «Empezar tutorial» para aprender las mecánicas; si tienes prisa puedes «Saltar tutorial»; o acepta el talismán de keiko para abrirlo cuando quieras
+		RefreshAskTitle: Tutorial actualizado
+		RefreshAskBody: Se han añadido dos guías: cómo consultar el Códice de inscripciones junto al atril y precauciones antes de desplegar el dominio. Los pasos ya practicados no se repetirán
+		RefreshAskPrompt: Pulsa para ver el contenido nuevo o acepta el talismán de keiko para revisarlo más adelante
+		AcceptBtn: Empezar tutorial
+		DeclineBtn: Ahora no
+		DeclineNotice: El talismán de keiko se ha guardado en tu inventario; úsalo en cualquier momento para reabrir el tutorial
 		HudTitle: Vigor y Postura
-		HudBody: Mientras sostengas Onikiri, abajo a la izquierda permanecen dos lecturas. El Vigor se gasta en el paso relámpago y el vuelo de sakura, y se recupera solo; la Postura se acumula al golpear enemigos, y a medias y al llenarla desbloquea un escalón de ejecución. Aquí solo reconoce las lecturas; el detalle de las técnicas está en la descripción del arma
-		HudPrompt: Reconoce estas lecturas; el único acceso HUD a los paneles es el talismán de sello
+		HudBody: Mientras sostengas Onikiri, abajo a la izquierda se muestran dos barras de estado. El Vigor se consume en el paso relámpago y el vuelo de sakura y se regenera solo; la Postura se acumula al golpear enemigos, desbloqueando fases de ejecución a la mitad y al llenarse. Puedes consultar los detalles de las técnicas en la descripción del arma
+		HudPrompt: Comprueba las barras de estado abajo a la izquierda y pulsa «Entendido» para continuar. Haz clic en el talismán de sello para abrir el panel
 		SigilTitle: Disco de sellos
-		SigilBody: A la izquierda del dintel del Atril de inscripciones está clavado el letrero «Disco de sellos», con una miniatura del disco debajo. En el anillo exterior hay seis espectros, pero el triángulo interior solo tiene tres asientos de sello: pulsa el anillo para elegir, luego un asiento vacío para sellar. Los espectros del mismo disco se despiertan unos a otros y el Resurgimiento sube junto. En la ranura bajo la peana está el Libro de espectros; sácalo solo para leer, nunca para sellar
-		SigilPrompt: Pulsa el letrero o el disco resaltados; al abrir, reconoce el anillo y los tres asientos, luego guarda el disco para seguir
+		SigilBody: Haz clic en la pestaña del disco de sellos arriba a la izquierda del atril de inscripciones para cambiar a este panel. El anillo exterior muestra los espectros registrados y el triángulo interior tiene 3 plazas de sellado. Haz clic en un espectro y luego en una plaza vacía para sellarlo. Los espectros sellados otorgan mejoras en combate, pero invocarlos aumenta el resurgimiento y la erosión. Haz clic en el rollo inferior para abrir el Libro de espectros
+		SigilPrompt: Haz clic en la pestaña resaltada arriba a la izquierda para pasar al disco de sellos y examinar el anillo y las 3 plazas
 		MeiTitle: Atril de inscripciones
-		MeiBody: El talismán de sello es el único acceso HUD a los paneles; la primera apertura entra en el Atril de inscripciones. La hoja admite inscripción en tres sitios: mei del espigo, surco y talla, cada una con un efecto y un precio. Pulsa un asiento para abrir el abanico de estampas; las que ya tienes en el zurrón están en la caja de abajo
-		MeiPrompt: Pulsa {0} o el talismán resaltado para abrir el atril, y reconoce estos tres asientos
+		MeiBody: Haz clic en el talismán resaltado abajo a la izquierda (o pulsa el atajo) para abrir el atril de inscripciones. La hoja de Onikiri tiene tres ranuras de inscripción: espigo, surco y talla. Cada inscripción otorga un efecto especial con su correspondiente coste. Haz clic en una ranura para elegir una estampa; las que tengas en el inventario se muestran en la bandeja inferior
+		MeiPrompt: Pulsa {0} o haz clic en el talismán resaltado para abrir el atril y examinar las tres ranuras de inscripción
 		CodexTitle: Códice de inscripciones
-		CodexBody: Bajo el tablero del Atril hay un cuaderno cosido: es el Códice de inscripciones. La página izquierda lista todas las inscripciones por mei del espigo, surco y talla; la derecha escribe efecto, precio y procedencia. Las no grabadas solo muestran el progreso de afinidad. Aquí solo se lee; grabar se hace en el atril
-		CodexPrompt: Pulsa el cuaderno resaltado para leerlo; al cerrarlo vuelves solo al atril
+		CodexBody: A la derecha del atril de inscripciones descansa un libro: el Códice de inscripciones. La página izquierda clasifica todas las inscripciones por espigo, surco y talla; la derecha muestra efectos, costes y procedencia. Las no desbloqueadas muestran el progreso de afinidad. Solo lectura; la grabación se realiza en el atril
+		CodexPrompt: Haz clic en el libro resaltado a la derecha para abrir el códice; cerrarlo te devolverá al atril
 		DomainTitle: Ojo del Reino espectral
-		DomainBody: El ojo junto al Vigor gobierna el Reino espectral: despliega Omote (papel amarillento), voltea a Ura (el más allá de tinta) y luego puedes recogerlo. El desmembramiento solo existe en Ura
-		DomainPrompt: Clic izquierdo en el ojo para desplegar o recoger; clic derecho o {0} para voltear Omote/Ura
-		PrepareTitle: Preparar la práctica
-		PrepareBody: Guarda el Atril de inscripciones y el Libro de espectros, y sostén Onikiri. Si el Reino espectral ya está desplegado, lo recogeré primero por el mando formal; al volver de una interrupción, también restauraré el estado que pide el siguiente paso
-		PreparePrompt: Mantén Onikiri en la mano y espera a que el ojo y los paneles se asienten; si no avanza, pulsa «Saltar» y entra directo a la práctica
+		DomainBody: El ojo junto a la barra de Vigor representa el estado del dominio: permite desplegar el «Omote» superficial, voltear al «Ura» profundo o recoger el dominio. La ejecución clave «Desmembramiento» de Onikiri solo funciona en Ura
+		DomainPrompt: Clic izquierdo en el ojo para desplegar o recoger el dominio; clic derecho o {0} para voltear entre Omote y Ura
+		PrepareTitle: Preparación de la práctica
+		PrepareBody: Cierra los paneles abiertos y sostén Onikiri en la mano. Si el dominio ya está desplegado, el sistema lo recogerá automáticamente y restablecerá el entorno inicial para el tutorial
+		PreparePrompt: Mantén Onikiri en la mano y espera a que la interfaz y el dominio se reinicien; si tarda en responder, pulsa «Saltar» para empezar directamente la práctica
 		OpenDomainTitle: Desplegar Omote
-		OpenDomainBody: Pulsa la tecla de dominio (Q por defecto) para desplegar el Reino espectral. Con el ojo cerrado, la primera apertura entra en el Omote superficial y cubre cielo y tierra de papel amarillento
-		OpenDomainPrompt: Pulsa {0} tú mismo y espera a que el dominio se estabilice en Omote
+		OpenDomainBody: Pulsa la tecla de Despliegue de dominio (Q por defecto) para abrir el dominio. Desde el estado cerrado, la primera pulsación entra en el «Omote» superficial, cubriendo el entorno con estilo de papel amarillento
+		OpenDomainPrompt: Pulsa {0} para desplegar el dominio y espera a que se estabilice en Omote
 		FlipDomainTitle: Voltear a Ura
-		FlipDomainBody: En Omote, pulsa la tecla de volteo (Mouse3, el clic de la rueda, por defecto) para pasar el dominio superficial al Ura profundo
-		FlipDomainPrompt: Pulsa {0} para entrar en Ura y espera a que la tinta se asiente antes de mover la hoja
+		FlipDomainBody: Estando en Omote, pulsa la tecla de Volteo de dominio (clic de la rueda por defecto) para entrar en el «Ura» profundo, transformando el aspecto visual a estilo de tinta
+		FlipDomainPrompt: Pulsa {0} para entrar en Ura y espera a que la imagen se estabilice
 		DismemberTitle: Práctica de desmembramiento
-		DismemberBody: Pon el cursor sobre el cuerpo del Papá-NK-1 resaltado, suelta el clic izquierdo y púlsalo otra vez. Onikiri desmembrará el cuerpo de verdad; el papel de efigie también puede servir de medio, pero esta lección no lo pide
-		DismemberPrompt: Apunta al cuerpo del tanque, suelta y pulsa una vez el clic izquierdo
+		DismemberBody: Estando en Ura, apunta el cursor al objetivo de práctica resaltado, suelta el clic izquierdo y vuelve a pulsarlo. Onikiri se lanzará hacia adelante y desmembrará directamente el cuerpo del objetivo (golpear los papeles de efigie generados también puede activar el desmembramiento)
+		DismemberPrompt: Apunta al objetivo resaltado, suelta el clic izquierdo y vuelve a pulsarlo para desmembrar
 		BacklashTitle: Recibir el contragolpe
-		BacklashBody: Desmembrar el cuerpo de verdad inflige al portador un 25% de su vida máxima en daño real, y le quita el movimiento mientras envaina. Mira la secuencia entera; después te restauraré
-		BacklashPrompt: No operes; espera el contragolpe, la envainada y que la herida cierre
-		CloseDomainTitle: Recoger el dominio desde el ojo
-		CloseDomainBody: Para terminar, recoge el dominio tú mismo. El clic izquierdo en el ojo del HUD es el atajo más corto; la tecla de dominio también cuenta, y el clic derecho en el ojo voltea Omote y Ura
-		CloseDomainPrompt: Clic izquierdo en el ojo resaltado y espera a que se cierre del todo
-		DomainUnboundHint: La tecla de dominio no está asignada. En esta lección puedes pulsar Q como tecla temporal por defecto
-		FlipUnboundHint: La tecla de volteo no está asignada. En esta lección puedes pulsar Mouse3 (clic de la rueda) como tecla temporal por defecto
-		WaitingFeedback: Esperando a que el resultado de este paso se asiente
-		BusyFeedback: El Reino espectral aún transmuta; espera a que se estabilice antes de operar
-		RetryFeedback: Ese no ha llegado a tierra. Sigue la pista y prueba otra vez, o deja que te lo demuestre
-		NeedBladeHold: No tienes Onikiri en el zurrón; recógelo antes de seguir
-		TargetStalledHint: El blanco de práctica aún no ha caído. Si hay demasiadas criaturas alrededor no le toca turno; vete a un claro, párate y espera
+		BacklashBody: Desmembrar directamente el cuerpo de un enemigo inflige al portador un daño verdadero de contragolpe equivalente al 25% de la vida máxima e inmoviliza brevemente hasta que termine la animación de envainar (desmembrar mediante papel de efigie no causa contragolpe). La vida se restaurará tras completar este paso
+		BacklashPrompt: Espera un momento a que termine la animación de envainar y se restaure la vida
+		CloseDomainTitle: Recoger el dominio
+		CloseDomainBody: Práctica completada. Por último, recoge el dominio. Hacer clic izquierdo en el ojo resaltado del HUD cierra el dominio rápidamente; pulsar de nuevo la tecla de Despliegue de dominio también lo cierra
+		CloseDomainPrompt: Haz clic izquierdo en el ojo resaltado (o pulsa Despliegue de dominio) y espera a que el dominio se cierre por completo
+		DomainUnboundHint: La tecla de Despliegue de dominio no está asignada. En este tutorial puedes pulsar Q como tecla temporal
+		FlipUnboundHint: La tecla de Volteo de dominio no está asignada. En este tutorial puedes pulsar Mouse3 (clic de la rueda) como tecla temporal
+		WaitingFeedback: Esperando a registrar el resultado de la acción
+		BusyFeedback: El dominio está cambiando de forma; espera a que termine la transición
+		RetryFeedback: La acción no impactó en el objetivo. Sigue las indicaciones y vuelve a intentarlo, o pulsa «Demuéstramelo»
+		NeedBladeHold: No tienes Onikiri en el inventario. Ponlo en tu inventario para continuar
+		TargetStalledHint: La posición de aparición del objetivo de práctica está bloqueada. Si hay demasiadas entidades, ve a una zona despejada y espera
 		AssistBtn: Demuéstramelo
 		RetryBtn: Reintentar
-		NextBtn: Ya lo sé
-		OpenSigilBtn: Abrir el disco
-		OpenMeiBtn: Abrir el atril
-		OpenCodexBtn: Leer el códice
+		NextBtn: Entendido
+		OpenSigilBtn: Abrir disco
+		OpenMeiBtn: Abrir atril
+		OpenCodexBtn: Abrir códice
 		SkipBtn: Saltar
-		SkipStepBtn: Saltar este paso
-		AbortBtn: Guardar la lección
-		SkipAllBtn: Saltar el tutorial
-		SkipAllNotice: El tutorial cuenta como visto; los encargos de prueba ya se pueden aceptar
+		SkipStepBtn: Saltar paso
+		AbortBtn: Cerrar tutorial
+		SkipAllBtn: Saltar tutorial
+		SkipAllNotice: Tutorial omitido; los encargos de prueba ya están disponibles
 	}
 
 	OniMeiCodexUI: {

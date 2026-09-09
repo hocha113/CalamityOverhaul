@@ -355,15 +355,15 @@ TestItem: {
 }
 
 OniKeikoRune: {
-	// DisplayName: Keiko Rune
-	/* Tooltip:
+	DisplayName: Runa Keiko
+	Tooltip:
 		'''
-		Use it to open the Onikiri lesson from the beginning, or use it again mid-lesson to put the lesson away
-		Left with you when the opening lesson is declined; the rune is not consumed and may be used again
-		''' */
-	// NeedBlade: Onikiri is not in your bag, so the rune has no lesson to open
-	// Closed: The lesson is put away; use the rune again to reopen
-	// NotNow: Something else holds the stage right now
+		Use para reabrir o tutorial de Onikiri; use novamente durante o tutorial para fechá-lo
+		Item recebido ao recusar o tutorial inicial; não é consumido e pode ser usado repetidamente
+		'''
+	NeedBlade: Onikiri não está no inventário; não é possível abrir o tutorial
+	Closed: Tutorial fechado; use esta runa novamente para reabri-lo
+	NotNow: Não é possível abrir o tutorial agora; tente novamente mais tarde
 }
 
 ScrapBeacon: {

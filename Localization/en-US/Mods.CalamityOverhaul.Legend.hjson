@@ -634,79 +634,79 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Stance
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: Full Stance — {0} auto-locks for Finale; double-dash remains available
-		StanceHalfLine: Half Stance — double-tap {0}, then left-click for Annihilating Flash
-		StanceLockedLine: Finale Slash in progress — immune to damage, Stance locked and not building
+		StanceReadyLine: Full Stance: press {0} to lock onto target and execute Finale Slash; double-dash still penetrates foes
+		StanceHalfLine: Half Stance: double-tap {0}, then left-click to trigger Annihilating Flash
+		StanceLockedLine: Execution in progress: invulnerable, Stance locked
 		DomainTitle: Eye of the Oni Domain
-		DomainStateClosed: Shut — no domain unfolded
-		DomainStateOmote: Omote — the yellowed-paper world
-		DomainStateUra: Ura — the ink-wash netherworld
-		DomainStateShifting: Mid-rite — do not disturb
-		DomainToggleHintFormat: "{0} or Left Click: unfold / fold the domain"
-		DomainFlipHintFormat: "{0} or Right Click: flip Omote/Ura (unfolds if shut)"
+		DomainStateClosed: Closed (Domain not expanded)
+		DomainStateOmote: Omote (Paper form)
+		DomainStateUra: Ura (Ink-wash form)
+		DomainStateShifting: Transitioning forms
+		DomainToggleHintFormat: "{0} or Left Click: expand / close domain"
+		DomainFlipHintFormat: "{0} or Right Click: flip Omote/Ura (expands if closed)"
 	}
 
 	OnikiriTutorialLead: {
-		AskTitle: Take the Lesson First?
-		AskBody: Vigor and Stance, the Omote and Ura of the domain, the backlash of dismemberment. These three are hard to work out alone without hearing them once. You will only be asked this once
-		AskPrompt: Take the lesson now; skip it if you're in a hurry — it will count as completed; or accept the Keiko Rune and open it yourself later
-		RefreshAskTitle: A Couple of New Pages
-		RefreshAskBody: This version adds two lessons: how to read the codex beside the Inscription Stand, and what to know about the Eye of the Oni Domain before you act. You have already done the practice, so it won't be repeated
-		RefreshAskPrompt: Take the additions now, or accept the Keiko Rune and open them later
-		AcceptBtn: Teach Me
+		AskTitle: View the Tutorial?
+		AskBody: Vigor & Stance, Omote & Ura forms of the domain, and the dismemberment backlash mechanism: understanding these beforehand helps avoid trouble in combat. This prompt appears only once
+		AskPrompt: Click "Start Tutorial" to learn; skip if in a hurry; or accept the Keiko Rune to open the tutorial anytime later
+		RefreshAskTitle: Tutorial Content Updated
+		RefreshAskBody: This update adds two guides: how to consult the Mei Codex beside the Inscription Stand, and cautions before expanding the domain. Practiced steps will not repeat
+		RefreshAskPrompt: Click to view the new content, or accept the Keiko Rune to check later
+		AcceptBtn: Start Tutorial
 		DeclineBtn: Not Now
-		DeclineNotice: The Keiko Rune has been left with you; use it to open the lesson any time
+		DeclineNotice: The Keiko Rune has been placed in your inventory; use it anytime to reopen the tutorial
 		HudTitle: Vigor & Stance
-		HudBody: While holding Onikiri, the lower-left HUD keeps two read-only gauges. Vigor feeds flash steps and Sakura Flight and refills on its own; Stance builds as your cuts land, unlocking one execution tier at half and another when full. Learn the readouts here; the full moveset is written on the weapon itself
-		HudPrompt: Learn these readouts; the sealing talisman is the HUD's only panel control
+		HudBody: While holding Onikiri, the lower-left HUD displays two status gauges. Vigor feeds Flash Step and Sakura Flight and refills over time; Stance builds by hitting enemies, unlocking tier executions at half and full gauge. Detailed move explanations can be viewed on the weapon tooltip
+		HudPrompt: Check the status gauges in the lower-left corner and click "Understood" to continue. Click the sealing talisman to open the panel
 		SigilTitle: Sigil Wheel
-		SigilBody: The beam plaque "Sigil Wheel" on the left of the Inscription Stand hangs a miniature of the wheel. Six wraiths sit on the outer ring, but the inner triangle has only three seats — pick one on the ring, then click an empty seat to bind it. Wraiths sharing the wheel wake each other, so their revival climbs together. The Ghost Register sits in the slot under the wheel's base; pull it out to read, never to bind
-		SigilPrompt: Click the highlighted plaque or wheel; learn the outer ring and the three seats, then close it to continue
+		SigilBody: Click the Sigil Wheel tab on the upper-left of the Inscription Stand to switch to this interface. The outer ring displays recorded wraiths, and the inner triangle has 3 binding seats. Click a wraith on the outer ring, then click an empty seat to bind it. Bound wraiths grant battle buffs, but each use increases revival and erosion. Click the scroll below to open the Ghost Register
+		SigilPrompt: Click the highlighted upper-left tab to switch to the Sigil Wheel and view the outer ring and 3 binding seats
 		MeiTitle: Inscription Stand
-		MeiBody: The sealing talisman is the HUD's only panel control and opens the Inscription Stand by default. The blade takes an inscription at three places — tang, groove, and horimono — and each one carries a bestowal and a price. Click a slot to fan out the chisel ribs; the chisels already in your pack sit in the tray below
-		MeiPrompt: Press {0} or click the highlighted talisman to open the stand, then learn the three slots
+		MeiBody: Click the highlighted sealing talisman (or press hotkey) to open the Inscription Stand. Onikiri has three inscription slots: Tang, Groove, and Horimono. Each inscription grants a special effect and carries a cost. Click a slot to select a chisel; chisels in your inventory are listed in the tray below
+		MeiPrompt: Press {0} or click the highlighted talisman to open the stand and inspect the three inscription slots
 		CodexTitle: Mei Codex
-		CodexBody: A stitched booklet sits under the ledger board of the Inscription Stand — that is the codex. The left page lists every inscription by tang, groove, and horimono; the right page gives its bestowal, price, and where it comes from, while unearned ones show only affinity progress. Read-only; chiselling still happens on the stand
-		CodexPrompt: Click the highlighted booklet to read; closing it returns you to the stand
+		CodexBody: Beside the Inscription Stand lies a booklet known as the Mei Codex. The left page categorizes all inscriptions by Tang, Groove, and Horimono; the right page displays effects, costs, and provenance. Unlocked inscriptions show affinity progress. Read-only; chiseling is still done at the stand
+		CodexPrompt: Click the highlighted booklet on the right to open the codex; closing it returns to the stand
 		DomainTitle: Eye of the Oni Domain
-		DomainBody: That eye beside Vigor rules the domain — unfold Omote (yellowed paper), flip to Ura (ink-wash nether), then fold again. Dismemberment only works in Ura
-		DomainPrompt: Left-click the eye to unfold or fold; Right-click or {0} flips Omote/Ura
-		PrepareTitle: Prepare for Practice
-		PrepareBody: Close the Inscription Stand and Ghost Register, then hold Onikiri. If the domain is open, I will fold it through the normal command first; after an interruption, I will also restore the state needed for your next step
-		PreparePrompt: Keep Onikiri in hand and wait for the eye and panels to settle; if it stalls, hit Skip to go straight to practice
-		OpenDomainTitle: Unfold Omote
-		OpenDomainBody: Press the domain key (Q by default) to unfold the Oni Domain. From a shut eye, the first opening enters shallow Omote and covers the world in yellowed paper
-		OpenDomainPrompt: Press {0} yourself, then wait until the domain settles in Omote
-		FlipDomainTitle: Flip into Ura
-		FlipDomainBody: While in Omote, press the flip key (Mouse3, the middle mouse button, by default) to turn the shallow domain into deep Ura
-		FlipDomainPrompt: Press {0} to enter Ura, then wait for the ink to settle before drawing the blade
+		DomainBody: The eye beside the Vigor gauge represents domain status: expand into the shallow "Omote", flip into the deep "Ura", or close the domain. Onikiri's core "Dismemberment" execution can only be triggered in Ura
+		DomainPrompt: Left-click the eye to expand or close the domain; Right-click or press {0} to flip between Omote and Ura
+		PrepareTitle: Practice Preparation
+		PrepareBody: Please close any open interfaces and hold Onikiri. If the domain is already expanded, the system will automatically close it and reset to the initial tutorial state
+		PreparePrompt: Keep Onikiri in hand and wait for the domain and UI to reset; if unresponsive, click "Skip" to proceed directly to practice
+		OpenDomainTitle: Expand Omote
+		OpenDomainBody: Press the Domain Expansion key (Q by default) to open the domain. When closed, pressing it enters the shallow "Omote", covering the world in yellowed paper style
+		OpenDomainPrompt: Press {0} to expand the domain, and wait for it to stabilize in Omote
+		FlipDomainTitle: Flip to Ura
+		FlipDomainBody: While in Omote, press the Domain Flip key (middle mouse by default) to flip into the deep "Ura", turning the visuals into an ink-wash style
+		FlipDomainPrompt: Press {0} to flip into Ura and wait for the visuals to stabilize
 		DismemberTitle: Dismemberment Practice
-		DismemberBody: Put the cursor over the highlighted Santa-NK1 body, release left-click, then press it once more. Onikiri will dismember the body directly; Omokage paper can also serve as a medium, but this lesson does not require it
-		DismemberPrompt: Aim at the tank body, release left-click, then press it once
-		BacklashTitle: Endure the Backlash
-		BacklashBody: Directly dismembering a body deals a real 25% of maximum life to the wielder and locks movement during the sheathing rite. Watch the full sequence; I will restore you afterward
-		BacklashPrompt: Stop input and wait for the backlash, sheathing, and recovery to finish
-		CloseDomainTitle: Fold the Domain from the Eye
-		CloseDomainBody: Finish by folding the domain yourself. Left-clicking the HUD eye is the shortest way; the domain key counts too, while right-clicking the eye flips Omote and Ura instead
-		CloseDomainPrompt: Left-click the highlighted HUD eye and wait until it shuts completely
-		DomainUnboundHint: No domain key is bound. For this lesson, press Q as the temporary default
-		FlipUnboundHint: No flip key is bound. For this lesson, press Mouse3 (middle mouse) as the temporary default
-		WaitingFeedback: Waiting for this step's result to settle
-		BusyFeedback: The domain is still shifting. Wait until it settles before trying again
-		RetryFeedback: That one didn't land. Follow the prompt and try again, or let me demonstrate
-		NeedBladeHold: You don't have Onikiri. Retrieve it before continuing
-		TargetStalledHint: The practice dummy hasn't arrived. It can't get a slot when the area is crowded — move somewhere open and wait
+		DismemberBody: In Ura, aim the cursor at the highlighted practice target, release left-click, then press it once more. Onikiri will dash forward and dismember the target body directly (hitting spawned Omokage paper also triggers dismemberment)
+		DismemberPrompt: Aim at the highlighted target, release left-click, then press left-click again to dismember
+		BacklashTitle: Endure Backlash
+		BacklashBody: Directly dismembering an enemy body causes the wielder to suffer true backlash damage equal to 25% of max life, and briefly immobilizes you until the sheathing animation finishes (dismembering via Omokage paper has no backlash). Health will be restored after this step
+		BacklashPrompt: Wait a moment for the sheathing animation to finish and health to restore
+		CloseDomainTitle: Close the Domain
+		CloseDomainBody: Practice complete. Lastly, close the domain. Left-clicking the highlighted eye on the HUD quickly closes the domain; pressing the Domain Expansion key again also closes it
+		CloseDomainPrompt: Left-click the highlighted eye (or press Domain Expansion) and wait for the domain to close completely
+		DomainUnboundHint: Domain Expansion key is not bound. You can press Q as a temporary default for this tutorial
+		FlipUnboundHint: Domain Flip key is not bound. You can press Mouse3 (middle mouse) as a temporary default for this tutorial
+		WaitingFeedback: Waiting for the action result to register
+		BusyFeedback: The domain is transitioning forms; please wait until stable
+		RetryFeedback: The action did not hit the target. Follow the prompt and try again, or click "Demonstrate"
+		NeedBladeHold: Onikiri is not in your inventory. Put it in your inventory to continue
+		TargetStalledHint: Practice target spawn location obstructed. If crowded, move to an open area and wait
 		AssistBtn: Demonstrate
 		RetryBtn: Retry
 		NextBtn: Understood
 		OpenSigilBtn: Open Wheel
 		OpenMeiBtn: Open Stand
-		OpenCodexBtn: Read Codex
+		OpenCodexBtn: Open Codex
 		SkipBtn: Skip
 		SkipStepBtn: Skip Step
-		AbortBtn: Dismiss
+		AbortBtn: Close Tutorial
 		SkipAllBtn: Skip Tutorial
-		SkipAllNotice: The tutorial now counts as completed; trial commissions are open to you
+		SkipAllNotice: Tutorial skipped; trial commissions are now unlocked
 	}
 
 	OniMeiCodexUI: {

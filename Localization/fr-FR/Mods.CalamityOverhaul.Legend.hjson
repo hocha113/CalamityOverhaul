@@ -625,7 +625,7 @@ OnikiriText: {
 
 	OniTalismanHud: {
 		HudTitle: Talisman de scellement
-		HudHintFormat: "{0} ouvre ou ferme {1} · cliquez le talisman pour ouvrir"
+		HudHintFormat: "{0} ouvre ou ferme {1} · cliquez sur le talisman pour ouvrir"
 		HudMeiName: le Pupitre d'inscription
 		HudSigilName: le Disque de sceaux
 		HudDangerLine: Le réveil est presque plein ; encore une invocation et il s'éveille
@@ -634,79 +634,79 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Posture
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: Posture pleine : {0} verrouille pour la Finale ; le double pas éclair reste possible
-		StanceHalfLine: Posture à mi-jauge : appuyez deux fois sur {0}, puis clic gauche pour l'Éclair annihilateur
-		// StanceLockedLine: Finale Slash in progress — immune to damage, Stance locked and not building
+		StanceReadyLine: Posture pleine : appuyez sur {0} pour verrouiller la cible et lancer la Finale ; le double pas éclair traverse toujours les ennemis
+		StanceHalfLine: Posture à plus de la moitié : appuyez deux fois sur {0}, puis clic gauche pour l'Éclair annihilateur
+		StanceLockedLine: Exécution en cours : invincible, Posture verrouillée
 		DomainTitle: Œil du domaine spectral
-		DomainStateClosed: Clos, le domaine n'est pas déployé
-		DomainStateOmote: Omote, le monde de papier jauni
-		DomainStateUra: Ura, l'au-delà à l'encre
-		DomainStateShifting: En mutation, ne pas déranger
-		DomainToggleHintFormat: "{0} ou clic gauche : déployer / replier le domaine"
-		DomainFlipHintFormat: "{0} ou clic droit : inverser omote/ura (déploie d'abord si clos)"
+		DomainStateClosed: Domaine non déployé
+		DomainStateOmote: Omote (forme de papier)
+		DomainStateUra: Ura (forme d'encre)
+		DomainStateShifting: Changement de forme
+		DomainToggleHintFormat: "{0} ou Clic gauche : déployer / replier le domaine"
+		DomainFlipHintFormat: "{0} ou Clic droit : inverser Omote/Ura (déploie si fermé)"
 	}
 
 	OnikiriTutorialLead: {
-		AskTitle: On commence par la leçon ?
-		AskBody: Vigueur et Posture, l'omote et l'ura du domaine spectral, le contrecoup du démembrement : sans les entendre une fois, ces trois-là sont durs à saisir seuls. Cette question ne sera posée qu'une fois
-		AskPrompt: Recevez la leçon maintenant ; si vous êtes pressé, sautez le tutoriel, il comptera comme vu ; ou prenez le Sceau de keiko et ouvrez-le plus tard
-		RefreshAskTitle: Deux pages nouvelles
-		RefreshAskBody: Cette version ajoute deux leçons : comment consulter le Codex des inscriptions auprès du Pupitre d'inscription, et ce qu'il faut reconnaître sur l'Œil du domaine spectral avant d'agir. La pratique, vous l'avez déjà faite ; on ne la recommence pas
-		RefreshAskPrompt: On complète maintenant ; ou prenez le Sceau de keiko et ouvrez-le plus tard
-		AcceptBtn: Enseignez-moi
-		DeclineBtn: Pas besoin
-		DeclineNotice: Le Sceau de keiko vous a été laissé ; utilisez-le pour ouvrir la leçon à tout moment
+		AskTitle: Voir le tutoriel ?
+		AskBody: Vigueur et Posture, formes Omote et Ura du domaine et ricochet du démembrement : comprendre ces mécaniques clés à l'avance évite les erreurs en combat. Cet avertissement n'apparaît qu'une fois
+		AskPrompt: Cliquez sur « Démarrer le tutoriel » pour apprendre ; si vous êtes pressé, vous pouvez « Passer le tutoriel » ; ou prenez le Sceau de keiko pour l'ouvrir à tout moment
+		RefreshAskTitle: Tutoriel mis à jour
+		RefreshAskBody: Cette version ajoute deux guides : comment consulter le Codex des inscriptions auprès du pupitre et les précautions avant de déployer le domaine. Les étapes déjà pratiquées ne seront pas répétées
+		RefreshAskPrompt: Cliquez pour voir les ajouts ou prenez le Sceau de keiko pour consulter plus tard
+		AcceptBtn: Démarrer le tutoriel
+		DeclineBtn: Pas maintenant
+		DeclineNotice: Le Sceau de keiko a été placé dans votre inventaire ; utilisez-le à tout moment pour rouvrir le tutoriel
 		HudTitle: Vigueur et Posture
-		HudBody: Tant qu'Onikiri est en main, deux jauges restent en bas à gauche. La Vigueur alimente le pas éclair et le Vol des cerisiers, et se régénère d'elle-même ; la Posture s'accumule quand vos coups portent, et déverrouille un palier d'exécution à mi-jauge, un autre à jauge pleine. Reconnaissez d'abord ces lectures ; le détail des techniques est écrit sur l'arme
-		HudPrompt: Reconnaissez ces lectures ; le talisman de scellement est le seul accès HUD aux panneaux
+		HudBody: Tant qu'Onikiri est en main, deux jauges s'affichent en bas à gauche. La Vigueur alimente le Pas éclair et le Vol des cerisiers et se régénère avec le temps ; la Posture monte en touchant des ennemis, débloquant des paliers d'exécution à mi-jauge et à jauge pleine. Les détails des coups figurent sur la description de l'arme
+		HudPrompt: Vérifiez les jauges en bas à gauche et cliquez sur « Compris » pour continuer. Cliquez sur le talisman de scellement pour ouvrir le panneau
 		SigilTitle: Disque de sceaux
-		SigilBody: À gauche de la poutre du Pupitre d'inscription est cloué le relais 「Disque de sceaux」, avec une miniature du disque en dessous. Six spectres occupent l'anneau extérieur, mais le triangle intérieur n'a que trois sièges : cliquez l'anneau pour choisir, puis un siège vide pour poser le sceau. Les spectres du même disque se réveillent les uns les autres, et leur réveil monte ensemble. Le Registre des spectres est glissé dans la fente sous le socle ; on le tire pour lire, jamais pour lier
-		SigilPrompt: Cliquez le relais ou le disque en surbrillance ; une fois ouvert, reconnaissez l'anneau et les trois sièges, puis rangez pour continuer
+		SigilBody: Cliquez sur l'onglet du disque de sceaux en haut à gauche du pupitre pour passer à cet écran. L'anneau extérieur montre les spectres enregistrés et le triangle intérieur contient 3 emplacements de liaison. Cliquez sur un spectre puis sur un emplacement vide pour le lier. Les spectres liés accordent des bonus de combat, mais chaque utilisation augmente le réveil et l'érosion. Cliquez sur le rouleau du bas pour ouvrir le Registre des spectres
+		SigilPrompt: Cliquez sur l'onglet en surbrillance en haut à gauche pour passer au disque de sceaux et inspecter l'anneau et les 3 emplacements
 		MeiTitle: Pupitre d'inscription
-		MeiBody: Le talisman de scellement est le seul accès HUD aux panneaux ; la première ouverture mène au Pupitre d'inscription. La lame reçoit une inscription à trois places : mei de soie, gorge et gravure, chacune avec un effet et un prix. Cliquez un siège pour déployer l'éventail des estampes ; celles déjà dans le havresac sont listées dans le coffret du bas
-		MeiPrompt: Appuyez sur {0} ou cliquez le talisman en surbrillance pour ouvrir le pupitre, puis reconnaissez ces trois sièges
+		MeiBody: Cliquez sur le talisman en surbrillance en bas à gauche (ou appuyez sur le raccourci) pour ouvrir le Pupitre d'inscription. La lame d'Onikiri possède trois emplacements : soie, gorge et gravure. Chaque inscription confère un effet spécial avec son coût associé. Cliquez sur un emplacement pour choisir un burin ; ceux dans l'inventaire sont listés dans le plateau inférieur
+		MeiPrompt: Appuyez sur {0} ou cliquez sur le talisman en surbrillance pour ouvrir le pupitre et inspecter les trois emplacements
 		CodexTitle: Codex des inscriptions
-		CodexBody: Sous le plateau du Pupitre d'inscription est coincé un livret broché : c'est le Codex des inscriptions. La page de gauche liste toutes les inscriptions par mei de soie, gorge et gravure ; la page de droite donne l'effet, le prix et la provenance. Celles non gravées n'affichent que le progrès du lien. Lecture seule ; on grave encore sur le pupitre
-		CodexPrompt: Cliquez le livret en surbrillance pour le lire ; le fermer vous ramène au pupitre
+		CodexBody: À droite du pupitre repose un livre : le Codex des inscriptions. La page de gauche classe toutes les inscriptions par soie, gorge et gravure ; la droite affiche effets, coûts et provenance. Celles non débloquées affichent le progrès du lien. Lecture seule ; la gravure se fait sur le pupitre
+		CodexPrompt: Cliquez sur le livre en surbrillance à droite pour ouvrir le codex ; le fermer vous ramène au pupitre
 		DomainTitle: Œil du domaine spectral
-		DomainBody: L'œil à côté de la Vigueur gouverne le domaine spectral : déployez Omote (papier jauni), basculez vers Ura (au-delà à l'encre), puis repliez. Le démembrement n'existe qu'en Ura
-		DomainPrompt: Clic gauche sur l'œil pour déployer ou replier ; clic droit ou {0} inverse omote/ura
-		PrepareTitle: Préparer la pratique
-		PrepareBody: Rangez le Pupitre d'inscription et le Registre des spectres, et tenez Onikiri. Si le domaine spectral est déjà déployé, je le replierai d'abord par la commande normale ; au retour d'une interruption, je rétablirai aussi l'état exigé par l'étape suivante
-		PreparePrompt: Gardez Onikiri en main et attendez que l'œil et les panneaux se calment ; si ça bloque, cliquez 「Passer」 pour entrer directement en pratique
+		DomainBody: L'œil près de la Vigueur représente l'état du domaine : permet de déployer l'« Omote » peu profond, de basculer vers l'« Ura » profond ou de replier le domaine. L'exécution clé « Démembrement » d'Onikiri ne fonctionne qu'en Ura
+		DomainPrompt: Clic gauche sur l'œil pour déployer ou replier le domaine ; clic droit ou {0} pour alterner entre Omote et Ura
+		PrepareTitle: Préparation à l'exercice
+		PrepareBody: Veuillez fermer les interfaces ouvertes et tenir Onikiri en main. Si le domaine est déjà déployé, le système le repliera automatiquement et restaurera l'état initial pour le tutoriel
+		PreparePrompt: Gardez Onikiri en main et attendez que l'interface et le domaine se réinitialisent ; si cela tarde, cliquez sur « Passer » pour commencer directement
 		OpenDomainTitle: Déployer Omote
-		OpenDomainBody: Appuyez sur la touche de domaine (Q par défaut) pour déployer le domaine spectral. Œil clos, la première ouverture entre dans l'Omote peu profond et recouvre le monde de papier jauni
-		OpenDomainPrompt: Appuyez vous-même sur {0}, puis attendez que le domaine se stabilise en Omote
+		OpenDomainBody: Appuyez sur la touche Déploiement de domaine (Q par défaut) pour ouvrir le domaine. Depuis l'état fermé, la première pression entre dans l'« Omote » peu profond, recouvrant le monde d'un style papier jauni
+		OpenDomainPrompt: Appuyez sur {0} pour déployer le domaine et attendez qu'il se stabilise en Omote
 		FlipDomainTitle: Basculer en Ura
-		FlipDomainBody: En Omote, appuyez sur la touche d'inversion (Mouse3, le clic molette, par défaut) pour basculer le domaine peu profond vers l'Ura profond
-		FlipDomainPrompt: Appuyez sur {0} pour entrer en Ura, puis attendez que l'encre se stabilise avant de tirer la lame
+		FlipDomainBody: En Omote, appuyez sur la touche d'inversion de domaine (clic molette par défaut) pour plonger dans l'« Ura » profond, transformant les graphismes en style lavis d'encre
+		FlipDomainPrompt: Appuyez sur {0} pour basculer en Ura et attendez la stabilisation de l'image
 		DismemberTitle: Exercice de démembrement
-		DismemberBody: Placez le curseur sur le corps du Père Noël-NK1 en surbrillance, relâchez le clic gauche, puis appuyez une fois encore. Onikiri démembrera le corps directement ; le papier Omokage peut aussi servir de support, mais cette leçon ne l'exige pas
-		DismemberPrompt: Visez le corps du char, relâchez, puis appuyez une fois sur le clic gauche
+		DismemberBody: En Ura, visez la cible d'entraînement en surbrillance avec le curseur, relâchez le clic gauche puis réappuyez dessus. Onikiri foncera et démembrera directement le corps de la cible (frapper les papiers Omokage générés déclenche aussi le démembrement)
+		DismemberPrompt: Visez la cible en surbrillance, relâchez le clic gauche et réappuyez dessus pour démembrer
 		BacklashTitle: Subir le contrecoup
-		BacklashBody: Démembrer le corps directement inflige au porteur 25% de sa vie maximale en dégâts réels, et lui ôte tout mouvement pendant le rengainement. Regardez la séquence entière ; je vous rétablirai ensuite
-		BacklashPrompt: Cessez d'agir et attendez le contrecoup, le rengainement et la cicatrisation
-		CloseDomainTitle: Replier depuis l'œil
-		CloseDomainBody: Pour finir, repliez le domaine vous-même. Un clic gauche sur l'œil du HUD est le plus court ; la touche de domaine compte aussi, tandis qu'un clic droit sur l'œil inverse omote et ura
-		CloseDomainPrompt: Clic gauche sur l'œil en surbrillance, et attendez qu'il se ferme tout à fait
-		DomainUnboundHint: La touche de domaine n'est pas liée. Pour cette leçon, appuyez sur Q comme touche temporaire
-		FlipUnboundHint: La touche d'inversion n'est pas liée. Pour cette leçon, appuyez sur Mouse3 (clic molette) comme touche temporaire
-		WaitingFeedback: En attente que le résultat de cette étape se pose
-		BusyFeedback: Le domaine spectral mute encore. Attendez qu'il se stabilise avant de réessayer
-		RetryFeedback: Celui-là n'a pas pris. Suivez l'invite et recommencez, ou laissez-moi démontrer
-		NeedBladeHold: Vous n'avez pas Onikiri. Récupérez-le avant de continuer
-		TargetStalledHint: La cible d'exercice n'est pas encore en place. Trop de créatures autour et elle n'obtient pas de place : allez au large et attendez
+		BacklashBody: Démembrer directement le corps d'un ennemi inflige au porteur de vrais dégâts de contrecoup équivalents à 25% de sa vie maximale et immobilise brièvement jusqu'à la fin du rengainement (démembrer via le papier Omokage ne cause aucun contrecoup). La vie sera restaurée après cette étape
+		BacklashPrompt: Attendez un moment que l'animation de rengainement se termine et que la vie soit restaurée
+		CloseDomainTitle: Replier le domaine
+		CloseDomainBody: Exercice terminé. Enfin, repliez le domaine. Un clic gauche sur l'œil en surbrillance de l'interface ferme rapidement le domaine ; réappuyer sur la touche de déploiement de domaine le ferme également
+		CloseDomainPrompt: Cliquez gauche sur l'œil en surbrillance (ou appuyez sur la touche de déploiement) et attendez la fermeture complète du domaine
+		DomainUnboundHint: La touche Déploiement de domaine n'est pas assignée. Vous pouvez appuyer sur Q comme touche temporaire pour ce tutoriel
+		FlipUnboundHint: La touche d'inversion de domaine n'est pas assignée. Vous pouvez appuyer sur Mouse3 (clic molette) comme touche temporaire pour ce tutoriel
+		WaitingFeedback: En attente de la confirmation de l'action
+		BusyFeedback: Le domaine change de forme ; veuillez patienter
+		RetryFeedback: L'action n'a pas touché la cible. Suivez l'invite et réessayez, ou cliquez sur « Démontrez pour moi »
+		NeedBladeHold: Onikiri n'est pas dans votre inventaire. Mettez-la dans votre inventaire pour continuer
+		TargetStalledHint: Emplacement d'apparition de la cible bloqué. S'il y a trop d'entités, déplacez-vous dans un endroit dégagé et patientez
 		AssistBtn: Démontrez pour moi
 		RetryBtn: Réessayer
-		NextBtn: J'ai compris
-		OpenSigilBtn: Ouvrir le disque
-		OpenMeiBtn: Ouvrir le pupitre
-		OpenCodexBtn: Lire le codex
+		NextBtn: Compris
+		OpenSigilBtn: Ouvrir disque
+		OpenMeiBtn: Ouvrir pupitre
+		OpenCodexBtn: Ouvrir codex
 		SkipBtn: Passer
-		SkipStepBtn: Passer cette étape
-		AbortBtn: Ranger la leçon
+		SkipStepBtn: Passer l'étape
+		AbortBtn: Fermer le tutoriel
 		SkipAllBtn: Passer le tutoriel
-		SkipAllNotice: Le tutoriel compte désormais comme vu ; les commissions d'épreuve sont ouvertes
+		SkipAllNotice: Tutoriel ignoré ; les commissions d'épreuve sont débloquées
 	}
 
 	OniMeiCodexUI: {

@@ -625,7 +625,7 @@ OnikiriText: {
 
 	OniTalismanHud: {
 		HudTitle: 封印札
-		HudHintFormat: "{0} 开阖{1} · 点击札打开"
+		HudHintFormat: "{0} 打开/关闭{1} · 点击封印札打开"
 		HudMeiName: 改铭台
 		HudSigilName: 结印盘
 		HudDangerLine: 复苏将满，再役使它就会醒
@@ -634,79 +634,79 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: 架势
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: 势已圆满，{0} 锁敌终斩；双疾走仍可穿身
-		StanceHalfLine: 势已过半，连按 {0} 两次，再按左键可接灭世
-		StanceLockedLine: 终结乱舞进行中：全程免伤，架势锁定不蓄
+		StanceReadyLine: 架势全满：按 {0} 锁定目标发动终结处决，双击疾走仍可穿透敌人
+		StanceHalfLine: 架势过半：连按两次 {0} 后按左键可发动灭世斩
+		StanceLockedLine: 终结处决进行中：全程无敌，期间架势值锁定
 		DomainTitle: 鬼域之眼
-		DomainStateClosed: 阖目，领域未展
-		DomainStateOmote: 表世界，泛黄和纸
-		DomainStateUra: 里世界，水墨阴间
-		DomainStateShifting: 变相中，莫扰
-		DomainToggleHintFormat: "{0} 或左键 展开/收阖领域"
-		DomainFlipHintFormat: "{0} 或右键 翻转表里(阖时先展)"
+		DomainStateClosed: 领域未展开
+		DomainStateOmote: 表世界（和纸形态）
+		DomainStateUra: 里世界（水墨形态）
+		DomainStateShifting: 形态切换中
+		DomainToggleHintFormat: "{0} 或左键 展开/收起领域"
+		DomainFlipHintFormat: "{0} 或右键 翻转表里(未展开时直接展开)"
 	}
 
 	OnikiriTutorialLead: {
-		AskTitle: 要不要先受一遍教习
-		AskBody: 气力与架势、鬼域的表里、肢解的反噬，这三样不讲一遍很难自己摸清。这句话只问这一次
-		AskPrompt: 现在受教；急着动身可跳过教程，视同学过；或收下稽古符，改日自己开讲
-		RefreshAskTitle: 补一段新的
-		RefreshAskBody: 这一版多了两段讲解：改铭台旁那本铭谱怎么查，以及鬼域之眼在动手前该认的东西。实操你已经练过，这次不重练
-		RefreshAskPrompt: 现在补讲；或收下稽古符，改日自己开讲
-		AcceptBtn: 受 教
-		DeclineBtn: 不 必
-		DeclineNotice: 稽古符已留给你，使用它可随时开讲
+		AskTitle: 要不要先看一遍教程
+		AskBody: 气力与架势、鬼域的表里形态、以及肢解的反噬机制，这些关键机制建议提前了解，避免在实战中走弯路。提示仅出现一次
+		AskPrompt: 点击「开始教程」了解机制；急于动身可直接「跳过教程」；也可收下稽古符，日后随时使用开启教程
+		RefreshAskTitle: 教程内容更新
+		RefreshAskBody: 本次更新补充了两段引导：改铭台旁「铭谱」的查阅方法，以及展开鬼域前的注意事项。此前已练习过的实操部分不会重复
+		RefreshAskPrompt: 点击查看新增内容；或收下稽古符，日后随时使用开启教程
+		AcceptBtn: 开始教程
+		DeclineBtn: 暂不需要
+		DeclineNotice: 稽古符已放入背包，使用它可随时重新开启教程
 		HudTitle: 气力与架势
-		HudBody: 手持鬼切时，左下角常驻两条读数。气力笔触供疾走与樱流消耗，会自然回复；架势鞘靠砍中敌人积攒，过半与攒满各解锁一档处决。这里先认读数，招式细账都写在武器描述里
-		HudPrompt: 认一下这组读数；HUD 的界面入口只有封印札
+		HudBody: 手持鬼切时，屏幕左下角常驻显示两条数值。气力用于释放神威疾走与樱流，会随时间自然回复；架势通过击中敌怪积攒，过半与积满时分别解锁不同阶段的处决技能。招式详细说明可查阅武器描述
+		HudPrompt: 确认左下角的状态数值后，点击「已知晓」继续。点击左下角的封印札可打开界面
 		SigilTitle: 结印盘
-		SigilBody: 改铭台顶梁左侧钉着「结印盘」驿牌，牌下悬着盘的微缩。盘上外环摆六只鬼，内三角只有三个结印位，点外环选鬼，再点空位结印。同盘的鬼会互相催醒，复苏一起涨；盘座下缘的卷槽里插着点鬼簿，抽出来只看不结印
-		SigilPrompt: 点高亮驿牌或盘移步；打开后认一下外环与三个结印位，再收盘继续
+		SigilBody: 在改铭台顶部点击左侧的结印盘标签可切换至此界面。外环陈列着已收录的役鬼，内侧三角形区域设有 3 个结印位。点击外环选中役鬼后，再点击空位即可完成结印。已结印的役鬼会在战斗中提供增益，但役使会累积复苏与侵蚀；点击下方卷轴可打开「点鬼簿」查阅详情
+		SigilPrompt: 点击左上方的高亮标签切换至结印盘，查看外环役鬼与 3 个结印位
 		MeiTitle: 改铭台
-		MeiBody: 封印札是 HUD 唯一的界面入口，首次打开进入改铭台。刀上茎铭、樋位、雕位三处可凿，每一枚铭带一份赋效和一份代价。点铭位展开扇骨挑錾样，行囊里现有的錾样列在下方木匣
-		MeiPrompt: 按 {0} 或点高亮的札打开改铭台，认一下这三处铭位
+		MeiBody: 点击左下角高亮的封印札（或按快捷键）即可打开改铭台。鬼切刀身拥有「茎铭」、「樋位」和「雕位」三个槽位，每个铭文都会提供一项特殊效果并附带相应代价。点击对应铭位可选择要刻印的錾样，背包中拥有的錾样会列在下方物品框中
+		MeiPrompt: 按 {0} 或点击高亮的封印札打开改铭台，查看这三个铭位槽位
 		CodexTitle: 铭谱
-		CodexBody: 改铭台台账板下压着一本线装册子，就是铭谱。左页按茎铭、樋位、雕位分卷列出全部铭，右页写赋效、代价与来路；未凿的只露縁分进度。此处只读，凿铭仍在台上做
-		CodexPrompt: 点高亮的册子展读，合卷后自动回台
+		CodexBody: 在改铭台右侧有一本册子，即为「铭谱」。左侧页面按茎铭、樋位、雕位分类列出全部铭文，右侧页面记录其效果、代价与获取途径；尚未解锁的铭文会显示缘分进度。铭谱仅供查阅，刻印铭文仍在改铭台中进行
+		CodexPrompt: 点击右侧高亮册子打开铭谱，查阅完毕后关闭即可返回改铭台
 		DomainTitle: 鬼域之眼
-		DomainBody: 气力旁那只眼掌管鬼域：展开表世界（泛黄和纸）、翻到里世界（水墨阴间），再可收阖。肢解只在里世界成立
-		DomainPrompt: 左键点眼展开或收阖，右键或 {0} 翻转表里
+		DomainBody: 屏幕左下角气力槽旁的鬼眼代表领域状态：可展开浅层的「表世界」、翻转进入深层的「里世界」，或重新收起领域。鬼切核心的「肢解」斩杀机制仅能在里世界中发动
+		DomainPrompt: 左键点击鬼眼展开或收起领域；右键点击或按 {0} 可在表世界与里世界之间翻转
 		PrepareTitle: 实操准备
-		PrepareBody: 收好改铭台与点鬼簿，手持鬼切。若鬼域已展开，我会先按正式方式收域；从中断处回来时，也会先恢复到下一步所需的状态
-		PreparePrompt: 保持手持鬼切，等待鬼眼与界面安定；等不动就点「跳过」直接进实操
+		PrepareBody: 请关闭当前打开的界面，并手持鬼切。若领域处于展开状态，系统将自动收起并重置为教学所需的初始环境
+		PreparePrompt: 保持手持鬼切，等待界面与领域状态重置；若长时间未响应可点击「跳过」直接开始实操
 		OpenDomainTitle: 展开表世界
-		OpenDomainBody: 按领域键（默认 Q）展开鬼域。阖目时第一次展开会进入浅层的表世界，泛黄和纸将覆盖天地
-		OpenDomainPrompt: 按 {0} 亲手展开领域，并等它稳定在表世界
-		FlipDomainTitle: 翻入里世界
-		FlipDomainBody: 在表世界按翻转键（默认 Mouse3，鼠标中键），把浅层领域翻入深层的里世界
-		FlipDomainPrompt: 按 {0} 翻到里世界，等墨色稳定后再动刀
+		OpenDomainBody: 按「领域展开」键（默认 Q）展开鬼域。未展开状态下首次按下该键会进入浅层的「表世界」，视野将被泛黄和纸风格覆盖
+		OpenDomainPrompt: 按 {0} 展开领域，并等待领域进入稳定的表世界状态
+		FlipDomainTitle: 翻转至里世界
+		FlipDomainBody: 在表世界中按下「鬼切:领域表里翻转」键（默认鼠标中键），可将浅层领域翻转进入深层的「里世界」，画面将转为水墨风格
+		FlipDomainPrompt: 按 {0} 翻转至里世界，等待画面稳定后继续
 		DismemberTitle: 肢解演练
-		DismemberBody: 把光标放在高亮的圣诞坦克机体上，松开左键再按一次。鬼切会直接肢解真身；面影纸片也能作为肢解媒介，但本次不要求它
-		DismemberPrompt: 瞄准坦克机体，松开再按一次左键
-		BacklashTitle: 承受反噬
-		BacklashBody: 直接肢解真身会让持刀者承受真实的 25% 最大生命伤害，并在纳刀期间失去行动。看完整段演出，结束后我会替你恢复
-		BacklashPrompt: 暂停操作，等待反噬、纳刀与伤口复原
-		CloseDomainTitle: 从鬼眼收域
-		CloseDomainBody: 最后亲手收阖领域。左键点 HUD 上的鬼眼是最短的一手；用领域键收也算数，右键点眼则是翻转表里
-		CloseDomainPrompt: 左键点击高亮鬼眼，并等待它完全闭合
-		DomainUnboundHint: 领域键未绑定。本次教程可直接按 Q，作为临时默认键
-		FlipUnboundHint: 翻转键未绑定。本次教程可直接按 Mouse3（鼠标中键），作为临时默认键
-		WaitingFeedback: 正在等待这一步的结果落定
-		BusyFeedback: 鬼域仍在变相，等它稳定后再操作
-		RetryFeedback: 这一下没落到实处。照提示再来一次，或让我替你演示
-		NeedBladeHold: 行囊里没有鬼切，先把它拿回来再继续
-		TargetStalledHint: 演练靶还没落位。周围生灵太挤时它排不上号，换个开阔处站定再等等
+		DismemberBody: 在里世界中，将光标对准高亮的演练靶目标，松开左键后再按下一次。鬼切将直接发动突进肢解目标本体（击中生成的面影纸片同样可以触发肢解）
+		DismemberPrompt: 光标对准高亮靶机，松开左键后再次按下左键发动肢解
+		BacklashTitle: 承受肢解反噬
+		BacklashBody: 直接肢解敌人本体会导致持刀者承受自身最大生命值 25% 的真实反噬伤害，并在收刀动作完成前短暂无法行动（通过面影纸片肢解则无此反噬）。演练结束后将自动恢复生命值
+		BacklashPrompt: 稍候片刻，等待收刀动作完成与生命值恢复
+		CloseDomainTitle: 收起鬼域
+		CloseDomainBody: 实操演练完成，最后将领域收起。左键点击界面上的高亮鬼眼即可快速收起领域；再次按下「领域展开」键同样可以关闭领域
+		CloseDomainPrompt: 左键点击高亮的鬼眼（或按领域展开键），等待领域完全关闭
+		DomainUnboundHint: 领域键未绑定。本次教程可直接按 Q 作为临时默认键
+		FlipUnboundHint: 翻转键未绑定。本次教程可直接按 Mouse3（鼠标中键）作为临时默认键
+		WaitingFeedback: 正在等待操作结果判定
+		BusyFeedback: 鬼域正在切换形态，请等待过渡完成后再操作
+		RetryFeedback: 操作未成功命中目标。请按照提示重新操作，或点击「替我演示」
+		NeedBladeHold: 背包中未持有鬼切，请将其放回背包后继续
+		TargetStalledHint: 演练靶生成位置受阻。若周围实体过多，请移至开阔地带稍候片刻
 		AssistBtn: 替我演示
 		RetryBtn: 重试
 		NextBtn: 已知晓
-		OpenSigilBtn: 开结印盘
-		OpenMeiBtn: 开改铭台
-		OpenCodexBtn: 展读铭谱
+		OpenSigilBtn: 打开结印盘
+		OpenMeiBtn: 打开改铭台
+		OpenCodexBtn: 打开铭谱
 		SkipBtn: 跳过
 		SkipStepBtn: 跳过本步
-		AbortBtn: 收起教习
+		AbortBtn: 收起教程
 		SkipAllBtn: 跳过教程
-		SkipAllNotice: 教程已视同学过，试炼委托即刻可接
+		SkipAllNotice: 已跳过教程，试炼委托已解锁
 	}
 
 	OniMeiCodexUI: {

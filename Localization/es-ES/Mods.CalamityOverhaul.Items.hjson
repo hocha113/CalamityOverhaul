@@ -319,12 +319,12 @@ OniKeikoRune: {
 	DisplayName: Talismán de keiko
 	Tooltip:
 		'''
-		Úsalo para empezar de cero la lección de Onikiri; si lo usas otra vez a mitad de la lección, la recoge
-		Es el vale que queda al rechazar la lección inicial; el talismán no se consume y puedes abrirla una y otra vez
+		Úsalo para reabrir el tutorial de Onikiri; úsalo de nuevo durante el tutorial para cerrarlo
+		Objeto recibido al rechazar el tutorial inicial; no se consume y puede reutilizarse
 		'''
-	NeedBlade: No hay un Onikiri en el zurrón; el talismán no puede abrir la lección
-	Closed: La lección se ha recogido; usa de nuevo el talismán para reabrirla
-	NotNow: Ahora hay otro asunto; el talismán no puede sostener el escenario
+	NeedBlade: No tienes Onikiri en el inventario; no se puede abrir el tutorial
+	Closed: Tutorial cerrado; usa este talismán de nuevo para reabrirlo
+	NotNow: No se puede abrir el tutorial en este momento; inténtalo más tarde
 }
 
 ScrapBeacon: {
