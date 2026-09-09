@@ -1374,6 +1374,23 @@ MiningMachineUI: {
 	DrillEffectText: Gibt das Abbaurecht für die Zielmineralien und vervierfacht deren Ertragsgewicht
 }
 
+TurretControlUI: {
+	TitleText: Feuerleitpult
+	ChargeLabel: Ladung
+	PowerOnText: AN
+	PowerOffText: AUS
+	StateWorking: Im Einsatz
+	StateStandby: Ausgeschaltet
+	StateNoPower: Zu wenig Energie
+	RangeLine: "Reichweite: {0} Blöcke"
+	RhythmLine: "Takt: {0}/s"
+	RhythmSustained: "Takt: Dauerbetrieb"
+	EnergyPerShotLine: "Verbrauch: {0} UE pro Schuss"
+	EnergyPerTickLine: "Verbrauch: {0} UE pro Tick"
+	ChargeReadLine: "{0}/{1} UE"
+	SwitchHint: Turm ein- oder ausschalten
+}
+
 DungeonworldLoadingScreen: {
 	BandName0: Kathedralenviertel
 	BandName1: Kerkerstock

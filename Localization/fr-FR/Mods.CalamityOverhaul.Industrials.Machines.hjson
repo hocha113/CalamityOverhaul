@@ -64,7 +64,8 @@ FlameTurret: {
 		Crache sans cesse des langues de feu vers les ennemis proches ; le feu traverse les groupes et allume le Feu infernal
 		Clic droit sur la tourelle en tenant du gel pour charger le carburant ; brûler du gel renforce le feu
 		Maj + clic droit pour retirer le gel ; les canalisations d'objets peuvent aussi alimenter le slot
-		Clic droit à main vide ou un signal de fil pour basculer la tourelle
+		Clic droit pour ouvrir le panneau de contrôle ; on y bascule la tourelle et on installe les modules
+		Un signal de fil bascule aussi la tourelle
 		"Ça sent la gelée grillée"
 		'''
 }
@@ -80,7 +81,8 @@ CryoTurret: {
 		Répand sans cesse le froid sur tous les ennemis à portée, les givre et les ralentit
 		Un ennemi baigné de froid pendant environ deux secondes est brièvement gelé
 		Ralentir et geler, c'est le métier ; les dégâts ne sont qu'une lente brûlure de givre
-		Clic droit ou un signal de fil pour basculer la tourelle
+		Clic droit pour ouvrir le panneau de contrôle ; on y bascule la tourelle et on installe les modules
+		Un signal de fil bascule aussi la tourelle
 		"Calmez-vous"
 		'''
 }
@@ -95,7 +97,8 @@ LaserTurret: {
 		Nécessite de l'électricité pour fonctionner
 		Tire des faisceaux à hauts dégâts sur les ennemis en ligne de vue ; très longue portée, cadence lente
 		Les cibles masquées par le terrain ne sont pas verrouillées ; priorise les boss
-		Clic droit ou un signal de fil pour basculer la tourelle
+		Clic droit pour ouvrir le panneau de contrôle ; on y bascule la tourelle et on installe les modules
+		Un signal de fil bascule aussi la tourelle
 		"Un tir, un à terre"
 		'''
 }
@@ -111,7 +114,8 @@ ShieldGenerator: {
 		Sous tension, les joueurs à portée reçoivent un bouclier d'énergie
 		Le bouclier se charge lentement, encaisse une part des dégâts, puis s'estompe hors de portée
 		Plus il protège de joueurs, plus il consomme
-		Clic droit ou un signal de fil pour basculer le champ
+		Clic droit pour ouvrir le panneau de contrôle ; on y bascule le champ et on installe les modules
+		Un signal de fil bascule aussi le champ
 		'''
 }
 
@@ -124,7 +128,8 @@ HealStation: {
 		'''
 		Nécessite de l'électricité pour fonctionner
 		Sous tension, régénère lentement la vie de tous les joueurs à portée
-		Clic droit ou un signal de fil pour basculer l'aura
+		Clic droit pour ouvrir le panneau de contrôle ; on y bascule l'aura et on installe les modules
+		Un signal de fil bascule aussi l'aura
 		"Accident du travail ? Connais pas"
 		'''
 }

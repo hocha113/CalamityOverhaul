@@ -54,81 +54,86 @@ TeslaElectromagneticTower: {
 }
 
 FlameTurret: {
-	// TurretOnText: Flame turret on
-	// TurretOffText: Flame turret off
-	// NoEnergyText: Not enough energy!
-	// FuelLoadText: Loaded gel x{0}
-	// FuelTakeText: Took gel x{0}
-	// DisplayName: Flamethrower Turret
-	/* Tooltip:
+	TurretOnText: Torre de chamas ligada
+	TurretOffText: Torre de chamas desligada
+	NoEnergyText: Energia insuficiente!
+	FuelLoadText: Gel carregado x{0}
+	FuelTakeText: Gel retirado x{0}
+	DisplayName: Torre Lancachamas
+	Tooltip:
 		'''
-		Requires electrical energy to operate
-		Continuously spews flames at approaching enemies; the fire pierces through crowds and ignites Hellfire
-		Right-click the turret while holding gel to load fuel; burning gel makes the flames hit harder
-		Shift right-click to take the gel back; item pipes can also feed gel into the fuel slot
-		Right-click with an empty hand, or send a wire signal, to toggle the turret
-		"Smells like roasted slime"
-		''' */
+		Requer energia eletrica para operar
+		Cospe chamas sem parar nos inimigos que se aproximam; o fogo atravessa grupos e aplica Fogo infernal
+		Segure gel e clique direito na torre para carregar combustivel; queimar gel deixa o fogo mais forte
+		Segure Shift e clique direito para retirar o gel; tubos de itens tambem podem alimentar o compartimento
+		Clique direito para abrir o painel de controle; la voce liga a torre e instala modulos
+		Um sinal de fio tambem liga ou desliga a torre
+		"Cheira a slime assado"
+		'''
 }
 
 CryoTurret: {
-	// TurretOnText: Cryo turret on
-	// TurretOffText: Cryo turret off
-	// NoEnergyText: Not enough energy!
-	// DisplayName: Cryo Turret
-	/* Tooltip:
+	TurretOnText: Torre de gelo ligada
+	TurretOffText: Torre de gelo desligada
+	NoEnergyText: Energia insuficiente!
+	DisplayName: Torre de Gelo
+	Tooltip:
 		'''
-		Requires electrical energy to operate
-		Continuously spreads frost over all enemies in range, chilling and slowing them
-		An enemy soaked in frost for about two seconds gets briefly frozen
-		Slowing and freezing is the job; damage is only a slow frostburn
-		Right-click, or send a wire signal, to toggle the turret
-		"Calm down"
-		''' */
+		Requer energia eletrica para operar
+		Espalha frio sem parar em todos os inimigos no alcance e os deixa mais lentos
+		Um inimigo coberto de frio por cerca de dois segundos congela por um instante
+		Desacelerar e congelar e o oficio; o dano e so uma queimadura de geada lenta
+		Clique direito para abrir o painel de controle; la voce liga a torre e instala modulos
+		Um sinal de fio tambem liga ou desliga a torre
+		"Se acalma"
+		'''
 }
 
 LaserTurret: {
-	// TurretOnText: Laser turret on
-	// TurretOffText: Laser turret off
-	// NoEnergyText: Not enough energy!
-	// DisplayName: Laser Turret
-	/* Tooltip:
+	TurretOnText: Torre laser ligada
+	TurretOffText: Torre laser desligada
+	NoEnergyText: Energia insuficiente!
+	DisplayName: Torre Laser
+	Tooltip:
 		'''
-		Requires electrical energy to operate
-		Fires high-damage beams at enemies in line of sight; very long range, slow rate of fire
-		Targets blocked by terrain will not be locked on; prioritizes bosses
-		Right-click, or send a wire signal, to toggle the turret
-		"One shot, one down"
-		''' */
+		Requer energia eletrica para operar
+		Dispara um feixe de alto dano nos inimigos a vista; alcance enorme, cadencia lenta
+		Alvos atras do terreno nao sao trancados; prioriza chefes
+		Clique direito para abrir o painel de controle; la voce liga a torre e instala modulos
+		Um sinal de fio tambem liga ou desliga a torre
+		"Um tiro, um a menos"
+		'''
 }
 
 ShieldGenerator: {
-	// FieldOnText: Shield field on
-	// FieldOffText: Shield field off
-	// NoEnergyText: Not enough energy!
-	// DisplayName: Shield Generator
-	/* Tooltip:
+	FieldOnText: Campo de escudo ligado
+	FieldOffText: Campo de escudo desligado
+	NoEnergyText: Energia insuficiente!
+	DisplayName: Gerador de Escudo
+	Tooltip:
 		'''
-		Requires electrical energy to operate
-		While powered, players in range gain an energy shield
-		The shield slowly charges, absorbs part of incoming damage, and fades after leaving the range
-		The more players it guards, the faster it drains power
-		Right-click, or send a wire signal, to toggle the field
-		''' */
+		Requer energia eletrica para operar
+		Enquanto ligada, os jogadores no alcance ganham um escudo de energia
+		O escudo carrega devagar, absorve parte do dano e some ao sair do alcance
+		Quanto mais jogadores proteger, mais rapido gasta energia
+		Clique direito para abrir o painel de controle; la voce liga o campo e instala modulos
+		Um sinal de fio tambem liga ou desliga o campo
+		'''
 }
 
 HealStation: {
-	// FieldOnText: Healing aura on
-	// FieldOffText: Healing aura off
-	// NoEnergyText: Not enough energy!
-	// DisplayName: Healing Station
-	/* Tooltip:
+	FieldOnText: Aura de cura ligada
+	FieldOffText: Aura de cura desligada
+	NoEnergyText: Energia insuficiente!
+	DisplayName: Estacao de Cura
+	Tooltip:
 		'''
-		Requires electrical energy to operate
-		While powered, slowly regenerates the health of all players in range
-		Right-click, or send a wire signal, to toggle the aura
-		"Workplace injuries? Never heard of them"
-		''' */
+		Requer energia eletrica para operar
+		Enquanto ligada, regenera devagar a vida de todos os jogadores no alcance
+		Clique direito para abrir o painel de controle; la voce liga a aura e instala modulos
+		Um sinal de fio tambem liga ou desliga a aura
+		"Acidente de trabalho? Nunca ouvi falar"
+		'''
 }
 
 ElectricMinRocket: {

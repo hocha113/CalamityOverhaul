@@ -1374,6 +1374,23 @@ MiningMachineUI: {
 	DrillEffectText: Desbloquea la extracción del mineral objetivo y cuadruplica su peso de rendimiento
 }
 
+TurretControlUI: {
+	TitleText: Control de fuego
+	ChargeLabel: Carga
+	PowerOnText: ENCENDIDO
+	PowerOffText: APAGADO
+	StateWorking: En operación
+	StateStandby: Apagado
+	StateNoPower: Energía insuficiente
+	RangeLine: "Alcance: {0} bloques"
+	RhythmLine: "Cadencia: {0}/s"
+	RhythmSustained: "Cadencia: continua"
+	EnergyPerShotLine: "Consumo: {0} UE por disparo"
+	EnergyPerTickLine: "Consumo: {0} UE por tick"
+	ChargeReadLine: "{0}/{1} UE"
+	SwitchHint: Encender o apagar la torre
+}
+
 DungeonworldLoadingScreen: {
 	BandName0: Distrito de la catedral
 	BandName1: Nivel de las celdas

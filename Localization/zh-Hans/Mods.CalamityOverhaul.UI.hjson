@@ -1374,6 +1374,23 @@ MiningMachineUI: {
 	DrillEffectText: 解锁目标矿物的开采资格，并将其产出权重提高到四倍
 }
 
+TurretControlUI: {
+	TitleText: 火控台
+	ChargeLabel: 电量
+	PowerOnText: 开机
+	PowerOffText: 关机
+	StateWorking: 作业中
+	StateStandby: 已关闭
+	StateNoPower: 能量不足
+	RangeLine: 射程：{0} 格
+	RhythmLine: 节拍：{0} 次/秒
+	RhythmSustained: 节拍：持续运转
+	EnergyPerShotLine: 耗电：每发 {0} UE
+	EnergyPerTickLine: 耗电：每帧 {0} UE
+	ChargeReadLine: "{0}/{1} UE"
+	SwitchHint: 开关这座塔
+}
+
 DungeonworldLoadingScreen: {
 	BandName0: 教堂区
 	BandName1: 牢狱层

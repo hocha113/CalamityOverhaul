@@ -279,8 +279,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
         }
 
         /// <summary>
-        /// 右键交互(仅交互客户端执行,SendData 即传播):手持凝胶装填,
-        /// Shift 取出燃料,否则翻转开关
+        /// 右键交互(仅交互客户端执行):手持凝胶装填,
+        /// Shift 取出燃料,否则打开控制面板
         /// </summary>
         public void HandleRightClick() {
             Item held = Main.LocalPlayer.GetItem();
@@ -310,7 +310,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
                 return;
             }
 
-            //手持非凝胶的可堆叠物试图装填时给出拒绝提示(拿工具/武器点塔视为开关操作)
             if (Main.keyState.PressingShift()) {
                 //Shift:取出全部燃料(直接入背包,MP下地面掉落会被队友截走)
                 if (HasFuel) {
@@ -324,8 +323,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.FlameTurre
                 return;
             }
 
-            //其余:翻转开关
-            RightEvent();
+            //其余:打开控制面板(开关与模块都在面板里)
+            OpenPanel();
         }
 
         public override void MachineKill() {

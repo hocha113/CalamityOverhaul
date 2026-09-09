@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.HealingStations
             if (!TileProcessorLoader.AutoPositionGetTP<HealStationTP>(i, j, out var tp)) {
                 return false;
             }
-            tp.RightEvent();
+            tp.OpenPanel();
             return true;
         }
 

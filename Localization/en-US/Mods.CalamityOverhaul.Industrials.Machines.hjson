@@ -66,7 +66,8 @@ FlameTurret: {
 		Continuously spews flames at approaching enemies; the fire pierces through crowds and ignites Hellfire
 		Right-click the turret while holding gel to load fuel; burning gel makes the flames hit harder
 		Shift right-click to take the gel back; item pipes can also feed gel into the fuel slot
-		Right-click with an empty hand, or send a wire signal, to toggle the turret
+		Right-click to open the control panel; toggle power and install modules there
+		A wire signal can also toggle the turret
 		"Smells like roasted slime"
 		'''
 }
@@ -82,7 +83,8 @@ CryoTurret: {
 		Continuously spreads frost over all enemies in range, chilling and slowing them
 		An enemy soaked in frost for about two seconds gets briefly frozen
 		Slowing and freezing is the job; damage is only a slow frostburn
-		Right-click, or send a wire signal, to toggle the turret
+		Right-click to open the control panel; toggle power and install modules there
+		A wire signal can also toggle the turret
 		"Calm down"
 		'''
 }
@@ -97,7 +99,8 @@ LaserTurret: {
 		Requires electrical energy to operate
 		Fires high-damage beams at enemies in line of sight; very long range, slow rate of fire
 		Targets blocked by terrain will not be locked on; prioritizes bosses
-		Right-click, or send a wire signal, to toggle the turret
+		Right-click to open the control panel; toggle power and install modules there
+		A wire signal can also toggle the turret
 		"One shot, one down"
 		'''
 }
@@ -113,7 +116,8 @@ ShieldGenerator: {
 		While powered, players in range gain an energy shield
 		The shield slowly charges, absorbs part of incoming damage, and fades after leaving the range
 		The more players it guards, the faster it drains power
-		Right-click, or send a wire signal, to toggle the field
+		Right-click to open the control panel; toggle power and install modules there
+		A wire signal can also toggle the field
 		'''
 }
 
@@ -126,7 +130,8 @@ HealStation: {
 		'''
 		Requires electrical energy to operate
 		While powered, slowly regenerates the health of all players in range
-		Right-click, or send a wire signal, to toggle the aura
+		Right-click to open the control panel; toggle power and install modules there
+		A wire signal can also toggle the aura
 		"Workplace injuries? Never heard of them"
 		'''
 }

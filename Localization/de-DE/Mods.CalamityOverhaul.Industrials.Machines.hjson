@@ -63,7 +63,8 @@ FlameTurret: {
 		Spuckt dauernd Feuerzungen auf nähere Feinde; die Flammen durchdringen Gruppen und zünden Höllenfeuer
 		Gel in der Hand, Rechtsklick auf den Turm lädt Treibstoff; mit Gel brennt er härter
 		Shift halten und Rechtsklick holt Gel heraus; Gegenstandsrohre können Gel in den Treibstoffschlitz legen
-		Leere Hand, Rechtsklick oder Drahtsignal schaltet den Turm
+		Rechtsklick öffnet das Steuerpult; dort schaltet man den Turm und setzt Module
+		Ein Drahtsignal schaltet den Turm ebenfalls
 		"Riecht nach gebratenem Schleim"
 		'''
 }
@@ -79,7 +80,8 @@ CryoTurret: {
 		Streut dauernd Kälte auf alle Feinde in Reichweite und verlangsamt sie mit Frost
 		Dieselbe Bedeckung von etwa zwei Sekunden friert kurz ein
 		Verlangsamen und Einfrieren sind der Job; der Schaden ist nur ein wenig Frostbrand
-		Rechtsklick oder Drahtsignal schaltet den Turm
+		Rechtsklick öffnet das Steuerpult; dort schaltet man den Turm und setzt Module
+		Ein Drahtsignal schaltet den Turm ebenfalls
 		"Beruhig dich"
 		'''
 }
@@ -94,7 +96,8 @@ LaserTurret: {
 		Braucht Strom
 		Schießt hochschädigende Strahlen auf Feinde in Sicht; sehr weit, aber langsam
 		Hinter Gelände wird nicht erfasst, Bosse zuerst
-		Rechtsklick oder Drahtsignal schaltet den Turm
+		Rechtsklick öffnet das Steuerpult; dort schaltet man den Turm und setzt Module
+		Ein Drahtsignal schaltet den Turm ebenfalls
 		"Ein Schuss, einer weniger"
 		'''
 }
@@ -110,7 +113,8 @@ ShieldGenerator: {
 		Unter Strom erhalten Spieler im Bereich einen Energieschild
 		Der Schild lädt langsam, fängt einen Teil des Schadens und löst sich nach dem Verlassen
 		Je mehr Spieler geschützt sind, desto schneller der Verbrauch
-		Rechtsklick oder Drahtsignal schaltet das Feld
+		Rechtsklick öffnet das Steuerpult; dort schaltet man das Feld und setzt Module
+		Ein Drahtsignal schaltet das Feld ebenfalls
 		'''
 }
 
@@ -123,7 +127,8 @@ HealStation: {
 		'''
 		Braucht Strom
 		Unter Strom stellt sie langsam das Leben aller Spieler im Bereich wieder her
-		Rechtsklick oder Drahtsignal schaltet die Aura
+		Rechtsklick öffnet das Steuerpult; dort schaltet man die Aura und setzt Module
+		Ein Drahtsignal schaltet die Aura ebenfalls
 		"Arbeitsunfall? Gibt's nicht"
 		'''
 }

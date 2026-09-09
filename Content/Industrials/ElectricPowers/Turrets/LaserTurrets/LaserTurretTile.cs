@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets.LaserTurre
             if (!TileProcessorLoader.AutoPositionGetTP<LaserTurretTP>(i, j, out var tp)) {
                 return false;
             }
-            tp.RightEvent();
+            tp.OpenPanel();
             return true;
         }
 

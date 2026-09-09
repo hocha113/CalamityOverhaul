@@ -1374,6 +1374,23 @@ MiningMachineUI: {
 	DrillEffectText: Открывает право добывать целевую руду и поднимает её вес в выдаче в четыре раза
 }
 
+TurretControlUI: {
+	TitleText: Пульт огневого управления
+	ChargeLabel: Заряд
+	PowerOnText: ВКЛ
+	PowerOffText: ВЫКЛ
+	StateWorking: В работе
+	StateStandby: Выключена
+	StateNoPower: Нет энергии
+	RangeLine: "Дальность: {0} блоков"
+	RhythmLine: "Темп: {0}/с"
+	RhythmSustained: "Темп: постоянно"
+	EnergyPerShotLine: "Расход: {0} UE за выстрел"
+	EnergyPerTickLine: "Расход: {0} UE за тик"
+	ChargeReadLine: "{0}/{1} UE"
+	SwitchHint: Включить или выключить башню
+}
+
 DungeonworldLoadingScreen: {
 	BandName0: Соборный квартал
 	BandName1: Тюремный ярус

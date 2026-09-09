@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets
         /// <summary>存档缺失模式键时的默认值(特斯拉旧档语义为 false=护卫,新塔默认 true=开机)</summary>
         protected virtual bool DefaultModeWhenMissing => true;
 
-        /// <summary>通用模式位:特斯拉=攻击/护卫切换,其余塔=开/关;右键或电线翻转,SendData 传播</summary>
+        /// <summary>通用模式位:特斯拉=攻击/护卫切换,其余塔=开/关;面板拨杆或电线翻转,SendData 传播</summary>
         public bool AttackPattern { get; set; } = true;
         /// <summary>当前目标,由 <see cref="RunAttackCycle"/> 在权威端赋值</summary>
         public NPC TargetByNPC { get; set; }
@@ -58,6 +58,21 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets
         public int EffectiveFireInterval => System.Math.Max(1, (int)(FireInterval / ModuleRack.TurretRateMult));
         /// <summary>模块生效单发耗电</summary>
         public float EffectiveShotCost => ShotCost * ModuleRack.TurretEnergyMult;
+        #endregion
+
+        #region 控制面板读数(单位换算与排版都在面板侧)
+        /// <summary>作用半径(像素);光环塔重写成光环半径</summary>
+        internal virtual float PanelRange => EffectiveRange;
+        /// <summary>动作节拍(帧);0 表示这台塔没有节拍,通电即常驻</summary>
+        internal virtual int PanelRhythm => EffectiveFireInterval;
+        /// <summary>耗电量,单位由 <see cref="PanelEnergyPerTick"/> 决定</summary>
+        internal virtual float PanelEnergy => EffectiveShotCost;
+        /// <summary>true=运转时每帧持续耗电,false=每发耗电</summary>
+        internal virtual bool PanelEnergyPerTick => false;
+        /// <summary>面板补充读数行(燃料余量、耗电口径这类);null 表示这台塔没有</summary>
+        internal virtual string PanelNote => null;
+        /// <summary>面板状态灯:这台塔此刻是否真在干活</summary>
+        internal virtual bool PanelWorking => AttackPattern && (MachineData?.UEvalue ?? 0f) >= PanelEnergy;
         #endregion
 
         #region 序列化:MachineData → AttackPattern → 模块架(槽数>0时追加)
@@ -111,13 +126,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Turrets
         protected virtual void OnModeToggleEffect() { }
 
         /// <summary>
-        /// 右键/电线翻转模式;ModTile.RightClick 与 HitWire 只在交互端/布线端执行,
-        /// SendData 即传播机制(镜像特斯拉 RightEvent)
+        /// 翻转模式;面板拨杆、特斯拉右键与 HitWire 只在交互端/布线端执行,
+        /// SendData 即传播机制。大修塔右键走 <see cref="OpenPanel"/>,不再走这里
         /// </summary>
         public virtual void RightEvent() {
             AttackPattern = !AttackPattern;
             SendData();
             OnModeToggleEffect();
+        }
+
+        /// <summary>
+        /// 右键塔身:打开控制面板(电源拨杆与模块插座都在面板里)。
+        /// 面板纯本地,不发包;真正的开关与模块改动各自在面板内推送
+        /// </summary>
+        public void OpenPanel() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            TurretControlUI.Instance?.Initialize(this);
         }
 
         public sealed override void UpdateMachine() {

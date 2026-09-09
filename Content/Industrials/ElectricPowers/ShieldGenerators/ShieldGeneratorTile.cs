@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ShieldGenerators
             if (!TileProcessorLoader.AutoPositionGetTP<ShieldGeneratorTP>(i, j, out var tp)) {
                 return false;
             }
-            tp.RightEvent();
+            tp.OpenPanel();
             return true;
         }
 

@@ -1376,6 +1376,23 @@ MiningMachineUI: {
 	// DrillEffectText: Grants extraction rights for its targets and quadruples their yield weight
 }
 
+TurretControlUI: {
+	TitleText: Controle de Fogo
+	ChargeLabel: Carga
+	PowerOnText: LIGADO
+	PowerOffText: DESLIGADO
+	StateWorking: Em operacao
+	StateStandby: Desligado
+	StateNoPower: Sem energia
+	RangeLine: "Alcance: {0} blocos"
+	RhythmLine: "Cadencia: {0}/s"
+	RhythmSustained: "Cadencia: continua"
+	EnergyPerShotLine: "Consumo: {0} UE por disparo"
+	EnergyPerTickLine: "Consumo: {0} UE por tick"
+	ChargeReadLine: "{0}/{1} UE"
+	SwitchHint: Ligar ou desligar a torre
+}
+
 DungeonworldLoadingScreen: {
 	// BandName0: The Cathedral
 	// BandName1: The Gaols

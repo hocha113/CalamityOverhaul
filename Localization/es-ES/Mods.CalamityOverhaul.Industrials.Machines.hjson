@@ -64,7 +64,8 @@ FlameTurret: {
 		Lanza sin cesar lenguas de fuego a los enemigos que se acercan; las llamas atraviesan grupos y aplican Fuego infernal
 		Sostén gel y haz clic derecho en la torre para cargar combustible; al quemar gel el fuego es más feroz
 		Mantén Mayús y clic derecho para extraer el gel; las tuberías de objetos también pueden alimentar la ranura de combustible
-		Clic derecho con las manos vacías o una señal de cable enciende o apaga la torre
+		Clic derecho abre el panel de control; allí se enciende o apaga la torre y se instalan módulos
+		Una señal de cable también enciende o apaga la torre
 		"Huele a slime asado"
 		'''
 }
@@ -80,7 +81,8 @@ CryoTurret: {
 		Esparce frío sin cesar a todos los enemigos del área y los ralentiza con escarcha
 		Un enemigo cubierto de frío unos dos segundos queda congelado un instante
 		Ralentizar y congelar es su oficio; el daño es solo un poco de quemadura de escarcha
-		Clic derecho o una señal de cable enciende o apaga la torre
+		Clic derecho abre el panel de control; allí se enciende o apaga la torre y se instalan módulos
+		Una señal de cable también enciende o apaga la torre
 		"Enfríate un poco"
 		'''
 }
@@ -95,7 +97,8 @@ LaserTurret: {
 		Necesita electricidad para funcionar
 		Dispara un haz de alto daño a los enemigos a la vista; el alcance es enorme, pero la cadencia es lenta
 		No fija objetivos tapados por el terreno; prioriza a los jefes
-		Clic derecho o una señal de cable enciende o apaga la torre
+		Clic derecho abre el panel de control; allí se enciende o apaga la torre y se instalan módulos
+		Una señal de cable también enciende o apaga la torre
 		"Un disparo, uno menos"
 		'''
 }
@@ -111,7 +114,8 @@ ShieldGenerator: {
 		Mientras funciona con corriente, los jugadores del área obtienen un escudo de energía
 		El escudo se carga con lentitud, absorbe parte del daño al recibir un golpe y se disipa al salir del área
 		Cuantos más jugadores proteja, más rápido consume electricidad
-		Clic derecho o una señal de cable enciende o apaga el campo
+		Clic derecho abre el panel de control; allí se enciende o apaga el campo y se instalan módulos
+		Una señal de cable también enciende o apaga el campo
 		'''
 }
 
@@ -124,7 +128,8 @@ HealStation: {
 		'''
 		Necesita electricidad para funcionar
 		Mientras funciona con corriente, regenera con lentitud la vida de todos los jugadores del área
-		Clic derecho o una señal de cable enciende o apaga el aura
+		Clic derecho abre el panel de control; allí se enciende o apaga el aura y se instalan módulos
+		Una señal de cable también enciende o apaga el aura
 		"¿Accidente laboral? Nunca oído"
 		'''
 }
