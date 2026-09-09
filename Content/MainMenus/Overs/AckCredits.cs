@@ -3,7 +3,9 @@
     /// <summary>致谢贡献类别，定分节标题与强调色</summary>
     internal enum CreditRole
     {
+        LeadCreator,
         Artist,
+        ArtAssistance,
         CodeAssistance,
         Musician,
         BalanceTester,
@@ -23,7 +25,9 @@
 
         public static readonly CreditSection[] Sections =
         [
+            new(CreditRole.LeadCreator, ["红茶object"]),
             new(CreditRole.Artist, ["雾梯"]),
+            new(CreditRole.ArtAssistance, ["孩子们我不活了"]),
             new(CreditRole.CodeAssistance, ["Cyrilly", "瓶中微光", "Monomon"]),
             new(CreditRole.Musician, ["Ryusa"]),
             new(CreditRole.BalanceTester,
@@ -48,6 +52,7 @@
                 "Lyudmila", "Artem", "Katerina", "Oleg", "Fwoer'Vmoerd", "苍穹彼岸offest",
                 "Кот Пельмень", "Sodayo 的 Live", "我能看看你的小学吗", "烂柯棋缘", "华屋丘墟",
                 "易燃易爆品daze", "梦境使者爱梅斯",
+                "青寸", "ZHG", "曾记否", "剑剑君", "Macheno", "穗淞", "散桐AGN", "Tongguee", "348535",
             ]),
         ];
     }

@@ -1321,11 +1321,13 @@ HimayoMenu.ThemeName: Царство ночной сакуры
 ShenyoMenu.ThemeName: Ночной дождь на озере духов
 
 AcknowledgmentUI: {
+	LeadCreatorRole: Главный автор
 	ArtistRole: Художник
+	ArtAssistanceRole: Помощь с артом
 	CodeAssistanceRole: Помощь с кодом
 	MusicianRole: Музыкант
 	DonorRole: Донатер
-	BalanceTesterRole: Тестирование баланса
+	BalanceTesterRole: Тестирование
 	TitleText: Благодарности
 	SubtitleText: Calamity Overhaul · Все участники
 	FinaleText: Спасибо, что были с нами

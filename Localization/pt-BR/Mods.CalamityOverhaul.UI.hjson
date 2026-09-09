@@ -1323,11 +1323,13 @@ BulletinBoardUI: {
 ShenyoMenu.ThemeName: Chuva noturna no lago espectral
 
 AcknowledgmentUI: {
+	LeadCreatorRole: Criador Principal
 	ArtistRole: Artista
+	ArtAssistanceRole: Assistencia de Arte
 	CodeAssistanceRole: Assistencia de Codigo
 	MusicianRole: Musico
 	DonorRole: Doador
-	BalanceTesterRole: Testador de Balanceamento
+	BalanceTesterRole: Testador
 	TitleText: Agradecimentos
 	SubtitleText: Calamity Overhaul · Todos os colaboradores
 	FinaleText: Obrigado por nos acompanhar nesta jornada

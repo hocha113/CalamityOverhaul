@@ -42,7 +42,9 @@ namespace CalamityOverhaul.Content.MainMenus.Overs
     {
         public string LocalizationCategory => "UI";
 
+        public static LocalizedText LeadCreatorRole { get; private set; }
         public static LocalizedText ArtistRole { get; private set; }
+        public static LocalizedText ArtAssistanceRole { get; private set; }
         public static LocalizedText CodeAssistanceRole { get; private set; }
         public static LocalizedText MusicianRole { get; private set; }
         public static LocalizedText DonorRole { get; private set; }
@@ -115,11 +117,13 @@ namespace CalamityOverhaul.Content.MainMenus.Overs
         }
 
         public override void SetStaticDefaults() {
+            LeadCreatorRole = this.GetLocalization(nameof(LeadCreatorRole), () => "主创");
             ArtistRole = this.GetLocalization(nameof(ArtistRole), () => "画师");
+            ArtAssistanceRole = this.GetLocalization(nameof(ArtAssistanceRole), () => "美术援助");
             CodeAssistanceRole = this.GetLocalization(nameof(CodeAssistanceRole), () => "代码援助");
             MusicianRole = this.GetLocalization(nameof(MusicianRole), () => "音乐制作");
             DonorRole = this.GetLocalization(nameof(DonorRole), () => "捐赠者");
-            BalanceTesterRole = this.GetLocalization(nameof(BalanceTesterRole), () => "平衡测试");
+            BalanceTesterRole = this.GetLocalization(nameof(BalanceTesterRole), () => "测试");
             TitleText = this.GetLocalization(nameof(TitleText), () => "鸣 谢");
             SubtitleText = this.GetLocalization(nameof(SubtitleText), () => "灾厄大修 · 全体贡献者");
             FinaleText = this.GetLocalization(nameof(FinaleText), () => "感谢一路同行");
@@ -147,7 +151,9 @@ namespace CalamityOverhaul.Content.MainMenus.Overs
         }
 
         private static string RoleHeader(CreditRole role) => role switch {
+            CreditRole.LeadCreator => LeadCreatorRole.Value,
             CreditRole.Artist => ArtistRole.Value,
+            CreditRole.ArtAssistance => ArtAssistanceRole.Value,
             CreditRole.CodeAssistance => CodeAssistanceRole.Value,
             CreditRole.Musician => MusicianRole.Value,
             CreditRole.BalanceTester => BalanceTesterRole.Value,

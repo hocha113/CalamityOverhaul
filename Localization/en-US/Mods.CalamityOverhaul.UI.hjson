@@ -1323,11 +1323,13 @@ HimayoMenu.ThemeName: Sakura Night
 ShenyoMenu.ThemeName: Ghost Lake Rains
 
 AcknowledgmentUI: {
+	LeadCreatorRole: Lead Creator
 	ArtistRole: Artist
+	ArtAssistanceRole: Art Assistance
 	CodeAssistanceRole: Code Assistance
 	MusicianRole: Musician
 	DonorRole: Donor
-	BalanceTesterRole: Balance Tester
+	BalanceTesterRole: Tester
 	TitleText: Acknowledgments
 	SubtitleText: Calamity Overhaul · All Contributors
 	FinaleText: Thank you for journeying with us

@@ -154,10 +154,12 @@ namespace CalamityOverhaul.Content.MainMenus.Overs
         #region 组合元素
         /// <summary>角色拉丁副标签</summary>
         public static string RoleTag(CreditRole role) => role switch {
+            CreditRole.LeadCreator => "LEAD CREATOR",
             CreditRole.Artist => "ARTIST",
+            CreditRole.ArtAssistance => "ART ASSISTANCE",
             CreditRole.CodeAssistance => "CODE ASSISTANCE",
             CreditRole.Musician => "MUSIC",
-            CreditRole.BalanceTester => "BALANCE TEST",
+            CreditRole.BalanceTester => "TEST",
             _ => "DONORS",
         };
 

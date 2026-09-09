@@ -1321,11 +1321,13 @@ HimayoMenu.ThemeName: 夜樱境
 ShenyoMenu.ThemeName: 鬼湖夜雨
 
 AcknowledgmentUI: {
+	LeadCreatorRole: 主创
 	ArtistRole: 画师
+	ArtAssistanceRole: 美术援助
 	CodeAssistanceRole: 代码援助
 	MusicianRole: 音乐制作
 	DonorRole: 捐赠者
-	BalanceTesterRole: 平衡测试
+	BalanceTesterRole: 测试
 	TitleText: 鸣 谢
 	SubtitleText: 灾厄大修 · 全体贡献者
 	FinaleText: 感谢一路同行

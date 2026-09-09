@@ -1321,11 +1321,13 @@ HimayoMenu.ThemeName: Reino de sakura nocturna
 ShenyoMenu.ThemeName: Lluvia nocturna del lago espectral
 
 AcknowledgmentUI: {
+	LeadCreatorRole: Creador principal
 	ArtistRole: Artistas
+	ArtAssistanceRole: Ayuda con el arte
 	CodeAssistanceRole: Ayuda con el código
 	MusicianRole: Música
 	DonorRole: Donantes
-	BalanceTesterRole: Pruebas de equilibrio
+	BalanceTesterRole: Pruebas
 	TitleText: A g r a d e c i m i e n t o s
 	SubtitleText: Calamity Overhaul · Todos los colaboradores
 	FinaleText: Gracias por el camino juntos

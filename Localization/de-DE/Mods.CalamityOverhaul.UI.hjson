@@ -1321,11 +1321,13 @@ HimayoMenu.ThemeName: Nachtsakurenreich
 ShenyoMenu.ThemeName: Geistersee-Nachtregen
 
 AcknowledgmentUI: {
+	LeadCreatorRole: Leitung
 	ArtistRole: Künstler
+	ArtAssistanceRole: Kunst-Hilfe
 	CodeAssistanceRole: Code-Hilfe
 	MusicianRole: Musiker
 	DonorRole: Spender
-	BalanceTesterRole: Balancing-Tests
+	BalanceTesterRole: Tests
 	TitleText: Danksagungen
 	SubtitleText: Calamity Overhaul · Alle Mitwirkenden
 	FinaleText: Danke, dass ihr uns begleitet habt

@@ -39,7 +39,9 @@ namespace CalamityOverhaul.Content.MainMenus.Overs
         #endregion
 
         public static Color RoleColor(CreditRole role) => role switch {
+            CreditRole.LeadCreator => AccentHi,
             CreditRole.Artist => new Color(255, 178, 128),
+            CreditRole.ArtAssistance => new Color(255, 156, 164),
             CreditRole.CodeAssistance => new Color(122, 198, 226),
             CreditRole.Musician => new Color(189, 158, 255),
             CreditRole.BalanceTester => new Color(142, 216, 172),
