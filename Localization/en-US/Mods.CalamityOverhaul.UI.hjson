@@ -1384,11 +1384,11 @@ TurretControlUI: {
 	StateWorking: Operating
 	StateStandby: Switched Off
 	StateNoPower: No Power
-	RangeLine: "Range: {0} tiles"
-	RhythmLine: "Cadence: {0}/s"
-	RhythmSustained: "Cadence: sustained"
-	EnergyPerShotLine: "Draw: {0} UE per shot"
-	EnergyPerTickLine: "Draw: {0} UE per tick"
+	RangeLine: Range: {0} tiles
+	RhythmLine: Cadence: {0}/s
+	RhythmSustained: Cadence: sustained
+	EnergyPerShotLine: Draw: {0} UE per shot
+	EnergyPerTickLine: Draw: {0} UE per tick
 	ChargeReadLine: "{0}/{1} UE"
 	SwitchHint: Toggle the turret
 }

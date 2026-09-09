@@ -1382,11 +1382,11 @@ TurretControlUI: {
 	StateWorking: En operación
 	StateStandby: Apagado
 	StateNoPower: Energía insuficiente
-	RangeLine: "Alcance: {0} bloques"
-	RhythmLine: "Cadencia: {0}/s"
-	RhythmSustained: "Cadencia: continua"
-	EnergyPerShotLine: "Consumo: {0} UE por disparo"
-	EnergyPerTickLine: "Consumo: {0} UE por tick"
+	RangeLine: Alcance: {0} bloques
+	RhythmLine: Cadencia: {0}/s
+	RhythmSustained: Cadencia: continua
+	EnergyPerShotLine: Consumo: {0} UE por disparo
+	EnergyPerTickLine: Consumo: {0} UE por tick
 	ChargeReadLine: "{0}/{1} UE"
 	SwitchHint: Encender o apagar la torre
 }

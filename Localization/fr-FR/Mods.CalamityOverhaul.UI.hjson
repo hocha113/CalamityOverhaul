@@ -1382,11 +1382,11 @@ TurretControlUI: {
 	StateWorking: En activité
 	StateStandby: Éteint
 	StateNoPower: Énergie insuffisante
-	RangeLine: "Portée : {0} blocs"
-	RhythmLine: "Cadence : {0}/s"
-	RhythmSustained: "Cadence : continue"
-	EnergyPerShotLine: "Conso : {0} UE par tir"
-	EnergyPerTickLine: "Conso : {0} UE par tick"
+	RangeLine: Portée : {0} blocs
+	RhythmLine: Cadence : {0}/s
+	RhythmSustained: Cadence : continue
+	EnergyPerShotLine: Conso : {0} UE par tir
+	EnergyPerTickLine: Conso : {0} UE par tick
 	ChargeReadLine: "{0}/{1} UE"
 	SwitchHint: Activer ou couper la tourelle
 }

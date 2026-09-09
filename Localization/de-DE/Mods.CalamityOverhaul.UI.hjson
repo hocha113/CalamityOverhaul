@@ -1382,11 +1382,11 @@ TurretControlUI: {
 	StateWorking: Im Einsatz
 	StateStandby: Ausgeschaltet
 	StateNoPower: Zu wenig Energie
-	RangeLine: "Reichweite: {0} Blöcke"
-	RhythmLine: "Takt: {0}/s"
-	RhythmSustained: "Takt: Dauerbetrieb"
-	EnergyPerShotLine: "Verbrauch: {0} UE pro Schuss"
-	EnergyPerTickLine: "Verbrauch: {0} UE pro Tick"
+	RangeLine: Reichweite: {0} Blöcke
+	RhythmLine: Takt: {0}/s
+	RhythmSustained: Takt: Dauerbetrieb
+	EnergyPerShotLine: Verbrauch: {0} UE pro Schuss
+	EnergyPerTickLine: Verbrauch: {0} UE pro Tick
 	ChargeReadLine: "{0}/{1} UE"
 	SwitchHint: Turm ein- oder ausschalten
 }
