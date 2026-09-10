@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             int total = 0;
             int done = 0;
             foreach (var quest in AllQuests) {
-                if (quest == this || quest.HiddenUntilUnlocked) {
+                if (quest == this || quest.HiddenUntilUnlocked || !quest.CountsTowardCompletionist) {
                     continue;
                 }
                 total++;

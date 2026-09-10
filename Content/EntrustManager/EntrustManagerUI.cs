@@ -29,6 +29,21 @@ namespace CalamityOverhaul.Content.EntrustManager
         public string LocalizationCategory => "UI";
         public static QuestManagerUI Instance => UIHandleLoader.GetUIHandleOfType<QuestManagerUI>();
 
+        /// <summary>听服或 UI 未就绪时 false，避免 Instance 抛</summary>
+        internal static bool TryGetInstance(out QuestManagerUI ui) {
+            ui = null;
+            if (Main.dedServ) {
+                return false;
+            }
+            try {
+                ui = Instance;
+                return ui != null;
+            }
+            catch {
+                return false;
+            }
+        }
+
         #region 本地化
 
         public static LocalizedText TitleText { get; private set; }

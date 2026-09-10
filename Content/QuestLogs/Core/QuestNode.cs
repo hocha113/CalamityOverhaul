@@ -78,6 +78,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <summary>任务难度</summary>
         public QuestDifficulty Difficulty;
 
+        /// <summary>是否计入完典分母。CWR 自有节点默认计入；外模运行时节点默认否</summary>
+        public virtual bool CountsTowardCompletionist => true;
+
         /// <summary>章目枢纽：登记进左栏章目列表，供点击跳转</summary>
         public virtual bool IsChapterHub => false;
 
@@ -245,7 +248,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
 
         protected void AddParent<T>() where T : QuestNode {
-            ParentIDs.Add(typeof(T).Name);
+            AddParent(typeof(T).Name);
+        }
+
+        /// <summary>按稳定字符串 ID 挂父节点。父节点尚未入表时坐标回退自身 Position</summary>
+        public void AddParent(string parentId) {
+            if (string.IsNullOrWhiteSpace(parentId) || ParentIDs.Contains(parentId)) {
+                return;
+            }
+            ParentIDs.Add(parentId);
         }
 
         protected void AddChild<T>() where T : QuestNode {
@@ -258,6 +269,21 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public override void Unload() {
             _quests.Clear();
             _iconTextureCache = null;
+            //外部节点不走 Autoload Unload，随任意节点卸表一并摘掉，下次 Load 后可再 Call
+            Instances?.RemoveAll(static q => q is ExternalQuestNode);
+        }
+
+        /// <summary>
+        /// 不依赖 Autoload / VaultTypeRegistry 的入表路径。图谱读的是 <see cref="_quests"/>。
+        /// ID 碰撞返回 false，不覆盖已有节点
+        /// </summary>
+        internal static bool TryRegisterRuntime(QuestNode node) {
+            if (node == null || string.IsNullOrWhiteSpace(node.ID) || _quests.ContainsKey(node.ID)) {
+                return false;
+            }
+            Instances.Add(node);
+            _quests.Add(node.ID, node);
+            return true;
         }
 
         protected sealed override void VaultRegister() {
