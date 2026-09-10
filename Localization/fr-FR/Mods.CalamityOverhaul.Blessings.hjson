@@ -9,7 +9,7 @@ System: {
 	HudOpenHint: Cliquez pour ouvrir la Roue de la renaissance
 	WheelTitle: Roue de la renaissance
 	CenterHint: Choisissez une perle d'âme pour voir sa bénédiction
-	CloseHint: Échap, clic droit ou la touche {0} referme la Roue de la renaissance
+	CloseHint: Échap ou clic droit referme la Roue de la renaissance
 }
 
 KingSlimeBlessing: {

@@ -9,7 +9,7 @@ System: {
 	HudOpenHint: 点击打开往生轮
 	WheelTitle: 往生轮
 	CenterHint: 点选一枚魂珠，查看它的祝福
-	CloseHint: Esc、右键或 {0} 键合拢往生轮
+	CloseHint: Esc、右键合拢往生轮
 }
 
 KingSlimeBlessing: {

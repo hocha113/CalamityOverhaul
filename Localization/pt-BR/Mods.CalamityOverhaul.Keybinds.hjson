@@ -8,7 +8,6 @@ HackTime_Toggle.DisplayName: Tempo de Hackear
 CyberBanish_Key.DisplayName: Ciberespaco: Banir
 CyberFreeze_Key.DisplayName: Ciberespaco: Congelar
 CyberwareSkill_Key.DisplayName: Cibernetico: Acionar habilidade atual
-VoidTimeShift_Key.DisplayName: Mudanca Temporal do Vazio
 Halibut_Clone.DisplayName: Linguado: Invasao do Eu do Passado
 Halibut_Superposition.DisplayName: Linguado: Superposicao
 // Onikiri_FlashStep.DisplayName: Onikiri: Kamui Flash Step
@@ -24,5 +23,3 @@ CWRKeySystem: {
 	Notbound: "[Teclas nao vinculadas]"
 	// RightClickFallback: Right-click
 }
-
-// Blessing_Key.DisplayName: Rebirth Wheel: Hold to open

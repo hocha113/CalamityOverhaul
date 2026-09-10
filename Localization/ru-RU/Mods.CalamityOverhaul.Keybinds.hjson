@@ -8,7 +8,6 @@ HackTime_Toggle.DisplayName: Время взлома
 CyberBanish_Key.DisplayName: Киберпространство: Изгнание
 CyberFreeze_Key.DisplayName: Киберпространство: Заморозка
 CyberwareSkill_Key.DisplayName: Киберимплант: активировать текущий навык
-VoidTimeShift_Key.DisplayName: Вторжение времени Пустоты
 Halibut_Clone.DisplayName: Палтус: вторжение прошлого воплощения
 Halibut_Superposition.DisplayName: Палтус: суперпозиция
 Onikiri_FlashStep.DisplayName: Оникири: рывок Камуи
@@ -24,5 +23,3 @@ CWRKeySystem: {
 	Notbound: "[Не назначено]"
 	RightClickFallback: ПКМ
 }
-
-Blessing_Key.DisplayName: Колесо перерождения: удерживайте, чтобы открыть

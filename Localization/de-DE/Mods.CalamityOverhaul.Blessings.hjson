@@ -9,7 +9,7 @@ System: {
 	HudOpenHint: Klicken, um das Jenseitsrad zu öffnen
 	WheelTitle: Jenseitsrad
 	CenterHint: Wähle eine Seelenperle, um ihren Segen zu sehen
-	CloseHint: Esc, Rechtsklick oder {0} faltet das Jenseitsrad
+	CloseHint: Esc oder Rechtsklick faltet das Jenseitsrad
 }
 
 KingSlimeBlessing: {

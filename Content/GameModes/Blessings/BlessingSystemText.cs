@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.GameModes.Blessings
         public static LocalizedText WheelTitle { get; private set; }
         /// <summary>未选中珠位时的中心提示</summary>
         public static LocalizedText CenterHint { get; private set; }
-        /// <summary>轮底关闭提示，{0}=当前键位</summary>
+        /// <summary>轮底关闭提示</summary>
         public static LocalizedText CloseHint { get; private set; }
 
         void ICWRLoader.LoadData() {
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.GameModes.Blessings
             HudOpenHint = this.GetLocalization(nameof(HudOpenHint), () => "点击打开往生轮");
             WheelTitle = this.GetLocalization(nameof(WheelTitle), () => "往生轮");
             CenterHint = this.GetLocalization(nameof(CenterHint), () => "点选一枚魂珠，查看它的祝福");
-            CloseHint = this.GetLocalization(nameof(CloseHint), () => "Esc、右键或 {0} 键合拢往生轮");
+            CloseHint = this.GetLocalization(nameof(CloseHint), () => "Esc、右键合拢往生轮");
         }
 
         void ICWRLoader.UnLoadData() {

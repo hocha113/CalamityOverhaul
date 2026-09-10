@@ -8,7 +8,6 @@ HackTime_Toggle.DisplayName: Temps de piratage
 CyberBanish_Key.DisplayName: Cyberespace : bannir
 CyberFreeze_Key.DisplayName: Cyberespace : geler
 CyberwareSkill_Key.DisplayName: Cyberware : déclencher la compétence active
-VoidTimeShift_Key.DisplayName: Invasion temporelle du Vide
 Halibut_Clone.DisplayName: Flétan : invasion du moi passé
 Halibut_Superposition.DisplayName: Flétan : superposition
 Onikiri_FlashStep.DisplayName: Onikiri : pas éclair Kamui
@@ -24,5 +23,3 @@ CWRKeySystem: {
 	Notbound: "[Touches non assignées]"
 	RightClickFallback: Clic droit
 }
-
-Blessing_Key.DisplayName: Roue de la renaissance : maintenir pour ouvrir

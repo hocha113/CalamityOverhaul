@@ -8,7 +8,6 @@ HackTime_Toggle.DisplayName: 骇客时间
 CyberBanish_Key.DisplayName: 赛博空间:放逐
 CyberFreeze_Key.DisplayName: 赛博空间:冻结
 CyberwareSkill_Key.DisplayName: 赛博义体:触发当前技能
-VoidTimeShift_Key.DisplayName: 虚空时间入侵
 Halibut_Clone.DisplayName: 大比目鱼:过去身入侵
 Halibut_Superposition.DisplayName: 大比目鱼:叠加
 Onikiri_FlashStep.DisplayName: 鬼切:神威疾走
@@ -24,5 +23,3 @@ CWRKeySystem: {
 	Notbound: "[未绑定按键]"
 	RightClickFallback: 右键
 }
-
-Blessing_Key.DisplayName: 往生轮:按住打开

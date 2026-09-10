@@ -9,7 +9,7 @@ System: {
 	HudOpenHint: Click to open the Wheel of Passing
 	WheelTitle: Wheel of Passing
 	CenterHint: Pick a soul bead to view its blessing
-	CloseHint: Esc, right-click, or {0} folds the Wheel
+	CloseHint: Esc or right-click folds the Wheel
 }
 
 KingSlimeBlessing: {

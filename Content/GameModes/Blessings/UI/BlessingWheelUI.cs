@@ -289,10 +289,9 @@ namespace CalamityOverhaul.Content.GameModes.Blessings.UI
                 new Vector2(center.X, center.Y - radius - 46f),
                 (full ? BlessingTheme.Ember : BlessingTheme.BoneDim) * alpha, 0.95f, 0.5f, 0.5f);
 
-            //轮底关闭提示：动态键位文案
-            string keyText = CWRKeySystem.GetKeybindText(CWRKeySystem.Blessing_Key, CWRKeySystem.Notbound.Value);
+            //轮底关闭提示：Esc / 右键
             Utils.DrawBorderString(spriteBatch,
-                BlessingSystemText.CloseHint.Format(keyText),
+                BlessingSystemText.CloseHint.Value,
                 new Vector2(center.X, center.Y + radius + 52f),
                 BlessingTheme.BoneDim * (alpha * 0.8f), 0.82f, 0.5f, 0.5f);
 

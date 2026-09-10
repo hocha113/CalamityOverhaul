@@ -8,7 +8,6 @@ HackTime_Toggle.DisplayName: Hackerzeit
 CyberBanish_Key.DisplayName: Cyberspace: Verbannung
 CyberFreeze_Key.DisplayName: Cyberspace: Einfrieren
 CyberwareSkill_Key.DisplayName: Cyberware: Aktuelle Fähigkeit auslösen
-VoidTimeShift_Key.DisplayName: Leeren-Zeitverschiebung
 Halibut_Clone.DisplayName: Heilbutt: Vergangenheits-Ich-Invasion
 Halibut_Superposition.DisplayName: Heilbutt: Überlagerung
 Onikiri_FlashStep.DisplayName: Onikiri: Kamui-Blitzschritt
@@ -24,5 +23,3 @@ CWRKeySystem: {
 	Notbound: "[Ungebundene Taste]"
 	RightClickFallback: Rechtsklick
 }
-
-Blessing_Key.DisplayName: Jenseitsrad: Gedrückt halten zum Öffnen

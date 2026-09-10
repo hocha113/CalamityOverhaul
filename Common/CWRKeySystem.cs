@@ -26,7 +26,6 @@ namespace CalamityOverhaul.Common
         public static ModKeybind CyberBanish_Key { get; private set; }
         public static ModKeybind CyberFreeze_Key { get; private set; }
         public static ModKeybind CyberwareSkill_Key { get; private set; }
-        public static ModKeybind VoidTimeShift_Key { get; private set; }
         public static ModKeybind Halibut_Clone { get; private set; }
         public static ModKeybind Halibut_Superposition { get; private set; }
         public static ModKeybind Onikiri_FlashStep { get; private set; }
@@ -38,8 +37,6 @@ namespace CalamityOverhaul.Common
         /// <summary>鬼伞引潮：长按让血湖水位跟随光标高度</summary>
         public static ModKeybind Kikasa_TideControl { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
-        /// <summary>祝福往生轮开关键，修罗模式未开启时静默</summary>
-        public static ModKeybind Blessing_Key { get; private set; }
 
         public override void SetStaticDefaults() {
             Notbound = this.GetLocalization(nameof(Notbound), () => "[未绑定按键]");
@@ -59,7 +56,6 @@ namespace CalamityOverhaul.Common
             CyberBanish_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberBanish_Key), "Y");
             CyberFreeze_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberFreeze_Key), "U");
             CyberwareSkill_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberwareSkill_Key), "V");
-            VoidTimeShift_Key = KeybindLoader.RegisterKeybind(mod, nameof(VoidTimeShift_Key), "K");
             Halibut_Clone = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Clone), "J");
             Halibut_Superposition = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Superposition), "F");
             Onikiri_FlashStep = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_FlashStep), Keys.None);
@@ -78,7 +74,6 @@ namespace CalamityOverhaul.Common
             //鬼伞大范围重启复用 Legend_Restart，与比目鱼/赛博/绯嫁同键、按各自形态门互斥
             //旧 WeponSkill_Q/R 两键已删:武器技能改走手持技能按钮 HUD(WeaponSkillHud)
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
-            Blessing_Key = KeybindLoader.RegisterKeybind(mod, nameof(Blessing_Key), "P");
         }
 
         public static bool IsKeybindUnbound(ModKeybind keybind, InputMode mode = InputMode.Keyboard) {
@@ -136,8 +131,6 @@ namespace CalamityOverhaul.Common
             CyberBanish_Key = null;
             CyberFreeze_Key = null;
             CyberwareSkill_Key = null;
-            VoidTimeShift_Key = null;
-            Blessing_Key = null;
         }
     }
 }

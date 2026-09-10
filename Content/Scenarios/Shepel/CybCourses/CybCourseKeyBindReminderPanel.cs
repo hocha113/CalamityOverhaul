@@ -66,7 +66,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             () => CWRKeySystem.CyberBanish_Key,
             () => CWRKeySystem.CyberFreeze_Key,
             () => CWRKeySystem.CyberwareSkill_Key,
-            () => CWRKeySystem.VoidTimeShift_Key,
         };
 
         private readonly struct KeyEntry

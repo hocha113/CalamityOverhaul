@@ -1,4 +1,3 @@
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.HudStack;
 using CalamityOverhaul.Content.UIs.UIEffect;
@@ -19,7 +18,7 @@ namespace CalamityOverhaul.Content.GameModes.Blessings.UI
     /// 魂焰 shader（受悬停气流倾斜）、SVG 多层线稿（主骨架/细部/窗拱/巡行亮笔/吊铃）。
     /// 新讨伐时魂灵自檐外螺旋入灯，落灯瞬间灯焰腾起、余烬迸散、吊铃受激；
     /// 有未看过的祝福时宝顶栖一缕新焰苗。
-    /// 点击或按 <see cref="CWRKeySystem.Blessing_Key"/> 打开往生轮；异域全屏开启时淡出让位
+    /// 点击引魂灯打开往生轮；异域全屏开启时淡出让位
     /// </summary>
     internal class BlessingHud : UIHandle, IBottomLeftHud
     {
@@ -442,19 +441,6 @@ namespace CalamityOverhaul.Content.GameModes.Blessings.UI
             Vector2 normal = tangent.SafeNormalize(Vector2.UnitY).RotatedBy(MathHelper.PiOver2);
             pos += normal * MathF.Sin(t * 9.4f) * 7f * (1f - t);
             return pos;
-        }
-    }
-
-    /// <summary>祝福键：修罗开启时开合往生轮</summary>
-    internal class BlessingKeySystem : ModSystem
-    {
-        public override void UpdateUI(GameTime gameTime) {
-            if (!BlessingPlayer.SystemActive || Main.gameMenu) {
-                return;
-            }
-            if (CWRKeySystem.Blessing_Key != null && CWRKeySystem.Blessing_Key.JustReleased) {
-                BlessingWheelUI.Instance?.Toggle();
-            }
         }
     }
 }

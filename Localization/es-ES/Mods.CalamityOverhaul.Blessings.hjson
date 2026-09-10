@@ -9,7 +9,7 @@ System: {
 	HudOpenHint: Clic para abrir la Rueda del Tránsito
 	WheelTitle: Rueda del Tránsito
 	CenterHint: Elige una perla de alma para ver su bendición
-	CloseHint: Esc, clic derecho o {0} pliega la Rueda del Tránsito
+	CloseHint: Esc o clic derecho pliega la Rueda del Tránsito
 }
 
 KingSlimeBlessing: {
