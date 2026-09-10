@@ -81,6 +81,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         /// <summary>是否计入完典分母。CWR 自有节点默认计入；外模运行时节点默认否</summary>
         public virtual bool CountsTowardCompletionist => true;
 
+        /// <summary>
+        /// 无父根：自动进章目列表并恒排最前（教程把第 0 条当起点讲）。
+        /// 自有节点按"没有父节点"判定；外模运行时节点恒否，只能显式登记为 <see cref="IsChapterHub"/>
+        /// </summary>
+        public virtual bool IsChapterRoot => ParentIDs == null || ParentIDs.Count == 0;
+
         /// <summary>章目枢纽：登记进左栏章目列表，供点击跳转</summary>
         public virtual bool IsChapterHub => false;
 
@@ -269,16 +275,24 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public override void Unload() {
             _quests.Clear();
             _iconTextureCache = null;
+            AutoloadRegistered = false;
             //外部节点不走 Autoload Unload，随任意节点卸表一并摘掉，下次 Load 后可再 Call
             Instances?.RemoveAll(static q => q is ExternalQuestNode);
         }
 
         /// <summary>
+        /// 本模组自有节点是否已经 Autoload 入表。外模若在自己 Load 里、且早于本模组加载时调用注册，
+        /// 未加前缀的 ID 会抢占自有节点类名，<see cref="VaultRegister"/> 的 TryAdd 会把自有节点静默丢掉；
+        /// 所以运行时入表必须等这个标志为真（PostSetupContent 起）
+        /// </summary>
+        internal static bool AutoloadRegistered { get; private set; }
+
+        /// <summary>
         /// 不依赖 Autoload / VaultTypeRegistry 的入表路径。图谱读的是 <see cref="_quests"/>。
-        /// ID 碰撞返回 false，不覆盖已有节点
+        /// 自有节点未入表、ID 空或碰撞都返回 false，不覆盖已有节点
         /// </summary>
         internal static bool TryRegisterRuntime(QuestNode node) {
-            if (node == null || string.IsNullOrWhiteSpace(node.ID) || _quests.ContainsKey(node.ID)) {
+            if (!AutoloadRegistered || node == null || string.IsNullOrWhiteSpace(node.ID) || _quests.ContainsKey(node.ID)) {
                 return false;
             }
             Instances.Add(node);
@@ -290,6 +304,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             ModTypeLookup<QuestNode>.Register(this);
             Instances.Add(this);
             _quests.TryAdd(ID, this);
+            AutoloadRegistered = true;
         }
 
         public override void VaultSetup() {

@@ -778,18 +778,19 @@ namespace CalamityOverhaul.Content.QuestLogs
         private void RefreshChapterRoots() {
             chapterRoots.Clear();
             foreach (var node in Nodes) {
-                //无父节点的根与登记为枢纽的节点都算章目；隐藏且未解锁的不列
+                //无父根与登记为枢纽的节点都算章目；隐藏且未解锁的不列。
+                //根的判定走 IsChapterRoot：外模运行时节点无父也不算根，不许抢第 0 条
                 if (node.IsHiddenNow) {
                     continue;
                 }
-                if (node.ParentIDs == null || node.ParentIDs.Count == 0 || node.IsChapterHub) {
+                if (node.IsChapterRoot || node.IsChapterHub) {
                     chapterRoots.Add(node);
                 }
             }
             //起点(无父根)恒在第 0 条，教程按此讲解；其余按 ChapterOrder，ID 兜底保证全序稳定
             chapterRoots.Sort(static (a, b) => {
-                int rootA = a.ParentIDs == null || a.ParentIDs.Count == 0 ? 0 : 1;
-                int rootB = b.ParentIDs == null || b.ParentIDs.Count == 0 ? 0 : 1;
+                int rootA = a.IsChapterRoot ? 0 : 1;
+                int rootB = b.IsChapterRoot ? 0 : 1;
                 if (rootA != rootB) {
                     return rootA.CompareTo(rootB);
                 }

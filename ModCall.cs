@@ -105,6 +105,10 @@ namespace CalamityOverhaul
             }
             catch (Exception ex) {
                 ExternalCallUtil.LogFailed(command, ex.Message);
+                //查询类命令的失败值是 null，别把 bool 混进去
+                if (command == EntrustAPI.Get) {
+                    return null;
+                }
                 return false;
             }
         }

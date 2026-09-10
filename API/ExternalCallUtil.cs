@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using Terraria;
 using Terraria.Localization;
 
@@ -114,7 +113,15 @@ namespace CalamityOverhaul.API
             }
         }
 
-        internal static LocalizedText CoerceText(object raw, string id, string slot) {
+        /// <summary>
+        /// 外模文案：<see cref="LocalizedText"/> 原样返回；string 字面量包成绑定文本。<br/>
+        /// 不能走 <c>Language.GetOrRegister("Mods.CalamityOverhaul....")</c>：
+        /// 开发机上 tML 会在 FinishSetup 把该前缀下未落文件的 key 写进本模组 hjson，
+        /// 且切语言时 ReloadLanguage 会把所有值重置为 key，注册时给的默认值不会重放。<br/>
+        /// <c>Language.GetText("{0}")</c> 这个 key 从未注册，取值恒为 "{0}"；
+        /// <c>WithFormatArgs</c> 绑定后重算仍得字面量，也不会被写回任何 hjson
+        /// </summary>
+        internal static LocalizedText CoerceText(object raw) {
             if (raw is LocalizedText text) {
                 return text;
             }
@@ -122,22 +129,12 @@ namespace CalamityOverhaul.API
                 if (string.IsNullOrEmpty(literal)) {
                     return LocalizedText.Empty;
                 }
-                //外模字面量的运行时壳，不进 QuestLogs.hjson
-                return Language.GetOrRegister($"Mods.CalamityOverhaul.ExternalAPI.Literal.{SanitizeKey(id)}.{slot}", () => literal);
+                return Language.GetText(LiteralFormatKey).WithFormatArgs(literal);
             }
             return LocalizedText.Empty;
         }
 
-        internal static string SanitizeKey(string id) {
-            if (string.IsNullOrEmpty(id)) {
-                return "Empty";
-            }
-            var sb = new StringBuilder(id.Length);
-            foreach (char c in id) {
-                sb.Append(char.IsLetterOrDigit(c) ? c : '_');
-            }
-            return sb.ToString();
-        }
+        private const string LiteralFormatKey = "{0}";
 
         internal static bool TryBindComplete(object raw, out Func<Player, bool> asBool, out Func<Player, float> asFloat) {
             asBool = null;
