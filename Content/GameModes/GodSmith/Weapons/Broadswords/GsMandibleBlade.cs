@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             SpriteEffects mirrorEffect = effect == SpriteEffects.FlipVertically
                 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             float mirrorRotOffset = -rotOffset;
-            float scale = mainReach * (BladeTipFill - BladePark) * 2f / MathF.Max(new Vector2(tex.Width, tex.Height).Length(), 1f);
+            float scale = mainReach * BladeSpanRatio / MathF.Max(new Vector2(tex.Width, tex.Height).Length(), 1f);
 
             //斩切期颚影最实，其余相位保持半透提示「这是双颚武器」
             float strength = CurrentPhase == PhaseSlash ? 0.55f : 0.30f;

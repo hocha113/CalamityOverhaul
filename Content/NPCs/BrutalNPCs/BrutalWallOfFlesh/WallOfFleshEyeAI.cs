@@ -188,6 +188,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             return false;
         }
 
+        /// <summary>
+        /// 叠加充血/预警层。恒返回 true：眼没接管本体绘制，第三方 GlobalNPC 的 PreDraw 已跑，
+        /// 返回 false 会让 InnoVault 跳过 NPCLoader.PostDraw 原体、拆开它们的 PreDraw/PostDraw 配对
+        /// (TerrariaOverhaul 受击抖动的 scale 复原被吞，眼越打越小)
+        /// </summary>
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             //充能强度：点射预告 / 扫描充能通道 取大
             float telegraphGlow = TelegraphTimer > 0f
@@ -200,7 +205,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             }
             float glow = Math.Max(telegraphGlow, scanGlow);
             if (glow <= 0.02f) {
-                return false;
+                return true;
             }
 
             //血目充血：本体贴图加色重影
@@ -225,7 +230,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
                 spriteBatch.Draw(soft, pos, null, new Color(255, 70, 50, 0) * (0.9f * scanGlow), 0f,
                     soft.Size() / 2f, 0.8f + scanGlow * 1.4f, SpriteEffects.None, 0f);
             }
-            return false;
+            return true;
         }
         #endregion
 

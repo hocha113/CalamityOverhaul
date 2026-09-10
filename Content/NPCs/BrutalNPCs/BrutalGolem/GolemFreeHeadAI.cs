@@ -316,7 +316,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             //高速拖影（速度门控）
             Rendering.GolemRenderHelper.DrawFistTrail(spriteBatch, npc, screenPos);
-            return false;
+            //本体绘制没被接管，必须放行 NPCLoader.PostDraw 原体，否则第三方 GlobalNPC 的 PreDraw/PostDraw 配对被拆
+            return true;
         }
         #endregion
     }

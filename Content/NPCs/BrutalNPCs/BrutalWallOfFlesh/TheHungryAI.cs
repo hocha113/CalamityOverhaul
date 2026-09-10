@@ -26,6 +26,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             //原版画在墙与饿鬼之间的锁链会一端稳一端跳。位置是向墙上锚点收敛，本身自愈
             RunNetFrameForAnchoredPart();
 
+            //原版 Main.DrawWOFRopeToTheHungry 以 28*scale 为步长把锁链一节节画到墙锚点，
+            //scale 趋零就是每帧百万次 Draw 直至死循环卡死。饿鬼的缩放本就恒为 1，
+            //第三方绘制钩子(受击抖动等)配对被拆时会把临时缩放泄漏进实体，这里兜底复位
+            if (!float.IsFinite(npc.scale) || npc.scale < 0.25f) {
+                npc.scale = 1f;
+            }
+
             if (!WallOfFleshAI.TryGetWall(out NPC wall)) {
                 npc.active = false;
                 return false;
@@ -228,12 +235,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         /// <summary>
         /// 结网期绘制肉链：只在成对节点(0-1、2-3...)间拉链，与判定同源，
         /// 对与对之间是可穿越的窗口。偶数秩节点负责绘制到下一节点的链。
-        /// 编织期暗色垂坠，通电后血光贲张
+        /// 编织期暗色垂坠，通电后血光贲张。
+        /// 恒返回 true：本体绘制没被接管，第三方 GlobalNPC 的 PreDraw 已跑，
+        /// 返回 false 会让 InnoVault 跳过 NPCLoader.PostDraw 原体、拆开它们的 PreDraw/PostDraw 配对
+        /// (TerrariaOverhaul 受击抖动的 scale 复原被吞 → 饿鬼越打越小 → 原版锁链绘制死循环卡死)
         /// </summary>
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (!WallOfFleshAI.TryGetWall(out NPC wall)
                 || WallOfFleshAI.GetStateIndex(wall) != WofStateIndex.HungryNet) {
-                return false;
+                return true;
             }
 
             int wallPhase = (int)wall.ai[1] > 0 ? (int)wall.ai[1] : 1;
@@ -241,12 +251,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             int selfIndex = members.IndexOf(npc);
             //只有偶数秩且有下一节点的成员持链
             if (selfIndex < 0 || selfIndex % 2 != 0 || selfIndex + 1 >= members.Count) {
-                return false;
+                return true;
             }
 
             bool armed = WofHungryNetState.NetArmed(wall);
             DrawFleshLink(spriteBatch, npc.Center, members[selfIndex + 1].Center, armed);
-            return false;
+            return true;
         }
 
         /// <summary>网成员：whoAmI升序取前N(与判定/槽位同源规则，逐帧稳定)</summary>

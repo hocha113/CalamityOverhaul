@@ -250,7 +250,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 spriteBatch.Draw(glow, neck, null, gold, 0f, glow.Size() / 2f,
                     new Vector2(1.6f, 3.2f + lift * 3f), SpriteEffects.None, 0f);
             }
-            return false;
+            //本体绘制没被接管，必须放行 NPCLoader.PostDraw 原体，否则第三方 GlobalNPC 的 PreDraw/PostDraw 配对被拆
+            return true;
         }
         #endregion
     }

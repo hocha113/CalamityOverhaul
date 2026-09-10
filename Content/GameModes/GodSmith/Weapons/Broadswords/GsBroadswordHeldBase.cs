@@ -61,6 +61,9 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
     /// 收势前段几何完全冻结的硬停顿，之后才收刀回守位）、命中顿帧记账扣回（带下限）、
     /// 贪婪逐段采样判定、体态倾斜（举刀后仰、爆发前甩、停顿保持，钉脚底、坐骑冲刺让位）、
     /// 重拍命中震屏、族级节奏倍率、原版物品贴图一笔绘制。玩家位移一律不做（体术前压已删）。<br/>
+    /// 触及与刀身尺寸同源：刀身贴图沿手→刃尖整条铺满，所以拍表 <see cref="BaseReach"/> 只是上限，
+    /// 真实触及由原版刀身自然轴长按 <see cref="BladeOversize"/> 反推（<see cref="EffectiveBaseReach"/>）。
+    /// 拍表数字与贴图尺寸脱钩过一次，结果是原版小贴图被撑成巨幅贴片（issue #113），别再把触及写成定值。<br/>
     /// 自绘层默认关闭；保留 R2 重做的件把 <see cref="SelfDrawnVisuals"/> 打开后，
     /// 涂抹刀光、姿态残影、垫影、辉光闪、族色火星、命中反馈与 <see cref="DrawExtra"/> 整层复活，
     /// 其余件对这一层零足迹。<br/>
@@ -108,12 +111,17 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         /// <summary>连段拍数（与方案侧 ComboBeats 一致）</summary>
         protected virtual int BeatCount => 3;
-        /// <summary>手→刃尖基准距离（px）</summary>
+        /// <summary>手→刃尖基准距离上限（px）；实际触及由刀身自然轴长反推，见 <see cref="EffectiveBaseReach"/></summary>
         protected virtual float BaseReach => 118f;
         /// <summary>刀身贴图中心停在手→刃尖的几成处</summary>
         protected virtual float BladePark => 0.46f;
         /// <summary>刀尖顶到手→刃尖的几成</summary>
         protected virtual float BladeTipFill => 1.02f;
+        /// <summary>刀身贴图相对原版尺寸的放大上限。本模组自绘兵器是二倍像素稿按 1 倍画，
+        /// 原版 1 倍稿放到 2 倍才与之同像素密度；再大就是一格像素糊成一块贴片</summary>
+        protected virtual float BladeOversize => 2f;
+        /// <summary>触及下限（px）：贴图再小也要留一条读得出的弧；不抬高本就更短的拍表</summary>
+        protected virtual float MinBladeReach => 56f;
         /// <summary>斩切伤害窗（进度超过即停判，余下是纯演出）</summary>
         protected virtual float DamageWindowEnd => 0.9f;
         /// <summary>贪婪判定的线宽</summary>
@@ -165,6 +173,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         protected int timer;
         private GsBroadBeat beat;
+        private float swordSpan;
 
         /// <summary>连段拍号（ai[0]，生成端写入随包过线）</summary>
         protected int ComboStage => Math.Clamp((int)Projectile.ai[0], 0, BeatCount - 1);
@@ -188,7 +197,25 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             }
         }
 
-        protected float FullReach => BaseReach * reachScale;
+        /// <summary>刀身要横跨的触及占比：停位到刀尖的两倍，<see cref="DrawBladeSet"/> 反推缩放用同一系数</summary>
+        protected float BladeSpanRatio => MathF.Max((BladeTipFill - BladePark) * 2f, 0.01f);
+
+        /// <summary>原版刀身自然轴长（物品尺寸对角 × 当前物品缩放，px）：尺寸词条与增伤手套真实生效。
+        /// 取物品尺寸而非贴图尺寸，服务端没有贴图也算得出同一个值，触及各端一致</summary>
+        protected float SwordSpan => swordSpan > 0f ? swordSpan : (swordSpan = MeasureSwordSpan());
+
+        /// <summary>本件生效的基准触及：贴图撑不满拍表长度的按刀身自然轴长回缩，
+        /// 手调过的长兵仍以 <see cref="BaseReach"/> 为上限。<br/>
+        /// 这里是刀身放大倍数的唯一闸门——绘制缩放由 mainReach 反推，触及一放开，
+        /// 原版小贴图就被拉成巨幅贴片（issue #113：木剑贴图 24×28 被撑到 3.6 倍，终结拍 4 倍）</summary>
+        protected float EffectiveBaseReach {
+            get {
+                float fit = SwordSpan * BladeOversize / BladeSpanRatio;
+                return MathHelper.Clamp(fit, MathF.Min(MinBladeReach, BaseReach), BaseReach);
+            }
+        }
+
+        protected float FullReach => EffectiveBaseReach * reachScale;
         protected float ArcStart => baseAngle - (swingDir * raiseBack);
         protected float ArcEnd => baseAngle + (swingDir * follow);
         protected Vector2 Hand => Owner.GetPlayerStabilityCenter();
@@ -219,8 +246,25 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
 
         public override bool ShouldUpdatePosition() => false;
 
+        /// <summary>量刀身自然轴长：物品尺寸对角 × 当前物品缩放（词条/增伤手套），缩放收敛在合理带内</summary>
+        private float MeasureSwordSpan() {
+            float w = 40f, h = 40f;
+            if (ContentSamples.ItemsByType.TryGetValue(SwordItemID, out Item sample)) {
+                w = sample.width;
+                h = sample.height;
+            }
+            float itemScale = 1f;
+            Item held = Item;
+            if (held != null && held.type == SwordItemID) {
+                itemScale = MathHelper.Clamp(Owner.GetAdjustedItemScale(held), 0.5f, 2.5f);
+            }
+            return MathF.Sqrt((w * w) + (h * h)) * itemScale;
+        }
+
         /// <summary>按拍号写入时长与几何；各相时长除以攻速再除以族节奏倍率，攻速词条真实生效</summary>
         protected void InitStage() {
+            //一拍只量一次刀身，整段挥砍的触及与绘制缩放锁定同一个值（各端同算，无需过线）
+            swordSpan = MeasureSwordSpan();
             baseAngle = Projectile.velocity.ToRotation();
             float cos = MathF.Cos(baseAngle);
             facingDir = MathF.Abs(cos) < 0.05f ? Owner.direction : Math.Sign(cos);
@@ -686,13 +730,14 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         /// <summary>辉光色</summary>
         protected virtual Color GlowColor => HotAccent;
 
-        /// <summary>刀身绘制：默认原版物品贴图按触及缩放摆到手上一笔；自绘层件加残影+垫影+辉光闪</summary>
+        /// <summary>刀身绘制：默认原版物品贴图按触及缩放摆到手上一笔；自绘层件加残影+垫影+辉光闪。
+        /// 缩放由 mainReach 反推，放大倍数的闸门在 <see cref="EffectiveBaseReach"/></summary>
         protected virtual void DrawBladeSet(SpriteBatch sb, Color lightColor) {
             Main.instance.LoadItem(SwordItemID);
             Texture2D tex = TextureAssets.Item[SwordItemID].Value;
             Vector2 origin = tex.Size() / 2f;
             GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
-            float scale = mainReach * (BladeTipFill - BladePark) * 2f / MathF.Max(new Vector2(tex.Width, tex.Height).Length(), 1f);
+            float scale = mainReach * BladeSpanRatio / MathF.Max(new Vector2(tex.Width, tex.Height).Length(), 1f);
             Vector2 hand = Hand;
             Vector2 drawPos = hand + (mainAngle.ToRotationVector2() * mainReach * BladePark) - Main.screenPosition;
             if (!SelfDrawnVisuals) {
