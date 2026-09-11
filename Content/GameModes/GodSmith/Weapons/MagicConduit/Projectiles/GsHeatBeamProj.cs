@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
         protected override float TickDamageCoef => 0.25f;
         protected override bool UseChannelFlag => false;//原版非 channel 物品，读 controlUseItem
         protected override float MuzzleOffset => 24f;
+        /// <summary>热射线是魔法枪（不在 Item.staff 名单），炮口钉在束根，勿用法杖斜握</summary>
+        protected override GsConduitBodyPose BodyPose => GsConduitBodyPose.MuzzleAimed;
 
         /// <summary>束宽的本地平滑量（从同步热段确定性推进）</summary>
         private float widthCur = BaseWidth;

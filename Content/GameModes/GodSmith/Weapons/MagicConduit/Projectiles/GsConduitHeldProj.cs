@@ -81,6 +81,10 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
             Projectile.localNPCHitCooldown = HitCooldown;
             Projectile.ownerHitCheck = true;
             Projectile.timeLeft = 90;
+            //heldProj 只走玩家第 27 层内联绘制（PlayerDrawLayers 无 hide 检查），
+            //不设 hide 会在 Main.DrawProjectiles 再画一遍，和本体自绘叠成两把枪
+            Projectile.hide = true;
+            DrawHeldProjInFrontOfHeldItemAndArms = true;
         }
 
         public override bool ShouldUpdatePosition() => false;

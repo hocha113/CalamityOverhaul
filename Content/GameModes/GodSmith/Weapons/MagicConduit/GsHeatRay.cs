@@ -1,7 +1,6 @@
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Projectiles;
 using System;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -32,14 +31,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit
             if (HeldAlive<GsHeatBeamProj>(player)) {
                 return false;
             }
-            return null;
-        }
-
-        public override bool? GsShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
-            Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            if (player.whoAmI == Main.myPlayer && !HeldAlive<GsHeatBeamProj>(player)) {
-                Projectile.NewProjectile(source, player.MountedCenter, GsAimUnit(player),
-                    ModContent.ProjectileType<GsHeatBeamProj>(), damage, knockback, player.whoAmI);
+            //原版热射线非 channel、autoReuse 点射：放行 use 会先跑完 UseStyle5 持物动画，
+            //再和 held 自绘叠成两把枪。全端 false 压掉原版 use 流，远端靠弹幕同步看动作
+            if (player.whoAmI == Main.myPlayer) {
+                Projectile.NewProjectile(player.GetSource_ItemUse(item), player.MountedCenter, GsAimUnit(player),
+                    ModContent.ProjectileType<GsHeatBeamProj>(),
+                    player.GetWeaponDamage(item), item.knockBack, player.whoAmI);
             }
             return false;
         }
