@@ -1679,8 +1679,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                     , cross.Size() * 0.5f, new Vector2(2.2f, 1.0f) * easeOut * sizeMul, SpriteEffects.None, 0);
             }
 
-            if (CWRAsset.Ring01?.Value is Texture2D ring) {
-                float ringS = (0.4f + easeOut * 2.2f) * sizeMul;
+            if (CWRAsset.DiffusionCircle4?.Value is Texture2D ring) {
+                float ringS = (0.4f + easeOut * 2.2f) * sizeMul * 0.716f;
                 float ringA = MathF.Pow(inv, 2.5f) * 0.6f;
                 sb.Draw(ring, impact, null, new Color(255, 90, 60) * ringA, 0f
                     , ring.Size() * 0.5f, ringS, SpriteEffects.None, 0);
@@ -1723,8 +1723,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
             }
 
             //血环外扩
-            if (CWRAsset.Ring01?.Value is Texture2D ring) {
-                float ringS = (0.35f + easeOut * 1.8f) * sizeMul;
+            if (CWRAsset.DiffusionCircle4?.Value is Texture2D ring) {
+                float ringS = (0.35f + easeOut * 1.8f) * sizeMul * 0.716f;
                 float ringA = MathF.Pow(inv, 2.2f) * 0.55f;
                 sb.Draw(ring, impact, null, CrimsonRendHitVFX.Blood * ringA, 0f
                     , ring.Size() * 0.5f, ringS, SpriteEffects.None, 0);

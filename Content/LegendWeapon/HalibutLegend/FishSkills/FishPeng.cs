@@ -499,12 +499,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 , new Vector2(wPx * 0.9f / soft.Width, wPx * 0.24f / soft.Height), SpriteEffects.None, 0f);
 
             //冰蓝预告圈，随企鹅逼近向落点收拢
-            Texture2D ring = CWRAsset.Ring01?.Value;
+            Texture2D ring = CWRAsset.DiffusionCircle4?.Value;
             if (ring != null) {
                 float rPx = wPx * MathHelper.Lerp(1.7f, 0.62f, closeness);
                 float ringA = (0.16f + 0.30f * closeness) * bodyAlpha;
+                //DiffusionCircle4 环带在 0.95R，可见半径=rPx 折算(旧 Ring01 2f/128)
+                float rscale = rPx / (ring.Width * 0.5f * 0.95f);
                 sb.Draw(ring, sPos, null, FishPengVFX.IceRing with { A = 0 } * ringA, 0f, ring.Size() * 0.5f
-                    , new Vector2(rPx / ring.Width, rPx * 0.30f / ring.Height), SpriteEffects.None, 0f);
+                    , new Vector2(rscale, rscale * 0.30f), SpriteEffects.None, 0f);
             }
         }
 

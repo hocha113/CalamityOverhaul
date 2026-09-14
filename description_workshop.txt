@@ -7,12 +7,17 @@
 该模组在 [url=https://github.com/hocha113/CalamityOverhaul]Github[/url] 上开源。欢迎您在此反馈问题、提出建议，或为模组的本地化翻译贡献力量！
 
 [h2] 如何联系作者&加入社区？ [/h2]
-QQ群: 1081642139 - 在这里您可以直接联系到我并参与讨论。
+官方QQ群: 
+一群 1081642139 (3000人上限)
+二群 972565277  (3000人上限)
+三群 1078131258 (3000人上限)
+四群 1106091594 (3000人上限)
+在这里您可以直接联系到我并参与讨论
 视频主页: [url=https://space.bilibili.com/441452460?spm_id_from=333.1007.0.0]红茶object的个人主页[/url] - 获取更多实时更新与视频内容！
 
 [h2] 游玩建议 [/h2]
 -建议在启用模组后新创建一个地图来体验流程，因为模组添加了一些新的地形结构，使用新的地图才能体验到这些内容!
 -建议同时添加 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2619954303&searchtext=] Recipe Browser Mod [/url] 与 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2669644269&searchtext=] Boss Checklist Mod [/url] 来辅助您的游戏!
--试试[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3316697363&searchtext=Calamity] Calamity Entropy Mod [/url]! 我们会有许多有趣的联动内容!
+-试试[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3316697363&searchtext=Calamity] Call of Void [/url]! 我们会有许多有趣的联动内容!
 -最后，试试FTB团队的[url=https://www.mcmod.cn/modpack/526.html] Stone Block 整合包系列! [/url] 我爱你们，如果不是你们我就不会对模组制作感兴趣!
--最后最后~感谢“Escu:de”社的作品，在过去几个月里给予我的精神支持。他们的音乐真是太棒了！
+-最后最后~感谢“Escu:de”社的作品，在过去几个月里给予我的精神支持。他们的音乐真是太棒了!

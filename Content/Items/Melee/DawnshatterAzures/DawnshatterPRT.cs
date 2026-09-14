@@ -89,11 +89,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
     /// </summary>
     internal class PRT_DawnRing : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "Ring01";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         public override bool CanPool => true;
 
         [VaultLoaden(CWRConstant.Masking + "SoftGlow")]
         internal static Asset<Texture2D> GlowTex = null;
+        [VaultLoaden(CWRConstant.Masking + "DarkRing01")]
+        internal static Asset<Texture2D> DarkRingTex = null;
 
         private static readonly Color RingGold = new(255, 198, 92);
         private static readonly Color RingSoot = new(88, 38, 22);
@@ -176,14 +178,20 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             Texture2D tex = TexValue;
             Vector2 pos = Position - Main.screenPosition;
             float rot = normal.ToRotation() - MathHelper.PiOver2;
-            float sx = radius * 2f / tex.Width;
+            //DiffusionCircle4 环带在 0.95R(156px)，可见半径=radius 折算；Ring01 旧值 2f/128
+            float sx = radius / (tex.Width * 0.5f * 0.95f);
             var scale = new Vector2(sx, sx * squash);
             Vector2 origin = tex.Size() * 0.5f;
 
-            //焦烟暗环带 A 遮挡出实体感,金边 A=0 走加法;日食模式暗层更重更靠内
-            float sootA = eclipse ? 0.72f : 0.4f;
-            spriteBatch.Draw(tex, pos, null, RingSoot * (sootA * Opacity)
-                , rot, origin, scale * (eclipse ? 0.9f : 1.08f), SpriteEffects.None, 0f);
+            //焦烟暗环走真 alpha DarkRing01 压暗出实体感(黑底加色图画不了暗层),金边 A=0 走加法
+            Texture2D dark = DarkRingTex?.Value;
+            if (dark != null) {
+                float sootA = eclipse ? 0.72f : 0.4f;
+                //DarkRing01 环带 0.77R(96px)，同半径折算
+                float ds = radius / (dark.Width * 0.5f * 0.77f);
+                spriteBatch.Draw(dark, pos, null, RingSoot * (sootA * Opacity)
+                    , rot, dark.Size() * 0.5f, new Vector2(ds, ds * squash) * (eclipse ? 0.92f : 1.06f), SpriteEffects.None, 0f);
+            }
             Color gold = RingGold with { A = 0 };
             spriteBatch.Draw(tex, pos, null, gold * (0.85f * Opacity), rot, origin, scale, SpriteEffects.None, 0f);
 

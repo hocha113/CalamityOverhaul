@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>喵声可视化</summary>
     internal class PRT_FishCatMeowRing : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "Ring01";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         public override bool CanPool => true;
 
         private float startScale;
@@ -227,29 +227,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            Rectangle src;
-            Vector2 origin;
-            if (fullRing) {
-                src = new Rectangle(0, 0, tex.Width, tex.Height);
-                origin = src.Size() / 2f;
-            }
-            else {
-                //右半环切片:弧口朝Rotation方向鼓出,环心在切片左缘中点
-                src = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
-                origin = new Vector2(0f, tex.Height * 0.5f);
-            }
+            Vector2 origin = tex.Size() * 0.5f;
             Vector2 pos = Position - Main.screenPosition;
             //颤音squish:沿传播向与垂直向微缩放摆动
             float wob = MathF.Sin(Time * 0.55f + wobbleSeed) * 0.05f;
-            Vector2 drawScale = new Vector2(Scale * (1f + wob), Scale * (1f - wob));
-            Color main = baseColor * (Opacity * 0.8f);
-            Color echo = baseColor * (Opacity * 0.38f);
+            //旧 Ring01 环带在 0.83R，DiffusionCircle4 在 0.95R；Scale 语义=环半径，按可见半径折算
+            Vector2 drawScale = new Vector2(Scale / 0.95f * (1f + wob), Scale / 0.95f * (1f - wob));
+            Color main = baseColor with { A = 0 } * (Opacity * 0.8f);
+            Color echo = baseColor with { A = 0 } * (Opacity * 0.38f);
             Color kiss = new Color(baseColor.R, baseColor.G, baseColor.B, 0) * (Opacity * 0.22f);
-            spriteBatch.Draw(tex, pos, src, main, Rotation, origin, drawScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, main, Rotation, origin, drawScale, SpriteEffects.None, 0f);
             //滞后回声波前:制造声波厚度
-            spriteBatch.Draw(tex, pos, src, echo, Rotation, origin, drawScale * 0.74f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, echo, Rotation, origin, drawScale * 0.74f, SpriteEffects.None, 0f);
             //极轻加色吻边,暗处保读性
-            spriteBatch.Draw(tex, pos, src, kiss, Rotation, origin, drawScale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, kiss, Rotation, origin, drawScale, SpriteEffects.None, 0f);
             return false;
         }
     }

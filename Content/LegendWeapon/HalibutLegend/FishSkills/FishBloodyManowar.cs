@@ -856,9 +856,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 , Projectile.rotation, soft.Size() / 2f, RimRadius * 2.3f / soft.Width * squish, SpriteEffects.None, 0f);
 
             //波沿主体
-            Texture2D ring = CWRAsset.Ring01?.Value;
+            Texture2D ring = CWRAsset.DarkRing01?.Value;
             if (ring != null) {
-                float ringScale = RimRadius * 2f / ring.Width;
+                //DarkRing01 环带在 0.77R，可见半径=RimRadius 折算(旧 Ring01 2f/128)
+                float ringScale = RimRadius / (ring.Width * 0.5f * 0.77f);
                 Main.spriteBatch.Draw(ring, drawPos, null, FishBloodyManowarVFX.Membrane * (fadeAlpha * 0.85f)
                     , Projectile.rotation, ring.Size() / 2f, ringScale * squish, SpriteEffects.None, 0f);
                 //内缘饱和血色描线

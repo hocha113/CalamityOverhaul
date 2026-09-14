@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         [VaultLoaden(CWRConstant.Masking + "Extra_98")]
         internal static Asset<Texture2D> Blob = null;
-        [VaultLoaden(CWRConstant.Masking + "Ring01")]
+        [VaultLoaden(CWRConstant.Masking + "DarkRing01")]
         internal static Asset<Texture2D> Ring = null;
         [VaultLoaden(CWRConstant.Masking + "SoftGlow")]
         internal static Asset<Texture2D> Glow = null;
@@ -308,9 +308,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float a = (1f - t) * 0.55f;
                 Vector2 pos = Owner.Center - Main.screenPosition;
                 Color dark = new Color(34, 10, 13);
-                sb.Draw(ring, pos, null, dark * a, timer * 0.02f, ring.Size() / 2f, radius * 2f / ring.Width, SpriteEffects.None, 0f);
+                //DarkRing01 环带在 0.77R，可见半径=radius 折算(旧 Ring01 2f/128)
+                float s = radius / (ring.Width * 0.5f * 0.77f);
+                sb.Draw(ring, pos, null, dark * a, timer * 0.02f, ring.Size() / 2f, s, SpriteEffects.None, 0f);
                 //内缘一圈极淡暗红加色描边
-                sb.Draw(ring, pos, null, new Color(120, 26, 34, 0) * (a * 0.35f), timer * 0.02f, ring.Size() / 2f, radius * 1.86f / ring.Width, SpriteEffects.None, 0f);
+                sb.Draw(ring, pos, null, new Color(120, 26, 34, 0) * (a * 0.35f), timer * 0.02f, ring.Size() / 2f, s * 0.93f, SpriteEffects.None, 0f);
             }
             //悬尘:近乎静止的小暗红点,呼吸闪烁
             if (motePos != null && timer <= 30 && FishVoodooAssets.Glow?.Value != null) {

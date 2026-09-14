@@ -634,8 +634,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
             //扩散环弱化为空气被排开的一圈涟漪、环读作爆炸，斩击不需要大环
 
-            if (CWRAsset.Ring01?.Value is Texture2D ring) {
-                float ringS = (0.5f + easeOut * 2.8f) * SizeMul;
+            if (CWRAsset.DiffusionCircle4?.Value is Texture2D ring) {
+                float ringS = (0.5f + easeOut * 2.8f) * SizeMul * 0.716f;
                 float ringA = MathF.Pow(inv, 2.6f) * 0.22f;
                 sb.Draw(ring, screenPos, null, new Color(255, 98, 58) * ringA, 0f
                     , ring.Size() * 0.5f, ringS, SpriteEffects.None, 0);

@@ -725,8 +725,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
             //点燃瞬间琥珀闪环
-            if (igniteFlash > 0.1f && CWRAsset.Ring01?.Value is Texture2D ring) {
-                float fs = (1.4f - igniteFlash) * 80f / ring.Width;
+            if (igniteFlash > 0.1f && CWRAsset.DiffusionCircle4?.Value is Texture2D ring) {
+                //旧 Ring01 环带 0.83R，DiffusionCircle4 0.95R，可见半径折算
+                float fs = (1.4f - igniteFlash) * 80f / (ring.Width * 0.5f * 0.95f);
                 spriteBatch.Draw(ring, Projectile.Center - Main.screenPosition, null,
                     FishLardPalette.OilAmber with { A = 0 } * (igniteFlash * 0.7f),
                     0f, ring.Size() * 0.5f, fs, SpriteEffects.None, 0f);

@@ -488,36 +488,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 
         /// <summary>冲击环双层,暗墨+绯红缘</summary>
         private void DrawBurstRings() {
-            if (CWRAsset.Ring01?.Value is not Texture2D ring) {
+            if (CWRAsset.DarkRing01?.Value is not Texture2D dark) {
                 return;
             }
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
             SpriteBatch sb = Main.spriteBatch;
 
-            //暗墨环
+            //暗墨环(真 alpha 压暗)
             float darkT = MathHelper.Clamp(timer / 12f, 0f, 1f);
             if (darkT < 1f) {
                 float ease = 1f - MathF.Pow(1f - darkT, 3f);
-                float scale = MathHelper.Lerp(0.4f, 2.6f, ease) * SizeMul;
+                float scale = MathHelper.Lerp(0.4f, 2.6f, ease) * SizeMul * 0.93f;
                 float alpha = 0.5f * MathF.Pow(1f - darkT, 1.2f);
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp
                     , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                sb.Draw(ring, screenPos, null, new Color(28, 12, 18) * alpha, 0f
-                    , ring.Size() * 0.5f, scale, SpriteEffects.None, 0);
+                sb.Draw(dark, screenPos, null, new Color(28, 12, 18) * alpha, 0f
+                    , dark.Size() * 0.5f, scale, SpriteEffects.None, 0);
                 sb.End();
             }
 
             //绯红缘环,略超前
             float rimT = MathHelper.Clamp(timer / 10f, 0f, 1f);
             if (rimT < 1f) {
-                float ease = 1f - MathF.Pow(1f - rimT, 3f);
-                float scale = MathHelper.Lerp(0.55f, 2.9f, ease) * SizeMul;
-                float alpha = 0.45f * MathF.Pow(1f - rimT, 2f);
-                sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp
-                    , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                sb.Draw(ring, screenPos, null, new Color(255, 90, 50) * alpha, 0f
-                    , ring.Size() * 0.5f, scale, SpriteEffects.None, 0);
-                sb.End();
+                Texture2D rim = CWRAsset.DiffusionCircle4?.Value;
+                if (rim != null) {
+                    float ease = 1f - MathF.Pow(1f - rimT, 3f);
+                    float scale = MathHelper.Lerp(0.55f, 2.9f, ease) * SizeMul * 0.716f;
+                    float alpha = 0.45f * MathF.Pow(1f - rimT, 2f);
+                    sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp
+                        , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                    sb.Draw(rim, screenPos, null, new Color(255, 90, 50) * alpha, 0f
+                        , rim.Size() * 0.5f, scale, SpriteEffects.None, 0);
+                    sb.End();
+                }
             }
         }
 

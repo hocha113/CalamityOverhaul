@@ -17,11 +17,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
     /// </summary>
     internal class PRT_OmniShockRing : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "Ring01";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle5";
         public override bool CanPool => true;
 
         [VaultLoaden(CWRConstant.Masking + "SoftGlow")]
         internal static Asset<Texture2D> GlowTex = null;
+        [VaultLoaden(CWRConstant.Masking + "DiffusionCircle4")]
+        internal static Asset<Texture2D> RimTex = null;
 
         private float radius;
         private float expandSpeed;
@@ -69,9 +71,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             Texture2D tex = TexValue;
             Vector2 pos = Position - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
-            float sx = radius * 2f / tex.Width;
             Color edge = Color with { A = 0 };
 
+            //环体 DiffusionCircle5 环带在 0.39R(256px)，可见半径=radius 需按此折算
+            float sx = radius / (tex.Width * 0.5f * 0.39f);
             spriteBatch.Draw(tex, pos, null, edge * (0.85f * Opacity), 0f, origin
                 , new Vector2(sx, sx * squash), SpriteEffects.None, 0f);
             //白热内缘只在前段存在，撑住"刚炸开"的温度
@@ -79,6 +82,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 float hot = 1f - LifetimeCompletion / 0.45f;
                 spriteBatch.Draw(tex, pos, null, Color.White with { A = 0 } * (0.7f * Opacity * hot), 0f, origin
                     , new Vector2(sx * 0.82f, sx * squash * 0.82f), SpriteEffects.None, 0f);
+            }
+            //薄锐缘外描：DiffusionCircle4 环带在 0.95R(156px)，叠一圈冷亮锋
+            Texture2D rim = RimTex?.Value;
+            if (rim != null) {
+                float rs = radius / (rim.Width * 0.5f * 0.95f);
+                spriteBatch.Draw(rim, pos, null, edge * (0.5f * Opacity), 0f, rim.Size() * 0.5f
+                    , new Vector2(rs * 1.05f, rs * squash * 1.05f), SpriteEffects.None, 0f);
             }
 
             Texture2D glow = GlowTex?.Value;

@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>声呐脉冲细环</summary>
     internal class PRT_FishBatSonar : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "Ring01";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         public override bool CanPool => true;
 
         private float fromScale;
@@ -308,8 +308,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pos = Position - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
             Color col = Color with { A = 0 };
-            spriteBatch.Draw(tex, pos, null, col * Opacity, 0f, origin, Scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(tex, pos, null, col * (Opacity * 0.45f), 0f, origin, Scale * 0.84f, SpriteEffects.None, 0f);
+            //旧 Ring01 环带在 0.83R，DiffusionCircle4 在 0.95R；Scale 语义=环半径，按可见半径折算
+            float s = Scale / 0.95f;
+            spriteBatch.Draw(tex, pos, null, col * Opacity, 0f, origin, s, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, col * (Opacity * 0.45f), 0f, origin, s * 0.84f, SpriteEffects.None, 0f);
             return false;
         }
     }

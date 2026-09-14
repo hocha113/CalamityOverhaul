@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class PRT_FishLardBubble : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "Ring01";
+        public override string Texture => CWRConstant.Masking + "DarkRing01";
         public override bool CanPool => true;
 
         private float wobbleSeed;
@@ -79,9 +79,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pos = Position - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
             float t = LifetimeCompletion;
-            //直径 3.5-7px 的小气泡，破裂前最后一成再鼓大
+            //直径 3.5-7px 的小气泡，破裂前最后一成再鼓大；DarkRing01 环带在 0.77R
             float px = MathHelper.Lerp(3.5f, 7f, (Scale - 0.55f) / 0.6f) * (1f + (t > 0.86f ? (t - 0.86f) * 3.2f : 0f));
-            float s = px / tex.Width;
+            float s = px / (tex.Width * 0.77f);
 
             //气泡壁，比油面略浅的暗环
             spriteBatch.Draw(tex, pos, null, new Color(74, 60, 32) * (Opacity * 0.55f)

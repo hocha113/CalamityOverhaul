@@ -628,12 +628,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //冲击环
-            if (CWRAsset.Ring01?.Value is Texture2D ring && age <= 16) {
+            if (CWRAsset.DiffusionCircle4?.Value is Texture2D ring && age <= 16) {
                 float rt = age / 16f;
                 float ease = 1f - MathF.Pow(1f - rt, 3f);
                 float radius = MathHelper.Lerp(30f, 330f, ease);
                 float alpha = MathF.Pow(1f - rt, 1.7f) * 0.5f;
-                float rscale = radius * 2f / ring.Width;
+                //DiffusionCircle4 环带在 0.95R，可见半径=radius 折算(旧 Ring01 2f/128)
+                float rscale = radius / (ring.Width * 0.5f * 0.95f);
                 //白热只许起步两帧，气浪迅速落回扬尘色
                 Color rcol = Color.Lerp(FishDynamiteVFX.HotWhite, FishDynamiteVFX.DustWallHot, Math.Min(rt * 8f, 1f)) with { A = 0 };
                 Vector2 rsc = grounded ? new Vector2(rscale, rscale * 0.45f) : new Vector2(rscale);
