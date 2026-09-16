@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (Overcharged && Charge > 0) {
                 Charge--;
                 if (Charge <= 0) {
-                    SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.6f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item92 with { Pitch = -0.6f }, Projectile.Center);
                     Overcharged = false;
                 }
             }
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             if (Charge >= 80) {
                 if (!Overcharged) {
-                    SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.2f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item92 with { Pitch = -0.2f }, Projectile.Center);
                     SoundEngine.PlaySound(CWRSound.Pecharge with { Pitch = -0.2f, Volume = 0.8f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), InMousePos

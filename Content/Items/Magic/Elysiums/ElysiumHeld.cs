@@ -108,20 +108,20 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
         private void UpdateChargeCues() {
             switch ((int)chargeTime) {
                 case MinCharge:
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.7f, Pitch = 0.05f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.7f, Pitch = 0.05f }, Projectile.Center);
                     SpawnRing(130f, 30, WarmGold);
                     break;
                 case 58:
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.85f, Pitch = 0.22f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.85f, Pitch = 0.22f }, Projectile.Center);
                     SpawnRing(190f, 36, BrightGold);
                     break;
                 case 88:
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 1f, Pitch = 0.38f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1f, Pitch = 0.38f }, Projectile.Center);
                     SpawnRing(250f, 42, BrightGold);
                     break;
                 case FullCharge:
                     SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 1.1f, Pitch = 0.1f }, Projectile.Center);
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 1f, Pitch = 0.5f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1f, Pitch = 0.5f }, Projectile.Center);
                     SpawnRing(330f, 50, HolyWhite);
                     break;
             }
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             float charge01 = Math.Min(chargeTime / FullCharge, 1f);
 
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.1f, Pitch = -0.15f }, Owner.Center);
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 1.2f, Pitch = -0.3f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Item117 with { Volume = 1.2f, Pitch = -0.3f }, Owner.Center);
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 float maxRadius = 250f + charge01 * 380f;

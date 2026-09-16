@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         /// <summary>每一挥叠一层水晶和音：底哨恒定，和音随拍号上行三度</summary>
         protected override void PlaySwingSound() {
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = Beat.SwingPitch }, Owner.Center);
-            SoundEngine.PlaySound(SoundID.Item29 with {
+            SoundEngine.PlaySound(SoundID.Item101 with {
                 Volume = 0.2f,
                 Pitch = -0.1f + 0.25f * ComboStage,
                 MaxInstances = 3
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             brandMap[target.whoAmI] = (target.type, brands);
             //印记递升音阶
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item29 with {
+                SoundEngine.PlaySound(SoundID.Item101 with {
                     Volume = 0.3f,
                     Pitch = 0.2f + 0.25f * brands,
                     MaxInstances = 3
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             Life++;
             if (Life == 1f && !VaultUtils.isServer) {
                 //齐鸣：双层钟音
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.55f, Pitch = -0.1f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item101 with { Volume = 0.55f, Pitch = -0.1f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item101 with { Volume = 0.3f, Pitch = 0.3f }, Projectile.Center);
             }
         }

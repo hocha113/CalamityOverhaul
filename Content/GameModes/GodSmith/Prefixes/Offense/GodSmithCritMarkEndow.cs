@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Prefixes.Offense
 
         public override void AI() {
             if (Projectile.timeLeft == 19 && !VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = 0.5f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.6f, Pitch = 0.5f }, Projectile.Center);
             }
         }
     }

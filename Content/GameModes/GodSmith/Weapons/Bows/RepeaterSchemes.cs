@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Bows
                 return;
             }
             //透镜聚焦：暴击帧一记清响
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.35f, Pitch = 0.6f }, target.Center);
+                SoundEngine.PlaySound(SoundID.Item101 with { Volume = 0.35f, Pitch = 0.6f }, target.Center);
         }
     }
 
@@ -434,7 +434,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Bows
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.6f, Pitch = -0.15f }, target.Center);
             //净化时刻：亡灵在钉刑下倒下
             if (IsUndead(target) && target.life <= 0) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.55f, Pitch = 0.4f }, target.Center);
+                SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.55f, Pitch = 0.4f }, target.Center);
             }
         }
     }

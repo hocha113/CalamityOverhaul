@@ -482,7 +482,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         public override void AI() {
             Life++;
             if (Life == 1f && !VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = -0.4f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item105 with { Volume = 0.5f, Pitch = -0.4f }, Projectile.Center);
                 for (int i = 0; i < 10; i++) {
                     PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center,
                         Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 8f),

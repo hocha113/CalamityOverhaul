@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                     player.ManaEffect(refund);
                 }
                 //正拍确认音随层数升调，读数不看 UI 听杖尖
-                SoundEngine.PlaySound(SoundID.Item4 with {
+                SoundEngine.PlaySound(SoundID.Item122 with {
                     Volume = 0.35f,
                     Pitch = 0.15f + 0.08f * chant.Resonance,
                     MaxInstances = 3
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             GsChantPlayer chant = Chant(player);
             if (UsesStandardBeat && chant.CurrentBeat == ChantBeat.Empower) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.8f, Pitch = -0.1f }, position);
+                SoundEngine.PlaySound(SoundID.Item43 with { Volume = 0.8f, Pitch = -0.1f }, position);
                 return ChantEmpowerShoot(item, player, chant, source, position, velocity, type, damage, knockback);
             }
             return ChantShoot(item, player, chant, source, position, velocity, type, damage, knockback);

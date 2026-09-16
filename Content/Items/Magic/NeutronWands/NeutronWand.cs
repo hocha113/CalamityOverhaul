@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.Items.Magic.NeutronWands
 
         private void SeedPulsar() {
             SnapToAimPose();
-            SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.55f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item92 with { Pitch = -0.55f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item88 with { Pitch = -0.35f }, Projectile.Center);
             CreateFireLight();
 

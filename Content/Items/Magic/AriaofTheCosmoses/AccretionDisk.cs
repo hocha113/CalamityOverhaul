@@ -323,7 +323,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
             float t = ChargeTime;
             if (t == 2) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.55f, Pitch = -0.4f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.55f, Pitch = -0.4f }, Projectile.Center);
             }
             else if (t == StarEnd) {
                 SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 0.9f, Pitch = -0.6f }, Projectile.Center);
@@ -368,7 +368,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
 
             if (!Thrown) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = 0.5f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item88 with { Volume = 0.5f, Pitch = 0.5f }, Projectile.Center);
                 for (int i = 0; i < 14; i++) {
                     Vector2 spawn = Projectile.Center + Main.rand.NextVector2Circular(60f, 60f);
                     PRTLoader.NewParticle<PRT_Spark>(spawn,

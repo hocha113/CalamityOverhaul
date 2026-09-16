@@ -1,11 +1,12 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 {
     /// <summary>终焉时刻运镜：坍缩缓推近→内爆紧咬→死寂定格→超新星急拉远→余烬缓释</summary>
-    internal sealed class MLordDeathCutscene : CutsceneClip<NPC>
+    internal sealed class MLordDeathCutscene : CutsceneClip<NPC>, IBossDeathCutscene
     {
         //死亡演出运镜优先级，高于普通演出
         public override int Priority => 100;

@@ -1,11 +1,12 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>死亡运镜，对齐PrimeDeathState阶段帧</summary>
-    internal sealed class PrimeDeathCutscene : CutsceneClip<NPC>
+    internal sealed class PrimeDeathCutscene : CutsceneClip<NPC>, IBossDeathCutscene
     {
         //死亡演出运镜优先级，高于普通演出
         public override int Priority => 100;

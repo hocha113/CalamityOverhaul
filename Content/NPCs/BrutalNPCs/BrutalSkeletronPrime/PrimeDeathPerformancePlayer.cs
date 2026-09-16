@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 using Terraria.ID;
@@ -75,11 +76,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         /// <summary>本地启停 PrimeDeathCutscene 过场</summary>
-        private static void UpdateCutscene(HeadPrimeAI headAI, NPC head) {
+        private void UpdateCutscene(HeadPrimeAI headAI, NPC head) {
             bool playing = CutsceneDirector.CurrentClip is PrimeDeathCutscene;
             if (headAI != null && head != null) {
-                //restartSameClip:false，已播则复用
-                if (!playing) {
+                //restartSameClip:false，已播则复用；观众门槛：被拖拽的目标必看，其余人打过它（含四臂）或在附近
+                bool dragged = Player.whoAmI == headAI.DeathTargetIndex;
+                if (!playing && (dragged || BossDeathSpectator.ShouldWatch(Player, head))) {
                     CutsceneDirector.Play<PrimeDeathCutscene, NPC>(head, restartSameClip: false);
                 }
             }

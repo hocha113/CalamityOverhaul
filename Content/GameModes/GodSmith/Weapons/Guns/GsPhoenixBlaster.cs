@@ -92,7 +92,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
         protected override void OnReloadCue(Item item, Player player, GsGunsEarlyPlayer mp, int index, int total) {
             if (!VaultUtils.isServer) {
                 //音调随节拍上行
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.6f, Pitch = -0.1f + 0.18f * index }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipLocked with {
+                    Volume = 0.6f,
+                    Pitch = -0.1f + 0.18f * index,
+                    MaxInstances = 3
+                }, player.Center);
             }
         }
 

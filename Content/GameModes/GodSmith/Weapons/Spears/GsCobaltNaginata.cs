@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords;
 using Terraria;
 using Terraria.Audio;
@@ -89,7 +90,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
                 return;
             }
             bool sweep = IsSweep && sweepBeat != null;
-            SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.4f, Pitch = sweep ? 0.15f : 0.45f, MaxInstances = 3 }, target.Center);
+            SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.4f, Pitch = sweep ? 0.15f : 0.45f, MaxInstances = 3 }, target.Center);
         }
     }
 }

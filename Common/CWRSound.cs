@@ -10,6 +10,8 @@ namespace CalamityOverhaul.Common
         public static SoundStyle SwiftSlice;
         public static SoundStyle Pecharge;
         public static SoundStyle Peuncharge;
+        public static SoundStyle Pedestruct;
+        public static SoundStyle AT;
         public static SoundStyle BlackHole;
         public static SoundStyle Accumulator;
         public static SoundStyle Bees;
@@ -25,6 +27,7 @@ namespace CalamityOverhaul.Common
         public static SoundStyle HitTheFlesh_1;
         public static SoundStyle HitTheFlesh_2;
         public static SoundStyle HitTheSteel;
+        public static SoundStyle MetalImpact;
         public static SoundStyle DeploymentSound;
         public static SoundStyle DeploymentSound_Fire;
         public static SoundStyle DeploymentSound_AP;
@@ -59,6 +62,7 @@ namespace CalamityOverhaul.Common
         public static SoundStyle Gun_Magnum_ClipLocked;
         public static SoundStyle Gun_Magnum_ClipOut;
         public static SoundStyle Gun_Rifle_Shoot;
+        public static SoundStyle Gun_Rifle_ClipOut;
         public static SoundStyle Gun_BoltAction;
         public static SoundStyle Gun_NERifle_ClipLocked;
         public static SoundStyle Gun_NERifle_SlideInt;

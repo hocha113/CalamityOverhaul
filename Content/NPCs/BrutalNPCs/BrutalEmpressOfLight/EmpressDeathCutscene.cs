@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using InnoVault.GameSystem;
 using System;
@@ -10,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
 {
     /// <summary>死亡运镜：跟随她的升空与绽散，对齐EmpressDeathState阶段帧</summary>
-    internal sealed class EmpressDeathCutscene : CutsceneClip<NPC>
+    internal sealed class EmpressDeathCutscene : CutsceneClip<NPC>, IBossDeathCutscene
     {
         public override int Priority => 100;
 
@@ -64,8 +65,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             bool playing = CutsceneDirector.CurrentClip is EmpressDeathCutscene;
 
             if (performing != null && boss != null) {
-                //距离太远的旁观者不接管镜头
-                if (!playing && Player.Distance(boss.Center) < 2600f) {
+                //观众门槛（共享判定）：打过她或人在附近，远处没出手的旁观者不接管镜头
+                if (!playing && BossDeathSpectator.ShouldWatch(Player, boss)) {
                     CutsceneDirector.Play<EmpressDeathCutscene, NPC>(boss, restartSameClip: false);
                 }
             }

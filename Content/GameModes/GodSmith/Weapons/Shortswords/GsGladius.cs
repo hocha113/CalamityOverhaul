@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             }
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.75f, Pitch = ThrustPitch + TempoStacks * 0.05f }, Owner.Center);
             if (IsFinisher) {
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.45f, Pitch = -0.30f }, Owner.Center);
+                SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.45f, Pitch = -0.30f, MaxInstances = 3 }, Owner.Center);
             }
         }
 

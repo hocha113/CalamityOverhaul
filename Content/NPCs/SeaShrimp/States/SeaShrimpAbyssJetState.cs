@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                         Main.rand.NextFloat(0.26f, 0.44f))?.Configure(14, 1.8f);
                 }
                 if (t == 6 && !Main.dedServ) {
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.7f, Pitch = -0.5f, MaxInstances = 2 }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Item13 with { Volume = 0.7f, Pitch = -0.5f, MaxInstances = 2 }, npc.Center);
                     SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.5f, Pitch = -0.45f, MaxInstances = 2 }, npc.Center);
                 }
 

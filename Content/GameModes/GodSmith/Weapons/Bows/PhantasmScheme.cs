@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Bows
                     ModContent.ProjectileType<GsPhantomArcherProj>(), 0, 0f, owner.whoAmI);
             }
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.55f, Pitch = -0.2f }, owner.Center);
+                SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.55f, Pitch = -0.2f }, owner.Center);
             }
         }
 
@@ -303,7 +303,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Bows
                     }
                 }
                 else {
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.4f + 0.1f * rank, Pitch = 0.2f + 0.15f * rank },
+                    SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.4f + 0.1f * rank, Pitch = 0.2f + 0.15f * rank },
                         Projectile.Center);
                 }
             }

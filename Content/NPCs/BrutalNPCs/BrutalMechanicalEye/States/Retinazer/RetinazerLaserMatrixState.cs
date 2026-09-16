@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                             dust.noGravity = true;
                         }
                     }
-                    SoundEngine.PlaySound(SoundID.Item29 with { Pitch = 0.5f }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.Item92 with { Pitch = 0.5f }, npc.Center);
                 }
             }
         }

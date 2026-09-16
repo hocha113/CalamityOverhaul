@@ -201,7 +201,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
             int tier = MomentumTier;
             if (tier > lastTier && tier >= 2) {
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item37 with {
+                    //冲势升档读数
+                    SoundEngine.PlaySound(SoundID.MaxMana with {
                         Volume = tier >= 3 ? 0.55f : 0.4f,
                         Pitch = tier >= 3 ? 0.35f : 0.05f
                     }, Owner.Center);
@@ -448,7 +449,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
         /// <summary>命中圣光清音</summary>
         protected override void OnHitExtra(NPC target, NPC.HitInfo hit, int damageDone) {
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.35f, Pitch = 0.3f }, target.Center);
+                SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.35f, Pitch = 0.3f }, target.Center);
             }
         }
     }

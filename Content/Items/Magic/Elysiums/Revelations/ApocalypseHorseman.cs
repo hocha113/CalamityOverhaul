@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Revelations
         }
 
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.7f, Pitch = -0.3f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.7f, Pitch = -0.3f }, Projectile.Center);
             if (Main.dedServ) {
                 return;
             }

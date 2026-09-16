@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using InnoVault.GameSystem;
 using System;
@@ -33,8 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
             bool playing = CutsceneDirector.CurrentClip is DeerclopsDeathCutscene;
 
             if (deer != null) {
-                //restartSameClip:false，已播则复用
-                if (!playing) {
+                //restartSameClip:false，已播则复用；观众门槛：打过它或人在附近
+                if (!playing && BossDeathSpectator.ShouldWatch(Player, deer)) {
                     CutsceneDirector.Play<DeerclopsDeathCutscene, NPC>(deer, restartSameClip: false);
                 }
             }

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using InnoVault.GameContent.BaseEntity;
 using System;
 using Terraria;
@@ -83,7 +84,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
         protected override void OnReloadStart(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
                 //拔鼓
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.7f, Pitch = -0.45f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Clipout with { Volume = 0.7f, Pitch = -0.45f }, player.Center);
             }
         }
 
@@ -91,8 +92,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
             if (!VaultUtils.isServer) {
                 //两拍：新鼓上位闷响、插鼓到位脆响
                 SoundEngine.PlaySound(index == 1
-                    ? SoundID.Grab with { Volume = 0.7f, Pitch = -0.2f }
-                    : SoundID.Unlock with { Volume = 0.8f, Pitch = 0.3f }, player.Center);
+                    ? CWRSound.Gun_ClipIn1 with { Volume = 0.7f, Pitch = -0.2f }
+                    : CWRSound.Gun_ClipinLocked with { Volume = 0.8f, Pitch = 0.3f }, player.Center);
             }
         }
 
@@ -187,7 +188,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
                 if (InFrenzy && !frenzyLatch) {
                     frenzyLatch = true;
                     if (!VaultUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = -0.2f }, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.6f, Pitch = -0.2f }, Projectile.Center);
                         CombatText.NewText(Owner.getRect(), SharkTeal, GsMinishark.FrenzyText.Value);
                     }
                 }

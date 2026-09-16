@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -54,7 +55,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
         protected override void OnReloadCue(Item item, Player player, GsGunsEarlyPlayer mp, int index, int total) {
             if (!VaultUtils.isServer) {
                 float pitch = index switch { 1 => -0.45f, 2 => -0.1f, _ => 0.35f };
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.55f, Pitch = pitch }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Musket_ClipOut with {
+                Volume = 0.55f,
+                Pitch = pitch,
+                MaxInstances = 3
+            }, player.Center);
             }
         }
     }

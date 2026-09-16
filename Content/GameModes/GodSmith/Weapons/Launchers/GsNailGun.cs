@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
 using Terraria;
@@ -89,7 +90,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Launchers
             proj.tileCollide = false;
             proj.netUpdate = true;
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = -0.2f, MaxInstances = 5 }, target.Center);
+                SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.5f, Pitch = -0.2f, MaxInstances = 5 }, target.Center);
             }
         }
     }

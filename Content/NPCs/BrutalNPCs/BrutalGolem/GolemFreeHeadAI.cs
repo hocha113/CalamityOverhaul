@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -271,23 +272,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.NPCDeath14 with { Pitch = -0.4f }, npc.Center);
                     GolemScreenEffects.Shake(6f);
-                    for (int i = 0; i < 18; i++) {
-                        PRTLoader.NewParticle<PRT_MarbleChip>(npc.Center + Main.rand.NextVector2Circular(24f, 16f),
+                    //触地崩出真石：热断口小碎块 + 砖格 + 卡其尘 + 真 alpha 烟
+                    Rectangle area = new((int)npc.Center.X - 24, (int)npc.Center.Y - 12, 48, 28);
+                    GolemRubble.SpawnGores([368, 370, 368], area, new Vector2(0f, -3.5f), 3f, heat: 1f, scale: npc.scale, rest: 160);
+                    for (int i = 0; i < 4; i++) {
+                        GolemRubble.SpawnBrick(npc.Center + Main.rand.NextVector2Circular(24f, 12f),
                             new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-6f, -1f)),
-                            new Color(122, 104, 78), Main.rand.NextFloat(0.8f, 1.4f)).Configure(50);
+                            heat: 0.4f, quadrant: i >= 2, rest: 150, scale: npc.scale);
                     }
-                    for (int i = 0; i < 8; i++) {
-                        PRTLoader.NewParticle<PRT_Smoke>(npc.Center + Main.rand.NextVector2Circular(20f, 12f),
-                            -Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.5f),
-                            new Color(70, 62, 52), Main.rand.NextFloat(0.7f, 1.1f)).Configure(46, 0.6f);
-                    }
+                    GolemRubble.SpawnDust(npc.Center, 18, 26f, new Vector2(0f, -1.4f), 1.3f);
+                    GolemRubble.SpawnSmoke(npc.GetSource_FromAI(), npc.Center, 4, new Vector2(0f, -0.9f), 1.1f);
                 }
                 //坠毁后由死亡状态在崩解拍统一移除
             }
-            else if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                //坠落拖烟
-                PRTLoader.NewParticle<PRT_Smoke>(npc.Center, -npc.velocity * 0.1f,
-                    new Color(80, 70, 58), Main.rand.NextFloat(0.5f, 0.9f)).Configure(30, 0.55f);
+            else if (!VaultUtils.isServer && Main.rand.NextBool(4)) {
+                //坠落拖烟（真 alpha 烟 gore，能压暗背景）
+                GolemRubble.SpawnSmoke(npc.GetSource_FromAI(), npc.Center, 1, -npc.velocity * 0.1f, 0.8f);
             }
         }
         #endregion

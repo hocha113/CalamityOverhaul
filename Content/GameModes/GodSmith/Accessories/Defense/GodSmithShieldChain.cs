@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.GameModes.GodSmith.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GameModes.GodSmith.Core;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -78,7 +79,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
             bulwark.GuardBonus = item.type == ItemID.CobaltShield ? 6 : item.type == ItemID.ObsidianShield ? 8 : 10;
 
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.6f, Pitch = -0.2f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.HitTheSteel with { Volume = 0.6f, Pitch = -0.2f }, player.Center);
             }
 
             //黑曜石回振：震焰点燃近身敌人（受击方本地端可安全请求上 buff）
@@ -123,7 +124,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
                 return;
             }
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.55f, Pitch = -0.1f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.HitTheSteel with { Volume = 0.55f, Pitch = -0.1f }, player.Center);
             }
             //审判之锤 owner 侧生成（受击方本地端权威）
             if (player.whoAmI != Main.myPlayer) {
@@ -187,7 +188,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
             }
             player.GetModPlayer<BulwarkPlayer>().PactTimer = PactDuration;
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = -0.3f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.HitTheSteel with { Volume = 0.5f, Pitch = -0.3f }, player.Center);
             }
         }
 
@@ -290,7 +291,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Defense
             if (Main.dedServ) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = 0.3f }, target.Center);
+                SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.5f, Pitch = 0.3f, MaxInstances = 3 }, target.Center);
         }
     }
 

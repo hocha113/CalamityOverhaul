@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         private void PlayChargeSoundR() {
             if (chargeTimeR == 1) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
             }
             else if (chargeTimeR == Stage1) {
                 SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.7f, Pitch = -0.5f }, Projectile.Center);

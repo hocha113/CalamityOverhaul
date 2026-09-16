@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -58,7 +59,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             if (!chargeCuePlayed && ChargeT >= 1f) {
                 chargeCuePlayed = true;
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = 0.4f }, Owner.Center);
+                    //蓄满就绪
+                    SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.5f, Pitch = 0.4f }, Owner.Center);
                 }
             }
         }

@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
             war.AddLegionStack();
             //首次集结满编：号令响声
             if (!wasFull && war.LegionStacks >= MaxStacks) {
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = 0.3f }, player.Center);
+                SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.5f, Pitch = 0.3f }, player.Center);
             }
         }
     }
@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Accessories.Offense
                 return;
             }
             player.GetModPlayer<EmblemWarPlayer>().GazeTimer = GazeDuration;
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.4f, Pitch = 0.6f }, player.Center);
+            SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.4f, Pitch = 0.6f }, player.Center);
         }
     }
 

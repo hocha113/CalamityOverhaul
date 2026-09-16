@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.Items.Magic.NeutronWands
         private void OnAnchor() {
             Projectile.velocity = Vector2.Zero;
             anchorFlash = 10;
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.55f, Pitch = 0.35f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.55f, Pitch = 0.35f }, Projectile.Center);
 
             if (VaultUtils.isServer) {
                 return;

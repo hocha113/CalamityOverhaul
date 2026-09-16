@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
                         ?.Configure(johnPos - new Vector2((i - 1) * 46f, 700f), johnPos, 30 + i * 4);
                 }
             }
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 1.2f, Pitch = 0.5f }, johnPos);
+            SoundEngine.PlaySound(SoundID.Item117 with { Volume = 1.2f, Pitch = 0.5f }, johnPos);
 
             ShootState shootState = Player.GetShootState();
             Projectile.NewProjectile(shootState.Source, Player.Center, Vector2.Zero,
@@ -589,7 +589,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
             PeterGuardCooldown = 540;
             PeterBlockAt = Main.GameUpdateCount;
             SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.9f, Pitch = 0.35f }, Player.Center);
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.8f, Pitch = 0.15f }, Player.Center);
+            SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.8f, Pitch = 0.15f }, Player.Center);
         }
         #endregion
 

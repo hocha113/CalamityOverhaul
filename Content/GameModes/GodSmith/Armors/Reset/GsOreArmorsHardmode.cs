@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
 using Terraria;
@@ -115,7 +116,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
                 blade.DamageType = hit.DamageType;
             }
             if (!Main.dedServ) {
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.45f, Pitch = 0.3f, MaxInstances = 3 }, shoulder);
+                SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.45f, Pitch = 0.3f, MaxInstances = 3 }, shoulder);
             }
         }
     }

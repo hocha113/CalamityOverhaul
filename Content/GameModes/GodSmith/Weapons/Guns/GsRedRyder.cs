@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CalamityOverhaul.Common;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -77,14 +78,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
         protected override void OnReloadStart(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
                 //拉开杠杆
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = 0.1f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_BoltAction with { Volume = 0.5f, Pitch = 0.1f }, player.Center);
             }
         }
 
         protected override void OnRoundLoaded(Item item, Player player, GsGunsEarlyPlayer mp, int roundIndex) {
             if (!VaultUtils.isServer) {
                 //杠杆咔嗒，音阶爬升如拆礼物
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.6f, Pitch = -0.2f + 0.07f * roundIndex }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with {
+                    Volume = 0.6f,
+                    Pitch = -0.2f + 0.07f * roundIndex,
+                    MaxInstances = 4
+                }, player.Center);
             }
         }
 
@@ -213,7 +218,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
                 }
             }
             if (!VaultUtils.isServer && Gift) {
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.6f, Pitch = 0.3f }, target.Center);
+                SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.6f, Pitch = 0.3f, MaxInstances = 3 }, target.Center);
             }
         }
     }

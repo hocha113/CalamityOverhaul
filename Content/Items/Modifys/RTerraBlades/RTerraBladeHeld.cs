@@ -484,7 +484,7 @@ namespace CalamityOverhaul.Content.Items.Modifys.RTerraBlades
                 default:
                     SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.5f, Volume = 1f }, Owner.Center);
                     //双魂并鸣：圣光钟鸣垫一记，夜色低鸣再垫一记
-                    SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.1f, Volume = 0.4f }, Owner.Center);
+                    SoundEngine.PlaySound(SoundID.Item60 with { Pitch = -0.1f, Volume = 0.4f }, Owner.Center);
                     SoundEngine.PlaySound(SoundID.Item8 with { Pitch = -0.55f, Volume = 0.35f }, Owner.Center);
                     break;
             }

@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
                 return;
             }
             //命中金属音：甜点更沉更响
-            SoundEngine.PlaySound(SoundID.Item37 with { Volume = sweetPending ? 0.5f : 0.3f, Pitch = sweetPending ? -0.35f : 0.1f, MaxInstances = 3 }, target.Center);
+            SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = sweetPending ? 0.5f : 0.3f, Pitch = sweetPending ? -0.35f : 0.1f, MaxInstances = 3 }, target.Center);
             if (!sweetPending || !firstOnTarget) {
                 return;
             }

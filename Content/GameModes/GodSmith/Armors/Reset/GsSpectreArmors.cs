@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
             state.TryUseCooldown(this, 480);
             int heal = Math.Max(1, player.statLifeMax2 / 10);
             player.Heal(heal);
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f }, player.Center);
+            SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.6f, Pitch = -0.3f }, player.Center);
         }
     }
 

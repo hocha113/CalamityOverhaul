@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -91,7 +92,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
                 Projectile.velocity = new Vector2(Projectile.velocity.X * 0.2f, -3.2f);
                 Projectile.tileCollide = false;
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = -0.3f }, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.5f, Pitch = -0.3f, MaxInstances = 3 }, Projectile.Center);
                 }
                 return;
             }
@@ -163,7 +164,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.7f, Pitch = -0.3f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = -0.5f }, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.7f, Pitch = -0.5f, MaxInstances = 3 }, Projectile.Center);
             Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center,
                 Vector2.UnitY, 6f, 8f, 14, 1000f, "GsPaladinSlam"));
         }

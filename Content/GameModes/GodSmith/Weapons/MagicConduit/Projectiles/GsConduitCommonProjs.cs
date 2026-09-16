@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicConduit.Proje
                 SoundStyle cue = Preset switch {
                     0 => SoundID.Item71 with { Volume = 0.85f, Pitch = -0.35f },
                     2 => SoundID.Item74 with { Volume = 0.95f, Pitch = -0.2f },
-                    _ => SoundID.Item29 with { Volume = 0.8f, Pitch = 0.25f },
+                    _ => SoundID.Item15 with { Volume = 0.8f, Pitch = 0.25f },
                 };
                 SoundEngine.PlaySound(cue, Projectile.Center);
             }

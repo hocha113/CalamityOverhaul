@@ -62,12 +62,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Disciples
                     }
                     Owner.HealEffect(25, true);
                     Owner.AddBuff(BuffID.Regeneration, 480);
-                    SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.8f, Pitch = 0.3f }, Owner.Center);
+                    SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.8f, Pitch = 0.3f }, Owner.Center);
                     MiracleBurst(new Color(180, 255, 200));
                     break;
                 case Miracle.SwiftWind:
                     Owner.AddBuff(BuffID.Swiftness, 480);
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.8f, Pitch = 0.6f }, Owner.Center);
+                    SoundEngine.PlaySound(SoundID.Item88 with { Volume = 0.8f, Pitch = 0.6f }, Owner.Center);
                     MiracleBurst(new Color(190, 235, 255));
                     break;
                 case Miracle.GuardingRing:

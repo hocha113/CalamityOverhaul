@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -65,7 +66,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
             ConsumePointShot(mp, position);
             if (!VaultUtils.isServer) {
                 //滑套后锁脆响
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = 0.45f }, position);
+                SoundEngine.PlaySound(CWRSound.Gun_Slideforward1 with { Volume = 0.5f, Pitch = 0.45f }, position);
             }
             return null;
         }
@@ -102,7 +103,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
             if (router.MarkData >= 2f) {
                 //点穴命中：震穴重响
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.7f, Pitch = 0.2f }, target.Center);
+                    SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.7f, Pitch = 0.2f, MaxInstances = 3 }, target.Center);
                 }
                 return;
             }
@@ -121,8 +122,12 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
                 }
             }
             else if (!VaultUtils.isServer) {
-                //连击爬音提示（第 1、2 响）
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.45f, Pitch = 0.1f * mp.comboHits }, target.Center);
+                //连击爬音提示（第 1、2 响）；原版未绑定的 Item122 做中性读数，不借 UI 悬停音
+                SoundEngine.PlaySound(SoundID.Item122 with {
+                    Volume = 0.45f,
+                    Pitch = 0.1f * mp.comboHits,
+                    MaxInstances = 3
+                }, target.Center);
             }
         }
 
@@ -131,7 +136,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
         protected override void OnReloadStart(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
                 //退匣
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.55f, Pitch = -0.25f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipOut with { Volume = 0.55f, Pitch = -0.25f }, player.Center);
             }
         }
 
@@ -139,8 +144,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
             if (!VaultUtils.isServer) {
                 //上匣拍、放套拍
                 SoundEngine.PlaySound(index == 1
-                    ? SoundID.Grab with { Volume = 0.6f, Pitch = 0.1f }
-                    : SoundID.Unlock with { Volume = 0.7f, Pitch = 0.4f }, player.Center);
+                    ? CWRSound.Gun_ClipIn1 with { Volume = 0.6f, Pitch = 0.1f }
+                    : CWRSound.Gun_HandGun_ClipLocked with { Volume = 0.7f, Pitch = 0.4f }, player.Center);
             }
         }
 

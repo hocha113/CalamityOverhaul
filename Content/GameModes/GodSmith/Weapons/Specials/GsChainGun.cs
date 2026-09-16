@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns;
 using InnoVault.GameContent.BaseEntity;
@@ -153,7 +154,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Specials
             if (overheated && heat <= 0f) {
                 overheated = false;
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = -0.1f }, Projectile.Center);
+                    //冷却转好：原版就用 MaxMana 表达「冷却结束、可以再来」
+                    SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.5f, Pitch = -0.1f }, Projectile.Center);
                 }
             }
 

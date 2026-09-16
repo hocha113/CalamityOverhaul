@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -102,7 +103,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             if (!VaultUtils.isServer) {
                 //专属重音：攻城锤砸地 + 铁甲碎响
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.9f, Pitch = -0.25f }, target.Center);
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.7f, Pitch = -0.2f }, target.Center);
+                SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.7f, Pitch = -0.2f, MaxInstances = 3 }, target.Center);
             }
         }
     }

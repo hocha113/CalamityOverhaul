@@ -99,8 +99,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Revelations
 
         /// <summary>第五印·殉道者显圣：十一道殉道之灵盘旋而出</summary>
         private void BeatSeal5() {
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 1.1f, Pitch = -0.1f }, Owner.Center);
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.9f, Pitch = 0.2f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Item123 with { Volume = 1.1f, Pitch = -0.1f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Item88 with { Volume = 0.9f, Pitch = 0.2f }, Owner.Center);
             if (Main.dedServ) {
                 return;
             }
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Revelations
         private void BeatSeal7() {
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.3f, Pitch = -0.5f }, Owner.Center);
             SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 1.2f, Pitch = -0.3f }, Owner.Center);
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 1.1f, Pitch = -0.4f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Item123 with { Volume = 1.1f, Pitch = -0.4f }, Owner.Center);
             Owner.CWR().ScreenShakeValue = Math.Max(Owner.CWR().ScreenShakeValue, 6f);
             if (Main.dedServ) {
                 return;
@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Revelations
         private void BeatFinale() {
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.5f, Pitch = -0.6f }, Owner.Center);
             SoundEngine.PlaySound(SoundID.Thunder with { Volume = 1.2f, Pitch = -0.4f }, Owner.Center);
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 1.3f, Pitch = 0.1f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Item117 with { Volume = 1.3f, Pitch = 0.1f }, Owner.Center);
             Owner.CWR().ScreenShakeValue = Math.Max(Owner.CWR().ScreenShakeValue, 9f);
             if (Main.dedServ) {
                 return;

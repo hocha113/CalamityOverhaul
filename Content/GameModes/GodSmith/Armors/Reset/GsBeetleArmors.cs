@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
 using Terraria;
@@ -49,7 +50,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
             if (stacks < MaxStacks) {
                 SetTally(player, stacks + 1);
                 if (stacks + 1 == MaxStacks && !Main.dedServ) {
-                    SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.6f, Pitch = -0.2f }, player.Center);
+                    //满层就绪：原版用 MaxMana 表达资源攒满可用
+                    SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.6f, Pitch = -0.2f }, player.Center);
                 }
                 return;
             }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -268,7 +269,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
                         Math.Max(1, Projectile.damage / 3), 2f, Projectile.owner, 50f, 1f);
                 }
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.8f, Pitch = -0.4f }, target.Center);
+                    SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.8f, Pitch = -0.4f, MaxInstances = 3 }, target.Center);
                 }
             }
             else if (Projectile.IsOwnedByLocalPlayer()) {
@@ -306,7 +307,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
             mp.pullArmed = false;
             mp.pullTimer = 0;
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.6f, Pitch = 0.35f }, owner.Center);
+                //叉头归位复膛
+                SoundEngine.PlaySound(CWRSound.Gun_ClipinLocked with { Volume = 0.6f, Pitch = 0.35f }, owner.Center);
             }
         }
 

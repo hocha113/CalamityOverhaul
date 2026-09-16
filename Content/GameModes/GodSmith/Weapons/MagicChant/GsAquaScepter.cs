@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.MagicChant
                         chant.EmpowerArmed = true;
                         SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.85f, Pitch = 0.1f }, player.Center);
                     }
-                    SoundEngine.PlaySound(SoundID.Item4 with {
+                    SoundEngine.PlaySound(SoundID.Item13 with {
                         Volume = 0.35f,
                         Pitch = 0.1f + 0.1f * chant.Resonance
                     }, player.Center);

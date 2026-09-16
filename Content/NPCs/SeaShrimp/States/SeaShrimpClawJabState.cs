@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.NPCs.SeaShrimp.States
                 ctx.Owner.Skeleton.Arms[0].Impulse(lockDir * 36f);
                 if (!Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.9f, Pitch = -0.35f, MaxInstances = 2 }, shoulder);
-                    SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.6f, Pitch = 0.25f, MaxInstances = 2 }, shoulder);
+                    SoundEngine.PlaySound(SoundID.NPCHit41 with { Volume = 0.6f, Pitch = 0.25f, MaxInstances = 2 }, shoulder);
                     ShakeNearby(npc.Center, 3.5f);
                 }
                 if (!VaultUtils.isClient) {

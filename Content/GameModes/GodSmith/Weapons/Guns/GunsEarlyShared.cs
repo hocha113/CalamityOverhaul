@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.UI;
 using Microsoft.Xna.Framework.Graphics;
@@ -289,31 +290,35 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
             OnReloadComplete(item, player, mp);
         }
 
-        /// <summary>装填开始（起装音）</summary>
+        /// <summary>装填开始（起装音）：退匣</summary>
         protected virtual void OnReloadStart(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.55f, Pitch = -0.2f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Clipout with { Volume = 0.55f, Pitch = -0.2f }, player.Center);
             }
         }
 
-        /// <summary>整体装填的节拍点（index 从 1 到 total）</summary>
+        /// <summary>整体装填的节拍点（index 从 1 到 total）：弹匣逐拍进位</summary>
         protected virtual void OnReloadCue(Item item, Player player, GsGunsEarlyPlayer mp, int index, int total) {
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.6f, Pitch = -0.2f + 0.15f * index }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_ClipIn1 with { Volume = 0.6f, Pitch = -0.2f + 0.15f * index }, player.Center);
             }
         }
 
-        /// <summary>逐发装填的每发落膛（roundIndex = 当前余弹数）</summary>
+        /// <summary>逐发装填的每发落膛（roundIndex = 当前余弹数）：压弹</summary>
         protected virtual void OnRoundLoaded(Item item, Player player, GsGunsEarlyPlayer mp, int roundIndex) {
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f, Pitch = -0.1f + 0.05f * roundIndex }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with {
+                    Volume = 0.55f,
+                    Pitch = -0.1f + 0.05f * roundIndex,
+                    MaxInstances = 4
+                }, player.Center);
             }
         }
 
-        /// <summary>装填完成</summary>
+        /// <summary>装填完成：锁膛</summary>
         protected virtual void OnReloadComplete(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.7f, Pitch = 0.15f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_ClipinLocked with { Volume = 0.7f, Pitch = 0.15f }, player.Center);
             }
         }
 

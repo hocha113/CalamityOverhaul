@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords;
 using Terraria;
 using Terraria.Audio;
@@ -82,7 +83,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
             if (VaultUtils.isServer) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.35f, Pitch = IsHeavy ? -0.1f : 0.3f, MaxInstances = 3 }, target.Center);
+            SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.35f, Pitch = IsHeavy ? -0.1f : 0.3f, MaxInstances = 3 }, target.Center);
             if (IsHeavy) {
                 SoundEngine.PlaySound(SoundID.Item101 with { Volume = 0.25f, Pitch = 0.5f, MaxInstances = 2 }, target.Center);
             }

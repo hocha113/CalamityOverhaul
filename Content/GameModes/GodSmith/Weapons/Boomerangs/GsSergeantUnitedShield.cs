@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Common;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -103,7 +104,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
             }
             parryWindow = 0;
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.9f, Pitch = 0.1f }, Player.Center);
+                //招架成立：原版这把盾的招架就绪音就是 MaxMana，别再借重铸叮
+                SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.9f, Pitch = 0.1f }, Player.Center);
             }
             return true;
         }

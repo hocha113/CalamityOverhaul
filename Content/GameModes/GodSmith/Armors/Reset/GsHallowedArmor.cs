@@ -58,7 +58,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Reset
             //闪避被消耗的下降沿：各端都能看到旗标变化，星只由 owner 生成
             hallowed.WindowEnd = Main.GameUpdateCount + WindowFrames;
             if (!Main.dedServ) {
-                SoundEngine.PlaySound(SoundID.Item4, player.Center);
+                //闪避成立：借原版的传送/闪现语汇
+            SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.6f, Pitch = 0.35f }, player.Center);
                 for (int i = 0; i < 20; i++) {
                     Dust dust = Dust.NewDustPerfect(player.Center, DustID.Enchanted_Gold,
                         Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 7f), 100, default, Main.rand.NextFloat(1f, 1.5f));

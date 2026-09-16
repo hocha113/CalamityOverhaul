@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 using Terraria.ID;
@@ -16,7 +17,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             MoonLordCoreAI coreAI = FindPerformanceCore(out NPC core);
             bool playing = CutsceneDirector.CurrentClip is MLordDeathCutscene;
             if (coreAI != null && core != null) {
-                if (!playing) {
+                //观众门槛：打过它（含手/头部件）或人在附近，远处没出手的人不接管镜头
+                if (!playing && BossDeathSpectator.ShouldWatch(Player, core)) {
                     CutsceneDirector.Play<MLordDeathCutscene, NPC>(core, restartSameClip: false);
                 }
             }

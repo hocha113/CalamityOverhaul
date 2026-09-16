@@ -1,11 +1,12 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 {
     /// <summary>诅咒崩解死亡运镜，对齐 SkeletronDeathState 时间线</summary>
-    internal sealed class SkeletronDeathCutscene : CutsceneClip<NPC>
+    internal sealed class SkeletronDeathCutscene : CutsceneClip<NPC>, IBossDeathCutscene
     {
         public override int Priority => 100;
 

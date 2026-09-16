@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.UI
             if (!mouseDown && wasMouseDown && dragging) {
                 dragging = false;
                 if (dragTarget >= 0 && ep.SwapSeats(dragSource, dragTarget)) {
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.8f, Pitch = 0.4f });
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.8f, Pitch = 0.4f });
                 }
                 else {
                     SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.4f });

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns;
 using System;
@@ -49,7 +50,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Specials
                 charge = Math.Min(charge + 1, ChargeFull);
                 if (prev < ChargeFull && charge >= ChargeFull && !VaultUtils.isServer) {
                     //满蓄咔哒
-                    SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = 0.6f }, player.Center);
+                    SoundEngine.PlaySound(CWRSound.Gun_ClipinLocked with { Volume = 0.5f, Pitch = 0.6f }, player.Center);
                 }
             }
             else if (charge > 0) {

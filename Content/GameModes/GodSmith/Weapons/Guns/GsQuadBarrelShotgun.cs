@@ -79,21 +79,25 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
         protected override void OnReloadStart(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
                 //折开
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.7f, Pitch = -0.4f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Pump with { Volume = 0.7f, Pitch = -0.4f }, player.Center);
             }
         }
 
         protected override void OnReloadCue(Item item, Player player, GsGunsEarlyPlayer mp, int index, int total) {
             if (!VaultUtils.isServer) {
                 //逐管落膛四响，音阶渐升
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.75f, Pitch = -0.35f + 0.18f * index }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with {
+                    Volume = 0.75f,
+                    Pitch = -0.35f + 0.18f * index,
+                    MaxInstances = 5
+                }, player.Center);
             }
         }
 
         protected override void OnReloadComplete(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
                 //合膛重响
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.8f, Pitch = 0.25f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_ClipinLocked with { Volume = 0.8f, Pitch = 0.25f }, player.Center);
             }
         }
     }

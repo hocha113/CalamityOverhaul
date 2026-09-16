@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             Life++;
             if (Life == 1f && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.85f, Pitch = 0.1f }, Projectile.Center);
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.35f, Pitch = 0.3f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.35f, Pitch = 0.3f }, Projectile.Center);
             }
         }
 

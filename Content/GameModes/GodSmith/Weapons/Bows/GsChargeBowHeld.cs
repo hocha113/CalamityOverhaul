@@ -244,7 +244,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Bows
             if (tier != seenTier && phase == PhaseDraw && tier > seenTier) {
                 if (!VaultUtils.isServer) {
                     if (tier == 2) {
-                        SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = 0.25f }, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.5f, Pitch = 0.25f }, Projectile.Center);
                     }
                     else if (tier == 3) {
                         SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.8f, Pitch = -0.1f }, Projectile.Center);

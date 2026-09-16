@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 
         /// <summary>升华演出：天光落柱 + 光尘升腾(纯本地)</summary>
         internal static void PlayConversionFX(Vector2 pos) {
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 1.1f, Pitch = 0.2f }, pos);
+            SoundEngine.PlaySound(SoundID.Item117 with { Volume = 1.1f, Pitch = 0.2f }, pos);
             SoundEngine.PlaySound(SoundID.Item123 with { Volume = 0.7f, Pitch = 0.35f }, pos);
             if (Main.dedServ) {
                 return;

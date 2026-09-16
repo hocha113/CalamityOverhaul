@@ -1134,7 +1134,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Projectile.scale = 1.25f;
 
                     if (++Projectile.ai[1] > 5) {
-                        SoundEngine.PlaySound(SoundID.Item4, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.Item92, Projectile.Center);
                         Vector2 pos = Projectile.Center + Projectile.velocity.UnitVector() * Main.rand.Next(-52, 112);
                         int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos
                         , Projectile.velocity.RotatedByRandom(0.2f), ModContent.ProjectileType<NeutronsOrb>(), Projectile.damage, 0);
@@ -1165,7 +1165,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             if (Projectile.ai[0] >= maxatcck) {
                 if (canatcck3) {
-                    SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.2f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item92 with { Pitch = -0.2f }, Projectile.Center);
                     canatcck3 = false;
                 }
                 Projectile.scale = 1.5f;

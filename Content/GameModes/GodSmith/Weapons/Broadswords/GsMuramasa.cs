@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -176,7 +177,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
         protected override void PlaySwingSound() {
             if (IsCharge) {
                 //蓄满卡簧声，蓄拍不出挥砍音
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = 0.35f }, Owner.Center);
+                SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.5f, Pitch = 0.35f }, Owner.Center);
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.7f, Pitch = Beat.SwingPitch }, Owner.Center);

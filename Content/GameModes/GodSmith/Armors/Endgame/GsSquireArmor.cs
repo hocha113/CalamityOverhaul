@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
 using Terraria;
@@ -44,7 +45,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Endgame
             state.EndowFlag = true;
             state.EndowTimer = Main.GameUpdateCount;
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.8f, Pitch = -0.2f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.HitTheSteel with { Volume = 0.8f, Pitch = -0.2f }, player.Center);
             }
         }
 
@@ -157,8 +158,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.Endgame
             if (Main.dedServ) {
                 return;
             }
-            //命中反馈：清脆枪鸣
-            SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.6f, Pitch = 0.5f, MaxInstances = 3 }, target.Center);
+            //命中反馈：枪尖咬进去的金属脆响
+            SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.6f, Pitch = 0.5f, MaxInstances = 3 }, target.Center);
         }
     }
 }

@@ -1,11 +1,12 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 {
     /// <summary>石像崩解死亡运镜，对齐 GolemDeathState 阶段帧</summary>
-    internal sealed class GolemDeathCutscene : CutsceneClip<NPC>
+    internal sealed class GolemDeathCutscene : CutsceneClip<NPC>, IBossDeathCutscene
     {
         //死亡演出运镜优先级，高于普通演出
         public override int Priority => 100;

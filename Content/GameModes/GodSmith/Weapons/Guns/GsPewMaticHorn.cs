@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -114,7 +115,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
 
         protected override void OnReloadStart(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.45f, Pitch = 0.2f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Clipout with { Volume = 0.45f, Pitch = 0.2f }, player.Center);
             }
         }
 

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 using Terraria.ID;
@@ -18,8 +19,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
             bool playing = CutsceneDirector.CurrentClip is GolemDeathCutscene;
 
             if (bodyAI != null && body != null) {
-                //restartSameClip:false，已播则复用
-                if (!playing) {
+                //restartSameClip:false，已播则复用；观众门槛：打过它（含拳/头）或人在附近
+                if (!playing && BossDeathSpectator.ShouldWatch(Player, body)) {
                     CutsceneDirector.Play<GolemDeathCutscene, NPC>(body, restartSameClip: false);
                 }
             }

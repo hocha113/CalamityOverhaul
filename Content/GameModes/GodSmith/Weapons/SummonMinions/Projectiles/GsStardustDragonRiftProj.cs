@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
                     Projectile.Center);
             }
             if (Elapsed == TearFrames) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.55f, Pitch = -0.2f },
+                SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.55f, Pitch = -0.2f },
                     Projectile.Center);
             }
         }

@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Revelations
             if (timer == 1) {
                 SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.4f, Pitch = -0.3f }, Owner.Center);
                 SoundEngine.PlaySound(SoundID.Item105 with { Volume = 1.1f, Pitch = 0.3f }, Owner.Center);
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 1f, Pitch = -0.1f }, Owner.Center);
+                SoundEngine.PlaySound(SoundID.Item117 with { Volume = 1f, Pitch = -0.1f }, Owner.Center);
                 Owner.CWR().ScreenShakeValue = Math.Max(Owner.CWR().ScreenShakeValue, 6f);
             }
 

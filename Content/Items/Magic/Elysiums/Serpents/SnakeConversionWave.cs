@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Serpents
                         PRTLoader.NewParticle<PRT_Light>(pos, vel, new Color(255, 236, 180), Main.rand.NextFloat(0.28f, 0.5f))
                             ?.Configure(Main.rand.Next(22, 34), 0.95f);
                     }
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.9f, Pitch = 0.3f }, target.Center);
+                    SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.9f, Pitch = 0.3f }, target.Center);
                 }
             }
 

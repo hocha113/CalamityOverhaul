@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -126,7 +127,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
                 return;
             }
             //反刺命中升级反馈：重音
-            SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.55f, Pitch = 0.2f }, target.Center);
+            SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.55f, Pitch = 0.2f, MaxInstances = 3 }, target.Center);
         }
     }
 }

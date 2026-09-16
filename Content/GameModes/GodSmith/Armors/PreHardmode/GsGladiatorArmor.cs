@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Armors.Hardmode;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
@@ -111,7 +112,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Armors.PreHardmode
             if (Main.dedServ) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.45f, Pitch = 0.35f, MaxInstances = 4 }, target.Center);
+                SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.45f, Pitch = 0.35f, MaxInstances = 4 }, target.Center);
         }
     }
 }

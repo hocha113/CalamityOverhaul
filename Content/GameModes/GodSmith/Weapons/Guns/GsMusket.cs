@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -57,7 +58,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
 
         protected override void OnReloadStart(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.5f, Pitch = -0.3f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Musket_ClipOut with { Volume = 0.5f, Pitch = -0.3f }, player.Center);
             }
         }
 
@@ -65,7 +66,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
             if (!VaultUtils.isServer) {
                 //三响：倒药沙声、杵压闷响、上膛脆响
                 float pitch = index switch { 1 => -0.5f, 2 => -0.15f, _ => 0.3f };
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.6f + 0.1f * index, Pitch = pitch }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with {
+                Volume = 0.6f + 0.1f * index,
+                Pitch = pitch,
+                MaxInstances = 4
+            }, player.Center);
             }
         }
     }

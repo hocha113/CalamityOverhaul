@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             }
             beamFired = true;
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.38f, Pitch = 0.2f + 0.06f * ComboStage }, Owner.Center);
+                SoundEngine.PlaySound(SoundID.Item15 with { Volume = 0.38f, Pitch = 0.2f + 0.06f * ComboStage }, Owner.Center);
             }
             if (Owner.whoAmI != Main.myPlayer) {
                 return;
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                     Projectile.penetrate = 6;
                     Projectile.Resize(60, 60);
                     if (!VaultUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.7f, Pitch = -0.3f }, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.Item15 with { Volume = 0.7f, Pitch = -0.3f }, Projectile.Center);
                         SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.5f, Pitch = 0.0f }, Projectile.Center);
                     }
                 }
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
                 int old = scheme.Charge;
                 scheme.Charge = Math.Min(3, scheme.Charge + 1);
                 if (old < 3 && scheme.Charge == 3 && !VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.45f, Pitch = 0.4f }, Main.player[Projectile.owner].Center);
+                    SoundEngine.PlaySound(SoundID.Item15 with { Volume = 0.45f, Pitch = 0.4f }, Main.player[Projectile.owner].Center);
                 }
             }
         }

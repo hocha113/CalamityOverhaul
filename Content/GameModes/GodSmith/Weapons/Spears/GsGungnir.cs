@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.85f, Pitch = ThrustPitch }, Owner.Center);
             if (IsFinisher) {
                 //神威重刺：低鸣
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = -0.35f }, Owner.Center);
+                SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.5f, Pitch = -0.35f }, Owner.Center);
             }
         }
 
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Spears
             if (!IsFinisher || !firstOnTarget || VaultUtils.isServer) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = 0.2f }, target.Center);
+                SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.5f, Pitch = 0.2f, MaxInstances = 3 }, target.Center);
             if (CWRClientConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                     target.Center, stabUnit, 4f, 5.5f, 8, 520f, FullName));

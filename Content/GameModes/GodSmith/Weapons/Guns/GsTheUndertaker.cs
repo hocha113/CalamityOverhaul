@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
 using Terraria;
@@ -77,14 +78,18 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
         protected override void OnReloadStart(Item item, Player player, GsGunsEarlyPlayer mp) {
             if (!VaultUtils.isServer) {
                 //甩轮
-                SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.6f, Pitch = -0.4f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Magnum_ClipOut with { Volume = 0.6f, Pitch = -0.4f }, player.Center);
             }
         }
 
         protected override void OnRoundLoaded(Item item, Player player, GsGunsEarlyPlayer mp, int roundIndex) {
             if (!VaultUtils.isServer) {
                 //钉棺闷响：低音定死、不上行，钉一颗少一声
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.75f, Pitch = -0.5f }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with {
+                    Volume = 0.75f,
+                    Pitch = -0.5f,
+                    MaxInstances = 4
+                }, player.Center);
                 SoundEngine.PlaySound(SoundID.NPCHit2 with { Volume = 0.15f, Pitch = -0.6f }, player.Center);
             }
         }
@@ -144,7 +149,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
                         owner.Heal(10);
                     }
                     if (!VaultUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = 0.3f }, owner.Center);
+                        //吸血回复：借原版药水的治疗语汇
+                        SoundEngine.PlaySound(SoundID.Item3 with { Volume = 0.5f, Pitch = 0.3f }, owner.Center);
                     }
                     Projectile.Kill();
                     return;

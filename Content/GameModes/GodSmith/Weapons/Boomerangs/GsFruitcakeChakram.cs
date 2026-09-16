@@ -42,7 +42,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Boomerangs
                 if (glaze.TryGetValue(target.whoAmI, out int coats) && coats > 0) {
                     glaze[target.whoAmI] = 0;
                     if (!VaultUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = -0.15f }, target.Center);
+                        //糖霜被啃掉：借原版的固体食物语汇
+                        SoundEngine.PlaySound(SoundID.Item2 with { Volume = 0.7f, Pitch = -0.15f }, target.Center);
                     }
                 }
                 return;

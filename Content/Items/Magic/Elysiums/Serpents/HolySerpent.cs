@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Serpents
             Projectile.velocity.Y += 0.06f;
 
             if (stateTimer == 1) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.7f, Pitch = -0.1f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item119 with { Volume = 0.7f, Pitch = -0.1f }, Projectile.Center);
             }
 
             if (stateTimer >= EmergeTime) {

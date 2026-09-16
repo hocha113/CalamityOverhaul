@@ -1,14 +1,20 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 {
-    /// <summary>石像崩解（死亡演出）：踉跄 → 裂纹蔓延 → 自上而下崩解 → 太阳宝石谢幕</summary>
+    /// <summary>
+    /// 石像崩解（死亡演出）：踉跄 → 裂纹蔓延 → 自上而下崩解 → 太阳宝石谢幕。
+    /// 碎屑全部是原版神庙石材（砖格 / 石巨人 gore / 本体切片），由各端按共享时间轴自己生成；
+    /// 服务端只做静默移除与真死，不调用 HitEffect（服务端 HitEffect 无视觉，客户端也收不到）
+    /// </summary>
     [InnoVault.StateMachines.VaultState((int)GolemStateIndex.Death, typeof(GolemStateContext))]
     internal class GolemDeathState : GolemStateBase
     {
@@ -20,8 +26,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
         internal static int CollapseEnd => 262;
         internal static int FinaleEnd => 336;
 
+        //部件清场拍：拳先碎，头后碎
+        private const int FistBurstTick = 218;
+        private const int HeadBurstTick = 242;
+
         //裂响加速节拍表（帧间隔递减，仪式感）
         private static readonly int[] CrackBeats = [70, 92, 110, 125, 138, 149, 158, 165, 171, 176];
+
+        //原版大块 gore 按部位被蚀线吞掉的时刻投放（帧内归一高度）
+        private static readonly (float Frac, int[] Gores)[] GoreDrops = [
+            (0.20f, GolemRubble.ShoulderGores),
+            (0.42f, [360, 361]),
+            (0.58f, [364]),
+            (0.80f, GolemRubble.LegGores),
+        ];
+
+        //客户端演出账本：蚀线推进、一次性拍是否已放、部件最后可见位置（部件被服务端移除后仍要在原地碎）
+        private float lastErodeFrac;
+        private float lastSliceFrac;
+        private int goreDropCursor;
+        private bool fistBurstDone;
+        private bool headBurstDone;
+        private Vector2? leftFistPos;
+        private Vector2? rightFistPos;
+        private Vector2? headPos;
 
         public override void OnEnter(GolemStateContext context) {
             base.OnEnter(context);
@@ -32,6 +60,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             context.DeathTimer = 0;
             context.DeathPhase = GolemDeathPhase.Stagger;
             GolemBodyAI.ActivePerformanceBody = npc.whoAmI;
+
+            lastErodeFrac = 0f;
+            lastSliceFrac = 0f;
+            goreDropCursor = 0;
+            fistBurstDone = false;
+            headBurstDone = false;
+            leftFistPos = rightFistPos = headPos = null;
 
             //清debuff
             for (int i = 0; i < npc.buffType.Length; i++) {
@@ -57,6 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             }
 
             if (!VaultUtils.isServer) {
+                GolemRubble.CacheBodyMask(npc);
                 SoundEngine.PlaySound(SoundID.NPCDeath14 with { Pitch = -0.6f, Volume = 0.8f }, npc.Center);
                 SoundEngine.PlaySound(SoundID.WormDig with { Pitch = -0.9f, Volume = 1.1f }, npc.Center);
             }
@@ -80,6 +116,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             context.DeathPhase = phase;
             context.DeathTimer = Timer;
 
+            if (!VaultUtils.isServer) {
+                RememberPartPositions(context);
+            }
+
             switch (phase) {
                 case GolemDeathPhase.Stagger:
                     UpdateStagger(context);
@@ -97,7 +137,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
             Timer++;
 
-            //落幕：放行真死
+            //落幕：放行真死。躯干早在崩解期化为碎屑，这里不再 HitEffect 凭空弹 gore
             if (Timer >= FinaleEnd) {
                 context.DeathPerformanceFinished = true;
                 if (GolemBodyAI.ActivePerformanceBody == npc.whoAmI) {
@@ -106,7 +146,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                 if (!VaultUtils.isClient) {
                     npc.dontTakeDamage = false;
                     npc.life = 0;
-                    npc.HitEffect();
                     npc.checkDead();
                     npc.netUpdate = true;
                 }
@@ -116,6 +155,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
         public override void OnExit(GolemStateContext context) {
             base.OnExit(context);
+            GolemRubble.ReleaseBodyMask();
             if (GolemBodyAI.ActivePerformanceBody == context.Npc.whoAmI) {
                 GolemBodyAI.ActivePerformanceBody = -1;
             }
@@ -151,7 +191,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             return 1f;
         }
 
-        /// <summary>踉跄：躯干晃动，宝石光乱闪</summary>
+        /// <summary>蚀线在世界中的高度：帧内归一高度换算到绘制矩形（本体以帧中心对齐 npc.Center 绘制）</summary>
+        private static float ErodeWorldY(NPC npc, float frac) {
+            int frameHeight = npc.frame.Height > 0
+                ? npc.frame.Height
+                : TextureAssets.Npc[npc.type].Value.Height / Math.Max(Main.npcFrameCount[npc.type], 1);
+            return npc.Center.Y + (frac - 0.5f) * frameHeight * npc.scale;
+        }
+
+        /// <summary>记住部件最后可见位置：服务端清场包先到时，客户端仍能在原地碎</summary>
+        private void RememberPartPositions(GolemStateContext context) {
+            GolemLimbStatus limbs = context.Limbs;
+            if (limbs.LeftFistAlive) {
+                leftFistPos = Main.npc[limbs.LeftFistIndex].Center;
+            }
+            if (limbs.RightFistAlive) {
+                rightFistPos = Main.npc[limbs.RightFistIndex].Center;
+            }
+            if (limbs.FreeHeadAlive) {
+                headPos = Main.npc[limbs.FreeHeadIndex].Center;
+            }
+            else if (limbs.HeadAlive) {
+                headPos = Main.npc[limbs.HeadIndex].Center;
+            }
+        }
+
+        /// <summary>踉跄：躯干晃动，宝石光乱闪，顶缘抖落砖屑</summary>
         private void UpdateStagger(GolemStateContext context) {
             NPC npc = context.Npc;
             context.VeinGlow = 0.5f + 0.5f * MathF.Sin(Timer * 0.6f) * MathF.Sin(Timer * 0.23f);
@@ -162,14 +227,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             if (Timer % 20 == 5) {
                 SoundEngine.PlaySound(SoundID.WormDig with { Pitch = -0.5f, Volume = 0.7f }, npc.Center);
                 GolemScreenEffects.Shake(2f);
+                //每个震动拍从顶缘抖落几块砖角
+                int chips = Main.rand.Next(2, 4);
+                for (int i = 0; i < chips; i++) {
+                    Vector2 pos = npc.Top + new Vector2(Main.rand.NextFloat(-0.35f, 0.35f) * npc.width, Main.rand.NextFloat(0f, 12f));
+                    GolemRubble.SpawnBrick(pos, new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), Main.rand.NextFloat(-0.6f, 0.4f)),
+                        heat: 0.2f, quadrant: true, rest: 100, scale: npc.scale);
+                }
+                GolemRubble.SpawnDust(npc.Top + new Vector2(0f, 8f), 4, npc.width * 0.3f, new Vector2(0f, 0.6f));
             }
             if (Timer % 7 == 0) {
-                Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Stone, 0f, 1f, 60, default, 1.1f);
+                Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Lihzahrd, 0f, 1f, 60, default, 1.1f);
                 dust.velocity *= 0.3f;
             }
         }
 
-        /// <summary>裂纹蔓延：加速的碎裂节拍，光从石缝漏出</summary>
+        /// <summary>裂纹蔓延：加速的碎裂节拍，光从石缝漏出，裂点弹出热碎块</summary>
         private void UpdateCrack(GolemStateContext context) {
             NPC npc = context.Npc;
 
@@ -192,62 +265,131 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
                         PRTLoader.NewParticle<PRT_Spark>(crackPos, VaultUtils.RandVr(1.5f, 4f),
                             new Color(255, 205, 110), Main.rand.NextFloat(0.8f, 1.2f)).Configure(true, 20);
                     }
+                    //裂点崩出带岩浆断口的小碎块
+                    int chunks = Main.rand.Next(2, 4);
+                    for (int i = 0; i < chunks; i++) {
+                        int gore = GolemRubble.SmallChunks[Main.rand.Next(GolemRubble.SmallChunks.Length)];
+                        Vector2 vel = VaultUtils.RandVr(1.5f, 3.5f);
+                        vel.Y -= 1f;
+                        GolemRubble.SpawnGore(gore, crackPos, vel, heat: 1f, rest: 150, scale: npc.scale);
+                    }
+                    GolemRubble.SpawnDust(crackPos, 6, 6f, Vector2.Zero);
                     break;
                 }
             }
 
-            //持续掉渣
-            if (Timer % 5 == 0) {
-                PRTLoader.NewParticle<PRT_MarbleChip>(
-                    npc.Center + Main.rand.NextVector2Circular(npc.width * 0.45f, npc.height * 0.45f),
-                    new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 0.5f)),
-                    new Color(122, 104, 78), Main.rand.NextFloat(0.6f, 1f)).Configure(40);
+            //持续掉渣：砖角带余温
+            if (Timer % 6 == 0) {
+                Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.45f, npc.height * 0.45f);
+                GolemRubble.SpawnBrick(pos, new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 0.5f)),
+                    heat: 0.6f, quadrant: true, rest: 110, scale: npc.scale);
             }
         }
 
-        /// <summary>崩解：沿侵蚀线倾泻碎屑与烟，部件清场</summary>
+        /// <summary>崩解：沿侵蚀线切下本体、投放原版大块 gore、扬尘起烟；部件清场</summary>
         private void UpdateCollapse(GolemStateContext context) {
             NPC npc = context.Npc;
 
-            //侵蚀线高度（自上而下）
-            float crumble = GetCrumble(Timer);
-            float erodeY = npc.position.Y + npc.height * crumble;
-
             if (!VaultUtils.isServer) {
+                float curFrac = GolemRubble.ErodeFraction(GetCrumble(Timer));
+                float erodeY = ErodeWorldY(npc, curFrac);
+                float halfW = npc.frame.Width > 0 ? npc.frame.Width * npc.scale * 0.42f : npc.width * 0.45f;
+
                 if (Timer % 3 == 0) {
                     GolemScreenEffects.Shake(2.5f);
                 }
-                //侵蚀线上倾泻碎屑
-                for (int i = 0; i < 3; i++) {
-                    Vector2 pos = new(npc.position.X + Main.rand.NextFloat(npc.width), erodeY + Main.rand.NextFloat(-8f, 8f));
-                    PRTLoader.NewParticle<PRT_MarbleChip>(pos,
-                        new Vector2(Main.rand.NextFloat(-2.5f, 2.5f), Main.rand.NextFloat(-2f, 1f)),
-                        new Color(122, 104, 78), Main.rand.NextFloat(0.7f, 1.3f)).Configure(50);
+
+                //沿蚀线切本体：取刚被吞掉的那一段
+                if (Timer % 4 == 0 && curFrac - lastSliceFrac > 0.002f) {
+                    GolemRubble.SpawnBodySlices(npc, lastSliceFrac, curFrac, Main.rand.Next(3, 5), heat: 0.9f);
+                    lastSliceFrac = curFrac;
+                    Vector2 brickPos = new(npc.Center.X + Main.rand.NextFloat(-halfW, halfW), erodeY);
+                    GolemRubble.SpawnBrick(brickPos, new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-1.5f, 0.5f)),
+                        heat: 0.5f, quadrant: false, rest: 130, scale: npc.scale);
                 }
-                if (Timer % 4 == 0) {
-                    PRTLoader.NewParticle<PRT_Smoke>(new Vector2(npc.position.X + Main.rand.NextFloat(npc.width), erodeY),
-                        -Vector2.UnitY * Main.rand.NextFloat(0.4f, 1.2f),
-                        new Color(74, 64, 54), Main.rand.NextFloat(0.7f, 1.2f)).Configure(44, 0.6f);
+
+                //原版大块 gore：蚀线吞过部位时投放
+                while (goreDropCursor < GoreDrops.Length && curFrac >= GoreDrops[goreDropCursor].Frac && lastErodeFrac < GoreDrops[goreDropCursor].Frac) {
+                    Rectangle area = new((int)(npc.Center.X - halfW), (int)erodeY - 10, (int)(halfW * 2f), 20);
+                    GolemRubble.SpawnGores(GoreDrops[goreDropCursor].Gores, area, new Vector2(0f, -1f), 2.4f, heat: 0.7f, scale: npc.scale, rest: 170);
+                    goreDropCursor++;
                 }
+                lastErodeFrac = Math.Max(lastErodeFrac, curFrac);
+
+                //蚀线扬尘 + 真 alpha 烟
+                if (curFrac < 0.999f) {
+                    GolemRubble.SpawnDust(new Vector2(npc.Center.X, erodeY), 3, halfW, new Vector2(0f, 0.8f), 1.2f);
+                    if (Timer % 6 == 0) {
+                        GolemRubble.SpawnSmoke(npc.GetSource_FromAI(),
+                            new Vector2(npc.Center.X + Main.rand.NextFloat(-halfW, halfW), erodeY),
+                            1, new Vector2(0f, -0.6f), 1.1f);
+                    }
+                }
+
                 if (Timer == CrackEnd + 4) {
                     SoundEngine.PlaySound(SoundID.NPCDeath14 with { Pitch = -0.5f, Volume = 1f }, npc.Center);
                 }
+
+                //部件清场视觉：客户端按共享时间轴自己碎，用记住的位置兜底
+                if (!fistBurstDone && Timer >= FistBurstTick) {
+                    fistBurstDone = true;
+                    BurstFist(npc, leftFistPos);
+                    BurstFist(npc, rightFistPos);
+                }
+                if (!headBurstDone && Timer >= HeadBurstTick) {
+                    headBurstDone = true;
+                    BurstHead(npc, headPos);
+                }
             }
 
-            //部件清场（服务端）
+            //部件清场（服务端静默移除，视觉由客户端时间轴驱动）
             if (!VaultUtils.isClient) {
                 GolemLimbStatus limbs = context.Limbs;
-                //拳先碎
-                if (Timer == 218) {
-                    RemovePartWithBurst(limbs.LeftFistIndex);
-                    RemovePartWithBurst(limbs.RightFistIndex);
+                if (Timer == FistBurstTick) {
+                    RemovePartSilently(limbs.LeftFistIndex);
+                    RemovePartSilently(limbs.RightFistIndex);
                 }
-                //头后碎（坠毁的飞头/仍附着的头）
-                if (Timer == 242) {
-                    RemovePartWithBurst(limbs.FreeHeadIndex);
-                    RemovePartWithBurst(limbs.HeadIndex);
+                if (Timer == HeadBurstTick) {
+                    RemovePartSilently(limbs.FreeHeadIndex);
+                    RemovePartSilently(limbs.HeadIndex);
                 }
             }
+        }
+
+        /// <summary>拳碎：拳 gore + 小碎块 + 砖格 + 尘 + 烟</summary>
+        private static void BurstFist(NPC body, Vector2? at) {
+            if (at is not Vector2 center) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.NPCDeath43 with { Pitch = -0.3f, Volume = 0.7f, MaxInstances = 2 }, center);
+            Rectangle area = new((int)center.X - 24, (int)center.Y - 20, 48, 40);
+            GolemRubble.SpawnGores(GolemRubble.FistGores, area, new Vector2(0f, -3f), 2.6f, heat: 0.8f, scale: body.scale, rest: 160);
+            GolemRubble.SpawnGores([368, 368], area, new Vector2(0f, -2.5f), 3f, heat: 1f, scale: body.scale, rest: 150);
+            for (int i = 0; i < 4; i++) {
+                GolemRubble.SpawnBrick(center + Main.rand.NextVector2Circular(20f, 14f),
+                    new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-4f, -1f)),
+                    heat: 0.5f, quadrant: Main.rand.NextBool(), rest: 140, scale: body.scale);
+            }
+            GolemRubble.SpawnDust(center, 20, 24f, new Vector2(0f, -1f), 1.3f);
+            GolemRubble.SpawnSmoke(body.GetSource_FromAI(), center, 3, new Vector2(0f, -0.8f), 1.1f);
+        }
+
+        /// <summary>头碎：头 gore + 小碎块 + 砖格 + 尘 + 烟</summary>
+        private static void BurstHead(NPC body, Vector2? at) {
+            if (at is not Vector2 center) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.NPCDeath43 with { Pitch = -0.15f, Volume = 0.8f, MaxInstances = 2 }, center);
+            Rectangle area = new((int)center.X - 26, (int)center.Y - 22, 52, 44);
+            GolemRubble.SpawnGores(GolemRubble.HeadGores, area, new Vector2(0f, -3f), 2.6f, heat: 0.8f, scale: body.scale, rest: 170);
+            GolemRubble.SpawnGores(GolemRubble.SmallChunks, area, new Vector2(0f, -2.5f), 3f, heat: 1f, scale: body.scale, rest: 150);
+            for (int i = 0; i < 3; i++) {
+                GolemRubble.SpawnBrick(center + Main.rand.NextVector2Circular(20f, 16f),
+                    new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-4f, -1f)),
+                    heat: 0.5f, quadrant: Main.rand.NextBool(), rest: 140, scale: body.scale);
+            }
+            GolemRubble.SpawnDust(center, 16, 24f, new Vector2(0f, -1f), 1.3f);
+            GolemRubble.SpawnSmoke(body.GetSource_FromAI(), center, 3, new Vector2(0f, -0.8f), 1.1f);
         }
 
         /// <summary>宝石谢幕：太阳宝石浮出废墟 → 三声碎响 → 金光散尽</summary>
@@ -290,7 +432,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             return npc.Bottom + new Vector2(0f, -40f - rise);
         }
 
-        private static void RemovePartWithBurst(int index) {
+        /// <summary>
+        /// 静默移除部件：不走 HitEffect（服务端无视觉、客户端收不到，且附着头的原版 HitEffect 会生成分离头），
+        /// 碎裂表现由客户端按 <see cref="FistBurstTick"/>/<see cref="HeadBurstTick"/> 自己生成
+        /// </summary>
+        private static void RemovePartSilently(int index) {
             if (index < 0 || index >= Main.maxNPCs) {
                 return;
             }
@@ -298,16 +444,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             if (!part.active) {
                 return;
             }
-            //碎裂表现走 HitEffect 前先清血防原版分离头逻辑
-            if (part.type == NPCID.GolemHead) {
-                //附着头静默移除，防止原版 HitEffect 生成分离头
-                part.life = 0;
-                part.active = false;
-                part.netUpdate = true;
-                return;
-            }
             part.life = 0;
-            part.HitEffect();
             part.active = false;
             part.netUpdate = true;
         }

@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Cinematics;
 using InnoVault.PRT;
@@ -452,7 +453,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             bool playing = CutsceneDirector.CurrentClip is QueenBeeDeathCutscene;
             bool inDeath = stateMachine?.CurrentState is QBDeathState;
             if (inDeath && npc.active) {
-                if (!playing) {
+                //观众门槛：本机玩家打过她或人在附近，远处没出手的人不接管镜头
+                if (!playing && BossDeathSpectator.ShouldWatch(Main.LocalPlayer, npc)) {
                     CutsceneDirector.Play<QueenBeeDeathCutscene, NPC>(npc, restartSameClip: false);
                     deathCutsceneStarted = true;
                 }

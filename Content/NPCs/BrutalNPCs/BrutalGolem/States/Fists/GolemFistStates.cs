@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -410,11 +411,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.7f }, npc.Center);
                     GolemScreenEffects.Shake(4f);
-                    for (int i = 0; i < 12; i++) {
-                        PRTLoader.NewParticle<PRT_MarbleChip>(npc.Bottom + Main.rand.NextVector2Circular(18f, 6f),
+                    //砸地崩出真砖屑与卡其尘，两团真 alpha 烟压暗落点
+                    for (int i = 0; i < 6; i++) {
+                        GolemRubble.SpawnBrick(npc.Bottom + Main.rand.NextVector2Circular(18f, 6f),
                             new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-5f, -1f)),
-                            new Color(122, 104, 78), Main.rand.NextFloat(0.7f, 1.2f)).Configure(46);
+                            heat: 0.3f, quadrant: i >= 2, rest: 140, scale: npc.scale);
                     }
+                    GolemRubble.SpawnDust(npc.Bottom, 14, 20f, new Vector2(0f, -1.2f), 1.2f);
+                    GolemRubble.SpawnSmoke(npc.GetSource_FromAI(), npc.Bottom, 2, new Vector2(0f, -0.7f), 1f);
                 }
             }
 

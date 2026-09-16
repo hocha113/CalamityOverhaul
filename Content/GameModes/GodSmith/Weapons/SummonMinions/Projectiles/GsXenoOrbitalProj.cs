@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions.Proj
             }
             //锁定起始：校准滴答
             if (Elapsed == 1) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = 0.6f },
+                SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.5f, Pitch = 0.6f },
                     Projectile.Center);
             }
             //光矛落下：轨道炮鸣

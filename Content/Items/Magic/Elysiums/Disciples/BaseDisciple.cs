@@ -86,8 +86,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Disciples
             //殉道状态经ai[1]同步：远端看到标记即进入演出
             if (StateFlag == 1f && martyrTimer < 0) {
                 martyrTimer = 0;
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.9f, Pitch = -0.25f }, Projectile.Center);
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.1f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item117 with { Volume = 0.9f, Pitch = -0.25f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item88 with { Volume = 0.7f, Pitch = 0.1f }, Projectile.Center);
             }
 
             if (martyrTimer >= 0) {
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Disciples
             if (emergeTimer < EmergeTime) {
                 emergeTimer++;
                 if (emergeTimer == 1) {
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
                 }
             }
 

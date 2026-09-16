@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 using Terraria.ID;
@@ -42,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
     }
 
     /// <summary>死亡运镜：挣扎推近→忍者逃逸特写→终融拉远</summary>
-    internal sealed class KingSlimeDeathCutscene : CutsceneClip<NPC>
+    internal sealed class KingSlimeDeathCutscene : CutsceneClip<NPC>, IBossDeathCutscene
     {
         public override int Priority => 100;
 
@@ -144,7 +145,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
             NPC deathBoss = FindDeathPerformanceBoss();
             bool deathPlaying = CutsceneDirector.CurrentClip is KingSlimeDeathCutscene;
             if (deathBoss != null) {
-                if (!deathPlaying) {
+                //观众门槛：打过它或人在附近，远处没出手的人不接管镜头
+                if (!deathPlaying && BossDeathSpectator.ShouldWatch(Player, deathBoss)) {
                     CutsceneDirector.Play<KingSlimeDeathCutscene, NPC>(deathBoss, restartSameClip: false);
                 }
                 return;

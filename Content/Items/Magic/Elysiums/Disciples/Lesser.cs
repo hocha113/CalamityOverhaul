@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Disciples
         protected override bool TryCast() => Owner.statLife < (int)(Owner.statLifeMax2 * 0.86f);
 
         protected override void ExecuteAbility() {
-            SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.4f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.7f, Pitch = 0.4f }, Owner.Center);
 
             //治疗只在主人端结算(绿字广播全端可见)
             if (Projectile.IsOwnedByLocalPlayer()) {

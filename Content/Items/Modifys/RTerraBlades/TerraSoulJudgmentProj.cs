@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Items.Modifys.RTerraBlades
                 Projectile.velocity = dir * DiveSpeed;
                 Projectile.netUpdate = true;
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item60 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.5f, Pitch = -0.1f }, Projectile.Center);
                     PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, RTerraBlade.LightCream, 0f)
                         ?.Configure(0.04f, 0.4f, 10);
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Items.Modifys.RTerraBlades
             if (VaultUtils.isServer) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = -0.15f }, target.Center);
+            SoundEngine.PlaySound(SoundID.Item60 with { Volume = 0.5f, Pitch = -0.15f }, target.Center);
             PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, RTerraBlade.LightCream, 0f)
                 ?.Configure(0.05f, 0.6f, 12);
             for (int i = 0; i < 8; i++) {

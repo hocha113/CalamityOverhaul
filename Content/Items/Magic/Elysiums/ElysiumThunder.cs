@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums
 
         public override void AI() {
             if (Timer == 0) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = 0.6f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with { Volume = 0.6f, Pitch = 0.6f }, Projectile.Center);
             }
 
             if (Timer == OmenTime) {

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -67,11 +68,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Broadswords
             },
         };
 
-        /// <summary>轻剑高音快哨；终结拍垫一记呼雨铃音</summary>
+        /// <summary>轻剑高音快哨；终结拍垫一记厚响</summary>
         protected override void PlaySwingSound() {
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.72f, Pitch = Beat.SwingPitch }, Owner.Center);
             if (IsFinisher) {
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.35f, Pitch = 0.45f }, Owner.Center);
+                SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.35f, Pitch = 0.45f }, Owner.Center);
             }
         }
 

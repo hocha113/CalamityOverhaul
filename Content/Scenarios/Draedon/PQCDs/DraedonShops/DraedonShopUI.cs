@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
             if (player.BuyItem(si.price)) {
                 player.GiveItem(player.GetSource_OpenItem(si.itemType), si.itemType, si.stack);
                 SoundEngine.PlaySound(SoundID.Coins);
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = 0.3f });
+                SoundEngine.PlaySound(SoundID.Coins with { Volume = 0.6f, Pitch = 0.3f });
             }
             else {
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.5f, Volume = 0.8f });

@@ -313,14 +313,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 CultistScreenFX.PushFlash(0.22f);
                 CultistMotion.Shake(planet.Center, 4f, 10);
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.75f, Pitch = 0.1f }, planet.Center);
+                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.75f, Pitch = 0.1f }, planet.Center);
                 }
             }
             //复圆拍:钻石环闪
             if ((int)age == (int)TotalityEndF) {
                 CultistScreenFX.PushFlash(0.5f);
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.9f, Pitch = -0.4f }, planet.Center);
+                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.9f, Pitch = -0.4f }, planet.Center);
                 }
             }
 

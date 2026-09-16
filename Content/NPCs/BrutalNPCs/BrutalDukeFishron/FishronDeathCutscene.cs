@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 using Terraria.ID;
@@ -6,7 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 {
     /// <summary>死亡运镜：跟随坠海全程，只聚焦与轻推变焦，不锁玩家输入</summary>
-    internal sealed class FishronDeathCutscene : CutsceneClip<NPC>
+    internal sealed class FishronDeathCutscene : CutsceneClip<NPC>, IBossDeathCutscene
     {
         public override int Priority => 100;
 
@@ -45,7 +46,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             bool playing = CutsceneDirector.CurrentClip is FishronDeathCutscene;
 
             if (bossAI != null && boss != null) {
-                if (!playing) {
+                //观众门槛：打过它或人在附近，远处没出手的人不接管镜头
+                if (!playing && BossDeathSpectator.ShouldWatch(Player, boss)) {
                     CutsceneDirector.Play<FishronDeathCutscene, NPC>(boss, restartSameClip: false);
                 }
             }

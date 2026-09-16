@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -91,7 +92,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonWhips.Projec
                         Projectile.damage = Math.Max(1, (int)Projectile.ai[1]);
                         if (!VaultUtils.isServer) {
                             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.9f, Pitch = 0.1f }, Projectile.Center);
-                            SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.8f, Pitch = -0.3f }, Projectile.Center);
+                            SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.8f, Pitch = -0.3f, MaxInstances = 3 }, Projectile.Center);
                         }
                     }
                     break;

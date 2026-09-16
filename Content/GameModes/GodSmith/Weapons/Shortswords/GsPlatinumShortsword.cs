@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -100,7 +101,7 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Shortswords
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.25f, Pitch = 0.5f }, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.MetalImpact with { Volume = 0.25f, Pitch = 0.5f, MaxInstances = 4 }, Projectile.Center);
                 }
             }
         }

@@ -215,7 +215,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Throwing
                     burstType, (int)(proj.damage * 0.5f), 2f, proj.owner, 60f, GsBurstProj.FxNone);
             }
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.7f }, target.Center);
+                //骨器命中：借原版骷髅系受击的骨响
+                SoundEngine.PlaySound(SoundID.NPCHit2 with { Volume = 0.7f, MaxInstances = 3 }, target.Center);
             }
         }
     }

@@ -58,7 +58,8 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.SummonMinions
             if (Projectile.localAI[2] == 0f) {
                 Projectile.localAI[2] = 1f;
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.55f, Pitch = 0.2f },
+                    //旗杆入土
+                    SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.55f, Pitch = -0.2f },
                         Projectile.Center);
                 }
             }

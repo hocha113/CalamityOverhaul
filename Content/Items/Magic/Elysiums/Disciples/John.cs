@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Elysiums.Disciples
         }
 
         protected override void ExecuteAbility() {
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.65f, Pitch = 0.5f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.65f, Pitch = 0.5f }, Projectile.Center);
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GameModes.GodSmith.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -110,7 +111,11 @@ namespace CalamityOverhaul.Content.GameModes.GodSmith.Weapons.Guns
         protected override void OnRoundLoaded(Item item, Player player, GsGunsEarlyPlayer mp, int roundIndex) {
             if (!VaultUtils.isServer) {
                 //一口一镖归膛
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = 0.05f + 0.1f * roundIndex }, player.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with {
+                    Volume = 0.5f,
+                    Pitch = 0.05f + 0.1f * roundIndex,
+                    MaxInstances = 4
+                }, player.Center);
             }
         }
 

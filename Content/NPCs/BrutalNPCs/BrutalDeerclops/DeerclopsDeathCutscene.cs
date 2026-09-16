@@ -1,11 +1,12 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.Cinematics;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
 {
     /// <summary>死亡运镜，对齐 DeerclopsDeathState 节拍常量</summary>
-    internal sealed class DeerclopsDeathCutscene : CutsceneClip<NPC>
+    internal sealed class DeerclopsDeathCutscene : CutsceneClip<NPC>, IBossDeathCutscene
     {
         //死亡演出运镜优先级，高于普通演出
         public override int Priority => 100;
