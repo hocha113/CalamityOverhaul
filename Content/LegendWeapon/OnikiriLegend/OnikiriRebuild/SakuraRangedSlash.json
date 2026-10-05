@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "name": "樱月",
+  "segments": [
+    {
+      "outer": [
+        {
+          "x": 30.70812781198017,
+          "y": -155.35035453609672
+        },
+        {
+          "x": 190.31757,
+          "y": -112.03778
+        },
+        {
+          "x": 188.5093,
+          "y": 113.98625
+        },
+        {
+          "x": -70.17062,
+          "y": 104.44099
+        }
+      ],
+      "inner": [
+        {
+          "x": -32.44529111237018,
+          "y": -80.62194227314185
+        },
+        {
+          "x": 94.730736,
+          "y": -88.91187
+        },
+        {
+          "x": 91.08129,
+          "y": 97.56157
+        },
+        {
+          "x": -70.29733,
+          "y": 104.5199
+        }
+      ]
+    }
+  ],
+  "tolerance": 0.8,
+  "widthSegments": 4,
+  "material": {
+    "atlasColumns": 1,
+    "atlasRows": 1,
+    "frameCount": 1,
+    "frameIndex": 0,
+    "frameRate": 0,
+    "frameOrder": "row-major",
+    "frameAxis": "horizontal",
+    "flipAlong": false,
+    "flipAcross": false,
+    "texture": "ramp_603_4c.png",
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "opacity": 1,
+    "repeat": 1,
+    "offset": 0,
+    "scrollSpeed": 0,
+    "wrap": false,
+    "blend": "alpha"
+  }
+}

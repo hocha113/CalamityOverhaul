@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "name": "樱月",
+  "segments": [
+    {
+      "outer": [
+        {
+          "x": -124.06833,
+          "y": -127.13293
+        },
+        {
+          "x": 414.2628993959055,
+          "y": -132.53974215104884
+        },
+        {
+          "x": 319.98052186829096,
+          "y": 149.02307253468135
+        },
+        {
+          "x": -287.12572338363253,
+          "y": 204.10959930323526
+        }
+      ],
+      "inner": [
+        {
+          "x": -122.59432,
+          "y": -122.18874
+        },
+        {
+          "x": 61.18159323920784,
+          "y": -51.51601761567258
+        },
+        {
+          "x": -26.424649872286864,
+          "y": 32.402183519751844
+        },
+        {
+          "x": -126.61762741606934,
+          "y": 72.25037173626843
+        }
+      ]
+    }
+  ],
+  "tolerance": 0.8,
+  "widthSegments": 4,
+  "material": {
+    "atlasColumns": 1,
+    "atlasRows": 1,
+    "frameCount": 1,
+    "frameIndex": 0,
+    "frameRate": 0,
+    "frameOrder": "row-major",
+    "frameAxis": "horizontal",
+    "flipAlong": true,
+    "flipAcross": false,
+    "texture": "Eff_Trail_63_03.png",
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "opacity": 1,
+    "repeat": 1,
+    "offset": 0,
+    "scrollSpeed": 0,
+    "wrap": false,
+    "blend": "additive"
+  }
+}
